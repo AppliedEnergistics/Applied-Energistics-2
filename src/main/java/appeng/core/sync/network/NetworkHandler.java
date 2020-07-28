@@ -118,8 +118,8 @@ public class NetworkHandler {
 
     public void sendToAllAround(final BasePacket message, final TargetPoint point) {
         IPacket<?> pkt = message.toPacket(NetworkDirection.PLAY_TO_CLIENT);
-        getServer().getPlayerList().sendToAllNearExcept(point.excluded, point.x, point.y, point.z, point.r2, point.world.func_234923_W_(),
-                pkt);
+        getServer().getPlayerList().sendToAllNearExcept(point.excluded, point.x, point.y, point.z, point.r2,
+                point.world.func_234923_W_(), pkt);
     }
 
     public void sendToServer(final BasePacket message) {

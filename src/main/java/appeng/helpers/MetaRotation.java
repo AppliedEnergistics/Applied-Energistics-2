@@ -58,7 +58,7 @@ public class MetaRotation implements IOrientable {
     public Direction getUp() {
         final BlockState state = this.w.getBlockState(this.pos);
 
-        if (this.facingProp != null && state.func_235901_b_(this.facingProp) ) {
+        if (this.facingProp != null && state.func_235901_b_(this.facingProp)) {
             return state.get(this.facingProp);
         }
 

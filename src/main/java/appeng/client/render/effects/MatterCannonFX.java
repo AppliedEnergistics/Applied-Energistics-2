@@ -85,8 +85,8 @@ public class MatterCannonFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType data, ClientWorld world, double x, double y, double z, double xSpeed,
-                double ySpeed, double zSpeed) {
+        public Particle makeParticle(BasicParticleType data, ClientWorld world, double x, double y, double z,
+                double xSpeed, double ySpeed, double zSpeed) {
             return new MatterCannonFX(world, x, y, z, spriteSet);
         }
     }

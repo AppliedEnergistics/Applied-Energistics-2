@@ -75,7 +75,9 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
     }
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+            ItemOverrideList overrides, ResourceLocation modelLocation) {
         // Retrieve our textures and pass them on to the baked model
         TextureAtlasSprite ringCorner = spriteGetter.apply(RING_CORNER);
         TextureAtlasSprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);

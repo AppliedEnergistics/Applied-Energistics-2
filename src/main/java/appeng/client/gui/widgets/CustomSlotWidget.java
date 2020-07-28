@@ -31,7 +31,8 @@ public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
     public void slotClicked(final ItemStack clickStack, final int mouseButton) {
     }
 
-    public abstract void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks);
+    public abstract void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
+            final float partialTicks);
 
     public void drawBackground(int guileft, int guitop, int currentZIndex) {
     }

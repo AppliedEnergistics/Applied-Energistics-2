@@ -47,13 +47,14 @@ public class FluidTankWidget extends Widget implements ITooltip {
         this.tank = tank;
         this.slot = slot;
     }
-    
+
     @Override
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             RenderSystem.disableBlend();
 
-            fill(matrixStack, this.x, this.y, this.x + this.width, this.y + this.height, AEColor.GRAY.blackVariant | 0xFF000000);
+            fill(matrixStack, this.x, this.y, this.x + this.width, this.y + this.height,
+                    AEColor.GRAY.blackVariant | 0xFF000000);
 
             final IAEFluidStack fluidStack = this.tank.getFluidInSlot(this.slot);
             if (fluidStack != null && fluidStack.getStackSize() > 0) {
@@ -75,12 +76,12 @@ public class FluidTankWidget extends Widget implements ITooltip {
 
                 int iconHeightRemainder = scaledHeight % 16;
                 if (iconHeightRemainder > 0) {
-                    blit(matrixStack, this.x, this.y + this.height - iconHeightRemainder, getBlitOffset(), 16, iconHeightRemainder,
-                            sprite);
+                    blit(matrixStack, this.x, this.y + this.height - iconHeightRemainder, getBlitOffset(), 16,
+                            iconHeightRemainder, sprite);
                 }
                 for (int i = 0; i < scaledHeight / 16; i++) {
-                    blit(matrixStack, this.x, this.y + this.height - iconHeightRemainder - (i + 1) * 16, getBlitOffset(), 16, 16,
-                            sprite);
+                    blit(matrixStack, this.x, this.y + this.height - iconHeightRemainder - (i + 1) * 16,
+                            getBlitOffset(), 16, 16, sprite);
                 }
             }
 

@@ -56,7 +56,8 @@ public class DebugPartPlacerItem extends AEBaseItem {
 
         TileEntity te = world.getTileEntity(pos);
         if (!(te instanceof IPartHost)) {
-            player.sendMessage(new StringTextComponent("Right-click something that will accept parts"), Util.DUMMY_UUID);
+            player.sendMessage(new StringTextComponent("Right-click something that will accept parts"),
+                    Util.DUMMY_UUID);
             return ActionResultType.FAIL;
         }
         IPartHost center = (IPartHost) te;

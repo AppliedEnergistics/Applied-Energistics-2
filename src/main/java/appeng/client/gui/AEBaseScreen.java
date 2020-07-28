@@ -192,7 +192,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     protected void drawTooltip(MatrixStack matrices, int x, int y, ITextComponent message) {
         String[] lines = message.getString().split("\n"); // FIXME FABRIC
-        List<ITextComponent> textLines = Arrays.stream(lines).map(StringTextComponent::new).collect(Collectors.toList());
+        List<ITextComponent> textLines = Arrays.stream(lines).map(StringTextComponent::new)
+                .collect(Collectors.toList());
         this.drawTooltip(matrices, x, y, textLines);
     }
 
@@ -233,8 +234,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     public abstract void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY);
 
     @Override
-    protected final void func_230450_a_(MatrixStack matrixStack, final float f, final int x,
-            final int y) {
+    protected final void func_230450_a_(MatrixStack matrixStack, final float f, final int x, final int y) {
         final int ox = this.guiLeft; // (width - xSize) / 2;
         final int oy = this.guiTop; // (height - ySize) / 2;
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

@@ -46,12 +46,13 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     public AEBaseBlockItemChargeable(Block id, Properties props) {
         super(id, props);
 
-        ItemModelsProperties.func_239418_a_(this, new ResourceLocation("appliedenergistics2:fill_level"), (is, world, entity) -> {
-            double curPower = getAECurrentPower(is);
-            double maxPower = getAEMaxPower(is);
+        ItemModelsProperties.func_239418_a_(this, new ResourceLocation("appliedenergistics2:fill_level"),
+                (is, world, entity) -> {
+                    double curPower = getAECurrentPower(is);
+                    double maxPower = getAEMaxPower(is);
 
-            return (int) Math.round(100 * curPower / maxPower);
-        });
+                    return (int) Math.round(100 * curPower / maxPower);
+                });
     }
 
     @Override

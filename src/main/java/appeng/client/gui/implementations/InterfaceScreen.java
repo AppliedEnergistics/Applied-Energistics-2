@@ -61,7 +61,8 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
         if (this.blockMode != null) {
             this.blockMode.set(((InterfaceContainer) this.cvb).getBlockingMode());
         }

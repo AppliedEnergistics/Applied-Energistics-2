@@ -46,8 +46,8 @@ import appeng.block.AEBaseBlock;
  */
 public class MatrixFrameBlock extends AEBaseBlock {
 
-    private static final Material MATERIAL = new Material(MaterialColor.AIR, false, true, true, false, false,
-            false, PushReaction.PUSH_ONLY);
+    private static final Material MATERIAL = new Material(MaterialColor.AIR, false, true, true, false, false, false,
+            PushReaction.PUSH_ONLY);
 
     public MatrixFrameBlock() {
         super(Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).notSolid().noDrops());

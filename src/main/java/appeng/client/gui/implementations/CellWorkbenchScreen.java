@@ -62,7 +62,8 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.handleButtonVisibility();
 
         this.bindTexture(this.getBackground());

@@ -62,8 +62,7 @@ public final class WorldData implements IWorldData {
 
         // Attach shared data to the server's overworld dimension
         if (overworld.func_234923_W_() != ServerWorld.field_234918_g_) {
-            throw new IllegalStateException(
-                    "The server doesn't have an overworld we could store our data on!");
+            throw new IllegalStateException("The server doesn't have an overworld we could store our data on!");
         }
 
         final PlayerData playerData = overworld.getSavedData().getOrCreate(PlayerData::new, PlayerData.NAME);

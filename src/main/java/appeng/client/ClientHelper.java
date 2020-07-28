@@ -208,8 +208,8 @@ public class ClientHelper extends ServerHelper {
 
     private void spawnLightningArc(final World world, final double posX, final double posY, final double posZ,
             final Vector3d second) {
-        final LightningFX fx = new LightningArcFX((ClientWorld) world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f,
-                0.0f);
+        final LightningFX fx = new LightningArcFX((ClientWorld) world, posX, posY, posZ, second.x, second.y, second.z,
+                0.0f, 0.0f, 0.0f);
         Minecraft.getInstance().particles.addEffect(fx);
     }
 

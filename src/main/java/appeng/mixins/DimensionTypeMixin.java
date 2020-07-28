@@ -20,8 +20,8 @@ public class DimensionTypeMixin {
     private static void addRegistryDefaults(IDynamicRegistries.Impl registryTracker, CallbackInfoReturnable<?> cir) {
 
         registryTracker.func_239774_a_(SpatialDimensionManager.STORAGE_DIMENSION_TYPE,
-                new DimensionType(OptionalLong.of(12000), false, false, false, false, false, false, true, false,
-                        false, 256, BlockTags.INFINIBURN_OVERWORLD.getName(), 1.0f));
+                new DimensionType(OptionalLong.of(12000), false, false, false, false, false, false, true, false, false,
+                        256, BlockTags.INFINIBURN_OVERWORLD.getName(), 1.0f));
 
     }
 

@@ -140,8 +140,8 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
                             playerId = this.getProxy().getSecurity().getOwner();
                         }
 
-                        final TransitionResult tr = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
-                                playerId);
+                        final TransitionResult tr = sc.doSpatialTransition(cell, serverWorld, spc.getMin(),
+                                spc.getMax(), playerId);
                         if (tr.success) {
                             energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);
                             this.inv.setStackInSlot(0, ItemStack.EMPTY);

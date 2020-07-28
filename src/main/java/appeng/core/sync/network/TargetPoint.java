@@ -32,8 +32,7 @@ public class TargetPoint {
         return new TargetPoint(x, y, z, r2, world);
     }
 
-    public static TargetPoint at(ServerPlayerEntity excluded, double x, double y, double z, double r2,
-                                 World world) {
+    public static TargetPoint at(ServerPlayerEntity excluded, double x, double y, double z, double r2, World world) {
         return new TargetPoint(excluded, x, y, z, r2, world);
     }
 }

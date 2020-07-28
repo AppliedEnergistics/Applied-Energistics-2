@@ -48,7 +48,7 @@ public class MinecraftServerMixin implements DynamicDimensions {
     private SaveFormat.LevelSave anvilConverterForAnvilFile;
 
     public ServerWorld addWorld(RegistryKey<World> worldId, RegistryKey<DimensionType> dimensionTypeId,
-                                ChunkGenerator chunkGenerator) {
+            ChunkGenerator chunkGenerator) {
         Preconditions.checkArgument(!worlds.containsKey(worldId), "World with id %s already exists.",
                 worldId.func_240901_a_());
 
@@ -84,9 +84,9 @@ public class MinecraftServerMixin implements DynamicDimensions {
         MinecraftServer self = (MinecraftServer) (Object) this;
         DerivedWorldInfo unmodifiableLevelProperties = new DerivedWorldInfo(this.field_240768_i_,
                 serverWorldProperties);
-        ServerWorld world = new ServerWorld(self, this.backgroundExecutor, this.anvilConverterForAnvilFile, unmodifiableLevelProperties,
-                worldId, dimensionTypeId, dimensionType, worldGenerationProgressListener, chunkGenerator, false, seed,
-                ImmutableList.of(), false);
+        ServerWorld world = new ServerWorld(self, this.backgroundExecutor, this.anvilConverterForAnvilFile,
+                unmodifiableLevelProperties, worldId, dimensionTypeId, dimensionType, worldGenerationProgressListener,
+                chunkGenerator, false, seed, ImmutableList.of(), false);
         worldBorder.addListener(new IBorderListener.Impl(world.getWorldBorder()));
         this.worlds.put(worldId, world);
 
@@ -96,7 +96,8 @@ public class MinecraftServerMixin implements DynamicDimensions {
         generatorOptions.func_236224_e_().func_239662_d_(dimOptKey); // Otherwise it wont be saved
         // Ensure the save properties are saved, or the world will potentially be lost
         // on restart
-        this.anvilConverterForAnvilFile.func_237288_a_(this.field_240767_f_, this.field_240768_i_, self.getPlayerList().getHostPlayerData());
+        this.anvilConverterForAnvilFile.func_237288_a_(this.field_240767_f_, this.field_240768_i_,
+                self.getPlayerList().getHostPlayerData());
 
         return world;
     }

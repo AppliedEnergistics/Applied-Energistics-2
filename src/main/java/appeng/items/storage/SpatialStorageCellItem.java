@@ -100,7 +100,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @Override
     public TransitionResult doSpatialTransition(final ItemStack is, final ServerWorld w, final WorldCoord min,
-                                                final WorldCoord max, int playerId) {
+            final WorldCoord max, int playerId) {
         final int targetX = max.x - min.x - 1;
         final int targetY = max.y - min.y - 1;
         final int targetZ = max.z - min.z - 1;

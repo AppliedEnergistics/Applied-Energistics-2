@@ -65,8 +65,8 @@ public class CachedPlane {
     private int verticalBits;
     private final BlockState matrixBlockState;
 
-    public CachedPlane(final ServerWorld w, final int minX, final int minY, final int minZ, final int maxX, final int maxY,
-            final int maxZ) {
+    public CachedPlane(final ServerWorld w, final int minX, final int minY, final int minZ, final int maxX,
+            final int maxY, final int maxZ) {
 
         Block matrixFrameBlock = Api.instance().definitions().blocks().matrixFrame().maybeBlock().orElse(null);
         if (matrixFrameBlock != null) {

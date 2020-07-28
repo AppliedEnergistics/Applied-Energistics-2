@@ -57,8 +57,8 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
             this.guiSlots.add(new FluidSlotWidget(configFluids, i, i, 35 + 18 * i, 35));
         }
 
-        this.addButton(new TabButton(this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16,
-                GuiText.Priority.text(), this.itemRenderer, btn -> openPriorityGui()));
+        this.addButton(new TabButton(this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.text(),
+                this.itemRenderer, btn -> openPriorityGui()));
     }
 
     @Override
@@ -67,8 +67,8 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
 
     @Override
     public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.FluidInterface.text()).getString(), 8,
-                6, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.FluidInterface.text()).getString(), 8, 6,
+                4210752);
         this.font.drawString(matrixStack, GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
         this.font.drawString(matrixStack, GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);

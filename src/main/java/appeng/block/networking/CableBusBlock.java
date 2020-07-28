@@ -222,8 +222,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
             double z = target.getHitVec().z;
             // FIXME: Check how this looks, probably like shit, maybe provide parts the
             // ability to supply particle textures???
-            effectRenderer
-                    .addEffect(new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).multipleParticleScaleBy(0.8F));
+            effectRenderer.addEffect(
+                    new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).multipleParticleScaleBy(0.8F));
         }
 
         return true;
@@ -264,8 +264,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
                         // FIXME: Check how this looks, probably like shit, maybe provide parts the
                         // ability to supply particle textures???
-                        Particle effect = new CableBusBreakingParticle((ClientWorld) world, x, y, z, x - pos.getX() - 0.5D,
-                                y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
+                        Particle effect = new CableBusBreakingParticle((ClientWorld) world, x, y, z,
+                                x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
                         effectRenderer.addEffect(effect);
                     }
                 }

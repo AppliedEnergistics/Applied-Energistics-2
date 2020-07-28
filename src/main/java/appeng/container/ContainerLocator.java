@@ -72,7 +72,8 @@ public final class ContainerLocator {
         this(type, itemIndex, world.func_234923_W_().func_240901_a_(), blockPos, side);
     }
 
-    private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos, AEPartLocation side) {
+    private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
+            AEPartLocation side) {
         this.type = type;
         this.itemIndex = itemIndex;
         this.worldId = worldId;
@@ -132,8 +133,7 @@ public final class ContainerLocator {
     public static ContainerLocator forPart(AEBasePart part) {
         IPartHost host = part.getHost();
         DimensionalCoord pos = host.getLocation();
-        return new ContainerLocator(Type.PART, -1, pos.getWorld().getWorld(), pos.getBlockPos(),
-                part.getSide());
+        return new ContainerLocator(Type.PART, -1, pos.getWorld().getWorld(), pos.getBlockPos(), part.getSide());
     }
 
     public boolean hasItemIndex() {
@@ -202,8 +202,8 @@ public final class ContainerLocator {
             case 0:
                 return new ContainerLocator(Type.PLAYER_INVENTORY, buf.readInt(), (ResourceLocation) null, null, null);
             case 1:
-                return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(), buf.readResourceLocation(),
-                        buf.readBlockPos(), AEPartLocation.values()[buf.readByte()]);
+                return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(),
+                        buf.readResourceLocation(), buf.readBlockPos(), AEPartLocation.values()[buf.readByte()]);
             case 2:
                 return new ContainerLocator(Type.BLOCK, -1, buf.readResourceLocation(), buf.readBlockPos(), null);
             case 3:

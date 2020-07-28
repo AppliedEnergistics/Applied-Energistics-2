@@ -257,7 +257,8 @@ public class CraftConfirmContainer extends AEBaseContainer {
                     // :P
                 }
             } catch (final Throwable e) {
-                this.getPlayerInv().player.sendMessage(new StringTextComponent("Error: " + e.toString()), Util.DUMMY_UUID);
+                this.getPlayerInv().player.sendMessage(new StringTextComponent("Error: " + e.toString()),
+                        Util.DUMMY_UUID);
                 AELog.debug(e);
                 this.setValidContainer(false);
                 this.result = null;

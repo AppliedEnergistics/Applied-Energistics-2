@@ -970,7 +970,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                             hostTile.getPos().getZ() + 0.5);
                     from = from.add(direction.getXOffset() * 0.501, direction.getYOffset() * 0.501,
                             direction.getZOffset() * 0.501);
-                    final Vector3d to = from.add(direction.getXOffset(), direction.getYOffset(), direction.getZOffset());
+                    final Vector3d to = from.add(direction.getXOffset(), direction.getYOffset(),
+                            direction.getZOffset());
                     final BlockRayTraceResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
                                                          // https://github.com/MinecraftForge/MinecraftForge/pull/6708
                     if (hit != null && !BAD_BLOCKS.contains(directedBlock)) {

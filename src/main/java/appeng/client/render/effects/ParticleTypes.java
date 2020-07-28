@@ -20,8 +20,8 @@ public final class ParticleTypes {
             return null;
         }
     };
-    public static final ParticleType<LightningArcParticleData> LIGHTNING_ARC = new ParticleType<LightningArcParticleData>(false,
-            LightningArcParticleData.DESERIALIZER) {
+    public static final ParticleType<LightningArcParticleData> LIGHTNING_ARC = new ParticleType<LightningArcParticleData>(
+            false, LightningArcParticleData.DESERIALIZER) {
         @Override
         public Codec<LightningArcParticleData> func_230522_e_() {
             return null;

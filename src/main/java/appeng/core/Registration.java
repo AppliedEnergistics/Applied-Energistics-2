@@ -689,12 +689,11 @@ final class Registration {
 
     public void registerStructures(RegistryEvent.Register<Structure<?>> evt) {
         // Registering into the Forge registry is INSUFFICIENT!
-        // There's a bidirectional map in the Structure class itself primarily for the purposes of NBT serialization
-        StructureAccessor.register(
-                MeteoriteStructure.ID.toString(),
+        // There's a bidirectional map in the Structure class itself primarily for the
+        // purposes of NBT serialization
+        StructureAccessor.register(MeteoriteStructure.ID.toString(),
                 MeteoriteStructure.INSTANCE.setRegistryName(MeteoriteStructure.ID),
-                GenerationStage.Decoration.TOP_LAYER_MODIFICATION
-        );
+                GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> evt) {

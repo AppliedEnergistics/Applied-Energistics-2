@@ -144,8 +144,9 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                 }
 
                 final int w = this.font.getStringWidth(str);
-                this.font.drawString(matrixStack, str, (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2),
-                        (y * 18 + yo + 6) * 2, 4210752);
+                this.font.drawString(matrixStack, str,
+                        (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * 18 + yo + 6) * 2,
+                        4210752);
 
                 RenderSystem.popMatrix();
                 final int posX = x * sectionLength + xo + sectionLength - 18;
@@ -225,8 +226,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                 }
 
                 currentToolTip.add(GuiText.Installed.withSuffix(": " + (myStack.getStackSize())));
-                currentToolTip.add(GuiText.EnergyDrain.withSuffix(": "
-                        + Platform.formatPowerLong(myStack.getCountRequestable(), true)));
+                currentToolTip.add(GuiText.EnergyDrain
+                        .withSuffix(": " + Platform.formatPowerLong(myStack.getCountRequestable(), true)));
 
                 this.drawTooltip(matrixStack, x, y, currentToolTip);
             }

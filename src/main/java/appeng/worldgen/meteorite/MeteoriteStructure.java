@@ -17,8 +17,7 @@ public class MeteoriteStructure extends Structure<NoFeatureConfig> {
 
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
 
-    public static final Structure<NoFeatureConfig> INSTANCE = new MeteoriteStructure(
-            NoFeatureConfig.field_236558_a_);
+    public static final Structure<NoFeatureConfig> INSTANCE = new MeteoriteStructure(NoFeatureConfig.field_236558_a_);
 
     public MeteoriteStructure(Codec<NoFeatureConfig> configCodec) {
         super(configCodec);
@@ -31,7 +30,9 @@ public class MeteoriteStructure extends Structure<NoFeatureConfig> {
     }
 
     @Override
-    protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider biomeSource, long seed, SharedSeedRandom randIn, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos2, NoFeatureConfig featureConfig) {
+    protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider biomeSource, long seed,
+            SharedSeedRandom randIn, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos2,
+            NoFeatureConfig featureConfig) {
         return randIn.nextBoolean();
     }
 

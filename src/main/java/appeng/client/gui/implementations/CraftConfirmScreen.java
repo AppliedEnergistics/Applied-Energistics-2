@@ -84,8 +84,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     public void init() {
         super.init();
 
-        this.start = new Button(this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20,
-                GuiText.Start.text(), btn -> start());
+        this.start = new Button(this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.text(),
+                btn -> start());
         this.start.active = false;
         this.addButton(this.start);
 

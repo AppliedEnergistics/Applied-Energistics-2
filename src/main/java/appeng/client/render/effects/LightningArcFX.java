@@ -76,7 +76,7 @@ public class LightningArcFX extends LightningFX {
 
         @Override
         public Particle makeParticle(LightningArcParticleData data, ClientWorld worldIn, double x, double y, double z,
-                                     double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             SpriteTexturedParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
                     data.target.z, 0, 0, 0);
             lightningFX.selectSpriteRandomly(this.spriteSet);

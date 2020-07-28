@@ -49,12 +49,12 @@ public final class SpatialDimensionManager implements ISpatialDimension {
     // we move the origin to the middle of region 0,0
     public static final BlockPos REGION_CENTER = new BlockPos(512 / 2, 64, 512 / 2);
 
-    public static final RegistryKey<DimensionType> STORAGE_DIMENSION_TYPE = RegistryKey.func_240903_a_(Registry.DIMENSION_TYPE_KEY,
-            AppEng.makeId("storage_cell"));
+    public static final RegistryKey<DimensionType> STORAGE_DIMENSION_TYPE = RegistryKey
+            .func_240903_a_(Registry.DIMENSION_TYPE_KEY, AppEng.makeId("storage_cell"));
 
     // See the fabric version of this to get any idea what its doing
-    public static final DimensionRenderInfo STORAGE_SKY = new DimensionRenderInfo(Float.NaN /* disables clouds */, false,
-            DimensionRenderInfo.FogType.NONE /* we use a custom render mixin */, true, false) {
+    public static final DimensionRenderInfo STORAGE_SKY = new DimensionRenderInfo(Float.NaN /* disables clouds */,
+            false, DimensionRenderInfo.FogType.NONE /* we use a custom render mixin */, true, false) {
 
         @Override
         public Vector3d func_230494_a_(Vector3d p_230494_1_, float p_230494_2_) {
@@ -97,8 +97,8 @@ public final class SpatialDimensionManager implements ISpatialDimension {
 
         ServerWorld world = dynamicDimensions.addWorld(worldId, STORAGE_DIMENSION_TYPE, StorageChunkGenerator.INSTANCE);
 
-        SpatialDimensionExtraData spatialExtraData = world.getSavedData()
-                .getOrCreate(SpatialDimensionExtraData::new, SpatialDimensionExtraData.ID);
+        SpatialDimensionExtraData spatialExtraData = world.getSavedData().getOrCreate(SpatialDimensionExtraData::new,
+                SpatialDimensionExtraData.ID);
         spatialExtraData.setSize(size);
 
         return worldId;

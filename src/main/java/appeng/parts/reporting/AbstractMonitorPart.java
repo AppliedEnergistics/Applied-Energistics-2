@@ -179,7 +179,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         if (player.getHeldItem(hand).isEmpty()) {
             this.isLocked = !this.isLocked;
-            player.sendMessage((this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get(), Util.DUMMY_UUID);
+            player.sendMessage((this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get(),
+                    Util.DUMMY_UUID);
             this.getHost().markForSave();
             this.getHost().markForUpdate();
         }

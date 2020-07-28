@@ -37,7 +37,8 @@ public class ColorableTileBlockColor implements IBlockColor {
     public static final ColorableTileBlockColor INSTANCE = new ColorableTileBlockColor();
 
     @Override
-    public int getColor(BlockState state, @Nullable IBlockDisplayReader worldIn, @Nullable BlockPos pos, int tintIndex) {
+    public int getColor(BlockState state, @Nullable IBlockDisplayReader worldIn, @Nullable BlockPos pos,
+            int tintIndex) {
         AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 
         if (worldIn != null && pos != null) {

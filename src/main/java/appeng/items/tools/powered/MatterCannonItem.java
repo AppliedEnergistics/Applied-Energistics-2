@@ -285,8 +285,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         while (penetration > 0 && hasDestroyed) {
             hasDestroyed = false;
 
-            final AxisAlignedBB bb = new AxisAlignedBB(Math.min(Vector3d.x, Vector3d1.x), Math.min(Vector3d.y, Vector3d1.y),
-                    Math.min(Vector3d.z, Vector3d1.z), Math.max(Vector3d.x, Vector3d1.x), Math.max(Vector3d.y, Vector3d1.y),
+            final AxisAlignedBB bb = new AxisAlignedBB(Math.min(Vector3d.x, Vector3d1.x),
+                    Math.min(Vector3d.y, Vector3d1.y), Math.min(Vector3d.z, Vector3d1.z),
+                    Math.max(Vector3d.x, Vector3d1.x), Math.max(Vector3d.y, Vector3d1.y),
                     Math.max(Vector3d.z, Vector3d1.z)).grow(16, 16, 16);
 
             Entity entity = null;
@@ -322,8 +323,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 }
             }
 
-            RayTraceContext rayTraceContext = new RayTraceContext(Vector3d, Vector3d1, RayTraceContext.BlockMode.COLLIDER,
-                    RayTraceContext.FluidMode.NONE, p);
+            RayTraceContext rayTraceContext = new RayTraceContext(Vector3d, Vector3d1,
+                    RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, p);
             final Vector3d vec = new Vector3d(d0, d1, d2);
             RayTraceResult pos = w.rayTraceBlocks(rayTraceContext);
             if (entity != null && pos.getType() != RayTraceResult.Type.MISS

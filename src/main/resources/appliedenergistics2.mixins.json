@@ -10,10 +10,7 @@
     "DimensionStructuresSettingsMixin",
     "StructureAccessor"
   ],
-  "client": [
-    "SkyRenderMixin",
-    "SkyPropertiesMixin"
-  ],
+  "client": ["SkyRenderMixin", "SkyPropertiesMixin"],
   "server": [],
   "injectors": {
     "defaultRequire": 1

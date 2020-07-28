@@ -37,7 +37,8 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks) {
+    public void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
+            final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
             RenderSystem.disableBlend();

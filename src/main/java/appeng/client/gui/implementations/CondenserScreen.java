@@ -56,7 +56,8 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Condenser.text()).getString(), 8, 6, 4210752);
         this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
 
@@ -65,7 +66,8 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.bindTexture("guis/condenser.png");
 
         GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());

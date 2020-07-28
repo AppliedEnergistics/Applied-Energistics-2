@@ -86,11 +86,13 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean func_230383_a_(ISeedReader world, StructureManager p_230383_2_, ChunkGenerator chunkGeneratorIn, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
+    public boolean func_230383_a_(ISeedReader world, StructureManager p_230383_2_, ChunkGenerator chunkGeneratorIn,
+            Random rand, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();
 
-        WorldData.instance().compassData().service().tryUpdateArea(world, chunkPos); // FIXME: We know the y-range here...
+        WorldData.instance().compassData().service().tryUpdateArea(world, chunkPos); // FIXME: We know the y-range
+                                                                                     // here...
         return true;
     }
 }

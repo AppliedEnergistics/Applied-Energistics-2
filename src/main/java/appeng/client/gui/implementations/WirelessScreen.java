@@ -45,7 +45,8 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Wireless.text()).getString(), 8, 6, 4210752);
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
@@ -63,7 +64,8 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.bindTexture("guis/wireless.png");
         GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
     }

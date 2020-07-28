@@ -31,11 +31,12 @@ public class StorageCellBiome extends Biome {
 
     public StorageCellBiome() {
         super(new Biome.Builder()
-                .surfaceBuilder(new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_STONE_GRAVEL_CONFIG))
+                .surfaceBuilder(
+                        new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_STONE_GRAVEL_CONFIG))
                 .precipitation(RainType.NONE).category(Category.NONE).depth(0).scale(1)
                 // Copied from the vanilla void biome
-                .temperature(0.5F).downfall(0.5F)
-                .func_235097_a_(new BiomeAmbience.Builder().func_235246_b_(4159204).func_235248_c_(329011).func_235239_a_(0).func_235238_a_())
+                .temperature(0.5F).downfall(0.5F).func_235097_a_(new BiomeAmbience.Builder().func_235246_b_(4159204)
+                        .func_235248_c_(329011).func_235239_a_(0).func_235238_a_())
                 .parent(null));
     }
 

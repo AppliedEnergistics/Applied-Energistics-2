@@ -97,7 +97,8 @@ public class StorageHelper {
         newWorld.getChunkProvider().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
-        if (entity instanceof ServerPlayerEntity && link.dim.func_234922_V_() == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {
+        if (entity instanceof ServerPlayerEntity
+                && link.dim.func_234922_V_() == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
@@ -136,8 +137,9 @@ public class StorageHelper {
         }
     }
 
-    public void swapRegions(final ServerWorld srcWorld, final int srcX, final int srcY, final int srcZ, final ServerWorld dstWorld,
-            final int dstX, final int dstY, final int dstZ, final int scaleX, final int scaleY, final int scaleZ) {
+    public void swapRegions(final ServerWorld srcWorld, final int srcX, final int srcY, final int srcZ,
+            final ServerWorld dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX,
+            final int scaleY, final int scaleZ) {
         Api.instance().definitions().blocks().matrixFrame().maybeBlock()
                 .ifPresent(matrixFrameBlock -> this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
                         dstY + scaleY + 1, dstZ + scaleZ + 1,

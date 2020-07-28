@@ -59,7 +59,7 @@ public class ChargedOreFX extends RedstoneParticle {
 
         @Override
         public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
-                                     double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             return new ChargedOreFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

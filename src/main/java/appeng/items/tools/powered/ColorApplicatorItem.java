@@ -107,14 +107,15 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     public ColorApplicatorItem(Item.Properties props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
-        ItemModelsProperties.func_239418_a_(this, new ResourceLocation(AppEng.MOD_ID, "colored"), (itemStack, world, entity) -> {
-            // If the stack has no color, don't use the colored model since the impact of
-            // calling getColor for every quad is extremely high, if the stack tries to
-            // re-search its
-            // inventory for a new paintball everytime
-            AEColor col = getActiveColor(itemStack);
-            return (col != null) ? 1 : 0;
-        });
+        ItemModelsProperties.func_239418_a_(this, new ResourceLocation(AppEng.MOD_ID, "colored"),
+                (itemStack, world, entity) -> {
+                    // If the stack has no color, don't use the colored model since the impact of
+                    // calling getColor for every quad is extremely high, if the stack tries to
+                    // re-search its
+                    // inventory for a new paintball everytime
+                    AEColor col = getActiveColor(itemStack);
+                    return (col != null) ? 1 : 0;
+                });
     }
 
     @Override
@@ -321,7 +322,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     private boolean recolourBlock(final Block blk, final Direction side, final World w, final BlockPos pos,
-                                  final AEColor newColor, @Nullable final PlayerEntity p) {
+            final AEColor newColor, @Nullable final PlayerEntity p) {
         final BlockState state = w.getBlockState(pos);
 
         Block recolored = BlockRecolorer.recolor(blk, newColor);
