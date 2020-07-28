@@ -22,15 +22,12 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
       - name: Clean gradle
-        run: ./gradlew clean --no-daemon
+        run: ./gradlew clean --no-daemon --max-workers 1
       - name: Validate no assets
         run: test ! -d ./src/generated
-      # FG does appear to read the deps in runData before it has written it. Separate step to avoid it
-      - name: Compile Java and prepare runData
-        run: ./gradlew compileJava prepareRunData --no-daemon
       - name: Generate assets
-        run: ./gradlew runData --no-daemon
+        run: ./gradlew runData --no-daemon --max-workers 1
       - name: Validate assets
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build --no-daemon --max-workers 1
