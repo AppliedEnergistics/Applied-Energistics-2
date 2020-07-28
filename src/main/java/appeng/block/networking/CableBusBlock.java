@@ -223,7 +223,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
             // FIXME: Check how this looks, probably like shit, maybe provide parts the
             // ability to supply particle textures???
             effectRenderer.addEffect(
-                    new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).multipleParticleScaleBy(0.8F));
+                    new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).multiplyParticleScaleBy(0.8F));
         }
 
         return true;

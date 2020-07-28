@@ -207,7 +207,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             extra = new TranslationTextComponent(selected.translationKey);
         }
 
-        return super.getDisplayName(is).deepCopy().func_240702_b_(" - ").func_230529_a_(extra);
+        return super.getDisplayName(is).deepCopy().appendString(" - ").append(extra);
     }
 
     public AEColor getActiveColor(final ItemStack tol) {
@@ -328,7 +328,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         Block recolored = BlockRecolorer.recolor(blk, newColor);
         if (recolored != blk) {
             BlockState newState = recolored.getDefaultState();
-            for (Property<?> prop : newState.func_235904_r_()) {
+            for (Property<?> prop : newState.getProperties()) {
                 newState = copyProp(state, newState, prop);
             }
 
@@ -355,7 +355,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     private static <T extends Comparable<T>> BlockState copyProp(BlockState oldState, BlockState newState,
             Property<T> prop) {
-        if (newState.func_235901_b_(prop)) {
+        if (newState.hasProperty(prop)) {
             return newState.with(prop, oldState.get(prop));
         }
         return newState;

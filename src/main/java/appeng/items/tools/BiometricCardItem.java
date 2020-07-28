@@ -78,7 +78,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     @Override
     public ITextComponent getDisplayName(final ItemStack is) {
         final GameProfile username = this.getProfile(is);
-        return username != null ? super.getDisplayName(is).deepCopy().func_240702_b_(" - " + username.getName())
+        return username != null ? super.getDisplayName(is).deepCopy().appendString(" - " + username.getName())
                 : super.getDisplayName(is);
     }
 
@@ -167,8 +167,8 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
                 if (msg == null) {
                     msg = new TranslationTextComponent(sp.getTranslatedName());
                 } else {
-                    msg = msg.deepCopy().func_240702_b_(", ")
-                            .func_230529_a_(new TranslationTextComponent(sp.getTranslatedName()));
+                    msg = msg.deepCopy().appendString(", ")
+                            .append(new TranslationTextComponent(sp.getTranslatedName()));
                 }
             }
             lines.add(msg);

@@ -87,8 +87,8 @@ public class ProgressBar extends Widget implements ITooltip {
         }
         ITextComponent result = this.titleName != null ? this.titleName : new StringTextComponent("");
 
-        return result.deepCopy().func_240702_b_("\n").func_240702_b_(this.source.getCurrentProgress() + " ")
-                .func_230529_a_(GuiText.Of.text().deepCopy().func_240702_b_(" " + this.source.getMaxProgress()));
+        return result.deepCopy().appendString("\n").appendString(this.source.getCurrentProgress() + " ")
+                .append(GuiText.Of.text().deepCopy().appendString(" " + this.source.getMaxProgress()));
     }
 
     @Override

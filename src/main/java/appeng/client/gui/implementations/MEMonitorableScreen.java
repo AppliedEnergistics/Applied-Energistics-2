@@ -314,8 +314,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     @Override
-    public void removed() {
-        super.removed();
+    public void onClose() {
+        super.onClose();
         getMinecraft().keyboardListener.enableRepeatEvents(false);
         memoryText = this.searchField.getText();
     }

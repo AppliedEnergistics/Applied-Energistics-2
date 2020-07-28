@@ -77,7 +77,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         try {
             final ItemStack in = this.getTextureItem(is);
             if (!in.isEmpty()) {
-                return super.getDisplayName(is).deepCopy().func_240702_b_(" - ").func_230529_a_(in.getDisplayName());
+                return super.getDisplayName(is).deepCopy().appendString(" - ").append(in.getDisplayName());
             }
         } catch (final Throwable ignored) {
 
