@@ -50,8 +50,6 @@ public class SkyCompassModel implements BasicUnbakedModel {
 
     private static final Identifier MODEL_POINTER = new Identifier("appliedenergistics2:block/sky_compass_pointer");
 
-    public static final List<Identifier> DEPENDENCIES = ImmutableList.of(MODEL_BASE, MODEL_POINTER);
-
     @Nullable
     @Override
     public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
