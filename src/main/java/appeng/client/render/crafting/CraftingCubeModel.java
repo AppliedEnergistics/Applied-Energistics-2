@@ -18,16 +18,11 @@
 
 package appeng.client.render.crafting;
 
-import java.util.Collection;
-import java.util.Set;
 import java.util.function.Function;
-
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
+import java.util.stream.Stream;
 
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.RenderMaterial;
@@ -35,15 +30,15 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
 /**
  * The built-in model for the connected texture crafting cube.
  */
-class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
+class CraftingCubeModel implements BasicUnbakedModel<CraftingCubeModel> {
 
     private final static RenderMaterial RING_CORNER = texture("ring_corner");
     private final static RenderMaterial RING_SIDE_HOR = texture("ring_side_hor");
@@ -67,9 +62,8 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
     }
 
     @Override
-    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
-            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return ImmutableList.of(RING_CORNER, RING_SIDE_HOR, RING_SIDE_VER, UNIT_BASE, LIGHT_BASE, ACCELERATOR_LIGHT,
+    public Stream<RenderMaterial> getAdditionalTextures() {
+        return Stream.of(RING_CORNER, RING_SIDE_HOR, RING_SIDE_VER, UNIT_BASE, LIGHT_BASE, ACCELERATOR_LIGHT,
                 STORAGE_1K_LIGHT, STORAGE_4K_LIGHT, STORAGE_16K_LIGHT, STORAGE_64K_LIGHT, MONITOR_BASE,
                 MONITOR_LIGHT_DARK, MONITOR_LIGHT_MEDIUM, MONITOR_LIGHT_BRIGHT);
     }

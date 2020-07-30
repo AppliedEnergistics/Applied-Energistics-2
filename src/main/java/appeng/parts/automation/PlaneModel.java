@@ -18,16 +18,11 @@
 
 package appeng.parts.automation;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
 import java.util.function.Function;
-
-import com.mojang.datafixers.util.Pair;
+import java.util.stream.Stream;
 
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.RenderMaterial;
@@ -35,12 +30,13 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
+
+import appeng.client.render.BasicUnbakedModel;
 
 /**
  * Built-in model for annihilation planes that supports connected textures.
  */
-public class PlaneModel implements IModelGeometry<PlaneModel> {
+public class PlaneModel implements BasicUnbakedModel<PlaneModel> {
 
     private final RenderMaterial frontTexture;
     private final RenderMaterial sidesTexture;
@@ -64,9 +60,8 @@ public class PlaneModel implements IModelGeometry<PlaneModel> {
     }
 
     @Override
-    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
-            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return Arrays.asList(frontTexture, sidesTexture, backTexture);
+    public Stream<RenderMaterial> getAdditionalTextures() {
+        return Stream.of(frontTexture, sidesTexture, backTexture);
     }
 
 }

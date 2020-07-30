@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * 
+ *
  * Copyright (c) 2020, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 package appeng.core.api.client;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -31,7 +32,6 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 
 import appeng.api.client.ICellModelRegistry;
 import appeng.core.ApiDefinitions;
@@ -67,8 +67,8 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
             MODEL_CELL_ITEMS_1K, MODEL_CELL_ITEMS_4K, MODEL_CELL_ITEMS_16K, MODEL_CELL_ITEMS_64K, MODEL_CELL_FLUIDS_1K,
             MODEL_CELL_FLUIDS_4K, MODEL_CELL_FLUIDS_16K, MODEL_CELL_FLUIDS_64K, MODEL_CELL_CREATIVE };
 
-    public static void registerModels() {
-        Arrays.stream(MODELS).forEach(ModelLoader::addSpecialModel);
+    public static Collection<ResourceLocation> getModels() {
+        return Arrays.asList(MODELS);
     }
 
     private final Map<Item, ResourceLocation> registry;

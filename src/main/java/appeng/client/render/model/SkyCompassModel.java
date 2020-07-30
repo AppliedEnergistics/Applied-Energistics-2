@@ -19,38 +19,32 @@
 package appeng.client.render.model;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
+
+import appeng.client.render.BasicUnbakedModel;
 
 /**
  * The parent model for the compass baked model. Declares the dependencies for
  * the base and pointer submodels mostly.
  */
-public class SkyCompassModel implements IModelGeometry<SkyCompassModel> {
+public class SkyCompassModel implements BasicUnbakedModel<SkyCompassModel> {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(
             "appliedenergistics2:block/sky_compass_base");
 
     private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
             "appliedenergistics2:block/sky_compass_pointer");
-
-    public static final List<ResourceLocation> DEPENDENCIES = ImmutableList.of(MODEL_BASE, MODEL_POINTER);
 
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
@@ -62,9 +56,8 @@ public class SkyCompassModel implements IModelGeometry<SkyCompassModel> {
     }
 
     @Override
-    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
-            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return Collections.emptyList();
+    public Collection<ResourceLocation> getModelDependencies() {
+        return ImmutableSet.of(MODEL_BASE, MODEL_POINTER);
     }
 
 }

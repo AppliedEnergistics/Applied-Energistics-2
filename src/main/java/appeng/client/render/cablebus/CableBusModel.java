@@ -19,38 +19,46 @@
 package appeng.client.render.cablebus;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import appeng.api.util.AEColor;
+import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AELog;
 import appeng.core.features.registries.PartModels;
 
 /**
  * The built-in model for the cable bus block.
  */
-public class CableBusModel implements IModelGeometry<CableBusModel> {
+public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
 
     private final PartModels partModels;
 
     public CableBusModel(PartModels partModels) {
         this.partModels = partModels;
+    }
+
+    @Override
+    public Collection<ResourceLocation> getModelDependencies() {
+        partModels.setInitialized(true);
+        return partModels.getModels();
+    }
+
+    @Override
+    public Stream<RenderMaterial> getAdditionalTextures() {
+        return CableBuilder.getTextures().stream();
     }
 
     @Override
@@ -68,12 +76,6 @@ public class CableBusModel implements IModelGeometry<CableBusModel> {
         TextureAtlasSprite particleTexture = cableBuilder.getCoreTexture(CableCoreType.GLASS, AEColor.TRANSPARENT);
 
         return new CableBusBakedModel(cableBuilder, facadeBuilder, partModels, particleTexture);
-    }
-
-    @Override
-    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
-            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return Collections.unmodifiableList(CableBuilder.getTextures());
     }
 
     private Map<ResourceLocation, IBakedModel> loadPartModels(ModelBakery bakery,

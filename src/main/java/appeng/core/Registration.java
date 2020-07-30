@@ -126,9 +126,6 @@ import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.effects.VibrantFX;
-import appeng.client.render.model.BiometricCardModel;
-import appeng.client.render.model.MemoryCardModel;
-import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.AEBaseContainer;
@@ -166,7 +163,6 @@ import appeng.container.implementations.UpgradeableContainer;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.container.implementations.WirelessContainer;
 import appeng.container.implementations.WirelessTermContainer;
-import appeng.core.api.client.ApiCellModelRegistry;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.cell.BasicCellHandler;
@@ -251,10 +247,6 @@ final class Registration {
      */
     @OnlyIn(Dist.CLIENT)
     private void registerSpecialModels() {
-        SkyCompassModel.DEPENDENCIES.forEach(ModelLoader::addSpecialModel);
-        ModelLoader.addSpecialModel(BiometricCardModel.MODEL_BASE);
-        ModelLoader.addSpecialModel(MemoryCardModel.MODEL_BASE);
-        ApiCellModelRegistry.registerModels();
         ModelLoader.addSpecialModel(MolecularAssemblerRenderer.LIGHTS_MODEL);
 
         PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();

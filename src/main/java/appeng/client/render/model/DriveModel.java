@@ -19,18 +19,15 @@
 package appeng.client.render.model;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.function.Function;
 
-import com.mojang.datafixers.util.Pair;
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.RenderMaterial;
@@ -39,12 +36,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import appeng.api.client.ICellModelRegistry;
+import appeng.client.render.BasicUnbakedModel;
 import appeng.core.Api;
+import appeng.core.api.client.ApiCellModelRegistry;
 
-public class DriveModel implements IModelGeometry<DriveModel> {
+public class DriveModel implements BasicUnbakedModel<DriveModel> {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_base");
@@ -73,9 +71,10 @@ public class DriveModel implements IModelGeometry<DriveModel> {
     }
 
     @Override
-    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
-            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return Collections.emptyList();
+    public Collection<ResourceLocation> getModelDependencies() {
+        ICellModelRegistry cells = Api.instance().client().cells();
+        return ImmutableSet.<ResourceLocation>builder().add(cells.getDefaultModel())
+                .addAll(ApiCellModelRegistry.getModels()).addAll(cells.models().values()).build();
     }
 
 }

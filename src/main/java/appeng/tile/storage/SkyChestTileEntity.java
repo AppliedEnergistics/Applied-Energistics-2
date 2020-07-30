@@ -30,6 +30,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.block.storage.SkyChestBlock;
@@ -37,6 +39,7 @@ import appeng.tile.AEBaseInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
+@OnlyIn(value = Dist.CLIENT, _interface = IChestLid.class)
 public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickableTileEntity, IChestLid {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
