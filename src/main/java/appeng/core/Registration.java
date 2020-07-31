@@ -428,9 +428,6 @@ final class Registration {
     public void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
 
-        GrinderRecipe.TYPE = new AERecipeType<>(GrinderRecipeSerializer.INSTANCE.getRegistryName());
-        InscriberRecipe.TYPE = new AERecipeType<>(InscriberRecipeSerializer.INSTANCE.getRegistryName());
-
         FacadeItem facadeItem = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
         r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE,
                 InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem));
