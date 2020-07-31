@@ -29,7 +29,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     public static final GrinderRecipeSerializer INSTANCE = new GrinderRecipeSerializer();
 
     static {
-        INSTANCE.setRegistryName(AppEng.MOD_ID, "grinder");
+        INSTANCE.setRegistryName(GrinderRecipe.TYPE_ID);
     }
 
     private GrinderRecipeSerializer() {
