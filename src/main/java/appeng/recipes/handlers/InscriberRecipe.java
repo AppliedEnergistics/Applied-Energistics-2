@@ -11,10 +11,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.api.features.InscriberProcessType;
+import appeng.core.AppEng;
 
 public class InscriberRecipe implements IRecipe<IInventory> {
 
-    public static IRecipeType<InscriberRecipe> TYPE;
+    public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
+
+    public static final IRecipeType<InscriberRecipe> TYPE = IRecipeType.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
     private final String group;

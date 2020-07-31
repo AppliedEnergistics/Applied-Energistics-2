@@ -14,9 +14,13 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import appeng.core.AppEng;
+
 public class GrinderRecipe implements IRecipe<IInventory> {
 
-    public static IRecipeType<GrinderRecipe> TYPE;
+    public static final ResourceLocation TYPE_ID = AppEng.makeId("grinder");
+
+    public static final IRecipeType<GrinderRecipe> TYPE = IRecipeType.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
     private final String group;
