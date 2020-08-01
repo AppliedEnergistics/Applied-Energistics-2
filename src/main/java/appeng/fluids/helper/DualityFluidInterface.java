@@ -210,7 +210,7 @@ public class DualityFluidInterface
         } else if (capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {
             return (LazyOptional<T>) LazyOptional.of(() -> this.accessor);
         }
-        return null;
+        return LazyOptional.empty();
     }
 
     private boolean hasConfig() {
