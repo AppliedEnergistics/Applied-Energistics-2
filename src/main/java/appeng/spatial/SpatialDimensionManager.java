@@ -23,12 +23,10 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.world.DimensionRenderInfo;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DimensionType;
@@ -51,27 +49,6 @@ public final class SpatialDimensionManager implements ISpatialDimension {
 
     public static final RegistryKey<DimensionType> STORAGE_DIMENSION_TYPE = RegistryKey
             .func_240903_a_(Registry.DIMENSION_TYPE_KEY, AppEng.makeId("storage_cell"));
-
-    // See the fabric version of this to get any idea what its doing
-    public static final DimensionRenderInfo STORAGE_SKY = new DimensionRenderInfo(Float.NaN /* disables clouds */,
-            false, DimensionRenderInfo.FogType.NONE /* we use a custom render mixin */, true, false) {
-
-        @Override
-        public Vector3d func_230494_a_(Vector3d p_230494_1_, float p_230494_2_) {
-            return Vector3d.ZERO;
-        }
-
-        @Override
-        public boolean func_230493_a_(int p_230493_1_, int p_230493_2_) {
-            return false;
-        }
-
-        @Nullable
-        @Override
-        public float[] func_230492_a_(float p_230492_1_, float p_230492_2_) {
-            return null;
-        }
-    };
 
     public static final ISpatialDimension INSTANCE = new SpatialDimensionManager();
 

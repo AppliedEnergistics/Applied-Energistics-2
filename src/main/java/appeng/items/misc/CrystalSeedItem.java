@@ -61,7 +61,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     /**
      * The number of growth ticks required to finish growing.
      */
-    private static final int GROWTH_TICKS_REQUIRED = 600;
+    public static final int GROWTH_TICKS_REQUIRED = 600;
 
     /**
      * The item to convert to, when growth finishes.
@@ -71,9 +71,6 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     public CrystalSeedItem(Properties properties, IItemProvider grownItem) {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
-        // Expose the growth of the seed to the model system
-        ItemModelsProperties.func_239418_a_(this, new ResourceLocation("appliedenergistics2:growth"),
-                (is, w, p) -> getGrowthTicks(is) / (float) GROWTH_TICKS_REQUIRED);
     }
 
     @Nullable
@@ -88,7 +85,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         }
     }
 
-    private static int getGrowthTicks(final ItemStack is) {
+    public static int getGrowthTicks(final ItemStack is) {
         CompoundNBT tag = is.getTag();
         return tag != null ? tag.getInt(TAG_GROWTH_TICKS) : 0;
     }
