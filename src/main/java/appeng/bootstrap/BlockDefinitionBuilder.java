@@ -31,6 +31,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,8 +40,10 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
+import appeng.block.AEBaseBlockItemChargeable;
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.IBlockRegistrationComponent;
+import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AEItemGroup;
@@ -147,6 +151,24 @@ class BlockDefinitionBuilder implements IBlockBuilder {
         BlockItem item = this.constructItemFromBlock(block);
         if (item != null) {
             item.setRegistryName(AppEng.MOD_ID, this.registryName);
+        }
+
+        // Register the client-only item model property for chargeable items
+        if (item instanceof AEBaseBlockItemChargeable) {
+            AEBaseBlockItemChargeable chargeable = (AEBaseBlockItemChargeable) item;
+            this.factory.addBootstrapComponent(new IClientSetupComponent() {
+                @Override
+                @OnlyIn(Dist.CLIENT)
+                public void setup() {
+                    ItemModelsProperties.func_239418_a_(item, new ResourceLocation("appliedenergistics2:fill_level"),
+                            (is, world, entity) -> {
+                                double curPower = chargeable.getAECurrentPower(is);
+                                double maxPower = chargeable.getAEMaxPower(is);
+
+                                return (int) Math.round(100 * curPower / maxPower);
+                            });
+                }
+            });
         }
 
         // Register the item and block with the game

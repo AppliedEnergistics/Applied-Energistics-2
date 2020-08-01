@@ -18,11 +18,14 @@
 
 package appeng.core.api.definitions;
 
+import java.awt.*;
 import java.util.function.Consumer;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
@@ -35,6 +38,8 @@ import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
+import appeng.bootstrap.components.IClientSetupComponent;
+import appeng.core.AppEng;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
@@ -210,7 +215,22 @@ public final class ApiItems implements IItems {
                 .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
         this.colorApplicator = powerTools.item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
                 .addFeatures(AEFeature.COLOR_APPLICATOR).dispenserBehavior(BlockToolDispenseItemBehavior::new)
-                .rendering(new ColorApplicatorItemRendering()).build();
+                .bootstrap(item -> new IClientSetupComponent() {
+                    @Override
+                    @OnlyIn(Dist.CLIENT)
+                    public void setup() {
+                        ColorApplicatorItem colorApplicatorItem = (ColorApplicatorItem) item;
+                        ItemModelsProperties.func_239418_a_(item, new ResourceLocation(AppEng.MOD_ID, "colored"),
+                                (itemStack, world, entity) -> {
+                                    // If the stack has no color, don't use the colored model since the impact of
+                                    // calling getColor for every quad is extremely high, if the stack tries to
+                                    // re-search its
+                                    // inventory for a new paintball everytime
+                                    AEColor col = colorApplicatorItem.getActiveColor(itemStack);
+                                    return (col != null) ? 1 : 0;
+                                });
+                    }
+                }).rendering(new ColorApplicatorItemRendering()).build();
 
         this.biometricCard = registry.item("biometric_card", BiometricCardItem::new)
                 .props(props -> props.maxStackSize(1)).features(AEFeature.SECURITY).build();
@@ -278,7 +298,16 @@ public final class ApiItems implements IItems {
         this.certusCrystalSeed = registry
                 .item("certus_crystal_seed",
                         props -> new CrystalSeedItem(props, materials.purifiedCertusQuartzCrystal().item()))
-                .features(AEFeature.CRYSTAL_SEEDS).build();
+                .bootstrap(item -> new IClientSetupComponent() {
+                    @Override
+                    @OnlyIn(Dist.CLIENT)
+                    public void setup() {
+                        // Expose the growth of the seed to the model system
+                        ItemModelsProperties.func_239418_a_(item, new ResourceLocation("appliedenergistics2:growth"),
+                                (is, w, p) -> CrystalSeedItem.getGrowthTicks(is)
+                                        / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
+                    }
+                }).features(AEFeature.CRYSTAL_SEEDS).build();
         this.fluixCrystalSeed = registry
                 .item("fluix_crystal_seed",
                         props -> new CrystalSeedItem(props, materials.purifiedFluixCrystal().item()))
