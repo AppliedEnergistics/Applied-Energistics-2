@@ -12,6 +12,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.world.DimensionType;
 
 import appeng.spatial.SpatialDimensionManager;
+import appeng.spatial.StorageSkyProperties;
 
 @Mixin(DimensionRenderInfo.class)
 public class SkyPropertiesMixin {
@@ -20,7 +21,7 @@ public class SkyPropertiesMixin {
     private static void byDimensionType(Optional<RegistryKey<DimensionType>> optional,
             CallbackInfoReturnable<DimensionRenderInfo> ci) {
         if (optional.orElse(null) == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {
-            ci.setReturnValue(SpatialDimensionManager.STORAGE_SKY);
+            ci.setReturnValue(StorageSkyProperties.INSTANCE);
         }
     }
 

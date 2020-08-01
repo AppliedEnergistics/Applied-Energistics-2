@@ -30,10 +30,14 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.features.AEFeature;
+import appeng.block.AEBaseBlockItemChargeable;
+import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.core.AEItemGroup;
