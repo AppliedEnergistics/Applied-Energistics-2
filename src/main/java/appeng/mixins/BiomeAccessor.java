@@ -1,13 +1,14 @@
 package appeng.mixins;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.gen.feature.StructureFeature;
+import java.util.List;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.List;
-import java.util.Map;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 @Mixin(Biome.class)
 public interface BiomeAccessor {

@@ -34,11 +34,8 @@ public class StorageCellBiome {
             .precipitation(Biome.Precipitation.NONE).category(Biome.Category.NONE).depth(0).scale(1)
             // Copied from the vanilla void biome
             .temperature(0.5F).downfall(0.5F)
-            .effects(new BiomeEffects.Builder().waterColor(4159204).waterFogColor(329011).fogColor(0).skyColor(0x111111).build())
-            .parent(null)
-            .spawnSettings(new SpawnSettings.Builder()
-                    .creatureSpawnProbability(0)
+            .effects(new BiomeEffects.Builder().waterColor(4159204).waterFogColor(329011).fogColor(0).skyColor(0x111111)
                     .build())
-            .build();
+            .parent(null).spawnSettings(new SpawnSettings.Builder().creatureSpawnProbability(0).build()).build();
 
 }

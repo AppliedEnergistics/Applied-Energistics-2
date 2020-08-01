@@ -23,6 +23,9 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.StringRenderable;
+import net.minecraft.text.Text;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.render.StackSizeRenderer;
@@ -30,9 +33,6 @@ import appeng.core.AEConfig;
 import appeng.util.ISlimReadableNumberConverter;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.StringRenderable;
-import net.minecraft.text.Text;
 
 /**
  * @author AlgorithmX2

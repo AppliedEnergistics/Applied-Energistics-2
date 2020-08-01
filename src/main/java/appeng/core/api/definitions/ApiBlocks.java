@@ -21,7 +21,6 @@ package appeng.core.api.definitions;
 import static appeng.block.AEBaseBlock.defaultProps;
 import static appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 
-import appeng.block.storage.ChestBlock;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -52,6 +51,7 @@ import appeng.block.spatial.MatrixFrameBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.spatial.SpatialPylonBlock;
 import appeng.block.storage.*;
+import appeng.block.storage.ChestBlock;
 import appeng.bootstrap.*;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;

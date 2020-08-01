@@ -25,6 +25,8 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
@@ -32,8 +34,6 @@ import appeng.core.localization.GuiText;
 import appeng.util.ISlimReadableNumberConverter;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
 
 /**
  * @author AlgorithmX2

@@ -85,8 +85,8 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean generate(StructureWorldAccess world, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator,
-            Random random, BlockBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
+    public boolean generate(StructureWorldAccess world, StructureAccessor structureAccessor,
+            ChunkGenerator chunkGenerator, Random random, BlockBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();
 

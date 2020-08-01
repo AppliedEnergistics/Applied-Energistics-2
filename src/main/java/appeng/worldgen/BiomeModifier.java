@@ -1,18 +1,20 @@
 package appeng.worldgen;
 
-import appeng.mixins.BiomeAccessor;
-import appeng.mixins.GenerationSettingsAccessor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import com.google.common.collect.Lists;
+
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
+import appeng.mixins.BiomeAccessor;
+import appeng.mixins.GenerationSettingsAccessor;
 
 public final class BiomeModifier {
 
@@ -29,7 +31,8 @@ public final class BiomeModifier {
     public void addFeature(GenerationStep.Feature step, ConfiguredFeature<?, ?> feature) {
 
         int stepIndex = step.ordinal();
-        List<List<Supplier<ConfiguredFeature<?, ?>>>> featuresByStep = new ArrayList<>(generationSettingsAccessor.getFeatures());
+        List<List<Supplier<ConfiguredFeature<?, ?>>>> featuresByStep = new ArrayList<>(
+                generationSettingsAccessor.getFeatures());
 
         while (featuresByStep.size() <= stepIndex) {
             featuresByStep.add(Lists.newArrayList());
@@ -44,7 +47,8 @@ public final class BiomeModifier {
     }
 
     public void addStructureFeature(ConfiguredStructureFeature<?, ?> structure) {
-        List<Supplier<ConfiguredStructureFeature<?, ?>>> features = new ArrayList<>(generationSettingsAccessor.getStructureFeatures());
+        List<Supplier<ConfiguredStructureFeature<?, ?>>> features = new ArrayList<>(
+                generationSettingsAccessor.getStructureFeatures());
         features.add(() -> structure);
         generationSettingsAccessor.setStructureFeatures(features);
 

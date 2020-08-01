@@ -6,13 +6,13 @@ import java.util.concurrent.Executor;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.registry.DynamicRegistryManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.SaveProperties;
@@ -94,7 +94,8 @@ public class MinecraftServerMixin implements DynamicDimensions {
         RegistryKey<DimensionOptions> dimOptKey = RegistryKey.of(Registry.DIMENSION_OPTIONS, worldId.getValue());
         generatorOptions.getDimensionMap().add(dimOptKey, dimensionOptions);
         // FIXME FABRIC: might not be needed anymore if dimensions will save regardless
-        // FIXME FABRIC generatorOptions.getDimensionMap().markLoaded(dimOptKey); // Otherwise it wont be saved
+        // FIXME FABRIC generatorOptions.getDimensionMap().markLoaded(dimOptKey); //
+        // Otherwise it wont be saved
         // Ensure the save properties are saved, or the world will potentially be lost
         // on restart
         this.session.method_27426(this.registryManager, this.saveProperties, self.getPlayerManager().getUserData());
