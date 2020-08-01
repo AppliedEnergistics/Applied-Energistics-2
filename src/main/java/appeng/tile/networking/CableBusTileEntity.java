@@ -310,7 +310,7 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
         IPart part = this.getPart(partLocation);
         LazyOptional<T> result = part == null ? LazyOptional.empty() : part.getCapability(capabilityClass);
 
-        if (result != null) {
+        if (result.isPresent()) {
             return result;
         }
 

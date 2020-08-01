@@ -50,6 +50,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNode;
@@ -346,10 +347,12 @@ public interface IPart extends ICustomCableConnection {
      * capabilities on the cable bus will be forwarded to parts on the appropriate
      * side.
      *
-     * @see TileEntity#getCapability(Capability, net.minecraft.util.Direction)
+     * @see CapabilityProvider#getCapability(Capability,
+     *      net.minecraft.util.Direction)
      *
-     * @return The capability or null.
+     * @return The capability
      */
+    @Nonnull
     default <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
         return LazyOptional.empty();
     }
