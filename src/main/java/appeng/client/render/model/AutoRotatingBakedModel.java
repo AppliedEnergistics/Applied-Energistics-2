@@ -50,14 +50,16 @@ import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
 
+import appeng.client.render.DelegateBakedModel;
 import appeng.client.render.FacingToRotation;
 
-public class AutoRotatingBakedModel implements IBakedModel {
+public class AutoRotatingBakedModel extends DelegateBakedModel {
 
     private final IBakedModel parent;
     private final LoadingCache<AutoRotatingCacheKey, List<BakedQuad>> quadCache;
 
     public AutoRotatingBakedModel(IBakedModel parent) {
+        super(parent);
         this.parent = parent;
         // 6 (DUNSWE) * 6 (DUNSWE) * 7 (DUNSWE + null) = 252
         this.quadCache = CacheBuilder.newBuilder().maximumSize(252)
@@ -111,42 +113,6 @@ public class AutoRotatingBakedModel implements IBakedModel {
             rotated.add(packedQuad);
         }
         return rotated;
-    }
-
-    @Override
-    public boolean isAmbientOcclusion() {
-        return this.parent.isAmbientOcclusion();
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return this.parent.isGui3d();
-    }
-
-    @Override
-    public boolean func_230044_c_() {
-        return parent.func_230044_c_();
-    }
-
-    @Override
-    public boolean isBuiltInRenderer() {
-        return this.parent.isBuiltInRenderer();
-    }
-
-    @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.parent.getParticleTexture();
-    }
-
-    @Override
-    @Deprecated
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return parent.getItemCameraTransforms();
-    }
-
-    @Override
-    public ItemOverrideList getOverrides() {
-        return parent.getOverrides();
     }
 
     @Override
