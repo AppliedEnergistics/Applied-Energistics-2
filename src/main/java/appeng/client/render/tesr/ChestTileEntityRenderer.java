@@ -41,15 +41,15 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.client.ICellModelRegistry;
 import appeng.block.storage.DriveSlotsState;
+import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.DelegateBakedModel;
 import appeng.client.render.FacingToRotation;
+import appeng.client.render.model.DriveBakedModel;
 import appeng.core.Api;
 import appeng.tile.storage.ChestTileEntity;
 
@@ -58,8 +58,6 @@ import appeng.tile.storage.ChestTileEntity;
  * model for the inserted cell, as well as the LED.
  */
 public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity> {
-
-    private final ICellModelRegistry cellModelRegistry = Api.instance().client().cells();
 
     private final ModelManager modelManager;
 
@@ -88,12 +86,13 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
             return; // No cell inserted into chest
         }
 
-        ResourceLocation cellModelLocation = cellModelRegistry.model(cellItem);
-        if (cellModelLocation == null) {
-            cellModelLocation = cellModelRegistry.getDefaultModel();
+        // Try to get the right cell chassis model from the drive model since it already
+        // loads them all
+        DriveBakedModel driveModel = getDriveModel();
+        if (driveModel == null) {
+            return;
         }
-
-        IBakedModel model = modelManager.getModel(cellModelLocation);
+        IBakedModel cellModel = driveModel.getCellChassisModel(cellItem);
 
         matrices.push();
         matrices.translate(0.5, 0.5, 0.5);
@@ -109,7 +108,7 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
         IVertexBuilder buffer = buffers.getBuffer(RenderType.getCutout());
         // We "fake" the position here to make it use the light-value in front of the
         // drive
-        FaceRotatingModel rotatedModel = new FaceRotatingModel(model, rotation);
+        FaceRotatingModel rotatedModel = new FaceRotatingModel(cellModel, rotation);
         blockRenderer.renderModel(world, rotatedModel, chest.getBlockState(), chest.getPos(), matrices, buffer, false,
                 new Random(), 0L, combinedOverlay, EmptyModelData.INSTANCE);
 
@@ -117,6 +116,12 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
         CellLedRenderer.renderLed(chest, 0, ledBuffer, matrices, partialTicks);
 
         matrices.pop();
+    }
+
+    private DriveBakedModel getDriveModel() {
+        IBakedModel driveModel = modelManager.getBlockModelShapes()
+                .getModel(Api.instance().definitions().blocks().drive().block().getDefaultState());
+        return BakedModelUnwrapper.unwrap(driveModel, DriveBakedModel.class);
     }
 
     /**

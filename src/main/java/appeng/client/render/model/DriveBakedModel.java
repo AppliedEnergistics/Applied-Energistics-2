@@ -108,7 +108,7 @@ public class DriveBakedModel extends DelegateBakedModel {
     }
 
     // Determine which drive chassis to show based on the used cell
-    private IBakedModel getCellChassisModel(Item cell) {
+    public IBakedModel getCellChassisModel(Item cell) {
         if (cell == null) {
             return bakedCells.get(Items.AIR);
         }
