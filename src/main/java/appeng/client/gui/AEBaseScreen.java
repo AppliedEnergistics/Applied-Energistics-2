@@ -225,7 +225,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
             styledLines.add(lines.get(i).copy().styled(s -> style));
         }
 
-        this.renderTooltip(matrices, styledLines, x, y);
+        this.method_30901(matrices, styledLines, x, y);
     }
 
     @Override

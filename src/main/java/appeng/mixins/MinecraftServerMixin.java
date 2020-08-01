@@ -6,6 +6,7 @@ import java.util.concurrent.Executor;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.util.registry.DynamicRegistryManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -14,7 +15,6 @@ import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.RegistryTracker;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
@@ -33,7 +33,7 @@ import appeng.hooks.DynamicDimensions;
 public class MinecraftServerMixin implements DynamicDimensions {
 
     @Shadow
-    private RegistryTracker.Modifiable dimensionTracker;
+    private DynamicRegistryManager.Impl registryManager;
 
     @Shadow
     private Map<RegistryKey<World>, ServerWorld> worlds;
@@ -58,12 +58,12 @@ public class MinecraftServerMixin implements DynamicDimensions {
         Preconditions.checkArgument(!generatorOptions.getDimensionMap().containsId(worldId.getValue()),
                 "Dimension config with id %s already exists.", worldId.getValue());
 
-        DimensionType dimensionType = dimensionTracker.getDimensionTypeRegistry().get(dimensionTypeId);
+        DimensionType dimensionType = registryManager.getDimensionTypes().get(dimensionTypeId);
         Preconditions.checkArgument(dimensionType != null, "dimensionTypeId %s is not registered", dimensionTypeId);
 
         // Create dimension options with the given world-id and chunk generator
         DimensionOptions dimensionOptions = new DimensionOptions(
-                () -> dimensionTracker.getDimensionTypeRegistry().get(dimensionTypeId), chunkGenerator);
+                () -> registryManager.getDimensionTypes().get(dimensionTypeId), chunkGenerator);
 
         ServerWorldProperties serverWorldProperties = this.saveProperties.getMainWorldProperties();
 
@@ -93,10 +93,11 @@ public class MinecraftServerMixin implements DynamicDimensions {
         // Adding it here will cause the world to be re-created on server restart
         RegistryKey<DimensionOptions> dimOptKey = RegistryKey.of(Registry.DIMENSION_OPTIONS, worldId.getValue());
         generatorOptions.getDimensionMap().add(dimOptKey, dimensionOptions);
-        generatorOptions.getDimensionMap().markLoaded(dimOptKey); // Otherwise it wont be saved
+        // FIXME FABRIC: might not be needed anymore if dimensions will save regardless
+        // FIXME FABRIC generatorOptions.getDimensionMap().markLoaded(dimOptKey); // Otherwise it wont be saved
         // Ensure the save properties are saved, or the world will potentially be lost
         // on restart
-        this.session.method_27426(this.dimensionTracker, this.saveProperties, self.getPlayerManager().getUserData());
+        this.session.method_27426(this.registryManager, this.saveProperties, self.getPlayerManager().getUserData());
 
         return world;
     }

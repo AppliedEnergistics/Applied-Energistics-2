@@ -1,56 +1,5 @@
 package appeng.core;
 
-import java.util.OptionalLong;
-import java.util.function.Consumer;
-
-import net.earthcomputer.libstructure.LibStructure;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BannerBlockEntity;
-import net.minecraft.block.entity.BeaconBlockEntity;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.CommandBlockBlockEntity;
-import net.minecraft.block.entity.ComparatorBlockEntity;
-import net.minecraft.block.entity.DaylightDetectorBlockEntity;
-import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.block.entity.DropperBlockEntity;
-import net.minecraft.block.entity.EnchantingTableBlockEntity;
-import net.minecraft.block.entity.EndPortalBlockEntity;
-import net.minecraft.block.entity.EnderChestBlockEntity;
-import net.minecraft.block.entity.FurnaceBlockEntity;
-import net.minecraft.block.entity.HopperBlockEntity;
-import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import net.minecraft.block.entity.PistonBlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.block.entity.SkullBlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
-import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.FeatureConfig;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
-
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
@@ -149,9 +98,60 @@ import appeng.spatial.SpatialDimensionManager;
 import appeng.spatial.StorageCellBiome;
 import appeng.spatial.StorageChunkGenerator;
 import appeng.tile.AEBaseBlockEntity;
+import appeng.worldgen.BiomeModifier;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
+import net.earthcomputer.libstructure.LibStructure;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BannerBlockEntity;
+import net.minecraft.block.entity.BeaconBlockEntity;
+import net.minecraft.block.entity.BrewingStandBlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.CommandBlockBlockEntity;
+import net.minecraft.block.entity.ComparatorBlockEntity;
+import net.minecraft.block.entity.DaylightDetectorBlockEntity;
+import net.minecraft.block.entity.DispenserBlockEntity;
+import net.minecraft.block.entity.DropperBlockEntity;
+import net.minecraft.block.entity.EnchantingTableBlockEntity;
+import net.minecraft.block.entity.EndPortalBlockEntity;
+import net.minecraft.block.entity.EnderChestBlockEntity;
+import net.minecraft.block.entity.FurnaceBlockEntity;
+import net.minecraft.block.entity.HopperBlockEntity;
+import net.minecraft.block.entity.MobSpawnerBlockEntity;
+import net.minecraft.block.entity.PistonBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.block.entity.SkullBlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.chunk.StructureConfig;
+import net.minecraft.world.gen.decorator.Decorator;
+import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
+import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.FeatureConfig;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+
+import java.util.OptionalLong;
+import java.util.function.Consumer;
 
 public abstract class AppEngBase implements AppEng {
 
@@ -426,7 +426,7 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
-            final double dist, final World w, final BasePacket packet) {
+                                    final double dist, final World w, final BasePacket packet) {
         if (w.isClient()) {
             return;
         }
@@ -450,7 +450,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     protected final <T extends IBootstrapComponent> void callDeferredBootstrapComponents(Class<T> componentClass,
-            Consumer<T> invoker) {
+                                                                                         Consumer<T> invoker) {
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
         definitions.getRegistry().getBootstrapComponents(componentClass).forEachRemaining(invoker);
     }
@@ -552,7 +552,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private <T extends AEBaseContainer> ScreenHandlerType<T> registerScreenHandler(String id,
-            ScreenHandlerRegistry.ExtendedClientHandlerFactory<T> factory, ContainerOpener.Opener<T> opener) {
+                                                                                   ScreenHandlerRegistry.ExtendedClientHandlerFactory<T> factory, ContainerOpener.Opener<T> opener) {
         ScreenHandlerType<T> type = ScreenHandlerRegistry.registerExtended(AppEng.makeId(id), factory);
         ContainerOpener.addOpener(type, opener);
         return type;
@@ -564,6 +564,7 @@ public abstract class AppEngBase implements AppEng {
                 new MeteoriteStructure(DefaultFeatureConfig.CODEC).configure(DefaultFeatureConfig.INSTANCE));
         Registry.register(Registry.FEATURE, AppEng.makeId("charged_quartz_ore"), ChargedQuartzOreFeature.INSTANCE);
 
+        // add to all standard biomes
         Biome.BIOMES.forEach(b -> {
             addMeteoriteWorldGen(b);
             addQuartzWorldGen(b);
@@ -579,7 +580,8 @@ public abstract class AppEngBase implements AppEng {
             return;
         }
 
-        b.addStructureFeature(MeteoriteStructure.INSTANCE.configure(FeatureConfig.DEFAULT));
+        BiomeModifier modifier = new BiomeModifier(b);
+        modifier.addStructureFeature(MeteoriteStructure.INSTANCE.configure(FeatureConfig.DEFAULT));
     }
 
     private static void addQuartzWorldGen(Biome b) {
@@ -587,22 +589,23 @@ public abstract class AppEngBase implements AppEng {
             return;
         }
 
+        BiomeModifier modifier = new BiomeModifier(b);
+
         BlockState quartzOre = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
-        b.addFeature(GenerationStep.Feature.UNDERGROUND_ORES, Feature.ORE
-                .configure(new OreFeatureConfig(OreFeatureConfig.Target.NATURAL_STONE, quartzOre,
+        modifier.addFeature(GenerationStep.Feature.UNDERGROUND_ORES, Feature.ORE
+                .configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, quartzOre,
                         AEConfig.instance().getQuartzOresPerCluster()))
-                .createDecoratedFeature(Decorator.COUNT_RANGE.configure(
-                        new RangeDecoratorConfig(AEConfig.instance().getQuartzOresClusterAmount(), 12, 12, 72))));
+                .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(12, 12, 72))).spreadHorizontally().repeat(AEConfig.instance().getQuartzOresClusterAmount()));
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
 
             BlockState chargedQuartzOre = Api.instance().definitions().blocks().quartzOreCharged().block()
                     .getDefaultState();
-            b.addFeature(GenerationStep.Feature.UNDERGROUND_DECORATION,
+            modifier.addFeature(GenerationStep.Feature.UNDERGROUND_DECORATION,
                     ChargedQuartzOreFeature.INSTANCE
                             .configure(new ChargedQuartzOreConfig(quartzOre, chargedQuartzOre,
                                     AEConfig.instance().getSpawnChargedChance()))
-                            .createDecoratedFeature(Decorator.NOPE.configure(NopeDecoratorConfig.field_24892)));
+                            .decorate(Decorator.NOPE.configure(NopeDecoratorConfig.INSTANCE)));
 
         }
     }
@@ -615,14 +618,14 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void registerDimension() {
-        Registry.register(Registry.BIOME, AppEng.makeId("storage"), StorageCellBiome.INSTANCE);
+        Registry.register(BuiltinRegistries.BIOME, AppEng.makeId("storage"), StorageCellBiome.INSTANCE);
         Registry.register(Registry.CHUNK_GENERATOR, AppEng.makeId("storage"), StorageChunkGenerator.CODEC);
 
         RegisterDimensionTypeCallback.EVENT.register(registryTracker -> {
+            DimensionType dimensionType = new DimensionType(OptionalLong.of(12000), false, false, false, false, false, false, true, false,
+                    false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), 1.0f);
 
-            registryTracker.addDimensionType(SpatialDimensionManager.STORAGE_DIMENSION_TYPE,
-                    new DimensionType(OptionalLong.of(12000), false, false, false, false, false, false, true, false,
-                            false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), 1.0f));
+            Registry.register(registryTracker.getDimensionTypes(), SpatialDimensionManager.STORAGE_DIMENSION_TYPE.getValue(), dimensionType);
         });
     }
 

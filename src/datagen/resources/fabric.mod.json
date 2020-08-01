@@ -12,8 +12,7 @@
 
   "license": "LGPL",
   "icon": "assets/appliedenergistics2/icon.png",
-
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "preLaunch": ["appeng.data.Entrypoint"]
   },

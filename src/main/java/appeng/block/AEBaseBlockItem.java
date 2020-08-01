@@ -60,7 +60,7 @@ public class AEBaseBlockItem extends BlockItem {
     @Environment(EnvType.CLIENT)
     public void addCheckedInformation(final ItemStack itemStack, final World world, final List<Text> toolTip,
             final TooltipContext advancedTooltips) {
-        this.blockType.buildTooltip(itemStack, world, toolTip, advancedTooltips);
+        this.blockType.appendTooltip(itemStack, world, toolTip, advancedTooltips);
     }
 
     @Override

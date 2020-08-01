@@ -70,14 +70,14 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
                     currentToolTip.add(ButtonToolTips.ItemsRequestable.text(formattedAmount));
                 }
 
-                this.renderTooltip(matrices, currentToolTip, x, y);
+                this.method_30901(matrices, currentToolTip, x, y);
 
                 return;
             } else if (stack.getCount() > bigNumber) {
                 final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(stack.getCount());
                 currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).formatted(Formatting.GRAY));
 
-                this.renderTooltip(matrices, currentToolTip, x, y);
+                this.method_30901(matrices, currentToolTip, x, y);
 
                 return;
             }

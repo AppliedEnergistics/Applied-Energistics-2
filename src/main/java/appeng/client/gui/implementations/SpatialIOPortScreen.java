@@ -43,27 +43,27 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices,
+        this.textRenderer.method_30883(matrices,
                 GuiText.StoredPower.withSuffix(": " + Platform.formatPowerLong(this.handler.getCurrentPower(), false)),
                 13, 21, 4210752);
-        this.textRenderer.draw(matrices,
+        this.textRenderer.method_30883(matrices,
                 GuiText.MaxPower.withSuffix(": " + Platform.formatPowerLong(this.handler.getMaxPower(), false)), 13, 31,
                 4210752);
-        this.textRenderer.draw(matrices, GuiText.RequiredPower
+        this.textRenderer.method_30883(matrices, GuiText.RequiredPower
                 .withSuffix(": " + Platform.formatPowerLong(this.handler.getRequiredPower(), false)), 13, 73, 4210752);
-        this.textRenderer.draw(matrices,
+        this.textRenderer.method_30883(matrices,
                 GuiText.Efficiency.withSuffix(": " + (((float) this.handler.getEfficency()) / 100) + '%'), 13, 83,
                 4210752);
 
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.SpatialIOPort.text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96, 4210752);
+        this.textRenderer.method_30883(matrices, this.getGuiDisplayName(GuiText.SpatialIOPort.text()), 8, 6, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96, 4210752);
 
         if (this.handler.xSize != 0 && this.handler.ySize != 0 && this.handler.zSize != 0) {
             final Text text = GuiText.SCSSize
                     .withSuffix(": " + this.handler.xSize + "x" + this.handler.ySize + "x" + this.handler.zSize);
-            this.textRenderer.draw(matrices, text, 13, 93, 4210752);
+            this.textRenderer.method_30883(matrices, text, 13, 93, 4210752);
         } else {
-            this.textRenderer.draw(matrices, GuiText.SCSSize.withSuffix(": ").append(GuiText.SCSInvalid.text()), 13, 93,
+            this.textRenderer.method_30883(matrices, GuiText.SCSSize.withSuffix(": ").append(GuiText.SCSInvalid.text()), 13, 93,
                     4210752);
         }
 

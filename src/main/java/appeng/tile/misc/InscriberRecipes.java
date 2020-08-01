@@ -32,7 +32,7 @@ public final class InscriberRecipes {
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
     public static Iterable<InscriberRecipe> getRecipes(World world) {
-        return world.getRecipeManager().method_30027(InscriberRecipe.TYPE);
+        return world.getRecipeManager().listAllOfType(InscriberRecipe.TYPE);
     }
 
     @Nullable

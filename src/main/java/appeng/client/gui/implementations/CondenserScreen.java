@@ -55,8 +55,8 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.Condenser.text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.textRenderer.method_30883(matrices, this.getGuiDisplayName(GuiText.Condenser.text()), 8, 6, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
 
         this.mode.set(this.handler.getOutput());
         this.mode.setFillVar(String.valueOf(this.handler.getOutput().requiredPower));

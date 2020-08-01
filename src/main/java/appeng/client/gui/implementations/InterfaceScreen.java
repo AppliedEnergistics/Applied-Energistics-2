@@ -68,13 +68,13 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
             this.interfaceMode.setState(((InterfaceContainer) this.cvb).getInterfaceTerminalMode() == YesNo.YES);
         }
 
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.Interface.text()), 8, 6, 4210752);
+        this.textRenderer.method_30883(matrices, this.getGuiDisplayName(GuiText.Interface.text()), 8, 6, 4210752);
 
-        this.textRenderer.draw(matrices, GuiText.Config.text(), 8, 6 + 11 + 7, 4210752);
-        this.textRenderer.draw(matrices, GuiText.StoredItems.text(), 8, 6 + 60 + 7, 4210752);
-        this.textRenderer.draw(matrices, GuiText.Patterns.text(), 8, 6 + 73 + 7, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.Config.text(), 8, 6 + 11 + 7, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.StoredItems.text(), 8, 6 + 60 + 7, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.Patterns.text(), 8, 6 + 73 + 7, 4210752);
 
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
     @Override

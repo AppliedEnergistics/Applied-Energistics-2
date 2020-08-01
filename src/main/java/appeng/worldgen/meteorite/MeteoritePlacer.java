@@ -193,7 +193,7 @@ public final class MeteoritePlacer {
             }
         }
 
-        for (final Object o : world.getEntities(ItemEntity.class,
+        for (final Object o : world.getEntitiesByClass(ItemEntity.class,
                 new Box(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)), null)) {
             final Entity e = (Entity) o;
             e.remove();

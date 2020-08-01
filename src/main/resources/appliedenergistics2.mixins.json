@@ -12,7 +12,9 @@
     "TntAccessor",
     "DimensionTypeMixin",
     "MinecraftServerMixin",
-    "ThreadedAnvilChunkStorageAccessor"
+    "ThreadedAnvilChunkStorageAccessor",
+    "GenerationSettingsAccessor",
+    "BiomeAccessor"
   ],
   "client": [
     "ModelsReloadMixin",

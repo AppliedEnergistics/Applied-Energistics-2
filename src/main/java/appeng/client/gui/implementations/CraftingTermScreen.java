@@ -64,7 +64,7 @@ public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContaine
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
         super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
-        this.textRenderer.draw(matrices, GuiText.CraftingTerminal.text(), 8,
+        this.textRenderer.method_30883(matrices, GuiText.CraftingTerminal.text(), 8,
                 this.backgroundHeight - 96 + 1 - this.getReservedSpace(), 4210752);
     }
 

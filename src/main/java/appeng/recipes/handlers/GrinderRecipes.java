@@ -19,7 +19,7 @@ public final class GrinderRecipes {
     @Nullable
     public static GrinderRecipe findForInput(World world, ItemStack input) {
         // FIXME: this is slow, this creates a full copy of the list everytime
-        List<GrinderRecipe> grinderRecipes = world.getRecipeManager().method_30027(GrinderRecipe.TYPE);
+        List<GrinderRecipe> grinderRecipes = world.getRecipeManager().listAllOfType(GrinderRecipe.TYPE);
         for (GrinderRecipe recipe : grinderRecipes) {
             if (recipe.getIngredient().test(input) && input.getCount() >= recipe.getIngredientCount()) {
                 return recipe;
@@ -34,7 +34,7 @@ public final class GrinderRecipes {
      */
     public static boolean isValidIngredient(World world, ItemStack stack) {
         // FIXME: this is slow, this creates a full copy of the list everytime
-        List<GrinderRecipe> grinderRecipes = world.getRecipeManager().method_30027(GrinderRecipe.TYPE);
+        List<GrinderRecipe> grinderRecipes = world.getRecipeManager().listAllOfType(GrinderRecipe.TYPE);
         for (GrinderRecipe recipe : grinderRecipes) {
             if (recipe.getIngredient().test(stack)) {
                 return true;

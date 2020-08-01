@@ -346,7 +346,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     private int countEntitesAround(World world, BlockPos pos) {
         final Box t = new Box(pos).expand(8);
-        final List<Entity> list = world.getEntities(Entity.class, t, null);
+        final List<Entity> list = world.getEntitiesByClass(Entity.class, t, null);
 
         return list.size();
     }

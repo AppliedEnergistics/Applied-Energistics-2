@@ -104,7 +104,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         BlockState blockState = block.getDefaultState();
 
         final boolean areTileEntitiesEnabled = AEConfig.instance().isFeatureEnabled(AEFeature.TILE_ENTITY_FACADES);
-        Tag<Block> whitelistTag = BlockTags.getContainer().getOrCreate(TAG_WHITELISTED);
+        Tag<Block> whitelistTag = BlockTags.getTagGroup().getTagOrEmpty(TAG_WHITELISTED);
         final boolean isWhiteListed = block.isIn(whitelistTag);
         final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 

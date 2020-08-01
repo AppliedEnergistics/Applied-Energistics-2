@@ -66,7 +66,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, GuiText.SelectAmount.text(), 8, 6, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.SelectAmount.text(), 8, 6, 4210752);
     }
 
     @Override

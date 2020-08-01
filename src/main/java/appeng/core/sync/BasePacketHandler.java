@@ -25,9 +25,6 @@ import java.util.function.Function;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.core.sync.packets.*;
-import appeng.core.sync.packets.CompassResponsePacket;
-import appeng.core.sync.packets.PartPlacementPacket;
-import appeng.core.sync.packets.SpawnEntityPacket;
 
 public class BasePacketHandler {
     private static final Map<Class<? extends BasePacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();

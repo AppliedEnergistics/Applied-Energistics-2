@@ -66,7 +66,7 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
         mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90.0F));
-        TntMinecartEntityRenderer.method_23190(Blocks.TNT.getDefaultState(), mStack, buffers, packedLight,
+        TntMinecartEntityRenderer.renderFlashingBlock(Blocks.TNT.getDefaultState(), mStack, buffers, packedLight,
                 tnt.getFuse() / 5 % 2 == 0);
         mStack.pop();
         super.render(tnt, entityYaw, partialTicks, mStack, buffers, packedLight);

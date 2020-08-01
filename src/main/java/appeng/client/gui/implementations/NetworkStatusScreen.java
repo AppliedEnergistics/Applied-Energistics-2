@@ -101,7 +101,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, GuiText.NetworkDetails.text(), 8, 6, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.NetworkDetails.text(), 8, 6, 4210752);
 
         this.textRenderer.draw(matrices,
                 GuiText.StoredPower.text() + ": " + Platform.formatPowerLong(handler.getCurrentPower(), false), 13, 16,

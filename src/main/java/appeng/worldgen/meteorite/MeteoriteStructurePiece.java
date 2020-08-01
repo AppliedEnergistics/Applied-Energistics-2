@@ -26,7 +26,7 @@ import net.minecraft.structure.StructurePieceType;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
@@ -85,7 +85,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean generate(ServerWorldAccess world, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator,
+    public boolean generate(StructureWorldAccess world, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator,
             Random random, BlockBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();

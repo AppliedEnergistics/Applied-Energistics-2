@@ -566,7 +566,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         // breaking
         // i.e. our cable-buses do this (bad practice, really)
         final Box box = new Box(pos).expand(0.2);
-        for (final Object ei : w.getEntities(ItemEntity.class, box, null)) {
+        for (final Object ei : w.getEntitiesByClass(ItemEntity.class, box, null)) {
             if (ei instanceof ItemEntity) {
                 final ItemEntity entityItem = (ItemEntity) ei;
                 this.storeEntityItem(entityItem);
@@ -616,12 +616,12 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     public static boolean isBlockBlacklisted(Block b) {
-        Tag<Block> tag = BlockTags.getContainer().getOrCreate(TAG_BLACKLIST);
+        Tag<Block> tag = BlockTags.getTagGroup().getTagOrEmpty(TAG_BLACKLIST);
         return b.isIn(tag);
     }
 
     public static boolean isItemBlacklisted(Item i) {
-        Tag<Item> tag = ItemTags.getContainer().getOrCreate(TAG_BLACKLIST);
+        Tag<Item> tag = ItemTags.getTagGroup().getTagOrEmpty(TAG_BLACKLIST);
         return i.isIn(tag);
     }
 

@@ -233,7 +233,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         // TODO: Can be optimized by somehow caching the Tag's
         Item item = i.getItem();
         for (Identifier tagName : METAL_INGOT_TAGS) {
-            Tag<Item> ingotTag = ItemTags.getContainer().get(tagName);
+            Tag<Item> ingotTag = ItemTags.getTagGroup().getTag(tagName);
             if (ingotTag != null && item.isIn(ingotTag)) {
                 return true;
             }

@@ -14,6 +14,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
@@ -26,9 +27,9 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig> {
 
-    private final Tag<Block> sandTag = BlockTags.getContainer().getOrCreate(new Identifier("minecraft:sand"));
-    private final Tag<Block> terracottaTag = BlockTags.getContainer()
-            .getOrCreate(new Identifier("c:terracotta_blocks"));
+    private final Tag<Block> sandTag = BlockTags.getTagGroup().getTagOrEmpty(new Identifier("minecraft:sand"));
+    private final Tag<Block> terracottaTag = BlockTags.getTagGroup()
+            .getTagOrEmpty(new Identifier("c:terracotta_blocks"));
 
     public MeteoriteStructureStart(StructureFeature<DefaultFeatureConfig> feature, int chunkX, int chunkZ, BlockBox box,
             int references, long seed) {
@@ -36,8 +37,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
     }
 
     @Override
-    public void init(ChunkGenerator generator, StructureManager templateManagerIn, int chunkX, int chunkZ, Biome biome,
-            DefaultFeatureConfig config) {
+    public void init(DynamicRegistryManager dynamicRegistryManager, ChunkGenerator generator, StructureManager structureManager, int chunkX, int chunkZ, Biome biome, DefaultFeatureConfig featureConfig) {
         final int centerX = chunkX * 16 + this.random.nextInt(16);
         final int centerZ = chunkZ * 16 + this.random.nextInt(16);
         final float meteoriteRadius = (this.random.nextFloat() * 6.0f) + 2;
@@ -75,7 +75,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
         boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius);
         CraterType craterType = this.determineCraterType(spawnBiome);
         boolean pureCrater = this.random.nextFloat() > .9f;
-        FalloutMode fallout = getFalloutFromBaseBlock(spawnBiome.getSurfaceConfig().getTopMaterial());
+        FalloutMode fallout = getFalloutFromBaseBlock(spawnBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial());
 
         children.add(
                 new MeteoriteStructurePiece(actualPos, meteoriteRadius, craterType, fallout, pureCrater, craterLake));

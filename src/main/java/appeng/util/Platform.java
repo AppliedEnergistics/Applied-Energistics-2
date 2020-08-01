@@ -694,7 +694,7 @@ public class Platform {
         Entity entity = null;
         double closest = 9999999.0D;
         if (hitEntities) {
-            final List<Entity> list = w.getEntities(p, bb);
+            final List<Entity> list = w.getOtherEntities(p, bb);
 
             for (final Entity entity1 : list) {
                 if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {

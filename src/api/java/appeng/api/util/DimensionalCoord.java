@@ -25,6 +25,7 @@ package appeng.api.util;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -33,7 +34,7 @@ import net.minecraft.world.dimension.DimensionType;
  */
 public class DimensionalCoord extends WorldCoord {
 
-    private final WorldAccess world;
+    private final World world;
     private final DimensionType dimension;
 
     public DimensionalCoord(final DimensionalCoord coordinate) {
@@ -48,13 +49,13 @@ public class DimensionalCoord extends WorldCoord {
         this.dimension = this.world.getDimension();
     }
 
-    public DimensionalCoord(final WorldAccess world, final int x, final int y, final int z) {
+    public DimensionalCoord(final World world, final int x, final int y, final int z) {
         super(x, y, z);
         this.world = world;
         this.dimension = world.getDimension();
     }
 
-    public DimensionalCoord(final WorldAccess world, final BlockPos pos) {
+    public DimensionalCoord(final World world, final BlockPos pos) {
         super(pos);
         this.world = world;
         this.dimension = world.getDimension();
@@ -84,7 +85,7 @@ public class DimensionalCoord extends WorldCoord {
         return this.world == world;
     }
 
-    public WorldAccess getWorld() {
+    public World getWorld() {
         return this.world;
     }
 

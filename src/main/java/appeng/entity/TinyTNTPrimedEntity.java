@@ -134,7 +134,7 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
 
         final Box area = new Box(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5, this.getX() + 1.5,
                 this.getY() + 1.5, this.getZ() + 1.5);
-        final List<Entity> list = this.world.getEntities(this, area);
+        final List<Entity> list = this.world.getOtherEntities(this, area);
 
         for (final Entity e : list) {
             e.damage(DamageSource.explosion(ex), 6);

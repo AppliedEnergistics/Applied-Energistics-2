@@ -55,8 +55,8 @@ public class MovableTileRegistry implements IMovableRegistry {
     private final Tag<Block> blockTagBlackList;
 
     public MovableTileRegistry() {
-        this.blockTagWhiteList = BlockTags.getContainer().getOrCreate(TAG_WHITELIST);
-        this.blockTagBlackList = BlockTags.getContainer().getOrCreate(TAG_BLACKLIST);
+        this.blockTagWhiteList = BlockTags.getTagGroup().getTagOrEmpty(TAG_WHITELIST);
+        this.blockTagBlackList = BlockTags.getTagGroup().getTagOrEmpty(TAG_BLACKLIST);
     }
 
     @Override

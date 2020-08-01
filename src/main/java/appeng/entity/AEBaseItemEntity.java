@@ -45,7 +45,7 @@ public abstract class AEBaseItemEntity extends ItemEntity {
     }
 
     protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final Box region) {
-        return this.world.getEntities(this, region);
+        return this.world.getOtherEntities(this, region);
     }
 
 }

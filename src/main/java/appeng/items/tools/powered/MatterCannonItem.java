@@ -185,7 +185,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
         Entity entity = null;
         Vec3d entityIntersection = null;
-        final List list = w.getEntities(p, bb);
+        final List list = w.getOtherEntities(p, bb);
         double closest = 9999999.0D;
 
         for (int l = 0; l < list.size(); ++l) {
@@ -291,7 +291,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
             Entity entity = null;
             Vec3d entityIntersection = null;
-            final List list = w.getEntities(p, bb);
+            final List list = w.getOtherEntities(p, bb);
             double closest = 9999999.0D;
 
             for (int l = 0; l < list.size(); ++l) {

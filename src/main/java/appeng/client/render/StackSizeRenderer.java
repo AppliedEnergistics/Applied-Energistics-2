@@ -32,6 +32,8 @@ import appeng.core.localization.GuiText;
 import appeng.util.ISlimReadableNumberConverter;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 /**
  * @author AlgorithmX2
@@ -46,8 +48,8 @@ public class StackSizeRenderer {
     public void renderStackSize(TextRenderer fontRenderer, IAEItemStack aeStack, int xPos, int yPos) {
         if (aeStack != null) {
             if (aeStack.getStackSize() == 0 && aeStack.isCraftable()) {
-                final String craftLabelText = AEConfig.instance().isUseLargeFonts() ? GuiText.LargeFontCraft.getLocal()
-                        : GuiText.SmallFontCraft.getLocal();
+                final Text craftLabelText = AEConfig.instance().isUseLargeFonts() ? GuiText.LargeFontCraft.text()
+                        : GuiText.SmallFontCraft.text();
 
                 renderSizeLabel(fontRenderer, xPos, yPos, craftLabelText);
             }
@@ -55,13 +57,13 @@ public class StackSizeRenderer {
             if (aeStack.getStackSize() > 0) {
                 final String stackSize = this.getToBeRenderedStackSize(aeStack.getStackSize());
 
-                renderSizeLabel(fontRenderer, xPos, yPos, stackSize);
+                renderSizeLabel(fontRenderer, xPos, yPos, new LiteralText(stackSize));
             }
 
         }
     }
 
-    public static void renderSizeLabel(TextRenderer fontRenderer, float xPos, float yPos, String text) {
+    public static void renderSizeLabel(TextRenderer fontRenderer, float xPos, float yPos, Text text) {
 
         final float scaleFactor = AEConfig.instance().isUseLargeFonts() ? 0.85f : 0.5f;
         final float inverseScaleFactor = 1.0f / scaleFactor;
@@ -76,7 +78,7 @@ public class StackSizeRenderer {
         final int Y = (int) ((yPos + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
         VertexConsumerProvider.Immediate buffer = VertexConsumerProvider
                 .immediate(Tessellator.getInstance().getBuffer());
-        fontRenderer.draw(text, X, Y, 16777215, true, tm.getMatrix(), buffer, false, 0, 15728880);
+        fontRenderer.method_30882(text, X, Y, 16777215, true, tm.getMatrix(), buffer, false, 0, 15728880);
         buffer.draw();
         RenderSystem.enableBlend();
     }

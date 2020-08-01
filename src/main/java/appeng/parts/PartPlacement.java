@@ -39,7 +39,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RayTraceContext;
 import net.minecraft.world.World;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.parts.*;
 import appeng.api.util.AEPartLocation;

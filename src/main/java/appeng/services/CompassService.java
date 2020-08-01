@@ -33,6 +33,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
@@ -89,18 +90,14 @@ public final class CompassService {
         }
     }
 
-    public void tryUpdateArea(final WorldAccess w, ChunkPos chunkPos) {
+    public void tryUpdateArea(final ServerWorldAccess w, ChunkPos chunkPos) {
         // If this seems weird: during worldgen, WorldAccess is a specific region, but
         // getWorld is
         // still the server world. We do need to use the world access to get the chunk
         // in question
         // though, since during worldgen, it's not comitted to the actual world yet.
-        World world = w.getWorld();
-        if (!(world instanceof ServerWorld)) {
-            return;
-        }
         Chunk chunk = w.getChunk(chunkPos.x, chunkPos.z);
-        updateArea((ServerWorld) world, chunk);
+        updateArea(w.toServerWorld(), chunk);
     }
 
     public void updateArea(final ServerWorld w, Chunk chunk) {

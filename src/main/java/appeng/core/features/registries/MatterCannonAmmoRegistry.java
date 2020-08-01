@@ -134,7 +134,7 @@ public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
 
         // Next, check each item tag
         for (Map.Entry<Identifier, Double> entry : tagDamageModifiers.entrySet()) {
-            Tag<Item> itemTag = ItemTags.getContainer().get(entry.getKey());
+            Tag<Item> itemTag = ItemTags.getTagGroup().getTag(entry.getKey());
             if (itemTag != null && itemTag.contains(item)) {
                 return entry.getValue().floatValue();
             }

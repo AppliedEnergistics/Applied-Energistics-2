@@ -64,10 +64,10 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
 
     @Override
     public void drawFG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.FluidInterface.text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
-        this.textRenderer.draw(matrices, GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.textRenderer.method_30883(matrices, this.getGuiDisplayName(GuiText.FluidInterface.text()), 8, 6, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.Config.text(), 35, 6 + 11 + 7, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.StoredFluids.text(), 35, 6 + 112 + 7, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
     @Override

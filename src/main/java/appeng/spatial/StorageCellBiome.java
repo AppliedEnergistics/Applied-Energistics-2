@@ -18,31 +18,27 @@
 
 package appeng.spatial;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
+import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 
-public class StorageCellBiome extends Biome {
+public class StorageCellBiome {
 
-    public static final StorageCellBiome INSTANCE = new StorageCellBiome();
-
-    public StorageCellBiome() {
-        super(new Biome.Settings()
-                .surfaceBuilder(new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_CONFIG))
-                .precipitation(Precipitation.NONE).category(Category.NONE).depth(0).scale(1)
-                // Copied from the vanilla void biome
-                .temperature(0.5F).downfall(0.5F)
-                .effects(new BiomeEffects.Builder().waterColor(4159204).waterFogColor(329011).fogColor(0).build())
-                .parent(null));
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public int getSkyColor() {
-        return 0x111111;
-    }
+    public static final Biome INSTANCE = new Biome.Settings()
+            .generationSettings(new GenerationSettings.Builder()
+                    .surfaceBuilder(new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_CONFIG))
+                    .build())
+            .precipitation(Biome.Precipitation.NONE).category(Biome.Category.NONE).depth(0).scale(1)
+            // Copied from the vanilla void biome
+            .temperature(0.5F).downfall(0.5F)
+            .effects(new BiomeEffects.Builder().waterColor(4159204).waterFogColor(329011).fogColor(0).skyColor(0x111111).build())
+            .parent(null)
+            .spawnSettings(new SpawnSettings.Builder()
+                    .creatureSpawnProbability(0)
+                    .build())
+            .build();
 
 }

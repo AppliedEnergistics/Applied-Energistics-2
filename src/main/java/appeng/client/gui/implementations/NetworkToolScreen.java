@@ -58,8 +58,8 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
             this.tFacades.setState(handler.isFacadeMode());
         }
 
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.NetworkTool.text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.textRenderer.method_30883(matrices, this.getGuiDisplayName(GuiText.NetworkTool.text()), 8, 6, 4210752);
+        this.textRenderer.method_30883(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
     @Override

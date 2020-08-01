@@ -60,7 +60,7 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     public void drawFG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY) {
         super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
 
-        this.textRenderer.draw(matrices, GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
+        this.textRenderer.method_30883(matrices, GuiText.FluidLevelEmitterUnit.text(), 110, 44, COLOR_DARK_GRAY);
     }
 
     @Override

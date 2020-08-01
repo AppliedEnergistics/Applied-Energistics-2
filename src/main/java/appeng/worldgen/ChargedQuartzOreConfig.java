@@ -15,7 +15,7 @@ public class ChargedQuartzOreConfig implements FeatureConfig {
     public static final Codec<ChargedQuartzOreConfig> CODEC = RecordCodecBuilder.create((instance) -> instance
             .group(BlockState.CODEC.fieldOf("target").forGetter((config) -> config.target),
                     BlockState.CODEC.fieldOf("state").forGetter((config) -> config.state),
-                    Codec.FLOAT.fieldOf("chance").withDefault(0f).forGetter((config) -> config.chance))
+                    Codec.FLOAT.fieldOf("chance").orElse(0f).forGetter((config) -> config.chance))
             .apply(instance, ChargedQuartzOreConfig::new));
 
     public final BlockState target;

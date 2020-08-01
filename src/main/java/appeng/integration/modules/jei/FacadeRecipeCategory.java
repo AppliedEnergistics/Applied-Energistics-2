@@ -28,7 +28,7 @@ public class FacadeRecipeCategory extends DefaultCraftingCategory {
 
     @Override
     public String getCategoryName() {
-        return I18n.translate(FacadeCreativeTab.getGroup().getTranslationKey());
+        return FacadeCreativeTab.getGroup().getTranslationKey().getString();
     }
 
 }

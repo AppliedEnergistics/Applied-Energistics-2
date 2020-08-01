@@ -105,7 +105,7 @@ public class StorageHelper {
 
         // FIXME FABRIC new METeleporter(link)
         float yaw = entity.yaw;
-        entity = entity.changeDimension(link.dim);
+        entity = entity.moveToWorld(link.dim);
         entity.yaw = yaw;
         entity.refreshPositionAfterTeleport(link.x, link.y, link.z);
         entity.setVelocity(0, 0, 0);

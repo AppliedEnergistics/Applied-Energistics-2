@@ -315,7 +315,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     private boolean isFluidBlacklisted(Fluid fluid) {
-        Tag<Fluid> tag = FluidTags.getContainer().getOrCreate(TAG_BLACKLIST);
+        Tag<Fluid> tag = FluidTags.getTagGroup().getTagOrEmpty(TAG_BLACKLIST);
         return fluid.isIn(tag);
     }
 

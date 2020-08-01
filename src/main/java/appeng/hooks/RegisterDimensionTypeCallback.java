@@ -2,7 +2,7 @@ package appeng.hooks;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.util.registry.RegistryTracker;
+import net.minecraft.util.registry.DynamicRegistryManager;
 
 public interface RegisterDimensionTypeCallback {
 
@@ -13,6 +13,6 @@ public interface RegisterDimensionTypeCallback {
                 }
             });
 
-    void addDimensionTypes(RegistryTracker.Modifiable registryTracker);
+    void addDimensionTypes(DynamicRegistryManager registryTracker);
 
 }
