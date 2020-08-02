@@ -97,6 +97,7 @@ import appeng.client.render.crafting.CraftingMonitorTESR;
 import appeng.client.render.crafting.MonitorBakedModel;
 import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.client.render.spatial.SpatialPylonRendering;
+import appeng.client.render.tesr.ChargerTESR;
 import appeng.client.render.tesr.ChestTileEntityRenderer;
 import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.DriveLedTileEntityRenderer;
@@ -371,7 +372,7 @@ public final class ApiBlocks implements IBlocks {
                             @Override
                             @OnlyIn(Dist.CLIENT)
                             public void customize(TileEntityRendering<ChargerTileEntity> rendering) {
-                                rendering.tileEntityRenderer(ChargerBlock.createTesr());
+                                rendering.tileEntityRenderer(ChargerTESR.FACTORY);
                             }
                         }).build())
                 .build();

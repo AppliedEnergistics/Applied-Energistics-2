@@ -19,18 +19,12 @@
 package appeng.block.misc;
 
 import java.util.Random;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
@@ -42,8 +36,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -52,8 +44,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.ParticleTypes;
-import appeng.client.render.renderable.ItemRenderable;
-import appeng.client.render.tesr.ModularTESR;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -173,17 +163,6 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
             ISelectionContext context) {
         return VoxelShapes.create(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static Function<TileEntityRendererDispatcher, TileEntityRenderer<ChargerTileEntity>> createTesr() {
-        return dispatcher -> new ModularTESR<>(dispatcher, new ItemRenderable<>(ChargerBlock::getRenderedItem));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Pair<ItemStack, TransformationMatrix> getRenderedItem(ChargerTileEntity tile) {
-        TransformationMatrix transform = new TransformationMatrix(new Vector3f(0.5f, 0.375f, 0.5f), null, null, null);
-        return new ImmutablePair<>(tile.getInternalInventory().getStackInSlot(0), transform);
     }
 
 }
