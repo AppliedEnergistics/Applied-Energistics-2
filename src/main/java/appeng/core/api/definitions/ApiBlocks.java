@@ -39,6 +39,7 @@ import appeng.api.features.AEFeature;
 import appeng.block.AEBaseBlockItemChargeable;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.block.crafting.CraftingMonitorBlock;
+import appeng.block.crafting.CraftingMonitorBlockRendering;
 import appeng.block.crafting.CraftingStorageBlock;
 import appeng.block.crafting.CraftingStorageItem;
 import appeng.block.crafting.CraftingUnitBlock;
@@ -94,8 +95,6 @@ import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
 import appeng.client.render.crafting.CraftingMonitorTESR;
-import appeng.client.render.crafting.MonitorBakedModel;
-import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.client.render.spatial.SpatialPylonRendering;
 import appeng.client.render.tesr.ChargerTESR;
 import appeng.client.render.tesr.ChestTileEntityRenderer;
@@ -533,20 +532,7 @@ public final class ApiBlocks implements IBlocks {
                                 rendering.tileEntityRenderer(CraftingMonitorTESR::new);
                             }
                         }).build())
-                .rendering(new BlockRenderingCustomizer() {
-                    @Override
-                    @OnlyIn(Dist.CLIENT)
-                    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                        rendering.renderType(RenderType.getCutout());
-                        rendering.modelCustomizer((path, model) -> {
-                            // The formed model handles rotations itself, the unformed one does not
-                            if (model instanceof MonitorBakedModel) {
-                                return model;
-                            }
-                            return new AutoRotatingBakedModel(model);
-                        });
-                    }
-                }).build();
+                .rendering(new CraftingMonitorBlockRendering()).build();
 
         this.molecularAssembler = registry
                 .block("molecular_assembler", () -> new MolecularAssemblerBlock(defaultProps(Material.IRON).notSolid()))
