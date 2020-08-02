@@ -3,6 +3,8 @@ package appeng.core;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
+
 import net.earthcomputer.libstructure.LibStructure;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
@@ -151,8 +153,6 @@ import appeng.worldgen.BiomeModifier;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
-
-import javax.annotation.Nullable;
 
 public abstract class AppEngBase implements AppEng {
 

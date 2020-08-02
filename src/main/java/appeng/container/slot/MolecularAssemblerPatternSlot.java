@@ -30,11 +30,11 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot {
 
     private final int slotIdx;
 
-    public MolecularAssemblerPatternSlot(final MolecularAssemblerContainer mac, final FixedItemInv inv, final int invSlot,
-            final int x, final int y) {
+    public MolecularAssemblerPatternSlot(final MolecularAssemblerContainer mac, final FixedItemInv inv,
+            final int invSlot, final int x, final int y) {
         super(inv, invSlot, x, y);
         this.mac = mac;
-        this.slotIdx = slotIdx;
+        this.slotIdx = invSlot;
     }
 
     @Override

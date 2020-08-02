@@ -52,7 +52,7 @@ public class AppEngSlot extends Slot {
         super(EMPTY_INVENTORY, invSlot, x, y);
         this.itemHandler = inv;
         this.invSlot = invSlot;
-        this.backingSlot = inv.getSlot(idx);
+        this.backingSlot = inv.getSlot(invSlot);
 
         this.defX = x;
         this.defY = y;
@@ -92,7 +92,7 @@ public class AppEngSlot extends Slot {
             return ItemStack.EMPTY;
         }
 
-        if (this.index >= this.itemHandler.getSlotCount()) {
+        if (this.invSlot >= this.itemHandler.getSlotCount()) {
             return ItemStack.EMPTY;
         }
 

@@ -20,13 +20,17 @@ package appeng.util.inv;
 
 import net.minecraft.entity.player.PlayerInventory;
 
-import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
-import alexiil.mc.lib.attributes.item.impl.DelegatingFixedItemInv;
+import alexiil.mc.lib.attributes.item.impl.DirectFixedItemInv;
 
-public class WrapperCursorItemHandler extends DelegatingFixedItemInv {
+public class WrapperCursorItemHandler extends DirectFixedItemInv {
+    private final PlayerInventory inv;
 
-    public WrapperCursorItemHandler(PlayerInventory inventory) {
-        super(new FixedInventoryVanillaWrapper(inventory).getSubInv(0, 1));
+    public WrapperCursorItemHandler(PlayerInventory PlayerInventory) {
+        super(1);
+
+        this.inv = PlayerInventory;
+        this.forceSetInvStack(0, PlayerInventory.getCursorStack());
+        setOwnerListener(view -> this.inv.setCursorStack(getInvStack(0)));
     }
 
 }

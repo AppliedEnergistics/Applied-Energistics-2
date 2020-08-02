@@ -1,15 +1,16 @@
 package appeng.block.crafting;
 
-import appeng.bootstrap.BlockRenderingCustomizer;
-import appeng.bootstrap.IBlockRendering;
-import appeng.bootstrap.IItemRendering;
-import appeng.client.render.crafting.MonitorBakedModel;
-import appeng.client.render.model.AutoRotatingBakedModel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.Identifier;
+
+import appeng.bootstrap.BlockRenderingCustomizer;
+import appeng.bootstrap.IBlockRendering;
+import appeng.bootstrap.IItemRendering;
+import appeng.client.render.crafting.MonitorBakedModel;
+import appeng.client.render.model.AutoRotatingBakedModel;
 
 public class CraftingMonitorBlockRendering extends BlockRenderingCustomizer {
 

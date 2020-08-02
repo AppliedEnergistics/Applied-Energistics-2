@@ -70,8 +70,10 @@ public interface AppEng {
     CableRenderMode getCableRenderMode();
 
     /**
-     * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that
-     * player's cable render mode from calls to {@link #getCableRenderMode()}, until another player or null is set.
+     * Sets the player that is currently interacting with a cable or part attached
+     * to a cable. This will return that player's cable render mode from calls to
+     * {@link #getCableRenderMode()}, until another player or null is set.
+     * 
      * @param player Null to revert to the default cable render mode.
      */
     void setPartInteractionPlayer(PlayerEntity player);
