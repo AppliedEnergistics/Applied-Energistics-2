@@ -235,7 +235,15 @@ public final class AppEngClient extends AppEngBase {
 
     @Override
     public boolean shouldAddParticles(Random r) {
-        return false;
+        switch (client.options.particles) {
+            default:
+            case ALL:
+                return true;
+            case DECREASED:
+                return r.nextBoolean();
+            case MINIMAL:
+                return false;
+        }
     }
 
     @Override
