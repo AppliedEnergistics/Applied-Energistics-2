@@ -23,14 +23,12 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import appeng.api.config.AccessRestriction;
@@ -39,21 +37,12 @@ import appeng.api.config.PowerUnits;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.Api;
-import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
     public AEBaseBlockItemChargeable(Block id, Settings props) {
         super(id, props);
-
-        FabricModelPredicateProviderRegistry.register(this, new Identifier(AppEng.MOD_ID, "fill_level"),
-                (is, world, entity) -> {
-                    double curPower = getAECurrentPower(is);
-                    double maxPower = getAEMaxPower(is);
-
-                    return (int) Math.round(100 * curPower / maxPower);
-                });
     }
 
     @Override

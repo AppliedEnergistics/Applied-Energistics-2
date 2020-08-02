@@ -23,13 +23,11 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.render.SkyProperties;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -50,25 +48,6 @@ public final class SpatialDimensionManager implements ISpatialDimension {
 
     public static final RegistryKey<DimensionType> STORAGE_DIMENSION_TYPE = RegistryKey.of(Registry.DIMENSION_TYPE_KEY,
             AppEng.makeId("storage_cell"));
-
-    public static final SkyProperties STORAGE_SKY = new SkyProperties(Float.NaN /* disables clouds */, false,
-            SkyProperties.SkyType.NONE /* we use a custom render mixin */, true, false) {
-        @Override
-        public Vec3d adjustSkyColor(Vec3d color, float sunHeight) {
-            return Vec3d.ZERO;
-        }
-
-        @Override
-        public boolean useThickFog(int camX, int camY) {
-            return false;
-        }
-
-        @Nullable
-        @Override
-        public float[] getSkyColor(float skyAngle, float tickDelta) {
-            return null;
-        }
-    };
 
     public static final ISpatialDimension INSTANCE = new SpatialDimensionManager();
 

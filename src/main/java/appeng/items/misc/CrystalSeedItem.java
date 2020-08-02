@@ -26,26 +26,21 @@ import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IGrowableCrystal;
-import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
-import appeng.entity.GrowingCrystalEntity;
 import appeng.items.AEBaseItem;
 
 /**
@@ -62,7 +57,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     /**
      * The number of growth ticks required to finish growing.
      */
-    private static final int GROWTH_TICKS_REQUIRED = 600;
+    public static final int GROWTH_TICKS_REQUIRED = 600;
 
     /**
      * The item to convert to, when growth finishes.
@@ -72,9 +67,6 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     public CrystalSeedItem(Settings properties, ItemConvertible grownItem) {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
-        // Expose the growth of the seed to the model system
-        FabricModelPredicateProviderRegistry.register(this, new Identifier(AppEng.MOD_ID, "growth"),
-                (is, w, p) -> getGrowthTicks(is) / (float) GROWTH_TICKS_REQUIRED);
     }
 
     @Nullable
@@ -89,7 +81,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         }
     }
 
-    private static int getGrowthTicks(final ItemStack is) {
+    public static int getGrowthTicks(final ItemStack is) {
         CompoundTag tag = is.getTag();
         return tag != null ? tag.getInt(TAG_GROWTH_TICKS) : 0;
     }

@@ -20,6 +20,8 @@ package appeng.tile.storage;
 
 import java.io.IOException;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.EnvironmentInterface;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.block.ChestAnimationProgress;
@@ -38,6 +40,7 @@ import appeng.tile.AEBaseInvBlockEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
+@EnvironmentInterface(value = EnvType.CLIENT, itf = ChestAnimationProgress.class)
 public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickable, ChestAnimationProgress {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);

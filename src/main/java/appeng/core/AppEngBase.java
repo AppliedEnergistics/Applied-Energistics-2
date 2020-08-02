@@ -31,8 +31,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
@@ -181,7 +179,6 @@ public abstract class AppEngBase implements AppEng {
 
         registerScreenHandlerTypes();
         registerParticleTypes();
-        registerRecipeTypes();
         registerRecipeSerializers();
         registerWorldGen();
         registerServerCommands();
@@ -400,21 +397,11 @@ public abstract class AppEngBase implements AppEng {
                 ITileEntityRegistrationComponent::register);
     }
 
-    private static <T extends Recipe<?>> RecipeType<T> registerRecipeType(String id) {
-        Identifier fullId = AppEng.makeId(id);
-        return Registry.register(Registry.RECIPE_TYPE, fullId, new AERecipeType<>(fullId));
-    }
-
-    private void registerRecipeTypes() {
-        GrinderRecipe.TYPE = registerRecipeType("grinder");
-        InscriberRecipe.TYPE = registerRecipeType("inscriber");
-    }
-
     private void registerRecipeSerializers() {
         Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("quartz_knife"),
                 QuartzKnifeRecipeSerializer.INSTANCE);
-        Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("grinder"), GrinderRecipeSerializer.INSTANCE);
-        Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("inscriber"), InscriberRecipeSerializer.INSTANCE);
+        Registry.register(Registry.RECIPE_SERIALIZER, GrinderRecipe.TYPE_ID, GrinderRecipeSerializer.INSTANCE);
+        Registry.register(Registry.RECIPE_SERIALIZER, InscriberRecipe.TYPE_ID, InscriberRecipeSerializer.INSTANCE);
         Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("disassemble"), DisassembleRecipe.SERIALIZER);
         FacadeItem facadeItem = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
         Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("facade"), FacadeRecipe.getSerializer(facadeItem));

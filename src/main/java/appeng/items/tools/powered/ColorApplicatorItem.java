@@ -18,7 +18,10 @@
 
 package appeng.items.tools.powered;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +29,6 @@ import com.google.common.collect.ImmutableMap;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -67,7 +69,6 @@ import appeng.block.networking.CableBusBlock;
 import appeng.block.paint.PaintSplotchesBlock;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.IBlockTool;
@@ -100,15 +101,6 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     public ColorApplicatorItem(Item.Settings props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
-        FabricModelPredicateProviderRegistry.register(this, new Identifier(AppEng.MOD_ID, "colored"),
-                (itemStack, world, entity) -> {
-                    // If the stack has no color, don't use the colored model since the impact of
-                    // calling getColor for every quad is extremely high, if the stack tries to
-                    // re-search its
-                    // inventory for a new paintball everytime
-                    AEColor col = getActiveColor(itemStack);
-                    return (col != null) ? 1 : 0;
-                });
     }
 
     @Override

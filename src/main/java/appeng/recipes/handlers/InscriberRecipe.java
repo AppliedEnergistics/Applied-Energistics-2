@@ -2,16 +2,22 @@ package appeng.recipes.handlers;
 
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.*;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 import appeng.api.features.InscriberProcessType;
+import appeng.core.AppEng;
 
 public class InscriberRecipe implements Recipe<Inventory> {
 
-    public static RecipeType<InscriberRecipe> TYPE;
+    public static final Identifier TYPE_ID = AppEng.makeId("inscriber");
+
+    public static final RecipeType<InscriberRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
     private final Identifier id;
     private final String group;

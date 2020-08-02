@@ -14,9 +14,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
+import appeng.core.AppEng;
+
 public class GrinderRecipe implements Recipe<Inventory> {
 
-    public static RecipeType<GrinderRecipe> TYPE;
+    public static final Identifier TYPE_ID = AppEng.makeId("grinder");
+
+    public static final RecipeType<GrinderRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
     private final Identifier id;
     private final String group;

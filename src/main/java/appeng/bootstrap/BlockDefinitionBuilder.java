@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -40,7 +41,9 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
+import appeng.block.AEBaseBlockItemChargeable;
 import appeng.block.AEBaseTileBlock;
+import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
@@ -147,6 +150,24 @@ class BlockDefinitionBuilder implements IBlockBuilder {
         BlockItem item = this.constructItemFromBlock(block);
         if (item != null) {
             Registry.register(Registry.ITEM, id, item);
+        }
+
+        // Register the client-only item model property for chargeable items
+        if (item instanceof AEBaseBlockItemChargeable) {
+            AEBaseBlockItemChargeable chargeable = (AEBaseBlockItemChargeable) item;
+            this.factory.addBootstrapComponent(new IClientSetupComponent() {
+                @Override
+                @Environment(EnvType.CLIENT)
+                public void setup() {
+                    FabricModelPredicateProviderRegistry.register(item, AppEng.makeId("fill_level"),
+                            (is, world, entity) -> {
+                                double curPower = chargeable.getAECurrentPower(is);
+                                double maxPower = chargeable.getAEMaxPower(is);
+
+                                return (int) Math.round(100 * curPower / maxPower);
+                            });
+                }
+            });
         }
 
         // Register all extra handlers

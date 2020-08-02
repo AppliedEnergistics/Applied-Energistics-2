@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.item.Item;
@@ -35,6 +36,8 @@ import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
+import appeng.bootstrap.components.IClientSetupComponent;
+import appeng.core.AppEng;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
@@ -62,8 +65,20 @@ import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
-import appeng.items.tools.powered.*;
-import appeng.items.tools.quartz.*;
+import appeng.items.tools.powered.ChargedStaffItem;
+import appeng.items.tools.powered.ColorApplicatorItem;
+import appeng.items.tools.powered.ColorApplicatorItemRendering;
+import appeng.items.tools.powered.EntropyManipulatorItem;
+import appeng.items.tools.powered.MatterCannonItem;
+import appeng.items.tools.powered.PortableCellItem;
+import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.items.tools.quartz.QuartzAxeItem;
+import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
+import appeng.items.tools.quartz.QuartzHoeItem;
+import appeng.items.tools.quartz.QuartzPickaxeItem;
+import appeng.items.tools.quartz.QuartzSpadeItem;
+import appeng.items.tools.quartz.QuartzSwordItem;
+import appeng.items.tools.quartz.QuartzWrenchItem;
 
 /**
  * Internal implementation for the API items
@@ -198,7 +213,22 @@ public final class ApiItems implements IItems {
                 .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
         this.colorApplicator = powerTools.item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
                 .addFeatures(AEFeature.COLOR_APPLICATOR).dispenserBehavior(BlockToolDispenseItemBehavior::new)
-                .rendering(new ColorApplicatorItemRendering()).build();
+                .bootstrap(item -> new IClientSetupComponent() {
+                    @Override
+                    @Environment(EnvType.CLIENT)
+                    public void setup() {
+                        ColorApplicatorItem colorApplicatorItem = (ColorApplicatorItem) item;
+                        FabricModelPredicateProviderRegistry.register(item, AppEng.makeId("colored"),
+                                (itemStack, world, entity) -> {
+                                    // If the stack has no color, don't use the colored model since the impact of
+                                    // calling getColor for every quad is extremely high, if the stack tries to
+                                    // re-search its
+                                    // inventory for a new paintball everytime
+                                    AEColor col = colorApplicatorItem.getActiveColor(itemStack);
+                                    return (col != null) ? 1 : 0;
+                                });
+                    }
+                }).rendering(new ColorApplicatorItemRendering()).build();
 
         this.biometricCard = registry.item("biometric_card", BiometricCardItem::new).props(props -> props.maxCount(1))
                 .features(AEFeature.SECURITY).build();
@@ -273,7 +303,16 @@ public final class ApiItems implements IItems {
         this.certusCrystalSeed = registry
                 .item("certus_crystal_seed",
                         props -> new CrystalSeedItem(props, materials.purifiedCertusQuartzCrystal().item()))
-                .features(AEFeature.CRYSTAL_SEEDS).build();
+                .bootstrap(item -> new IClientSetupComponent() {
+                    @Override
+                    @Environment(EnvType.CLIENT)
+                    public void setup() {
+                        // Expose the growth of the seed to the model system
+                        FabricModelPredicateProviderRegistry.register(item, AppEng.makeId("growth"),
+                                (is, w, p) -> CrystalSeedItem.getGrowthTicks(is)
+                                        / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
+                    }
+                }).features(AEFeature.CRYSTAL_SEEDS).build();
         this.fluixCrystalSeed = registry
                 .item("fluix_crystal_seed",
                         props -> new CrystalSeedItem(props, materials.purifiedFluixCrystal().item()))

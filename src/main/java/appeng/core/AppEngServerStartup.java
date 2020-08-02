@@ -1,7 +1,8 @@
 package appeng.core;
 
-import appeng.server.AppEngServer;
 import net.fabricmc.api.DedicatedServerModInitializer;
+
+import appeng.server.AppEngServer;
 
 @SuppressWarnings("unused")
 public class AppEngServerStartup implements DedicatedServerModInitializer {
