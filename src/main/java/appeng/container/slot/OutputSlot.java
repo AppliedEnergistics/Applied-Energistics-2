@@ -23,13 +23,13 @@ import net.minecraftforge.items.IItemHandler;
 
 public class OutputSlot extends AppEngSlot {
 
-    public OutputSlot(final IItemHandler a, final int b, final int c, final int d, final int i) {
-        super(a, b, c, d);
-        this.setIIcon(i);
+    public OutputSlot(final IItemHandler inv, final int invSlot, final int x, final int y, final int iconIndex) {
+        super(inv, invSlot, x, y);
+        this.setIIcon(iconIndex);
     }
 
     @Override
-    public boolean isItemValid(final ItemStack i) {
+    public boolean isItemValid(final ItemStack stack) {
         return false;
     }
 }

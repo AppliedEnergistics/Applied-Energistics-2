@@ -22,8 +22,8 @@ import net.minecraftforge.items.IItemHandler;
 
 public class FakeBlacklistSlot extends FakeTypeOnlySlot {
 
-    public FakeBlacklistSlot(final IItemHandler inv, final int idx, final int x, final int y) {
-        super(inv, idx, x, y);
+    public FakeBlacklistSlot(final IItemHandler inv, final int invSlot, final int x, final int y) {
+        super(inv, invSlot, x, y);
     }
 
     @Override

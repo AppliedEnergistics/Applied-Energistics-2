@@ -24,8 +24,8 @@ import net.minecraftforge.items.IItemHandler;
 
 public class FakeSlot extends AppEngSlot {
 
-    public FakeSlot(final IItemHandler inv, final int idx, final int x, final int y) {
-        super(inv, idx, x, y);
+    public FakeSlot(final IItemHandler inv, final int invSlot, final int x, final int y) {
+        super(inv, invSlot, x, y);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class FakeSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean isItemValid(final ItemStack par1ItemStack) {
+    public boolean isItemValid(final ItemStack stack) {
         return false;
     }
 
@@ -53,7 +53,7 @@ public class FakeSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity par1PlayerEntity) {
+    public boolean canTakeStack(final PlayerEntity player) {
         return false;
     }
 }

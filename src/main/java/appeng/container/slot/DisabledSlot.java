@@ -24,17 +24,17 @@ import net.minecraftforge.items.IItemHandler;
 
 public class DisabledSlot extends AppEngSlot {
 
-    public DisabledSlot(final IItemHandler par1iInventory, final int slotIndex, final int x, final int y) {
-        super(par1iInventory, slotIndex, x, y);
+    public DisabledSlot(final IItemHandler par1iInventory, final int invSlot, final int x, final int y) {
+        super(par1iInventory, invSlot, x, y);
     }
 
     @Override
-    public boolean isItemValid(final ItemStack par1ItemStack) {
+    public boolean isItemValid(final ItemStack stack) {
         return false;
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity par1PlayerEntity) {
+    public boolean canTakeStack(final PlayerEntity player) {
         return false;
     }
 }

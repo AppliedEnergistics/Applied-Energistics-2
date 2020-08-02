@@ -22,8 +22,8 @@ import net.minecraftforge.items.IItemHandler;
 
 public class PlayerHotBarSlot extends AppEngSlot {
 
-    public PlayerHotBarSlot(final IItemHandler par1iInventory, final int par2, final int par3, final int par4) {
-        super(par1iInventory, par2, par3, par4);
+    public PlayerHotBarSlot(final IItemHandler inv, final int invSlot, final int x, final int y) {
+        super(inv, invSlot, x, y);
         this.setPlayerSide(true);
     }
 }

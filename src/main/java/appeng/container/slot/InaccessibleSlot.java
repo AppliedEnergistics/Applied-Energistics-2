@@ -26,12 +26,12 @@ public class InaccessibleSlot extends AppEngSlot {
 
     private ItemStack dspStack = ItemStack.EMPTY;
 
-    public InaccessibleSlot(final IItemHandler i, final int slotIdx, final int x, final int y) {
-        super(i, slotIdx, x, y);
+    public InaccessibleSlot(final IItemHandler i, final int invSlot, final int x, final int y) {
+        super(i, invSlot, x, y);
     }
 
     @Override
-    public boolean isItemValid(final ItemStack i) {
+    public boolean isItemValid(final ItemStack stack) {
         return false;
     }
 
@@ -42,7 +42,7 @@ public class InaccessibleSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity par1PlayerEntity) {
+    public boolean canTakeStack(final PlayerEntity player) {
         return false;
     }
 

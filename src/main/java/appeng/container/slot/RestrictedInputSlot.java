@@ -70,9 +70,9 @@ public class RestrictedInputSlot extends AppEngSlot {
     private boolean allowEdit = true;
     private int stackLimit = -1;
 
-    public RestrictedInputSlot(final PlacableItemType valid, final IItemHandler i, final int slotIndex, final int x,
+    public RestrictedInputSlot(final PlacableItemType valid, final IItemHandler inv, final int invSlot, final int x,
             final int y, final PlayerInventory p) {
-        super(i, slotIndex, x, y);
+        super(inv, invSlot, x, y);
         this.which = valid;
         this.setIIcon(valid.IIcon);
         this.p = p;
@@ -99,20 +99,20 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean isItemValid(final ItemStack i) {
-        if (!this.getContainer().isValidForSlot(this, i)) {
+    public boolean isItemValid(final ItemStack stack) {
+        if (!this.getContainer().isValidForSlot(this, stack)) {
             return false;
         }
 
-        if (i.isEmpty()) {
+        if (stack.isEmpty()) {
             return false;
         }
 
-        if (i.getItem() == Items.AIR) {
+        if (stack.getItem() == Items.AIR) {
             return false;
         }
 
-        if (!super.isItemValid(i)) {
+        if (!super.isItemValid(stack)) {
             return false;
         }
 
@@ -127,7 +127,7 @@ public class RestrictedInputSlot extends AppEngSlot {
 
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
-                final ICraftingPatternDetails de = crafting.decodePattern(i, this.p.player.world);
+                final ICraftingPatternDetails de = crafting.decodePattern(stack, this.p.player.world);
                 if (de != null) {
                     return de.isCraftable();
                 }
@@ -135,19 +135,19 @@ public class RestrictedInputSlot extends AppEngSlot {
             case VALID_ENCODED_PATTERN_W_OUTPUT:
             case ENCODED_PATTERN_W_OUTPUT:
             case ENCODED_PATTERN:
-                return crafting.isEncodedPattern(i);
+                return crafting.isEncodedPattern(stack);
             case BLANK_PATTERN:
-                return materials.blankPattern().isSameAs(i);
+                return materials.blankPattern().isSameAs(stack);
 
             case PATTERN:
-                return materials.blankPattern().isSameAs(i) || crafting.isEncodedPattern(i);
+                return materials.blankPattern().isSameAs(stack) || crafting.isEncodedPattern(stack);
 
             case INSCRIBER_PLATE:
-                if (materials.namePress().isSameAs(i)) {
+                if (materials.namePress().isSameAs(stack)) {
                     return true;
                 }
 
-                return InscriberRecipes.isValidOptionalIngredient(p.player.world, i);
+                return InscriberRecipes.isValidOptionalIngredient(p.player.world, stack);
 
             case INSCRIBER_INPUT:
                 return true;/*
@@ -157,46 +157,48 @@ public class RestrictedInputSlot extends AppEngSlot {
 
             case METAL_INGOTS:
 
-                return isMetalIngot(i);
+                return isMetalIngot(stack);
 
             case VIEW_CELL:
-                return items.viewCell().isSameAs(i);
+                return items.viewCell().isSameAs(stack);
             case ORE:
-                return GrinderRecipes.isValidIngredient(p.player.world, i);
+                return GrinderRecipes.isValidIngredient(p.player.world, stack);
             case FUEL:
-                return ForgeHooks.getBurnTime(i) > 0;
+                return ForgeHooks.getBurnTime(stack) > 0;
             case POWERED_TOOL:
-                return Platform.isChargeable(i);
+                return Platform.isChargeable(stack);
             case QE_SINGULARITY:
-                return materials.qESingularity().isSameAs(i);
+                return materials.qESingularity().isSameAs(stack);
 
             case RANGE_BOOSTER:
-                return materials.wirelessBooster().isSameAs(i);
+                return materials.wirelessBooster().isSameAs(stack);
 
             case SPATIAL_STORAGE_CELLS:
-                return i.getItem() instanceof ISpatialStorageCell
-                        && ((ISpatialStorageCell) i.getItem()).isSpatialStorage(i);
+                return stack.getItem() instanceof ISpatialStorageCell
+                        && ((ISpatialStorageCell) stack.getItem()).isSpatialStorage(stack);
             case STORAGE_CELLS:
-                return Api.instance().registries().cell().isCellHandled(i);
+                return Api.instance().registries().cell().isCellHandled(stack);
             case WORKBENCH_CELL:
-                return i.getItem() instanceof ICellWorkbenchItem && ((ICellWorkbenchItem) i.getItem()).isEditable(i);
+                return stack.getItem() instanceof ICellWorkbenchItem
+                        && ((ICellWorkbenchItem) stack.getItem()).isEditable(stack);
             case STORAGE_COMPONENT:
-                return i.getItem() instanceof IStorageComponent
-                        && ((IStorageComponent) i.getItem()).isStorageComponent(i);
+                return stack.getItem() instanceof IStorageComponent
+                        && ((IStorageComponent) stack.getItem()).isStorageComponent(stack);
             case TRASH:
-                if (Api.instance().registries().cell().isCellHandled(i)) {
+                if (Api.instance().registries().cell().isCellHandled(stack)) {
                     return false;
                 }
 
-                return !(i.getItem() instanceof IStorageComponent
-                        && ((IStorageComponent) i.getItem()).isStorageComponent(i));
+                return !(stack.getItem() instanceof IStorageComponent
+                        && ((IStorageComponent) stack.getItem()).isStorageComponent(stack));
             case ENCODABLE_ITEM:
-                return i.getItem() instanceof INetworkEncodable
-                        || Api.instance().registries().wireless().isWirelessTerminal(i);
+                return stack.getItem() instanceof INetworkEncodable
+                        || Api.instance().registries().wireless().isWirelessTerminal(stack);
             case BIOMETRIC_CARD:
-                return i.getItem() instanceof IBiometricCard;
+                return stack.getItem() instanceof IBiometricCard;
             case UPGRADES:
-                return i.getItem() instanceof IUpgradeModule && ((IUpgradeModule) i.getItem()).getType(i) != null;
+                return stack.getItem() instanceof IUpgradeModule
+                        && ((IUpgradeModule) stack.getItem()).getType(stack) != null;
             default:
                 break;
         }
@@ -205,7 +207,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity par1PlayerEntity) {
+    public boolean canTakeStack(final PlayerEntity player) {
         return this.isAllowEdit();
     }
 
