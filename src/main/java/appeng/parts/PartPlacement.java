@@ -316,11 +316,12 @@ public class PartPlacement {
     }
 
     private static SelectedPart selectPart(final PlayerEntity player, final IPartHost host, final Vec3d pos) {
-        AppEng.instance().updateRenderMode(player);
-        final SelectedPart sp = host.selectPart(pos);
-        AppEng.instance().updateRenderMode(null);
-
-        return sp;
+        AppEng.instance().setPartInteractionPlayer(player);
+        try {
+            return host.selectPart(pos);
+        } finally {
+            AppEng.instance().setPartInteractionPlayer(null);
+        }
     }
 
     public static IFacadePart isFacade(final ItemStack held, final AEPartLocation side) {

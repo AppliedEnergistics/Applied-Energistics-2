@@ -67,9 +67,14 @@ public interface AppEng {
 
     void postInit();
 
-    CableRenderMode getRenderMode();
+    CableRenderMode getCableRenderMode();
 
-    void updateRenderMode(PlayerEntity player);
+    /**
+     * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that
+     * player's cable render mode from calls to {@link #getCableRenderMode()}, until another player or null is set.
+     * @param player Null to revert to the default cable render mode.
+     */
+    void setPartInteractionPlayer(PlayerEntity player);
 
     boolean isActionKey(@Nonnull final ActionKey key, int keyCode, int scanCode);
 
@@ -80,6 +85,11 @@ public interface AppEng {
      * @return The current server. Never null.
      */
     MinecraftServer getServer();
+
+    /**
+     * Checks whether the current thread is the main server thread.
+     */
+    boolean isOnServerThread();
 
 //
 //    private final Registration registration;

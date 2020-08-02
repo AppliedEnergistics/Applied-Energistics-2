@@ -18,48 +18,14 @@
 
 package appeng.util;
 
-import java.text.DecimalFormat;
-import java.util.*;
-
-import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.*;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.RayTraceContext;
-import net.minecraft.world.World;
-
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-
-import appeng.api.config.*;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.config.PowerUnits;
+import appeng.api.config.SearchBoxMode;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.config.SortOrder;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
@@ -86,6 +52,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
+import appeng.core.AppEng;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.TickHandler;
@@ -97,6 +64,50 @@ import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author AlgorithmX2
@@ -203,10 +214,7 @@ public class Platform {
      * returns true if the code is on the client.
      */
     public static boolean isClient() {
-        // FIXME: Move this to the proxy so it will work on a dedicated server
-        MinecraftClient client = MinecraftClient.getInstance();
-        IntegratedServer server = client.getServer();
-        return server == null || Thread.currentThread() != server.getThread();
+        return !AppEng.instance().isOnServerThread();
     }
 
     /*
@@ -647,8 +655,7 @@ public class Platform {
 
     public static LookDirection getPlayerRay(final PlayerEntity playerIn, double reachDistance) {
         final double x = playerIn.prevX + (playerIn.getX() - playerIn.prevX);
-        final double y = playerIn.prevY + (playerIn.getY() - playerIn.prevY)
-                + playerIn.getEyeHeight(playerIn.getPose());
+        final double y = playerIn.prevY + (playerIn.getY() - playerIn.prevY) + playerIn.getStandingEyeHeight();
         final double z = playerIn.prevZ + (playerIn.getZ() - playerIn.prevZ);
 
         final float playerPitch = playerIn.prevPitch + (playerIn.pitch - playerIn.prevPitch);

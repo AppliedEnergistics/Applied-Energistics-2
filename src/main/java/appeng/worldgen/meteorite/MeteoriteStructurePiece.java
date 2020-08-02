@@ -35,7 +35,7 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructurePiece extends StructurePiece {
 
-    public static final StructurePieceType TYPE = StructurePieceType.register(MeteoriteStructurePiece::new, "AE2MTRT");
+    public static final StructurePieceType TYPE = StructurePieceType.register(MeteoriteStructurePiece::new, "ae2mtrt");
 
     private final PlacedMeteoriteSettings settings;
 

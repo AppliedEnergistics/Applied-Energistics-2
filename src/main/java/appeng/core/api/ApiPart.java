@@ -41,6 +41,6 @@ public class ApiPart implements IPartHelper {
 
     @Override
     public CableRenderMode getCableRenderMode() {
-        return AppEng.instance().getRenderMode();
+        return AppEng.instance().getCableRenderMode();
     }
 }

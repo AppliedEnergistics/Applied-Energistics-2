@@ -152,12 +152,23 @@ import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 
+import javax.annotation.Nullable;
+
 public abstract class AppEngBase implements AppEng {
 
     protected AdvancementTriggers advancementTriggers;
 
-    // WTF is this doing? Should this be a ThreadLocal???
-    private PlayerEntity renderModeBased;
+    /**
+     * While we process a player-specific part placement/cable interaction packet,
+     * we need to use that player's transparent-facade mode to understand whether
+     * the player can see through facades or not.
+     * <p>
+     * We need to use this method since the collision shape methods do not know
+     * about the player that the shape is being requested for, so they will call
+     * {@link #getCableRenderMode()} below, which then will use this field to figure
+     * out which player it's for.
+     */
+    private final ThreadLocal<PlayerEntity> partInteractionPlayer = new ThreadLocal<>();
 
     public AppEngBase() {
         if (AppEng.instance() != null) {
@@ -423,18 +434,13 @@ public abstract class AppEngBase implements AppEng {
     }
 
     @Override
-    public CableRenderMode getRenderMode() {
-        if (this.renderModeBased == null) {
-            return CableRenderMode.STANDARD;
-        }
-
-        return this.renderModeForPlayer(this.renderModeBased);
+    public CableRenderMode getCableRenderMode() {
+        return this.getCableRenderModeForPlayer(partInteractionPlayer.get());
     }
 
-    // FIXME this is some hot shit _FOR WHAT_?
     @Override
-    public void updateRenderMode(final PlayerEntity player) {
-        this.renderModeBased = player;
+    public void setPartInteractionPlayer(final PlayerEntity player) {
+        this.partInteractionPlayer.set(player);
     }
 
     protected final <T extends IBootstrapComponent> void callDeferredBootstrapComponents(Class<T> componentClass,
@@ -443,7 +449,7 @@ public abstract class AppEngBase implements AppEng {
         definitions.getRegistry().getBootstrapComponents(componentClass).forEachRemaining(invoker);
     }
 
-    protected CableRenderMode renderModeForPlayer(final PlayerEntity player) {
+    protected final CableRenderMode getCableRenderModeForPlayer(@Nullable final PlayerEntity player) {
         if (player != null) {
             for (int x = 0; x < PlayerInventory.getHotbarSize(); x++) {
                 final ItemStack is = player.inventory.getStack(x);

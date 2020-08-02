@@ -37,7 +37,9 @@ repositories {
     maven {
         name = "HYWLA"
         url = "https://maven.tehnut.info/"
-
+        content {
+            includeGroup "mcp.mobius.waila"
+        }
     }
     maven {
         name = 'Earthcomputer Mods'
@@ -107,8 +109,12 @@ dependencies {
     include "alexiil.mc.lib:libblockattributes-items:${libblockattributes_version}"
     include "alexiil.mc.lib:libblockattributes-fluids:${libblockattributes_version}"
 
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems:4.6.6"
-    modCompileOnly "mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75"
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems:5.0.2-unstable") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+    modCompileOnly("mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
 //    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems:4.6.6"
 //    modRuntimeOnly "mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75"
 

@@ -7,13 +7,11 @@ import javax.annotation.Nonnull;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.server.PlayerStream;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
-import appeng.api.parts.CableRenderMode;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.core.AppEngBase;
@@ -79,16 +77,6 @@ public final class AppEngServer extends AppEngBase {
     }
 
     @Override
-    public CableRenderMode getRenderMode() {
-        return null;
-    }
-
-    @Override
-    public void updateRenderMode(PlayerEntity player) {
-
-    }
-
-    @Override
     public boolean isActionKey(@Nonnull ActionKey key, int keyCode, int scanCode) {
         return false;
     }
@@ -96,6 +84,11 @@ public final class AppEngServer extends AppEngBase {
     @Override
     public MinecraftServer getServer() {
         return server;
+    }
+
+    @Override
+    public boolean isOnServerThread() {
+        return server != null && server.isOnThread();
     }
 
 }

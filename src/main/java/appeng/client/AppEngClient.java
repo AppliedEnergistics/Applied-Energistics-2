@@ -218,6 +218,12 @@ public final class AppEngClient extends AppEngBase {
     }
 
     @Override
+    public boolean isOnServerThread() {
+        IntegratedServer server = client.getServer();
+        return server != null && server.isOnThread();
+    }
+
+    @Override
     public Stream<? extends PlayerEntity> getPlayers() {
         return Stream.empty();
     }
@@ -243,15 +249,15 @@ public final class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public CableRenderMode getRenderMode() {
+    public CableRenderMode getCableRenderMode() {
         if (Platform.isServer()) {
-            return super.getRenderMode();
+            return super.getCableRenderMode();
         }
 
         final MinecraftClient mc = MinecraftClient.getInstance();
         final PlayerEntity player = mc.player;
 
-        return this.renderModeForPlayer(player);
+        return this.getCableRenderModeForPlayer(player);
     }
 
     public void triggerUpdates() {
@@ -271,7 +277,7 @@ public final class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public void updateRenderMode(PlayerEntity player) {
+    public void setPartInteractionPlayer(PlayerEntity player) {
 
     }
 
