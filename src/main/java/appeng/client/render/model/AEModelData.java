@@ -2,8 +2,6 @@ package appeng.client.render.model;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 
 import net.minecraft.util.math.Direction;

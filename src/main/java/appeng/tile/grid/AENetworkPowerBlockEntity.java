@@ -21,11 +21,6 @@ package appeng.tile.grid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
