@@ -121,16 +121,6 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
 
     @Override
     public boolean setInvStack(int slot, ItemStack to, Simulation simulation) {
-        if (this.te == null || !Platform.isServer()) {
-            return false;
-        }
-
-        // FIXME: We need to implement the actual checks here, stacking
-        // /caninsert/canremove
-        if (true) {
-            throw new IllegalStateException();
-        }
-
         if (simulation == Simulation.SIMULATE) {
             return true;
         }
