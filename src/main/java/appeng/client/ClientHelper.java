@@ -138,15 +138,15 @@ public class ClientHelper extends ServerHelper {
     }
 
     @Override
-    public CableRenderMode getRenderMode() {
+    public CableRenderMode getCableRenderMode() {
         if (Platform.isServer()) {
-            return super.getRenderMode();
+            return super.getCableRenderMode();
         }
 
         final Minecraft mc = Minecraft.getInstance();
         final PlayerEntity player = mc.player;
 
-        return this.renderModeForPlayer(player);
+        return this.getCableRenderModeForPlayer(player);
     }
 
     @Override
