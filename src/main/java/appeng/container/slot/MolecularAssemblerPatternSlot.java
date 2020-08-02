@@ -30,15 +30,15 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot {
 
     private final int slotIdx;
 
-    public MolecularAssemblerPatternSlot(final MolecularAssemblerContainer mac, final FixedItemInv i, final int slotIdx,
+    public MolecularAssemblerPatternSlot(final MolecularAssemblerContainer mac, final FixedItemInv inv, final int invSlot,
             final int x, final int y) {
-        super(i, slotIdx, x, y);
+        super(inv, invSlot, x, y);
         this.mac = mac;
         this.slotIdx = slotIdx;
     }
 
     @Override
-    public boolean canInsert(final ItemStack i) {
-        return this.mac.isValidItemForSlot(slotIdx, i);
+    public boolean canInsert(final ItemStack stack) {
+        return this.mac.isValidItemForSlot(slotIdx, stack);
     }
 }

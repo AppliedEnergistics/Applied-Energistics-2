@@ -103,8 +103,8 @@ public class QuartzKnifeContainer extends AEBaseContainer {
     }
 
     private class QuartzKniveSlot extends OutputSlot {
-        QuartzKniveSlot(FixedItemInv a, int b, int c, int d, int i) {
-            super(a, b, c, d, i);
+        QuartzKniveSlot(FixedItemInv inv, int invSlot, int x, int y, int iconIdx) {
+            super(inv, invSlot, x, y, iconIdx);
         }
 
         @Override

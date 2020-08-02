@@ -24,13 +24,13 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class OutputSlot extends AppEngSlot {
 
-    public OutputSlot(final FixedItemInv a, final int b, final int c, final int d, final int i) {
-        super(a, b, c, d);
-        this.setIIcon(i);
+    public OutputSlot(final FixedItemInv inv, final int invSlot, final int x, final int y, final int iconIndex) {
+        super(inv, invSlot, x, y);
+        this.setIIcon(iconIndex);
     }
 
     @Override
-    public boolean canInsert(final ItemStack i) {
+    public boolean canInsert(final ItemStack stack) {
         return false;
     }
 }

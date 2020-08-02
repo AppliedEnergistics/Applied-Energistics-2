@@ -25,17 +25,17 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class DisabledSlot extends AppEngSlot {
 
-    public DisabledSlot(final FixedItemInv par1iInventory, final int slotIndex, final int x, final int y) {
-        super(par1iInventory, slotIndex, x, y);
+    public DisabledSlot(final FixedItemInv par1iInventory, final int invSlot, final int x, final int y) {
+        super(par1iInventory, invSlot, x, y);
     }
 
     @Override
-    public boolean canInsert(final ItemStack par1ItemStack) {
+    public boolean canInsert(final ItemStack stack) {
         return false;
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity par1PlayerEntity) {
+    public boolean canTakeItems(final PlayerEntity player) {
         return false;
     }
 }

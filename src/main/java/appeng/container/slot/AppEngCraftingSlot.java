@@ -48,8 +48,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
     private int amountCrafted;
 
     public AppEngCraftingSlot(final PlayerEntity par1PlayerEntity, final FixedItemInv par2IInventory,
-            final FixedItemInv par3IInventory, final int par4, final int par5, final int par6) {
-        super(par3IInventory, par4, par5, par6);
+            final FixedItemInv inv, final int invSlot, final int x, final int y) {
+        super(inv, invSlot, x, y);
         this.thePlayer = par1PlayerEntity;
         this.craftMatrix = par2IInventory;
     }
@@ -59,7 +59,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * armor slots.
      */
     @Override
-    public boolean canInsert(final ItemStack par1ItemStack) {
+    public boolean canInsert(final ItemStack stack) {
         return false;
     }
 

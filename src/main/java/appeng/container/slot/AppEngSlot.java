@@ -34,10 +34,10 @@ import alexiil.mc.lib.attributes.item.SingleItemSlot;
 import appeng.container.AEBaseContainer;
 
 public class AppEngSlot extends Slot {
-    private static Inventory emptyInventory = new SimpleInventory(0);
+    private static Inventory EMPTY_INVENTORY = new SimpleInventory(0);
     private final FixedItemInv itemHandler;
     private final SingleItemSlot backingSlot;
-    private final int index;
+    private final int invSlot;
 
     private final int defX;
     private final int defY;
@@ -48,10 +48,10 @@ public class AppEngSlot extends Slot {
     private CalculatedValidity isValid;
     private boolean isDisplay = false;
 
-    public AppEngSlot(final FixedItemInv inv, final int idx, final int x, final int y) {
-        super(emptyInventory, idx, x, y);
+    public AppEngSlot(final FixedItemInv inv, final int invSlot, final int x, final int y) {
+        super(EMPTY_INVENTORY, invSlot, x, y);
         this.itemHandler = inv;
-        this.index = idx;
+        this.invSlot = invSlot;
         this.backingSlot = inv.getSlot(idx);
 
         this.defX = x;
@@ -136,7 +136,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity par1PlayerEntity) {
+    public boolean canTakeItems(final PlayerEntity player) {
         if (this.isSlotEnabled()) {
             return this.backingSlot.couldExtractAnything();
         }

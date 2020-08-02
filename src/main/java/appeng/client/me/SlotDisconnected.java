@@ -30,13 +30,13 @@ public class SlotDisconnected extends AppEngSlot {
 
     private final ClientDCInternalInv mySlot;
 
-    public SlotDisconnected(final ClientDCInternalInv me, final int which, final int x, final int y) {
-        super(me.getInventory(), which, x, y);
+    public SlotDisconnected(final ClientDCInternalInv me, final int invSlot, final int x, final int y) {
+        super(me.getInventory(), invSlot, x, y);
         this.mySlot = me;
     }
 
     @Override
-    public boolean canInsert(final ItemStack par1ItemStack) {
+    public boolean canInsert(final ItemStack stack) {
         return false;
     }
 
@@ -46,7 +46,7 @@ public class SlotDisconnected extends AppEngSlot {
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity par1PlayerEntity) {
+    public boolean canTakeItems(final PlayerEntity player) {
         return false;
     }
 

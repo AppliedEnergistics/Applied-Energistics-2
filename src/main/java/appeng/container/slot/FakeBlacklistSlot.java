@@ -22,8 +22,8 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class FakeBlacklistSlot extends FakeTypeOnlySlot {
 
-    public FakeBlacklistSlot(final FixedItemInv inv, final int idx, final int x, final int y) {
-        super(inv, idx, x, y);
+    public FakeBlacklistSlot(final FixedItemInv inv, final int invSlot, final int x, final int y) {
+        super(inv, invSlot, x, y);
     }
 
     @Override

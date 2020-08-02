@@ -25,8 +25,8 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class FakeSlot extends AppEngSlot {
 
-    public FakeSlot(final FixedItemInv inv, final int idx, final int x, final int y) {
-        super(inv, idx, x, y);
+    public FakeSlot(final FixedItemInv inv, final int invSlot, final int x, final int y) {
+        super(inv, invSlot, x, y);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class FakeSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean canInsert(final ItemStack par1ItemStack) {
+    public boolean canInsert(final ItemStack stack) {
         return false;
     }
 
@@ -54,7 +54,7 @@ public class FakeSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity par1PlayerEntity) {
+    public boolean canTakeItems(final PlayerEntity player) {
         return false;
     }
 }

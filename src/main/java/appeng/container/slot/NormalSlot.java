@@ -22,7 +22,7 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class NormalSlot extends AppEngSlot {
 
-    public NormalSlot(final FixedItemInv inv, final int slot, final int xPos, final int yPos) {
-        super(inv, slot, xPos, yPos);
+    public NormalSlot(final FixedItemInv inv, final int invSlot, final int xPos, final int yPos) {
+        super(inv, invSlot, xPos, yPos);
     }
 }
