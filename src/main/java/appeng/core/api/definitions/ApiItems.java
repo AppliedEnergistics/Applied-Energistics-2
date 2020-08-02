@@ -18,13 +18,13 @@
 
 package appeng.core.api.definitions;
 
-import java.awt.*;
 import java.util.function.Consumer;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -241,7 +241,8 @@ public final class ApiItems implements IItems {
                 .features(AEFeature.NETWORK_TOOL).build();
 
         this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
-                .props(props -> props.maxStackSize(1)).features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
+                .props(props -> props.maxStackSize(1).rarity(Rarity.EPIC))
+                .features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
         this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.VIEW_CELL).build();
 
