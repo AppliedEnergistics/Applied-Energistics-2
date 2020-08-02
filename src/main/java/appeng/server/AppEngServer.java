@@ -23,21 +23,26 @@ import appeng.hooks.TickHandler;
 
 public final class AppEngServer extends AppEngBase {
 
-    private final MinecraftServer server;
+    private MinecraftServer server;
 
     private final ServerNetworkHandler networkHandler;
 
     private final TickHandler tickHandler;
 
-    public AppEngServer(MinecraftServer server) {
-        this.server = server;
+    public AppEngServer() {
         this.networkHandler = new ServerNetworkHandler();
         this.tickHandler = new TickHandler();
 
-        // For a dedicated server, the lifecycle of WorldData is much simpler
-        WorldData.onServerStarting(server);
+        ServerLifecycleEvents.SERVER_STARTING.register(this::onServerStarting);
         ServerLifecycleEvents.SERVER_STOPPING.register(s -> onServerStopping());
         ServerLifecycleEvents.SERVER_STOPPED.register(s -> onServerStopped());
+    }
+
+    private void onServerStarting(MinecraftServer server) {
+        // For a dedicated server, the lifecycle of WorldData is much simpler
+        WorldData.onServerStarting(server);
+
+        this.server = server;
     }
 
     private void onServerStopping() {
