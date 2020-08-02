@@ -100,8 +100,6 @@ dependencies {
     //Fabric api
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
-
     modImplementation "alexiil.mc.lib:libblockattributes-core:${libblockattributes_version}"
     modImplementation "alexiil.mc.lib:libblockattributes-items:${libblockattributes_version}"
     modImplementation "alexiil.mc.lib:libblockattributes-fluids:${libblockattributes_version}"
@@ -175,7 +173,9 @@ import net.fabricmc.loom.task.RunClientTask;
 
 task generateData(type: RunClientTask, dependsOn: downloadAssets, group: "ae2") {
     classpath = configurations.runtimeClasspath
-    classpath sourceSets.datagen.runtimeClasspath
+    classpath sourceSets.api.output
+    classpath sourceSets.main.output
+    classpath sourceSets.datagen.output
     systemProperty "appeng.generateData", "true"
 }
 build.dependsOn generateData
