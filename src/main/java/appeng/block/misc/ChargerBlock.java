@@ -19,12 +19,8 @@
 package appeng.block.misc;
 
 import java.util.Random;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -32,11 +28,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.model.json.Transformation;
-import net.minecraft.client.util.math.AffineTransformation;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -53,8 +44,6 @@ import net.minecraft.world.World;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.ParticleTypes;
-import appeng.client.render.renderable.ItemRenderable;
-import appeng.client.render.tesr.ModularTESR;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -174,18 +163,6 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return VoxelShapes.cuboid(new Box(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static Function<BlockEntityRenderDispatcher, BlockEntityRenderer<ChargerBlockEntity>> createTesr() {
-        return dispatcher -> new ModularTESR<>(dispatcher, new ItemRenderable<>(ChargerBlock::getRenderedItem));
-    }
-
-    @Environment(EnvType.CLIENT)
-    private static Pair<ItemStack, Transformation> getRenderedItem(ChargerBlockEntity tile) {
-        Transformation transform = new Transformation(new Vector3f(), new Vector3f(0.5f, 0.375f, 0.5f),
-                new Vector3f(1f, 1f, 1f));
-        return new ImmutablePair<>(tile.getInternalInventory().getInvStack(0), transform);
     }
 
 }
