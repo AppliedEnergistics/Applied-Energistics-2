@@ -18,6 +18,9 @@
 
 package appeng.block.storage;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockRenderType;
@@ -47,7 +50,18 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> {
 
     private static final double AABB_OFFSET_BOTTOM = 0.00;
     private static final double AABB_OFFSET_SIDES = 0.06;
-    private static final double AABB_OFFSET_TOP = 0.125;
+    private static final double AABB_OFFSET_TOP = 0.0625;
+
+    // Precomputed bounding boxes of the chest, sorted into the map by the UP
+    // direction
+    private static final Map<Direction, VoxelShape> SHAPES = new EnumMap<>(Direction.class);
+
+    static {
+        for (Direction up : Direction.values()) {
+            AxisAlignedBB aabb = computeAABB(up);
+            SHAPES.put(up, VoxelShapes.create(aabb));
+        }
+    }
 
     public enum SkyChestType {
         STONE, BLOCK
@@ -87,37 +101,30 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        // TODO Cache this! It can't be that hard!
-        AxisAlignedBB aabb = computeAABB(worldIn, pos);
-        return VoxelShapes.create(aabb);
+        final SkyChestTileEntity sk = this.getTileEntity(worldIn, pos);
+        Direction up = sk != null ? sk.getUp() : Direction.UP;
+        return SHAPES.get(up);
     }
 
-    private AxisAlignedBB computeAABB(final IBlockReader w, final BlockPos pos) {
-        final SkyChestTileEntity sk = this.getTileEntity(w, pos);
-        Direction o = Direction.UP;
-
-        if (sk != null) {
-            o = sk.getUp();
-        }
-
-        final double offsetX = o.getXOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
-        final double offsetY = o.getYOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
-        final double offsetZ = o.getZOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
+    private static AxisAlignedBB computeAABB(Direction up) {
+        final double offsetX = up.getXOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
+        final double offsetY = up.getYOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
+        final double offsetZ = up.getZOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
 
         // for x/z top and bottom is swapped
         final double minX = Math.max(0.0,
-                offsetX + (o.getXOffset() < 0 ? AABB_OFFSET_BOTTOM : (o.getXOffset() * AABB_OFFSET_TOP)));
+                offsetX + (up.getXOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getXOffset() * AABB_OFFSET_TOP)));
         final double minY = Math.max(0.0,
-                offsetY + (o.getYOffset() < 0 ? AABB_OFFSET_TOP : (o.getYOffset() * AABB_OFFSET_BOTTOM)));
+                offsetY + (up.getYOffset() < 0 ? AABB_OFFSET_TOP : (up.getYOffset() * AABB_OFFSET_BOTTOM)));
         final double minZ = Math.max(0.0,
-                offsetZ + (o.getZOffset() < 0 ? AABB_OFFSET_BOTTOM : (o.getZOffset() * AABB_OFFSET_TOP)));
+                offsetZ + (up.getZOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getZOffset() * AABB_OFFSET_TOP)));
 
         final double maxX = Math.min(1.0,
-                1.0 - offsetX - (o.getXOffset() < 0 ? AABB_OFFSET_TOP : (o.getXOffset() * AABB_OFFSET_BOTTOM)));
+                1.0 - offsetX - (up.getXOffset() < 0 ? AABB_OFFSET_TOP : (up.getXOffset() * AABB_OFFSET_BOTTOM)));
         final double maxY = Math.min(1.0,
-                1.0 - offsetY - (o.getYOffset() < 0 ? AABB_OFFSET_BOTTOM : (o.getYOffset() * AABB_OFFSET_TOP)));
+                1.0 - offsetY - (up.getYOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getYOffset() * AABB_OFFSET_TOP)));
         final double maxZ = Math.min(1.0,
-                1.0 - offsetZ - (o.getZOffset() < 0 ? AABB_OFFSET_TOP : (o.getZOffset() * AABB_OFFSET_BOTTOM)));
+                1.0 - offsetZ - (up.getZOffset() < 0 ? AABB_OFFSET_TOP : (up.getZOffset() * AABB_OFFSET_BOTTOM)));
 
         return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }

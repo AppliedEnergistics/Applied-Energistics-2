@@ -60,11 +60,11 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
         this.singleBottom.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
         this.singleLid = new ModelRenderer(64, 64, 0, 0);
         this.singleLid.addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
-        this.singleLid.rotationPointY = 9.0F;
+        this.singleLid.rotationPointY = 10.0F;
         this.singleLid.rotationPointZ = 1.0F;
         this.singleLatch = new ModelRenderer(64, 64, 0, 0);
         this.singleLatch.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
-        this.singleLatch.rotationPointY = 8.0F;
+        this.singleLatch.rotationPointY = 9.0F;
     }
 
     @Override
