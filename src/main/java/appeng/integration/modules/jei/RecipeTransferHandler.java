@@ -29,6 +29,7 @@ import net.minecraft.screen.slot.Slot;
 
 import me.shedaniel.rei.api.AutoTransferHandler;
 import me.shedaniel.rei.api.EntryStack;
+import me.shedaniel.rei.api.TransferRecipeDisplay;
 
 import appeng.container.slot.CraftingMatrixSlot;
 import appeng.container.slot.FakeCraftingMatrixSlot;
@@ -47,6 +48,9 @@ class RecipeTransferHandler<T extends ScreenHandler> implements AutoTransferHand
 
     @Override
     public Result handle(Context context) {
+        if (!(context.getRecipe() instanceof TransferRecipeDisplay)) {
+            return Result.createNotApplicable();
+        }
 
         ScreenHandler container = context.getContainerScreen().getScreenHandler();
 
@@ -59,12 +63,18 @@ class RecipeTransferHandler<T extends ScreenHandler> implements AutoTransferHand
             return Result.createSuccessful();
         }
 
-        List<List<EntryStack>> ingredients = context.getRecipe().getInputEntries();
+        TransferRecipeDisplay transferRecipe = (TransferRecipeDisplay) context.getRecipe();
 
         final CompoundTag recipe = new CompoundTag();
 
-        for (int slotIndex = 0; slotIndex < ingredients.size(); slotIndex++) {
-            List<EntryStack> ingredientEntry = ingredients.get(slotIndex);
+        List<List<EntryStack>> ingredients = transferRecipe.getInputEntries();
+        for (int i = 0; i < ingredients.size(); i++) {
+            List<EntryStack> ingredientEntry = ingredients.get(i);
+
+            // Vanilla will pack ingredients if the recipe is less than 3x3
+            int x = i % transferRecipe.getWidth();
+            int y = (i - x) / transferRecipe.getWidth();
+            int slotIndex = 3 * y + x;
 
             for (final Slot slot : container.slots) {
                 if (slot instanceof CraftingMatrixSlot || slot instanceof FakeCraftingMatrixSlot) {
