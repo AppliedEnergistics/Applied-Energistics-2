@@ -28,13 +28,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.ListenerRemovalToken;
+import alexiil.mc.lib.attributes.ListenerToken;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.InvMarkDirtyListener;
 import alexiil.mc.lib.attributes.item.ItemInsertable;
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
@@ -67,17 +71,27 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
-    private final ItemInsertable externalItemInput = new CondenseItemHandler();
+    // This is a FixedItemInv implementation to satisfy the UI, which is slot based
+    private final CondenseItemHandler internalInputSlot = new CondenseItemHandler();
+    private final CondenseItemInsertable externalItemInput = new CondenseItemInsertable();
     private final FluidInsertable externalFluidInput = new FluidHandler();
     private final MEHandler meHandler = new MEHandler();
 
-    private final FixedItemInv combinedInv = new WrapperChainedItemHandler(this.outputSlot, this.storageSlot);
+    private final FixedItemInv combinedInv = new WrapperChainedItemHandler(this.internalInputSlot, this.outputSlot,
+            this.storageSlot);
+
+    // Only makes input+output visible and limits output to extraction
+    private final FixedItemInv externalCombinedInv;
 
     private double storedPower = 0;
 
     public CondenserBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
+
+        LimitedFixedItemInv limitedOutput = this.outputSlot.createLimitedFixedInv();
+        limitedOutput.getAllRule().disallowInsertion();
+        externalCombinedInv = new WrapperChainedItemHandler(this.internalInputSlot, limitedOutput);
     }
 
     @Override
@@ -125,7 +139,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     private boolean canAddOutput(final ItemStack output) {
-        return this.outputSlot.setInvStack(0, output, Simulation.SIMULATE);
+        return this.outputSlot.getInsertable().attemptInsertion(output, Simulation.SIMULATE).isEmpty();
     }
 
     /**
@@ -134,7 +148,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
      * @param output to be added output
      */
     private void addOutput(final ItemStack output) {
-        this.outputSlot.setInvStack(0, output, Simulation.ACTION);
+        this.outputSlot.getInsertable().attemptInsertion(output, Simulation.ACTION);
     }
 
     FixedItemInv getOutputSlot() {
@@ -194,24 +208,58 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     @Override
     public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
-        super.addAllAttributes(world, pos, state, to);
+        // Do not call super here since it would offer up the internal inventory
 
-        to.offer(externalItemInput);
+        to.offer(externalCombinedInv);
         to.offer(externalFluidInput);
-        to.offer(outputSlot.getPureExtractable());
         to.offer(meHandler);
     }
 
-    private class CondenseItemHandler implements ItemInsertable {
-
+    private class CondenseItemInsertable implements ItemInsertable {
         @Override
-        public ItemStack attemptInsertion(ItemStack stack, Simulation simulation) {
-            if (simulation == Simulation.ACTION && !stack.isEmpty()) {
-                CondenserBlockEntity.this.addPower(stack.getCount());
+        public ItemStack attemptInsertion(ItemStack itemStack, Simulation simulation) {
+            if (simulation == Simulation.ACTION && !itemStack.isEmpty()) {
+                CondenserBlockEntity.this.addPower(itemStack.getCount());
             }
             return ItemStack.EMPTY;
         }
+    }
 
+    private class CondenseItemHandler implements FixedItemInv {
+        @Override
+        public int getSlotCount() {
+            return 1;
+        }
+
+        @Override
+        public ItemStack getInvStack(int i) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public boolean isItemValidForSlot(int i, ItemStack itemStack) {
+            return true;
+        }
+
+        @Override
+        public boolean setInvStack(int i, ItemStack itemStack, Simulation simulation) {
+            if (simulation == Simulation.ACTION) {
+                CondenserBlockEntity.this.addPower(itemStack.getCount());
+            }
+            return true;
+        }
+
+        @Override
+        public int getChangeValue() {
+            return 0;
+        }
+
+        @Nullable
+        @Override
+        public ListenerToken addListener(InvMarkDirtyListener invMarkDirtyListener,
+                ListenerRemovalToken listenerRemovalToken) {
+            return null;
+        }
     }
 
     /**
