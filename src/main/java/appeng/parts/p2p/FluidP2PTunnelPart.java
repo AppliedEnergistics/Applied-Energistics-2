@@ -240,7 +240,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
 
     private LazyOptional<IFluidHandler> getTarget() {
         if (!this.getProxy().isActive()) {
-            return null;
+            return LazyOptional.empty();
         }
 
         if (this.cachedTank != null) {
@@ -256,7 +256,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
                     this.getSide().getFacing().getOpposite());
         }
 
-        return null;
+        return LazyOptional.empty();
     }
 
 }
