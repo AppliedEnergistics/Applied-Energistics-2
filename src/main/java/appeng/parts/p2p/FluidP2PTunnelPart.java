@@ -18,15 +18,10 @@
 
 package appeng.parts.p2p;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -37,18 +32,18 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 
-public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implements IFluidHandler {
+public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
 
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_fluids");
+    private static final IFluidHandler NULL_FLUID_HANDLER = new NullFluidHandler();
 
-    private static final ThreadLocal<Deque<FluidP2PTunnelPart>> DEPTH = new ThreadLocal<>();;
-
-    private LazyOptional<IFluidHandler> cachedTank;
-    private int tmpUsed;
+    private final IFluidHandler inputHandler = new InputFluidHandler();
+    private final IFluidHandler outputHandler = new OutputFluidHandler();
 
     public FluidP2PTunnelPart(final ItemStack is) {
         super(is);
@@ -65,13 +60,10 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
 
     @Override
     public void onTunnelNetworkChange() {
-        this.cachedTank = null;
     }
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        this.cachedTank = null;
-
         if (this.isOutput()) {
             final FluidP2PTunnelPart in = this.getInput();
             if (in != null) {
@@ -84,7 +76,10 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
         if (capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this);
+            if (this.isOutput()) {
+                return (LazyOptional<T>) LazyOptional.of(() -> this.outputHandler);
+            }
+            return (LazyOptional<T>) LazyOptional.of(() -> this.inputHandler);
         }
 
         return super.getCapability(capabilityClass);
@@ -95,168 +90,191 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
         return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
-    @Override
-    public int getTanks() {
-        return 0;
-    }
+    private IFluidHandler getAttachedFluidHandler() {
+        LazyOptional<IFluidHandler> fluidHandler = LazyOptional.empty();
+        if (this.isActive()) {
+            final TileEntity self = this.getTile();
+            final TileEntity te = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
 
-    @Override
-    @Nonnull
-    public FluidStack getFluidInTank(int tank) {
-        return FluidStack.EMPTY;
-    }
-
-    @Override
-    public int getTankCapacity(int tank) {
-        return 1000;
-    }
-
-    @Override
-    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-        return false;
-    }
-
-    @Override
-    public int fill(FluidStack resource, FluidAction action) {
-
-        final Deque<FluidP2PTunnelPart> stack = this.getDepth();
-
-        for (final FluidP2PTunnelPart t : stack) {
-            if (t == this) {
-                return 0;
+            if (te != null) {
+                fluidHandler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+                        this.getSide().getOpposite().getFacing());
             }
         }
+        return fluidHandler.orElse(NULL_FLUID_HANDLER);
+    }
 
-        stack.push(this);
+    private class InputFluidHandler implements IFluidHandler {
 
-        final List<FluidP2PTunnelPart> list = this.getOutputs(resource.getFluid());
-        int requestTotal = 0;
-
-        Iterator<FluidP2PTunnelPart> i = list.iterator();
-
-        while (i.hasNext()) {
-            final FluidP2PTunnelPart l = i.next();
-            final IFluidHandler tank = l.getTarget().orElse(null);
-            if (tank != null) {
-                l.tmpUsed = tank.fill(resource.copy(), FluidAction.SIMULATE);
-            } else {
-                l.tmpUsed = 0;
-            }
-
-            if (l.tmpUsed <= 0) {
-                i.remove();
-            } else {
-                requestTotal += l.tmpUsed;
-            }
+        @Override
+        public int getTanks() {
+            return 1;
         }
 
-        if (requestTotal <= 0) {
-            if (stack.pop() != this) {
-                throw new IllegalStateException("Invalid Recursion detected.");
+        @Override
+        @Nonnull
+        public FluidStack getFluidInTank(int tank) {
+            return FluidStack.EMPTY;
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            return true;
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            int total = 0;
+
+            try {
+                final int outputTunnels = FluidP2PTunnelPart.this.getOutputs().size();
+                final int amount = resource.getAmount();
+
+                if (outputTunnels == 0 || amount == 0) {
+                    return 0;
+                }
+
+                final int amountPerOutput = Math.max(1, amount / outputTunnels);
+                int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
+
+                for (FluidP2PTunnelPart target : FluidP2PTunnelPart.this.getOutputs()) {
+                    final IFluidHandler output = target.getAttachedFluidHandler();
+                    final int toSend = amountPerOutput + overflow;
+                    final FluidStack fillWithFluidStack = resource.copy();
+                    fillWithFluidStack.setAmount(toSend);
+
+                    final int received = output.fill(fillWithFluidStack, action);
+
+                    overflow = toSend - received;
+                    total += received;
+                }
+
+                // Make a second pass, to distribute any leftover overflow in case
+                // a later output did not completely consume its allotment
+                if (overflow > 0) {
+                    for (FluidP2PTunnelPart target : FluidP2PTunnelPart.this.getOutputs()) {
+                        final IFluidHandler output = target.getAttachedFluidHandler();
+                        final FluidStack fillWithFluidStack = resource.copy();
+                        fillWithFluidStack.setAmount(overflow);
+
+                        final int received = output.fill(fillWithFluidStack, action);
+
+                        overflow -= received;
+                        total += received;
+                        if (overflow <= 0) {
+                            break; // don't continue if nothing is left
+                        }
+                    }
+                }
+
+                if (action == FluidAction.EXECUTE) {
+                    FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
+                }
+            } catch (GridAccessException ignored) {
             }
 
+            return total;
+        }
+
+        @Override
+        @Nonnull
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
+
+        @Override
+        @Nonnull
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
+
+    }
+
+    private class OutputFluidHandler implements IFluidHandler {
+
+        @Override
+        public int getTanks() {
+            return FluidP2PTunnelPart.this.getAttachedFluidHandler().getTanks();
+        }
+
+        @Override
+        @Nonnull
+        public FluidStack getFluidInTank(int tank) {
+            return FluidP2PTunnelPart.this.getAttachedFluidHandler().getFluidInTank(tank);
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            return FluidP2PTunnelPart.this.getAttachedFluidHandler().getTankCapacity(tank);
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            return FluidP2PTunnelPart.this.getAttachedFluidHandler().isFluidValid(tank, stack);
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
             return 0;
         }
 
-        if (action != FluidAction.EXECUTE) {
-            if (stack.pop() != this) {
-                throw new IllegalStateException("Invalid Recursion detected.");
-            }
-
-            return Math.min(resource.getAmount(), requestTotal);
+        @Override
+        @Nonnull
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidP2PTunnelPart.this.getAttachedFluidHandler().drain(resource, action);
         }
 
-        int available = resource.getAmount();
-
-        i = list.iterator();
-        int used = 0;
-
-        while (i.hasNext() && available > 0) {
-            final FluidP2PTunnelPart l = i.next();
-
-            final FluidStack insert = resource.copy();
-            insert.setAmount((int) Math.ceil(insert.getAmount() * ((double) l.tmpUsed / (double) requestTotal)));
-            if (insert.getAmount() > available) {
-                insert.setAmount(available);
-            }
-
-            final IFluidHandler tank = l.getTarget().orElse(null);
-            if (tank != null) {
-                l.tmpUsed = tank.fill(insert.copy(), action);
-            } else {
-                l.tmpUsed = 0;
-            }
-
-            available -= insert.getAmount();
-            used += l.tmpUsed;
+        @Override
+        @Nonnull
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            return FluidP2PTunnelPart.this.getAttachedFluidHandler().drain(maxDrain, action);
         }
-
-        if (stack.pop() != this) {
-            throw new IllegalStateException("Invalid Recursion detected.");
-        }
-
-        return used;
     }
 
-    @Override
-    @Nonnull
-    public FluidStack drain(FluidStack resource, FluidAction action) {
-        return FluidStack.EMPTY;
-    }
+    private static class NullFluidHandler implements IFluidHandler {
 
-    @Override
-    @Nonnull
-    public FluidStack drain(int maxDrain, FluidAction action) {
-        return FluidStack.EMPTY;
-    }
-
-    private Deque<FluidP2PTunnelPart> getDepth() {
-        Deque<FluidP2PTunnelPart> s = DEPTH.get();
-
-        if (s == null) {
-            DEPTH.set(s = new ArrayDeque<>());
+        @Override
+        public int getTanks() {
+            return 0;
         }
 
-        return s;
-    }
-
-    private List<FluidP2PTunnelPart> getOutputs(final Fluid input) {
-        final List<FluidP2PTunnelPart> outs = new ArrayList<>();
-
-        try {
-            for (final FluidP2PTunnelPart l : this.getOutputs()) {
-                final IFluidHandler handler = l.getTarget().orElse(null);
-
-                if (handler != null) {
-                    outs.add(l);
-                }
-            }
-        } catch (final GridAccessException e) {
-            // :P
+        @Override
+        @Nonnull
+        public FluidStack getFluidInTank(int tank) {
+            return FluidStack.EMPTY;
         }
 
-        return outs;
-    }
-
-    private LazyOptional<IFluidHandler> getTarget() {
-        if (!this.getProxy().isActive()) {
-            return null;
+        @Override
+        public int getTankCapacity(int tank) {
+            return 0;
         }
 
-        if (this.cachedTank != null) {
-            return this.cachedTank;
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            return false;
         }
 
-        final TileEntity te = this.getTile().getWorld()
-                .getTileEntity(this.getTile().getPos().offset(this.getSide().getFacing()));
-
-        if (te != null && te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                this.getSide().getFacing().getOpposite()).isPresent()) {
-            return this.cachedTank = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                    this.getSide().getFacing().getOpposite());
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            return 0;
         }
 
-        return null;
+        @Override
+        @Nonnull
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
+
+        @Override
+        @Nonnull
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
     }
 
 }
