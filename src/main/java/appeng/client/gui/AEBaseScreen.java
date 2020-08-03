@@ -191,10 +191,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     protected void drawTooltip(MatrixStack matrices, int x, int y, ITextComponent message) {
-        String[] lines = message.getString().split("\n"); // FIXME FABRIC
-        List<ITextComponent> textLines = Arrays.stream(lines).map(StringTextComponent::new)
-                .collect(Collectors.toList());
-        this.drawTooltip(matrices, x, y, textLines);
+        String tooltipText = message.getString();
+
+        if (!tooltipText.isEmpty()) {
+            String[] lines = tooltipText.split("\n"); // FIXME FABRIC
+            List<ITextComponent> textLines = Arrays.stream(lines).map(StringTextComponent::new)
+                    .collect(Collectors.toList());
+            this.drawTooltip(matrices, x, y, textLines);
+        }
     }
 
     // FIXME FABRIC: move out to json (?)

@@ -8,6 +8,7 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
     private final int x;
@@ -39,7 +40,7 @@ public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
 
     @Override
     public ITextComponent getMessage() {
-        return null;
+        return StringTextComponent.EMPTY;
     }
 
     @Override
