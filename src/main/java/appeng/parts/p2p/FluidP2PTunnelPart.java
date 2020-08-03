@@ -154,6 +154,24 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
                     total += received;
                 }
 
+                // Make a second pass, to distribute any leftover overflow in case
+                // a later output did not completely consume its allotment
+                if (overflow > 0) {
+                    for (FluidP2PTunnelPart target : FluidP2PTunnelPart.this.getOutputs()) {
+                        final IFluidHandler output = target.getAttachedFluidHandler();
+                        final FluidStack fillWithFluidStack = resource.copy();
+                        fillWithFluidStack.setAmount(overflow);
+
+                        final int received = output.fill(fillWithFluidStack, action);
+
+                        overflow -= received;
+                        total += received;
+                        if (overflow <= 0) {
+                            break; // don't continue if nothing is left
+                        }
+                    }
+                }
+
                 if (action == FluidAction.EXECUTE) {
                     FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
                 }
