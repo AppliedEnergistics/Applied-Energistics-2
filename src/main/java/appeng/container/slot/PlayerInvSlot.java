@@ -21,11 +21,10 @@ package appeng.container.slot;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 // there is nothing special about this slot, its simply used to represent the players inventory, vs a container slot.
-
 public class PlayerInvSlot extends AppEngSlot {
 
-    public PlayerInvSlot(final FixedItemInv par1iInventory, final int invSlot, final int x, final int y) {
-        super(par1iInventory, invSlot, x, y);
+    public PlayerInvSlot(final FixedItemInv inv, final int invSlot, final int x, final int y) {
+        super(inv, invSlot, x, y);
 
         this.setPlayerSide(true);
     }

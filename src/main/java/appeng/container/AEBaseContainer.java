@@ -95,8 +95,6 @@ public abstract class AEBaseContainer extends ScreenHandler {
     private boolean sentCustomName;
     private int ticksSinceCheck = 900;
     private IAEItemStack clientRequestedTargetItem = null;
-    // Slots that were created to represent the player inventory
-    private List<Slot> playerInventorySlots = null;
 
     public AEBaseContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip,
             final BlockEntity myTile, final IPart myPart) {
@@ -264,25 +262,39 @@ public abstract class AEBaseContainer extends ScreenHandler {
     }
 
     protected void bindPlayerInventory(final PlayerInventory playerInventory, final int offsetX, final int offsetY) {
-        FixedItemInv ih = new FixedInventoryVanillaWrapper(playerInventory);
+        FixedItemInv ih = new FixedInventoryVanillaWrapper(playerInventory) {
+            // Vanilla needs this to be modifiable otherwise stacking will eat items.
+            // FIXME FABRIC: Remove when LBA makes these mutable as per
+            // ModifiableFixedItemInv
+            @Override
+            public ItemStack getInvStack(int slot) {
+                return playerInventory.getStack(slot);
+            }
+        };
 
         // bind player inventory
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                if (this.locked.contains(j + i * 9 + 9)) {
-                    this.addSlot(new DisabledSlot(ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18));
+                int invSlot = j + i * 9 + 9;
+                int x = 8 + j * 18 + offsetX;
+                int y = offsetY + i * 18;
+
+                if (this.locked.contains(invSlot)) {
+                    this.addSlot(new DisabledSlot(ih, invSlot, x, y));
                 } else {
-                    this.addSlot(new PlayerInvSlot(ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18));
+                    this.addSlot(new PlayerInvSlot(ih, invSlot, x, y));
                 }
             }
         }
 
         // bind player hotbar
         for (int i = 0; i < 9; i++) {
+            int x = 8 + i * 18 + offsetX;
+            int y = 58 + offsetY;
             if (this.locked.contains(i)) {
-                this.addSlot(new DisabledSlot(ih, i, 8 + i * 18 + offsetX, 58 + offsetY));
+                this.addSlot(new DisabledSlot(ih, i, x, y));
             } else {
-                this.addSlot(new PlayerHotBarSlot(ih, i, 8 + i * 18 + offsetX, 58 + offsetY));
+                this.addSlot(new PlayerHotBarSlot(ih, i, x, y));
             }
         }
     }
