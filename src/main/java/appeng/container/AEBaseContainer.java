@@ -93,8 +93,6 @@ public abstract class AEBaseContainer extends Container {
     private boolean sentCustomName;
     private int ticksSinceCheck = 900;
     private IAEItemStack clientRequestedTargetItem = null;
-    // Slots that were created to represent the player inventory
-    private List<Slot> playerInventorySlots = null;
 
     public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
             final IPart myPart) {

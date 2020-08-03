@@ -24,8 +24,8 @@ import net.minecraftforge.items.IItemHandler;
 
 public class PlayerInvSlot extends AppEngSlot {
 
-    public PlayerInvSlot(final IItemHandler par1iInventory, final int invSlot, final int x, final int y) {
-        super(par1iInventory, invSlot, x, y);
+    public PlayerInvSlot(final IItemHandler inv, final int invSlot, final int x, final int y) {
+        super(inv, invSlot, x, y);
 
         this.setPlayerSide(true);
     }
