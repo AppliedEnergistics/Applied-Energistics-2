@@ -25,7 +25,6 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -44,11 +43,9 @@ import net.minecraft.item.Items;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import appeng.api.client.ICellModelRegistry;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.FacingToRotation;
-import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.core.Api;
 import appeng.tile.storage.ChestBlockEntity;
@@ -58,8 +55,6 @@ import appeng.tile.storage.ChestBlockEntity;
  * model for the inserted cell, as well as the LED.
  */
 public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntity> {
-
-    private final ICellModelRegistry cellModelRegistry = Api.instance().client().cells();
 
     private final BakedModelManager modelManager;
 

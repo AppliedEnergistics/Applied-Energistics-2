@@ -34,7 +34,7 @@ import alexiil.mc.lib.attributes.item.SingleItemSlot;
 import appeng.container.AEBaseContainer;
 
 public class AppEngSlot extends Slot {
-    private static Inventory EMPTY_INVENTORY = new SimpleInventory(0);
+    private static final Inventory EMPTY_INVENTORY = new SimpleInventory(0);
     private final FixedItemInv itemHandler;
     private final SingleItemSlot backingSlot;
     private final int invSlot;
