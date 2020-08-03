@@ -63,11 +63,11 @@ public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
         this.singleBottom.addCuboid(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
         this.singleLid = new ModelPart(64, 64, 0, 0);
         this.singleLid.addCuboid(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
-        this.singleLid.pivotY = 9.0F;
+        this.singleLid.pivotY = 10.0F;
         this.singleLid.pivotZ = 1.0F;
         this.singleLatch = new ModelPart(64, 64, 0, 0);
         this.singleLatch.addCuboid(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
-        this.singleLatch.pivotY = 8.0F;
+        this.singleLatch.pivotY = 9.0F;
     }
 
     @Override

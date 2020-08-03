@@ -18,6 +18,9 @@
 
 package appeng.block.storage;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockRenderType;
@@ -47,7 +50,18 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
 
     private static final double AABB_OFFSET_BOTTOM = 0.00;
     private static final double AABB_OFFSET_SIDES = 0.06;
-    private static final double AABB_OFFSET_TOP = 0.125;
+    private static final double AABB_OFFSET_TOP = 0.0625;
+
+    // Precomputed bounding boxes of the chest, sorted into the map by the UP
+    // direction
+    private static final Map<Direction, VoxelShape> SHAPES = new EnumMap<>(Direction.class);
+
+    static {
+        for (Direction up : Direction.values()) {
+            Box aabb = computeAABB(up);
+            SHAPES.put(up, VoxelShapes.cuboid(aabb));
+        }
+    }
 
     public enum SkyChestType {
         STONE, BLOCK
@@ -87,37 +101,30 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
-        // TODO Cache this! It can't be that hard!
-        Box aabb = computeAABB(worldIn, pos);
-        return VoxelShapes.cuboid(aabb);
+        final SkyChestBlockEntity sk = this.getBlockEntity(worldIn, pos);
+        Direction up = sk != null ? sk.getUp() : Direction.UP;
+        return SHAPES.get(up);
     }
 
-    private Box computeAABB(final BlockView w, final BlockPos pos) {
-        final SkyChestBlockEntity sk = this.getBlockEntity(w, pos);
-        Direction o = Direction.UP;
-
-        if (sk != null) {
-            o = sk.getUp();
-        }
-
-        final double offsetX = o.getOffsetX() == 0 ? AABB_OFFSET_SIDES : 0.0;
-        final double offsetY = o.getOffsetY() == 0 ? AABB_OFFSET_SIDES : 0.0;
-        final double offsetZ = o.getOffsetZ() == 0 ? AABB_OFFSET_SIDES : 0.0;
+    private static Box computeAABB(Direction up) {
+        final double offsetX = up.getOffsetX() == 0 ? AABB_OFFSET_SIDES : 0.0;
+        final double offsetY = up.getOffsetY() == 0 ? AABB_OFFSET_SIDES : 0.0;
+        final double offsetZ = up.getOffsetZ() == 0 ? AABB_OFFSET_SIDES : 0.0;
 
         // for x/z top and bottom is swapped
         final double minX = Math.max(0.0,
-                offsetX + (o.getOffsetX() < 0 ? AABB_OFFSET_BOTTOM : (o.getOffsetX() * AABB_OFFSET_TOP)));
+                offsetX + (up.getOffsetX() < 0 ? AABB_OFFSET_BOTTOM : (up.getOffsetX() * AABB_OFFSET_TOP)));
         final double minY = Math.max(0.0,
-                offsetY + (o.getOffsetY() < 0 ? AABB_OFFSET_TOP : (o.getOffsetY() * AABB_OFFSET_BOTTOM)));
+                offsetY + (up.getOffsetY() < 0 ? AABB_OFFSET_TOP : (up.getOffsetY() * AABB_OFFSET_BOTTOM)));
         final double minZ = Math.max(0.0,
-                offsetZ + (o.getOffsetZ() < 0 ? AABB_OFFSET_BOTTOM : (o.getOffsetZ() * AABB_OFFSET_TOP)));
+                offsetZ + (up.getOffsetZ() < 0 ? AABB_OFFSET_BOTTOM : (up.getOffsetZ() * AABB_OFFSET_TOP)));
 
         final double maxX = Math.min(1.0,
-                1.0 - offsetX - (o.getOffsetX() < 0 ? AABB_OFFSET_TOP : (o.getOffsetX() * AABB_OFFSET_BOTTOM)));
+                1.0 - offsetX - (up.getOffsetX() < 0 ? AABB_OFFSET_TOP : (up.getOffsetX() * AABB_OFFSET_BOTTOM)));
         final double maxY = Math.min(1.0,
-                1.0 - offsetY - (o.getOffsetY() < 0 ? AABB_OFFSET_BOTTOM : (o.getOffsetY() * AABB_OFFSET_TOP)));
+                1.0 - offsetY - (up.getOffsetY() < 0 ? AABB_OFFSET_BOTTOM : (up.getOffsetY() * AABB_OFFSET_TOP)));
         final double maxZ = Math.min(1.0,
-                1.0 - offsetZ - (o.getOffsetZ() < 0 ? AABB_OFFSET_TOP : (o.getOffsetZ() * AABB_OFFSET_BOTTOM)));
+                1.0 - offsetZ - (up.getOffsetZ() < 0 ? AABB_OFFSET_TOP : (up.getOffsetZ() * AABB_OFFSET_BOTTOM)));
 
         return new Box(minX, minY, minZ, maxX, maxY, maxZ);
     }
