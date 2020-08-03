@@ -1,5 +1,6 @@
 package appeng.fluids.client.gui.widgets;
 
+import java.awt.TextComponent;
 import java.util.Collections;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -84,7 +86,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
         if (fluid != null) {
             return new TranslationTextComponent(fluid.getFluidStack().getTranslationKey());
         }
-        return null;
+        return StringTextComponent.EMPTY;
     }
 
     @Override
