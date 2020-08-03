@@ -18,10 +18,13 @@
 
 package appeng.decorative.solid;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -65,6 +68,17 @@ public class SkyStoneBlock extends AEBaseBlock {
         }
 
         return super.getStateForNeighborUpdate(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+    }
+
+    @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
+            ItemStack itemStack) {
+        super.onPlaced(world, pos, state, placer, itemStack);
+
+        if (world instanceof ServerWorld) {
+            ServerWorld serverWorld = (ServerWorld) world;
+            WorldData.instance().compassData().service().notifyBlockChange(serverWorld, pos);
+        }
     }
 
     @Override
