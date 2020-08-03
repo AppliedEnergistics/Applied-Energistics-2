@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -46,7 +48,17 @@ import appeng.util.Platform;
 
 public class ServerHelper extends CommonHelper {
 
-    private PlayerEntity renderModeBased;
+    /**
+     * While we process a player-specific part placement/cable interaction packet,
+     * we need to use that player's transparent-facade mode to understand whether
+     * the player can see through facades or not.
+     * <p>
+     * We need to use this method since the collision shape methods do not know
+     * about the player that the shape is being requested for, so they will call
+     * {@link #getCableRenderMode()} below, which then will use this field to figure
+     * out which player it's for.
+     */
+    private final ThreadLocal<PlayerEntity> partInteractionPlayer = new ThreadLocal<>();
 
     @Override
     public World getWorld() {
@@ -112,12 +124,8 @@ public class ServerHelper extends CommonHelper {
     }
 
     @Override
-    public CableRenderMode getRenderMode() {
-        if (this.renderModeBased == null) {
-            return CableRenderMode.STANDARD;
-        }
-
-        return this.renderModeForPlayer(this.renderModeBased);
+    public CableRenderMode getCableRenderMode() {
+        return this.getCableRenderModeForPlayer(partInteractionPlayer.get());
     }
 
     @Override
@@ -126,11 +134,11 @@ public class ServerHelper extends CommonHelper {
     }
 
     @Override
-    public void updateRenderMode(final PlayerEntity player) {
-        this.renderModeBased = player;
+    public void setPartInteractionPlayer(final PlayerEntity player) {
+        this.partInteractionPlayer.set(player);
     }
 
-    protected CableRenderMode renderModeForPlayer(final PlayerEntity player) {
+    protected final CableRenderMode getCableRenderModeForPlayer(@Nullable final PlayerEntity player) {
         if (player != null) {
             for (int x = 0; x < PlayerInventory.getHotbarSize(); x++) {
                 final ItemStack is = player.inventory.getStackInSlot(x);

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
@@ -55,11 +56,18 @@ public abstract class CommonHelper {
 
     public abstract void postInit();
 
-    public abstract CableRenderMode getRenderMode();
+    public abstract CableRenderMode getCableRenderMode();
 
     public abstract void triggerUpdates();
 
-    public abstract void updateRenderMode(PlayerEntity player);
+    /**
+     * Sets the player that is currently interacting with a cable or part attached
+     * to a cable. This will return that player's cable render mode from calls to
+     * {@link #getCableRenderMode()}, until another player or null is set.
+     * 
+     * @param player Null to revert to the default cable render mode.
+     */
+    public abstract void setPartInteractionPlayer(@Nullable PlayerEntity player);
 
     public abstract boolean isActionKey(@Nonnull final ActionKey key, InputMappings.Input input);
 

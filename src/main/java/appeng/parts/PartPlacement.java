@@ -330,11 +330,12 @@ public class PartPlacement {
     }
 
     private static SelectedPart selectPart(final PlayerEntity player, final IPartHost host, final Vector3d pos) {
-        AppEng.proxy.updateRenderMode(player);
-        final SelectedPart sp = host.selectPart(pos);
-        AppEng.proxy.updateRenderMode(null);
-
-        return sp;
+        AppEng.proxy.setPartInteractionPlayer(player);
+        try {
+            return host.selectPart(pos);
+        } finally {
+            AppEng.proxy.setPartInteractionPlayer(null);
+        }
     }
 
     public static IFacadePart isFacade(final ItemStack held, final AEPartLocation side) {
