@@ -38,7 +38,6 @@ import appeng.api.features.AEFeature;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.AppEng;
 import appeng.util.Platform;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {

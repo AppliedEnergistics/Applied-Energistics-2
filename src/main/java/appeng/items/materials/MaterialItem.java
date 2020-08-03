@@ -24,13 +24,15 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -45,12 +47,14 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
+import appeng.hooks.AECustomEntityItem;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InventoryAdaptor;
 import appeng.util.inv.AdaptorFixedInv;
 
-public final class MaterialItem extends AEBaseItem implements IStorageComponent, IUpgradeModule, AEToolItem {
+public final class MaterialItem extends AEBaseItem
+        implements IStorageComponent, IUpgradeModule, AEToolItem, AECustomEntityItem {
 
     /**
      * NBT property used by the name press to store the name to be inscribed.
@@ -147,31 +151,30 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
         return ActionResult.PASS;
     }
 
-// FIXME FABRIC    @Override
-// FIXME FABRIC    public boolean hasCustomEntity(final ItemStack is) {
-// FIXME FABRIC        return materialType.hasCustomEntity();
-// FIXME FABRIC    }
+    @Override
+    public Entity replaceItemEntity(ServerWorld world, ItemEntity itemEntity, ItemStack itemStack) {
+        if (!materialType.hasCustomEntity()) {
+            return itemEntity;
+        }
 
-// FIXME FABRIC    @Override
-// FIXME FABRIC    public Entity createEntity(final World w, final Entity location, final ItemStack itemstack) {
-// FIXME FABRIC        final Class<? extends Entity> droppedEntity = materialType.getCustomEntityClass();
-// FIXME FABRIC        final Entity eqi;
+        final Class<? extends Entity> droppedEntity = materialType.getCustomEntityClass();
+        final Entity eqi;
 
-// FIXME FABRIC        try {
-// FIXME FABRIC            eqi = droppedEntity.getConstructor(World.class, double.class, double.class, double.class, ItemStack.class)
-// FIXME FABRIC                    .newInstance(w, location.getX(), location.getY(), location.getZ(), itemstack);
-// FIXME FABRIC        } catch (final Throwable t) {
-// FIXME FABRIC            throw new IllegalStateException(t);
-// FIXME FABRIC        }
+        try {
+            eqi = droppedEntity.getConstructor(World.class, double.class, double.class, double.class, ItemStack.class)
+                    .newInstance(world, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), itemStack);
+        } catch (final Throwable t) {
+            throw new IllegalStateException(t);
+        }
 
-// FIXME FABRIC        eqi.setVelocity(location.getVelocity());
+        eqi.setVelocity(itemEntity.getVelocity());
 
-// FIXME FABRIC        if (location instanceof ItemEntity && eqi instanceof ItemEntity) {
-// FIXME FABRIC            ((ItemEntity) eqi).setDefaultPickupDelay();
-// FIXME FABRIC        }
+        if (eqi instanceof ItemEntity) {
+            ((ItemEntity) eqi).setToDefaultPickupDelay();
+        }
 
-// FIXME FABRIC        return eqi;
-// FIXME FABRIC    }
+        return eqi;
+    }
 
     @Override
     public int getBytes(final ItemStack is) {

@@ -24,10 +24,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.Packet;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
-public abstract class AEBaseItemEntity extends ItemEntity {
+import appeng.core.sync.packets.ICustomEntity;
+import appeng.core.sync.packets.SpawnEntityPacket;
+
+public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEntity {
 
     protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final World world) {
         super(entityType, world);
@@ -46,6 +50,11 @@ public abstract class AEBaseItemEntity extends ItemEntity {
 
     protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final Box region) {
         return this.world.getOtherEntities(this, region);
+    }
+
+    @Override
+    public Packet<?> createSpawnPacket() {
+        return SpawnEntityPacket.create(this);
     }
 
 }

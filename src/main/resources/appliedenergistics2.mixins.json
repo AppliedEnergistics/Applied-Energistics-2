@@ -14,7 +14,8 @@
     "MinecraftServerMixin",
     "ThreadedAnvilChunkStorageAccessor",
     "GenerationSettingsAccessor",
-    "BiomeAccessor"
+    "BiomeAccessor",
+    "ServerWorldCustomItemEntityMixin"
   ],
   "client": [
     "ModelsReloadMixin",

@@ -62,6 +62,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.FormationPlaneContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
+import appeng.hooks.AECustomEntityItem;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
@@ -203,6 +204,11 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         final BlockEntity te = this.getHost().getTile();
         final World w = te.getWorld();
+        if (!(w instanceof ServerWorld)) {
+            return input;
+        }
+        ServerWorld serverWorld = (ServerWorld) w;
+
         final AEPartLocation side = this.getSide();
 
         final BlockPos placePos = te.getPos().offset(side.getFacing());
@@ -210,7 +216,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES && (i instanceof BlockItem || i instanceof FireworkChargeItem
                     || i instanceof FireworkItem || i instanceof IPartItem)) {
-                final PlayerEntity player = FakePlayer.getOrCreate((ServerWorld) w);
+                final PlayerEntity player = FakePlayer.getOrCreate(serverWorld);
                 Platform.configurePlayer(player, side, this.getTile());
                 Hand hand = player.getActiveHand();
                 player.setStackInHand(hand, is);
@@ -279,20 +285,17 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                                 + .5 + te.getPos().getZ();
 
                         final ItemEntity ei = new ItemEntity(w, x, y, z, is.copy());
-
-                        Entity result = ei;
-
                         ei.setVelocity(side.xOffset * 0.2, side.yOffset * 0.2, side.zOffset * 0.2);
 
-                        // FIXME FABRIC No custom item entity support
-                        // FIXME FABRIC if (is.getItem().hasCustomEntity(is)) {
-                        // FIXME FABRIC result = is.getItem().createEntity(w, ei, is);
-                        // FIXME FABRIC if (result != null) {
-                        // FIXME FABRIC ei.remove();
-                        // FIXME FABRIC } else {
-                        // FIXME FABRIC result = ei;
-                        // FIXME FABRIC }
-                        // FIXME FABRIC }
+                        Entity result;
+                        if (is.getItem() instanceof AECustomEntityItem) {
+                            result = ((AECustomEntityItem) is.getItem()).replaceItemEntity(serverWorld, ei, is);
+                            if (result != ei) {
+                                ei.remove();
+                            }
+                        } else {
+                            result = ei;
+                        }
 
                         if (!w.spawnEntity(result)) {
                             result.remove();

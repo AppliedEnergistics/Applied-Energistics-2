@@ -29,10 +29,13 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
@@ -41,13 +44,15 @@ import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.core.localization.ButtonToolTips;
+import appeng.entity.GrowingCrystalEntity;
+import appeng.hooks.AECustomEntityItem;
 import appeng.items.AEBaseItem;
 
 /**
  * This item reprents one of the seeds used to grow various forms of quartz by
  * throwing them into water (for that behavior, see the linked entity)
  */
-public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
+public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AECustomEntityItem {
 
     /**
      * Name of NBT tag used to store the growth progress value.
@@ -111,25 +116,19 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         return new LiteralText(Math.round(100 * progress / (float) GROWTH_TICKS_REQUIRED) + "%");
     }
 
-// FIXME FABRIC Needs custom mixin
-// FIXME FABRIC    @Override
-// FIXME FABRIC    public boolean hasCustomEntity(final ItemStack stack) {
-// FIXME FABRIC        return true;
-// FIXME FABRIC    }
-// FIXME FABRIC
-// FIXME FABRIC    @Override
-// FIXME FABRIC    public Entity createEntity(final World world, final Entity location, final ItemStack itemstack) {
-// FIXME FABRIC        final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, location.getX(), location.getY(),
-// FIXME FABRIC                location.getZ(), itemstack);
-// FIXME FABRIC
-// FIXME FABRIC        egc.setVelocity(location.getVelocity());
-// FIXME FABRIC
-// FIXME FABRIC        // Cannot read the pickup delay of the original item, so we
-// FIXME FABRIC        // use the pickup delay used for items dropped by a player instead
-// FIXME FABRIC        egc.setPickupDelay(40);
-// FIXME FABRIC
-// FIXME FABRIC        return egc;
-// FIXME FABRIC    }
+    @Override
+    public Entity replaceItemEntity(ServerWorld world, ItemEntity itemEntity, ItemStack itemStack) {
+        final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, itemEntity.getX(), itemEntity.getY(),
+                itemEntity.getZ(), itemStack);
+
+        egc.setVelocity(itemEntity.getVelocity());
+
+        // Cannot read the pickup delay of the original item, so we
+        // use the pickup delay used for items dropped by a player instead
+        egc.setPickupDelay(40);
+
+        return egc;
+    }
 
     @Override
     public void appendStacks(ItemGroup group, DefaultedList<ItemStack> items) {
