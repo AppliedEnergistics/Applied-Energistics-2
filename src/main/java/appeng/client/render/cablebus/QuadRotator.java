@@ -93,6 +93,10 @@ public class QuadRotator implements RenderContext.QuadTransform {
             }
         }
 
+        // FIXME FABRIC: Wait for Grondags response about this one
+        MutableQuadViewImpl quadImpl = (MutableQuadViewImpl) quad;
+        quadImpl.lightFace(rotation.rotate(quad.lightFace()));
+
         // Transform the nominal face
         quad.nominalFace(rotation.rotate(quad.nominalFace()));
         Direction cullFace = quad.cullFace();
