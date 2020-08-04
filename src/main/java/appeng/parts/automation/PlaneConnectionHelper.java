@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
@@ -30,7 +31,7 @@ public final class PlaneConnectionHelper {
      * to
      */
     public PlaneConnections getConnections() {
-        IPartHost host = part.getHost();
+        TileEntity hostTileEntity = getHostTileEntity();
         AEPartLocation side = part.getSide();
 
         final Direction facingRight, facingUp;
@@ -66,24 +67,23 @@ public final class PlaneConnectionHelper {
 
         boolean left = false, right = false, down = false, up = false;
 
-        if (host != null) {
-            final TileEntity te = host.getTile();
+        if (hostTileEntity != null) {
+            World world = hostTileEntity.getWorld();
+            BlockPos pos = hostTileEntity.getPos();
 
-            final BlockPos pos = te.getPos();
-
-            if (isCompatiblePlaneAdjacent(te.getWorld().getTileEntity(pos.offset(facingRight.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingRight.getOpposite())))) {
                 left = true;
             }
 
-            if (isCompatiblePlaneAdjacent(te.getWorld().getTileEntity(pos.offset(facingRight)))) {
+            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingRight)))) {
                 right = true;
             }
 
-            if (isCompatiblePlaneAdjacent(te.getWorld().getTileEntity(pos.offset(facingUp.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingUp.getOpposite())))) {
                 down = true;
             }
 
-            if (isCompatiblePlaneAdjacent(te.getWorld().getTileEntity(pos.offset(facingUp)))) {
+            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingUp)))) {
                 up = true;
             }
         }
@@ -100,28 +100,28 @@ public final class PlaneConnectionHelper {
         int maxX = 15;
         int maxY = 15;
 
-        final IPartHost host = part.getHost();
-        if (host != null) {
-            final TileEntity te = host.getTile();
+        TileEntity hostTile = getHostTileEntity();
+        if (hostTile != null) {
+            World world = hostTile.getWorld();
 
-            final BlockPos pos = te.getPos();
+            final BlockPos pos = hostTile.getPos();
 
             final Direction e = bch.getWorldX();
             final Direction u = bch.getWorldY();
 
-            if (isCompatiblePlaneAdjacent(te.getWorld().getTileEntity(pos.offset(e.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(e.getOpposite())))) {
                 minX = 0;
             }
 
-            if (isCompatiblePlaneAdjacent(te.getWorld().getTileEntity(pos.offset(e)))) {
+            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(e)))) {
                 maxX = 16;
             }
 
-            if (isCompatiblePlaneAdjacent(te.getWorld().getTileEntity(pos.offset(u.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(u.getOpposite())))) {
                 minY = 0;
             }
 
-            if (isCompatiblePlaneAdjacent(te.getWorld().getTileEntity(pos.offset(e)))) {
+            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(u)))) {
                 maxY = 16;
             }
         }
@@ -135,7 +135,7 @@ public final class PlaneConnectionHelper {
      * recalculated.
      */
     public void updateConnections() {
-        TileEntity hostTile = part.getHost().getTile();
+        TileEntity hostTile = getHostTileEntity();
         if (hostTile != null) {
             hostTile.requestModelDataUpdate();
         }
@@ -147,6 +147,14 @@ public final class PlaneConnectionHelper {
             return p != null && p.getClass() == part.getClass();
         }
         return false;
+    }
+
+    private TileEntity getHostTileEntity() {
+        IPartHost host = part.getHost();
+        if (host != null) {
+            return host.getTile();
+        }
+        return null;
     }
 
 }
