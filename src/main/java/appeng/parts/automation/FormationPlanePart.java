@@ -21,10 +21,12 @@ package appeng.parts.automation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
@@ -86,6 +88,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
 public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack> {
 
     private static final PlaneModels MODELS = new PlaneModels("part/formation_plane", "part/formation_plane_on");
+    private static final Random RANDOM_OFFSET = new Random();
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -281,18 +284,40 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 if (sum < AEConfig.instance().getFormationPlaneEntityLimit()) {
                     if (type == Actionable.MODULATE) {
                         is.setCount((int) maxStorage);
-                        final double x = (side.xOffset != 0 ? 0 : .7 * (Platform.getRandomFloat() - .5)) + side.xOffset
-                                + .5 + te.getPos().getX();
-                        final double y = (side.yOffset != 0 ? 0 : .7 * (Platform.getRandomFloat() - .5)) + side.yOffset
-                                + .5 + te.getPos().getY();
-                        final double z = (side.zOffset != 0 ? 0 : .7 * (Platform.getRandomFloat() - .5)) + side.zOffset
-                                + .5 + te.getPos().getZ();
 
-                        final ItemEntity ei = new ItemEntity(w, x, y, z, is.copy());
+                        // the item offset based on the entity height plus some offset
+                        final double itemOffset = .55 + EntityType.ITEM.getHeight();
 
+                        // The center of the block the plane is located in
+                        final double centerX = te.getPos().getX() + .5;
+                        final double centerY = te.getPos().getY() + .5;
+                        final double centerZ = te.getPos().getZ() + .5;
+
+                        // When spawning downwards, we have to take the item height of 0.25 into account
+                        // Otherwise it will get stuck and be spit out in a random direction as
+                        // minecraft spawns it at its feet position and not center
+                        final double additionalYOffset = side.yOffset == -1 ? -.3 : 0;
+
+                        // Calculate the offsets to spawn it into the adjacent block, taking the sign
+                        // into account.
+                        // Spawn it 0.8 blocks away from the center pos when facing in this direction
+                        // Every other direction will select a position in a .5 block area around the
+                        // block center.
+                        final double offsetX = side.xOffset == 0 ? RANDOM_OFFSET.nextFloat() / 2 - .25
+                                : side.xOffset * itemOffset;
+                        final double offsetY = side.yOffset == 0 ? RANDOM_OFFSET.nextFloat() / 2 - .25
+                                : side.yOffset * itemOffset + additionalYOffset;
+                        final double offsetZ = side.zOffset == 0 ? RANDOM_OFFSET.nextFloat() / 2 - .25
+                                : side.zOffset * itemOffset;
+
+                        final double absoluteX = centerX + offsetX;
+                        final double absoluteY = centerY + offsetY;
+                        final double absoluteZ = centerZ + offsetZ;
+
+                        final ItemEntity ei = new ItemEntity(w, absoluteX, absoluteY, absoluteZ, is.copy());
                         Entity result = ei;
 
-                        ei.setMotion(side.xOffset * 0.2, side.yOffset * 0.2, side.zOffset * 0.2);
+                        ei.setMotion(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
 
                         if (is.getItem().hasCustomEntity(is)) {
                             result = is.getItem().createEntity(w, ei, is);
