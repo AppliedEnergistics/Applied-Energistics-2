@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
@@ -35,7 +34,6 @@ import net.minecraft.item.FireworkRocketItem;
 import net.minecraft.item.FireworkStarItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -44,7 +42,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -362,13 +359,6 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final List<Entity> list = world.getEntitiesWithinAABB(Entity.class, t);
 
         return list.size();
-    }
-
-    private class ForcedItemUseContext extends ItemUseContext {
-        protected ForcedItemUseContext(World worldIn, @Nullable PlayerEntity player, Hand handIn, ItemStack heldItem,
-                BlockRayTraceResult rayTraceResultIn) {
-            super(worldIn, player, handIn, heldItem, rayTraceResultIn);
-        }
     }
 
 }
