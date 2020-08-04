@@ -284,54 +284,10 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 if (sum < AEConfig.instance().getFormationPlaneEntityLimit()) {
                     if (type == Actionable.MODULATE) {
                         is.setCount((int) maxStorage);
-
-                        // the item offset based on the entity height plus some offset
-                        final double itemOffset = .55 + EntityType.ITEM.getHeight();
-
-                        // The center of the block the plane is located in
-                        final double centerX = te.getPos().getX() + .5;
-                        final double centerY = te.getPos().getY() + .5;
-                        final double centerZ = te.getPos().getZ() + .5;
-
-                        // When spawning downwards, we have to take the item height of 0.25 into account
-                        // Otherwise it will get stuck and be spit out in a random direction as
-                        // minecraft spawns it at its feet position and not center
-                        final double additionalYOffset = side.yOffset == -1 ? -.3 : 0;
-
-                        // Calculate the offsets to spawn it into the adjacent block, taking the sign
-                        // into account.
-                        // Spawn it 0.8 blocks away from the center pos when facing in this direction
-                        // Every other direction will select a position in a .5 block area around the
-                        // block center.
-                        final double offsetX = side.xOffset == 0 ? RANDOM_OFFSET.nextFloat() / 2 - .25
-                                : side.xOffset * itemOffset;
-                        final double offsetY = side.yOffset == 0 ? RANDOM_OFFSET.nextFloat() / 2 - .25
-                                : side.yOffset * itemOffset + additionalYOffset;
-                        final double offsetZ = side.zOffset == 0 ? RANDOM_OFFSET.nextFloat() / 2 - .25
-                                : side.zOffset * itemOffset;
-
-                        final double absoluteX = centerX + offsetX;
-                        final double absoluteY = centerY + offsetY;
-                        final double absoluteZ = centerZ + offsetZ;
-
-                        final ItemEntity ei = new ItemEntity(w, absoluteX, absoluteY, absoluteZ, is.copy());
-                        Entity result = ei;
-
-                        ei.setMotion(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
-
-                        if (is.getItem().hasCustomEntity(is)) {
-                            result = is.getItem().createEntity(w, ei, is);
-                            if (result != null) {
-                                ei.remove();
-                            } else {
-                                result = ei;
-                            }
-                        }
-
-                        if (!w.addEntity(result)) {
-                            result.remove();
+                        if (!spawnItemEntity(w, te, side, is)) {
                             worked = false;
                         }
+
                     }
                 } else {
                     worked = false;
@@ -351,6 +307,57 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         }
 
         return input;
+    }
+
+    private static boolean spawnItemEntity(World w, TileEntity te, AEPartLocation side, ItemStack is) {
+        // the item offset based on the entity height plus some offset
+        final double itemOffset = .55 + EntityType.ITEM.getHeight();
+
+        // The center of the block the plane is located in
+        final double centerX = te.getPos().getX() + .5;
+        final double centerY = te.getPos().getY() + .5;
+        final double centerZ = te.getPos().getZ() + .5;
+
+        // When spawning downwards, we have to take the item height of 0.25 into account
+        // Otherwise it will get stuck and be spit out in a random direction as
+        // minecraft spawns it at its feet position and not center
+        final double additionalYOffset = side.yOffset == -1 ? -.3 : 0;
+
+        // Calculate the offsets to spawn it into the adjacent block, taking the sign
+        // into account.
+        // Spawn it 0.8 blocks away from the center pos when facing in this direction
+        // Every other direction will select a position in a .5 block area around the
+        // block center.
+        final double offsetX = (side.xOffset == 0) ? ((RANDOM_OFFSET.nextFloat() / 2) - .25)
+                : (side.xOffset * itemOffset);
+        final double offsetY = (side.yOffset == 0) ? ((RANDOM_OFFSET.nextFloat() / 2) - .25)
+                : ((side.yOffset * itemOffset) + additionalYOffset);
+        final double offsetZ = (side.zOffset == 0) ? ((RANDOM_OFFSET.nextFloat() / 2) - .25)
+                : (side.zOffset * itemOffset);
+
+        final double absoluteX = centerX + offsetX;
+        final double absoluteY = centerY + offsetY;
+        final double absoluteZ = centerZ + offsetZ;
+
+        final ItemEntity ei = new ItemEntity(w, absoluteX, absoluteY, absoluteZ, is.copy());
+        Entity result = ei;
+
+        ei.setMotion(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
+
+        if (is.getItem().hasCustomEntity(is)) {
+            result = is.getItem().createEntity(w, ei, is);
+            if (result != null) {
+                ei.remove();
+            } else {
+                result = ei;
+            }
+        }
+
+        if (!w.addEntity(result)) {
+            result.remove();
+            return false;
+        }
+        return true;
     }
 
     @Override
