@@ -97,12 +97,14 @@ public class QuadRotator implements RenderContext.QuadTransform {
         MutableQuadViewImpl quadImpl = (MutableQuadViewImpl) quad;
         quadImpl.lightFace(rotation.rotate(quad.lightFace()));
 
-        // Transform the nominal face
-        quad.nominalFace(rotation.rotate(quad.nominalFace()));
+        // Transform the nominal face, setting the cull face will also overwrite the nominialFace,
+        // hence saving both first and the order here.
+        Direction nominalFace = quad.nominalFace();
         Direction cullFace = quad.cullFace();
         if (cullFace != null) {
             quad.cullFace(rotation.rotate(cullFace));
         }
+        quad.nominalFace(rotation.rotate(nominalFace));
 
         return true;
     }
