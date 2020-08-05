@@ -18,28 +18,22 @@
 
 package appeng.tile;
 
-import java.util.EnumMap;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
+import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
-
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.InvOperation;
+import javax.annotation.Nonnull;
+import java.util.List;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements IAEAppEngInventory {
 
@@ -108,27 +102,13 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     private void offerItemInventory(AttributeList<?> to) {
-        FixedItemInv internalHandler = getInternalInventory();
-
-        // Offer up the directional ones first
-        for (Direction side : Direction.values()) {
-            FixedItemInv inv = getItemHandlerForSide(side);
-            if (inv != internalHandler) {
-                to.offer(inv, FACE_SHAPES.get(side));
-            }
+        Direction searchDirection = to.getSearchDirection();
+        if (searchDirection == null) {
+            to.offer(getInternalInventory());
+        } else {
+            Direction side = searchDirection.getOpposite();
+            to.offer(getItemHandlerForSide(side));
         }
-
-        to.offer(internalHandler);
-    }
-
-    private static final EnumMap<Direction, VoxelShape> FACE_SHAPES = new EnumMap<>(Direction.class);
-    static {
-        FACE_SHAPES.put(Direction.UP, VoxelShapes.cuboid(0f, 15f, 0f, 16f, 16f, 16f));
-        FACE_SHAPES.put(Direction.DOWN, VoxelShapes.cuboid(0f, 0f, 0f, 16f, 1f, 16f));
-        FACE_SHAPES.put(Direction.NORTH, VoxelShapes.cuboid(0f, 0f, 0f, 16f, 16f, 1f));
-        FACE_SHAPES.put(Direction.SOUTH, VoxelShapes.cuboid(0f, 0f, 15f, 16f, 16f, 16f));
-        FACE_SHAPES.put(Direction.WEST, VoxelShapes.cuboid(0f, 0f, 0f, 1f, 16f, 16f));
-        FACE_SHAPES.put(Direction.EAST, VoxelShapes.cuboid(15f, 0f, 0f, 16f, 16f, 16f));
     }
 
 }
