@@ -7,6 +7,7 @@ import java.util.Set;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
@@ -35,7 +36,12 @@ public class FluidSlotWidget extends CustomSlotWidget {
     public void drawContent(final MinecraftClient mc, final int mouseX, final int mouseY, final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
-            fs.getFluidStack().renderGuiRect(xPos(), yPos(), xPos() + getWidth(), yPos() + getHeight());
+            // The tooltip area coincides with the area of the slot
+            int x = getTooltipAreaX();
+            int y = getTooltipAreaY();
+            int width = getTooltipAreaX();
+            int height = getTooltipAreaY();
+            fs.getFluidStack().renderGuiRect(x, y, x + width, y + height);
         }
     }
 
@@ -61,16 +67,16 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public Text getMessage() {
+    public Text getTooltipMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
             return fluid.getFluidStack().getName();
         }
-        return null;
+        return LiteralText.EMPTY;
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isTooltipAreaVisible() {
         return true;
     }
 

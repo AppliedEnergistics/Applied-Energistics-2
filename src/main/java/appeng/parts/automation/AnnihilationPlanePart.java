@@ -60,9 +60,7 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -98,53 +96,31 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     private boolean isAccepting = true;
     private boolean breaking = false;
 
+    private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
+
     public AnnihilationPlanePart(final ItemStack is) {
         super(is);
     }
 
     @Override
-    public TickRateModulation call(final World world) throws Exception {
+    public TickRateModulation call(final World world) {
         this.breaking = false;
         return this.breakBlock(true);
     }
 
     @Override
     public void getBoxes(final IPartCollisionHelper bch) {
-        int minX = 1;
-        int minY = 1;
-        int maxX = 15;
-        int maxY = 15;
 
-        final IPartHost host = this.getHost();
-        if (host != null) {
-            final BlockEntity te = host.getTile();
-
-            final BlockPos pos = te.getPos();
-
-            final Direction e = bch.getWorldX();
-            final Direction u = bch.getWorldY();
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e.getOpposite())), this.getSide())) {
-                minX = 0;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e)), this.getSide())) {
-                maxX = 16;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(u.getOpposite())), this.getSide())) {
-                minY = 0;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e)), this.getSide())) {
-                maxY = 16;
-            }
+        // For collision, we're using a simplified bounding box
+        if (bch.isBBCollision()) {
+            // The smaller collision hitbox here is needed to allow for the entity collision
+            // event
+            bch.addBox(0, 0, 14, 16, 16, 15.5);
+            return;
         }
 
-        bch.addBox(5, 5, 14, 11, 11, 15);
-        // The smaller collision hitbox here is needed to allow for the entity collision
-        // event
-        bch.addBox(minX, minY, 15, maxX, maxY, bch.isBBCollision() ? 15 : 16);
+        connectionHelper.getBoxes(bch);
+
     }
 
     /**
@@ -152,73 +128,15 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      *         visually.
      */
     public PlaneConnections getConnections() {
-
-        final Direction facingRight, facingUp;
-        AEPartLocation location = this.getSide();
-        switch (location) {
-            case UP:
-                facingRight = Direction.EAST;
-                facingUp = Direction.NORTH;
-                break;
-            case DOWN:
-                facingRight = Direction.WEST;
-                facingUp = Direction.NORTH;
-                break;
-            case NORTH:
-                facingRight = Direction.WEST;
-                facingUp = Direction.UP;
-                break;
-            case SOUTH:
-                facingRight = Direction.EAST;
-                facingUp = Direction.UP;
-                break;
-            case WEST:
-                facingRight = Direction.SOUTH;
-                facingUp = Direction.UP;
-                break;
-            case EAST:
-                facingRight = Direction.NORTH;
-                facingUp = Direction.UP;
-                break;
-            default:
-            case INTERNAL:
-                return PlaneConnections.of(false, false, false, false);
-        }
-
-        boolean left = false, right = false, down = false, up = false;
-
-        final IPartHost host = this.getHost();
-        if (host != null) {
-            final BlockEntity te = host.getTile();
-
-            final BlockPos pos = te.getPos();
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingRight.getOpposite())),
-                    this.getSide())) {
-                left = true;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingRight)), this.getSide())) {
-                right = true;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingUp.getOpposite())),
-                    this.getSide())) {
-                down = true;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingUp)), this.getSide())) {
-                up = true;
-            }
-        }
-
-        return PlaneConnections.of(up, right, down, left);
+        return connectionHelper.getConnections();
     }
 
     @Override
     public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.refresh();
+        } else {
+            connectionHelper.updateConnections();
         }
     }
 
@@ -361,14 +279,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         entityItem.getStack().setCount(newStackSize);
 
         return changed;
-    }
-
-    protected boolean isAnnihilationPlane(final BlockEntity blockTileEntity, final AEPartLocation side) {
-        if (blockTileEntity instanceof IPartHost) {
-            final IPart p = ((IPartHost) blockTileEntity).getPart(side);
-            return p != null && p.getClass() == this.getClass();
-        }
-        return false;
     }
 
     @Override

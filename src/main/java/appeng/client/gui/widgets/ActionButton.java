@@ -27,7 +27,7 @@ import net.minecraft.text.Text;
 import appeng.api.config.ActionItems;
 import appeng.core.localization.ButtonToolTips;
 
-public class ActionButton extends IconButton implements ITooltip {
+public class ActionButton extends IconButton {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
     private final int iconIndex;
 

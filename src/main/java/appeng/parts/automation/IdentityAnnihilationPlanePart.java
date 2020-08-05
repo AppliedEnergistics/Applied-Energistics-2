@@ -55,15 +55,6 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
     }
 
     @Override
-    protected boolean isAnnihilationPlane(final BlockEntity blockTileEntity, final AEPartLocation side) {
-        if (blockTileEntity instanceof IPartHost) {
-            final IPart p = ((IPartHost) blockTileEntity).getPart(side);
-            return p != null && p.getClass() == this.getClass();
-        }
-        return false;
-    }
-
-    @Override
     protected float calculateEnergyUsage(final ServerWorld w, final BlockPos pos, final List<ItemStack> items) {
         final float requiredEnergy = super.calculateEnergyUsage(w, pos, items);
 

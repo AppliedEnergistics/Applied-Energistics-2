@@ -53,7 +53,7 @@ public class FormationPlaneContainer extends UpgradeableContainer {
         return helper.open(player, locator);
     }
 
-    @GuiSync(6)
+    @GuiSync(7)
     public YesNo placeMode;
 
     public FormationPlaneContainer(int id, final PlayerInventory ip, final FormationPlanePart te) {

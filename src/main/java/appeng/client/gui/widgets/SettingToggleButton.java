@@ -279,7 +279,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     @Override
-    public Text getMessage() {
+    public Text getTooltipMessage() {
         Text displayName = null;
         Text displayValue = null;
 

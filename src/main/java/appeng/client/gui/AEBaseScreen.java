@@ -168,14 +168,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     protected void drawGuiSlot(MatrixStack matrices, CustomSlotWidget slot, int mouseX, int mouseY,
             float partialTicks) {
         if (slot.isSlotEnabled()) {
-            final int left = slot.xPos();
-            final int top = slot.yPos();
-            final int right = left + slot.getWidth();
-            final int bottom = top + slot.getHeight();
+            final int left = slot.getTooltipAreaX();
+            final int top = slot.getTooltipAreaY();
+            final int right = left + slot.getTooltipAreaWidth();
+            final int bottom = top + slot.getTooltipAreaHeight();
 
             slot.drawContent(getClient(), mouseX, mouseY, partialTicks);
 
-            if (this.isPointWithinBounds(left, top, slot.getWidth(), slot.getHeight(), mouseX, mouseY)
+            if (this.isPointWithinBounds(left, top, slot.getTooltipAreaWidth(), slot.getTooltipAreaHeight(), mouseX, mouseY)
                     && slot.canClick(getPlayer())) {
                 RenderSystem.colorMask(true, true, true, false);
                 this.fillGradient(matrices, left, top, right, bottom, -2130706433, -2130706433);
@@ -185,27 +185,28 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     }
 
     private void drawTooltip(MatrixStack matrices, ITooltip tooltip, int mouseX, int mouseY) {
-        final int x = tooltip.xPos();
-        int y = tooltip.yPos();
+        final int x = tooltip.getTooltipAreaX();
+        int y = tooltip.getTooltipAreaY();
 
-        if (x < mouseX && x + tooltip.getWidth() > mouseX && tooltip.isVisible()) {
-            if (y < mouseY && y + tooltip.getHeight() > mouseY) {
+        if (x < mouseX && x + tooltip.getTooltipAreaWidth() > mouseX && tooltip.isTooltipAreaVisible()) {
+            if (y < mouseY && y + tooltip.getTooltipAreaHeight() > mouseY) {
                 if (y < 15) {
                     y = 15;
                 }
 
-                final Text msg = tooltip.getMessage();
-                if (msg != null && !msg.getString().isEmpty()) {
-                    this.drawTooltip(matrices, x + 11, y + 4, msg);
-                }
+                final Text msg = tooltip.getTooltipMessage();
+                this.drawTooltip(matrices, x + 11, y + 4, msg);
             }
         }
     }
 
     protected void drawTooltip(MatrixStack matrices, int x, int y, Text message) {
-        String[] lines = message.getString().split("\n"); // FIXME FABRIC
-        List<Text> textLines = Arrays.stream(lines).map(LiteralText::new).collect(Collectors.toList());
-        this.drawTooltip(matrices, x, y, textLines);
+        String tooltipText = message.getString();
+
+        if (!tooltipText.isEmpty()) {
+            String[] lines = tooltipText.split("\n"); // FIXME FABRIC
+            List<Text> textLines = Arrays.stream(lines).map(LiteralText::new).collect(Collectors.toList());
+        this.drawTooltip(matrices, x, y, textLines);}
     }
 
     // FIXME FABRIC: move out to json (?)
@@ -290,8 +291,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
         }
 
         for (CustomSlotWidget slot : this.guiSlots) {
-            if (this.isPointWithinBounds(slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord)
-                    && slot.canClick(getPlayer())) {
+            if (this.isPointWithinBounds(slot.getTooltipAreaX(), slot.getTooltipAreaY(), slot.getTooltipAreaWidth(),
+                    slot.getTooltipAreaHeight(), xCoord, yCoord) && slot.canClick(getPlayer())) {
                 slot.slotClicked(getPlayer().inventory.getCursorStack(), btn);
             }
         }

@@ -38,15 +38,12 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
@@ -56,6 +53,7 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
+import appeng.parts.automation.PlaneConnectionHelper;
 import appeng.parts.automation.PlaneConnections;
 import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
@@ -75,129 +73,33 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     private final IActionSource mySrc = new MachineSource(this);
 
+    private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
+
     public FluidAnnihilationPlanePart(final ItemStack is) {
         super(is);
     }
 
     @Override
     public void getBoxes(final IPartCollisionHelper bch) {
-        int minX = 1;
-        int minY = 1;
-        int maxX = 15;
-        int maxY = 15;
-
-        final IPartHost host = this.getHost();
-        if (host != null) {
-            final BlockEntity te = host.getTile();
-
-            final BlockPos pos = te.getPos();
-
-            final Direction e = bch.getWorldX();
-            final Direction u = bch.getWorldY();
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e.getOpposite())), this.getSide())) {
-                minX = 0;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e)), this.getSide())) {
-                maxX = 16;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(u.getOpposite())), this.getSide())) {
-                minY = 0;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e)), this.getSide())) {
-                maxY = 16;
-            }
-        }
-
-        bch.addBox(5, 5, 14, 11, 11, 15);
-        bch.addBox(minX, minY, 15, maxX, maxY, 16);
+        connectionHelper.getBoxes(bch);
     }
 
     public PlaneConnections getConnections() {
-
-        final Direction facingRight, facingUp;
-        AEPartLocation location = this.getSide();
-        switch (location) {
-            case UP:
-                facingRight = Direction.EAST;
-                facingUp = Direction.NORTH;
-                break;
-            case DOWN:
-                facingRight = Direction.WEST;
-                facingUp = Direction.NORTH;
-                break;
-            case NORTH:
-                facingRight = Direction.WEST;
-                facingUp = Direction.UP;
-                break;
-            case SOUTH:
-                facingRight = Direction.EAST;
-                facingUp = Direction.UP;
-                break;
-            case WEST:
-                facingRight = Direction.SOUTH;
-                facingUp = Direction.UP;
-                break;
-            case EAST:
-                facingRight = Direction.NORTH;
-                facingUp = Direction.UP;
-                break;
-            default:
-            case INTERNAL:
-                return PlaneConnections.of(false, false, false, false);
-        }
-
-        boolean left = false, right = false, down = false, up = false;
-
-        final IPartHost host = this.getHost();
-        if (host != null) {
-            final BlockEntity te = host.getTile();
-
-            final BlockPos pos = te.getPos();
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingRight.getOpposite())),
-                    this.getSide())) {
-                left = true;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingRight)), this.getSide())) {
-                right = true;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingUp.getOpposite())),
-                    this.getSide())) {
-                down = true;
-            }
-
-            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingUp)), this.getSide())) {
-                up = true;
-            }
-        }
-
-        return PlaneConnections.of(up, right, down, left);
+        return connectionHelper.getConnections();
     }
 
     @Override
     public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.refresh();
+        } else {
+            connectionHelper.updateConnections();
         }
     }
 
     @Override
     public float getCableConnectionLength(AECableType cable) {
         return 1;
-    }
-
-    private boolean isAnnihilationPlane(final BlockEntity blockTileEntity, final AEPartLocation side) {
-        if (blockTileEntity instanceof IPartHost) {
-            final IPart p = ((IPartHost) blockTileEntity).getPart(side);
-            return p != null && p.getClass() == this.getClass();
-        }
-        return false;
     }
 
     private void refresh() {

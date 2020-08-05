@@ -20,48 +20,53 @@ package appeng.client.gui.widgets;
 
 import net.minecraft.text.Text;
 
+import javax.annotation.Nonnull;
+
 /**
  * AEBaseGui controlled Tooltip Interface.
  */
 public interface ITooltip {
 
     /**
-     * returns the tooltip message.
+     * Returns the tooltip message.
+     *
+     * Should use {@link net.minecraft.text.LiteralText#EMPTY} for no tooltip
      *
      * @return tooltip message
      */
-    Text getMessage();
+    @Nonnull
+    Text getTooltipMessage();
 
     /**
      * x Location for the object that triggers the tooltip.
      *
      * @return xPosition
      */
-    int xPos();
+    int getTooltipAreaX();
 
     /**
      * y Location for the object that triggers the tooltip.
      *
      * @return yPosition
      */
-    int yPos();
+    int getTooltipAreaY();
 
     /**
      * Width of the object that triggers the tooltip.
      *
      * @return width
      */
-    int getWidth();
+    int getTooltipAreaWidth();
 
     /**
      * Height for the object that triggers the tooltip.
      *
      * @return height
      */
-    int getHeight();
+    int getTooltipAreaHeight();
 
     /**
      * @return true if button being drawn
      */
-    boolean isVisible();
+    boolean isTooltipAreaVisible();
 }

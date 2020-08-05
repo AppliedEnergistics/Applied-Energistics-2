@@ -74,7 +74,7 @@ public class ToggleButton extends ButtonWidget implements ITooltip {
     }
 
     @Override
-    public Text getMessage() {
+    public Text getTooltipMessage() {
         if (this.displayName != null) {
             String name = this.displayName.getString();
             String value = this.displayHint.getString();
@@ -96,27 +96,27 @@ public class ToggleButton extends ButtonWidget implements ITooltip {
     }
 
     @Override
-    public int xPos() {
+    public int getTooltipAreaX() {
         return this.x;
     }
 
     @Override
-    public int yPos() {
+    public int getTooltipAreaY() {
         return this.y;
     }
 
     @Override
-    public int getWidth() {
+    public int getTooltipAreaWidth() {
         return 16;
     }
 
     @Override
-    public int getHeight() {
+    public int getTooltipAreaHeight() {
         return 16;
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isTooltipAreaVisible() {
         return this.visible;
     }
 }
