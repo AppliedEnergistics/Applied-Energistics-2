@@ -15,7 +15,8 @@
     "ThreadedAnvilChunkStorageAccessor",
     "GenerationSettingsAccessor",
     "BiomeAccessor",
-    "ServerWorldCustomItemEntityMixin"
+    "ServerWorldCustomItemEntityMixin",
+    "HopperMixin"
   ],
   "client": [
     "ModelsReloadMixin",
