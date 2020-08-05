@@ -30,25 +30,22 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DirectionalPlaceContext;
-import net.minecraft.item.FireworkRocketItem;
-import net.minecraft.item.FireworkStarItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.AccessRestriction;
@@ -63,7 +60,6 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
@@ -222,12 +218,12 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final BlockPos placePos = te.getPos().offset(side.getFacing());
 
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
-            if (placeBlock == YesNo.YES && (i instanceof BlockItem || i instanceof IPlantable
-                    || i instanceof FireworkStarItem || i instanceof FireworkRocketItem || i instanceof IPartItem)) {
+            if (placeBlock == YesNo.YES) {
                 final PlayerEntity player = Platform.getPlayer((ServerWorld) w);
                 Platform.configurePlayer(player, side, this.getTile());
-                Hand hand = player.getActiveHand();
-                player.setHeldItem(hand, is);
+                // Seems to work without...
+                // Hand hand = player.getActiveHand();
+                // player.setHeldItem(hand, is);
 
                 maxStorage = is.getCount();
                 worked = true;
@@ -235,62 +231,33 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                     // The side the plane is attached to will be considered the look direction
                     // in terms of placing an item
                     Direction lookDirection = side.getFacing();
+                    PlaneDirectionalPlaceContext context = new PlaneDirectionalPlaceContext(w, player, placePos,
+                            lookDirection, is, lookDirection.getOpposite());
 
-                    // FIXME No idea what any of this is _supposed_ to do, comment badly needed
-                    if (i instanceof IPlantable || i instanceof WallOrFloorItem) {
-                        boolean Worked = false;
+                    i.onItemUse(context);
+                    maxStorage -= is.getCount();
 
-                        // Up or Down, Attempt 1??
-                        if (side.xOffset == 0 && side.zOffset == 0) {
-                            Worked = i.onItemUse(new DirectionalPlaceContext(w, placePos.offset(side.getFacing()),
-                                    lookDirection, is, side.getFacing())) == ActionResultType.SUCCESS;
-                        }
-
-                        // Up or Down, Attempt 2??
-                        if (!Worked && side.xOffset == 0 && side.zOffset == 0) {
-                            Worked = i.onItemUse(new DirectionalPlaceContext(w,
-                                    placePos.offset(side.getFacing().getOpposite()), lookDirection, is,
-                                    side.getFacing().getOpposite())) == ActionResultType.SUCCESS;
-                        }
-
-                        // Horizontal, attempt 1??
-                        if (!Worked && side.yOffset == 0) {
-                            Worked = i.onItemUse(new DirectionalPlaceContext(w, placePos.offset(Direction.DOWN),
-                                    lookDirection, is, Direction.DOWN)) == ActionResultType.SUCCESS;
-                        }
-
-                        if (!Worked) {
-                            i.onItemUse(new DirectionalPlaceContext(w, placePos, lookDirection, is,
-                                    lookDirection.getOpposite()));
-                        }
-
-                        maxStorage -= is.getCount();
-                    } else {
-                        i.onItemUse(new DirectionalPlaceContext(w, placePos, lookDirection, is,
-                                lookDirection.getOpposite()));
-                        maxStorage -= is.getCount();
-                    }
                 } else {
                     maxStorage = 1;
                 }
 
-                // Safe keeping
-                player.setHeldItem(hand, ItemStack.EMPTY);
+                // Seems to work without... Safe keeping
+                // player.setHeldItem(hand, ItemStack.EMPTY);
             } else {
-                worked = true;
-
                 final int sum = this.countEntitesAround(w, placePos);
 
+                // Disable spawning once there is a certain amount of entities in an area.
                 if (sum < AEConfig.instance().getFormationPlaneEntityLimit()) {
+                    worked = true;
+
                     if (type == Actionable.MODULATE) {
                         is.setCount((int) maxStorage);
                         if (!spawnItemEntity(w, te, side, is)) {
+                            // revert in case something prevents spawning.
                             worked = false;
                         }
 
                     }
-                } else {
-                    worked = false;
                 }
             }
         }
@@ -393,4 +360,69 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         return list.size();
     }
 
+    /**
+     * A custom {@link DirectionalPlaceContext} which also accepts a player needed
+     * various blocks like seeds.
+     * <p>
+     * Also removed {@link DirectionalPlaceContext#replacingClickedOnBlock} as this
+     * can cause a {@link StackOverflowError} for certain replaceable blocks.
+     */
+    private static class PlaneDirectionalPlaceContext extends BlockItemUseContext {
+        private final Direction lookDirection;
+
+        public PlaneDirectionalPlaceContext(World world, PlayerEntity player, BlockPos pos, Direction lookDirection,
+                ItemStack itemStack, Direction facing) {
+            super(world, player, Hand.MAIN_HAND, itemStack,
+                    new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), facing, pos, false));
+            this.lookDirection = lookDirection;
+        }
+
+        public BlockPos getPos() {
+            return this.rayTraceResult.getPos();
+        }
+
+        public boolean canPlace() {
+            return this.world.getBlockState(this.rayTraceResult.getPos()).isReplaceable(this);
+        }
+
+        public Direction getNearestLookingDirection() {
+            return Direction.DOWN;
+        }
+
+        public Direction[] getNearestLookingDirections() {
+            switch (this.lookDirection) {
+                case DOWN:
+                default:
+                    return new Direction[] { Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.SOUTH,
+                            Direction.WEST, Direction.UP };
+                case UP:
+                    return new Direction[] { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.EAST,
+                            Direction.SOUTH, Direction.WEST };
+                case NORTH:
+                    return new Direction[] { Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.WEST,
+                            Direction.UP, Direction.SOUTH };
+                case SOUTH:
+                    return new Direction[] { Direction.DOWN, Direction.SOUTH, Direction.EAST, Direction.WEST,
+                            Direction.UP, Direction.NORTH };
+                case WEST:
+                    return new Direction[] { Direction.DOWN, Direction.WEST, Direction.SOUTH, Direction.UP,
+                            Direction.NORTH, Direction.EAST };
+                case EAST:
+                    return new Direction[] { Direction.DOWN, Direction.EAST, Direction.SOUTH, Direction.UP,
+                            Direction.NORTH, Direction.WEST };
+            }
+        }
+
+        public Direction getPlacementHorizontalFacing() {
+            return this.lookDirection.getAxis() == Axis.Y ? Direction.NORTH : this.lookDirection;
+        }
+
+        public boolean func_225518_g_() {
+            return false;
+        }
+
+        public float getPlacementYaw() {
+            return (float) (this.lookDirection.getHorizontalIndex() * 90);
+        }
+    }
 }
