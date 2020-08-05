@@ -108,6 +108,15 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     @Override
     public void getBoxes(final IPartCollisionHelper bch) {
+
+        // For collision, we're using a simplified bounding box
+        if (bch.isBBCollision()) {
+            // The smaller collision hitbox here is needed to allow for the entity collision
+            // event
+            bch.addBox(0, 0, 14, 16, 16, 15.5);
+            return;
+        }
+
         int minX = 1;
         int minY = 1;
         int maxX = 15;
@@ -140,9 +149,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         }
 
         bch.addBox(5, 5, 14, 11, 11, 15);
-        // The smaller collision hitbox here is needed to allow for the entity collision
-        // event
-        bch.addBox(minX, minY, 15, maxX, maxY, bch.isBBCollision() ? 15 : 16);
+        bch.addBox(minX, minY, 15, maxX, maxY, 16);
     }
 
     /**
