@@ -49,7 +49,7 @@ public class FacadePart implements IFacadePart {
 
     @Override
     public void getBoxes(final IPartCollisionHelper ch, boolean livingEntity) {
-        if (livingEntity) {
+        if (livingEntity || !ch.isBBCollision()) {
             // prevent weird snag behavior
             ch.addBox(0.0, 0.0, 14, 16.0, 16.0, 16.0);
         } else {
