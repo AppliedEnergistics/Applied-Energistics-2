@@ -1,6 +1,5 @@
 package appeng.fluids.client.gui.widgets;
 
-import java.awt.TextComponent;
 import java.util.Collections;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -57,7 +56,8 @@ public class FluidSlotWidget extends CustomSlotWidget {
             final float blue = (attributes.getColor() & 255) / 255.0F;
             RenderSystem.color3f(red, green, blue);
 
-            blit(matrixStack, xPos(), yPos(), this.getBlitOffset(), getWidth(), getHeight(), sprite);
+            blit(matrixStack, getTooltipAreaX(), getTooltipAreaY(), this.getBlitOffset(), getTooltipAreaWidth(),
+                    getTooltipAreaHeight(), sprite);
         }
     }
 
@@ -81,7 +81,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public ITextComponent getMessage() {
+    public ITextComponent getTooltipMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
             return new TranslationTextComponent(fluid.getFluidStack().getTranslationKey());
@@ -90,7 +90,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isTooltipAreaVisible() {
         return true;
     }
 

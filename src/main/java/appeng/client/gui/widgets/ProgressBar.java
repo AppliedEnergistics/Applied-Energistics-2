@@ -81,7 +81,7 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     @Override
-    public ITextComponent getMessage() {
+    public ITextComponent getTooltipMessage() {
         if (this.fullMsg != null) {
             return this.fullMsg;
         }
@@ -92,27 +92,27 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     @Override
-    public int xPos() {
+    public int getTooltipAreaX() {
         return this.x - 2;
     }
 
     @Override
-    public int yPos() {
+    public int getTooltipAreaY() {
         return this.y - 2;
     }
 
     @Override
-    public int getWidth() {
+    public int getTooltipAreaWidth() {
         return this.width + 4;
     }
 
     @Override
-    public int getHeight() {
+    public int getTooltipAreaHeight() {
         return this.height + 4;
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isTooltipAreaVisible() {
         return true;
     }
 
