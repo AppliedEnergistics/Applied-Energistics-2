@@ -113,7 +113,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (this.isOutput() && pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();

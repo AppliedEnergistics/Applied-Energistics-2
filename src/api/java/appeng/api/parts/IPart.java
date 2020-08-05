@@ -135,7 +135,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * a block around the bus's host has been changed.
      */
-    void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor);
+    void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor);
 
     /**
      * @return output redstone on facing side

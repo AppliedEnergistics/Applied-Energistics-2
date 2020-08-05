@@ -29,7 +29,6 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -685,7 +684,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         for (final AEPartLocation s : AEPartLocation.values()) {
             final IPart part = this.getPart(s);
             if (part != null) {
-                part.onneighborUpdate(w, pos, neighbor);
+                part.onNeighborUpdate(w, pos, neighbor);
             }
         }
 

@@ -117,7 +117,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
 
     }
 

@@ -93,7 +93,7 @@ public class TabButton extends ButtonWidget implements ITooltip {
     }
 
     @Override
-    public ITextComponent getTooltipMessage() {
+    public Text getTooltipMessage() {
         return getMessage();
     }
 

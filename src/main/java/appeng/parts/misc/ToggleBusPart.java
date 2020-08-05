@@ -99,7 +99,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         final boolean oldHasRedstone = this.hasRedstone;
         this.hasRedstone = this.getHost().hasRedstone(this.getSide());
 

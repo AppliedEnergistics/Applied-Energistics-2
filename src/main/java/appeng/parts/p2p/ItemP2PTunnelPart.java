@@ -67,7 +67,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
     }
 
     @Override
-    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         this.cachedInv = null;
         this.cachedInvs.clear();
         final ItemP2PTunnelPart input = this.getInput();

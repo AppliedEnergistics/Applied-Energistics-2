@@ -2,9 +2,9 @@ package appeng.parts.automation;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import appeng.api.parts.IPart;
@@ -31,7 +31,7 @@ public final class PlaneConnectionHelper {
      * to
      */
     public PlaneConnections getConnections() {
-        TileEntity hostTileEntity = getHostTileEntity();
+        BlockEntity hostTileEntity = getHostBlockEntity();
         AEPartLocation side = part.getSide();
 
         final Direction facingRight, facingUp;
@@ -71,19 +71,19 @@ public final class PlaneConnectionHelper {
             World world = hostTileEntity.getWorld();
             BlockPos pos = hostTileEntity.getPos();
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingRight.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.offset(facingRight.getOpposite())))) {
                 left = true;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingRight)))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.offset(facingRight)))) {
                 right = true;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingUp.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.offset(facingUp.getOpposite())))) {
                 down = true;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingUp)))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.offset(facingUp)))) {
                 up = true;
             }
         }
@@ -100,28 +100,28 @@ public final class PlaneConnectionHelper {
         int maxX = 15;
         int maxY = 15;
 
-        TileEntity hostTile = getHostTileEntity();
-        if (hostTile != null) {
-            World world = hostTile.getWorld();
+        BlockEntity hostEntity = getHostBlockEntity();
+        if (hostEntity != null) {
+            World world = hostEntity.getWorld();
 
-            final BlockPos pos = hostTile.getPos();
+            final BlockPos pos = hostEntity.getPos();
 
             final Direction e = bch.getWorldX();
             final Direction u = bch.getWorldY();
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(e.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.offset(e.getOpposite())))) {
                 minX = 0;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(e)))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.offset(e)))) {
                 maxX = 16;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(u.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.offset(u.getOpposite())))) {
                 minY = 0;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(u)))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.offset(u)))) {
                 maxY = 16;
             }
         }
@@ -135,21 +135,18 @@ public final class PlaneConnectionHelper {
      * recalculated.
      */
     public void updateConnections() {
-        TileEntity hostTile = getHostTileEntity();
-        if (hostTile != null) {
-            hostTile.requestModelDataUpdate();
-        }
+        // Not needed in Fabric, since model data is automatically updated
     }
 
-    private boolean isCompatiblePlaneAdjacent(@Nullable TileEntity adjacentTileEntity) {
-        if (adjacentTileEntity instanceof IPartHost) {
-            final IPart p = ((IPartHost) adjacentTileEntity).getPart(part.getSide());
+    private boolean isCompatiblePlaneAdjacent(@Nullable BlockEntity adjacentBlockEntity) {
+        if (adjacentBlockEntity instanceof IPartHost) {
+            final IPart p = ((IPartHost) adjacentBlockEntity).getPart(part.getSide());
             return p != null && p.getClass() == part.getClass();
         }
         return false;
     }
 
-    private TileEntity getHostTileEntity() {
+    private BlockEntity getHostBlockEntity() {
         IPartHost host = part.getHost();
         if (host != null) {
             return host.getTile();

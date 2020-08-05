@@ -193,7 +193,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
 
     }
 

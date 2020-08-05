@@ -71,7 +71,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
     }
 
     @Override
-    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             final BlockEntity te = this.getHost().getTile();
             final AEPartLocation side = this.getSide();

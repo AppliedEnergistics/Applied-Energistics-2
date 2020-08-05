@@ -18,34 +18,14 @@
 
 package appeng.parts.automation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-
-import appeng.api.config.*;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.IncludeExclude;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -73,6 +53,30 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AutomaticItemPlacementContext;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack> {
 
@@ -232,7 +236,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                     PlaneDirectionalPlaceContext context = new PlaneDirectionalPlaceContext(w, player, placePos,
                             lookDirection, is, lookDirection.getOpposite());
 
-                    i.onItemUse(context);
+                    i.useOnBlock(context);
                     maxStorage -= is.getCount();
 
                 } else {
@@ -357,49 +361,49 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     /**
-     * A custom {@link DirectionalPlaceContext} which also accepts a player needed
+     * A custom {@link AutomaticItemPlacementContext} which also accepts a player needed
      * various blocks like seeds.
      * <p>
-     * Also removed {@link DirectionalPlaceContext#replacingClickedOnBlock} as this
+     * Also removed {@link AutomaticItemPlacementContext#canReplaceExisting} as this
      * can cause a {@link StackOverflowError} for certain replaceable blocks.
      */
-    private static class PlaneDirectionalPlaceContext extends BlockItemUseContext {
+    private static class PlaneDirectionalPlaceContext extends ItemPlacementContext {
         private final Direction lookDirection;
 
         public PlaneDirectionalPlaceContext(World world, PlayerEntity player, BlockPos pos, Direction lookDirection,
-                ItemStack itemStack, Direction facing) {
+                                            ItemStack itemStack, Direction facing) {
             super(world, player, Hand.MAIN_HAND, itemStack,
-                    new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), facing, pos, false));
+                    new BlockHitResult(Vec3d.ofBottomCenter(pos), facing, pos, false));
             this.lookDirection = lookDirection;
         }
 
         @Override
-        public BlockPos getPos() {
-            return this.rayTraceResult.getPos();
+        public BlockPos getBlockPos() {
+            return this.method_30344().getBlockPos();
         }
 
         @Override
         public boolean canPlace() {
-            return this.world.getBlockState(this.rayTraceResult.getPos()).isReplaceable(this);
+            return this.getWorld().getBlockState(this.method_30344().getBlockPos()).canReplace(this);
         }
 
         @Override
-        public Direction getNearestLookingDirection() {
+        public Direction getPlayerLookDirection() {
             return Direction.DOWN;
         }
 
         @Override
-        public Direction[] getNearestLookingDirections() {
+        public Direction[] getPlacementDirections() {
             switch (this.lookDirection) {
                 case DOWN:
                 default:
-                    return new Direction[] { Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.SOUTH,
-                            Direction.WEST, Direction.UP };
+                    return new Direction[]{Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.SOUTH,
+                            Direction.WEST, Direction.UP};
                 case UP:
-                    return new Direction[] { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.EAST,
-                            Direction.SOUTH, Direction.WEST };
+                    return new Direction[]{Direction.DOWN, Direction.UP, Direction.NORTH, Direction.EAST,
+                            Direction.SOUTH, Direction.WEST};
                 case NORTH:
-                    return new Direction[] { Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.WEST,
+                    return new Direction[]{Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.WEST,
                             Direction.UP, Direction.SOUTH };
                 case SOUTH:
                     return new Direction[] { Direction.DOWN, Direction.SOUTH, Direction.EAST, Direction.WEST,
@@ -414,18 +418,18 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         }
 
         @Override
-        public Direction getPlacementHorizontalFacing() {
-            return this.lookDirection.getAxis() == Axis.Y ? Direction.NORTH : this.lookDirection;
+        public Direction getPlayerFacing() {
+            return this.lookDirection.getAxis() == Direction.Axis.Y ? Direction.NORTH : this.lookDirection;
         }
 
         @Override
-        public boolean func_225518_g_() {
+        public boolean shouldCancelInteraction() {
             return false;
         }
 
         @Override
-        public float getPlacementYaw() {
-            return (float) (this.lookDirection.getHorizontalIndex() * 90);
+        public float getPlayerYaw() {
+            return (float) (this.lookDirection.getHorizontal() * 90);
         }
     }
 }

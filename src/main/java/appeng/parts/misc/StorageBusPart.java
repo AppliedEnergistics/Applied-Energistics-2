@@ -255,7 +255,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             final BlockEntity te = w.getBlockEntity(neighbor);
 
