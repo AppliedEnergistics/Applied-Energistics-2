@@ -95,27 +95,32 @@ public abstract class IconButton extends Button implements ITooltip {
     protected abstract int getIconIndex();
 
     @Override
-    public int xPos() {
+    public String getTooltipMessage() {
+        return getMessage();
+    }
+
+    @Override
+    public int getTooltipAreaX() {
         return this.x;
     }
 
     @Override
-    public int yPos() {
+    public int getTooltipAreaY() {
         return this.y;
     }
 
     @Override
-    public int getWidth() {
+    public int getTooltipAreaWidth() {
         return this.halfSize ? 8 : 16;
     }
 
     @Override
-    public int getHeight() {
+    public int getTooltipAreaHeight() {
         return this.halfSize ? 8 : 16;
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isTooltipAreaVisible() {
         return this.visible;
     }
 

@@ -48,7 +48,8 @@ public class OptionalFluidSlotWidget extends FluidSlotWidget {
         } else {
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.4F);
         }
-        GuiUtils.drawTexturedModalRect(guileft + this.xPos() - 1, guitop + this.yPos() - 1, this.srcX - 1,
-                this.srcY - 1, this.getWidth() + 2, this.getHeight() + 2, currentZIndex);
+        GuiUtils.drawTexturedModalRect(guileft + this.getTooltipAreaX() - 1, guitop + this.getTooltipAreaY() - 1,
+                this.srcX - 1, this.srcY - 1, this.getTooltipAreaWidth() + 2, this.getTooltipAreaHeight() + 2,
+                currentZIndex);
     }
 }

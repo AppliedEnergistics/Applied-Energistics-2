@@ -52,7 +52,8 @@ public class FluidSlotWidget extends CustomSlotWidget {
             final float blue = (attributes.getColor() & 255) / 255.0F;
             RenderSystem.color3f(red, green, blue);
 
-            blit(xPos(), yPos(), this.getBlitOffset(), getWidth(), getHeight(), sprite);
+            blit(getTooltipAreaX(), getTooltipAreaY(), this.getBlitOffset(), getTooltipAreaWidth(),
+                    getTooltipAreaHeight(), sprite);
         }
     }
 
@@ -76,7 +77,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public String getMessage() {
+    public String getTooltipMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
             return I18n.format(fluid.getFluidStack().getTranslationKey());
@@ -85,7 +86,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isTooltipAreaVisible() {
         return true;
     }
 
