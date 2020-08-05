@@ -377,18 +377,22 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             this.lookDirection = lookDirection;
         }
 
+        @Override
         public BlockPos getPos() {
             return this.rayTraceResult.getPos();
         }
 
+        @Override
         public boolean canPlace() {
             return this.world.getBlockState(this.rayTraceResult.getPos()).isReplaceable(this);
         }
 
+        @Override
         public Direction getNearestLookingDirection() {
             return Direction.DOWN;
         }
 
+        @Override
         public Direction[] getNearestLookingDirections() {
             switch (this.lookDirection) {
                 case DOWN:
@@ -413,14 +417,17 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             }
         }
 
+        @Override
         public Direction getPlacementHorizontalFacing() {
             return this.lookDirection.getAxis() == Axis.Y ? Direction.NORTH : this.lookDirection;
         }
 
+        @Override
         public boolean func_225518_g_() {
             return false;
         }
 
+        @Override
         public float getPlacementYaw() {
             return (float) (this.lookDirection.getHorizontalIndex() * 90);
         }
