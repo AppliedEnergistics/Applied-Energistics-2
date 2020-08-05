@@ -25,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -97,27 +98,32 @@ public abstract class IconButton extends Button implements ITooltip {
     protected abstract int getIconIndex();
 
     @Override
-    public int xPos() {
+    public ITextComponent getTooltipMessage() {
+        return getMessage();
+    }
+
+    @Override
+    public int getTooltipAreaX() {
         return this.x;
     }
 
     @Override
-    public int yPos() {
+    public int getTooltipAreaY() {
         return this.y;
     }
 
     @Override
-    public int getWidth() {
+    public int getTooltipAreaWidth() {
         return this.halfSize ? 8 : 16;
     }
 
     @Override
-    public int getHeight() {
+    public int getTooltipAreaHeight() {
         return this.halfSize ? 8 : 16;
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isTooltipAreaVisible() {
         return this.visible;
     }
 

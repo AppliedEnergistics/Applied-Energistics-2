@@ -99,27 +99,32 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public int xPos() {
+    public ITextComponent getTooltipMessage() {
+        return getMessage();
+    }
+
+    @Override
+    public int getTooltipAreaX() {
         return this.x;
     }
 
     @Override
-    public int yPos() {
+    public int getTooltipAreaY() {
         return this.y;
     }
 
     @Override
-    public int getWidth() {
+    public int getTooltipAreaWidth() {
         return 22;
     }
 
     @Override
-    public int getHeight() {
+    public int getTooltipAreaHeight() {
         return 22;
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isTooltipAreaVisible() {
         return this.visible;
     }
 
