@@ -18,64 +18,64 @@
 
 package appeng.util.inv;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import net.minecraft.item.ItemStack;
-
-import alexiil.mc.lib.attributes.ListenerRemovalToken;
-import alexiil.mc.lib.attributes.ListenerToken;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import alexiil.mc.lib.attributes.item.InvMarkDirtyListener;
+import alexiil.mc.lib.attributes.item.ItemStackUtil;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
-
+import alexiil.mc.lib.attributes.item.impl.DelegatingFixedItemInv;
 import appeng.util.inv.filter.IAEItemFilter;
+import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
 
 // FIXME: Needs to be double checked, LBA has better ways of doing this
-public class WrapperFilteredItemHandler implements FixedItemInv {
-    private final FixedItemInv handler;
+public class WrapperFilteredItemHandler extends DelegatingFixedItemInv {
     private final IAEItemFilter filter;
 
     public WrapperFilteredItemHandler(@Nonnull FixedItemInv handler, @Nonnull IAEItemFilter filter) {
-        this.handler = handler;
+        super(handler);
         this.filter = filter;
     }
 
     @Override
-    public ItemStack getInvStack(int slot) {
-        return this.handler.getInvStack(slot);
-    }
-
-    @Override
     public boolean setInvStack(int slot, ItemStack to, Simulation simulation) {
-        return this.handler.setInvStack(slot, to, simulation);
-    }
+        ItemStack current = this.getInvStack(slot);
+        boolean same = ItemStackUtil.areEqualIgnoreAmounts(current, to);
+        boolean isExtracting = !current.isEmpty() && (!same || to.getCount() < current.getCount());
+        boolean isInserting = !to.isEmpty() && (!same || to.getCount() > current.getCount());
 
-    @Override
-    public int getSlotCount() {
-        return this.handler.getSlotCount();
+        if (isExtracting) {
+            // We may be extracting by "exchanging" the current item for something else,
+            // or we might be setting it to air
+            int extractAmount = current.getCount();
+            if (same && !to.isEmpty()) {
+                extractAmount -= to.getCount();
+            }
+
+            if (!filter.allowExtract(delegate, slot, extractAmount)) {
+                return false;
+            }
+        }
+
+        if (isInserting) {
+            if (!filter.allowInsert(delegate, slot, to)) {
+                return false;
+            }
+        }
+
+        return super.setInvStack(slot, to, simulation);
     }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        return filter.allowInsert(handler, slot, stack);
+        return (stack.isEmpty() || this.getFilterForSlot(slot).matches(stack)) && super.isItemValidForSlot(slot, stack);
     }
 
     @Override
     public ItemFilter getFilterForSlot(int slot) {
-        return stack -> filter.allowInsert(handler, slot, stack);
-    }
-
-    @Override
-    public int getChangeValue() {
-        return this.handler.getChangeValue();
-    }
-
-    @Nullable
-    @Override
-    public ListenerToken addListener(InvMarkDirtyListener listener, ListenerRemovalToken removalToken) {
-        return this.handler.addListener(listener, removalToken);
+        ItemFilter parentFilter = super.getFilterForSlot(slot);
+        ItemFilter thisFilter = stack -> filter.allowInsert(delegate, slot, stack);
+        return thisFilter.and(parentFilter);
     }
 
 }
