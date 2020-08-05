@@ -121,6 +121,10 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
 
     @Override
     public boolean setInvStack(int slot, ItemStack to, Simulation simulation) {
+        if (!to.isEmpty() && to.getCount() > getMaxAmount(slot, to)) {
+            return false;
+        }
+
         if (simulation == Simulation.SIMULATE) {
             return true;
         }
