@@ -103,18 +103,18 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
         this.textRenderer.method_30883(matrices, GuiText.NetworkDetails.text(), 8, 6, 4210752);
 
-        this.textRenderer.draw(matrices,
-                GuiText.StoredPower.text() + ": " + Platform.formatPowerLong(handler.getCurrentPower(), false), 13, 16,
+        this.textRenderer.method_30883(matrices,
+                GuiText.StoredPower.withSuffix(": " + Platform.formatPowerLong(handler.getCurrentPower(), false)), 13, 16,
                 4210752);
-        this.textRenderer.draw(matrices,
-                GuiText.MaxPower.text() + ": " + Platform.formatPowerLong(handler.getMaxPower(), false), 13, 26,
+        this.textRenderer.method_30883(matrices,
+                GuiText.MaxPower.withSuffix(": " + Platform.formatPowerLong(handler.getMaxPower(), false)), 13, 26,
                 4210752);
 
-        this.textRenderer.draw(matrices,
-                GuiText.PowerInputRate.text() + ": " + Platform.formatPowerLong(handler.getAverageAddition(), true), 13,
+        this.textRenderer.method_30883(matrices,
+                GuiText.PowerInputRate.withSuffix(": " + Platform.formatPowerLong(handler.getAverageAddition(), true)), 13,
                 143 - 10, 4210752);
-        this.textRenderer.draw(matrices,
-                GuiText.PowerUsageRate.text() + ": " + Platform.formatPowerLong(handler.getPowerUsage(), true), 13,
+        this.textRenderer.method_30883(matrices,
+                GuiText.PowerUsageRate.withSuffix(": " + Platform.formatPowerLong(handler.getPowerUsage(), true)), 13,
                 143 - 20, 4210752);
 
         final int sectionLength = 30;
