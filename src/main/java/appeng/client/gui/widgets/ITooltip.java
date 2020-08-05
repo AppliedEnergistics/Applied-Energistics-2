@@ -28,38 +28,38 @@ public interface ITooltip {
      *
      * @return tooltip message
      */
-    String getMessage();
+    String getTooltipMessage();
 
     /**
      * x Location for the object that triggers the tooltip.
      *
      * @return xPosition
      */
-    int xPos();
+    int getTooltipAreaX();
 
     /**
      * y Location for the object that triggers the tooltip.
      *
      * @return yPosition
      */
-    int yPos();
+    int getTooltipAreaY();
 
     /**
      * Width of the object that triggers the tooltip.
      *
      * @return width
      */
-    int getWidth();
+    int getTooltipAreaWidth();
 
     /**
      * Height for the object that triggers the tooltip.
      *
      * @return height
      */
-    int getHeight();
+    int getTooltipAreaHeight();
 
     /**
      * @return true if button being drawn
      */
-    boolean isVisible();
+    boolean isTooltipAreaVisible();
 }

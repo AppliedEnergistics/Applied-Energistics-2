@@ -85,7 +85,7 @@ public class FluidTankWidget extends Widget implements ITooltip {
     }
 
     @Override
-    public String getMessage() {
+    public String getTooltipMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
             String desc = fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()).getFormattedText();
@@ -97,27 +97,27 @@ public class FluidTankWidget extends Widget implements ITooltip {
     }
 
     @Override
-    public int xPos() {
+    public int getTooltipAreaX() {
         return this.x - 2;
     }
 
     @Override
-    public int yPos() {
+    public int getTooltipAreaY() {
         return this.y - 2;
     }
 
     @Override
-    public int getWidth() {
+    public int getTooltipAreaWidth() {
         return this.width + 4;
     }
 
     @Override
-    public int getHeight() {
+    public int getTooltipAreaHeight() {
         return this.height + 4;
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isTooltipAreaVisible() {
         return true;
     }
 

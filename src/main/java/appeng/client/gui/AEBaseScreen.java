@@ -154,14 +154,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     protected void drawGuiSlot(CustomSlotWidget slot, int mouseX, int mouseY, float partialTicks) {
         if (slot.isSlotEnabled()) {
-            final int left = slot.xPos();
-            final int top = slot.yPos();
-            final int right = left + slot.getWidth();
-            final int bottom = top + slot.getHeight();
+            final int left = slot.getTooltipAreaX();
+            final int top = slot.getTooltipAreaY();
+            final int right = left + slot.getTooltipAreaWidth();
+            final int bottom = top + slot.getTooltipAreaHeight();
 
             slot.drawContent(getMinecraft(), mouseX, mouseY, partialTicks);
 
-            if (this.isPointInRegion(left, top, slot.getWidth(), slot.getHeight(), mouseX, mouseY)
+            if (this.isPointInRegion(left, top, slot.getTooltipAreaWidth(), slot.getTooltipAreaHeight(), mouseX, mouseY)
                     && slot.canClick(getPlayer())) {
                 RenderSystem.colorMask(true, true, true, false);
                 this.fillGradient(left, top, right, bottom, -2130706433, -2130706433);
@@ -171,16 +171,16 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     private void drawTooltip(ITooltip tooltip, int mouseX, int mouseY) {
-        final int x = tooltip.xPos(); // ((GuiImgButton) c).x;
-        int y = tooltip.yPos(); // ((GuiImgButton) c).y;
+        final int x = tooltip.getTooltipAreaX();
+        int y = tooltip.getTooltipAreaY();
 
-        if (x < mouseX && x + tooltip.getWidth() > mouseX && tooltip.isVisible()) {
-            if (y < mouseY && y + tooltip.getHeight() > mouseY) {
+        if (x < mouseX && x + tooltip.getTooltipAreaWidth() > mouseX && tooltip.isTooltipAreaVisible()) {
+            if (y < mouseY && y + tooltip.getTooltipAreaHeight() > mouseY) {
                 if (y < 15) {
                     y = 15;
                 }
 
-                final String msg = tooltip.getMessage();
+                final String msg = tooltip.getTooltipMessage();
                 if (msg != null && !msg.isEmpty()) {
                     this.drawTooltip(x + 11, y + 4, msg);
                 }
@@ -275,8 +275,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
 
         for (CustomSlotWidget slot : this.guiSlots) {
-            if (this.isPointInRegion(slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord)
-                    && slot.canClick(getPlayer())) {
+            if (this.isPointInRegion(slot.getTooltipAreaX(), slot.getTooltipAreaY(), slot.getTooltipAreaWidth(),
+                    slot.getTooltipAreaHeight(), xCoord, yCoord) && slot.canClick(getPlayer())) {
                 slot.slotClicked(getPlayer().inventory.getItemStack(), btn);
             }
         }
