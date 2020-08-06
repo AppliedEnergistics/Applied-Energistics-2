@@ -45,6 +45,11 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
         super(is);
     }
 
+    @Override
+    protected float getPowerDrainPerTick() {
+        return 2.0f;
+    }
+
     @PartModels
     public static List<IPartModel> getModels() {
         return MODELS.getModels();
