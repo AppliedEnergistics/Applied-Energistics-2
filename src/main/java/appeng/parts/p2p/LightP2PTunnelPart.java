@@ -56,6 +56,10 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
         super(is);
     }
 
+    protected float getPowerDrainPerTick() {
+        return 0.5f;
+    }
+
     @Override
     public void chanRender(final MENetworkChannelsChanged c) {
         this.onTunnelNetworkChange();
@@ -184,10 +188,6 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
         return this.doWork() ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
-    }
-
-    public float getPowerDrainPerTick() {
-        return 0.5f;
     }
 
     @Override

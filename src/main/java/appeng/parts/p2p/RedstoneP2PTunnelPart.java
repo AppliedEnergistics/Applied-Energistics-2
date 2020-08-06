@@ -55,6 +55,11 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         super(is);
     }
 
+    @Override
+    protected float getPowerDrainPerTick() {
+        return 0.5f;
+    }
+
     @MENetworkEventSubscribe
     public void changeStateA(final MENetworkBootingStatusChange bs) {
         this.setNetworkReady();
@@ -121,10 +126,6 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     @Override
     public void onTunnelNetworkChange() {
         this.setNetworkReady();
-    }
-
-    public float getPowerDrainPerTick() {
-        return 0.5f;
     }
 
     @Override

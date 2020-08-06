@@ -69,6 +69,11 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
     }
 
     @Override
+    protected float getPowerDrainPerTick() {
+        return POWER_DRAIN;
+    }
+
+    @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         this.cachedInv = null;
         final ItemP2PTunnelPart input = this.getInput();
@@ -233,10 +238,6 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
     @Override
     public int getSlotLimit(int slot) {
         return this.getDestination().getSlotLimit(slot);
-    }
-
-    public float getPowerDrainPerTick() {
-        return POWER_DRAIN;
     }
 
     @Override
