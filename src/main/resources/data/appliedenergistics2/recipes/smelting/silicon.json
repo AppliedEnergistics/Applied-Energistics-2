@@ -5,7 +5,7 @@
   },
   "ingredient": [
     {
-      "tag": "appliedenergistics2:dusts/nether_quartz"
+      "tag": "forge:dusts/quartz"
     },
     {
       "tag": "appliedenergistics2:dusts/certus_quartz"
