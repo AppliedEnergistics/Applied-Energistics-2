@@ -1,6 +1,0 @@
-{
-  "parent": "uvlightmapjsontest:block/uvlblock",
-  "textures": {
-    "0": "block/diamond_block"
-  }
-}

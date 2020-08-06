@@ -1,5 +1,4 @@
 {
-  "loader": "appliedenergistics2:uvlightmap",
   "textures": {
     "sides": "appliedenergistics2:part/monitor_sides_status",
     "back": "appliedenergistics2:part/transition_plane_back",
@@ -35,34 +34,22 @@
         "down": {
           "texture": "#indicator",
           "tintindex": 3,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "up": {
           "texture": "#indicator",
           "tintindex": 3,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "east": {
           "texture": "#indicator",
           "tintindex": 3,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "west": {
           "texture": "#indicator",
           "tintindex": 3,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         }
       }
     }

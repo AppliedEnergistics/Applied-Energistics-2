@@ -1,5 +1,4 @@
 {
-  "loader": "appliedenergistics2:uvlightmap",
   "textures": {
     "lightsBright": "appliedenergistics2:part/interface_terminal_bright",
     "lightsMedium": "appliedenergistics2:part/interface_terminal_medium",
@@ -13,10 +12,7 @@
         "north": {
           "texture": "#lightsBright",
           "tintindex": 3,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         }
       }
     },
@@ -27,10 +23,7 @@
         "north": {
           "texture": "#lightsMedium",
           "tintindex": 2,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         }
       }
     },
@@ -41,10 +34,7 @@
         "north": {
           "texture": "#lightsDark",
           "tintindex": 1,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         }
       }
     }

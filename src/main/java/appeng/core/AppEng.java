@@ -76,7 +76,6 @@ import appeng.client.render.model.DriveModel;
 import appeng.client.render.model.GlassModel;
 import appeng.client.render.model.MemoryCardModel;
 import appeng.client.render.model.SkyCompassModel;
-import appeng.client.render.model.UVLModelLoader;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.features.registries.PartModels;
 import appeng.core.stats.AdvancementTriggers;
@@ -204,7 +203,6 @@ public final class AppEng {
                 PlaneModelLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"),
                 CraftingCubeModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "cable_bus"),
                 new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
 
