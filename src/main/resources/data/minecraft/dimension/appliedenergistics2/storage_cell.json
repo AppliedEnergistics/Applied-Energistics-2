@@ -1,0 +1,6 @@
+{
+  "type": "appliedenergistics2:storage_cell",
+  "generator": {
+    "type": "appliedenergistics2:storage"
+  }
+}

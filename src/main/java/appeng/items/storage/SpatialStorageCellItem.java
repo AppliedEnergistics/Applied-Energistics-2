@@ -18,15 +18,19 @@
 
 package appeng.items.storage;
 
-import java.util.List;
-
+import appeng.api.implementations.TransitionResult;
+import appeng.api.implementations.items.ISpatialStorageCell;
+import appeng.api.util.WorldCoord;
+import appeng.core.AELog;
+import appeng.core.localization.GuiText;
+import appeng.items.AEBaseItem;
+import appeng.spatial.SpatialDimensionManager;
+import appeng.spatial.StorageCellLot;
+import appeng.spatial.StorageHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -35,18 +39,10 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.implementations.TransitionResult;
-import appeng.api.implementations.items.ISpatialStorageCell;
-import appeng.api.storage.ISpatialDimension;
-import appeng.api.util.WorldCoord;
-import appeng.core.AELog;
-import appeng.core.localization.GuiText;
-import appeng.items.AEBaseItem;
-import appeng.spatial.SpatialDimensionManager;
-import appeng.spatial.StorageHelper;
+import java.util.List;
 
 public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorageCell {
-    private static final String TAG_DIMENSION_ID = "dimension_id";
+    private static final String TAG_LOT_ID = "lot_id";
 
     private final int maxRegion;
 
@@ -59,17 +55,20 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     @Override
     public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
-        final RegistryKey<World> worldId = this.getStoredDimension(stack);
-        if (worldId == null) {
+        int lotId = this.getAllocatedLotId(stack);
+        if (lotId == -1) {
             lines.add(GuiText.Unformatted.text().deepCopy().mergeStyle(TextFormatting.ITALIC));
             lines.add(GuiText.SpatialCapacity.text(maxRegion, maxRegion, maxRegion));
-        } else {
-            SpatialDimensionManager.INSTANCE.addCellDimensionTooltip(worldId, lines);
+            return;
         }
 
+        SpatialDimensionManager.INSTANCE.addLotTooltip(lotId, lines);
+
         if (advancedTooltips.isAdvanced()) {
-            if (worldId != null && worldId.func_240901_a_() != null) {
-                lines.add(new StringTextComponent("Dimension: " + worldId.func_240901_a_()));
+            StorageCellLot lot = SpatialDimensionManager.INSTANCE.getLot(lotId);
+            if (lot != null) {
+                lines.add(new StringTextComponent("Origin: " + lot.getOrigin()));
+                lines.add(new StringTextComponent("Owner: " + lot.getOwner()));
             }
         }
     }
@@ -85,17 +84,20 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public RegistryKey<World> getStoredDimension(final ItemStack is) {
+    public int getAllocatedLotId(final ItemStack is) {
         final CompoundNBT c = is.getTag();
-        if (c != null && c.contains(TAG_DIMENSION_ID)) {
+        if (c != null && c.contains(TAG_LOT_ID)) {
             try {
-                ResourceLocation worldId = new ResourceLocation(c.getString(TAG_DIMENSION_ID));
-                return RegistryKey.func_240903_a_(Registry.WORLD_KEY, worldId);
+                int lotId = c.getInt(TAG_LOT_ID);
+                if (SpatialDimensionManager.INSTANCE.getLot(lotId) == null) {
+                    return -1;
+                }
+                return lotId;
             } catch (Exception e) {
                 AELog.warn("Failed to retrieve storage cell dimension.", e);
             }
         }
-        return null;
+        return -1;
     }
 
     @Override
@@ -108,47 +110,41 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
         final BlockPos targetSize = new BlockPos(targetX, targetY, targetZ);
 
-        ISpatialDimension manager = SpatialDimensionManager.INSTANCE;
+        SpatialDimensionManager manager = SpatialDimensionManager.INSTANCE;
 
-        RegistryKey<World> worldId = this.getStoredDimension(is);
-        if (worldId == null || manager.getWorld(worldId) == null) {
-            worldId = manager.createNewCellDimension(targetSize);
-        }
-
-        if (worldId == null) {
-            // Failed to create the dimension
-            return new TransitionResult(false, 0);
+        StorageCellLot lot = SpatialDimensionManager.INSTANCE.getLot(this.getAllocatedLotId(is));
+        if (lot == null) {
+            lot = manager.allocateLot(targetSize, playerId);
         }
 
         try {
-            if (manager.isCellDimension(worldId)) {
-                ServerWorld cellWorld = manager.getWorld(worldId);
+            ServerWorld cellWorld = manager.getWorld();
 
-                BlockPos scale = manager.getCellDimensionSize(worldId);
+            BlockPos scale = lot.getSize();
 
-                if (scale.equals(targetSize)) {
-                    if (targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize) {
-                        BlockPos offset = manager.getCellDimensionOrigin(worldId);
+            if (scale.equals(targetSize)) {
+                if (targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize) {
+                    BlockPos offset = lot.getOrigin();
 
-                        this.setStoredDimension(is, worldId);
+                        this.setStoredDimension(is, lot.getId());
                         StorageHelper.getInstance().swapRegions(w, min.x + 1, min.y + 1, min.z + 1, cellWorld,
                                 offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
 
                         return new TransitionResult(true, 0);
                     }
                 }
-            }
+
             return new TransitionResult(false, 0);
         } finally {
             // clean up newly created dimensions that failed transfer
-            if (manager.isCellDimension(worldId) && this.getStoredDimension(is) == null) {
-                manager.deleteCellDimension(worldId);
+            if (this.getAllocatedLotId(is) == -1) {
+                manager.freeLot(lot.getId());
             }
         }
     }
 
-    private void setStoredDimension(final ItemStack is, RegistryKey<World> worldId) {
+    private void setStoredDimension(final ItemStack is, int lotId) {
         final CompoundNBT c = is.getOrCreateTag();
-        c.putString(TAG_DIMENSION_ID, worldId.func_240901_a_().toString());
+        c.putInt(TAG_LOT_ID, lotId);
     }
 }

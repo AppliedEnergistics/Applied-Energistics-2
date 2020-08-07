@@ -13,6 +13,9 @@ import net.minecraft.world.DimensionType;
 
 import appeng.spatial.SpatialDimensionManager;
 
+/**
+ * Adds the storage cell world dimension type as a built-in dimension type.
+ */
 @Mixin(value = DimensionType.class)
 public class DimensionTypeMixin {
 

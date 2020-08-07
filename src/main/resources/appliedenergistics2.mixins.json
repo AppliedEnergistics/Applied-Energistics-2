@@ -6,10 +6,10 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "DimensionTypeMixin",
-    "MinecraftServerMixin",
     "ThreadedAnvilChunkStorageAccessor",
     "DimensionStructuresSettingsMixin",
-    "StructureAccessor"
+    "StructureAccessor",
+    "DimensionOptionMixin"
   ],
   "client": ["SkyRenderMixin", "SkyPropertiesMixin"],
   "server": [],
