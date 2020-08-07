@@ -24,7 +24,7 @@ public class BlockPartFaceDeserializerMixin {
     @Inject(method = "deserialize", at = @At("RETURN"), cancellable = true, allow = 1, remap = false)
     public void onDeserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext,
             CallbackInfoReturnable<BlockPartFace> cri) {
-        if (!UnlitQuadHooks.isDeserializingEnhancedModel()) {
+        if (!UnlitQuadHooks.isUnlitExtensionEnabled()) {
             return; // Not in a model that activated the deserializer
         }
 

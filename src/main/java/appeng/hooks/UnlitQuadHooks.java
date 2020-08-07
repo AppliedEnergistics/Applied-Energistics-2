@@ -13,7 +13,9 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
 import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
 
+import appeng.core.AppEng;
 import appeng.mixins.unlitquad.BakedQuadAccessor;
 
 /**
@@ -35,14 +37,28 @@ public class UnlitQuadHooks {
      * Thread-Local flag to indicate that an enhanced Applied Energistics model is
      * currently being deserialized.
      */
-    private static final ThreadLocal<Boolean> DESERIALIZING_APPENG_MODEL = new ThreadLocal<>();
+    private static final ThreadLocal<Boolean> ENABLE_UNLIT_EXTENSIONS = new ThreadLocal<>();
 
-    public static void setIsDeserializingEnhancedModel(boolean enabled) {
-        DESERIALIZING_APPENG_MODEL.set(enabled);
+    /**
+     * Notify the unlit model system that a specific model is about to be
+     * deserialized by {@link net.minecraft.client.renderer.model.ModelBakery}.
+     */
+    public static void beginDeserializingModel(ResourceLocation location) {
+        String namespace = location.getNamespace();
+        if (namespace.equals(AppEng.MOD_ID)) {
+            ENABLE_UNLIT_EXTENSIONS.set(true);
+        }
     }
 
-    public static boolean isDeserializingEnhancedModel() {
-        Boolean b = DESERIALIZING_APPENG_MODEL.get();
+    /**
+     * Notify the unlit model system that deserialization of a model has ended.
+     */
+    public static void endDeserializingModel() {
+        ENABLE_UNLIT_EXTENSIONS.set(false);
+    }
+
+    public static boolean isUnlitExtensionEnabled() {
+        Boolean b = ENABLE_UNLIT_EXTENSIONS.get();
         return b != null && b;
     }
 
@@ -55,6 +71,12 @@ public class UnlitQuadHooks {
         return modelElement;
     }
 
+    /**
+     * Creates a new quad from the given quad and pre-bakes it to not be affected by
+     * lighting (neither diffuse lighting nor the prebaked lightmap). This works on
+     * the assumption that Vanilla will not modify a quad's lightmap data if it's
+     * not zero.
+     */
     public static BakedQuad makeUnlit(BakedQuad quad) {
         int[] vertexData = quad.getVertexData().clone();
         int stride = DefaultVertexFormats.BLOCK.getIntegerSize();
@@ -68,6 +90,11 @@ public class UnlitQuadHooks {
         return new BakedQuad(vertexData, quad.getTintIndex(), quad.getFace(), sprite, false /* diffuse lighting */);
     }
 
+    /**
+     * This subclass is used as a marker to indicate this face deserialized from
+     * JSON is supposed to be unlit, which translates to processing by
+     * {@link #makeUnlit(BakedQuad)}.
+     */
     public static class UnlitBlockPartFace extends BlockPartFace {
         public UnlitBlockPartFace(Direction cullFaceIn, int tintIndexIn, String textureIn, BlockFaceUV blockFaceUVIn) {
             super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
