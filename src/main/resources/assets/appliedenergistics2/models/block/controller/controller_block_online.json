@@ -1,5 +1,4 @@
 {
-  "loader": "appliedenergistics2:uvlightmap",
   "parent": "block/block",
   "textures": {
     "block": "appliedenergistics2:block/controller_powered",
@@ -12,50 +11,32 @@
         "down": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         },
         "east": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         },
         "north": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         },
         "south": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         },
         "up": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         },
         "west": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         }
       },
       "from": [0, 0, 0],

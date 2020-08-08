@@ -1,5 +1,4 @@
 {
-  "loader": "appliedenergistics2:uvlightmap",
   "ambientocclusion": false,
   "textures": {
     "emitter": "appliedenergistics2:part/level_emitter_on",
@@ -40,10 +39,7 @@
           "texture": "#emitter",
           "uv": [6, 7, 8, 9],
           "rotation": 270,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         }
       }
     },
@@ -56,19 +52,13 @@
           "texture": "#emitter",
           "uv": [5, 6, 9, 10],
           "rotation": 90,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "down": {
           "texture": "#emitter",
           "uv": [5, 6, 9, 10],
           "rotation": 270,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         }
       }
     },
@@ -80,19 +70,13 @@
         "west": {
           "texture": "#emitter",
           "uv": [5, 6, 9, 10],
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "east": {
           "texture": "#emitter",
           "uv": [5, 6, 9, 10],
           "rotation": 180,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         }
       }
     }

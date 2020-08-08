@@ -1,5 +1,4 @@
 {
-  "loader": "appliedenergistics2:uvlightmap",
   "parent": "block/block",
   "textures": {
     "all": "appliedenergistics2:block/molecular_assembler_lights"
@@ -13,55 +12,37 @@
           "texture": "#all",
           "uv": [2.6, 2.6, 13.4, 13.4],
           "cullface": "down",
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "up": {
           "texture": "#all",
           "uv": [2.6, 2.6, 13.4, 13.4],
           "cullface": "up",
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "north": {
           "texture": "#all",
           "uv": [2.6, 2.6, 13.4, 13.4],
           "cullface": "north",
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "south": {
           "texture": "#all",
           "uv": [2.6, 2.6, 13.4, 13.4],
           "cullface": "south",
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "west": {
           "texture": "#all",
           "uv": [2.6, 2.6, 13.4, 13.4],
           "cullface": "west",
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "east": {
           "texture": "#all",
           "uv": [2.6, 2.6, 13.4, 13.4],
           "cullface": "east",
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         }
       }
     }
