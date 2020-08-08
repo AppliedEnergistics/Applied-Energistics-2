@@ -5,13 +5,13 @@
   "refmap": "appliedenergistics2.mixins.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "DimensionTypeMixin",
+    "spatial.DimensionTypeMixin",
+    "spatial.DimensionOptionMixin",
     "ThreadedAnvilChunkStorageAccessor",
     "DimensionStructuresSettingsMixin",
-    "StructureAccessor",
-    "DimensionOptionMixin"
+    "StructureAccessor"
   ],
-  "client": ["SkyRenderMixin", "SkyPropertiesMixin"],
+  "client": ["spatial.SkyRenderMixin", "spatial.SkyPropertiesMixin"],
   "server": [],
   "injectors": {
     "defaultRequire": 1

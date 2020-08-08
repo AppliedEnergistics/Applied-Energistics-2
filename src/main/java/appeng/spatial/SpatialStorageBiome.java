@@ -25,11 +25,14 @@ import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class StorageCellBiome extends Biome {
+/**
+ * The single biome used within the spatial storage world.
+ */
+public class SpatialStorageBiome extends Biome {
 
-    public static final StorageCellBiome INSTANCE = new StorageCellBiome();
+    public static final SpatialStorageBiome INSTANCE = new SpatialStorageBiome();
 
-    public StorageCellBiome() {
+    public SpatialStorageBiome() {
         super(new Biome.Builder()
                 .surfaceBuilder(
                         new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_STONE_GRAVEL_CONFIG))

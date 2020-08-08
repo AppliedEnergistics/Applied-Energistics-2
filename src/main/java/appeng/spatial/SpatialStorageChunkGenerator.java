@@ -43,18 +43,21 @@ import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 
 import appeng.core.Api;
 
-public class StorageChunkGenerator extends ChunkGenerator {
+/**
+ * Chunk generator the spatial storage world.
+ */
+public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     private final Blockreader columnSample;
 
-    public static final StorageChunkGenerator INSTANCE = new StorageChunkGenerator();
+    public static final SpatialStorageChunkGenerator INSTANCE = new SpatialStorageChunkGenerator();
 
-    public static final Codec<StorageChunkGenerator> CODEC = RecordCodecBuilder
+    public static final Codec<SpatialStorageChunkGenerator> CODEC = RecordCodecBuilder
             .create((instance) -> instance.stable(INSTANCE));
 
     private final BlockState defaultBlockState;
 
-    private StorageChunkGenerator() {
+    private SpatialStorageChunkGenerator() {
         super(createBiomeProvider(), createSettings());
         this.defaultBlockState = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
 
@@ -71,7 +74,7 @@ public class StorageChunkGenerator extends ChunkGenerator {
     }
 
     private static BiomeProvider createBiomeProvider() {
-        return new SingleBiomeProvider(StorageCellBiome.INSTANCE);
+        return new SingleBiomeProvider(SpatialStorageBiome.INSTANCE);
     }
 
     private static DimensionStructuresSettings createSettings() {

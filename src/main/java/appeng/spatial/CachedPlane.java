@@ -46,6 +46,7 @@ import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
+import net.minecraft.world.server.ServerWorldLightManager;
 
 public class CachedPlane {
     private final int x_size;
@@ -304,13 +305,14 @@ public class CachedPlane {
         WorldLightManager lightManager = world.getLightManager();
 
         // update shit..
-        for (int x = 0; x < this.cx_size; x++) {
-            for (int z = 0; z < this.cz_size; z++) {
-                final Chunk c = this.myChunks[x][z];
-                for(int y = 0; y < 16; ++y) {
-                    lightManager.updateSectionStatus(SectionPos.of(x, y, z), false);
+        if (lightManager instanceof ServerWorldLightManager) {
+            ServerWorldLightManager serverLightManager = (ServerWorldLightManager) lightManager;
+            for (int x = 0; x < this.cx_size; x++) {
+                for (int z = 0; z < this.cz_size; z++) {
+                    final Chunk c = this.myChunks[x][z];
+                    serverLightManager.lightChunk(c, false);
+                    c.markDirty();
                 }
-                c.markDirty();
             }
         }
 

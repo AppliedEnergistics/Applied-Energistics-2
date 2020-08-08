@@ -1,41 +1,50 @@
 package appeng.spatial;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MutableBoundingBox;
+
+import javax.annotation.Nullable;
 
 /**
- * A lot inside the storage cell world that is assigned to a specific storage cell.
+ * A plot inside the storage cell world that is assigned to a specific storage cell.
  */
-public class StorageCellLot {
+public class SpatialStoragePlot {
 
     private static final int MAX_SIZE = 512;
 
     /**
-     * Id of the lot.
+     * Id of the plot.
      */
     private final int id;
 
     /**
-     * The storage size of this dimension. This is dicateted by the pylon structure
+     * The storage size of this dimension. This is dictated by the pylon structure
      * size used to perform the first transfer into this dimension. Once it's set,
      * it cannot be changed anymore.
      */
     private final BlockPos size;
 
     /**
-     * AE2 player id of who primarily owned the network when the storage lot was
+     * AE2 player id of who primarily owned the network when the storage plot was
      * allocated.
      */
     private final int owner;
 
-    public StorageCellLot(int id, BlockPos size, int owner) {
+    /**
+     * Information about the last transition into this plot.
+     */
+    @Nullable
+    private TransitionInfo lastTransition;
+
+    public SpatialStoragePlot(int id, BlockPos size, int owner) {
         this.id = id;
         this.size = size;
         this.owner = owner;
         if (size.getX() < 1 || size.getY() < 1 || size.getZ() < 1) {
-            throw new IllegalArgumentException("Lot size " + size + " is smaller than minimum size.");
+            throw new IllegalArgumentException("Plot size " + size + " is smaller than minimum size.");
         }
         if (size.getX() > MAX_SIZE || size.getY() >= MAX_SIZE || size.getZ() >= MAX_SIZE) {
-            throw new IllegalArgumentException("Lot size " + size + " exceeds maximum size of " + MAX_SIZE);
+            throw new IllegalArgumentException("Plot size " + size + " exceeds maximum size of " + MAX_SIZE);
         }
     }
 
@@ -43,6 +52,11 @@ public class StorageCellLot {
         return id;
     }
 
+    /**
+     * The size in blocks of the plot in the storage dimension.
+     *
+     * @see #getOrigin()
+     */
     public BlockPos getSize() {
         return size;
     }
@@ -51,6 +65,23 @@ public class StorageCellLot {
         return owner;
     }
 
+    /**
+     * Returns information about the last transition into this plot (if any).
+     */
+    @Nullable
+    public TransitionInfo getLastTransition() {
+        return lastTransition;
+    }
+
+    void setLastTransition(TransitionInfo info) {
+        this.lastTransition = info;
+    }
+
+    /**
+     * The origin of this plot within the spatial storage dimension.
+     *
+     * @see #getSize()
+     */
     public BlockPos getOrigin() {
         int signBits = id & 0b11;
         int offsetBits = id >> 2;

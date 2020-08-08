@@ -1,6 +1,7 @@
-package appeng.mixins;
+package appeng.mixins.spatial;
 
-import appeng.spatial.SpatialDimensionManager;
+import appeng.spatial.SpatialStorageDimensionIds;
+import appeng.spatial.SpatialStoragePlotManager;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.Dimension;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +27,8 @@ public class DimensionOptionMixin {
     @ModifyVariable(method = "func_236060_a_", at = @At(value = "INVOKE_ASSIGN", ordinal = 0, target = "Lcom/google/common/collect/Lists;newArrayList(Ljava/lang/Iterable;)Ljava/util/ArrayList;", remap = false), allow = 1)
     private static List<Map.Entry<RegistryKey<Dimension>, Dimension>> overrideExperimentalCheck(List<Map.Entry<RegistryKey<Dimension>, Dimension>> dimensions) {
         // this only removes our dimension from the check
-        return SpatialDimensionManager.removeDimension(dimensions);
+        dimensions.removeIf(e -> e.getKey() == SpatialStorageDimensionIds.DIMENSION_ID);
+        return dimensions;
     }
 
 }

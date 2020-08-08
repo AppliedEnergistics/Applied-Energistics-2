@@ -18,6 +18,7 @@
 
 package appeng.core;
 
+import appeng.spatial.SpatialStorageDimensionIds;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -196,13 +197,11 @@ import appeng.me.cache.TickManagerCache;
 import appeng.mixins.StructureAccessor;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
-import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.GrinderRecipeSerializer;
-import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
-import appeng.spatial.StorageCellBiome;
-import appeng.spatial.StorageChunkGenerator;
+import appeng.spatial.SpatialStorageBiome;
+import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.worldgen.ChargedQuartzOreConfig;
@@ -687,11 +686,12 @@ final class Registration {
                 MeteoriteStructure.INSTANCE.setRegistryName(MeteoriteStructure.ID),
                 GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
 
-        Registry.register(Registry.CHUNK_GENERATOR_CODEC, AppEng.makeId("storage"), StorageChunkGenerator.CODEC);
+        Registry.register(Registry.CHUNK_GENERATOR_CODEC,
+                SpatialStorageDimensionIds.CHUNK_GENERATOR_ID, SpatialStorageChunkGenerator.CODEC);
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> evt) {
-        evt.getRegistry().register(StorageCellBiome.INSTANCE.setRegistryName(AppEng.makeId("storage")));
+        evt.getRegistry().register(SpatialStorageBiome.INSTANCE.setRegistryName(SpatialStorageDimensionIds.BIOME_ID));
     }
 
     @OnlyIn(Dist.CLIENT)
