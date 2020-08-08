@@ -18,6 +18,8 @@
 
 package appeng.client.render.crafting;
 
+import java.util.Locale;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -48,7 +50,7 @@ public class CraftingCubeModelLoader implements IModelLoader<CraftingCubeModel> 
         if (typeEl != null) {
             String typeName = deserializationContext.deserialize(typeEl, String.class);
             if (typeName != null) {
-                unitType = AbstractCraftingUnitBlock.CraftingUnitType.valueOf(typeName.toUpperCase());
+                unitType = AbstractCraftingUnitBlock.CraftingUnitType.valueOf(typeName.toUpperCase(Locale.ROOT));
             }
         }
         if (unitType == null) {

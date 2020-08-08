@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -100,7 +101,7 @@ class CableBuilder {
         }
 
         return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-                new ResourceLocation(AppEng.MOD_ID, textureFolder + color.name().toLowerCase()));
+                new ResourceLocation(AppEng.MOD_ID, textureFolder + color.name().toLowerCase(Locale.ROOT)));
     }
 
     /**
