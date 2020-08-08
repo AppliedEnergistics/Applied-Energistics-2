@@ -1,20 +1,20 @@
 package appeng.mixins;
 
-import java.util.OptionalLong;
-
+import appeng.spatial.SpatialDimensionManager;
+import net.minecraft.server.IDynamicRegistries;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.server.IDynamicRegistries;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.DimensionType;
-
-import appeng.spatial.SpatialDimensionManager;
+import java.util.OptionalLong;
 
 /**
  * Adds the storage cell world dimension type as a built-in dimension type.
+ * This can be registered as a JSON file as well, but doing so will trigger an experimental feature warning
+ * when the world is being loaded.
  */
 @Mixin(value = DimensionType.class)
 public class DimensionTypeMixin {

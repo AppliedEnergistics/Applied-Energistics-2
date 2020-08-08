@@ -53,11 +53,13 @@ public class StorageCellWorldData extends WorldSavedData {
 
         StorageCellLot lot = new StorageCellLot(nextId, size, owner);
         lots.put(nextId, lot);
+        markDirty();
         return lot;
     }
 
     public void removeLot(int lotId) {
         lots.remove(lotId);
+        markDirty();
     }
 
     @Override
