@@ -8,7 +8,8 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 
 /**
- * A plot inside the storage cell world that is assigned to a specific storage cell.
+ * A plot inside the storage cell world that is assigned to a specific storage
+ * cell.
  */
 public class SpatialStoragePlot {
 

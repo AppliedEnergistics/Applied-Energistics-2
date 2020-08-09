@@ -37,22 +37,16 @@ public class SpatialStorageCommand implements ISubCommand {
 
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(literal("info")
-                .then(Commands.argument("plotId", IntegerArgumentType.integer(0))
-                        .executes(ctx -> {
-                                    int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
-                                    showPlotInfo(ctx.getSource(), plotId);
-                                    return 1;
-                                }
-                        )));
-        builder.then(literal("tp")
-                .then(Commands.argument("plotId", IntegerArgumentType.integer(0))
-                        .executes(ctx -> {
-                                    int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
-                                    teleportToPlot(ctx.getSource(), plotId);
-                                    return 1;
-                                }
-                        )));
+        builder.then(literal("info").then(Commands.argument("plotId", IntegerArgumentType.integer(0)).executes(ctx -> {
+            int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
+            showPlotInfo(ctx.getSource(), plotId);
+            return 1;
+        })));
+        builder.then(literal("tp").then(Commands.argument("plotId", IntegerArgumentType.integer(0)).executes(ctx -> {
+            int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
+            teleportToPlot(ctx.getSource(), plotId);
+            return 1;
+        })));
     }
 
     private void showPlotInfo(CommandSource source, int plotId) {
@@ -87,24 +81,24 @@ public class SpatialStorageCommand implements ISubCommand {
         sendKeyValuePair(source, "Size", formatBlockPos(plot.getSize(), "x"));
 
         // Show the plot's origin and make it clickable to teleport directly to it
-        String teleportToPlotCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.func_240901_a_(), plot.getOrigin());
-        sendKeyValuePair(source, "Origin",
-                new StringTextComponent(formatBlockPos(plot.getOrigin(), ","))
-                        .modifyStyle(makeCommandLink(teleportToPlotCommand, "Teleport into plot"))
-        );
+        String teleportToPlotCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.func_240901_a_(),
+                plot.getOrigin());
+        sendKeyValuePair(source, "Origin", new StringTextComponent(formatBlockPos(plot.getOrigin(), ","))
+                .modifyStyle(makeCommandLink(teleportToPlotCommand, "Teleport into plot")));
 
-        // Show information about what was last transfered into the plot (with a clickable link to the source)
+        // Show information about what was last transfered into the plot (with a
+        // clickable link to the source)
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition != null) {
-            source.sendFeedback(new StringTextComponent("Last Transition:").mergeStyle(TextFormatting.UNDERLINE, TextFormatting.BOLD), true);
+            source.sendFeedback(new StringTextComponent("Last Transition:").mergeStyle(TextFormatting.UNDERLINE,
+                    TextFormatting.BOLD), true);
 
             String sourceWorldId = lastTransition.getWorldId().toString();
-            IFormattableTextComponent sourceLink = new StringTextComponent(sourceWorldId + " - "
-                    + formatBlockPos(lastTransition.getMin(), ",")
-                    + " to " + formatBlockPos(lastTransition.getMax(), ","));
-            String tpCommand = "/execute in " + sourceWorldId + " run tp @s "
-                    + lastTransition.getMin().getX() + " " + (lastTransition.getMin().getY() + 1) + " "
-                    + lastTransition.getMin().getZ();
+            IFormattableTextComponent sourceLink = new StringTextComponent(
+                    sourceWorldId + " - " + formatBlockPos(lastTransition.getMin(), ",") + " to "
+                            + formatBlockPos(lastTransition.getMax(), ","));
+            String tpCommand = "/execute in " + sourceWorldId + " run tp @s " + lastTransition.getMin().getX() + " "
+                    + (lastTransition.getMin().getY() + 1) + " " + lastTransition.getMin().getZ();
             sourceLink.modifyStyle(makeCommandLink(tpCommand, "Click to teleport"));
 
             sendKeyValuePair(source, "Source", sourceLink);
@@ -123,10 +117,8 @@ public class SpatialStorageCommand implements ISubCommand {
             return;
         }
 
-        String teleportCommand = getTeleportCommand(
-                SpatialStorageDimensionIds.WORLD_ID.func_240901_a_(),
-                plot.getOrigin()
-        );
+        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.func_240901_a_(),
+                plot.getOrigin());
 
         Commands commandManager = ServerLifecycleHooks.getCurrentServer().getCommandManager();
         commandManager.handleCommand(source, teleportCommand);
@@ -135,11 +127,8 @@ public class SpatialStorageCommand implements ISubCommand {
     private static void sendKeyValuePair(CommandSource source, String label, ITextComponent value) {
         source.sendFeedback(
                 new StringTextComponent("")
-                        .append(new StringTextComponent(label + ": ").mergeStyle(TextFormatting.BOLD))
-                        .append(value)
-                ,
-                true
-        );
+                        .append(new StringTextComponent(label + ": ").mergeStyle(TextFormatting.BOLD)).append(value),
+                true);
     }
 
     private static void sendKeyValuePair(CommandSource source, String label, String value) {
@@ -172,10 +161,8 @@ public class SpatialStorageCommand implements ISubCommand {
             ITextComponent tpLink = new StringTextComponent("Origin: " + origin)
                     .modifyStyle(makeCommandLink("/ae2 spatial tp " + plot.getId(), "Click to teleport into plot"));
 
-            IFormattableTextComponent message = new StringTextComponent("")
-                    .append(infoLink)
-                    .appendString(" Size: " + size + " ")
-                    .append(tpLink);
+            IFormattableTextComponent message = new StringTextComponent("").append(infoLink)
+                    .appendString(" Size: " + size + " ").append(tpLink);
 
             sender.sendFeedback(message, true);
         }

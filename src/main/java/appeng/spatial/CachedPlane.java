@@ -18,10 +18,13 @@
 
 package appeng.spatial;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
+import appeng.api.movable.IMovableHandler;
+import appeng.api.movable.IMovableRegistry;
+import appeng.api.util.AEPartLocation;
+import appeng.api.util.WorldCoord;
+import appeng.core.AELog;
+import appeng.core.Api;
+import appeng.core.worlddata.WorldData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -29,7 +32,6 @@ import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.SectionPos;
 import net.minecraft.world.EmptyBlockReader;
 import net.minecraft.world.ITickList;
 import net.minecraft.world.NextTickListEntry;
@@ -38,15 +40,11 @@ import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.lighting.WorldLightManager;
 import net.minecraft.world.server.ServerTickList;
 import net.minecraft.world.server.ServerWorld;
-
-import appeng.api.movable.IMovableHandler;
-import appeng.api.movable.IMovableRegistry;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.WorldCoord;
-import appeng.core.AELog;
-import appeng.core.Api;
-import appeng.core.worlddata.WorldData;
 import net.minecraft.world.server.ServerWorldLightManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class CachedPlane {
     private final int x_size;

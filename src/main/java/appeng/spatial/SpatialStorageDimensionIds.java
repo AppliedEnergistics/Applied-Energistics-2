@@ -16,33 +16,39 @@ public final class SpatialStorageDimensionIds {
 
     /**
      * ID of the {@link DimensionType} used for the spatial storage world.
-     * <p>This is defined in {@link DimensionTypeMixin}.
+     * <p>
+     * This is defined in {@link DimensionTypeMixin}.
      */
     public static final RegistryKey<DimensionType> DIMENSION_TYPE_ID = RegistryKey
             .func_240903_a_(Registry.DIMENSION_TYPE_KEY, AppEng.makeId("spatial_storage"));
 
     /**
-     * ID of the {@link net.minecraft.world.gen.ChunkGenerator} used for the spatial storage world.
+     * ID of the {@link net.minecraft.world.gen.ChunkGenerator} used for the spatial
+     * storage world.
      */
     public static final ResourceLocation CHUNK_GENERATOR_ID = AppEng.makeId("spatial_storage");
 
     /**
-     * ID of the {@link net.minecraft.world.biome.Biome} used for the spatial storage world.
+     * ID of the {@link net.minecraft.world.biome.Biome} used for the spatial
+     * storage world.
      */
     public static final ResourceLocation BIOME_ID = AppEng.makeId("spatial_storage");
 
     /**
      * ID of the {@link Dimension} used for the spatial storage dimension.
-     * <p>This is defined in <code>data/minecraft/dimension/appliedenergistics2/spatial_storage.json</code>
+     * <p>
+     * This is defined in
+     * <code>data/minecraft/dimension/appliedenergistics2/spatial_storage.json</code>
      */
-    public static final RegistryKey<Dimension> DIMENSION_ID = RegistryKey
-            .func_240903_a_(Registry.DIMENSION_KEY, AppEng.makeId("spatial_storage"));
+    public static final RegistryKey<Dimension> DIMENSION_ID = RegistryKey.func_240903_a_(Registry.DIMENSION_KEY,
+            AppEng.makeId("spatial_storage"));
 
     /**
-     * ID of the {@link World} that is instantiated from the dimension/dimension type.
+     * ID of the {@link World} that is instantiated from the dimension/dimension
+     * type.
      */
-    public static final RegistryKey<World> WORLD_ID = RegistryKey
-            .func_240903_a_(Registry.WORLD_KEY, AppEng.makeId("spatial_storage"));
+    public static final RegistryKey<World> WORLD_ID = RegistryKey.func_240903_a_(Registry.WORLD_KEY,
+            AppEng.makeId("spatial_storage"));
 
     private SpatialStorageDimensionIds() {
     }

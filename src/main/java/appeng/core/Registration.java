@@ -688,8 +688,8 @@ final class Registration {
                 MeteoriteStructure.INSTANCE.setRegistryName(MeteoriteStructure.ID),
                 GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
 
-        Registry.register(Registry.CHUNK_GENERATOR_CODEC,
-                SpatialStorageDimensionIds.CHUNK_GENERATOR_ID, SpatialStorageChunkGenerator.CODEC);
+        Registry.register(Registry.CHUNK_GENERATOR_CODEC, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+                SpatialStorageChunkGenerator.CODEC);
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> evt) {

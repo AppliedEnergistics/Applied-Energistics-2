@@ -48,7 +48,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     private static final String TAG_PLOT_ID = "plot_id";
 
     /**
-     * This is only stored in the itemstack to display in the tooltip on the client-side.
+     * This is only stored in the itemstack to display in the tooltip on the
+     * client-side.
      */
     private static final String TAG_PLOT_SIZE = "plot_size";
 
@@ -127,12 +128,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
 
         // Store some information about this transition in the plot
-        TransitionInfo info = new TransitionInfo(
-                w.func_234923_W_().func_240901_a_(),
-                min.getBlockPos(),
-                max.getBlockPos(),
-                Instant.now()
-        );
+        TransitionInfo info = new TransitionInfo(w.func_234923_W_().func_240901_a_(), min.getBlockPos(),
+                max.getBlockPos(), Instant.now());
         manager.setLastTransition(plot.getId(), info);
 
         try {
@@ -144,13 +141,13 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
                 if (targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize) {
                     BlockPos offset = plot.getOrigin();
 
-                        this.setStoredDimension(is, plot.getId(), scale);
-                        SpatialStorageHelper.getInstance().swapRegions(w, min.x + 1, min.y + 1, min.z + 1, cellWorld,
-                                offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
+                    this.setStoredDimension(is, plot.getId(), scale);
+                    SpatialStorageHelper.getInstance().swapRegions(w, min.x + 1, min.y + 1, min.z + 1, cellWorld,
+                            offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
 
-                        return new TransitionResult(true, 0);
-                    }
+                    return new TransitionResult(true, 0);
                 }
+            }
 
             return new TransitionResult(false, 0);
         } finally {
