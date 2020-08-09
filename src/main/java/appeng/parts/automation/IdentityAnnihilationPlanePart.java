@@ -28,15 +28,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
-import appeng.api.util.AEPartLocation;
 import appeng.items.parts.PartModels;
 
 public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {

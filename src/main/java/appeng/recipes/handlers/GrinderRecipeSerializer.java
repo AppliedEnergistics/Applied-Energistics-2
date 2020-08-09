@@ -20,7 +20,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
 
 public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>

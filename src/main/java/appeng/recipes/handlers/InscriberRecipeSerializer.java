@@ -14,7 +14,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.api.features.InscriberProcessType;
-import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
 
 public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
