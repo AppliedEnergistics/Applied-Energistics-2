@@ -1,5 +1,4 @@
 {
-  "loader": "appliedenergistics2:uvlightmap",
   "parent": "block/block",
   "textures": {
     "block": "block/stone",
@@ -42,50 +41,32 @@
         "down": {
           "texture": "#quartz",
           "cullface": "down",
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         },
         "east": {
           "texture": "#quartz",
           "cullface": "east",
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         },
         "north": {
           "texture": "#quartz",
           "cullface": "north",
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         },
         "south": {
           "texture": "#quartz",
           "cullface": "south",
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         },
         "up": {
           "texture": "#quartz",
           "cullface": "up",
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         },
         "west": {
           "texture": "#quartz",
           "cullface": "west",
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         }
       },
       "from": [0, 0, 0],

@@ -34,8 +34,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -193,7 +191,7 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
                     vec.setX(vec.getX() + 0.5f);
                     vec.setY(vec.getY() + 0.5f);
                     vec.setZ(vec.getZ() + 0.5f);
-                    return new float[] { vec.getX(), vec.getY(), vec.getZ() };
+                    return new float[] { snap(vec.getX()), snap(vec.getY()), snap(vec.getZ()) };
                 case 4:
                     Vector4f vecc = new Vector4f(fs[0], fs[1], fs[2], fs[3]);
                     vecc.setX(vecc.getX() - 0.5f);
@@ -203,11 +201,30 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
                     vecc.setX(vecc.getX() + 0.5f);
                     vecc.setY(vecc.getY() + 0.5f);
                     vecc.setZ(vecc.getZ() + 0.5f);
-                    return new float[] { vecc.getX(), vecc.getY(), vecc.getZ(), vecc.getW() };
+                    return new float[] { snap(vecc.getX()), snap(vecc.getY()), snap(vecc.getZ()), snap(vecc.getW()) };
 
                 default:
                     return fs;
             }
+        }
+
+        /**
+         * This is the same value used by Vanilla's AO lighter.
+         */
+        private static final float EPS = 0.0001f;
+
+        /**
+         * This tries to snap the coordinate to the edges of the block frame, because
+         * Vanilla uses direct equals comparisons to 0 and 1 for checking if a face
+         * extends fully towards the edge. This is used primarily for AO calculations.
+         */
+        private static float snap(float x) {
+            if (Math.abs(x) <= EPS) {
+                return 0f;
+            } else if (Math.abs(x - 1) <= EPS) {
+                return 1f;
+            }
+            return x;
         }
 
         private float[] transformNormal(float[] fs) {
@@ -220,7 +237,7 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
                     case 4:
                         Vector4f vec4 = new Vector4f(fs[0], fs[1], fs[2], fs[3]);
                         vec4.transform(this.f2r.getMat());
-                        return new float[] { vec4.getX(), vec4.getY(), vec4.getZ(), 0 };
+                        return new float[] { snap(vec4.getX()), snap(vec4.getY()), snap(vec4.getZ()), 0 };
 
                     default:
                         return fs;

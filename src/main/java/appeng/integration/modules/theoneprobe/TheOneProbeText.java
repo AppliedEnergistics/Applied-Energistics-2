@@ -37,7 +37,7 @@ public enum TheOneProbeText {
     }
 
     public String getUnlocalized() {
-        return this.root + '.' + this.name().toLowerCase(Locale.ENGLISH);
+        return this.root + '.' + this.name().toLowerCase(Locale.ROOT);
     }
 
 }

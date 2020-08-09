@@ -11,7 +11,14 @@
     "DimensionStructuresSettingsMixin",
     "StructureAccessor"
   ],
-  "client": ["spatial.SkyRenderMixin", "spatial.SkyPropertiesMixin"],
+  "client": [
+    "spatial.SkyRenderMixin",
+    "spatial.SkyPropertiesMixin",
+    "unlitquad.ModelBakeryMixin",
+    "unlitquad.BlockModelMixin",
+    "unlitquad.BlockPartFaceDeserializerMixin",
+    "unlitquad.BakedQuadAccessor"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

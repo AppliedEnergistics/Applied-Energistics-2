@@ -1,6 +1,8 @@
 
 package appeng.client;
 
+import java.util.Locale;
+
 import org.lwjgl.glfw.GLFW;
 
 public enum ActionKey {
@@ -13,7 +15,7 @@ public enum ActionKey {
     }
 
     public String getTranslationKey() {
-        return "key." + this.name().toLowerCase() + ".desc";
+        return "key." + this.name().toLowerCase(Locale.ROOT) + ".desc";
     }
 
     public int getDefaultKey() {

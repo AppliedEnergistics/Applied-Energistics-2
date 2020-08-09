@@ -18,6 +18,8 @@
 
 package appeng.client.render;
 
+import java.util.Locale;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.util.Direction;
@@ -111,6 +113,6 @@ public enum FacingToRotation implements IStringSerializable {
 
     @Override
     public String getString() {
-        return name().toLowerCase();
+        return name().toLowerCase(Locale.ROOT);
     }
 }

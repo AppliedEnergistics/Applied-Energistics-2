@@ -19,6 +19,7 @@
 package appeng.client.render.cablebus;
 
 import java.util.EnumMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
@@ -74,7 +75,7 @@ public enum CableCoreType {
 
     public RenderMaterial getTexture(AEColor color) {
         return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-                new ResourceLocation(AppEng.MOD_ID, this.textureFolder + "/" + color.name().toLowerCase()));
+                new ResourceLocation(AppEng.MOD_ID, this.textureFolder + "/" + color.name().toLowerCase(Locale.ROOT)));
     }
 
 }
