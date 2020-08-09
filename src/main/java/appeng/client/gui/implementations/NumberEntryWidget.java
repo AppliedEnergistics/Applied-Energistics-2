@@ -1,5 +1,7 @@
 package appeng.client.gui.implementations;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.LongConsumer;
 
@@ -33,14 +35,7 @@ public class NumberEntryWidget implements ITickingWidget {
 
     private final NumberBox level;
     private final NumberEntryType type;
-    private Button plus1;
-    private Button plus10;
-    private Button plus100;
-    private Button plus1000;
-    private Button minus1;
-    private Button minus10;
-    private Button minus100;
-    private Button minus1000;
+    private List<Button> buttons;
 
     public NumberEntryWidget(AEBaseScreen<?> parent, int x, int y, int width, int height, NumberEntryType type,
             LongConsumer changeListener) {
@@ -63,14 +58,7 @@ public class NumberEntryWidget implements ITickingWidget {
 
     public void setActive(boolean active) {
         this.level.setEnabled(active);
-        this.plus1.active = active;
-        this.plus10.active = active;
-        this.plus100.active = active;
-        this.plus1000.active = active;
-        this.minus1.active = active;
-        this.minus10.active = active;
-        this.minus100.active = active;
-        this.minus1000.active = active;
+        this.buttons.forEach(b -> b.active = active);
     }
 
     public void setTextFieldBounds(int x, int y, int width) {
@@ -93,18 +81,23 @@ public class NumberEntryWidget implements ITickingWidget {
         int left = parent.getGuiLeft() + x;
         int top = parent.getGuiTop() + y;
 
-        addButton.accept(this.plus1 = new Button(left, top, 22, 20, PLUS /* + a */, btn -> addQty(a)));
-        addButton.accept(this.plus10 = new Button(left + 28, top, 28, 20, PLUS /* + b */, btn -> addQty(b)));
-        addButton.accept(this.plus100 = new Button(left + 62, top, 32, 20, PLUS /* + c */, btn -> addQty(c)));
-        addButton.accept(this.plus1000 = new Button(left + 100, top, 38, 20, PLUS/* + d */, btn -> addQty(d)));
+        List<Button> buttons = new ArrayList<>(8);
+
+        buttons.add(new Button(left, top, 22, 20, makeLabel(PLUS, a), btn -> addQty(a)));
+        buttons.add(new Button(left + 28, top, 28, 20, makeLabel(PLUS, b), btn -> addQty(b)));
+        buttons.add(new Button(left + 62, top, 32, 20, makeLabel(PLUS, c), btn -> addQty(c)));
+        buttons.add(new Button(left + 100, top, 38, 20, makeLabel(PLUS, d), btn -> addQty(d)));
 
         // Placing this here will give a sensible tab order
         addChildren.accept(this.level);
 
-        addButton.accept(this.minus1 = new Button(left, top + 42, 22, 20, MINUS /* + a */, btn -> addQty(-a)));
-        addButton.accept(this.minus10 = new Button(left + 28, top + 42, 28, 20, MINUS /* + b */, btn -> addQty(-b)));
-        addButton.accept(this.minus100 = new Button(left + 62, top + 42, 32, 20, MINUS /* + c */, btn -> addQty(-c)));
-        addButton.accept(this.minus1000 = new Button(left + 100, top + 42, 38, 20, MINUS /* + d */, btn -> addQty(-d)));
+        buttons.add(new Button(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-a)));
+        buttons.add(new Button(left + 28, top + 42, 28, 20, makeLabel(MINUS, b), btn -> addQty(-b)));
+        buttons.add(new Button(left + 62, top + 42, 32, 20, makeLabel(MINUS, c), btn -> addQty(-c)));
+        buttons.add(new Button(left + 100, top + 42, 38, 20, makeLabel(MINUS, d), btn -> addQty(-d)));
+
+        this.buttons = buttons;
+        this.buttons.forEach(addButton);
     }
 
     private void addQty(final long i) {
@@ -132,6 +125,10 @@ public class NumberEntryWidget implements ITickingWidget {
     @Override
     public void tick() {
         this.level.tick();
+    }
+
+    private ITextComponent makeLabel(ITextComponent prefix, int amount) {
+        return prefix.copyRaw().appendString(String.valueOf(amount));
     }
 
 }
