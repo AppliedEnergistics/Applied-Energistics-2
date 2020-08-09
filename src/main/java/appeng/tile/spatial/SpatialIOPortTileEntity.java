@@ -18,17 +18,6 @@
 
 package appeng.tile.spatial;
 
-import javax.annotation.Nonnull;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.YesNo;
@@ -52,6 +41,16 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nonnull;
 
 public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements IWorldCallable<Void> {
 
@@ -135,9 +134,13 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
                 if (Math.abs(pr - req) < req * 0.001) {
                     final MENetworkEvent res = gi.postEvent(new MENetworkSpatialEvent(this, req));
                     if (!res.isCanceled()) {
-                        int playerId = -1;
+                        // Prefer player id from security system, but if unavailable, use the
+                        // player who placed the grid node (if any)
+                        int playerId;
                         if (this.getProxy().getSecurity().isAvailable()) {
                             playerId = this.getProxy().getSecurity().getOwner();
+                        } else {
+                            playerId = this.getProxy().getNode().getPlayerID();
                         }
 
                         final TransitionResult tr = sc.doSpatialTransition(cell, serverWorld, spc.getMin(),

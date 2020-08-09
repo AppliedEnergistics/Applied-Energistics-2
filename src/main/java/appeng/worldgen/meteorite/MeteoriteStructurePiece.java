@@ -17,8 +17,8 @@
  */
 package appeng.worldgen.meteorite;
 
-import java.util.Random;
-
+import appeng.core.worlddata.WorldData;
+import appeng.worldgen.meteorite.fallout.FalloutMode;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -30,13 +30,18 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
-import appeng.core.worlddata.WorldData;
-import appeng.worldgen.meteorite.fallout.FalloutMode;
+import java.util.Random;
 
 public class MeteoriteStructurePiece extends StructurePiece {
 
     public static final IStructurePieceType TYPE = IStructurePieceType.register(MeteoriteStructurePiece::new,
             "AE2MTRT");
+
+    public static void register() {
+        // THIS MUST BE CALLED otherwise the static initializer above will not run,
+        // unless world generation is actually invoked, which means that chunks may
+        // be loaded without this being registered as a structure piece!
+    }
 
     private PlacedMeteoriteSettings settings;
 

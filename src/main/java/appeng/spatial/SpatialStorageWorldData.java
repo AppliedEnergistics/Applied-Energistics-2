@@ -1,14 +1,16 @@
 package appeng.spatial;
 
 import appeng.core.AELog;
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.List;
 
 /**
  * Extra data attached to the spatial storage world.
@@ -27,12 +29,6 @@ public class SpatialStorageWorldData extends WorldSavedData {
 
     private static final String TAG_PLOTS = "plots";
 
-    private static final String TAG_PLOT_ID = "id";
-
-    private static final String TAG_PLOT_SIZE = "size";
-
-    private static final String TAG_PLOT_OWNER = "owner";
-
     private final Int2ObjectOpenHashMap<SpatialStoragePlot> plots = new Int2ObjectOpenHashMap<>();
 
     public SpatialStorageWorldData() {
@@ -41,6 +37,10 @@ public class SpatialStorageWorldData extends WorldSavedData {
 
     public SpatialStoragePlot getPlotById(int id) {
         return plots.get(id);
+    }
+
+    public List<SpatialStoragePlot> getPlots() {
+        return ImmutableList.copyOf(plots.values());
     }
 
     public SpatialStoragePlot allocatePlot(BlockPos size, int owner) {
@@ -82,16 +82,12 @@ public class SpatialStorageWorldData extends WorldSavedData {
 
         ListNBT plotsTag = tag.getList(TAG_PLOTS, Constants.NBT.TAG_COMPOUND);
         for (INBT plotTag : plotsTag) {
-            CompoundNBT plotCompound = (CompoundNBT) plotTag;
+            SpatialStoragePlot plot = SpatialStoragePlot.fromTag((CompoundNBT) plotTag);
 
-            int plotId = plotCompound.getInt(TAG_PLOT_ID);
-            if (plots.containsKey(plotId)) {
-                AELog.warn("Overwriting duplicate plot id %s", plotId);
+            if (plots.containsKey(plot.getId())) {
+                AELog.warn("Overwriting duplicate plot id %s", plot.getId());
             }
-
-            BlockPos plotSize = NBTUtil.readBlockPos(plotCompound.getCompound(TAG_PLOT_SIZE));
-            int plotOwner = plotCompound.getInt(TAG_PLOT_OWNER);
-            plots.put(plotId, new SpatialStoragePlot(plotId, plotSize, plotOwner));
+            plots.put(plot.getId(), plot);
         }
     }
 
@@ -101,11 +97,7 @@ public class SpatialStorageWorldData extends WorldSavedData {
 
         ListNBT plotTags = new ListNBT();
         for (SpatialStoragePlot plot : plots.values()) {
-            CompoundNBT nbt = new CompoundNBT();
-            nbt.putInt(TAG_PLOT_ID, plot.getId());
-            nbt.putInt(TAG_PLOT_OWNER, plot.getOwner());
-            nbt.put(TAG_PLOT_SIZE, NBTUtil.writeBlockPos(plot.getSize()));
-            plotTags.add(nbt);
+            plotTags.add(plot.toTag());
         }
         tag.put(TAG_PLOTS, plotTags);
 

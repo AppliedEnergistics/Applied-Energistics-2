@@ -27,6 +27,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Allocates and manages plots for spatial storage in the spatial storage world.
@@ -75,6 +76,13 @@ public final class SpatialStoragePlotManager {
      */
     public void setLastTransition(int plotId, TransitionInfo info) {
         getWorldData().setLastTransition(plotId, info);
+    }
+
+    /**
+     * Returns an immutable list of all plots.
+     */
+    public List<SpatialStoragePlot> getPlots() {
+        return getWorldData().getPlots();
     }
 
     public void freePlot(int plotId, boolean resetBlocks) {

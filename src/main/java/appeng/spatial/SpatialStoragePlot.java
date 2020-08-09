@@ -1,7 +1,9 @@
 package appeng.spatial;
 
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
@@ -9,6 +11,14 @@ import javax.annotation.Nullable;
  * A plot inside the storage cell world that is assigned to a specific storage cell.
  */
 public class SpatialStoragePlot {
+
+    private static final String TAG_ID = "id";
+
+    private static final String TAG_SIZE = "size";
+
+    private static final String TAG_OWNER = "owner";
+
+    private static final String TAG_LAST_TRANSITION = "last_transition";
 
     private static final int MAX_SIZE = 512;
 
@@ -111,6 +121,29 @@ public class SpatialStoragePlot {
         posz -= 64;
 
         return new BlockPos(posx, 64, posz);
+    }
+
+    public CompoundNBT toTag() {
+        CompoundNBT tag = new CompoundNBT();
+        tag.putInt(TAG_ID, id);
+        tag.put(TAG_SIZE, NBTUtil.writeBlockPos(size));
+        tag.putInt(TAG_OWNER, owner);
+        if (lastTransition != null) {
+            tag.put(TAG_LAST_TRANSITION, lastTransition.toTag());
+        }
+        return tag;
+    }
+
+    public static SpatialStoragePlot fromTag(CompoundNBT tag) {
+        int id = tag.getInt(TAG_ID);
+        BlockPos size = NBTUtil.readBlockPos(tag.getCompound(TAG_SIZE));
+        int ownerId = tag.getInt(TAG_OWNER);
+        SpatialStoragePlot plot = new SpatialStoragePlot(id, size, ownerId);
+
+        if (tag.contains(TAG_LAST_TRANSITION, Constants.NBT.TAG_COMPOUND)) {
+            plot.lastTransition = TransitionInfo.fromTag(tag.getCompound(TAG_LAST_TRANSITION));
+        }
+        return plot;
     }
 
 }
