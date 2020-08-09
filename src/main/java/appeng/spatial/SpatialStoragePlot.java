@@ -1,12 +1,13 @@
 package appeng.spatial;
 
-import javax.annotation.Nullable;
+import java.util.Locale;
 
-import org.apache.commons.lang3.tuple.Pair;
+import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.util.Constants;
 
 /**
@@ -25,7 +26,7 @@ public class SpatialStoragePlot {
 
     private static final int REGION_SIZE = 512;
 
-    private static final int MAX_SIZE = 512;
+    public static final int MAX_SIZE = 128;
 
     /**
      * Id of the plot.
@@ -58,7 +59,7 @@ public class SpatialStoragePlot {
         if (size.getX() < 1 || size.getY() < 1 || size.getZ() < 1) {
             throw new IllegalArgumentException("Plot size " + size + " is smaller than minimum size.");
         }
-        if (size.getX() > MAX_SIZE || size.getY() >= MAX_SIZE || size.getZ() >= MAX_SIZE) {
+        if (size.getX() > MAX_SIZE || size.getY() > MAX_SIZE || size.getZ() > MAX_SIZE) {
             throw new IllegalArgumentException("Plot size " + size + " exceeds maximum size of " + MAX_SIZE);
         }
     }
@@ -76,6 +77,11 @@ public class SpatialStoragePlot {
         return size;
     }
 
+    /**
+     * Returns the AE player id of the owner of this plot, or -1 if unknown.
+     * 
+     * @see appeng.core.worlddata.IWorldPlayerData
+     */
     public int getOwner() {
         return owner;
     }
@@ -148,21 +154,13 @@ public class SpatialStoragePlot {
     }
 
     /**
-     * The region file containing this plot
-     * 
-     * @return a Pair of x and z coordinates
+     * Returns the filename of the region in the world save containing this plot.
      */
-    public Pair<Integer, Integer> getRegion() {
+    public String getRegionFilename() {
         BlockPos origin = this.getOrigin();
-        int posX = origin.getX();
-        int posZ = origin.getZ();
+        ChunkPos originChunk = new ChunkPos(origin);
 
-        // Shift block pos by 4 to get the chunk pos
-        // Shift chunk pos by another 5 to region pos
-        posX >>= 9;
-        posZ >>= 9;
-
-        return Pair.of(posX, posZ);
+        return String.format(Locale.ROOT, "r.%d.%d.mca", originChunk.getRegionCoordX(), originChunk.getRegionCoordZ());
     }
 
     public CompoundNBT toTag() {

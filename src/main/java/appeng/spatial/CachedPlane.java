@@ -18,13 +18,10 @@
 
 package appeng.spatial;
 
-import appeng.api.movable.IMovableHandler;
-import appeng.api.movable.IMovableRegistry;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.WorldCoord;
-import appeng.core.AELog;
-import appeng.core.Api;
-import appeng.core.worlddata.WorldData;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -42,9 +39,13 @@ import net.minecraft.world.server.ServerTickList;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.ServerWorldLightManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
+import appeng.api.movable.IMovableHandler;
+import appeng.api.movable.IMovableRegistry;
+import appeng.api.util.AEPartLocation;
+import appeng.api.util.WorldCoord;
+import appeng.core.AELog;
+import appeng.core.Api;
+import appeng.core.worlddata.WorldData;
 
 public class CachedPlane {
     private final int x_size;

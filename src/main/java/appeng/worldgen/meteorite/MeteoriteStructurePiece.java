@@ -17,8 +17,8 @@
  */
 package appeng.worldgen.meteorite;
 
-import appeng.core.worlddata.WorldData;
-import appeng.worldgen.meteorite.fallout.FalloutMode;
+import java.util.Random;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -30,7 +30,8 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
-import java.util.Random;
+import appeng.core.worlddata.WorldData;
+import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructurePiece extends StructurePiece {
 

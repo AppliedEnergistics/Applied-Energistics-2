@@ -18,16 +18,10 @@
 
 package appeng.items.storage;
 
-import appeng.api.implementations.TransitionResult;
-import appeng.api.implementations.items.ISpatialStorageCell;
-import appeng.api.util.WorldCoord;
-import appeng.core.AELog;
-import appeng.core.localization.GuiText;
-import appeng.items.AEBaseItem;
-import appeng.spatial.SpatialStorageHelper;
-import appeng.spatial.SpatialStoragePlot;
-import appeng.spatial.SpatialStoragePlotManager;
-import appeng.spatial.TransitionInfo;
+import java.time.Instant;
+import java.util.List;
+import java.util.Locale;
+
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -40,9 +34,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Locale;
+import appeng.api.implementations.items.ISpatialStorageCell;
+import appeng.api.util.WorldCoord;
+import appeng.core.AELog;
+import appeng.core.localization.GuiText;
+import appeng.items.AEBaseItem;
+import appeng.spatial.SpatialStorageHelper;
+import appeng.spatial.SpatialStoragePlot;
+import appeng.spatial.SpatialStoragePlotManager;
+import appeng.spatial.TransitionInfo;
 
 public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorageCell {
     private static final String TAG_PLOT_ID = "plot_id";
@@ -111,19 +111,34 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public TransitionResult doSpatialTransition(final ItemStack is, final ServerWorld w, final WorldCoord min,
+    public boolean doSpatialTransition(final ItemStack is, final ServerWorld w, final WorldCoord min,
             final WorldCoord max, int playerId) {
         final int targetX = max.x - min.x - 1;
         final int targetY = max.y - min.y - 1;
         final int targetZ = max.z - min.z - 1;
         final int maxSize = this.getMaxStoredDim(is);
+        if (targetX > maxSize && targetY > maxSize && targetZ > maxSize) {
+            AELog.info(
+                    "Failing spatial transition because the transfer area (%dx%dx%d) exceeds the cell capacity (%s).",
+                    targetX, targetY, targetZ, maxSize);
+            return false;
+        }
 
         final BlockPos targetSize = new BlockPos(targetX, targetY, targetZ);
 
         SpatialStoragePlotManager manager = SpatialStoragePlotManager.INSTANCE;
 
         SpatialStoragePlot plot = SpatialStoragePlotManager.INSTANCE.getPlot(this.getAllocatedPlotId(is));
-        if (plot == null) {
+        if (plot != null) {
+            // Check that the existing plot has the right size
+            if (!plot.getSize().equals(targetSize)) {
+                AELog.info(
+                        "Failing spatial transition because the transfer area (%dx%dx%d) does not match the spatial storage plot's size (%s).",
+                        targetX, targetY, targetZ, plot.getSize());
+                return false;
+            }
+        } else {
+            // Otherwise allocate a new one
             plot = manager.allocatePlot(targetSize, playerId);
         }
 
@@ -135,21 +150,13 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         try {
             ServerWorld cellWorld = manager.getWorld();
 
-            BlockPos scale = plot.getSize();
+            BlockPos offset = plot.getOrigin();
 
-            if (scale.equals(targetSize)) {
-                if (targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize) {
-                    BlockPos offset = plot.getOrigin();
+            this.setStoredDimension(is, plot.getId(), plot.getSize());
+            SpatialStorageHelper.getInstance().swapRegions(w, min.x + 1, min.y + 1, min.z + 1, cellWorld, offset.getX(),
+                    offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
 
-                    this.setStoredDimension(is, plot.getId(), scale);
-                    SpatialStorageHelper.getInstance().swapRegions(w, min.x + 1, min.y + 1, min.z + 1, cellWorld,
-                            offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
-
-                    return new TransitionResult(true, 0);
-                }
-            }
-
-            return new TransitionResult(false, 0);
+            return true;
         } finally {
             // clean up newly created dimensions that failed transfer
             if (this.getAllocatedPlotId(is) == -1) {
@@ -158,7 +165,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
     }
 
-    private void setStoredDimension(final ItemStack is, int plotId, BlockPos size) {
+    public void setStoredDimension(final ItemStack is, int plotId, BlockPos size) {
         final CompoundNBT c = is.getOrCreateTag();
         c.putInt(TAG_PLOT_ID, plotId);
         c.putLong(TAG_PLOT_SIZE, size.toLong());

@@ -18,10 +18,20 @@
 
 package appeng.tile.spatial;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -41,16 +51,6 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.items.IItemHandler;
-
-import javax.annotation.Nonnull;
 
 public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements IWorldCallable<Void> {
 
@@ -143,9 +143,9 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
                             playerId = this.getProxy().getNode().getPlayerID();
                         }
 
-                        final TransitionResult tr = sc.doSpatialTransition(cell, serverWorld, spc.getMin(),
-                                spc.getMax(), playerId);
-                        if (tr.success) {
+                        boolean success = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
+                                playerId);
+                        if (success) {
                             energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);
                             this.inv.setStackInSlot(0, ItemStack.EMPTY);
                             this.inv.setStackInSlot(1, cell);

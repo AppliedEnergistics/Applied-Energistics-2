@@ -1,11 +1,11 @@
 package appeng.spatial;
 
+import java.time.Instant;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-
-import java.time.Instant;
 
 /**
  * Defines the source world and area of a transition into the spatial storage
