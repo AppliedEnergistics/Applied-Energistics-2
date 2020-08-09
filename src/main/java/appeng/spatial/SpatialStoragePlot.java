@@ -1,11 +1,13 @@
 package appeng.spatial;
 
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
-
-import javax.annotation.Nullable;
 
 /**
  * A plot inside the storage cell world that is assigned to a specific storage
@@ -20,6 +22,8 @@ public class SpatialStoragePlot {
     private static final String TAG_OWNER = "owner";
 
     private static final String TAG_LAST_TRANSITION = "last_transition";
+
+    private static final int REGION_SIZE = 512;
 
     private static final int MAX_SIZE = 512;
 
@@ -90,38 +94,75 @@ public class SpatialStoragePlot {
 
     /**
      * The origin of this plot within the spatial storage dimension.
-     *
+     * <p>
+     * To map an integer to a specific position, it uses the following algorithm.
+     * 
+     * The 2 least significant bits determine the sign for the x and z axis. Every
+     * other pack of 2 bits locate the plot within a quadrant of a increasing area
+     * by the bit position.
+     * 
+     * The first 2 bits after the sign address a quadrant within 1024x1024 blocks
+     * (or 4 region files)
+     * 
+     * Every further will continue to double both x and z values. E.g. 2048x2048 for
+     * the 3rd pack and 4096x4096 for the 4th.
+     * 
      * @see #getSize()
      */
     public BlockPos getOrigin() {
         int signBits = id & 0b11;
         int offsetBits = id >> 2;
         int offsetScale = 1;
-        int posx = MAX_SIZE / 2;
-        int posz = MAX_SIZE / 2;
+        int posx = REGION_SIZE / 2;
+        int posz = REGION_SIZE / 2;
 
         // find quadrant
         while (offsetBits != 0) {
-            posx += MAX_SIZE * offsetScale * (offsetBits & 0b01);
-            posz += MAX_SIZE * offsetScale * (offsetBits >> 1 & 0b01);
+            posx += REGION_SIZE * offsetScale * (offsetBits & 0b01);
+            posz += REGION_SIZE * offsetScale * (offsetBits >> 1 & 0b01);
 
             offsetBits >>= 2;
             offsetScale <<= 1;
         }
 
         // mirror in one of 4 directions
-        if ((signBits & 0b01) == 0) {
-            posx *= -1;
-        }
-        if ((signBits & 0b10) == 0) {
+        // First flip the z axis on every increment and then every two the x axis
+        if ((signBits & 0b01) != 0) {
             posz *= -1;
+        }
+        if ((signBits & 0b10) != 0) {
+            posx *= -1;
         }
 
         // offset from cell center
+        //
+        // This is to ensure a 128x128x128 block plot (or 8x8 chunks) is centered within
+        // the region.
+        // This provides 12 chunks around it, so the default chunk loading radius on
+        // servers of 10 will prevent adjacent regions to be generated. As well as a 24
+        // chunks to the next plot.
         posx -= 64;
         posz -= 64;
 
         return new BlockPos(posx, 64, posz);
+    }
+
+    /**
+     * The region file containing this plot
+     * 
+     * @return a Pair of x and z coordinates
+     */
+    public Pair<Integer, Integer> getRegion() {
+        BlockPos origin = this.getOrigin();
+        int posX = origin.getX();
+        int posZ = origin.getZ();
+
+        // Shift block pos by 4 to get the chunk pos
+        // Shift chunk pos by another 5 to region pos
+        posX >>= 9;
+        posZ >>= 9;
+
+        return Pair.of(posX, posZ);
     }
 
     public CompoundNBT toTag() {
