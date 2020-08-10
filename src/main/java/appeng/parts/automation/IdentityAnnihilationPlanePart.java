@@ -32,10 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
-import appeng.api.util.AEPartLocation;
 import appeng.items.parts.PartModels;
 
 public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {

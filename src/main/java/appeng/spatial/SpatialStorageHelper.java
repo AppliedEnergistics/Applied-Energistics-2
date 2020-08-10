@@ -40,13 +40,13 @@ import appeng.api.util.WorldCoord;
 import appeng.core.Api;
 import appeng.core.AppEng;
 
-public class StorageHelper {
+public class SpatialStorageHelper {
 
-    private static StorageHelper instance;
+    private static SpatialStorageHelper instance;
 
-    public static StorageHelper getInstance() {
+    public static SpatialStorageHelper getInstance() {
         if (instance == null) {
-            instance = new StorageHelper();
+            instance = new SpatialStorageHelper();
         }
         return instance;
     }
@@ -99,7 +99,7 @@ public class StorageHelper {
                 ChunkStatus.FULL, true);
 
         if (entity instanceof ServerPlayerEntity
-                && link.dim.getDimensionRegistryKey() == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {
+                && link.dim.getDimensionRegistryKey() == SpatialStorageDimensionIds.DIMENSION_TYPE_ID) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 

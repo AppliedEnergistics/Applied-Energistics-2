@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 import net.fabricmc.api.EnvType;
@@ -104,7 +105,7 @@ class CableBuilder {
         }
 
         return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
-                new Identifier(AppEng.MOD_ID, textureFolder + color.name().toLowerCase()));
+                new Identifier(AppEng.MOD_ID, textureFolder + color.name().toLowerCase(Locale.ROOT)));
     }
 
     /**

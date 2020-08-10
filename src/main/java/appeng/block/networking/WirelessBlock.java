@@ -18,6 +18,8 @@
 
 package appeng.block.networking;
 
+import java.util.Locale;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -52,7 +54,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
 
         @Override
         public String asString() {
-            return this.name().toLowerCase();
+            return this.name().toLowerCase(Locale.ROOT);
         }
     }
 

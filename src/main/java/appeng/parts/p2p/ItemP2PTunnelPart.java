@@ -67,6 +67,11 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
     }
 
     @Override
+    protected float getPowerDrainPerTick() {
+        return POWER_DRAIN;
+    }
+
+    @Override
     public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         this.cachedInv = null;
         this.cachedInvs.clear();
@@ -197,10 +202,6 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
     @Override
     public void addAllAttributes(AttributeList<?> to) {
         to.offer(getDestination(), CacheInfo.NOT_CACHABLE);
-    }
-
-    public float getPowerDrainPerTick() {
-        return POWER_DRAIN;
     }
 
     @Override

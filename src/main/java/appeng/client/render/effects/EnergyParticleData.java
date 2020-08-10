@@ -49,7 +49,7 @@ public class EnergyParticleData implements ParticleEffect {
             reader.expect(' ');
             boolean forItem = reader.readBoolean();
             reader.expect(' ');
-            AEPartLocation direction = AEPartLocation.valueOf(reader.readString().toUpperCase());
+            AEPartLocation direction = AEPartLocation.valueOf(reader.readString().toUpperCase(Locale.ROOT));
             return new EnergyParticleData(forItem, direction);
         }
 
@@ -74,7 +74,8 @@ public class EnergyParticleData implements ParticleEffect {
 
     @Override
     public String asString() {
-        return String.format(Locale.ROOT, "%s %s", forItem ? "true" : "false", direction.name().toLowerCase());
+        return String.format(Locale.ROOT, "%s %s", forItem ? "true" : "false",
+                direction.name().toLowerCase(Locale.ROOT));
     }
 
 }

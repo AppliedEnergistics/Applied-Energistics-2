@@ -25,7 +25,10 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 
-public class StorageCellBiome {
+/**
+ * The single biome used within the spatial storage world.
+ */
+public class SpatialStorageBiome {
 
     public static final Biome INSTANCE = new Biome.Settings()
             .generationSettings(new GenerationSettings.Builder()

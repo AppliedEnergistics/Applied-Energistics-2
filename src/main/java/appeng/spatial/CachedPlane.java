@@ -28,6 +28,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
 import net.minecraft.server.world.ServerChunkManager;
+import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerTickScheduler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
@@ -46,6 +47,7 @@ import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
+import net.minecraft.world.chunk.light.LightingProvider;
 
 public class CachedPlane {
     private final int x_size;
@@ -60,13 +62,13 @@ public class CachedPlane {
     private final Column[][] myColumns;
     private final List<BlockEntity> tiles = new ArrayList<>();
     private final List<ScheduledTick<Block>> ticks = new ArrayList<>();
-    private final World world;
+    private final ServerWorld world;
     private final IMovableRegistry reg = Api.instance().registries().movable();
     private final List<WorldCoord> updates = new ArrayList<>();
     private int verticalBits;
     private final BlockState matrixBlockState;
 
-    public CachedPlane(final World w, final int minX, final int minY, final int minZ, final int maxX, final int maxY,
+    public CachedPlane(final ServerWorld w, final int minX, final int minY, final int minZ, final int maxX, final int maxY,
             final int maxZ) {
 
         Block matrixFrameBlock = Api.instance().definitions().blocks().matrixFrame().maybeBlock().orElse(null);
@@ -301,12 +303,17 @@ public class CachedPlane {
 
     private void updateChunks() {
 
+        LightingProvider lightManager = world.getLightingProvider();
+
         // update shit..
-        for (int x = 0; x < this.cx_size; x++) {
-            for (int z = 0; z < this.cz_size; z++) {
-                final WorldChunk c = this.myChunks[x][z];
-                // FIXME: Light shit
-                c.markDirty();
+        if (lightManager instanceof ServerLightingProvider) {
+            ServerLightingProvider serverLightManager = (ServerLightingProvider) lightManager;
+            for (int x = 0; x < this.cx_size; x++) {
+                for (int z = 0; z < this.cz_size; z++) {
+                    final WorldChunk c = this.myChunks[x][z];
+                    serverLightManager.light(c, false);
+                    c.markDirty();
+                }
             }
         }
 
@@ -320,7 +327,7 @@ public class CachedPlane {
 
                 // FIXME this was sending chunks to players...
                 ChunkDataS2CPacket cdp = new ChunkDataS2CPacket(c, verticalBits, false);
-                ((ServerChunkManager) world.getChunkManager()).threadedAnvilChunkStorage
+                world.getChunkManager().threadedAnvilChunkStorage
                         .getPlayersWatchingChunk(c.getPos(), false).forEach(spe -> spe.networkHandler.sendPacket(cdp));
 
             }
@@ -341,7 +348,6 @@ public class CachedPlane {
 
     private static class BlockStorageData {
         public BlockState state;
-        public int light;
     }
 
     private class Column {
@@ -374,8 +380,6 @@ public class CachedPlane {
             final ChunkSection[] storage = this.c.getSectionArray();
             final ChunkSection extendedBlockStorage = storage[y >> 4];
             extendedBlockStorage.setBlockState(this.x, y & 15, this.z, data.state);
-            // FIXME extendedBlockStorage.setBlockLight( this.x, y & 15, this.z, data.light
-            // );
         }
 
         private void fillData(final int y, BlockStorageData data) {
@@ -383,8 +387,6 @@ public class CachedPlane {
             final ChunkSection extendedblockstorage = storage[y >> 4];
 
             data.state = extendedblockstorage.getBlockState(this.x, y & 15, this.z);
-            // FIXME data.light = extendedblockstorage.getBlockLight( this.x, y & 15, this.z
-            // );
         }
 
         private boolean doNotSkip(final int y) {

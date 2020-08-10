@@ -1,6 +1,3 @@
 {
-  "values": [
-    "#appliedenergistics2:dusts/certus_quartz",
-    "#appliedenergistics2:dusts/nether_quartz"
-  ]
+  "values": ["#appliedenergistics2:dusts/certus_quartz", "#forge:dusts/quartz"]
 }

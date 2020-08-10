@@ -20,6 +20,7 @@ package appeng.client.render.spatial;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -59,7 +60,7 @@ public class SpatialPylonModel implements BasicUnbakedModel {
 
     private static SpriteIdentifier getTexturePath(SpatialPylonTextureType type) {
         return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
-                new Identifier(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase()));
+                new Identifier(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
     }
 
 }

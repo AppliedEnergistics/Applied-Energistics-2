@@ -18,6 +18,8 @@
 
 package appeng.client.render;
 
+import java.util.Locale;
+
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.util.math.Vector4f;
@@ -112,6 +114,6 @@ public enum FacingToRotation implements StringIdentifiable {
 
     @Override
     public String asString() {
-        return name().toLowerCase();
+        return name().toLowerCase(Locale.ROOT);
     }
 }

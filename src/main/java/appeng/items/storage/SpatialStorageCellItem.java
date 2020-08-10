@@ -18,35 +18,39 @@
 
 package appeng.items.storage;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
-
-import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
-import appeng.api.storage.ISpatialDimension;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
-import appeng.spatial.SpatialDimensionManager;
-import appeng.spatial.StorageHelper;
+import appeng.spatial.SpatialStorageHelper;
+import appeng.spatial.SpatialStoragePlot;
+import appeng.spatial.SpatialStoragePlotManager;
+import appeng.spatial.TransitionInfo;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorageCell {
-    private static final String TAG_DIMENSION_ID = "dimension_id";
+    private static final String TAG_PLOT_ID = "plot_id";
+
+    /**
+     * This is only stored in the itemstack to display in the tooltip on the
+     * client-side.
+     */
+    private static final String TAG_PLOT_SIZE = "plot_size";
 
     private final int maxRegion;
 
@@ -58,19 +62,23 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
-            final TooltipContext advancedTooltips) {
-        final RegistryKey<World> worldId = this.getStoredDimension(stack);
-        if (worldId == null) {
+                               final TooltipContext advancedTooltips) {
+        int plotId = this.getAllocatedPlotId(stack);
+        if (plotId == -1) {
             lines.add(GuiText.Unformatted.text().copy().formatted(Formatting.ITALIC));
             lines.add(GuiText.SpatialCapacity.text(maxRegion, maxRegion, maxRegion));
-        } else {
-            SpatialDimensionManager.INSTANCE.addCellDimensionTooltip(worldId, lines);
+            return;
         }
 
-        if (advancedTooltips.isAdvanced()) {
-            if (worldId != null && worldId.getValue() != null) {
-                lines.add(new LiteralText("Dimension: " + worldId.getValue()));
-            }
+        // Add a serial number to allows players to keep different cells apart
+        // Try to make this a little more flavorful.
+        String serialNumber = String.format(Locale.ROOT, "SP-%04d", plotId);
+        lines.add(GuiText.SerialNumber.text(serialNumber));
+
+        CompoundTag tag = stack.getTag();
+        if (tag != null && tag.contains(TAG_PLOT_SIZE, NbtType.LONG)) {
+            BlockPos size = BlockPos.fromLong(tag.getLong(TAG_PLOT_SIZE));
+            lines.add(GuiText.StoredSize.text(size.getX(), size.getY(), size.getZ()));
         }
     }
 
@@ -85,70 +93,80 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public RegistryKey<World> getStoredDimension(final ItemStack is) {
+    public int getAllocatedPlotId(final ItemStack is) {
         final CompoundTag c = is.getTag();
-        if (c != null && c.contains(TAG_DIMENSION_ID)) {
+        if (c != null && c.contains(TAG_PLOT_ID)) {
             try {
-                Identifier worldId = new Identifier(c.getString(TAG_DIMENSION_ID));
-                return RegistryKey.of(Registry.DIMENSION, worldId);
+                int plotId = c.getInt(TAG_PLOT_ID);
+                if (SpatialStoragePlotManager.INSTANCE.getPlot(plotId) == null) {
+                    return -1;
+                }
+                return plotId;
             } catch (Exception e) {
-                AELog.warn("Failed to retrieve storage cell dimension.", e);
+                AELog.warn("Failed to retrieve spatial storage dimension: %s", e);
             }
         }
-        return null;
+        return -1;
     }
 
     @Override
-    public TransitionResult doSpatialTransition(final ItemStack is, final ServerWorld w, final WorldCoord min,
-            final WorldCoord max, int playerId) {
+    public boolean doSpatialTransition(final ItemStack is, final ServerWorld w, final WorldCoord min,
+                                       final WorldCoord max, int playerId) {
         final int targetX = max.x - min.x - 1;
         final int targetY = max.y - min.y - 1;
         final int targetZ = max.z - min.z - 1;
         final int maxSize = this.getMaxStoredDim(is);
+        if (targetX > maxSize && targetY > maxSize && targetZ > maxSize) {
+            AELog.info(
+                    "Failing spatial transition because the transfer area (%dx%dx%d) exceeds the cell capacity (%s).",
+                    targetX, targetY, targetZ, maxSize);
+            return false;
+        }
 
         final BlockPos targetSize = new BlockPos(targetX, targetY, targetZ);
 
-        ISpatialDimension manager = SpatialDimensionManager.INSTANCE;
+        SpatialStoragePlotManager manager = SpatialStoragePlotManager.INSTANCE;
 
-        RegistryKey<World> worldId = this.getStoredDimension(is);
-        if (worldId == null || manager.getWorld(worldId) == null) {
-            worldId = manager.createNewCellDimension(targetSize);
+        SpatialStoragePlot plot = SpatialStoragePlotManager.INSTANCE.getPlot(this.getAllocatedPlotId(is));
+        if (plot != null) {
+            // Check that the existing plot has the right size
+            if (!plot.getSize().equals(targetSize)) {
+                AELog.info(
+                        "Failing spatial transition because the transfer area (%dx%dx%d) does not match the spatial storage plot's size (%s).",
+                        targetX, targetY, targetZ, plot.getSize());
+                return false;
+            }
+        } else {
+            // Otherwise allocate a new one
+            plot = manager.allocatePlot(targetSize, playerId);
         }
 
-        if (worldId == null) {
-            // Failed to create the dimension
-            return new TransitionResult(false, 0);
-        }
+        // Store some information about this transition in the plot
+        TransitionInfo info = new TransitionInfo(w.getRegistryKey().getValue(), min.getBlockPos(),
+                max.getBlockPos(), Instant.now());
+        manager.setLastTransition(plot.getId(), info);
 
         try {
-            if (manager.isCellDimension(worldId)) {
-                ServerWorld cellWorld = manager.getWorld(worldId);
+            ServerWorld cellWorld = manager.getWorld();
 
-                BlockPos scale = manager.getCellDimensionSize(worldId);
+            BlockPos offset = plot.getOrigin();
 
-                if (scale.equals(targetSize)) {
-                    if (targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize) {
-                        BlockPos offset = manager.getCellDimensionOrigin(worldId);
+            this.setStoredDimension(is, plot.getId(), plot.getSize());
+            SpatialStorageHelper.getInstance().swapRegions(w, min.x + 1, min.y + 1, min.z + 1, cellWorld, offset.getX(),
+                    offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
 
-                        this.setStoredDimension(is, worldId);
-                        StorageHelper.getInstance().swapRegions(w, min.x + 1, min.y + 1, min.z + 1, cellWorld,
-                                offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
-
-                        return new TransitionResult(true, 0);
-                    }
-                }
-            }
-            return new TransitionResult(false, 0);
+            return true;
         } finally {
             // clean up newly created dimensions that failed transfer
-            if (manager.isCellDimension(worldId) && this.getStoredDimension(is) == null) {
-                manager.deleteCellDimension(worldId);
+            if (this.getAllocatedPlotId(is) == -1) {
+                manager.freePlot(plot.getId(), true);
             }
         }
     }
 
-    private void setStoredDimension(final ItemStack is, RegistryKey<World> worldId) {
+    public void setStoredDimension(final ItemStack is, int plotId, BlockPos size) {
         final CompoundTag c = is.getOrCreateTag();
-        c.putString(TAG_DIMENSION_ID, worldId.getValue().toString());
+        c.putInt(TAG_PLOT_ID, plotId);
+        c.putLong(TAG_PLOT_SIZE, size.asLong());
     }
 }

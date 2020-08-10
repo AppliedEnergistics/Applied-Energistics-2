@@ -60,7 +60,8 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
         return MODELS.getModels();
     }
 
-    public float getPowerDrainPerTick() {
+    @Override
+    protected float getPowerDrainPerTick() {
         return 2.0f;
     }
 

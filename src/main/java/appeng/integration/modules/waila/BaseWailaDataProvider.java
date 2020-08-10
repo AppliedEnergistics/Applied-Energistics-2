@@ -47,7 +47,7 @@ public abstract class BaseWailaDataProvider implements IComponentProvider, IServ
     }
 
     @Override
-    public void appendServerData(CompoundTag compoundNBT, ServerPlayerEntity serverPlayerEntity, World world,
+    public void appendServerData(CompoundTag CompoundTag, ServerPlayerEntity serverPlayerEntity, World world,
             BlockEntity tileEntity) {
 
     }

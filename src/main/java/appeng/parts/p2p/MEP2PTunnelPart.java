@@ -68,6 +68,11 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
+    protected float getPowerDrainPerTick() {
+        return 2.0f;
+    }
+
+    @Override
     public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         this.outerProxy.readFromNBT(extra);

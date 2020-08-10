@@ -59,6 +59,11 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
     public P2PTunnelPart(final ItemStack is) {
         super(is);
+        this.getProxy().setIdlePowerUsage(this.getPowerDrainPerTick());
+    }
+
+    protected float getPowerDrainPerTick() {
+        return 1.0f;
     }
 
     public TunnelCollection<T> getCollection(final Collection<P2PTunnelPart> collection,

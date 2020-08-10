@@ -1,5 +1,7 @@
 package appeng.client.gui.implementations;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.LongConsumer;
 
@@ -7,19 +9,22 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.NumberBox;
 import appeng.core.AEConfig;
+import net.minecraft.text.Text;
 
 /**
  * A utility widget that consists of a text-field to enter a number with
  * attached buttons to increment/decrement the number in fixed intervals.
  */
 public class NumberEntryWidget implements ITickingWidget {
+
+    private static final Text PLUS = Text.method_30163("+");
+    private static final Text MINUS = Text.method_30163("+");
 
     private final AEBaseScreen<?> parent;
 
@@ -28,14 +33,7 @@ public class NumberEntryWidget implements ITickingWidget {
 
     private final NumberBox level;
     private final NumberEntryType type;
-    private ButtonWidget plus1;
-    private ButtonWidget plus10;
-    private ButtonWidget plus100;
-    private ButtonWidget plus1000;
-    private ButtonWidget minus1;
-    private ButtonWidget minus10;
-    private ButtonWidget minus100;
-    private ButtonWidget minus1000;
+    private List<ButtonWidget> buttons;
 
     public NumberEntryWidget(AEBaseScreen<?> parent, int x, int y, int width, int height, NumberEntryType type,
             LongConsumer changeListener) {
@@ -57,14 +55,7 @@ public class NumberEntryWidget implements ITickingWidget {
 
     public void setActive(boolean active) {
         this.level.active = active;
-        this.plus1.active = active;
-        this.plus10.active = active;
-        this.plus100.active = active;
-        this.plus1000.active = active;
-        this.minus1.active = active;
-        this.minus10.active = active;
-        this.minus100.active = active;
-        this.minus1000.active = active;
+        this.buttons.forEach(b -> b.active = active);
     }
 
     public void setTextFieldBounds(int x, int y, int width) {
@@ -87,25 +78,23 @@ public class NumberEntryWidget implements ITickingWidget {
         int left = parent.getX() + x;
         int top = parent.getY() + y;
 
-        addButton.accept(this.plus1 = new ButtonWidget(left, top, 22, 20, new LiteralText("+" + a), btn -> addQty(a)));
-        addButton.accept(
-                this.plus10 = new ButtonWidget(left + 28, top, 28, 20, new LiteralText("+" + b), btn -> addQty(b)));
-        addButton.accept(
-                this.plus100 = new ButtonWidget(left + 62, top, 32, 20, new LiteralText("+" + c), btn -> addQty(c)));
-        addButton.accept(
-                this.plus1000 = new ButtonWidget(left + 100, top, 38, 20, new LiteralText("+" + d), btn -> addQty(d)));
+        List<ButtonWidget> buttons = new ArrayList<>(8);
+
+        buttons.add(new ButtonWidget(left, top, 22, 20, makeLabel(PLUS, a), btn -> addQty(a)));
+        buttons.add(new ButtonWidget(left + 28, top, 28, 20, makeLabel(PLUS, b), btn -> addQty(b)));
+        buttons.add(new ButtonWidget(left + 62, top, 32, 20, makeLabel(PLUS, c), btn -> addQty(c)));
+        buttons.add(new ButtonWidget(left + 100, top, 38, 20, makeLabel(PLUS, d), btn -> addQty(d)));
 
         // Placing this here will give a sensible tab order
         addChildren.accept(this.level);
 
-        addButton.accept(
-                this.minus1 = new ButtonWidget(left, top + 42, 22, 20, new LiteralText("-" + a), btn -> addQty(-a)));
-        addButton.accept(this.minus10 = new ButtonWidget(left + 28, top + 42, 28, 20, new LiteralText("-" + b),
-                btn -> addQty(-b)));
-        addButton.accept(this.minus100 = new ButtonWidget(left + 62, top + 42, 32, 20, new LiteralText("-" + c),
-                btn -> addQty(-c)));
-        addButton.accept(this.minus1000 = new ButtonWidget(left + 100, top + 42, 38, 20, new LiteralText("-" + d),
-                btn -> addQty(-d)));
+        buttons.add(new ButtonWidget(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-a)));
+        buttons.add(new ButtonWidget(left + 28, top + 42, 28, 20, makeLabel(MINUS, b), btn -> addQty(-b)));
+        buttons.add(new ButtonWidget(left + 62, top + 42, 32, 20, makeLabel(MINUS, c), btn -> addQty(-c)));
+        buttons.add(new ButtonWidget(left + 100, top + 42, 38, 20, makeLabel(MINUS, d), btn -> addQty(-d)));
+
+        this.buttons = buttons;
+        this.buttons.forEach(addButton);
     }
 
     private void addQty(final long i) {
@@ -133,6 +122,10 @@ public class NumberEntryWidget implements ITickingWidget {
     @Override
     public void tick() {
         this.level.tick();
+    }
+
+    private Text makeLabel(Text prefix, int amount) {
+        return prefix.copy().append(String.valueOf(amount));
     }
 
 }
