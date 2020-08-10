@@ -19,6 +19,7 @@
 package appeng.entity;
 
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -41,6 +42,8 @@ import appeng.core.AppEng;
 import appeng.util.Platform;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
+
+    private static final Random RANDOM = new Random();
 
     public static EntityType<ChargedQuartzEntity> TYPE;
 
@@ -135,9 +138,15 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                 }
 
                 materials.fluixCrystal().maybeStack(2).ifPresent(is -> {
-                    final ItemEntity entity = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(),
-                            is);
+                    final double x = Math.floor(this.getPosX()) + .25d + RANDOM.nextDouble() * .5;
+                    final double y = Math.floor(this.getPosY()) + .25d + RANDOM.nextDouble() * .5;
+                    final double z = Math.floor(this.getPosZ()) + .25d + RANDOM.nextDouble() * .5;
+                    final double xSpeed = RANDOM.nextDouble() * .25 - 0.125;
+                    final double ySpeed = RANDOM.nextDouble() * .25 - 0.125;
+                    final double zSpeed = RANDOM.nextDouble() * .25 - 0.125;
 
+                    final ItemEntity entity = new ItemEntity(this.world, x, y, z, is);
+                    entity.setMotion(xSpeed, ySpeed, zSpeed);
                     this.world.addEntity(entity);
                 });
 
