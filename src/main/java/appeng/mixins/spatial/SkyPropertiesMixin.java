@@ -1,4 +1,4 @@
-package appeng.mixins;
+package appeng.mixins.spatial;
 
 import java.util.Optional;
 
@@ -11,8 +11,8 @@ import net.minecraft.client.world.DimensionRenderInfo;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.DimensionType;
 
-import appeng.spatial.SpatialDimensionManager;
-import appeng.spatial.StorageSkyProperties;
+import appeng.spatial.SpatialStorageDimensionIds;
+import appeng.spatial.SpatialStorageSkyProperties;
 
 @Mixin(DimensionRenderInfo.class)
 public class SkyPropertiesMixin {
@@ -20,8 +20,8 @@ public class SkyPropertiesMixin {
     @Inject(method = "func_239215_a_", at = @At("HEAD"), cancellable = true)
     private static void byDimensionType(Optional<RegistryKey<DimensionType>> optional,
             CallbackInfoReturnable<DimensionRenderInfo> ci) {
-        if (optional.orElse(null) == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {
-            ci.setReturnValue(StorageSkyProperties.INSTANCE);
+        if (optional.orElse(null) == SpatialStorageDimensionIds.DIMENSION_TYPE_ID) {
+            ci.setReturnValue(SpatialStorageSkyProperties.INSTANCE);
         }
     }
 

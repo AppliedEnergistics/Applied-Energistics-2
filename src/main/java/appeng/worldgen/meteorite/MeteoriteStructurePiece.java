@@ -38,6 +38,12 @@ public class MeteoriteStructurePiece extends StructurePiece {
     public static final IStructurePieceType TYPE = IStructurePieceType.register(MeteoriteStructurePiece::new,
             "AE2MTRT");
 
+    public static void register() {
+        // THIS MUST BE CALLED otherwise the static initializer above will not run,
+        // unless world generation is actually invoked, which means that chunks may
+        // be loaded without this being registered as a structure piece!
+    }
+
     private PlacedMeteoriteSettings settings;
 
     protected MeteoriteStructurePiece(BlockPos center, float coreRadius, CraterType craterType, FalloutMode fallout,

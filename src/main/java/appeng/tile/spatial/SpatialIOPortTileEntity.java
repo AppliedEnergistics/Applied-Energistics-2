@@ -32,7 +32,6 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -135,14 +134,18 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
                 if (Math.abs(pr - req) < req * 0.001) {
                     final MENetworkEvent res = gi.postEvent(new MENetworkSpatialEvent(this, req));
                     if (!res.isCanceled()) {
-                        int playerId = -1;
+                        // Prefer player id from security system, but if unavailable, use the
+                        // player who placed the grid node (if any)
+                        int playerId;
                         if (this.getProxy().getSecurity().isAvailable()) {
                             playerId = this.getProxy().getSecurity().getOwner();
+                        } else {
+                            playerId = this.getProxy().getNode().getPlayerID();
                         }
 
-                        final TransitionResult tr = sc.doSpatialTransition(cell, serverWorld, spc.getMin(),
-                                spc.getMax(), playerId);
-                        if (tr.success) {
+                        boolean success = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
+                                playerId);
+                        if (success) {
                             energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);
                             this.inv.setStackInSlot(0, ItemStack.EMPTY);
                             this.inv.setStackInSlot(1, cell);

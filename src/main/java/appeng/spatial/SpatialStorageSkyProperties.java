@@ -7,8 +7,11 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * Defines properties for how the sky in the spatial storage world is rendered.
+ */
 @OnlyIn(Dist.CLIENT)
-public class StorageSkyProperties {
+public class SpatialStorageSkyProperties {
 
     // See the fabric version of this to get any idea what its doing
     public static final DimensionRenderInfo INSTANCE = new DimensionRenderInfo(Float.NaN /* disables clouds */, false,

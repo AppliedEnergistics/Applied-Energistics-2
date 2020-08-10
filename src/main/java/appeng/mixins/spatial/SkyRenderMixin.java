@@ -1,4 +1,4 @@
-package appeng.mixins;
+package appeng.mixins.spatial;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.WorldRenderer;
 
 import appeng.client.render.SpatialSkyRender;
-import appeng.spatial.SpatialDimensionManager;
+import appeng.spatial.SpatialStorageDimensionIds;
 
 @Mixin(value = WorldRenderer.class)
 public class SkyRenderMixin {
@@ -23,7 +23,7 @@ public class SkyRenderMixin {
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "renderSky(Lcom/mojang/blaze3d/matrix/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
     public void renderSky(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        if (mc.world.func_234922_V_() == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {
+        if (mc.world.func_234922_V_() == SpatialStorageDimensionIds.DIMENSION_TYPE_ID) {
             SpatialSkyRender.getInstance().render(matrices);
             ci.cancel();
         }

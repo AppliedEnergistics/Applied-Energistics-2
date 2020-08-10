@@ -34,9 +34,10 @@ import net.minecraft.world.ITickList;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.world.lighting.WorldLightManager;
 import net.minecraft.world.server.ServerTickList;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.ServerWorldLightManager;
 
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
@@ -300,12 +301,17 @@ public class CachedPlane {
 
     private void updateChunks() {
 
+        WorldLightManager lightManager = world.getLightManager();
+
         // update shit..
-        for (int x = 0; x < this.cx_size; x++) {
-            for (int z = 0; z < this.cz_size; z++) {
-                final Chunk c = this.myChunks[x][z];
-                // FIXME: Light shit
-                c.markDirty();
+        if (lightManager instanceof ServerWorldLightManager) {
+            ServerWorldLightManager serverLightManager = (ServerWorldLightManager) lightManager;
+            for (int x = 0; x < this.cx_size; x++) {
+                for (int z = 0; z < this.cz_size; z++) {
+                    final Chunk c = this.myChunks[x][z];
+                    serverLightManager.lightChunk(c, false);
+                    c.markDirty();
+                }
             }
         }
 
@@ -317,17 +323,14 @@ public class CachedPlane {
 
                 WorldData.instance().compassData().service().updateArea(this.getWorld(), c);
 
-                // FIXME this was sending chunks to players...
                 SChunkDataPacket cdp = new SChunkDataPacket(c, verticalBits, false);
-                ((ServerChunkProvider) world.getChunkProvider()).chunkManager.getTrackingPlayers(c.getPos(), false)
+                world.getChunkProvider().chunkManager.getTrackingPlayers(c.getPos(), false)
                         .forEach(spe -> spe.connection.sendPacket(cdp));
-
             }
         }
 
         // FIXME check if this makes any sense at all to send changes to players asap
-        ServerChunkProvider serverChunkProvider = (ServerChunkProvider) world.getChunkProvider();
-        serverChunkProvider.tick(() -> false);
+        world.getChunkProvider().tick(() -> false);
     }
 
     List<WorldCoord> getUpdates() {
@@ -340,7 +343,6 @@ public class CachedPlane {
 
     private static class BlockStorageData {
         public BlockState state;
-        public int light;
     }
 
     private class Column {
@@ -373,8 +375,6 @@ public class CachedPlane {
             final ChunkSection[] storage = this.c.getSections();
             final ChunkSection extendedBlockStorage = storage[y >> 4];
             extendedBlockStorage.setBlockState(this.x, y & 15, this.z, data.state);
-            // FIXME extendedBlockStorage.setBlockLight( this.x, y & 15, this.z, data.light
-            // );
         }
 
         private void fillData(final int y, BlockStorageData data) {
@@ -382,8 +382,6 @@ public class CachedPlane {
             final ChunkSection extendedblockstorage = storage[y >> 4];
 
             data.state = extendedblockstorage.getBlockState(this.x, y & 15, this.z);
-            // FIXME data.light = extendedblockstorage.getBlockLight( this.x, y & 15, this.z
-            // );
         }
 
         private boolean doNotSkip(final int y) {

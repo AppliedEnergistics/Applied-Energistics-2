@@ -220,13 +220,15 @@ import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.handlers.GrinderRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
-import appeng.spatial.StorageCellBiome;
-import appeng.spatial.StorageChunkGenerator;
+import appeng.spatial.SpatialStorageBiome;
+import appeng.spatial.SpatialStorageChunkGenerator;
+import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
+import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
 final class Registration {
 
@@ -680,6 +682,8 @@ final class Registration {
                     new ResourceLocation(dimension));
         }
 
+        MeteoriteStructurePiece.register();
+
         ForgeRegistries.BIOMES.forEach(b -> {
             addMeteoriteWorldGen(b);
             addQuartzWorldGen(b);
@@ -739,11 +743,12 @@ final class Registration {
                 MeteoriteStructure.INSTANCE.setRegistryName(MeteoriteStructure.ID),
                 GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
 
-        Registry.register(Registry.CHUNK_GENERATOR_CODEC, AppEng.makeId("storage"), StorageChunkGenerator.CODEC);
+        Registry.register(Registry.CHUNK_GENERATOR_CODEC, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+                SpatialStorageChunkGenerator.CODEC);
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> evt) {
-        evt.getRegistry().register(StorageCellBiome.INSTANCE.setRegistryName(AppEng.makeId("storage")));
+        evt.getRegistry().register(SpatialStorageBiome.INSTANCE.setRegistryName(SpatialStorageDimensionIds.BIOME_ID));
     }
 
     @OnlyIn(Dist.CLIENT)

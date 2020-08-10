@@ -5,15 +5,15 @@
   "refmap": "appliedenergistics2.mixins.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "DimensionTypeMixin",
-    "MinecraftServerMixin",
+    "spatial.DimensionTypeMixin",
+    "spatial.DimensionOptionMixin",
     "ThreadedAnvilChunkStorageAccessor",
     "DimensionStructuresSettingsMixin",
     "StructureAccessor"
   ],
   "client": [
-    "SkyRenderMixin",
-    "SkyPropertiesMixin",
+    "spatial.SkyRenderMixin",
+    "spatial.SkyPropertiesMixin",
     "unlitquad.ModelBakeryMixin",
     "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",
