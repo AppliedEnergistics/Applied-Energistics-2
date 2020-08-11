@@ -20,3 +20,4 @@ accessible method net/minecraft/data/server/BlockLootTableGenerator applyExplosi
 accessible method net/minecraft/world/dimension/DimensionType <init> (Ljava/util/OptionalLong;ZZZZZZZZZILnet/minecraft/util/Identifier;F)V
 
 accessible method net/minecraft/recipe/RecipeManager getAllOfType (Lnet/minecraft/recipe/RecipeType;)Ljava/util/Map;
+

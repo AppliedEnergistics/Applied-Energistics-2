@@ -23,8 +23,8 @@ import net.minecraft.text.Text;
  */
 public class NumberEntryWidget implements ITickingWidget {
 
-    private static final Text PLUS = Text.method_30163("+");
-    private static final Text MINUS = Text.method_30163("+");
+    private static final Text PLUS = Text.of("+");
+    private static final Text MINUS = Text.of("+");
 
     private final AEBaseScreen<?> parent;
 

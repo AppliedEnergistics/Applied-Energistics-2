@@ -59,9 +59,9 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.method_30883(matrices, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()), 8, 6,
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()), 8, 6,
                 4210752);
-        this.textRenderer.method_30883(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
     @Override

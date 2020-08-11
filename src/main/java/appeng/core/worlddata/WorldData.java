@@ -27,7 +27,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 
 import appeng.services.CompassService;
 import appeng.services.compass.CompassThreadFactory;
@@ -62,7 +62,7 @@ public final class WorldData implements IWorldData {
         Preconditions.checkNotNull(overworld);
 
         // Attach shared data to the server's overworld dimension
-        if (overworld.getDimension() != DimensionType.getOverworldDimensionType()) {
+        if (overworld.getRegistryKey() != World.OVERWORLD) {
             throw new IllegalStateException(
                     "The server doesn't have an Overworld dimension we could store our data on!");
         }

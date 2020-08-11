@@ -30,7 +30,7 @@ import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
  */
 public class SpatialStorageBiome {
 
-    public static final Biome INSTANCE = new Biome.Settings()
+    public static final Biome INSTANCE = new Biome.Builder()
             .generationSettings(new GenerationSettings.Builder()
                     .surfaceBuilder(new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_CONFIG))
                     .build())
@@ -39,6 +39,6 @@ public class SpatialStorageBiome {
             .temperature(0.5F).downfall(0.5F)
             .effects(new BiomeEffects.Builder().waterColor(4159204).waterFogColor(329011).fogColor(0).skyColor(0x111111)
                     .build())
-            .parent(null).spawnSettings(new SpawnSettings.Builder().creatureSpawnProbability(0).build()).build();
+            .spawnSettings(new SpawnSettings.Builder().creatureSpawnProbability(0).build()).build();
 
 }

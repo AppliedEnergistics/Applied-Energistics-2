@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import appeng.mixins.FluidTagsAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.block.entity.BlockEntity;
@@ -13,18 +14,13 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -60,8 +56,7 @@ import appeng.util.Platform;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
-    public static final Identifier TAG_BLACKLIST = new Identifier(AppEng.MOD_ID,
-            "blacklisted/fluid_annihilation_plane");
+    public static final Tag.Identified<Fluid> TAG_BLACKLIST = FluidTagsAccessor.register(AppEng.makeId("blacklisted/fluid_annihilation_plane").toString());
 
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
             "part/fluid_annihilation_plane_on");
@@ -217,8 +212,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     private boolean isFluidBlacklisted(Fluid fluid) {
-        Tag<Fluid> tag = FluidTags.getTagGroup().getTagOrEmpty(TAG_BLACKLIST);
-        return fluid.isIn(tag);
+        return fluid.isIn(TAG_BLACKLIST);
     }
 
 }

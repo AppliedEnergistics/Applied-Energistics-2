@@ -74,7 +74,7 @@ public class SlotFluidME extends Slot implements IMEFluidSlot {
     }
 
     @Override
-    public int getMaxStackAmount() {
+    public int getMaxItemCount() {
         return 0;
     }
 

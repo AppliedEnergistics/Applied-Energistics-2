@@ -326,7 +326,7 @@ public class CachedPlane {
                 WorldData.instance().compassData().service().updateArea((ServerWorld) this.getWorld(), c);
 
                 // FIXME this was sending chunks to players...
-                ChunkDataS2CPacket cdp = new ChunkDataS2CPacket(c, verticalBits, false);
+                ChunkDataS2CPacket cdp = new ChunkDataS2CPacket(c, verticalBits);
                 world.getChunkManager().threadedAnvilChunkStorage
                         .getPlayersWatchingChunk(c.getPos(), false).forEach(spe -> spe.networkHandler.sendPacket(cdp));
 

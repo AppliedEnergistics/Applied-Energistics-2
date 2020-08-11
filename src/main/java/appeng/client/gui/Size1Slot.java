@@ -48,13 +48,13 @@ class Size1Slot extends Slot {
     }
 
     @Override
-    public int getMaxStackAmount() {
-        return this.delegate.getMaxStackAmount();
+    public int getMaxItemCount() {
+        return this.delegate.getMaxItemCount();
     }
 
     @Override
-    public int getMaxStackAmount(ItemStack stack) {
-        return this.delegate.getMaxStackAmount(stack);
+    public int getMaxItemCount(ItemStack stack) {
+        return this.delegate.getMaxItemCount(stack);
     }
 
     @Override

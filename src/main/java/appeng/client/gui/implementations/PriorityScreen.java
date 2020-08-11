@@ -62,7 +62,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.method_30883(matrices, GuiText.Priority.text(), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.Priority.text(), 8, 6, 4210752);
     }
 
     @Override

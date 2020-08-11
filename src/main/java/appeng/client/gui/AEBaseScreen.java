@@ -226,7 +226,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
             styledLines.add(lines.get(i).copy().styled(s -> style));
         }
 
-        this.method_30901(matrices, styledLines, x, y);
+        this.renderTooltip(matrices, styledLines, x, y);
     }
 
     @Override
@@ -535,7 +535,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
                         }
                     }
 
-                    if (theSlot.getMaxStackAmount() == 64) {
+                    if (theSlot.getMaxItemCount() == 64) {
                         this.onMouseClick(theSlot, theSlot.id, j, SlotActionType.SWAP);
                         return true;
                     } else {

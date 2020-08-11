@@ -18,9 +18,9 @@
 
 package appeng.spatial;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.api.util.WorldCoord;
+import appeng.core.Api;
+import appeng.core.AppEng;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -30,15 +30,13 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.dimension.DimensionType;
 
-import appeng.api.util.WorldCoord;
-import appeng.core.Api;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpatialStorageHelper {
 
@@ -51,12 +49,20 @@ public class SpatialStorageHelper {
         return instance;
     }
 
+    private final ThreadLocal<TeleportTarget> teleportTarget = new ThreadLocal<>();
+
+    /**
+     * If an entity is currently being teleported, this will return the target within the target dimension.
+     */
+    public TeleportTarget getTeleportTarget() {
+        return teleportTarget.get();
+    }
+
     /**
      * Mostly from dimensional doors.. which mostly got it form X-Comp.
      *
      * @param entity to be teleported entity
      * @param link   destination
-     *
      * @return teleported entity
      */
     private Entity teleportEntity(Entity entity, final TelDestination link) {
@@ -99,16 +105,20 @@ public class SpatialStorageHelper {
                 ChunkStatus.FULL, true);
 
         if (entity instanceof ServerPlayerEntity
-                && link.dim.getDimensionRegistryKey() == SpatialStorageDimensionIds.DIMENSION_TYPE_ID) {
+                && link.dim.getRegistryKey() == SpatialStorageDimensionIds.WORLD_ID) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
-        // FIXME FABRIC new METeleporter(link)
-        float yaw = entity.yaw;
-        entity = entity.moveToWorld(link.dim);
-        entity.yaw = yaw;
-        entity.refreshPositionAfterTeleport(link.x, link.y, link.z);
-        entity.setVelocity(0, 0, 0);
+        // Store in a threadlocal so that EntityMixin can return it for the Vanilla logic to use
+        teleportTarget.set(new TeleportTarget(new Vec3d(link.x, link.y, link.z),
+                Vec3d.ZERO,
+                entity.yaw,
+                entity.pitch));
+        try {
+            entity = entity.moveToWorld(link.dim);
+        } finally {
+            teleportTarget.remove();
+        }
 
         if (!passengersOnOtherSide.isEmpty()) {
             for (Entity passanger : passengersOnOtherSide) {

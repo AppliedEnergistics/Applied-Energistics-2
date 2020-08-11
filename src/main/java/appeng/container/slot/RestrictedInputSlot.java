@@ -80,11 +80,11 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public int getMaxStackAmount() {
+    public int getMaxItemCount() {
         if (this.stackLimit != -1) {
             return this.stackLimit;
         }
-        return super.getMaxStackAmount();
+        return super.getMaxItemCount();
     }
 
     public boolean isValid(final ItemStack is, final World theWorld) {

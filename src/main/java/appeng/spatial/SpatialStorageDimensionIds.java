@@ -5,6 +5,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -31,7 +32,7 @@ public final class SpatialStorageDimensionIds {
      * ID of the {@link net.minecraft.world.biome.Biome} used for the spatial
      * storage world.
      */
-    public static final Identifier BIOME_ID = AppEng.makeId("spatial_storage");
+    public static final RegistryKey<Biome> BIOME_KEY = RegistryKey.of(Registry.BIOME_KEY, AppEng.makeId("spatial_storage"));
 
     /**
      * ID of the {@link DimensionOptions} used for the spatial storage dimension.
@@ -48,6 +49,11 @@ public final class SpatialStorageDimensionIds {
      */
     public static final RegistryKey<World> WORLD_ID = RegistryKey.of(Registry.DIMENSION,
             AppEng.makeId("spatial_storage"));
+
+    /**
+     * ID of the {@link net.minecraft.client.render.SkyProperties} used for the spatial storage world.
+     */
+    public static Identifier SKY_PROPERTIES_ID = AppEng.makeId("spatial_storage");
 
     private SpatialStorageDimensionIds() {
     }

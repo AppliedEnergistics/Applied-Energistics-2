@@ -162,7 +162,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         final String byteUsed = NumberFormat.getInstance().format(BytesUsed);
         final Text Add = BytesUsed > 0 ? new LiteralText(byteUsed + " ").append(GuiText.BytesUsed.text())
                 : GuiText.CalculatingWait.text();
-        this.textRenderer.method_30883(matrices, GuiText.CraftingPlan.withSuffix(" - ").append(Add), 8, 7, 4210752);
+        this.textRenderer.draw(matrices, GuiText.CraftingPlan.withSuffix(" - ").append(Add), 8, 7, 4210752);
 
         Text dsp;
 
@@ -176,7 +176,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         }
 
         final int offset = (219 - this.textRenderer.getWidth(dsp)) / 2;
-        this.textRenderer.method_30883(matrices, dsp, offset, 165, 4210752);
+        this.textRenderer.draw(matrices, dsp, offset, 165, 4210752);
 
         final int sectionLength = 67;
 

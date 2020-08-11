@@ -66,7 +66,7 @@ public class SlotME extends Slot {
     }
 
     @Override
-    public int getMaxStackAmount() {
+    public int getMaxItemCount() {
         return 0;
     }
 

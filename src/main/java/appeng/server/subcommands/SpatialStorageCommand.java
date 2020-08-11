@@ -91,7 +91,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private void teleportBack(ServerCommandSource source) {
 
         if (source.getWorld().getRegistryKey() != SpatialStorageDimensionIds.WORLD_ID) {
-            throw new CommandException(Text.method_30163("Must be within the spatial storage world."));
+            throw new CommandException(Text.of("Must be within the spatial storage world."));
         }
 
         BlockPos playerPos = new BlockPos(source.getPosition());
@@ -110,7 +110,7 @@ public class SpatialStorageCommand implements ISubCommand {
             }
         }
 
-        throw new CommandException(Text.method_30163("Couldn't find a plot for the current position."));
+        throw new CommandException(Text.of("Couldn't find a plot for the current position."));
 
     }
 
@@ -121,7 +121,7 @@ public class SpatialStorageCommand implements ISubCommand {
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition == null) {
             throw new CommandException(
-                    Text.method_30163("This plot doesn't have a last known transition."));
+                    Text.of("This plot doesn't have a last known transition."));
         }
 
         String command = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().add(0, 1, 0));
@@ -181,7 +181,7 @@ public class SpatialStorageCommand implements ISubCommand {
             sendKeyValuePair(source, "Source", sourceLink);
             sendKeyValuePair(source, "When", lastTransition.getTimestamp().toString());
         } else {
-            source.sendFeedback(Text.method_30163("Last Transition unknown"), true);
+            source.sendFeedback(Text.of("Last Transition unknown"), true);
         }
 
     }
@@ -212,7 +212,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
         if (!(cell.getItem() instanceof SpatialStorageCellItem)) {
             throw new CommandException(
-                    Text.method_30163("Storage cell items don't implement the storage cell interface!"));
+                    Text.of("Storage cell items don't implement the storage cell interface!"));
         }
 
         SpatialStorageCellItem spatialCellItem = (SpatialStorageCellItem) cell.getItem();
@@ -267,7 +267,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
         return style -> style.withFormatting(Formatting.UNDERLINE)
                 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command) )
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.method_30163(tooltip)));
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of(tooltip)));
 
     }
 
@@ -283,7 +283,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private static SpatialStoragePlot getPlot(int plotId) {
         SpatialStoragePlot plot = SpatialStoragePlotManager.INSTANCE.getPlot(plotId);
         if (plot == null) {
-            throw new CommandException(Text.method_30163("Plot not found: " + plotId));
+            throw new CommandException(Text.of("Plot not found: " + plotId));
         }
         return plot;
     }
@@ -296,7 +296,7 @@ public class SpatialStorageCommand implements ISubCommand {
     }
 
     private static void sendKeyValuePair(ServerCommandSource source, String label, String value) {
-        sendKeyValuePair(source, label, Text.method_30163(value));
+        sendKeyValuePair(source, label, Text.of(value));
     }
 
     /**
@@ -304,7 +304,7 @@ public class SpatialStorageCommand implements ISubCommand {
      */
     private static SpatialStoragePlot getCurrentPlot(ServerCommandSource source) {
         if (source.getWorld().getRegistryKey() != SpatialStorageDimensionIds.WORLD_ID) {
-            throw new CommandException(Text.method_30163("Must be within the spatial storage world."));
+            throw new CommandException(Text.of("Must be within the spatial storage world."));
         }
 
         BlockPos playerPos = new BlockPos(source.getPosition());
@@ -321,7 +321,7 @@ public class SpatialStorageCommand implements ISubCommand {
             }
         }
 
-        throw new CommandException(Text.method_30163("Couldn't find a plot for the current position."));
+        throw new CommandException(Text.of("Couldn't find a plot for the current position."));
     }
 
 }

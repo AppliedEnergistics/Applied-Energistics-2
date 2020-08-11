@@ -71,7 +71,7 @@ public class SlotDisconnected extends AppEngSlot {
     }
 
     @Override
-    public int getMaxStackAmount() {
+    public int getMaxItemCount() {
         return 0;
     }
 

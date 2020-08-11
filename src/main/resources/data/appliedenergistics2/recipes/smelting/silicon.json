@@ -3,7 +3,7 @@
   "result": "appliedenergistics2:silicon",
   "ingredient": [
     {
-      "tag": "c:dusts/quartz"
+      "tag": "c:quartz_dusts"
     },
     {
       "tag": "appliedenergistics2:dusts/certus_quartz"

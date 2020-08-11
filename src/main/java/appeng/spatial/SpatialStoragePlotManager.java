@@ -30,6 +30,7 @@ import net.minecraft.util.math.BlockPos;
 
 import appeng.core.AELog;
 import appeng.core.Api;
+import net.minecraft.world.TeleportTarget;
 
 /**
  * Allocates and manages plots for spatial storage in the spatial storage world.

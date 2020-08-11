@@ -24,7 +24,6 @@ import java.text.DecimalFormatSymbols;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 
 import appeng.api.storage.data.IAEFluidStack;

@@ -172,7 +172,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
             title = title.copy().append(" - " + etaTimeText);
         }
 
-        this.textRenderer.method_30883(matrices, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR);
+        this.textRenderer.draw(matrices, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR);
 
         int x = 0;
         int y = 0;

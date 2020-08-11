@@ -424,8 +424,8 @@ public abstract class AEBaseContainer extends ScreenHandler {
 
                             if (Platform.itemComparisons().isSameItem(t, tis)) {
                                 int maxSize = t.getMaxCount();
-                                if (maxSize > d.getMaxStackAmount()) {
-                                    maxSize = d.getMaxStackAmount();
+                                if (maxSize > d.getMaxItemCount()) {
+                                    maxSize = d.getMaxItemCount();
                                 }
 
                                 int placeable = maxSize - t.getCount();
@@ -468,8 +468,8 @@ public abstract class AEBaseContainer extends ScreenHandler {
 
                             if (Platform.itemComparisons().isSameItem(t, tis)) {
                                 int maxSize = t.getMaxCount();
-                                if (maxSize > d.getMaxStackAmount()) {
-                                    maxSize = d.getMaxStackAmount();
+                                if (maxSize > d.getMaxItemCount()) {
+                                    maxSize = d.getMaxItemCount();
                                 }
 
                                 int placeable = maxSize - t.getCount();
@@ -497,8 +497,8 @@ public abstract class AEBaseContainer extends ScreenHandler {
                             }
                         } else {
                             int maxSize = tis.getMaxCount();
-                            if (maxSize > d.getMaxStackAmount()) {
-                                maxSize = d.getMaxStackAmount();
+                            if (maxSize > d.getMaxItemCount()) {
+                                maxSize = d.getMaxItemCount();
                             }
 
                             final ItemStack tmp = tis.copy();
@@ -964,25 +964,25 @@ public abstract class AEBaseContainer extends ScreenHandler {
         ItemStack testB = isA.isEmpty() ? ItemStack.EMPTY : isA.copy();
 
         // can put some back?
-        if (!testA.isEmpty() && testA.getCount() > a.getMaxStackAmount()) {
+        if (!testA.isEmpty() && testA.getCount() > a.getMaxItemCount()) {
             if (!testB.isEmpty()) {
                 return;
             }
 
             final int totalA = testA.getCount();
-            testA.setCount(a.getMaxStackAmount());
+            testA.setCount(a.getMaxItemCount());
             testB = testA.copy();
 
             testB.setCount(totalA - testA.getCount());
         }
 
-        if (!testB.isEmpty() && testB.getCount() > b.getMaxStackAmount()) {
+        if (!testB.isEmpty() && testB.getCount() > b.getMaxItemCount()) {
             if (!testA.isEmpty()) {
                 return;
             }
 
             final int totalB = testB.getCount();
-            testB.setCount(b.getMaxStackAmount());
+            testB.setCount(b.getMaxItemCount());
             testA = testB.copy();
 
             testA.setCount(totalB - testA.getCount());

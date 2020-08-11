@@ -126,13 +126,13 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public int getMaxStackAmount() {
+    public int getMaxItemCount() {
         return this.backingSlot.getMaxAmount(ItemStack.EMPTY);
     }
 
     @Override
-    public int getMaxStackAmount(@Nonnull ItemStack stack) {
-        return Math.min(this.getMaxStackAmount(), stack.getMaxCount());
+    public int getMaxItemCount(@Nonnull ItemStack stack) {
+        return Math.min(this.getMaxItemCount(), stack.getMaxCount());
     }
 
     @Override

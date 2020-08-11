@@ -121,7 +121,8 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
     }
 
     private CraterType determineCraterType(Biome biome) {
-        final Biome.TemperatureGroup temp = biome.getTemperatureGroup();
+        // The temperature thresholds below are taken from older Vanilla code (temperature categories)
+        final float temp = biome.getTemperature();
         final Category category = biome.getCategory();
 
         // No craters in oceans
@@ -138,7 +139,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
         }
 
         // Warm biomes, higher chance for lava
-        if (temp == Biome.TemperatureGroup.WARM) {
+        if (temp >= 1) {
 
             // 50% chance to actually spawn as lava
             final boolean lava = random.nextFloat() > .5f;
@@ -161,7 +162,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
         }
 
         // Temperate biomes. Water or maybe lava
-        if (temp == Biome.TemperatureGroup.MEDIUM) {
+        if (temp < 1 && temp >= 0.2) {
             // 75% chance to actually spawn with a crater lake
             final boolean lake = random.nextFloat() > .25f;
             // 20% to spawn with lava
@@ -187,7 +188,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
         }
 
         // Cold biomes, Snow or Ice, maybe water and very rarely lava.
-        if (temp == Biome.TemperatureGroup.COLD) {
+        if (temp < 0.2) {
             // 75% chance to actually spawn with a crater lake
             final boolean lake = random.nextFloat() > .25f;
             // 5% to spawn with lava

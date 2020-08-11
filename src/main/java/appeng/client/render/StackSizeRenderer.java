@@ -78,7 +78,7 @@ public class StackSizeRenderer {
         final int Y = (int) ((yPos + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
         VertexConsumerProvider.Immediate buffer = VertexConsumerProvider
                 .immediate(Tessellator.getInstance().getBuffer());
-        fontRenderer.method_30882(text, X, Y, 16777215, true, tm.getMatrix(), buffer, false, 0, 15728880);
+        fontRenderer.draw(text, X, Y, 16777215, true, tm.getMatrix(), buffer, false, 0, 15728880);
         buffer.draw();
         RenderSystem.enableBlend();
     }

@@ -126,7 +126,7 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
         }
 
         super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
-        this.textRenderer.method_30883(matrices, GuiText.PatternTerminal.text(), 8,
+        this.textRenderer.draw(matrices, GuiText.PatternTerminal.text(), 8,
                 this.backgroundHeight - 96 + 2 - this.getReservedSpace(), 4210752);
     }
 

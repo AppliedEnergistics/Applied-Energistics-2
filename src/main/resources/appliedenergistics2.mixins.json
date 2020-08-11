@@ -6,6 +6,7 @@
   "mixins": [
     "spatial.DimensionTypeMixin",
     "spatial.DimensionOptionMixin",
+    "spatial.EntityMixin",
     "CriteriaRegisterMixin",
     "RemainderSetter",
     "ScreenHandlerListeners",
@@ -16,7 +17,8 @@
     "GenerationSettingsAccessor",
     "BiomeAccessor",
     "ServerWorldCustomItemEntityMixin",
-    "HopperMixin"
+    "HopperMixin",
+    "FluidTagsAccessor"
   ],
   "client": [
     "spatial.SkyRenderMixin",

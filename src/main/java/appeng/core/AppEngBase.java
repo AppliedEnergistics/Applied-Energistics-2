@@ -101,7 +101,6 @@ import appeng.worldgen.BiomeModifier;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
-import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 import net.earthcomputer.libstructure.LibStructure;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
@@ -549,15 +548,14 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void registerWorldGen() {
-        MeteoriteStructurePiece.register();
-
         LibStructure.registerStructure(MeteoriteStructure.ID, MeteoriteStructure.INSTANCE,
                 GenerationStep.Feature.TOP_LAYER_MODIFICATION, new StructureConfig(32, 8, 124895654),
                 new MeteoriteStructure(DefaultFeatureConfig.CODEC).configure(DefaultFeatureConfig.INSTANCE));
         Registry.register(Registry.FEATURE, AppEng.makeId("charged_quartz_ore"), ChargedQuartzOreFeature.INSTANCE);
 
         // add to all standard biomes
-        Biome.BIOMES.forEach(b -> {
+        // TODO: Wrong...
+        BuiltinRegistries.BIOME.forEach(b -> {
             addMeteoriteWorldGen(b);
             addQuartzWorldGen(b);
         });
@@ -612,7 +610,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void registerDimension() {
-        Registry.register(BuiltinRegistries.BIOME, SpatialStorageDimensionIds.BIOME_ID, SpatialStorageBiome.INSTANCE);
+        BuiltinRegistries.add(BuiltinRegistries.BIOME, SpatialStorageDimensionIds.BIOME_KEY.getValue(), SpatialStorageBiome.INSTANCE);
         Registry.register(Registry.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID, SpatialStorageChunkGenerator.CODEC);
     }
 

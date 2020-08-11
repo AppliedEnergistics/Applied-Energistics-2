@@ -34,7 +34,6 @@ import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.WorldChunk;
 
 import appeng.hooks.AEToolItem;
@@ -131,7 +130,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         // is a debug tool, we'll not care about being terribly efficient here
         ChunkPos.stream(new ChunkPos(spawned.getPos()), 2).forEach(cp -> {
             WorldChunk c = world.getChunk(cp.x, cp.z);
-            player.networkHandler.sendPacket(new ChunkDataS2CPacket(c, 65535, false)); // 65535 == full chunk
+            player.networkHandler.sendPacket(new ChunkDataS2CPacket(c, 65535)); // 65535 == full chunk
         });
 
         return ActionResult.SUCCESS;

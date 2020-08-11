@@ -18,21 +18,18 @@
 
 package appeng.spatial;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
-
+import appeng.core.Api;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeAccess;
-import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.GenerationStep;
@@ -41,25 +38,34 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 
-import appeng.core.Api;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 
 /**
  * Chunk generator the spatial storage world.
  */
 public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
+    /**
+     * This codec is necessary to restore the actual instance of the Biome we use,
+     * since it is sources from the dynamic registries and <em>must be the same object as in the registry!</em>.
+     * <p>If it was not the same object, then the Object->ID lookup would fail since it uses an identity hashmap
+     * internally.
+     */
+    public static final Codec<SpatialStorageChunkGenerator> CODEC
+            = RegistryLookupCodec.of(Registry.BIOME_KEY).xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();
+
+    private final Registry<Biome> biomeRegistry;
+
     private final VerticalBlockSample columnSample;
-
-    public static final SpatialStorageChunkGenerator INSTANCE = new SpatialStorageChunkGenerator();
-
-    public static final Codec<SpatialStorageChunkGenerator> CODEC = RecordCodecBuilder
-            .create((instance) -> instance.stable(INSTANCE));
 
     private final BlockState defaultBlockState;
 
-    private SpatialStorageChunkGenerator() {
-        super(createBiomeProvider(), createSettings());
+    private SpatialStorageChunkGenerator(Registry<Biome> biomeRegistry) {
+        super(createBiomeSource(biomeRegistry), createSettings());
         this.defaultBlockState = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
+        this.biomeRegistry = biomeRegistry;
 
         // Vertical sample is mostly used for Feature generation, for those purposes
         // we're all filled with matrix blocks
@@ -68,13 +74,18 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
         this.columnSample = new VerticalBlockSample(columnSample);
     }
 
+
     @Override
     protected Codec<? extends ChunkGenerator> getCodec() {
         return CODEC;
     }
 
-    private static BiomeSource createBiomeProvider() {
-        return new FixedBiomeSource(SpatialStorageBiome.INSTANCE);
+    private static FixedBiomeSource createBiomeSource(Registry<Biome> biomeRegistry) {
+        return new FixedBiomeSource(biomeRegistry.method_31140(SpatialStorageDimensionIds.BIOME_KEY));
+    }
+
+    public Registry<Biome> getBiomeRegistry() {
+        return biomeRegistry;
     }
 
     private static StructuresConfig createSettings() {
