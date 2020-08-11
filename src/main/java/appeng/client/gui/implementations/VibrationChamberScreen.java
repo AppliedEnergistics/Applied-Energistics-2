@@ -51,8 +51,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.VibrationChamber.text()), 8, 6,
-                4210752);
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.VibrationChamber.text()), 8, 6, 4210752);
         this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
 
         this.pb.setFullMsg(new LiteralText(VibrationChamberBlockEntity.POWER_PER_TICK

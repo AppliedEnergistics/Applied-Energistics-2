@@ -1,18 +1,20 @@
 package appeng.mixins.spatial;
 
-import appeng.spatial.SpatialStorageDimensionIds;
-import appeng.spatial.SpatialStorageHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.TeleportTarget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.TeleportTarget;
+
+import appeng.spatial.SpatialStorageDimensionIds;
+import appeng.spatial.SpatialStorageHelper;
+
 /**
- * This mixin sets the teleport destination, because otherwise Vanilla will not move
- * the player.
+ * This mixin sets the teleport destination, because otherwise Vanilla will not
+ * move the player.
  */
 @Mixin(Entity.class)
 public class EntityMixin {

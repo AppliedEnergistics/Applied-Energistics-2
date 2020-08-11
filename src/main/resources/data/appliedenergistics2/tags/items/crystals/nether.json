@@ -1,6 +1,3 @@
 {
-  "values": [
-    "#c:quartz",
-    "appliedenergistics2:purified_nether_quartz_crystal"
-  ]
+  "values": ["#c:quartz", "appliedenergistics2:purified_nether_quartz_crystal"]
 }

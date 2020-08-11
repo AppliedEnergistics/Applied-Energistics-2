@@ -18,12 +18,10 @@
 
 package appeng.tile;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.InvOperation;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
@@ -32,8 +30,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-import java.util.List;
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
+
+import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements IAEAppEngInventory {
 

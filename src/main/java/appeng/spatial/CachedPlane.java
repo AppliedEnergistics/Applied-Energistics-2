@@ -39,6 +39,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.chunk.light.LightingProvider;
 
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
@@ -47,7 +48,6 @@ import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
-import net.minecraft.world.chunk.light.LightingProvider;
 
 public class CachedPlane {
     private final int x_size;
@@ -68,8 +68,8 @@ public class CachedPlane {
     private int verticalBits;
     private final BlockState matrixBlockState;
 
-    public CachedPlane(final ServerWorld w, final int minX, final int minY, final int minZ, final int maxX, final int maxY,
-            final int maxZ) {
+    public CachedPlane(final ServerWorld w, final int minX, final int minY, final int minZ, final int maxX,
+            final int maxY, final int maxZ) {
 
         Block matrixFrameBlock = Api.instance().definitions().blocks().matrixFrame().maybeBlock().orElse(null);
         if (matrixFrameBlock != null) {
@@ -327,8 +327,8 @@ public class CachedPlane {
 
                 // FIXME this was sending chunks to players...
                 ChunkDataS2CPacket cdp = new ChunkDataS2CPacket(c, verticalBits);
-                world.getChunkManager().threadedAnvilChunkStorage
-                        .getPlayersWatchingChunk(c.getPos(), false).forEach(spe -> spe.networkHandler.sendPacket(cdp));
+                world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(c.getPos(), false)
+                        .forEach(spe -> spe.networkHandler.sendPacket(cdp));
 
             }
         }

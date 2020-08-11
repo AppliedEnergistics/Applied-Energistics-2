@@ -3,8 +3,6 @@ package appeng.hooks;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import appeng.core.AppEng;
-import appeng.mixins.unlitquad.BakedQuadAccessor;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormatElement;
@@ -16,6 +14,9 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.math.Direction;
+
+import appeng.core.AppEng;
+import appeng.mixins.unlitquad.BakedQuadAccessor;
 
 /**
  * Implementation details of allowing quads to be defined as "unlit" in JSON
@@ -100,7 +101,8 @@ public class UnlitQuadHooks {
      * {@link #makeUnlit(BakedQuad)}.
      */
     public static class UnlitModelElementFace extends ModelElementFace {
-        public UnlitModelElementFace(Direction cullFaceIn, int tintIndexIn, String textureIn, ModelElementTexture blockFaceUVIn) {
+        public UnlitModelElementFace(Direction cullFaceIn, int tintIndexIn, String textureIn,
+                ModelElementTexture blockFaceUVIn) {
             super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
         }
     }

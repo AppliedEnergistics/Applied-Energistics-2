@@ -18,8 +18,12 @@
 
 package appeng.spatial;
 
-import appeng.core.Api;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
+
 import com.mojang.serialization.Codec;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -38,9 +42,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import appeng.core.Api;
 
 /**
  * Chunk generator the spatial storage world.
@@ -49,12 +51,14 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     /**
      * This codec is necessary to restore the actual instance of the Biome we use,
-     * since it is sources from the dynamic registries and <em>must be the same object as in the registry!</em>.
-     * <p>If it was not the same object, then the Object->ID lookup would fail since it uses an identity hashmap
-     * internally.
+     * since it is sources from the dynamic registries and <em>must be the same
+     * object as in the registry!</em>.
+     * <p>
+     * If it was not the same object, then the Object->ID lookup would fail since it
+     * uses an identity hashmap internally.
      */
-    public static final Codec<SpatialStorageChunkGenerator> CODEC
-            = RegistryLookupCodec.of(Registry.BIOME_KEY).xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();
+    public static final Codec<SpatialStorageChunkGenerator> CODEC = RegistryLookupCodec.of(Registry.BIOME_KEY)
+            .xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();
 
     private final Registry<Biome> biomeRegistry;
 
@@ -73,7 +77,6 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
         Arrays.fill(columnSample, this.defaultBlockState);
         this.columnSample = new VerticalBlockSample(columnSample);
     }
-
 
     @Override
     protected Codec<? extends ChunkGenerator> getCodec() {

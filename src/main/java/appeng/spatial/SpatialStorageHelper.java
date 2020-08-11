@@ -18,9 +18,9 @@
 
 package appeng.spatial;
 
-import appeng.api.util.WorldCoord;
-import appeng.core.Api;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -35,8 +35,9 @@ import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.api.util.WorldCoord;
+import appeng.core.Api;
+import appeng.core.AppEng;
 
 public class SpatialStorageHelper {
 
@@ -52,7 +53,8 @@ public class SpatialStorageHelper {
     private final ThreadLocal<TeleportTarget> teleportTarget = new ThreadLocal<>();
 
     /**
-     * If an entity is currently being teleported, this will return the target within the target dimension.
+     * If an entity is currently being teleported, this will return the target
+     * within the target dimension.
      */
     public TeleportTarget getTeleportTarget() {
         return teleportTarget.get();
@@ -104,16 +106,13 @@ public class SpatialStorageHelper {
         newWorld.getChunkManager().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
-        if (entity instanceof ServerPlayerEntity
-                && link.dim.getRegistryKey() == SpatialStorageDimensionIds.WORLD_ID) {
+        if (entity instanceof ServerPlayerEntity && link.dim.getRegistryKey() == SpatialStorageDimensionIds.WORLD_ID) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
-        // Store in a threadlocal so that EntityMixin can return it for the Vanilla logic to use
-        teleportTarget.set(new TeleportTarget(new Vec3d(link.x, link.y, link.z),
-                Vec3d.ZERO,
-                entity.yaw,
-                entity.pitch));
+        // Store in a threadlocal so that EntityMixin can return it for the Vanilla
+        // logic to use
+        teleportTarget.set(new TeleportTarget(new Vec3d(link.x, link.y, link.z), Vec3d.ZERO, entity.yaw, entity.pitch));
         try {
             entity = entity.moveToWorld(link.dim);
         } finally {

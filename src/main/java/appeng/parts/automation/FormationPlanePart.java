@@ -18,7 +18,33 @@
 
 package appeng.parts.automation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AutomaticItemPlacementContext;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -53,30 +79,6 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AutomaticItemPlacementContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack> {
 
@@ -361,8 +363,8 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     /**
-     * A custom {@link AutomaticItemPlacementContext} which also accepts a player needed
-     * various blocks like seeds.
+     * A custom {@link AutomaticItemPlacementContext} which also accepts a player
+     * needed various blocks like seeds.
      * <p>
      * Also removed {@link AutomaticItemPlacementContext#canReplaceExisting} as this
      * can cause a {@link StackOverflowError} for certain replaceable blocks.
@@ -371,7 +373,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         private final Direction lookDirection;
 
         public PlaneDirectionalPlaceContext(World world, PlayerEntity player, BlockPos pos, Direction lookDirection,
-                                            ItemStack itemStack, Direction facing) {
+                ItemStack itemStack, Direction facing) {
             super(world, player, Hand.MAIN_HAND, itemStack,
                     new BlockHitResult(Vec3d.ofBottomCenter(pos), facing, pos, false));
             this.lookDirection = lookDirection;
@@ -397,13 +399,13 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             switch (this.lookDirection) {
                 case DOWN:
                 default:
-                    return new Direction[]{Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.SOUTH,
-                            Direction.WEST, Direction.UP};
+                    return new Direction[] { Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.SOUTH,
+                            Direction.WEST, Direction.UP };
                 case UP:
-                    return new Direction[]{Direction.DOWN, Direction.UP, Direction.NORTH, Direction.EAST,
-                            Direction.SOUTH, Direction.WEST};
+                    return new Direction[] { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.EAST,
+                            Direction.SOUTH, Direction.WEST };
                 case NORTH:
-                    return new Direction[]{Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.WEST,
+                    return new Direction[] { Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.WEST,
                             Direction.UP, Direction.SOUTH };
                 case SOUTH:
                     return new Direction[] { Direction.DOWN, Direction.SOUTH, Direction.EAST, Direction.WEST,

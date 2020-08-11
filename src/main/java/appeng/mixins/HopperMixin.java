@@ -1,13 +1,15 @@
 package appeng.mixins;
 
-import appeng.hooks.HopperHooks;
-import net.minecraft.block.entity.Hopper;
-import net.minecraft.block.entity.HopperBlockEntity;
-import net.minecraft.util.ActionResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.block.entity.Hopper;
+import net.minecraft.block.entity.HopperBlockEntity;
+import net.minecraft.util.ActionResult;
+
+import appeng.hooks.HopperHooks;
 
 // SEE: https://github.com/AlexIIL/LibBlockAttributes/pull/27
 @SuppressWarnings("ConstantConditions")

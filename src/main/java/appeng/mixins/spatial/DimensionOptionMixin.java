@@ -3,11 +3,12 @@ package appeng.mixins.spatial;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.dimension.DimensionOptions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.dimension.DimensionOptions;
 
 import appeng.spatial.SpatialStorageDimensionIds;
 

@@ -9,13 +9,13 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.NumberBox;
 import appeng.core.AEConfig;
-import net.minecraft.text.Text;
 
 /**
  * A utility widget that consists of a text-field to enter a number with

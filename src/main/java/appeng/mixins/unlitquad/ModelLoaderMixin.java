@@ -1,15 +1,17 @@
 package appeng.mixins.unlitquad;
 
-import appeng.hooks.UnlitQuadHooks;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.util.Identifier;
+import java.io.IOException;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.io.IOException;
+import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
+import net.minecraft.util.Identifier;
+
+import appeng.hooks.UnlitQuadHooks;
 
 /**
  * The only job of this mixin is to only enable the unlit extensions if the

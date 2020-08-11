@@ -1,12 +1,5 @@
 package appeng.hooks;
 
-import alexiil.mc.lib.attributes.SearchOption;
-import alexiil.mc.lib.attributes.SearchOptions;
-import alexiil.mc.lib.attributes.item.ItemAttributes;
-import alexiil.mc.lib.attributes.item.ItemExtractable;
-import alexiil.mc.lib.attributes.item.ItemInsertable;
-import alexiil.mc.lib.attributes.item.ItemInvUtil;
-import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
 import net.minecraft.block.HopperBlock;
 import net.minecraft.block.entity.Hopper;
 import net.minecraft.block.entity.HopperBlockEntity;
@@ -15,6 +8,14 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.SearchOption;
+import alexiil.mc.lib.attributes.SearchOptions;
+import alexiil.mc.lib.attributes.item.ItemAttributes;
+import alexiil.mc.lib.attributes.item.ItemExtractable;
+import alexiil.mc.lib.attributes.item.ItemInsertable;
+import alexiil.mc.lib.attributes.item.ItemInvUtil;
+import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
 
 // SEE: https://github.com/AlexIIL/LibBlockAttributes/pull/27
 public final class HopperHooks {
@@ -31,7 +32,8 @@ public final class HopperHooks {
             return ActionResult.PASS;
         }
 
-        ItemInsertable insertable = ItemAttributes.INSERTABLE.getFirstOrNull(world, targetPos, SearchOptions.inDirection(towards));
+        ItemInsertable insertable = ItemAttributes.INSERTABLE.getFirstOrNull(world, targetPos,
+                SearchOptions.inDirection(towards));
         if (insertable == null) {
             return ActionResult.PASS; // Let Vanilla handle non-LBA enabled inventories and Entities
         }
@@ -53,8 +55,8 @@ public final class HopperHooks {
     private static final SearchOption<? super ItemExtractable> EXTRACT_SEARCH = SearchOptions.inDirection(Direction.UP);
 
     /**
-     * Tries to extract items from an inventory above the given hopper into the hopper.
-     * Note that the given hopper can also be a hopper minecart.
+     * Tries to extract items from an inventory above the given hopper into the
+     * hopper. Note that the given hopper can also be a hopper minecart.
      */
     public static ActionResult tryExtract(Hopper hopper) {
         World world = hopper.getWorld();
@@ -82,9 +84,12 @@ public final class HopperHooks {
     }
 
     private static boolean isVanillaInventoryAt(World world, BlockPos pos) {
-        // If there's a TE at the target position that implements Inventory (such that Hopper would handle it itself)
-        // defer to Vanilla to avoid injecting ourselves inbetween Vanilla blocks needlessly.
-        // ItemAttributes.INSERTABLE would return an auto-converted Inventory in such cases.
+        // If there's a TE at the target position that implements Inventory (such that
+        // Hopper would handle it itself)
+        // defer to Vanilla to avoid injecting ourselves inbetween Vanilla blocks
+        // needlessly.
+        // ItemAttributes.INSERTABLE would return an auto-converted Inventory in such
+        // cases.
         return world.getBlockEntity(pos) instanceof Inventory;
     }
 

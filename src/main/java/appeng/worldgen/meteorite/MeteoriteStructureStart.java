@@ -121,7 +121,8 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
     }
 
     private CraterType determineCraterType(Biome biome) {
-        // The temperature thresholds below are taken from older Vanilla code (temperature categories)
+        // The temperature thresholds below are taken from older Vanilla code
+        // (temperature categories)
         final float temp = biome.getTemperature();
         final Category category = biome.getCategory();
 

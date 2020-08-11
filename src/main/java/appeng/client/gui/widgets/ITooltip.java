@@ -18,9 +18,9 @@
 
 package appeng.client.gui.widgets;
 
-import net.minecraft.text.Text;
-
 import javax.annotation.Nonnull;
+
+import net.minecraft.text.Text;
 
 /**
  * AEBaseGui controlled Tooltip Interface.

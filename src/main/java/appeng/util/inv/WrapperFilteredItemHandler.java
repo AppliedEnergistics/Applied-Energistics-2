@@ -18,15 +18,17 @@
 
 package appeng.util.inv;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemStackUtil;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
 import alexiil.mc.lib.attributes.item.impl.DelegatingFixedItemInv;
-import appeng.util.inv.filter.IAEItemFilter;
-import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
+import appeng.util.inv.filter.IAEItemFilter;
 
 // FIXME: Needs to be double checked, LBA has better ways of doing this
 public class WrapperFilteredItemHandler extends DelegatingFixedItemInv {

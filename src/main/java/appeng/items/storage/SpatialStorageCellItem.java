@@ -22,15 +22,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 
-import appeng.api.implementations.items.ISpatialStorageCell;
-import appeng.api.util.WorldCoord;
-import appeng.core.AELog;
-import appeng.core.localization.GuiText;
-import appeng.items.AEBaseItem;
-import appeng.spatial.SpatialStorageHelper;
-import appeng.spatial.SpatialStoragePlot;
-import appeng.spatial.SpatialStoragePlotManager;
-import appeng.spatial.TransitionInfo;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.util.NbtType;
@@ -42,6 +33,16 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import appeng.api.implementations.items.ISpatialStorageCell;
+import appeng.api.util.WorldCoord;
+import appeng.core.AELog;
+import appeng.core.localization.GuiText;
+import appeng.items.AEBaseItem;
+import appeng.spatial.SpatialStorageHelper;
+import appeng.spatial.SpatialStoragePlot;
+import appeng.spatial.SpatialStoragePlotManager;
+import appeng.spatial.TransitionInfo;
 
 public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorageCell {
     private static final String TAG_PLOT_ID = "plot_id";
@@ -62,7 +63,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
-                               final TooltipContext advancedTooltips) {
+            final TooltipContext advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
             lines.add(GuiText.Unformatted.text().copy().formatted(Formatting.ITALIC));
@@ -111,7 +112,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @Override
     public boolean doSpatialTransition(final ItemStack is, final ServerWorld w, final WorldCoord min,
-                                       final WorldCoord max, int playerId) {
+            final WorldCoord max, int playerId) {
         final int targetX = max.x - min.x - 1;
         final int targetY = max.y - min.y - 1;
         final int targetZ = max.z - min.z - 1;
@@ -142,8 +143,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
 
         // Store some information about this transition in the plot
-        TransitionInfo info = new TransitionInfo(w.getRegistryKey().getValue(), min.getBlockPos(),
-                max.getBlockPos(), Instant.now());
+        TransitionInfo info = new TransitionInfo(w.getRegistryKey().getValue(), min.getBlockPos(), max.getBlockPos(),
+                Instant.now());
         manager.setLastTransition(plot.getId(), info);
 
         try {

@@ -18,6 +18,15 @@
 
 package appeng.parts.p2p;
 
+import java.util.List;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.Attribute;
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.SearchOptions;
@@ -31,18 +40,11 @@ import alexiil.mc.lib.attributes.fluid.impl.EmptyFluidExtractable;
 import alexiil.mc.lib.attributes.fluid.impl.RejectingFluidInsertable;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-
-import java.util.List;
 
 public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
 
@@ -93,7 +95,8 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
         return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
-    // Gets the given attribute (or the defaultValue) of the block that this part attaches to
+    // Gets the given attribute (or the defaultValue) of the block that this part
+    // attaches to
     private <T> T getAttachedAttribute(Attribute<T> attribute, T defaultValue) {
         T result = null;
         if (this.isActive()) {
@@ -138,7 +141,8 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
                 }
 
                 if (simulation.isAction()) {
-                    FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, amount.sub(overflowAmount).asInexactDouble() * 1000);
+                    FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF,
+                            amount.sub(overflowAmount).asInexactDouble() * 1000);
                 }
             } catch (GridAccessException ignored) {
             }

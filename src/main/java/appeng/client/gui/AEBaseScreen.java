@@ -175,8 +175,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
 
             slot.drawContent(getClient(), mouseX, mouseY, partialTicks);
 
-            if (this.isPointWithinBounds(left, top, slot.getTooltipAreaWidth(), slot.getTooltipAreaHeight(), mouseX, mouseY)
-                    && slot.canClick(getPlayer())) {
+            if (this.isPointWithinBounds(left, top, slot.getTooltipAreaWidth(), slot.getTooltipAreaHeight(), mouseX,
+                    mouseY) && slot.canClick(getPlayer())) {
                 RenderSystem.colorMask(true, true, true, false);
                 this.fillGradient(matrices, left, top, right, bottom, -2130706433, -2130706433);
                 RenderSystem.colorMask(true, true, true, true);
@@ -206,7 +206,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
         if (!tooltipText.isEmpty()) {
             String[] lines = tooltipText.split("\n"); // FIXME FABRIC
             List<Text> textLines = Arrays.stream(lines).map(LiteralText::new).collect(Collectors.toList());
-        this.drawTooltip(matrices, x, y, textLines);}
+            this.drawTooltip(matrices, x, y, textLines);
+        }
     }
 
     // FIXME FABRIC: move out to json (?)

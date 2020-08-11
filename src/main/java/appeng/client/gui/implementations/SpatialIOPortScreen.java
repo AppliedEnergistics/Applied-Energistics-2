@@ -63,8 +63,8 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
                     .withSuffix(": " + this.handler.xSize + "x" + this.handler.ySize + "x" + this.handler.zSize);
             this.textRenderer.draw(matrices, text, 13, 93, 4210752);
         } else {
-            this.textRenderer.draw(matrices, GuiText.SCSSize.withSuffix(": ").append(GuiText.SCSInvalid.text()),
-                    13, 93, 4210752);
+            this.textRenderer.draw(matrices, GuiText.SCSSize.withSuffix(": ").append(GuiText.SCSInvalid.text()), 13, 93,
+                    4210752);
         }
 
     }

@@ -49,8 +49,8 @@ public final class AECommand {
 
     private void add(LiteralArgumentBuilder<ServerCommandSource> builder, Commands subCommand) {
 
-        LiteralArgumentBuilder<ServerCommandSource> subCommandBuilder = literal(subCommand.name().toLowerCase(Locale.ROOT))
-                .requires(src -> src.hasPermissionLevel(subCommand.level));
+        LiteralArgumentBuilder<ServerCommandSource> subCommandBuilder = literal(
+                subCommand.name().toLowerCase(Locale.ROOT)).requires(src -> src.hasPermissionLevel(subCommand.level));
         subCommand.command.addArguments(subCommandBuilder);
         subCommandBuilder.executes(ctx -> {
             MinecraftServer server = AppEng.instance().getServer();

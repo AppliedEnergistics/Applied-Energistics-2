@@ -23,10 +23,10 @@
 
 package appeng.api.config;
 
+import java.util.Locale;
+
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-
-import java.util.Locale;
 
 /**
  * Represent the security systems basic permissions, these are not for

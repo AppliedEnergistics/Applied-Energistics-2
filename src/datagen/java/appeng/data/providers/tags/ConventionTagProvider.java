@@ -3,10 +3,10 @@ package appeng.data.providers.tags;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import appeng.core.Api;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 
+import appeng.core.Api;
 import appeng.core.AppEng;
 
 public class ConventionTagProvider extends TagProvider {

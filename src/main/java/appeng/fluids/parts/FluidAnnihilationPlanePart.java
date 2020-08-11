@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import appeng.mixins.FluidTagsAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.block.entity.BlockEntity;
@@ -48,6 +47,7 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
+import appeng.mixins.FluidTagsAccessor;
 import appeng.parts.BasicStatePart;
 import appeng.parts.automation.PlaneConnectionHelper;
 import appeng.parts.automation.PlaneConnections;
@@ -56,7 +56,8 @@ import appeng.util.Platform;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
-    public static final Tag.Identified<Fluid> TAG_BLACKLIST = FluidTagsAccessor.register(AppEng.makeId("blacklisted/fluid_annihilation_plane").toString());
+    public static final Tag.Identified<Fluid> TAG_BLACKLIST = FluidTagsAccessor
+            .register(AppEng.makeId("blacklisted/fluid_annihilation_plane").toString());
 
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
             "part/fluid_annihilation_plane_on");

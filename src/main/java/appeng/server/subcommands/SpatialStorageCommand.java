@@ -1,5 +1,7 @@
 package appeng.server.subcommands;
 
+import static net.minecraft.server.command.CommandManager.literal;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -7,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
 
-import appeng.core.AppEng;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -16,6 +17,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
@@ -29,6 +31,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.core.Api;
+import appeng.core.AppEng;
 import appeng.core.worlddata.WorldData;
 import appeng.items.storage.SpatialStorageCellItem;
 import appeng.server.ISubCommand;
@@ -36,9 +39,6 @@ import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStoragePlot;
 import appeng.spatial.SpatialStoragePlotManager;
 import appeng.spatial.TransitionInfo;
-
-import net.minecraft.server.command.CommandManager;
-import static net.minecraft.server.command.CommandManager.literal;
 
 /**
  * This admin command allows management of spatial storage plots.
@@ -58,11 +58,12 @@ public class SpatialStorageCommand implements ISubCommand {
         })));
 
         // Teleport into the plot
-        builder.then(literal("tp").then(CommandManager.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
-            int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
-            teleportToPlot(ctx.getSource(), plotId);
-            return 1;
-        })));
+        builder.then(
+                literal("tp").then(CommandManager.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+                    int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
+                    teleportToPlot(ctx.getSource(), plotId);
+                    return 1;
+                })));
 
         // Teleport from the current plot back to the source of its content, or do the
         // same for a given plot id
@@ -76,8 +77,8 @@ public class SpatialStorageCommand implements ISubCommand {
         })));
 
         // Creates a storage cell for the given plot id and gives it to the player
-        builder.then(
-                literal("givecell").then(CommandManager.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+        builder.then(literal("givecell")
+                .then(CommandManager.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
                     int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
                     giveCell(ctx.getSource(), plotId);
                     return 1;
@@ -120,8 +121,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private void teleportBack(ServerCommandSource source, SpatialStoragePlot plot) {
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition == null) {
-            throw new CommandException(
-                    Text.of("This plot doesn't have a last known transition."));
+            throw new CommandException(Text.of("This plot doesn't have a last known transition."));
         }
 
         String command = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().add(0, 1, 0));
@@ -168,8 +168,8 @@ public class SpatialStorageCommand implements ISubCommand {
         // clickable link to the source)
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition != null) {
-            source.sendFeedback(new LiteralText("Last Transition:").formatted(Formatting.UNDERLINE,
-                    Formatting.BOLD), true);
+            source.sendFeedback(new LiteralText("Last Transition:").formatted(Formatting.UNDERLINE, Formatting.BOLD),
+                    true);
 
             String sourceWorldId = lastTransition.getWorldId().toString();
             MutableText sourceLink = new LiteralText(
@@ -189,8 +189,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private static void teleportToPlot(ServerCommandSource source, int plotId) {
         SpatialStoragePlot plot = getPlot(plotId);
 
-        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.getValue(),
-                plot.getOrigin());
+        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.getValue(), plot.getOrigin());
 
         runCommandFor(source, teleportCommand);
     }
@@ -211,8 +210,7 @@ public class SpatialStorageCommand implements ISubCommand {
         }
 
         if (!(cell.getItem() instanceof SpatialStorageCellItem)) {
-            throw new CommandException(
-                    Text.of("Storage cell items don't implement the storage cell interface!"));
+            throw new CommandException(Text.of("Storage cell items don't implement the storage cell interface!"));
         }
 
         SpatialStorageCellItem spatialCellItem = (SpatialStorageCellItem) cell.getItem();
@@ -251,8 +249,7 @@ public class SpatialStorageCommand implements ISubCommand {
             Text tpLink = new LiteralText("Origin: " + origin)
                     .styled(makeCommandLink("/ae2 spatial tp " + plot.getId(), "Click to teleport into plot"));
 
-            Text message = new LiteralText("").append(infoLink)
-                    .append(" Size: " + size + " ").append(tpLink);
+            Text message = new LiteralText("").append(infoLink).append(" Size: " + size + " ").append(tpLink);
 
             sender.sendFeedback(message, true);
         }
@@ -266,7 +263,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private static UnaryOperator<Style> makeCommandLink(String command, String tooltip) {
 
         return style -> style.withFormatting(Formatting.UNDERLINE)
-                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command) )
+                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of(tooltip)));
 
     }
@@ -290,8 +287,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
     private static void sendKeyValuePair(ServerCommandSource source, String label, Text value) {
         source.sendFeedback(
-                new LiteralText("")
-                        .append(new LiteralText(label + ": ").formatted(Formatting.BOLD)).append(value),
+                new LiteralText("").append(new LiteralText(label + ": ").formatted(Formatting.BOLD)).append(value),
                 true);
     }
 

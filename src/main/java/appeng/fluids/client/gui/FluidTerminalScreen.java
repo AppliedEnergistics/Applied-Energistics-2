@@ -125,8 +125,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
     @Override
     public void drawFG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(new LiteralText("Fluid Terminal")), 8, 6,
-                4210752);
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(new LiteralText("Fluid Terminal")), 8, 6, 4210752);
         this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
