@@ -26,7 +26,7 @@ import appeng.core.AEConfig;
 public class NumberEntryWidget implements ITickingWidget {
 
     private static final ITextComponent PLUS = new StringTextComponent("+");
-    private static final ITextComponent MINUS = new StringTextComponent("+");
+    private static final ITextComponent MINUS = new StringTextComponent("-");
 
     private final AEBaseScreen<?> parent;
 
