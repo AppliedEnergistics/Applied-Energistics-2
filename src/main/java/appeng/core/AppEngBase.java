@@ -101,6 +101,7 @@ import appeng.worldgen.BiomeModifier;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
+import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 import net.earthcomputer.libstructure.LibStructure;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
@@ -548,6 +549,8 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void registerWorldGen() {
+        MeteoriteStructurePiece.register();
+
         LibStructure.registerStructure(MeteoriteStructure.ID, MeteoriteStructure.INSTANCE,
                 GenerationStep.Feature.TOP_LAYER_MODIFICATION, new StructureConfig(32, 8, 124895654),
                 new MeteoriteStructure(DefaultFeatureConfig.CODEC).configure(DefaultFeatureConfig.INSTANCE));

@@ -3,6 +3,7 @@ package appeng.data.providers.tags;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import appeng.core.Api;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 
@@ -40,8 +41,9 @@ public class ConventionTagProvider extends TagProvider {
         addItemTag("gold_ores", Items.GOLD_ORE);
         addItemTag("glowstone_dusts", Items.GLOWSTONE_DUST);
         addItemTag("wooden_rods", Items.STICK);
-        addItemTag("nether_quartz_ores", Items.NETHER_QUARTZ_ORE);
-        addItemTag("nether_quartz_crystals", Items.QUARTZ);
+        addItemTag("quartz_dusts", MATERIALS.netherQuartzDust());
+        addItemTag("quartz_ores", Items.NETHER_QUARTZ_ORE);
+        addItemTag("quartz", Items.QUARTZ);
         addItemTag("sand_blocks", Items.SAND, Items.RED_SAND);
         addItemTag("diamonds", Items.DIAMOND);
         addItemTag("wooden_chests", Items.CHEST, Items.TRAPPED_CHEST);

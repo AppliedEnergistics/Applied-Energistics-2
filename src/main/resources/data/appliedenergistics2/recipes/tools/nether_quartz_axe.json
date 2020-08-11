@@ -6,7 +6,7 @@
   "pattern": ["aa", "ab", " b"],
   "key": {
     "a": {
-      "tag": "c:nether_quartz_crystals"
+      "tag": "c:quartz"
     },
     "b": {
       "tag": "c:wooden_rods"
