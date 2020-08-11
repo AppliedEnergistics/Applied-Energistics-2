@@ -24,7 +24,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
       - name: Publish Snapshot
-        run: ./gradlew publishSnapshot
+        run: ./gradlew publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.ref == 'refs/heads/fabric/master'
