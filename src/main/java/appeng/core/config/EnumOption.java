@@ -1,6 +1,7 @@
 package appeng.core.config;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -33,7 +34,7 @@ public class EnumOption<T extends Enum<T>> extends BaseOption {
 
     @Override
     protected JsonElement write() {
-        return new JsonPrimitive(currentValue.name().toLowerCase());
+        return new JsonPrimitive(currentValue.name().toLowerCase(Locale.ROOT));
     }
 
     @Override
@@ -55,7 +56,7 @@ public class EnumOption<T extends Enum<T>> extends BaseOption {
             }
         }
 
-        String allowedValues = Arrays.stream(enumConstants).map(e -> e.name().toLowerCase())
+        String allowedValues = Arrays.stream(enumConstants).map(e -> e.name().toLowerCase(Locale.ROOT))
                 .collect(Collectors.joining(", "));
         throw new ConfigValidationException(this, "Expected one of: " + allowedValues);
     }
@@ -67,12 +68,12 @@ public class EnumOption<T extends Enum<T>> extends BaseOption {
 
     @Override
     public String getDefaultAsString() {
-        return String.valueOf(defaultValue.name().toLowerCase());
+        return String.valueOf(defaultValue.name().toLowerCase(Locale.ROOT));
     }
 
     @Override
     public String getCurrentValueAsString() {
-        return String.valueOf(currentValue.name().toLowerCase());
+        return String.valueOf(currentValue.name().toLowerCase(Locale.ROOT));
     }
 
 }
