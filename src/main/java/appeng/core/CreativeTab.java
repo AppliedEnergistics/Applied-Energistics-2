@@ -29,7 +29,6 @@ import net.minecraft.util.collection.DefaultedList;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
-import appeng.core.Api;
 
 public final class CreativeTab {
 

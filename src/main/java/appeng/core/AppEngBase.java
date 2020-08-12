@@ -85,9 +85,6 @@ public abstract class AppEngBase implements AppEng {
             throw new IllegalStateException();
         }
 
-        CreativeTab.init();
-        FacadeCreativeTab.init();// This call has a side-effect (adding it to the creative screen)
-
         AeStats.register();
         advancementTriggers = new AdvancementTriggers(CriteriaRegisterMixin::callRegister);
 

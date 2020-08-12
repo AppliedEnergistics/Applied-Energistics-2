@@ -42,6 +42,10 @@ public final class AppEngBootstrap {
         initialized = true;
 
         AEConfig.load(FabricLoader.getInstance().getConfigDirectory());
+
+        CreativeTab.init();
+        FacadeCreativeTab.init();// This call has a side-effect (adding it to the creative screen)
+
         Api.INSTANCE = new Api();
 
         registerStructures();

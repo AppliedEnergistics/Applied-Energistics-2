@@ -36,9 +36,6 @@ public class Entrypoint implements PreLaunchEntrypoint {
         }
 
         Bootstrap.initialize();
-        AEConfig.load(new File("config"));
-        CreativeTab.init(); // Vanilla data gens use item tab associations
-        Api.INSTANCE = new Api();
 
         try {
             dump();
