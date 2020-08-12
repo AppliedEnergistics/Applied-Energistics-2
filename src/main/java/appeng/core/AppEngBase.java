@@ -4,56 +4,24 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
-import net.earthcomputer.libstructure.LibStructure;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BannerBlockEntity;
-import net.minecraft.block.entity.BeaconBlockEntity;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.CommandBlockBlockEntity;
-import net.minecraft.block.entity.ComparatorBlockEntity;
-import net.minecraft.block.entity.DaylightDetectorBlockEntity;
-import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.block.entity.DropperBlockEntity;
-import net.minecraft.block.entity.EnchantingTableBlockEntity;
-import net.minecraft.block.entity.EndPortalBlockEntity;
-import net.minecraft.block.entity.EnderChestBlockEntity;
-import net.minecraft.block.entity.FurnaceBlockEntity;
-import net.minecraft.block.entity.HopperBlockEntity;
-import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import net.minecraft.block.entity.PistonBlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.block.entity.SkullBlockEntity;
+import net.minecraft.block.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
-import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.FeatureConfig;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IParts;
-import appeng.api.features.AEFeature;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWorldGen;
@@ -72,39 +40,7 @@ import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.container.implementations.ChestContainer;
-import appeng.container.implementations.CondenserContainer;
-import appeng.container.implementations.CraftAmountContainer;
-import appeng.container.implementations.CraftConfirmContainer;
-import appeng.container.implementations.CraftingCPUContainer;
-import appeng.container.implementations.CraftingStatusContainer;
-import appeng.container.implementations.CraftingTermContainer;
-import appeng.container.implementations.DriveContainer;
-import appeng.container.implementations.FormationPlaneContainer;
-import appeng.container.implementations.GrinderContainer;
-import appeng.container.implementations.IOPortContainer;
-import appeng.container.implementations.InscriberContainer;
-import appeng.container.implementations.InterfaceContainer;
-import appeng.container.implementations.InterfaceTerminalContainer;
-import appeng.container.implementations.LevelEmitterContainer;
-import appeng.container.implementations.MEMonitorableContainer;
-import appeng.container.implementations.MEPortableCellContainer;
-import appeng.container.implementations.MolecularAssemblerContainer;
-import appeng.container.implementations.NetworkStatusContainer;
-import appeng.container.implementations.NetworkToolContainer;
-import appeng.container.implementations.PatternTermContainer;
-import appeng.container.implementations.PriorityContainer;
-import appeng.container.implementations.QNBContainer;
-import appeng.container.implementations.QuartzKnifeContainer;
-import appeng.container.implementations.SecurityStationContainer;
-import appeng.container.implementations.SkyChestContainer;
-import appeng.container.implementations.SpatialIOPortContainer;
-import appeng.container.implementations.StorageBusContainer;
-import appeng.container.implementations.UpgradeableContainer;
-import appeng.container.implementations.VibrationChamberContainer;
-import appeng.container.implementations.WirelessContainer;
-import appeng.container.implementations.WirelessTermContainer;
+import appeng.container.implementations.*;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.cell.BasicCellHandler;
 import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
@@ -115,41 +51,18 @@ import appeng.core.stats.AeStats;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
-import appeng.fluids.container.FluidFormationPlaneContainer;
-import appeng.fluids.container.FluidIOContainer;
-import appeng.fluids.container.FluidInterfaceContainer;
-import appeng.fluids.container.FluidLevelEmitterContainer;
-import appeng.fluids.container.FluidStorageBusContainer;
-import appeng.fluids.container.FluidTerminalContainer;
+import appeng.fluids.container.*;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.hooks.ToolItemHook;
 import appeng.items.parts.FacadeItem;
 import appeng.items.tools.NetworkToolItem;
-import appeng.me.cache.CraftingGridCache;
-import appeng.me.cache.EnergyGridCache;
-import appeng.me.cache.GridStorageCache;
-import appeng.me.cache.P2PCache;
-import appeng.me.cache.PathGridCache;
-import appeng.me.cache.SecurityCache;
-import appeng.me.cache.SpatialPylonCache;
-import appeng.me.cache.TickManagerCache;
+import appeng.me.cache.*;
 import appeng.mixins.CriteriaRegisterMixin;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
-import appeng.recipes.handlers.GrinderRecipe;
-import appeng.recipes.handlers.GrinderRecipeSerializer;
-import appeng.recipes.handlers.InscriberRecipe;
-import appeng.recipes.handlers.InscriberRecipeSerializer;
-import appeng.recipes.handlers.QuartzKnifeRecipeSerializer;
+import appeng.recipes.handlers.*;
 import appeng.server.AECommand;
-import appeng.spatial.SpatialStorageBiome;
-import appeng.spatial.SpatialStorageChunkGenerator;
-import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.tile.AEBaseBlockEntity;
-import appeng.worldgen.BiomeModifier;
-import appeng.worldgen.ChargedQuartzOreConfig;
-import appeng.worldgen.ChargedQuartzOreFeature;
-import appeng.worldgen.meteorite.MeteoriteStructure;
 
 public abstract class AppEngBase implements AppEng {
 
@@ -172,8 +85,6 @@ public abstract class AppEngBase implements AppEng {
             throw new IllegalStateException();
         }
 
-        AEConfig.load(FabricLoader.getInstance().getConfigDirectory());
-
         CreativeTab.init();
         FacadeCreativeTab.init();// This call has a side-effect (adding it to the creative screen)
 
@@ -182,15 +93,12 @@ public abstract class AppEngBase implements AppEng {
 
         ToolItemHook.install();
 
-        Api.INSTANCE = new Api();
         registerBlockEntities();
 
         registerScreenHandlerTypes();
         registerParticleTypes();
         registerRecipeSerializers();
-        registerWorldGen();
         registerServerCommands();
-        registerDimension();
 
         setupInternalRegistries();
 
@@ -549,73 +457,11 @@ public abstract class AppEngBase implements AppEng {
         return type;
     }
 
-    private void registerWorldGen() {
-        LibStructure.registerStructure(MeteoriteStructure.ID, MeteoriteStructure.INSTANCE,
-                GenerationStep.Feature.TOP_LAYER_MODIFICATION, new StructureConfig(32, 8, 124895654),
-                new MeteoriteStructure(DefaultFeatureConfig.CODEC).configure(DefaultFeatureConfig.INSTANCE));
-        Registry.register(Registry.FEATURE, AppEng.makeId("charged_quartz_ore"), ChargedQuartzOreFeature.INSTANCE);
-
-        // add to all standard biomes
-        // TODO: Wrong...
-        BuiltinRegistries.BIOME.forEach(b -> {
-            addMeteoriteWorldGen(b);
-            addQuartzWorldGen(b);
-        });
-    }
-
-    private static void addMeteoriteWorldGen(Biome b) {
-        if (!AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
-            return;
-        }
-
-        if (b.getCategory() == Biome.Category.THEEND || b.getCategory() == Biome.Category.NETHER) {
-            return;
-        }
-
-        BiomeModifier modifier = new BiomeModifier(b);
-        modifier.addStructureFeature(MeteoriteStructure.INSTANCE.configure(FeatureConfig.DEFAULT));
-    }
-
-    private static void addQuartzWorldGen(Biome b) {
-        if (!AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
-            return;
-        }
-
-        BiomeModifier modifier = new BiomeModifier(b);
-
-        BlockState quartzOre = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
-        modifier.addFeature(GenerationStep.Feature.UNDERGROUND_ORES,
-                Feature.ORE
-                        .configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, quartzOre,
-                                AEConfig.instance().getQuartzOresPerCluster()))
-                        .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(12, 12, 72))).spreadHorizontally()
-                        .repeat(AEConfig.instance().getQuartzOresClusterAmount()));
-
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
-
-            BlockState chargedQuartzOre = Api.instance().definitions().blocks().quartzOreCharged().block()
-                    .getDefaultState();
-            modifier.addFeature(GenerationStep.Feature.UNDERGROUND_DECORATION,
-                    ChargedQuartzOreFeature.INSTANCE
-                            .configure(new ChargedQuartzOreConfig(quartzOre, chargedQuartzOre,
-                                    AEConfig.instance().getSpawnChargedChance()))
-                            .decorate(Decorator.NOPE.configure(NopeDecoratorConfig.INSTANCE)));
-
-        }
-    }
-
     private void registerServerCommands() {
         // The server commands need to know what the current minecraft server is.
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             new AECommand().register(dispatcher);
         });
-    }
-
-    private void registerDimension() {
-        BuiltinRegistries.add(BuiltinRegistries.BIOME, SpatialStorageDimensionIds.BIOME_KEY.getValue(),
-                SpatialStorageBiome.INSTANCE);
-        Registry.register(Registry.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
-                SpatialStorageChunkGenerator.CODEC);
     }
 
 }

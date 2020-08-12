@@ -1,4 +1,4 @@
-package appeng.mixins;
+package appeng.mixins.structure;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -10,6 +10,9 @@ import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
+/**
+ * Allows the settings in a Biome's generation settings to be modified.
+ */
 @Mixin(GenerationSettings.class)
 public interface GenerationSettingsAccessor {
 

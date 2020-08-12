@@ -196,8 +196,8 @@ public final class AppEngClient extends AppEngBase {
         // WorldData
         // each time the integrated server starts&stops
         ServerLifecycleEvents.SERVER_STARTING.register(WorldData::onServerStarting);
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> WorldData.instance().onServerStopping());
-        ServerLifecycleEvents.SERVER_STOPPED.register(server -> WorldData.instance().onServerStoppped());
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> WorldData.onServerStopping(server));
+        ServerLifecycleEvents.SERVER_STOPPED.register(WorldData::onServerStoppped);
 
         this.bindings = new EnumMap<>(ActionKey.class);
         for (ActionKey key : ActionKey.values()) {

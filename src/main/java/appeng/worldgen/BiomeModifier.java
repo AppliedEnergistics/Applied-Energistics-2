@@ -13,8 +13,8 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import appeng.mixins.BiomeAccessor;
-import appeng.mixins.GenerationSettingsAccessor;
+import appeng.mixins.structure.BiomeAccessor;
+import appeng.mixins.structure.GenerationSettingsAccessor;
 
 public final class BiomeModifier {
 

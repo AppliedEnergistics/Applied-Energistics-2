@@ -32,8 +32,8 @@ public final class AppEngServer extends AppEngBase {
         this.tickHandler = new TickHandler();
 
         ServerLifecycleEvents.SERVER_STARTING.register(this::onServerStarting);
-        ServerLifecycleEvents.SERVER_STOPPING.register(s -> onServerStopping());
-        ServerLifecycleEvents.SERVER_STOPPED.register(s -> onServerStopped());
+        ServerLifecycleEvents.SERVER_STOPPING.register(WorldData::onServerStopping);
+        ServerLifecycleEvents.SERVER_STOPPED.register(WorldData::onServerStoppped);
     }
 
     private void onServerStarting(MinecraftServer server) {
@@ -41,14 +41,6 @@ public final class AppEngServer extends AppEngBase {
         WorldData.onServerStarting(server);
 
         this.server = server;
-    }
-
-    private void onServerStopping() {
-        WorldData.instance().onServerStopping();
-    }
-
-    private void onServerStopped() {
-        WorldData.instance().onServerStoppped();
     }
 
     @Override

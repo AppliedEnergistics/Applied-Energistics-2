@@ -49,7 +49,7 @@ public final class WorldData implements IWorldData {
      * Is null while no MinecraftServer exists.
      */
     @Nullable
-    private static IWorldData instance;
+    private static WorldData instance;
 
     @Nullable
     private static MinecraftServer server;
@@ -113,16 +113,17 @@ public final class WorldData implements IWorldData {
         WorldData.server = server;
     }
 
-    @Override
-    public void onServerStopping() {
-        compassData.service().kill();
+    public static void onServerStopping(MinecraftServer server) {
+        if (WorldData.server == server && instance != null) {
+            instance.compassData.service().kill();
+        }
     }
 
-    @Override
-    public void onServerStoppped() {
-        Preconditions.checkNotNull(server);
-        instance = null;
-        WorldData.server = null;
+    public static void onServerStoppped(MinecraftServer server) {
+        if (WorldData.server == server) {
+            instance = null;
+            WorldData.server = null;
+        }
     }
 
     @Nonnull

@@ -27,7 +27,6 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.FeatureFactory;
-import appeng.core.AEConfig;
 import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.SingularityEntity;
 import appeng.items.materials.MaterialItem;
@@ -190,12 +189,6 @@ public final class ApiMaterials implements IMaterials {
 
         IItemDefinition def = registry.item(mat.getId(), props -> new MaterialItem(props, mat))
                 .features(mat.getFeature().toArray(new AEFeature[0])).build();
-
-        boolean enabled = true;
-
-        for (final AEFeature f : mat.getFeature()) {
-            enabled = enabled && AEConfig.instance().isFeatureEnabled(f);
-        }
 
         mat.setItemInstance(def.item());
         mat.markReady();

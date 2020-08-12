@@ -26,10 +26,6 @@ import javax.annotation.Nonnull;
  * @since rv3 30.05.2015
  */
 public interface IWorldData {
-    void onServerStopping();
-
-    void onServerStoppped();
-
     @Nonnull
     IWorldGridStorageData storageData();
 
