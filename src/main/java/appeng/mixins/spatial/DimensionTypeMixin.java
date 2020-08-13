@@ -49,6 +49,10 @@ public class DimensionTypeMixin {
                 SpatialStorageDimensionIds.DIMENSION_TYPE_ID.func_240901_a_(), dimensionType);
     }
 
+    /**
+     * Insert our custom dimension into the initial registry. <em>This is what will
+     * ultimately lead to the creation of a new World.</em>
+     */
     @Inject(method = "func_242718_a", at = @At("RETURN"))
     private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,
             Registry<DimensionSettings> dimensionSettings, long seed,

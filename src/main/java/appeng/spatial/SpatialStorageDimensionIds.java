@@ -40,8 +40,7 @@ public final class SpatialStorageDimensionIds {
     /**
      * ID of the {@link Dimension} used for the spatial storage dimension.
      * <p>
-     * This is defined in
-     * <code>data/minecraft/dimension/appliedenergistics2/spatial_storage.json</code>
+     * This is defined in {@link appeng.mixins.spatial.DimensionTypeMixin}.
      */
     public static final RegistryKey<Dimension> DIMENSION_ID = RegistryKey.func_240903_a_(Registry.DIMENSION_KEY,
             AppEng.makeId("spatial_storage"));
