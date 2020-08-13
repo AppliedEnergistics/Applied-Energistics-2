@@ -110,7 +110,7 @@ public class SpatialStorageCommand implements ISubCommand {
             }
         }
 
-        throw new CommandException(ITextComponent.func_241827_a_("Couldn't find a plot for the current position."));
+        throw new CommandException(ITextComponent.func_244388_a("Couldn't find a plot for the current position."));
 
     }
 
@@ -121,7 +121,7 @@ public class SpatialStorageCommand implements ISubCommand {
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition == null) {
             throw new CommandException(
-                    ITextComponent.func_241827_a_("This plot doesn't have a last known transition."));
+                    ITextComponent.func_244388_a("This plot doesn't have a last known transition."));
         }
 
         String command = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().add(0, 1, 0));
@@ -212,7 +212,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
         if (!(cell.getItem() instanceof SpatialStorageCellItem)) {
             throw new CommandException(
-                    ITextComponent.func_241827_a_("Storage cell items don't implement the storage cell interface!"));
+                    ITextComponent.func_244388_a("Storage cell items don't implement the storage cell interface!"));
         }
 
         SpatialStorageCellItem spatialCellItem = (SpatialStorageCellItem) cell.getItem();
@@ -321,7 +321,7 @@ public class SpatialStorageCommand implements ISubCommand {
             }
         }
 
-        throw new CommandException(ITextComponent.func_241827_a_("Couldn't find a plot for the current position."));
+        throw new CommandException(ITextComponent.func_244388_a("Couldn't find a plot for the current position."));
     }
 
 }

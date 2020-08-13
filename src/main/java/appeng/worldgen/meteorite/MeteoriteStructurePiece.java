@@ -36,7 +36,7 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 public class MeteoriteStructurePiece extends StructurePiece {
 
     public static final IStructurePieceType TYPE = IStructurePieceType.register(MeteoriteStructurePiece::new,
-            "AE2MTRT");
+            "ae2mtrt");
 
     public static void register() {
         // THIS MUST BE CALLED otherwise the static initializer above will not run,

@@ -323,7 +323,7 @@ public class CachedPlane {
 
                 WorldData.instance().compassData().service().updateArea(this.getWorld(), c);
 
-                SChunkDataPacket cdp = new SChunkDataPacket(c, verticalBits, false);
+                SChunkDataPacket cdp = new SChunkDataPacket(c, verticalBits);
                 world.getChunkProvider().chunkManager.getTrackingPlayers(c.getPos(), false)
                         .forEach(spe -> spe.connection.sendPacket(cdp));
             }

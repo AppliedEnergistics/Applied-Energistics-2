@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -57,8 +56,8 @@ import appeng.util.Platform;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
-    public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
-            "blacklisted/fluid_annihilation_plane");
+    public static final ITag.INamedTag<Fluid> TAG_BLACKLIST = FluidTags
+            .makeWrapperTag(AppEng.makeId("blacklisted/fluid_annihilation_plane").toString());
 
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
             "part/fluid_annihilation_plane_on");
@@ -214,8 +213,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     private boolean isFluidBlacklisted(Fluid fluid) {
-        ITag<Fluid> tag = FluidTags.getCollection().getOrCreate(TAG_BLACKLIST);
-        return fluid.isIn(tag);
+        return TAG_BLACKLIST.contains(fluid);
     }
 
 }

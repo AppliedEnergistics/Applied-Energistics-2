@@ -218,7 +218,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             styledLines.add(lines.get(i).deepCopy().modifyStyle(s -> style));
         }
 
-        this.renderTooltip(matrices, styledLines, x, y);
+        this.func_243308_b(matrices, styledLines, x, y);
 
     }
 

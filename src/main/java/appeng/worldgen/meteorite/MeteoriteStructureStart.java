@@ -12,9 +12,9 @@ import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
-import net.minecraft.world.biome.Biome.TempCategory;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.Heightmap.Type;
@@ -27,17 +27,18 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
 
-    private final ITag<Block> sandTag = BlockTags.getCollection().getOrCreate(new ResourceLocation("minecraft:sand"));
+    private final ITag<Block> sandTag = BlockTags.getCollection().func_241834_b(new ResourceLocation("minecraft:sand"));
     private final ITag<Block> terracottaTag = BlockTags.getCollection()
-            .getOrCreate(new ResourceLocation("forge:terracotta"));
+            .func_241834_b(new ResourceLocation("forge:terracotta"));
 
     public MeteoriteStructureStart(Structure<NoFeatureConfig> p_i225815_1_, int p_i225815_2_, int p_i225815_3_,
             MutableBoundingBox p_i225815_4_, int p_i225815_5_, long p_i225815_6_) {
         super(p_i225815_1_, p_i225815_2_, p_i225815_3_, p_i225815_4_, p_i225815_5_, p_i225815_6_);
     }
 
-    public void func_230364_a_(ChunkGenerator generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
-            Biome biome, NoFeatureConfig config) {
+    @Override
+    public void func_230364_a_(DynamicRegistries dynamicRegistryManager, ChunkGenerator generator, TemplateManager templateManager, int chunkX, int chunkZ,
+                               Biome biome, NoFeatureConfig config) {
         final int centerX = chunkX * 16 + this.rand.nextInt(16);
         final int centerZ = chunkZ * 16 + this.rand.nextInt(16);
         final float meteoriteRadius = (this.rand.nextFloat() * 6.0f) + 2;
@@ -75,7 +76,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
         boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius);
         CraterType craterType = this.determineCraterType(spawnBiome);
         boolean pureCrater = this.rand.nextFloat() > .9f;
-        FalloutMode fallout = getFalloutFromBaseBlock(spawnBiome.getSurfaceBuilderConfig().getTop());
+        FalloutMode fallout = getFalloutFromBaseBlock(spawnBiome.func_242440_e().func_242502_e().getTop());
 
         components.add(
                 new MeteoriteStructurePiece(actualPos, meteoriteRadius, craterType, fallout, pureCrater, craterLake));
@@ -118,7 +119,9 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
     }
 
     private CraterType determineCraterType(Biome biome) {
-        final TempCategory temp = biome.getTempCategory();
+        // The temperature thresholds below are taken from older Vanilla code
+        // (temperature categories)
+        final float temp = biome.func_242445_k();
         final Category category = biome.getCategory();
 
         // No craters in oceans
@@ -135,7 +138,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
         }
 
         // Warm biomes, higher chance for lava
-        if (temp == TempCategory.WARM) {
+        if (temp >= 1) {
 
             // 50% chance to actually spawn as lava
             final boolean lava = rand.nextFloat() > .5f;
@@ -158,7 +161,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
         }
 
         // Temperate biomes. Water or maybe lava
-        if (temp == TempCategory.MEDIUM) {
+        if (temp < 1 && temp >= 0.2) {
             // 75% chance to actually spawn with a crater lake
             final boolean lake = rand.nextFloat() > .25f;
             // 20% to spawn with lava
@@ -184,7 +187,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
         }
 
         // Cold biomes, Snow or Ice, maybe water and very rarely lava.
-        if (temp == TempCategory.COLD) {
+        if (temp < 0.2) {
             // 75% chance to actually spawn with a crater lake
             final boolean lake = rand.nextFloat() > .25f;
             // 5% to spawn with lava

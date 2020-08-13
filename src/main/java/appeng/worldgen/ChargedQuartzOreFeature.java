@@ -11,7 +11,6 @@ import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 /**
  * Extends {@link net.minecraft.world.gen.feature.OreFeature} by also allowing
@@ -27,8 +26,7 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
     }
 
     @Override
-    public boolean func_230362_a_(ISeedReader worldIn, StructureManager structureAccessor, ChunkGenerator generator,
-            Random rand, BlockPos pos, ChargedQuartzOreConfig config) {
+    public boolean func_241855_a(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, ChargedQuartzOreConfig config) {
         ChunkPos chunkPos = new ChunkPos(pos);
 
         BlockPos.Mutable bpos = new BlockPos.Mutable();

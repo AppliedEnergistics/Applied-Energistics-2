@@ -176,7 +176,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
                 list.add(new StringTextComponent(formattedAmount));
                 list.add(new StringTextComponent(modName));
 
-                this.renderTooltip(matrixStack, list, mouseX, mouseY);
+                this.func_243308_b(matrixStack, list, mouseX, mouseY);
 
                 return;
             }

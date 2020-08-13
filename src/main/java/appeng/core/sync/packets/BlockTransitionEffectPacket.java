@@ -71,7 +71,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
         data.writeInt(this.getPacketID());
         data.writeBlockPos(pos);
-        int blockStateId = GameData.getBlockStateIDMap().get(blockState);
+        int blockStateId = GameData.getBlockStateIDMap().getId(blockState);
         if (blockStateId == -1) {
             AELog.warn("Failed to find numeric id for block state %s", blockState);
         }

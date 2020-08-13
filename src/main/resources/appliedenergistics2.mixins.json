@@ -7,9 +7,14 @@
   "mixins": [
     "spatial.DimensionTypeMixin",
     "spatial.DimensionOptionMixin",
-    "ThreadedAnvilChunkStorageAccessor",
-    "DimensionStructuresSettingsMixin",
-    "StructureAccessor"
+    "spatial.EntityMixin",
+    "spatial.BiomesMixin",
+    "structure.DimensionStructuresSettingsMixin",
+    "structure.ConfiguredStructureFeaturesAccessor",
+    "structure.StructureFeatureAccessor",
+    "structure.GenerationSettingsAccessor",
+    "structure.BiomeAccessor",
+    "feature.ConfiguredFeaturesAccessor"
   ],
   "client": [
     "spatial.SkyRenderMixin",

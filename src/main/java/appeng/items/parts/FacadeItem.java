@@ -58,7 +58,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     /**
      * Block tag used to explicitly whitelist blocks for use in facades.
      */
-    private static final ResourceLocation TAG_WHITELISTED = new ResourceLocation(AppEng.MOD_ID, "whitelisted/facades");
+    private static final ITag.INamedTag<Block> BLOCK_WHITELIST = BlockTags.makeWrapperTag(AppEng.makeId("whitelisted/facades").toString());
 
     private static final String NBT_ITEM_ID = "item";
 
@@ -105,8 +105,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         BlockState blockState = block.getDefaultState();
 
         final boolean areTileEntitiesEnabled = AEConfig.instance().isFeatureEnabled(AEFeature.TILE_ENTITY_FACADES);
-        ITag<Block> whitelistTag = BlockTags.getCollection().getOrCreate(TAG_WHITELISTED);
-        final boolean isWhiteListed = block.isIn(whitelistTag);
+        final boolean isWhiteListed = BLOCK_WHITELIST.contains(block);
         final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 
         final BlockState defaultState = block.getDefaultState();

@@ -25,11 +25,13 @@ import java.util.function.Function;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.server.ServerWorld;
@@ -48,6 +50,16 @@ public class SpatialStorageHelper {
             instance = new SpatialStorageHelper();
         }
         return instance;
+    }
+
+    private final ThreadLocal<PortalInfo> teleportTarget = new ThreadLocal<>();
+
+    /**
+     * If an entity is currently being teleported, this will return the target
+     * within the target dimension.
+     */
+    public PortalInfo getTeleportTarget() {
+        return teleportTarget.get();
     }
 
     /**
@@ -98,11 +110,23 @@ public class SpatialStorageHelper {
                 ChunkStatus.FULL, true);
 
         if (entity instanceof ServerPlayerEntity
-                && link.dim.func_234922_V_() == SpatialStorageDimensionIds.DIMENSION_TYPE_ID) {
+                && link.dim.func_234923_W_() == SpatialStorageDimensionIds.WORLD_ID) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
-        entity.changeDimension(link.dim, new METeleporter(link));
+        // Store in a threadlocal so that EntityMixin can return it for the Vanilla
+        // logic to use
+        teleportTarget.set(new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.rotationYaw, entity.rotationPitch));
+        try {
+            entity = entity.changeDimension(link.dim, new ITeleporter() {
+                @Override
+                public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                    return repositionEntity.apply(false);
+                }
+            });
+        } finally {
+            teleportTarget.remove();
+        }
 
         if (!passengersOnOtherSide.isEmpty()) {
             for (Entity passanger : passengersOnOtherSide) {
@@ -238,22 +262,4 @@ public class SpatialStorageHelper {
         }
     }
 
-    private static class METeleporter implements ITeleporter {
-
-        private final TelDestination destination;
-
-        METeleporter(final TelDestination d) {
-            this.destination = d;
-        }
-
-        @Override
-        public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw,
-                Function<Boolean, Entity> repositionEntity) {
-            Entity newEntity = repositionEntity.apply(false);
-            newEntity.rotationYaw = yaw;
-            newEntity.setPositionAndUpdate(this.destination.x, this.destination.y, this.destination.z);
-            newEntity.setMotion(0, 0, 0);
-            return newEntity;
-        }
-    }
 }

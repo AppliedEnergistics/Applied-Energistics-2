@@ -27,13 +27,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 
 /**
  * Represents a location in the Minecraft Universe
  */
 public class DimensionalCoord extends WorldCoord {
 
-    private final IWorld world;
+    private final World world;
     private final DimensionType dimension;
 
     public DimensionalCoord(final DimensionalCoord coordinate) {
@@ -48,13 +49,13 @@ public class DimensionalCoord extends WorldCoord {
         this.dimension = this.world.func_230315_m_();
     }
 
-    public DimensionalCoord(final IWorld world, final int x, final int y, final int z) {
+    public DimensionalCoord(final World world, final int x, final int y, final int z) {
         super(x, y, z);
         this.world = world;
         this.dimension = world.func_230315_m_();
     }
 
-    public DimensionalCoord(final IWorld world, final BlockPos pos) {
+    public DimensionalCoord(final World world, final BlockPos pos) {
         super(pos);
         this.world = world;
         this.dimension = world.func_230315_m_();
@@ -84,7 +85,7 @@ public class DimensionalCoord extends WorldCoord {
         return this.world == world;
     }
 
-    public IWorld getWorld() {
+    public World getWorld() {
         return this.world;
     }
 

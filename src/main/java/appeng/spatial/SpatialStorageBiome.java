@@ -20,33 +20,24 @@ package appeng.spatial;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeAmbience;
+import net.minecraft.world.biome.BiomeGenerationSettings;
+import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * The single biome used within the spatial storage world.
  */
-public class SpatialStorageBiome extends Biome {
+public class SpatialStorageBiome {
 
-    public static final SpatialStorageBiome INSTANCE = new SpatialStorageBiome();
-
-    public SpatialStorageBiome() {
-        super(new Biome.Builder()
-                .surfaceBuilder(
-                        new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_STONE_GRAVEL_CONFIG))
-                .precipitation(RainType.NONE).category(Category.NONE).depth(0).scale(1)
-                // Copied from the vanilla void biome
-                .temperature(0.5F).downfall(0.5F).func_235097_a_(new BiomeAmbience.Builder().setWaterColor(4159204)
-                        .setWaterFogColor(329011).setFogColor(0).build())
-                .parent(null));
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public int getSkyColor() {
-        return 0x111111;
-    }
+    public static final Biome INSTANCE = new Biome.Builder()
+            .func_242457_a(new BiomeGenerationSettings.Builder()
+                    .func_242517_a(new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_STONE_GRAVEL_CONFIG))
+                    .func_242508_a())
+            .precipitation(Biome.RainType.NONE).category(Biome.Category.NONE).depth(0).scale(1)
+            // Copied from the vanilla void biome
+            .temperature(0.5F).downfall(0.5F).func_235097_a_(new BiomeAmbience.Builder().setWaterColor(4159204)
+                    .setWaterFogColor(329011).setFogColor(0).func_242539_d(0x111111).build())
+            .func_242458_a(new MobSpawnInfo.Builder().func_242572_a(0).func_242577_b()).func_242455_a();
 
 }

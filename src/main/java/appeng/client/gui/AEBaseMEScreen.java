@@ -22,6 +22,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -72,14 +73,14 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
                     currentToolTip.add(ButtonToolTips.ItemsRequestable.text(formattedAmount));
                 }
 
-                this.renderToolTip(matrixStack, currentToolTip, x, y, this.font);
+                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y, this.font);
 
                 return;
             } else if (stack.getCount() > bigNumber) {
                 final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(stack.getCount());
                 currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
 
-                this.renderToolTip(matrixStack, currentToolTip, x, y, this.font);
+                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y, this.font);
 
                 return;
             }

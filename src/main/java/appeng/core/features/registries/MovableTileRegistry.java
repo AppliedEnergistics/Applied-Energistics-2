@@ -51,12 +51,12 @@ public class MovableTileRegistry implements IMovableRegistry {
     private final List<IMovableHandler> handlers = new ArrayList<>();
     private final DefaultSpatialHandler dsh = new DefaultSpatialHandler();
     private final IMovableHandler nullHandler = new DefaultSpatialHandler();
-    private final ITag<Block> blockTagWhiteList;
-    private final ITag<Block> blockTagBlackList;
+    private final ITag.INamedTag<Block> blockTagWhiteList;
+    private final ITag.INamedTag<Block> blockTagBlackList;
 
     public MovableTileRegistry() {
-        this.blockTagWhiteList = BlockTags.getCollection().getOrCreate(TAG_WHITELIST);
-        this.blockTagBlackList = BlockTags.getCollection().getOrCreate(TAG_BLACKLIST);
+        this.blockTagWhiteList = BlockTags.makeWrapperTag(TAG_WHITELIST.toString());
+        this.blockTagBlackList = BlockTags.makeWrapperTag(TAG_BLACKLIST.toString());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package appeng.mixins;
+package appeng.mixins.structure;
 
 import com.google.common.collect.ImmutableMap;
 

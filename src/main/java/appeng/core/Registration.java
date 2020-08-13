@@ -34,6 +34,7 @@ import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
@@ -41,7 +42,6 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
@@ -213,7 +213,6 @@ import appeng.me.cache.PathGridCache;
 import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
-import appeng.mixins.StructureAccessor;
 import appeng.parts.automation.PlaneModelLoader;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
@@ -682,73 +681,6 @@ final class Registration {
                     new ResourceLocation(dimension));
         }
 
-        MeteoriteStructurePiece.register();
-
-        ForgeRegistries.BIOMES.forEach(b -> {
-            addMeteoriteWorldGen(b);
-            addQuartzWorldGen(b);
-        });
-
-    }
-
-    private static void addMeteoriteWorldGen(Biome b) {
-        if (!AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
-            return;
-        }
-
-        if (b.getCategory() == Biome.Category.THEEND || b.getCategory() == Biome.Category.NETHER) {
-            return;
-        }
-
-        b.func_235063_a_(MeteoriteStructure.INSTANCE.func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
-    }
-
-    private static void addQuartzWorldGen(Biome b) {
-        if (!AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
-            return;
-        }
-
-        BlockState quartzOre = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
-        b.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
-                Feature.ORE
-                        .withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                quartzOre, AEConfig.instance().getQuartzOresPerCluster()))
-                        .withPlacement(Placement.COUNT_RANGE.configure(
-                                new CountRangeConfig(AEConfig.instance().getQuartzOresClusterAmount(), 12, 12, 72))));
-
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
-
-            BlockState chargedQuartzOre = Api.instance().definitions().blocks().quartzOreCharged().block()
-                    .getDefaultState();
-            b.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
-                    ChargedQuartzOreFeature.INSTANCE
-                            .withConfiguration(new ChargedQuartzOreConfig(quartzOre, chargedQuartzOre,
-                                    AEConfig.instance().getSpawnChargedChance()))
-                            .withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
-
-        }
-    }
-
-    public void registerFeatures(RegistryEvent.Register<Feature<?>> evt) {
-        IForgeRegistry<Feature<?>> r = evt.getRegistry();
-
-        r.register(ChargedQuartzOreFeature.INSTANCE.setRegistryName(AppEng.makeId("charged_quartz_ore")));
-    }
-
-    public void registerStructures(RegistryEvent.Register<Structure<?>> evt) {
-        // Registering into the Forge registry is INSUFFICIENT!
-        // There's a bidirectional map in the Structure class itself primarily for the
-        // purposes of NBT serialization
-        StructureAccessor.register(MeteoriteStructure.ID.toString(),
-                MeteoriteStructure.INSTANCE.setRegistryName(MeteoriteStructure.ID),
-                GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
-
-        Registry.register(Registry.CHUNK_GENERATOR_CODEC, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
-                SpatialStorageChunkGenerator.CODEC);
-    }
-
-    public void registerBiomes(RegistryEvent.Register<Biome> evt) {
-        evt.getRegistry().register(SpatialStorageBiome.INSTANCE.setRegistryName(SpatialStorageDimensionIds.BIOME_ID));
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -18,41 +18,6 @@
 
 package appeng.core;
 
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Stopwatch;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.components.IPostInitComponent;
 import appeng.capabilities.Capabilities;
@@ -69,6 +34,37 @@ import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
 import appeng.parts.PartPlacement;
 import appeng.server.ServerHelper;
+import com.google.common.base.Stopwatch;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DeferredWorkQueue;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import javax.annotation.Nonnull;
+import java.util.concurrent.TimeUnit;
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng {
@@ -101,6 +97,7 @@ public final class AppEng {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         registration = new Registration();
+        modEventBus.addListener(this::bootstrap);
         modEventBus.addGenericListener(Block.class, registration::registerBlocks);
         modEventBus.addGenericListener(Item.class, registration::registerItems);
         modEventBus.addGenericListener(EntityType.class, registration::registerEntities);
@@ -108,9 +105,6 @@ public final class AppEng {
         modEventBus.addGenericListener(TileEntityType.class, registration::registerTileEntities);
         modEventBus.addGenericListener(ContainerType.class, registration::registerContainerTypes);
         modEventBus.addGenericListener(IRecipeSerializer.class, registration::registerRecipeSerializers);
-        modEventBus.addGenericListener(Feature.class, registration::registerFeatures);
-        modEventBus.addGenericListener(Structure.class, registration::registerStructures);
-        modEventBus.addGenericListener(Biome.class, registration::registerBiomes);
 
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);
@@ -129,7 +123,15 @@ public final class AppEng {
         MinecraftForge.EVENT_BUS.register(new PartPlacement());
     }
 
+    private void bootstrap(RegistryEvent.NewRegistry e) {
+        // This has to be here so it's not run in parallel with other registrations
+        AppEngBootstrap.initialize();
+    }
+
     private void commonSetup(FMLCommonSetupEvent event) {
+        // This must run here because the config is not available earlier
+        DeferredWorkQueue.runLater(AppEngBootstrap::enhanceBiomes);
+
         ApiDefinitions definitions = Api.INSTANCE.definitions();
         definitions.getRegistry().getBootstrapComponents(IInitComponent.class)
                 .forEachRemaining(IInitComponent::initialize);

@@ -112,11 +112,6 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public void dropXpOnBlockBreak(World worldIn, BlockPos pos, int amount) {
-        super.dropXpOnBlockBreak(worldIn, pos, amount);
-    }
-
-    @Override
     public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change

@@ -379,12 +379,12 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         @Override
         public BlockPos getPos() {
-            return this.rayTraceResult.getPos();
+            return this.func_242401_i().getPos();
         }
 
         @Override
         public boolean canPlace() {
-            return this.world.getBlockState(this.rayTraceResult.getPos()).isReplaceable(this);
+            return getWorld().getBlockState(this.getPos()).isReplaceable(this);
         }
 
         @Override

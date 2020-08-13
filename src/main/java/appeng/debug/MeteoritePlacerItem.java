@@ -129,7 +129,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
         // is a debug tool, we'll not care about being terribly efficient here
         ChunkPos.getAllInBox(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
             Chunk c = world.getChunk(cp.x, cp.z);
-            player.connection.sendPacket(new SChunkDataPacket(c, 65535, false)); // 65535 == full chunk
+            player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
         });
 
         return ActionResultType.SUCCESS;

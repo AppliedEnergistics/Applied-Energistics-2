@@ -34,6 +34,7 @@ import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -81,6 +82,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/annihilation_plane");
+
+    private static final ITag.INamedTag<Block> BLOCK_BLACKLIST = BlockTags.makeWrapperTag(TAG_BLACKLIST.toString());
+
+    private static final ITag.INamedTag<Item> ITEM_BLACKLIST = ItemTags.makeWrapperTag(TAG_BLACKLIST.toString());
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane", "part/annihilation_plane_on");
 
@@ -527,13 +532,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     public static boolean isBlockBlacklisted(Block b) {
-        ITag<Block> tag = BlockTags.getCollection().getOrCreate(TAG_BLACKLIST);
-        return b.isIn(tag);
+        return BLOCK_BLACKLIST.contains(b);
     }
 
     public static boolean isItemBlacklisted(Item i) {
-        ITag<Item> tag = ItemTags.getCollection().getOrCreate(TAG_BLACKLIST);
-        return i.isIn(tag);
+        return ITEM_BLACKLIST.contains(i);
     }
 
 }
