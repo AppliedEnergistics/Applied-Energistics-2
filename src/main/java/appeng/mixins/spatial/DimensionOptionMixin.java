@@ -1,14 +1,16 @@
 package appeng.mixins.spatial;
 
-import appeng.spatial.SpatialStorageDimensionIds;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.Dimension;
+import java.util.List;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import java.util.List;
-import java.util.Map;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.Dimension;
+
+import appeng.spatial.SpatialStorageDimensionIds;
 
 /**
  * This Mixin tries to hide the screen that warns users about experimental

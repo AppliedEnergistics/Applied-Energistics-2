@@ -3,12 +3,12 @@ package appeng.mixins.structure;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.world.gen.feature.structure.Structure;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.gen.feature.structure.Structure;
 
 /**
  * Allows access to the copy of _all_ structures that is maintained within each

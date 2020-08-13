@@ -58,7 +58,8 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     /**
      * Block tag used to explicitly whitelist blocks for use in facades.
      */
-    private static final ITag.INamedTag<Block> BLOCK_WHITELIST = BlockTags.makeWrapperTag(AppEng.makeId("whitelisted/facades").toString());
+    private static final ITag.INamedTag<Block> BLOCK_WHITELIST = BlockTags
+            .makeWrapperTag(AppEng.makeId("whitelisted/facades").toString());
 
     private static final String NBT_ITEM_ID = "item";
 

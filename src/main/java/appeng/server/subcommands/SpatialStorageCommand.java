@@ -120,8 +120,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private void teleportBack(CommandSource source, SpatialStoragePlot plot) {
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition == null) {
-            throw new CommandException(
-                    ITextComponent.func_244388_a("This plot doesn't have a last known transition."));
+            throw new CommandException(ITextComponent.func_244388_a("This plot doesn't have a last known transition."));
         }
 
         String command = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().add(0, 1, 0));

@@ -1,18 +1,20 @@
 package appeng.worldgen;
 
-import appeng.mixins.structure.BiomeAccessor;
-import appeng.mixins.structure.GenerationSettingsAccessor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import com.google.common.collect.Lists;
+
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
+import appeng.mixins.structure.BiomeAccessor;
+import appeng.mixins.structure.GenerationSettingsAccessor;
 
 public final class BiomeModifier {
 

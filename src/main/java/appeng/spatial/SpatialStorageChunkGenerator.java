@@ -18,8 +18,12 @@
 
 package appeng.spatial;
 
-import appeng.core.Api;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
+
 import com.mojang.serialization.Codec;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -38,9 +42,7 @@ import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import appeng.core.Api;
 
 /**
  * Chunk generator the spatial storage world.
@@ -55,7 +57,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
      * If it was not the same object, then the Object->ID lookup would fail since it
      * uses an identity hashmap internally.
      */
-    public static final Codec<SpatialStorageChunkGenerator> CODEC = RegistryLookupCodec.func_244331_a(Registry.BIOME_KEY)
+    public static final Codec<SpatialStorageChunkGenerator> CODEC = RegistryLookupCodec
+            .func_244331_a(Registry.BIOME_KEY)
             .xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();
 
     private final Registry<Biome> biomeRegistry;
@@ -82,7 +85,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     private static SingleBiomeProvider createBiomeSource(Registry<Biome> biomeRegistry) {
-        return new SingleBiomeProvider(biomeRegistry.func_243576_d/*getOrThrow*/(SpatialStorageDimensionIds.BIOME_KEY));
+        return new SingleBiomeProvider(
+                biomeRegistry.func_243576_d/* getOrThrow */(SpatialStorageDimensionIds.BIOME_KEY));
     }
 
     public Registry<Biome> getBiomeRegistry() {

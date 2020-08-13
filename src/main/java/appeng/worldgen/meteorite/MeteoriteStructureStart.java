@@ -37,8 +37,8 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
     }
 
     @Override
-    public void func_230364_a_(DynamicRegistries dynamicRegistryManager, ChunkGenerator generator, TemplateManager templateManager, int chunkX, int chunkZ,
-                               Biome biome, NoFeatureConfig config) {
+    public void func_230364_a_(DynamicRegistries dynamicRegistryManager, ChunkGenerator generator,
+            TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
         final int centerX = chunkX * 16 + this.rand.nextInt(16);
         final int centerZ = chunkZ * 16 + this.rand.nextInt(16);
         final float meteoriteRadius = (this.rand.nextFloat() * 6.0f) + 2;

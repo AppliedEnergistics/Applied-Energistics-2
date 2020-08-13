@@ -18,23 +18,12 @@
 
 package appeng.core;
 
-import appeng.bootstrap.components.IInitComponent;
-import appeng.bootstrap.components.IPostInitComponent;
-import appeng.capabilities.Capabilities;
-import appeng.client.ClientHelper;
-import appeng.core.stats.AdvancementTriggers;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.worlddata.WorldData;
-import appeng.entity.ChargedQuartzEntity;
-import appeng.entity.GrowingCrystalEntity;
-import appeng.entity.SingularityEntity;
-import appeng.entity.TinyTNTPrimedEntity;
-import appeng.entity.TinyTNTPrimedRenderer;
-import appeng.hooks.TickHandler;
-import appeng.integration.Integrations;
-import appeng.parts.PartPlacement;
-import appeng.server.ServerHelper;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
+
 import com.google.common.base.Stopwatch;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -63,8 +52,22 @@ import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import javax.annotation.Nonnull;
-import java.util.concurrent.TimeUnit;
+import appeng.bootstrap.components.IInitComponent;
+import appeng.bootstrap.components.IPostInitComponent;
+import appeng.capabilities.Capabilities;
+import appeng.client.ClientHelper;
+import appeng.core.stats.AdvancementTriggers;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.worlddata.WorldData;
+import appeng.entity.ChargedQuartzEntity;
+import appeng.entity.GrowingCrystalEntity;
+import appeng.entity.SingularityEntity;
+import appeng.entity.TinyTNTPrimedEntity;
+import appeng.entity.TinyTNTPrimedRenderer;
+import appeng.hooks.TickHandler;
+import appeng.integration.Integrations;
+import appeng.parts.PartPlacement;
+import appeng.server.ServerHelper;
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng {

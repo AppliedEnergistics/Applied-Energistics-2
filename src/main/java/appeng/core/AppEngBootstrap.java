@@ -1,16 +1,5 @@
 package appeng.core;
 
-import appeng.api.features.AEFeature;
-import appeng.mixins.feature.ConfiguredFeaturesAccessor;
-import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
-import appeng.mixins.structure.StructureFeatureAccessor;
-import appeng.spatial.SpatialStorageChunkGenerator;
-import appeng.spatial.SpatialStorageDimensionIds;
-import appeng.worldgen.BiomeModifier;
-import appeng.worldgen.ChargedQuartzOreConfig;
-import appeng.worldgen.ChargedQuartzOreFeature;
-import appeng.worldgen.meteorite.MeteoriteStructure;
-import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
@@ -22,6 +11,18 @@ import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.gen.placement.TopSolidRangeConfig;
+
+import appeng.api.features.AEFeature;
+import appeng.mixins.feature.ConfiguredFeaturesAccessor;
+import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
+import appeng.mixins.structure.StructureFeatureAccessor;
+import appeng.spatial.SpatialStorageChunkGenerator;
+import appeng.spatial.SpatialStorageDimensionIds;
+import appeng.worldgen.BiomeModifier;
+import appeng.worldgen.ChargedQuartzOreConfig;
+import appeng.worldgen.ChargedQuartzOreFeature;
+import appeng.worldgen.meteorite.MeteoriteStructure;
+import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
 /**
  * Hooks into the very early bootstrapping phase to register things before the
@@ -87,7 +88,7 @@ public final class AppEngBootstrap {
     }
 
     private static void addQuartzWorldGen(Biome b, ConfiguredFeature<?, ?> quartzOre,
-                                          ConfiguredFeature<?, ?> chargedQuartz) {
+            ConfiguredFeature<?, ?> chargedQuartz) {
         if (!AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
             return;
         }
@@ -104,12 +105,12 @@ public final class AppEngBootstrap {
     private static ConfiguredFeature<?, ?> registerQuartzOreFeature() {
         // Tell Minecraft about our configured quartz ore feature
         BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
-        return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(),
-                Feature.ORE
-                        .withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.field_241882_a, quartzOreState,
-                                AEConfig.instance().getQuartzOresPerCluster()))
-                        .withPlacement(Placement.field_242907_l/*RANGE*/.configure(new TopSolidRangeConfig(12, 12, 72))).func_242728_a/*spreadHorizontally*/()
-                        .func_242731_b/*repeat*/(AEConfig.instance().getQuartzOresClusterAmount()));
+        return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(), Feature.ORE
+                .withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.field_241882_a, quartzOreState,
+                        AEConfig.instance().getQuartzOresPerCluster()))
+                .withPlacement(Placement.field_242907_l/* RANGE */.configure(new TopSolidRangeConfig(12, 12, 72)))
+                .func_242728_a/* spreadHorizontally */()
+                .func_242731_b/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
     }
 
     private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {

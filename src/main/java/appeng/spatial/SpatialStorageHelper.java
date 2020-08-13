@@ -109,18 +109,19 @@ public class SpatialStorageHelper {
         newWorld.getChunkProvider().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
-        if (entity instanceof ServerPlayerEntity
-                && link.dim.func_234923_W_() == SpatialStorageDimensionIds.WORLD_ID) {
+        if (entity instanceof ServerPlayerEntity && link.dim.func_234923_W_() == SpatialStorageDimensionIds.WORLD_ID) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
         // Store in a threadlocal so that EntityMixin can return it for the Vanilla
         // logic to use
-        teleportTarget.set(new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.rotationYaw, entity.rotationPitch));
+        teleportTarget.set(new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.rotationYaw,
+                entity.rotationPitch));
         try {
             entity = entity.changeDimension(link.dim, new ITeleporter() {
                 @Override
-                public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw,
+                        Function<Boolean, Entity> repositionEntity) {
                     return repositionEntity.apply(false);
                 }
             });

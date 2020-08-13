@@ -6,10 +6,10 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Dimension;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 
 import appeng.core.AppEng;
 import appeng.mixins.spatial.DimensionTypeMixin;
-import net.minecraft.world.biome.Biome;
 
 /**
  * IDs for the spatial storage world related dimension objects.

@@ -1,17 +1,18 @@
 package appeng.mixins.feature;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
+
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Features;
 import net.minecraft.world.gen.feature.IFeatureConfig;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(Features.class)
 public interface ConfiguredFeaturesAccessor {
 
     @Invoker("func_243968_a")
     static <FC extends IFeatureConfig> ConfiguredFeature<FC, ?> register(String id,
-                                                                         ConfiguredFeature<FC, ?> configuredFeature) {
+            ConfiguredFeature<FC, ?> configuredFeature) {
         throw new AssertionError();
     }
 
