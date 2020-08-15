@@ -19,7 +19,11 @@
 package appeng.parts;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -48,7 +52,15 @@ import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.parts.*;
+import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.IFacadePart;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
+import appeng.api.parts.LayerFlags;
+import appeng.api.parts.PartItemStack;
+import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;

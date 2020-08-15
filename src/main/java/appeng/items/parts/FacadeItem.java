@@ -18,7 +18,6 @@
 
 package appeng.items.parts;
 
-import appeng.mixins.tags.BlockTagsAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvironmentInterface;
@@ -28,9 +27,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -51,6 +54,7 @@ import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.mixins.tags.BlockTagsAccessor;
 
 @EnvironmentInterface(value = EnvType.CLIENT, itf = IAlphaPassItem.class)
 public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem, AEToolItem {

@@ -24,7 +24,32 @@ import java.util.function.Function;
 
 import net.minecraft.network.PacketByteBuf;
 
-import appeng.core.sync.packets.*;
+import appeng.core.sync.packets.AssemblerAnimationPacket;
+import appeng.core.sync.packets.BlockTransitionEffectPacket;
+import appeng.core.sync.packets.ClickPacket;
+import appeng.core.sync.packets.CompassRequestPacket;
+import appeng.core.sync.packets.CompassResponsePacket;
+import appeng.core.sync.packets.CompressedNBTPacket;
+import appeng.core.sync.packets.ConfigButtonPacket;
+import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.CraftRequestPacket;
+import appeng.core.sync.packets.FluidSlotPacket;
+import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.core.sync.packets.ItemTransitionEffectPacket;
+import appeng.core.sync.packets.JEIRecipePacket;
+import appeng.core.sync.packets.LightningPacket;
+import appeng.core.sync.packets.MEFluidInventoryUpdatePacket;
+import appeng.core.sync.packets.MEInventoryUpdatePacket;
+import appeng.core.sync.packets.MatterCannonPacket;
+import appeng.core.sync.packets.PaintedEntityPacket;
+import appeng.core.sync.packets.PartPlacementPacket;
+import appeng.core.sync.packets.PatternSlotPacket;
+import appeng.core.sync.packets.ProgressBarPacket;
+import appeng.core.sync.packets.SpawnEntityPacket;
+import appeng.core.sync.packets.SwapSlotsPacket;
+import appeng.core.sync.packets.SwitchGuisPacket;
+import appeng.core.sync.packets.TargetFluidStackPacket;
+import appeng.core.sync.packets.TargetItemStackPacket;
 
 public class BasePacketHandler {
     private static final Map<Class<? extends BasePacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();

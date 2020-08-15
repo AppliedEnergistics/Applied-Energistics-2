@@ -42,7 +42,11 @@ import appeng.core.AppEng;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
-import appeng.debug.*;
+import appeng.debug.DebugCardItem;
+import appeng.debug.DebugPartPlacerItem;
+import appeng.debug.EraserItem;
+import appeng.debug.MeteoritePlacerItem;
+import appeng.debug.ReplicatorCardItem;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
@@ -62,8 +66,20 @@ import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
-import appeng.items.tools.powered.*;
-import appeng.items.tools.quartz.*;
+import appeng.items.tools.powered.ChargedStaffItem;
+import appeng.items.tools.powered.ColorApplicatorItem;
+import appeng.items.tools.powered.ColorApplicatorItemRendering;
+import appeng.items.tools.powered.EntropyManipulatorItem;
+import appeng.items.tools.powered.MatterCannonItem;
+import appeng.items.tools.powered.PortableCellItem;
+import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.items.tools.quartz.QuartzAxeItem;
+import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
+import appeng.items.tools.quartz.QuartzHoeItem;
+import appeng.items.tools.quartz.QuartzPickaxeItem;
+import appeng.items.tools.quartz.QuartzSpadeItem;
+import appeng.items.tools.quartz.QuartzSwordItem;
+import appeng.items.tools.quartz.QuartzWrenchItem;
 
 /**
  * Internal implementation for the API items

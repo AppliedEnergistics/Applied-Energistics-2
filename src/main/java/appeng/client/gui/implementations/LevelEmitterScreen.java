@@ -22,7 +22,13 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-import appeng.api.config.*;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.LevelType;
+import appeng.api.config.PowerUnits;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;

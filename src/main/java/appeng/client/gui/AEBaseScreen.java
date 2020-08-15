@@ -18,7 +18,11 @@
 
 package appeng.client.gui;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -66,8 +70,17 @@ import appeng.client.me.SlotDisconnected;
 import appeng.client.me.SlotME;
 import appeng.client.render.StackSizeRenderer;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.*;
+import appeng.container.slot.AppEngCraftingSlot;
+import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.CalculatedValidity;
+import appeng.container.slot.CraftingTermSlot;
+import appeng.container.slot.DisabledSlot;
+import appeng.container.slot.FakeSlot;
+import appeng.container.slot.IOptionalSlot;
+import appeng.container.slot.InaccessibleSlot;
+import appeng.container.slot.OutputSlot;
+import appeng.container.slot.PatternTermSlot;
+import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;

@@ -1,6 +1,5 @@
 package appeng.core;
 
-import appeng.mixins.structure.StructureFeatureAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -17,6 +16,7 @@ import net.minecraft.world.gen.feature.OreFeatureConfig;
 import appeng.api.features.AEFeature;
 import appeng.mixins.feature.ConfiguredFeaturesAccessor;
 import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
+import appeng.mixins.structure.StructureFeatureAccessor;
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.worldgen.BiomeModifier;

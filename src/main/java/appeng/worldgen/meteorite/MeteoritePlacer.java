@@ -44,7 +44,11 @@ import appeng.tile.storage.SkyChestBlockEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorFixedInv;
-import appeng.worldgen.meteorite.fallout.*;
+import appeng.worldgen.meteorite.fallout.Fallout;
+import appeng.worldgen.meteorite.fallout.FalloutCopy;
+import appeng.worldgen.meteorite.fallout.FalloutMode;
+import appeng.worldgen.meteorite.fallout.FalloutSand;
+import appeng.worldgen.meteorite.fallout.FalloutSnow;
 
 public final class MeteoritePlacer {
     private static final double PRESSES_SPAWN_CHANCE = 0.7;

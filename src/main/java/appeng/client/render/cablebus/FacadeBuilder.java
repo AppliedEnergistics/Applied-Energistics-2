@@ -18,8 +18,14 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -53,7 +59,11 @@ import appeng.api.util.AEAxisAlignedBB;
 import appeng.core.Api;
 import appeng.mixins.MinecraftClientAccessor;
 import appeng.parts.misc.CableAnchorPart;
-import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.*;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerKicker;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadFaceStripper;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadReInterpolator;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadTinter;
 
 /**
  * The FacadeBuilder builds for facades..

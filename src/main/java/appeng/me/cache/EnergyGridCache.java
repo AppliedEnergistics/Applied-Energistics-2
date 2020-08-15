@@ -18,7 +18,16 @@
 
 package appeng.me.cache;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.NavigableSet;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedSet;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
@@ -30,9 +39,21 @@ import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.*;
-import appeng.api.networking.energy.*;
-import appeng.api.networking.events.*;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridBlock;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridStorage;
+import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyGridProvider;
+import appeng.api.networking.energy.IEnergyWatcher;
+import appeng.api.networking.energy.IEnergyWatcherHost;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPostCacheConstruction;
+import appeng.api.networking.events.MENetworkPowerIdleChange;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.me.Grid;

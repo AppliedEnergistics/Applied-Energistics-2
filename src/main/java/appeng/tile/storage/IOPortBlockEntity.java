@@ -34,7 +34,13 @@ import net.minecraft.world.World;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.api.config.*;
+import appeng.api.config.Actionable;
+import appeng.api.config.FullnessMode;
+import appeng.api.config.OperationMode;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;

@@ -25,7 +25,11 @@ import net.minecraft.screen.ScreenHandlerType;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.api.config.*;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;

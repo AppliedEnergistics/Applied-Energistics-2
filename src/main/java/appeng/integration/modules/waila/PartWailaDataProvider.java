@@ -38,7 +38,14 @@ import mcp.mobius.waila.api.IServerDataProvider;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.PartItemStack;
-import appeng.integration.modules.waila.part.*;
+import appeng.integration.modules.waila.part.ChannelWailaDataProvider;
+import appeng.integration.modules.waila.part.IPartWailaDataProvider;
+import appeng.integration.modules.waila.part.P2PStateWailaDataProvider;
+import appeng.integration.modules.waila.part.PartAccessor;
+import appeng.integration.modules.waila.part.PartStackWailaDataProvider;
+import appeng.integration.modules.waila.part.PowerStateWailaDataProvider;
+import appeng.integration.modules.waila.part.StorageMonitorWailaDataProvider;
+import appeng.integration.modules.waila.part.Tracer;
 
 /**
  * Delegation provider for parts through {@link IPartWailaDataProvider}

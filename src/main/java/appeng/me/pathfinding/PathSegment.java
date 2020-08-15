@@ -18,7 +18,11 @@
 
 package appeng.me.pathfinding;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;

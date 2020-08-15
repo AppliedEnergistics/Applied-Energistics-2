@@ -37,7 +37,12 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.parts.*;
+import appeng.api.parts.BusSupport;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartModel;
+import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;

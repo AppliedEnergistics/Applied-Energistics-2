@@ -18,7 +18,11 @@
 
 package appeng.server;
 
-import appeng.server.subcommands.*;
+import appeng.server.subcommands.ChunkLogger;
+import appeng.server.subcommands.SpatialStorageCommand;
+import appeng.server.subcommands.Supporters;
+import appeng.server.subcommands.TestMeteoritesCommand;
+import appeng.server.subcommands.TestOreGenCommand;
 
 public enum Commands {
     Chunklogger(4, new ChunkLogger(), false), Supporters(0, new Supporters(), false),

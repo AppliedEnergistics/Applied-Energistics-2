@@ -18,7 +18,12 @@
 
 package appeng.util.item;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 import net.minecraft.item.Item;
 

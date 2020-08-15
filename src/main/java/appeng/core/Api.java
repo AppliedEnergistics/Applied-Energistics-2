@@ -25,7 +25,11 @@ import appeng.api.crafting.ICraftingHelper;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
 import appeng.api.storage.IStorageHelper;
-import appeng.core.api.*;
+import appeng.core.api.ApiClientHelper;
+import appeng.core.api.ApiCrafting;
+import appeng.core.api.ApiGrid;
+import appeng.core.api.ApiPart;
+import appeng.core.api.ApiStorage;
 import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.RegistryContainer;
 

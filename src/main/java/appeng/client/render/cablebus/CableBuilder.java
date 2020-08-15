@@ -18,7 +18,12 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 import net.fabricmc.api.EnvType;
