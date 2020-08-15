@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 
-import appeng.core.Api;
 import appeng.core.AppEng;
 
 public class ConventionTagProvider extends TagProvider {

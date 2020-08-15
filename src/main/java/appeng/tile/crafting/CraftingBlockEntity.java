@@ -18,11 +18,7 @@
 
 package appeng.tile.crafting;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Optional;
+import java.util.*;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;

@@ -18,14 +18,15 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.EnumSet;
 
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;

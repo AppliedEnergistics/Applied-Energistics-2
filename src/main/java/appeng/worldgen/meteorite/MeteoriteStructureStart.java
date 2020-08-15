@@ -88,7 +88,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
 
     /**
      * Scan for water about 1 block further than the crater radius 333 1174
-     * 
+     *
      * @return true, if it found a single block of water
      */
     private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius) {

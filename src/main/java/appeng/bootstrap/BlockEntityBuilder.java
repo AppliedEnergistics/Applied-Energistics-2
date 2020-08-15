@@ -19,7 +19,6 @@ import net.minecraft.util.registry.Registry;
 
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseTileBlock;
-import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AppEng;

@@ -33,7 +33,6 @@ public interface IMEMonitorHandlerReceiver<T extends IAEStack<T>> {
      * return true if this object should remain as a listener.
      *
      * @param verificationToken to be checked object
-     *
      * @return true if object should remain as a listener
      */
     boolean isValid(Object verificationToken);

@@ -1,4 +1,3 @@
-
 package appeng.block.qnb;
 
 import net.fabricmc.api.EnvType;

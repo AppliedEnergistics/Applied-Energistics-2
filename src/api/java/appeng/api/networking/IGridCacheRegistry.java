@@ -45,7 +45,6 @@ public interface IGridCacheRegistry {
      * requests a new INSTANCE of a grid cache for use, used internally
      *
      * @param grid grid
-     *
      * @return a new Map of IGridCaches from the registry, called from IGrid when
      *         constructing a new grid.
      */

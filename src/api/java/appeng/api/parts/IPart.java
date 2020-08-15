@@ -61,7 +61,7 @@ public interface IPart extends ICustomCableConnection {
      * get an ItemStack that represents the bus, should contain the settings for
      * whatever, can also be used in conjunction with removePart to take a part off
      * and drop it or something.
-     *
+     * <p>
      * This is used to drop the bus, and to save the bus, when saving the bus,
      * wrenched is false, and writeToNBT will be called to save important details
      * about the part, if the part is wrenched include in your NBT Data any settings
@@ -69,7 +69,6 @@ public interface IPart extends ICustomCableConnection {
      * constructing your part.
      *
      * @param type , what kind of ItemStack to return?
-     *
      * @return item of part
      */
     ItemStack getItemStack(PartItemStack type);
@@ -127,7 +126,6 @@ public interface IPart extends ICustomCableConnection {
      * does this part act like a ladder?
      *
      * @param entity climbing entity
-     *
      * @return true if entity can climb
      */
     boolean isLadder(LivingEntity entity);
@@ -151,7 +149,6 @@ public interface IPart extends ICustomCableConnection {
      * write data to bus packet.
      *
      * @param data to be written data
-     *
      * @throws IOException
      */
     void writeToStream(PacketByteBuf data) throws IOException;
@@ -160,9 +157,7 @@ public interface IPart extends ICustomCableConnection {
      * read data from bus packet.
      *
      * @param data to be read data
-     *
      * @return true will re-draw the part.
-     *
      * @throws IOException
      */
     boolean readFromStream(PacketByteBuf data) throws IOException;
@@ -170,7 +165,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * get the Grid Node for the Bus, be sure your IGridBlock is NOT
      * isWorldAccessible, if it is your going to cause crashes.
-     *
+     * <p>
      * or null if you don't have a grid node.
      *
      * @return grid node
@@ -216,7 +211,6 @@ public interface IPart extends ICustomCableConnection {
      * @param player right clicking player
      * @param hand   hand used
      * @param pos    position of block
-     *
      * @return if your activate method performed something.
      */
     boolean onActivate(PlayerEntity player, Hand hand, Vec3d pos);
@@ -227,7 +221,6 @@ public interface IPart extends ICustomCableConnection {
      * @param player shift right clicking player
      * @param hand   hand used
      * @param pos    position of block
-     *
      * @return if your activate method performed something, you should use false
      *         unless you really need it.
      */
@@ -239,7 +232,6 @@ public interface IPart extends ICustomCableConnection {
      * @param player left clicking player
      * @param hand   hand used
      * @param pos    position of block
-     *
      * @return if your activate method performed something, you should use false
      *         unless you really need it.
      */
@@ -254,7 +246,6 @@ public interface IPart extends ICustomCableConnection {
      * @param player shift-left clicking player
      * @param hand   hand used
      * @param pos    position of block
-     *
      * @return if your activate method performed something, you should use false
      *         unless you really need it.
      */
@@ -299,12 +290,11 @@ public interface IPart extends ICustomCableConnection {
 
     /**
      * Used to determine which parts can be placed on what cables.
-     *
+     * <p>
      * Dense cables are not allowed for functional (getGridNode returns a node)
      * parts. Doing so will result in crashes.
      *
      * @param what placed part
-     *
      * @return true if the part can be placed on this support.
      */
     boolean canBePlacedOn(BusSupport what);

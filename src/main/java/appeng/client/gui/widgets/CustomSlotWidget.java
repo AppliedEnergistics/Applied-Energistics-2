@@ -1,4 +1,3 @@
-
 package appeng.client.gui.widgets;
 
 import net.minecraft.client.MinecraftClient;

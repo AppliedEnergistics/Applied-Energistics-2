@@ -36,7 +36,6 @@ public interface ICellWorkbenchItem {
      * inserted into the work bench.
      *
      * @param is item
-     *
      * @return true if the item should be editable in the cell workbench.
      */
     boolean isEditable(ItemStack is);
@@ -45,16 +44,16 @@ public interface ICellWorkbenchItem {
      * used to edit the upgrade slots on your cell, should have a capacity of 0-24,
      * you are also responsible for implementing the valid checks, and any
      * storage/usage of them.
-     *
+     * <p>
      * onInventoryChange will be called when saving is needed.
      */
     FixedItemInv getUpgradesInventory(ItemStack is);
 
     /**
      * Used to extract, or mirror the contents of the work bench onto the cell.
-     *
+     * <p>
      * - This should have exactly 63 slots, any more, or less might cause issues.
-     *
+     * <p>
      * onInventoryChange will be called when saving is needed.
      */
     FixedItemInv getConfigInventory(ItemStack is);

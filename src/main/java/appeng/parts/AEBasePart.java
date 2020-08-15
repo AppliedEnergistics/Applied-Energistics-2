@@ -19,11 +19,7 @@
 package appeng.parts;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import com.google.common.base.Preconditions;
 
@@ -45,7 +41,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Upgrades;
@@ -55,16 +50,8 @@ import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.parts.BusSupport;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.PartItemStack;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.api.util.IConfigManager;
+import appeng.api.parts.*;
+import appeng.api.util.*;
 import appeng.core.Api;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
@@ -335,7 +322,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * null means nothing to store...
      *
      * @param from source of settings
-     *
      * @return compound of source
      */
     private CompoundTag downloadSettings(final SettingsFrom from) {

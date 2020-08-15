@@ -29,32 +29,32 @@ import net.minecraft.block.entity.BlockEntity;
 /**
  * Used to determine if a tile is marked as movable, a block will be considered
  * movable, if...
- *
+ * <p>
  * 1. The Tile or its super classes have been white listed with
  * whiteListTileEntity.
- *
+ * <p>
  * 2. The Tile implements IMovableTile
- *
+ * <p>
  * 3. A IMovableHandler is register that returns canHandle = true for the
  * {@link BlockEntity} subclass
- *
- *
+ * <p>
+ * <p>
  * The movement process is as follows,
- *
+ * <p>
  * 1. IMovableTile.prepareToMove() or TileEntity.invalidate() depending on your
  * opt-in method. 2. The tile will be removed from the world. 3. Its world,
  * coordinates will be changed. *** this can be overridden with a
  * IMovableHandler *** 4. It will then be re-added to the world, or a new world.
  * 5. TileEntity.cancelRemoval() 6. IMovableTile.doneMoving ( if you implemented
  * IMovableTile )
- *
+ * <p>
  * Please note, this is a 100% white list only feature, I will never opt in any
  * non-vanilla, non-AE blocks. If you do not want to support your tiles being
  * moved, you don't have to do anything.
- *
+ * <p>
  * I appreciate anyone that takes the effort to get their tiles to work with
  * this system to create a better use experience.
- *
+ * <p>
  * If you need a build of deobf build of AE for testing, do not hesitate to ask.
  */
 public interface IMovableRegistry {
@@ -68,7 +68,7 @@ public interface IMovableRegistry {
 
     /**
      * White list your block entity with the registry.
-     *
+     * <p>
      * If you tile is handled with IMovableHandler or IMovableTile you do not need
      * to white list it.
      */
@@ -76,7 +76,6 @@ public interface IMovableRegistry {
 
     /**
      * @param te to be moved block entity
-     *
      * @return true if the tile has accepted your request to move it
      */
     boolean askToMove(BlockEntity te);
@@ -98,11 +97,10 @@ public interface IMovableRegistry {
     /**
      * handlers are used to perform movement, this allows you to override AE's
      * internal version.
-     *
+     * <p>
      * only valid after askToMove(...) = true
      *
      * @param te block entity
-     *
      * @return moving handler of block entity
      */
     IMovableHandler getHandler(BlockEntity te);
@@ -114,7 +112,6 @@ public interface IMovableRegistry {
 
     /**
      * @param blk block
-     *
      * @return true if this block is blacklisted
      */
     boolean isBlacklisted(Block blk);

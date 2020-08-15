@@ -30,13 +30,7 @@ import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.parts.IPart;
@@ -44,11 +38,7 @@ import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.slot.FakeTypeOnlySlot;
-import appeng.container.slot.IOptionalSlotHost;
-import appeng.container.slot.OptionalFakeSlot;
-import appeng.container.slot.OptionalTypeOnlyFakeSlot;
-import appeng.container.slot.RestrictedInputSlot;
+import appeng.container.slot.*;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.NetworkToolItem;
 import appeng.parts.automation.ExportBusPart;

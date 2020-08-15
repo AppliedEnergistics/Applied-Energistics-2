@@ -31,7 +31,7 @@ import appeng.api.config.Settings;
 
 /**
  * Used to adjust settings on an object,
- *
+ * <p>
  * Obtained via {@link IConfigurableObject}
  */
 public interface IConfigManager {
@@ -56,7 +56,6 @@ public interface IConfigManager {
      * Get Value of a particular setting
      *
      * @param settingName name of setting
-     *
      * @return value of setting
      */
     Enum<?> getSetting(Settings settingName);
@@ -66,7 +65,6 @@ public interface IConfigManager {
      *
      * @param settingName to be changed setting
      * @param newValue    new value for setting
-     *
      * @return changed setting
      */
     Enum<?> putSetting(Settings settingName, Enum<?> newValue);

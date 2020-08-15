@@ -18,13 +18,7 @@
 
 package appeng.helpers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -308,11 +302,9 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
      * Merges all equal entries into a single one while adding their total stack
      * sizes.
      *
-     * @throws IllegalStateException if the result would be empty.
-     *
      * @param collection the collection to condense
-     *
      * @return a non empty list of condensed stacks.
+     * @throws IllegalStateException if the result would be empty.
      */
     private List<IAEItemStack> condenseStacks(Collection<IAEItemStack> collection) {
         final List<IAEItemStack> merged = collection.stream().filter(Objects::nonNull)

@@ -48,7 +48,6 @@ public interface IBiometricCard {
 
     /**
      * @param itemStack card
-     *
      * @return the full list of permissions encoded on the card.
      */
     EnumSet<SecurityPermissions> getPermissions(ItemStack itemStack);
@@ -57,7 +56,6 @@ public interface IBiometricCard {
      * Check if a permission is encoded on the card.
      *
      * @param permission card
-     *
      * @return true if this permission is set on the card.
      */
     boolean hasPermission(ItemStack is, SecurityPermissions permission);

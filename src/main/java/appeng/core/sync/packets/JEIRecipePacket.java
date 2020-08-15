@@ -187,7 +187,6 @@ public class JEIRecipePacket extends BasePacket {
     }
 
     /**
-     *
      * @param slot
      * @param is   itemstack
      * @return is if it can be used, else EMPTY

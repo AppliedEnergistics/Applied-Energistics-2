@@ -20,8 +20,6 @@ package appeng.items.contents;
 
 import net.minecraft.item.ItemStack;
 
-import alexiil.mc.lib.attributes.item.FixedItemInvView;
-
 import appeng.tile.inventory.AppEngInternalInventory;
 
 public class CellConfig extends AppEngInternalInventory {

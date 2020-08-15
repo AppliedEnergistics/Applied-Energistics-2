@@ -1,4 +1,3 @@
-
 package appeng.api.storage.cells;
 
 import net.minecraft.entity.player.PlayerEntity;

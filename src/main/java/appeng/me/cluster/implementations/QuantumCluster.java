@@ -20,7 +20,6 @@ package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;

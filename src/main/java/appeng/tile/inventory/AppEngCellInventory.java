@@ -1,4 +1,3 @@
-
 package appeng.tile.inventory;
 
 import net.minecraft.item.ItemStack;

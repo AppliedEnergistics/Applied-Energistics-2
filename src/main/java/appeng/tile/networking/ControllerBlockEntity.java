@@ -23,7 +23,6 @@ import java.util.EnumSet;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;

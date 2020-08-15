@@ -25,11 +25,7 @@ import net.minecraft.text.Text;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.api.config.ActionItems;
-import appeng.api.config.CopyMode;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
+import appeng.api.config.*;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.SettingToggleButton;

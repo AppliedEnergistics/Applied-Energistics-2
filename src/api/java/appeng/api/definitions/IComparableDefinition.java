@@ -32,7 +32,6 @@ public interface IComparableDefinition {
      * Compare {@link ItemStack} with this
      *
      * @param comparableStack compared item
-     *
      * @return true if the item stack is a matching item.
      */
     boolean isSameAs(ItemStack comparableStack);

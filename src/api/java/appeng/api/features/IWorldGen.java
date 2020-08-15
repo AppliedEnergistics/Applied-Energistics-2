@@ -25,7 +25,6 @@ package appeng.api.features;
 
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.ServerWorldAccess;
 
 public interface IWorldGen {
 

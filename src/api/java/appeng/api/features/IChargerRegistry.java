@@ -33,12 +33,12 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 /**
  * A registry to allow mapping {@link Item}s to a specific charge rate when
  * being placed inside a charger.
- *
+ * <p>
  * The registry is used in favor of an additional method for
  * {@link IAEItemPowerStorage} with a fixed value per item. This allows more
  * flexibility for other charger like machines to choose their own values when
  * needed.
- *
+ * <p>
  * There is no guarantee that this is charged per tick, it only represents the
  * value per operation. By default this is one charging operation every 10 ticks
  * in case of an AE2 charger.
@@ -51,7 +51,7 @@ public interface IChargerRegistry {
 
     /**
      * Fetch a charge rate for a specific item.
-     *
+     * <p>
      * The specific item does not need to have a mapping registered at all. In this
      * case it will use a default value of 160 AE.
      *
@@ -63,7 +63,7 @@ public interface IChargerRegistry {
 
     /**
      * Register a custom charge rate for a specific item.
-     *
+     * <p>
      * Capped at 16000 to avoid extracting too much energy from a network for each
      * operation. This is done silently without any feedback or exception. Further
      * the cap is not fixed, it can change at any time in the future should power
@@ -76,7 +76,7 @@ public interface IChargerRegistry {
 
     /**
      * Remove the custom rate for a specific item.
-     *
+     * <p>
      * It will revert to the default value afterwards.
      *
      * @param item A {@link Item} implementing {@link IAEItemPowerStorage}.

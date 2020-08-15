@@ -1,4 +1,3 @@
-
 package appeng.block.paint;
 
 import net.fabricmc.api.EnvType;

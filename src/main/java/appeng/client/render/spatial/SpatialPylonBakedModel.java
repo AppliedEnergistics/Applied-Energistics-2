@@ -92,9 +92,7 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
                     builder.setUvRotation(Direction.UP, 1);
                     builder.setUvRotation(Direction.DOWN, 1);
                 }
-            }
-
-            else if (displayAxis == SpatialPylonBlockEntity.DISPLAY_Y) {
+            } else if (displayAxis == SpatialPylonBlockEntity.DISPLAY_Y) {
                 ori = Direction.UP;
                 if ((flags & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MAX) {
                     builder.setUvRotation(Direction.NORTH, 3);
@@ -102,9 +100,7 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
                     builder.setUvRotation(Direction.EAST, 3);
                     builder.setUvRotation(Direction.WEST, 3);
                 }
-            }
-
-            else if (displayAxis == SpatialPylonBlockEntity.DISPLAY_Z) {
+            } else if (displayAxis == SpatialPylonBlockEntity.DISPLAY_Z) {
                 ori = Direction.NORTH;
                 if ((flags & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MAX) {
                     builder.setUvRotation(Direction.EAST, 2);

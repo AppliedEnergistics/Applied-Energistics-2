@@ -24,7 +24,6 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -40,7 +39,6 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.Api;
 import appeng.fluids.items.FluidDummyItem;
-import appeng.util.Platform;
 import appeng.util.item.AEStack;
 
 public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFluidStack, Comparable<AEFluidStack> {

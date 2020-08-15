@@ -26,9 +26,6 @@ package appeng.api.implementations.items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 import appeng.api.util.WorldCoord;
 
@@ -39,14 +36,12 @@ public interface ISpatialStorageCell {
 
     /**
      * @param is spatial storage cell
-     *
      * @return true if this item is a spatial storage cell
      */
     boolean isSpatialStorage(ItemStack is);
 
     /**
      * @param is spatial storage cell
-     *
      * @return the maximum size of the spatial storage cell along any given axis
      */
     int getMaxStoredDim(ItemStack is);
@@ -55,7 +50,6 @@ public interface ISpatialStorageCell {
      * get the currently stored spatial storage plot id.
      *
      * @param is spatial storage cell
-     *
      * @return plot id or -1
      */
     int getAllocatedPlotId(ItemStack is);
@@ -68,7 +62,6 @@ public interface ISpatialStorageCell {
      * @param min      min coord
      * @param max      max coord
      * @param playerId owner of current grid or -1
-     *
      * @return success of transition
      */
     boolean doSpatialTransition(ItemStack is, ServerWorld w, WorldCoord min, WorldCoord max, int playerId);

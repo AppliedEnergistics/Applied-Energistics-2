@@ -25,7 +25,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.effects.EnergyParticleData;

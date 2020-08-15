@@ -22,11 +22,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.ActionItems;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
+import appeng.api.config.*;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;

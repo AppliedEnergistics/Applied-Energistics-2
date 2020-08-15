@@ -30,9 +30,9 @@ public class TickingRequest {
 
     /**
      * the minimum number of ticks that must pass between ticks.
-     *
+     * <p>
      * Valid Values are : 1+
-     *
+     * <p>
      * Suggested is 5-20
      */
     public final int minTickRate;
@@ -40,9 +40,9 @@ public class TickingRequest {
     /**
      * the maximum number of ticks that can pass between ticks, if this value is
      * exceeded the tile must tick.
-     *
+     * <p>
      * Valid Values are 1+
-     *
+     * <p>
      * Suggested is 20-40
      */
     public final int maxTickRate;

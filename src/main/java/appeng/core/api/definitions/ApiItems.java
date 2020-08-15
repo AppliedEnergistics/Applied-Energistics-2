@@ -42,11 +42,7 @@ import appeng.core.AppEng;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
-import appeng.debug.DebugCardItem;
-import appeng.debug.DebugPartPlacerItem;
-import appeng.debug.EraserItem;
-import appeng.debug.MeteoritePlacerItem;
-import appeng.debug.ReplicatorCardItem;
+import appeng.debug.*;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
@@ -66,20 +62,8 @@ import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
-import appeng.items.tools.powered.ChargedStaffItem;
-import appeng.items.tools.powered.ColorApplicatorItem;
-import appeng.items.tools.powered.ColorApplicatorItemRendering;
-import appeng.items.tools.powered.EntropyManipulatorItem;
-import appeng.items.tools.powered.MatterCannonItem;
-import appeng.items.tools.powered.PortableCellItem;
-import appeng.items.tools.powered.WirelessTerminalItem;
-import appeng.items.tools.quartz.QuartzAxeItem;
-import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
-import appeng.items.tools.quartz.QuartzHoeItem;
-import appeng.items.tools.quartz.QuartzPickaxeItem;
-import appeng.items.tools.quartz.QuartzSpadeItem;
-import appeng.items.tools.quartz.QuartzSwordItem;
-import appeng.items.tools.quartz.QuartzWrenchItem;
+import appeng.items.tools.powered.*;
+import appeng.items.tools.quartz.*;
 
 /**
  * Internal implementation for the API items
@@ -236,14 +220,14 @@ public final class ApiItems implements IItems {
         this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxCount(1))
                 .features(AEFeature.MEMORY_CARD).build();
         this.networkTool = registry.item("network_tool", NetworkToolItem::new).props(props -> props.maxCount(1)) // FIXME
-                                                                                                                 // FABRIC
-                                                                                                                 // .addToolType(FabricToolTags.get("wrench"),
-                                                                                                                 // 0)
-                                                                                                                 // (how???,
-                                                                                                                 // just
-                                                                                                                 // add
-                                                                                                                 // a
-                                                                                                                 // tag???)
+                // FABRIC
+                // .addToolType(FabricToolTags.get("wrench"),
+                // 0)
+                // (how???,
+                // just
+                // add
+                // a
+                // tag???)
                 .features(AEFeature.NETWORK_TOOL).build();
 
         this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)

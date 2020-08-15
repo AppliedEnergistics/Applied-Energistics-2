@@ -24,7 +24,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
@@ -32,13 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.WorldAccess;
-
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
-import alexiil.mc.lib.attributes.AttributeUtil;
-import alexiil.mc.lib.attributes.item.ItemAttributes;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
@@ -51,11 +44,7 @@ import appeng.tile.storage.SkyChestBlockEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorFixedInv;
-import appeng.worldgen.meteorite.fallout.Fallout;
-import appeng.worldgen.meteorite.fallout.FalloutCopy;
-import appeng.worldgen.meteorite.fallout.FalloutMode;
-import appeng.worldgen.meteorite.fallout.FalloutSand;
-import appeng.worldgen.meteorite.fallout.FalloutSnow;
+import appeng.worldgen.meteorite.fallout.*;
 
 public final class MeteoritePlacer {
     private static final double PRESSES_SPAWN_CHANCE = 0.7;

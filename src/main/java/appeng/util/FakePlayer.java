@@ -4,25 +4,12 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
-import javax.annotation.Nullable;
-
 import com.mojang.authlib.GameProfile;
 
-import io.netty.util.concurrent.CompleteFuture;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import io.netty.util.concurrent.SucceededFuture;
-
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.Packet;
-import net.minecraft.network.packet.c2s.play.ClientSettingsC2SPacket;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class FakePlayer extends ServerPlayerEntity {

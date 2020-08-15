@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;

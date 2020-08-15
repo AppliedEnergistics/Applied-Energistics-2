@@ -1,4 +1,3 @@
-
 package appeng.block.misc;
 
 import net.fabricmc.api.EnvType;

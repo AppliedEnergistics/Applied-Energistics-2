@@ -18,14 +18,8 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;

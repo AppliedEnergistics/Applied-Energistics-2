@@ -19,13 +19,7 @@
 package appeng.tile.storage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Nullable;
 
@@ -93,19 +87,16 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     /**
      * The state of all cells inside a drive as bitset, using the following format.
-     *
+     * <p>
      * - Bit 31: power state. 0 = off, 1 = on.
-     * 
+     * <p>
      * - Bit 30: reserved
-     * 
+     * <p>
      * - Bit 29-0: 3 bits for the state of each cell
-     *
+     * <p>
      * Cell states:
-     * 
+     * <p>
      * - Bit 2-0: {@link CellState} ordinal
-     *
-     *
-     * 
      */
     private int state = 0;
 

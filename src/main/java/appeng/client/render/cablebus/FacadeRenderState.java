@@ -1,4 +1,3 @@
-
 package appeng.client.render.cablebus;
 
 import net.minecraft.block.BlockState;

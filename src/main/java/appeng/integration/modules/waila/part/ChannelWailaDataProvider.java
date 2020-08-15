@@ -96,7 +96,6 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
      * @param part  part to be looked at
      * @param tag   tag maybe containing the channel information
      * @param cache cache with previous knowledge
-     *
      * @return used channels on the cable
      */
     private byte getUsedChannels(final IPart part, final CompoundTag tag, final Object2ByteMap<IPart> cache) {

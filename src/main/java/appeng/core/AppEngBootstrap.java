@@ -1,7 +1,5 @@
 package appeng.core;
 
-import com.google.common.base.Preconditions;
-
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -25,6 +23,7 @@ import appeng.worldgen.BiomeModifier;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
+import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
 /**
  * Hooks into the very early bootstrapping phase to register things before the
@@ -38,7 +37,9 @@ public final class AppEngBootstrap {
     }
 
     public synchronized static void initialize() {
-        Preconditions.checkState(!initialized, "Already initialized!");
+        if (initialized) {
+            return;
+        }
         initialized = true;
 
         AEConfig.load(FabricLoader.getInstance().getConfigDirectory());
@@ -64,6 +65,9 @@ public final class AppEngBootstrap {
     }
 
     private static void registerStructures() {
+
+        MeteoriteStructurePiece.register();
+
         // Registering into the registry alone is INSUFFICIENT!
         // There's a bidirectional map in the Structure class itself primarily for the
         // purposes of NBT serialization

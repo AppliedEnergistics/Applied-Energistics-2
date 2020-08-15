@@ -22,12 +22,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ServerSettingToggleButton;

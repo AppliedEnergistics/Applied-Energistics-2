@@ -30,12 +30,12 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 /**
  * An alternate version of FluidStack for AE to keep tabs on things easier, and
  * to support larger storage. stackSizes of getFluidStack will be capped.
- *
+ * <p>
  * You may hold on to these if you want, just make sure you let go of them when
  * your not using them.
- *
+ * <p>
  * Don't Implement.
- *
+ * <p>
  * Construct with Api.INSTANCE.storage().getStorageChannel(
  * IFluidStorageChannel.class).createStack( FluidStack )
  */

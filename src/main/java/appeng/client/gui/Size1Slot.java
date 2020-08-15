@@ -1,4 +1,3 @@
-
 package appeng.client.gui;
 
 import javax.annotation.Nonnull;

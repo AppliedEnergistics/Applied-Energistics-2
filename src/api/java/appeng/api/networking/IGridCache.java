@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 /**
  * Allows you to create a network wide service, AE2 uses these for providing
  * item, spatial, and tunnel services.
- *
+ * <p>
  * Any Class that implements this, should have a public default constructor that
  * takes a single argument of type IGrid.
  */
@@ -42,7 +42,7 @@ public interface IGridCache {
 
     /**
      * inform your cache, that a machine was removed from the grid.
-     *
+     * <p>
      * Important: Do not trust the grids state in this method, interact only with
      * the node you are passed, if you need to manage other grid information, do it
      * on the next updateTick.
@@ -54,7 +54,7 @@ public interface IGridCache {
 
     /**
      * informs you cache that a machine was added to the grid.
-     *
+     * <p>
      * Important: Do not trust the grids state in this method, interact only with
      * the node you are passed, if you need to manage other grid information, do it
      * on the next updateTick.

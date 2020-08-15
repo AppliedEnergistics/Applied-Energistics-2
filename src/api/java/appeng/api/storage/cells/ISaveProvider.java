@@ -28,7 +28,6 @@ import javax.annotation.Nullable;
 /**
  * Tells the cell provider that changes have been made an the cell must be
  * persisted
- *
  */
 public interface ISaveProvider {
     /**

@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Joiner;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;

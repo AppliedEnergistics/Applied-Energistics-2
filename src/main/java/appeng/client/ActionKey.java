@@ -1,4 +1,3 @@
-
 package appeng.client;
 
 import java.util.Locale;

@@ -51,7 +51,6 @@ public interface IMatterCannonAmmoRegistry {
      * get the penetration value for a particular ammo, 0 indicates a non-ammo.
      *
      * @param is ammo
-     *
      * @return 0 or a valid penetration value.
      */
     float getPenetration(ItemStack is);

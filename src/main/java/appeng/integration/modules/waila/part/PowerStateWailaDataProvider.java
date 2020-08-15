@@ -61,7 +61,6 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
      *
      * @param isActive  if part is active
      * @param isPowered if part is powered
-     *
      * @return tooltip of the state
      */
     private Text getToolTip(final boolean isActive, final boolean isPowered) {

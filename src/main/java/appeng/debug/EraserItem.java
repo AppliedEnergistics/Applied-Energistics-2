@@ -124,7 +124,7 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
     /**
      * Filling needs to be deferred as the tags might not be populated at
      * construction time.
-     * 
+     *
      * @return
      */
     private Set<Block> getCommonBlocks() {

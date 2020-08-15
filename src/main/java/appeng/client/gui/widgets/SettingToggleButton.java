@@ -29,24 +29,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.FullnessMode;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
-import appeng.api.config.OperationMode;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.RelativeDirection;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.ViewItems;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.core.localization.ButtonToolTips;
 import appeng.util.EnumCycler;
 

@@ -32,7 +32,6 @@ import net.minecraft.world.World;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IDefinitions;
 import appeng.core.Api;
-import appeng.core.AppEng;
 import appeng.items.parts.FacadeItem;
 
 public final class FacadeRecipe extends SpecialCraftingRecipe {

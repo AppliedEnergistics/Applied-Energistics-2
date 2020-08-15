@@ -27,14 +27,14 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
-import mcp.mobius.waila.Waila;
-import mcp.mobius.waila.api.*;
-import mcp.mobius.waila.api.impl.config.WailaConfig;
+import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerDataProvider;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.PartItemStack;

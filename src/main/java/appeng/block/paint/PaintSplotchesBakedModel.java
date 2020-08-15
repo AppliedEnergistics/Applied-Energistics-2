@@ -1,4 +1,3 @@
-
 package appeng.block.paint;
 
 import java.util.Collections;

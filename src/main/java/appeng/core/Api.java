@@ -25,11 +25,7 @@ import appeng.api.crafting.ICraftingHelper;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
 import appeng.api.storage.IStorageHelper;
-import appeng.core.api.ApiClientHelper;
-import appeng.core.api.ApiCrafting;
-import appeng.core.api.ApiGrid;
-import appeng.core.api.ApiPart;
-import appeng.core.api.ApiStorage;
+import appeng.core.api.*;
 import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.RegistryContainer;
 
@@ -43,10 +39,10 @@ public final class Api implements IAppEngApi {
 
     /**
      * Use primarily to access the API.
-     *
+     * <p>
      * Using {@link IAppEngApi} intentionally to avoid using functionality not
      * exposed by accident.
-     *
+     * <p>
      * In some cases we might have to access the API before it is announced via
      * {@link AEAddon}, otherwise we could just inject it into AE2 itself.
      */

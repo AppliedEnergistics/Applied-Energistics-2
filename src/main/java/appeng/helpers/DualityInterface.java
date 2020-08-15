@@ -18,13 +18,7 @@
 
 package appeng.helpers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.annotation.Nullable;
 
@@ -49,7 +43,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -74,11 +67,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPart;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.*;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -971,7 +960,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                             direction.getOffsetZ() * 0.501);
                     final Vec3d to = from.add(direction.getOffsetX(), direction.getOffsetY(), direction.getOffsetZ());
                     final BlockHitResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
-                                                    // https://github.com/MinecraftForge/MinecraftForge/pull/6708
+                    // https://github.com/MinecraftForge/MinecraftForge/pull/6708
                     if (hit != null && !BAD_BLOCKS.contains(directedBlock)) {
                         if (hit.getBlockPos().equals(directedTile.getPos())) {
                             // FIXME FABRIC: Either add "getName" to the interface adaptor, or special-case

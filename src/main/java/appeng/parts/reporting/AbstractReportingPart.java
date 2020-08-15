@@ -48,10 +48,10 @@ import appeng.util.Platform;
 /**
  * The most basic class for any part reporting information, like terminals or
  * monitors. This can also include basic panels which just provide light.
- *
+ * <p>
  * It deals with the most basic functionalities like network data, grid
  * registration or the rotation of the actual part.
- *
+ * <p>
  * The direct abstract subclasses are usually a better entry point for adding
  * new concrete ones. But this might be an ideal starting point to completely
  * new type, which does not resemble any existing one.

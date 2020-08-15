@@ -39,7 +39,6 @@ public final class UUIDMatcher {
      * applying a regular expression on it.
      *
      * @param potential to be checked potential {@link java.util.UUID}
-     *
      * @return true, if the potential {@link java.util.UUID} is indeed an
      *         {@link java.util.UUID}
      */

@@ -42,7 +42,6 @@ public interface IWirelessTermRegistry {
 
     /**
      * @param is item which might have a handler
-     *
      * @return true if there is a handler for this item
      */
     boolean isWirelessTerminal(ItemStack is);

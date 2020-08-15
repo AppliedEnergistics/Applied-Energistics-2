@@ -27,7 +27,6 @@ import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
 public class LightningArcFX extends LightningFX {

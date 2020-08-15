@@ -27,7 +27,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPart;
 import appeng.api.util.DimensionalCoord;
-import appeng.me.cache.TickManagerCache;
 
 public class TickTracker implements Comparable<TickTracker> {
 

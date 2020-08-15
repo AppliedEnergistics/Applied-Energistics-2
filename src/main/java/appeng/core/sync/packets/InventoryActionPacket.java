@@ -18,8 +18,6 @@
 
 package appeng.core.sync.packets;
 
-import java.util.Optional;
-
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,7 +30,6 @@ import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CraftAmountContainer;
-import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;

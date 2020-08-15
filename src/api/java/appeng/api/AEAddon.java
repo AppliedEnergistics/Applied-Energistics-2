@@ -18,20 +18,16 @@
 
 package appeng.api;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Use this annotation on a class in your Mod to have it instantiated during the
  * initialization phase of Applied Energistics.
- * 
+ * <p>
  * The class also needs to implement {@link IAEAddon}.
- * 
+ * <p>
  * AE expects your class to have a single constructor without any parameters.
- * 
+ * <p>
  * This is the only way to get access to the public {@link IAppEngApi} instance.
  */
 @Target(ElementType.TYPE)

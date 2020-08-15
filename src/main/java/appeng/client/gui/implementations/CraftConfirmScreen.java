@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.common.base.Joiner;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.widget.ButtonWidget;

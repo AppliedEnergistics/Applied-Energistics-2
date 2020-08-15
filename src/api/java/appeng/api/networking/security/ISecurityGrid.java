@@ -43,7 +43,6 @@ public interface ISecurityGrid extends IGridCache {
      *
      * @param player to be checked player
      * @param perm   checked permissions
-     *
      * @return true if the player has permissions.
      */
     boolean hasPermission(@Nonnull PlayerEntity player, @Nonnull SecurityPermissions perm);
@@ -53,7 +52,6 @@ public interface ISecurityGrid extends IGridCache {
      *
      * @param playerID id of player
      * @param perm     checked permissions
-     *
      * @return true if the player has permissions.
      */
     boolean hasPermission(@Nonnegative int playerID, @Nonnull SecurityPermissions perm);

@@ -33,7 +33,6 @@ public interface ISegmentedInventory {
      * duplication.
      *
      * @param name inventory name
-     *
      * @return inventory with inventory name
      */
     FixedItemInv getInventoryByName(String name);

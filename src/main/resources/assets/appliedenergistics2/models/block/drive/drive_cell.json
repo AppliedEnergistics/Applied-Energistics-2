@@ -8,15 +8,27 @@
       "name": "Cell Backdrop",
       "from": [0, 0, 0],
       "to": [6, 2, 2],
-      "rotation": { "angle": 0, "axis": "y", "origin": [9, 8, 8] },
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [9, 8, 8]
+      },
       "faces": {
         "north": {
           "uv": [0, 2, 6, 4],
           "texture": "#cell",
           "cullface": "north"
         },
-        "up": { "uv": [0, 0, 6, 2], "texture": "#cell", "cullface": "north" },
-        "down": { "uv": [0, 4, 6, 6], "texture": "#cell", "cullface": "north" }
+        "up": {
+          "uv": [0, 0, 6, 2],
+          "texture": "#cell",
+          "cullface": "north"
+        },
+        "down": {
+          "uv": [0, 4, 6, 6],
+          "texture": "#cell",
+          "cullface": "north"
+        }
       }
     }
   ]

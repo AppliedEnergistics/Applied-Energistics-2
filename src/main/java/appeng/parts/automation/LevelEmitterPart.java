@@ -35,18 +35,8 @@ import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
-import appeng.api.networking.crafting.ICraftingGrid;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.crafting.ICraftingWatcher;
-import appeng.api.networking.crafting.ICraftingWatcherHost;
+import appeng.api.config.*;
+import appeng.api.networking.crafting.*;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;

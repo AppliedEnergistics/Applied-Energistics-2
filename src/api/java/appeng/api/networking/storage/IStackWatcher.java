@@ -27,13 +27,13 @@ import appeng.api.storage.data.IAEStack;
 
 /**
  * DO NOT IMPLEMENT.
- *
+ * <p>
  * Will be injected when adding an {@link IStackWatcherHost} to a grid.
  */
 public interface IStackWatcher {
     /**
      * Add a specific {@link IAEStack} to watch.
-     *
+     * <p>
      * Supports multiple values, duplicate ones will not be added.
      *
      * @param stack

@@ -42,7 +42,6 @@ public interface ICraftingGrid extends IGridCache {
      * @param world       crafting world
      * @param slot        slot index
      * @param details     pattern details
-     *
      * @return a collection of crafting patterns for the item in question.
      */
     ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack whatToCraft,
@@ -56,7 +55,6 @@ public interface ICraftingGrid extends IGridCache {
      * @param actionSrc source
      * @param craftWhat result
      * @param callback  callback -- optional
-     *
      * @return a future which will at an undetermined point in the future get you
      *         the {@link ICraftingJob} do not wait on this, your be waiting
      *         forever.
@@ -79,7 +77,6 @@ public interface ICraftingGrid extends IGridCache {
      *                          this will be used for extracting items, should
      *                          usually be the same as the one provided to
      *                          beginCraftingJob.
-     *
      * @return null ( if failed ) or an {@link ICraftingLink} other wise, if you
      *         send requestingMachine you need to properly keep track of this and
      *         handle the nbt saving and loading of the object as well as the
@@ -96,7 +93,6 @@ public interface ICraftingGrid extends IGridCache {
 
     /**
      * @param what to be requested item
-     *
      * @return true if the item can be requested via a crafting emitter.
      */
     boolean canEmitFor(IAEItemStack what);
@@ -105,7 +101,6 @@ public interface ICraftingGrid extends IGridCache {
      * is this item being crafted?
      *
      * @param what item being crafted
-     *
      * @return true if it is being crafting
      */
     boolean isRequesting(IAEItemStack what);
@@ -114,7 +109,6 @@ public interface ICraftingGrid extends IGridCache {
      * The total amount being requested across all crafting cpus of a grid.
      *
      * @param what item being requested, ignores stacksize
-     *
      * @return The total amount being requested.
      */
     long requesting(IAEItemStack what);

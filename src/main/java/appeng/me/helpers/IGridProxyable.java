@@ -18,7 +18,6 @@
 
 package appeng.me.helpers;
 
-import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridHost;
 import appeng.api.util.DimensionalCoord;
 

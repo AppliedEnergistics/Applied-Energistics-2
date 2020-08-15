@@ -34,7 +34,7 @@ import appeng.services.compass.CompassThreadFactory;
 
 /**
  * Singleton access to anything related to world-based data.
- *
+ * <p>
  * Data will change depending which world is loaded. Will probably not affect
  * SMP at all since only one world is loaded, but SSP more, cause they play on
  * different worlds.
@@ -84,7 +84,6 @@ public final class WorldData implements IWorldData {
 
     /**
      * @return ae2 data related to a specific world
-     *
      * @deprecated do not use singletons which are dependent on specific world state
      */
     @Deprecated
@@ -106,7 +105,7 @@ public final class WorldData implements IWorldData {
 
     /**
      * Requires to start up from external from here
-     *
+     * <p>
      * drawback of the singleton build style
      */
     public static void onServerStarting(MinecraftServer server) {

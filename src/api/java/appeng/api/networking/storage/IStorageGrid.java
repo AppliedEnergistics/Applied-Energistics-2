@@ -42,7 +42,7 @@ public interface IStorageGrid extends IGridCache, IStorageMonitorable {
      * outside of the standard Network operations, Examples, ME Chest inputs from
      * the world, or a Storage Bus detecting modifications made to the chest by an
      * outside force.
-     *
+     * <p>
      * Expects the input to have either a negative or a positive stack size to
      * correspond to the injection, or extraction operation.
      *
@@ -52,7 +52,7 @@ public interface IStorageGrid extends IGridCache, IStorageMonitorable {
 
     /**
      * Used to add a cell provider to the storage system
-     *
+     * <p>
      * THIS IT NOT FOR USE {@link IGridHost} THAT PROVIDE {@link ICellContainer} -
      * those are automatically handled by the storage system.
      *

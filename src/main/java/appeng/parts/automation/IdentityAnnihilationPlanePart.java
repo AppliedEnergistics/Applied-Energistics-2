@@ -25,7 +25,6 @@ import javax.annotation.Nonnull;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;

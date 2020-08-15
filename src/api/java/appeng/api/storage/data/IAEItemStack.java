@@ -29,12 +29,12 @@ import net.minecraft.item.ItemStack;
 /**
  * An alternate version of ItemStack for AE to keep tabs on things easier, and
  * to support larger storage. stackSizes of getItemStack will be capped.
- *
+ * <p>
  * You may hold on to these if you want, just make sure you let go of them when
  * your not using them.
- *
+ * <p>
  * Don't Implement.
- *
+ * <p>
  * Construct with Api.INSTANCE.storage().getStorageChannel(
  * IItemStorageChannel.class).createStack( ItemStack )
  */
@@ -86,7 +86,6 @@ public interface IAEItemStack extends IAEStack<IAEItemStack> {
      * compare the item/damage/nbt of the stack.
      *
      * @param otherStack to be compared item
-     *
      * @return true if it is the same type (same item, damage, nbt)
      */
     boolean isSameType(IAEItemStack otherStack);
@@ -95,7 +94,6 @@ public interface IAEItemStack extends IAEStack<IAEItemStack> {
      * compare the item/damage/nbt of the stack.
      *
      * @param stored to be compared item
-     *
      * @return true if it is the same type (same item, damage, nbt)
      */
     boolean isSameType(ItemStack stored);

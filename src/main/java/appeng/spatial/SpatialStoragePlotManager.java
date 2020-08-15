@@ -26,7 +26,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.TeleportTarget;
 
 import appeng.core.AELog;
 import appeng.core.Api;

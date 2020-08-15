@@ -19,7 +19,6 @@
 package appeng.bootstrap;
 
 import java.util.function.BiFunction;
-import java.util.function.Predicate;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

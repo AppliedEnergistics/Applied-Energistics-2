@@ -37,7 +37,6 @@ public interface IItemComparisonProvider {
      * supplied item.
      *
      * @param is item
-     *
      * @return IItemComparison, or null
      */
     IItemComparison getComparison(ItemStack is);
@@ -47,7 +46,6 @@ public interface IItemComparisonProvider {
      * function. )
      *
      * @param stack item
-     *
      * @return true, if getComparison will return a valid IItemComparison Object
      */
     boolean canHandle(ItemStack stack);

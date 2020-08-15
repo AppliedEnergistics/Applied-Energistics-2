@@ -34,7 +34,6 @@ public interface IContainerCraftingPacket {
 
     /**
      * @param string name of inventory
-     *
      * @return the inventory of the part/tile by name.
      */
     FixedItemInv getInventoryByName(String string);

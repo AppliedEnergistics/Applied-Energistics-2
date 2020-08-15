@@ -66,7 +66,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     private final BlockState defaultBlockState;
 
-    private SpatialStorageChunkGenerator(Registry<Biome> biomeRegistry) {
+    public SpatialStorageChunkGenerator(Registry<Biome> biomeRegistry) {
         super(createBiomeSource(biomeRegistry), createSettings());
         this.defaultBlockState = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
         this.biomeRegistry = biomeRegistry;

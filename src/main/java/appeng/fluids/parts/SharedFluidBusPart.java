@@ -18,17 +18,14 @@
 
 package appeng.fluids.parts;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-
-import alexiil.mc.lib.attributes.Attribute;
-import alexiil.mc.lib.attributes.SearchOptions;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;

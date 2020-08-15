@@ -36,7 +36,6 @@ public interface ICraftingMachine {
      * @param patternDetails    details of pattern
      * @param table             crafting table
      * @param ejectionDirection ejection direction
-     *
      * @return if it was accepted, all or nothing.
      */
     boolean pushPattern(ICraftingPatternDetails patternDetails, CraftingInventory table, Direction ejectionDirection);

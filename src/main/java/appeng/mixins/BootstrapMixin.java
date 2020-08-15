@@ -12,7 +12,7 @@ import appeng.core.AppEngBootstrap;
 @Mixin(Bootstrap.class)
 public class BootstrapMixin {
 
-    @Inject(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/Bootstrap;setOutputStreams()V", shift = At.Shift.AFTER), require = 1, allow = 1)
+    @Inject(method = "initialize", at = @At(value = "TAIL"), require = 1, allow = 1)
     private static void afterInitialize(CallbackInfo ci) {
         AppEngBootstrap.initialize();
     }

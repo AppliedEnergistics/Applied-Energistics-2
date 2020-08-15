@@ -45,7 +45,6 @@ public interface IGridHost {
      *
      * @param dir feel free to ignore this, most blocks will use the same node for
      *            every side.
-     *
      * @return a new IGridNode, create these with AEApi.INSTANCE().createGridNode(
      *         MyIGridBlock )
      */

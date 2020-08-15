@@ -1,4 +1,3 @@
-
 package appeng.fluids.parts;
 
 import java.math.RoundingMode;
@@ -47,7 +46,7 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
-import appeng.mixins.FluidTagsAccessor;
+import appeng.mixins.tags.FluidTagsAccessor;
 import appeng.parts.BasicStatePart;
 import appeng.parts.automation.PlaneConnectionHelper;
 import appeng.parts.automation.PlaneConnections;

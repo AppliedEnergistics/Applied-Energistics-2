@@ -30,7 +30,6 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.Identifier;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.bootstrap.components.BlockColorComponent;
 import appeng.bootstrap.components.RenderTypeComponent;
 import appeng.client.render.model.AutoRotatingBakedModel;
 

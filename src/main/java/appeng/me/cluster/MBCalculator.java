@@ -91,7 +91,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         IAECluster currentCluster = target.getCluster();
         if (currentCluster != null && currentCluster.isDestroyed()) {
             return; // If we're still part of a cluster that is in the process of being destroyed,
-                    // don't recalc.
+            // don't recalc.
         }
 
         try {
@@ -173,7 +173,6 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      *
      * @param min min world coord
      * @param max max world coord
-     *
      * @return true if structure has correct dimensions or size
      */
     public abstract boolean checkMultiblockScale(BlockPos min, BlockPos max);
@@ -195,7 +194,6 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      * @param w   world
      * @param min min world coord
      * @param max max world coord
-     *
      * @return created cluster
      */
     public abstract TCluster createCluster(World w, BlockPos min, BlockPos max);
@@ -223,7 +221,6 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      * check if the block entities are correct for the structure.
      *
      * @param te to be checked block entity
-     *
      * @return true if block entity is valid for structure
      */
     public abstract boolean isValidTile(BlockEntity te);

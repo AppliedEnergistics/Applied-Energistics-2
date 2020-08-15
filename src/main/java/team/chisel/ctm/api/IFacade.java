@@ -1,13 +1,13 @@
 package team.chisel.ctm.api;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.BlockState;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * To be implemented on blocks that "hide" another block inside, so connected
@@ -17,7 +17,7 @@ public interface IFacade {
 
     /**
      * @deprecated Use
-     *             {@link #getFacade(BlockView, BlockPos, Direction, BlockPos)}
+     * {@link #getFacade(BlockView, BlockPos, Direction, BlockPos)}
      */
     @Nonnull
     @Deprecated
@@ -37,7 +37,7 @@ public interface IFacade {
      */
     @Nonnull
     default BlockState getFacade(@Nonnull BlockView world, @Nonnull BlockPos pos, @Nullable Direction side,
-            @Nonnull BlockPos connection) {
+                                 @Nonnull BlockPos connection) {
         return getFacade(world, pos, side);
     }
 

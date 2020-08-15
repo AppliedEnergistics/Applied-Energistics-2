@@ -18,14 +18,11 @@
 
 package appeng.core;
 
-import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
@@ -33,7 +30,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
 import appeng.api.parts.CableRenderMode;
-import appeng.block.AEBaseBlock;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.core.stats.AdvancementTriggers;
@@ -73,7 +69,7 @@ public interface AppEng {
      * Sets the player that is currently interacting with a cable or part attached
      * to a cable. This will return that player's cable render mode from calls to
      * {@link #getCableRenderMode()}, until another player or null is set.
-     * 
+     *
      * @param player Null to revert to the default cable render mode.
      */
     void setPartInteractionPlayer(PlayerEntity player);

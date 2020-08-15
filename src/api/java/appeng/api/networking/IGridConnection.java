@@ -29,10 +29,10 @@ import appeng.api.util.AEPartLocation;
 
 /**
  * Access to AE's internal grid connections.
- *
+ * <p>
  * Messing with connection is generally completely unnecessary, you should be
  * able to just use IGridNode.updateState() to have AE manage them for you.
- *
+ * <p>
  * Don't Implement.
  */
 public interface IGridConnection {
@@ -41,7 +41,6 @@ public interface IGridConnection {
      * lets you get the opposing node of the connection by passing your own node.
      *
      * @param gridNode current grid node
-     *
      * @return the IGridNode which represents the opposite side of the connection.
      */
     @Nonnull
@@ -51,7 +50,6 @@ public interface IGridConnection {
      * determine the direction of the connection based on your node.
      *
      * @param gridNode current grid node
-     *
      * @return the direction of the connection, only valid for in world connections.
      */
     @Nonnull

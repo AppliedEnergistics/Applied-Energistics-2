@@ -18,12 +18,7 @@
 
 package appeng.me.cluster.implementations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableList;
@@ -42,14 +37,7 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.CraftingItemList;
-import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingGrid;
-import appeng.api.networking.crafting.ICraftingJob;
-import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingMedium;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.crafting.*;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
@@ -62,11 +50,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.crafting.CraftBranchFailure;
-import appeng.crafting.CraftingJob;
-import appeng.crafting.CraftingLink;
-import appeng.crafting.CraftingWatcher;
-import appeng.crafting.MECraftingInventory;
+import appeng.crafting.*;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
@@ -378,9 +362,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             final Collection<CraftingWatcher> list = sg.getInterestManager().get(diff);
 
             if (!list.isEmpty()) {
-                for (final CraftingWatcher iw : list)
-
-                {
+                for (final CraftingWatcher iw : list) {
                     iw.getHost().onRequestChange(sg, diff);
                 }
             }

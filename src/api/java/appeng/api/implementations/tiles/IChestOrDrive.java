@@ -41,7 +41,6 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable {
 
     /**
      * @param slot slot index
-     *
      * @return status of the slot, one of the above indices.
      */
     CellState getCellStatus(int slot);
@@ -54,7 +53,6 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable {
 
     /**
      * @param slot slot index
-     *
      * @return is the cell currently blinking to show activity.
      */
     boolean isCellBlinking(int slot);

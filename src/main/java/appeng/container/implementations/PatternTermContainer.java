@@ -18,17 +18,11 @@
 
 package appeng.container.implementations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.Recipe;
@@ -55,12 +49,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerNull;
 import appeng.container.guisync.GuiSync;
-import appeng.container.slot.FakeCraftingMatrixSlot;
-import appeng.container.slot.IOptionalSlotHost;
-import appeng.container.slot.OptionalFakeSlot;
-import appeng.container.slot.PatternOutputsSlot;
-import appeng.container.slot.PatternTermSlot;
-import appeng.container.slot.RestrictedInputSlot;
+import appeng.container.slot.*;
 import appeng.core.Api;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;

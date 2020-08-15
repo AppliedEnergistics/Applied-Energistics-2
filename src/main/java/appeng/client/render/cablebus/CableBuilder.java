@@ -18,12 +18,7 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.Function;
 
 import net.fabricmc.api.EnvType;
@@ -110,7 +105,7 @@ class CableBuilder {
 
     /**
      * Adds the core of a cable to the given list of quads.
-     *
+     * <p>
      * The type of cable core is automatically deduced from the given cable type.
      */
     public void addCableCore(AECableType cableType, AEColor color, QuadEmitter emitter) {

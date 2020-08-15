@@ -2,6 +2,8 @@ package appeng.mixins.spatial;
 
 import java.util.OptionalLong;
 
+import com.mojang.serialization.Lifecycle;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,8 +14,13 @@ import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
+import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 
 /**
@@ -40,6 +47,18 @@ public class DimensionTypeMixin {
 
         Registry.register(registryTracker.getDimensionTypes(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.getValue(),
                 dimensionType);
+    }
+
+    @Inject(method = "method_28517", at = @At("RETURN"))
+    private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,
+            Registry<ChunkGeneratorSettings> chunkGeneratorSettings, long seed,
+            CallbackInfoReturnable<SimpleRegistry<DimensionOptions>> cir) {
+        SimpleRegistry<DimensionOptions> simpleregistry = cir.getReturnValue();
+
+        simpleregistry.add(SpatialStorageDimensionIds.DIMENSION_ID, new DimensionOptions(() -> {
+            return dimensionTypes.get(SpatialStorageDimensionIds.DIMENSION_TYPE_ID);
+        }, new SpatialStorageChunkGenerator(biomes)), Lifecycle.stable());
+
     }
 
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * 
+ *
  * Copyright (c) 2020, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
@@ -19,9 +19,7 @@
 
 package appeng.core.api.client;
 
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -28,12 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.GridNotification;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridBlock;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
+import appeng.api.networking.*;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkPowerIdleChange;
@@ -167,7 +162,6 @@ public class AENetworkProxy implements IGridBlock {
      * short cut!
      *
      * @return grid of node
-     *
      * @throws GridAccessException of node or grid is null
      */
     public IGrid getGrid() throws GridAccessException {

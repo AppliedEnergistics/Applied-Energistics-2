@@ -361,7 +361,6 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
      * null means nothing to store...
      *
      * @param from source of settings
-     *
      * @return compound of source
      */
     public CompoundTag downloadSettings(final SettingsFrom from) {

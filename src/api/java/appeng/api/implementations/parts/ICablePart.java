@@ -62,14 +62,13 @@ public interface ICablePart extends IPart, IGridHost {
      * something.
      *
      * @param newColor new color
-     *
      * @return if the color change was successful.
      */
     boolean changeColor(AEColor newColor, PlayerEntity who);
 
     /**
      * Change sides on the cables node.
-     *
+     * <p>
      * Called by AE, do not invoke.
      *
      * @param sides sides of cable
@@ -80,7 +79,6 @@ public interface ICablePart extends IPart, IGridHost {
      * used to tests if a cable connects to neighbors visually.
      *
      * @param side neighbor side
-     *
      * @return true if this side is currently connects to an external block.
      */
     boolean isConnected(Direction side);

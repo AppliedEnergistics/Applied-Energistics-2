@@ -65,7 +65,9 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
 
     public enum SkyChestType {
         STONE, BLOCK
-    };
+    }
+
+    ;
 
     public final SkyChestType type;
 

@@ -1,4 +1,3 @@
-
 package appeng.fluids.client.gui;
 
 import net.minecraft.entity.player.PlayerInventory;

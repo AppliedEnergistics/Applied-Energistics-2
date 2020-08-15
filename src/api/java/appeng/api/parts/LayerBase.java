@@ -35,7 +35,7 @@ import appeng.api.util.AEPartLocation;
  * All Layers must extends this, this get part implementation is provided to
  * interface with the parts, however a real implementation will be used at
  * runtime.
- *
+ * <p>
  * TODO: Consider removing and replacing with capabilities.
  */
 public abstract class LayerBase extends BlockEntity // implements IPartHost
@@ -48,12 +48,11 @@ public abstract class LayerBase extends BlockEntity // implements IPartHost
 
     /**
      * Grants access for the layer to the parts of the host.
-     *
+     * <p>
      * This Method looks silly, that is because its not used at runtime, a real
      * implementation will be used instead.
      *
      * @param side side of part
-     *
      * @return the part for the requested side.
      */
     public IPart getPart(final AEPartLocation side) {
@@ -62,12 +61,11 @@ public abstract class LayerBase extends BlockEntity // implements IPartHost
 
     /**
      * Grants access for the layer to the parts of the host.
-     *
+     * <p>
      * This Method looks silly, that is because its not used at runtime, a real
      * implementation will be used instead.
      *
      * @param side side of part
-     *
      * @return the part for the requested side.
      */
     public IPart getPart(final Direction side) {

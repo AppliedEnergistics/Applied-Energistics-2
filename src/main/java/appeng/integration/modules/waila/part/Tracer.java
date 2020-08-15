@@ -20,10 +20,8 @@ package appeng.integration.modules.waila.part;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import appeng.util.LookDirection;
@@ -43,7 +41,6 @@ public final class Tracer {
      * @param world  word of block
      * @param player player viewing block
      * @param pos    pos of block
-     *
      * @return trace movement. Can be null
      */
     public HitResult retraceBlock(final World world, final PlayerEntity player, BlockPos pos) {

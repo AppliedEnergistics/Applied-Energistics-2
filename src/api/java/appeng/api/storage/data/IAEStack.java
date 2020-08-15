@@ -130,15 +130,14 @@ public interface IAEStack<T extends IAEStack<T>> {
 
     /**
      * Compare stacks using precise logic.
-     *
+     * <p>
      * a IAEItemStack to another AEItemStack or a ItemStack.
-     *
+     * <p>
      * or
-     *
+     * <p>
      * IAEFluidStack, FluidStack
      *
      * @param obj compared object
-     *
      * @return true if they are the same.
      */
     @Override
@@ -150,7 +149,6 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @param other The stack to compare.
      * @param mode  Which {@link FuzzyMode} should be used.
-     *
      * @return true if two stacks are equal based on AE Fuzzy Comparison.
      */
     boolean fuzzyComparison(T other, FuzzyMode mode);
@@ -159,7 +157,6 @@ public interface IAEStack<T extends IAEStack<T>> {
      * Slower for disk saving, but smaller/more efficient for packets.
      *
      * @param data to be written data
-     *
      * @throws IOException
      */
     void writeToPacket(PacketByteBuf data);

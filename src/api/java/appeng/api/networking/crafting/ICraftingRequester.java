@@ -45,7 +45,6 @@ public interface ICraftingRequester extends IActionHost {
      *
      * @param items item
      * @param mode  action mode
-     *
      * @return unwanted item
      */
     IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable mode);
@@ -53,7 +52,7 @@ public interface ICraftingRequester extends IActionHost {
     /**
      * called when the job changes from in progress, to either complete, or
      * canceled.
-     *
+     * <p>
      * after this call the crafting link is "dead" and should be discarded.
      */
     void jobStateChange(ICraftingLink link);

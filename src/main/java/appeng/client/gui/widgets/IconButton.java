@@ -54,7 +54,7 @@ public abstract class IconButton extends ButtonWidget implements ITooltip {
             textureManager.bindTexture(TEXTURE_STATES);
             RenderSystem.disableDepthTest();
             RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
-                                        // it :|
+            // it :|
             if (this.halfSize) {
                 this.width = 8;
                 this.height = 8;

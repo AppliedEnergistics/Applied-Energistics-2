@@ -1,4 +1,3 @@
-
 package appeng.client.render.tesr;
 
 import com.google.common.collect.ImmutableList;

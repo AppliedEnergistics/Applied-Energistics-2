@@ -153,9 +153,7 @@ public class ClickPacket extends BasePacket {
                     final IMemoryCard mem = (IMemoryCard) is.getItem();
                     mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
                     is.setTag(null);
-                }
-
-                else if (maybeColorApplicator.isSameAs(is)) {
+                } else if (maybeColorApplicator.isSameAs(is)) {
                     final ColorApplicatorItem mem = (ColorApplicatorItem) is.getItem();
                     mem.cycleColors(is, mem.getColor(is), 1);
                 }

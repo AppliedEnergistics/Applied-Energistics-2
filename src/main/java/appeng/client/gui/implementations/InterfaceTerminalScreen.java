@@ -18,21 +18,13 @@
 
 package appeng.client.gui.implementations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -242,7 +234,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     /**
      * Rebuilds the list of interfaces.
-     *
+     * <p>
      * Respects a search term if present (ignores case) and adding only matching
      * patterns.
      */
@@ -335,12 +327,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     /**
      * Tries to retrieve a cache for a with search term as keyword.
-     *
+     * <p>
      * If this cache should be empty, it will populate it with an earlier cache if
      * available or at least the cache for the empty string.
      *
      * @param searchTerm the corresponding search
-     *
      * @return a Set matching a superset of the search term
      */
     private Set<Object> getCacheForSearchTerm(final String searchTerm) {

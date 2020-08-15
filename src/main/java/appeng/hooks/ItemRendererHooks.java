@@ -1,21 +1,12 @@
 package appeng.hooks;
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
 
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
 import appeng.client.render.DummyFluidBakedModel;

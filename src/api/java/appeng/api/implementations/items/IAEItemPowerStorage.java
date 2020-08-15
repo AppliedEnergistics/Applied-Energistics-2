@@ -46,7 +46,6 @@ public interface IAEItemPowerStorage {
      * return it.
      *
      * @param amount to be extracted power from device
-     *
      * @return what it could extract
      */
     double extractAEPower(ItemStack stack, double amount, Actionable mode);

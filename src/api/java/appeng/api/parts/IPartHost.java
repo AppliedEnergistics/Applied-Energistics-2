@@ -38,7 +38,7 @@ import appeng.api.util.DimensionalCoord;
 
 /**
  * Implemented on AE's TileEntity.
- *
+ * <p>
  * Do Not Implement
  */
 public interface IPartHost extends ICustomCableConnection {
@@ -54,7 +54,6 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * @param part to be added part
      * @param side part placed onto side
-     *
      * @return returns false if the part cannot be added.
      */
     boolean canAddPart(ItemStack part, AEPartLocation side);
@@ -66,7 +65,6 @@ public interface IPartHost extends ICustomCableConnection {
      * @param is    new part
      * @param side  onto side
      * @param owner with owning player
-     *
      * @return null if the item failed to add, the side it was placed on other wise
      *         ( may different for cables, {@link AEPartLocation}.UNKNOWN )
      */
@@ -76,7 +74,6 @@ public interface IPartHost extends ICustomCableConnection {
      * Get part by side ( center is {@link AEPartLocation}.UNKNOWN )
      *
      * @param side side of part
-     *
      * @return the part located on the specified side, or null if there is no part.
      */
     IPart getPart(AEPartLocation side);
@@ -86,7 +83,6 @@ public interface IPartHost extends ICustomCableConnection {
      * other varient of getPart.
      *
      * @param side side of part
-     *
      * @return the part located on the specified side, or null if there is no part.
      */
     IPart getPart(Direction side);
@@ -95,7 +91,7 @@ public interface IPartHost extends ICustomCableConnection {
      * removes the part on the side, this doesn't drop it or anything, if you don't
      * do something with it, its just "gone" and its never coming back; think about
      * it.
-     *
+     * <p>
      * if you want to drop the part you must request it prior to removing it.
      *
      * @param side           side of part
@@ -143,7 +139,6 @@ public interface IPartHost extends ICustomCableConnection {
      * finds the part located at the position ( pos must be relative, not global )
      *
      * @param pos part position
-     *
      * @return a new SelectedPart, this is never null.
      */
     SelectedPart selectPart(Vec3d pos);
@@ -162,7 +157,6 @@ public interface IPartHost extends ICustomCableConnection {
      * get the redstone state of host on this side, this value is cached internally.
      *
      * @param side side of part
-     *
      * @return true of the part host is receiving redstone from an external source.
      */
     boolean hasRedstone(AEPartLocation side);

@@ -18,11 +18,7 @@
 
 package appeng.me.cache;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.annotation.Nonnegative;

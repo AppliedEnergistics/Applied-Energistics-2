@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "appliedenergistics2",
   "version": "${version}",
-
   "name": "Applied Energistics 2",
   "description": "A Mod about matter, energy and using them to conquer the world..",
   "authors": ["TeamAppliedEnergistics"],
@@ -10,10 +9,8 @@
     "homepage": "https://ae-mod.info/",
     "sources": "https://github.com/AppliedEnergistics/Applied-Energistics-2/"
   },
-
   "license": "LGPL",
   "icon": "assets/appliedenergistics2/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "client": ["appeng.core.AppEngClientStartup"],

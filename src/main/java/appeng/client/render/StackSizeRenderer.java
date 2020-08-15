@@ -70,7 +70,7 @@ public class StackSizeRenderer {
         final int offset = AEConfig.instance().isUseLargeFonts() ? 0 : -1;
 
         AffineTransformation tm = new AffineTransformation(new Vector3f(0, 0, 300), // Taken from
-                                                                                    // ItemRenderer.renderItemOverlayIntoGUI
+                // ItemRenderer.renderItemOverlayIntoGUI
                 null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
 
         RenderSystem.disableBlend();

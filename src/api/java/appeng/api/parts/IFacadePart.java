@@ -31,7 +31,7 @@ import appeng.api.util.AEPartLocation;
 
 /**
  * Used Internally.
- *
+ * <p>
  * not intended for implementation.
  */
 public interface IFacadePart {

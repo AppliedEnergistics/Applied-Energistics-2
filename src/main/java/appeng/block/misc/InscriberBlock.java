@@ -45,7 +45,7 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberBlockEntity> {
     @Override
     public int getOpacity(BlockState state, BlockView worldIn, BlockPos pos) {
         return 2; // FIXME validate this. a) possibly not required because of getShape b) value
-                  // range. was 2 in 1.10
+        // range. was 2 in 1.10
     }
 
     @Override

@@ -1,4 +1,3 @@
-
 package appeng.fluids.helper;
 
 import java.util.HashMap;

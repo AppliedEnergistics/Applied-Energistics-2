@@ -46,7 +46,6 @@ public final class PartAccessor {
      *
      * @param te  being looked at {@link BlockEntity}
      * @param rtr type of ray-trace
-     *
      * @return maybe the looked at {@link IPart}
      */
     public Optional<IPart> getMaybePart(final BlockEntity te, final HitResult rtr) {

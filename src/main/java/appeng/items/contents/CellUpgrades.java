@@ -20,8 +20,6 @@ package appeng.items.contents;
 
 import net.minecraft.item.ItemStack;
 
-import alexiil.mc.lib.attributes.item.FixedItemInvView;
-
 import appeng.parts.automation.StackUpgradeInventory;
 
 public final class CellUpgrades extends StackUpgradeInventory {

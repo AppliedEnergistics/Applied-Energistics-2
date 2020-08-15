@@ -19,11 +19,7 @@
 package appeng.services;
 
 import java.util.WeakHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import javax.annotation.Nonnull;
 
@@ -32,12 +28,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.dimension.DimensionType;
 
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
@@ -79,7 +71,6 @@ public final class CompassService {
     // FIXME compassReader.close();
     // FIXME }
     // FIXME }
-
     private int jobSize() {
         return this.jobSize;
     }

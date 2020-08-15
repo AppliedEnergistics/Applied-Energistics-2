@@ -35,7 +35,6 @@ public interface IMovableHandler {
      *
      * @param myClass block entity class
      * @param tile    block entity
-     *
      * @return true if it can handle moving
      */
     boolean canHandle(Class<? extends BlockEntity> myClass, BlockEntity tile);
@@ -44,7 +43,7 @@ public interface IMovableHandler {
      * request that the handler move the the tile from its current location to the
      * new one. the tile has already been invalidated, and the blocks have already
      * been fully moved.
-     *
+     * <p>
      * Potential Example:
      *
      * <pre>

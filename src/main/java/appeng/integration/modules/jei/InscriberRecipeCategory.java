@@ -21,8 +21,6 @@ package appeng.integration.modules.jei;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 

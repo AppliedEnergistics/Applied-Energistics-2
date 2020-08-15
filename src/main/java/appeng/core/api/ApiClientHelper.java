@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * 
+ *
  * Copyright (c) 2013 - 2020, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify

@@ -1,16 +1,8 @@
 package appeng.client.render.effects;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
-import net.minecraft.util.registry.Registry;
-
-import appeng.core.AppEng;
 
 public final class ParticleTypes {
 

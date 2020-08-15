@@ -37,7 +37,6 @@ public interface ICraftingMedium {
      *
      * @param patternDetails details
      * @param table          crafting table
-     *
      * @return if the pattern was successfully pushed.
      */
     boolean pushPattern(ICraftingPatternDetails patternDetails, CraftingInventory table);

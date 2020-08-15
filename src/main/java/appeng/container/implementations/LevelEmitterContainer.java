@@ -20,7 +20,6 @@ package appeng.container.implementations;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketByteBuf;
@@ -28,12 +27,7 @@ import net.minecraft.screen.ScreenHandlerType;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;

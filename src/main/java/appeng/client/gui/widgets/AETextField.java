@@ -33,7 +33,7 @@ import net.minecraft.text.LiteralText;
  * A modified version of the Minecraft text field. You can initialize it over
  * the full element span. The mouse click area is increased to the full element
  * subtracted with the defined padding.
- *
+ * <p>
  * The rendering does pay attention to the size of the '_' caret.
  */
 public class AETextField extends TextFieldWidget {

@@ -36,15 +36,12 @@ import net.minecraft.world.World;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.exceptions.MissingDefinitionException;
-import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;

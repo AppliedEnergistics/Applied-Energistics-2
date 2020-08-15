@@ -122,7 +122,6 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
      *
      * @param te  te to be looked at
      * @param tag tag maybe containing the channel information
-     *
      * @return used channels on the cable
      */
     private long getInternalCurrentPower(final CompoundTag tag, final BlockEntity te) {

@@ -37,7 +37,6 @@ import net.minecraft.world.World;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.util.AEColor;
-import appeng.block.AEBaseTileBlock;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.hooks.AEToolItem;
@@ -81,7 +80,6 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
      * Find the localized string...
      *
      * @param name possible names for the localized string
-     *
      * @return localized name
      */
     private String getFirstValidTranslationKey(final String... name) {

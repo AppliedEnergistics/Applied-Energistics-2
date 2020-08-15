@@ -1,4 +1,3 @@
-
 package appeng.fluids.util;
 
 import alexiil.mc.lib.attributes.fluid.FixedFluidInv;

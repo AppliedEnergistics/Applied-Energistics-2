@@ -39,21 +39,21 @@ public interface ICellModelRegistry {
 
     /**
      * Register a new model for a storage cell item.
-     * 
+     *
      * <p>
      * You are responsible for ensuring that the given model is actually loaded by
      * the game. See
      * {@see net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
-     * 
+     * <p>
      * This method only maps an {@link Item} to a {@link Identifier} which can be
      * looked up from the
      * {@link net.minecraft.client.render.model.BakedModelManager}. No validation
      * about missing models will be done.
-     * 
+     * <p>
      * Will throw an exception in case a model is already registered for an item.
-     * 
+     * <p>
      * For examples look at our cell part models within the drive model directory.
-     * 
+     *
      * @param item  The cell item
      * @param model The {@link net.minecraft.util.Identifier} representing the
      *              model.
@@ -64,7 +64,7 @@ public interface ICellModelRegistry {
     /**
      * The {@link Identifier} of the model used to render the given storage cell
      * {@link Item} when inserted into a drive or similar.
-     * 
+     *
      * @param item
      * @return null, if no model is registered.
      */
@@ -73,7 +73,7 @@ public interface ICellModelRegistry {
 
     /**
      * An unmodifiable map of all registered mappings.
-     * 
+     *
      * @return
      */
     @Nonnull

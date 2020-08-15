@@ -1,4 +1,3 @@
-
 package appeng.fluids.parts;
 
 import java.math.RoundingMode;

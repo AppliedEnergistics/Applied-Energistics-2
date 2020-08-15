@@ -1,6 +1,5 @@
 package appeng.integration.modules.jei;
 
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
 
 import me.shedaniel.rei.api.EntryStack;

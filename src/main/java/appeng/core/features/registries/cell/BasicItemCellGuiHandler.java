@@ -1,4 +1,3 @@
-
 package appeng.core.features.registries.cell;
 
 import net.minecraft.block.entity.BlockEntity;

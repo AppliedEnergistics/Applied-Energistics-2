@@ -29,7 +29,7 @@ public interface ITooltip {
 
     /**
      * Returns the tooltip message.
-     *
+     * <p>
      * Should use {@link net.minecraft.text.LiteralText#EMPTY} for no tooltip
      *
      * @return tooltip message

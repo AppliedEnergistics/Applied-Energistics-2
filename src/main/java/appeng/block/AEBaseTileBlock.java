@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -284,7 +283,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     /**
      * Returns the BlockState based on the given BlockState while considering the
      * state of the given TileEntity.
-     *
+     * <p>
      * If the given TileEntity is not of the right type for this block, the state is
      * returned unchanged, this is also the case if the given block state does not
      * belong to this block.
@@ -300,7 +299,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     /**
      * Reimplement this in subclasses to allow tile-entities to update the state of
      * their block when their own state changes.
-     *
+     * <p>
      * It is guaranteed that te is not-null and the block of the given block state
      * is this exact block instance.
      */

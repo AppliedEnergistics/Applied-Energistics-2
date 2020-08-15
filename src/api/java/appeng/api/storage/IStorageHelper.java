@@ -44,19 +44,19 @@ public interface IStorageHelper {
 
     /**
      * Register a new storage channel.
-     *
+     * <p>
      * AE2 already provides native channels for {@link IAEItemStack} and
      * {@link IAEFluidStack}.
-     *
+     * <p>
      * Each {@link IAEStack} subtype can only have a single factory instance.
      * Overwriting is not intended. Each subtype should be a direct one, this might
      * be enforced at any time.
-     *
+     * <p>
      * Channel class and factory instance can be used interchangeable as identifier.
      * In most cases the factory instance is used as key as having direct access the
      * methods is more beneficial compared to being forced to query the registry
      * each time.
-     *
+     * <p>
      * Caching the factory instance in a field or local variable is perfectly for
      * performance reasons. But do not use any AE2 internal field as they can change
      * randomly between releases.
@@ -71,19 +71,19 @@ public interface IStorageHelper {
 
     /**
      * Fetch the factory instance for a specific storage channel.
-     *
+     * <p>
      * Channel must be a direct subtype of {@link IStorageChannel}.
      *
-     * @throws NullPointerException when fetching an unregistered channel.
      * @param channel The channel type
      * @return the factory instance
+     * @throws NullPointerException when fetching an unregistered channel.
      */
     @Nonnull
     <T extends IAEStack<T>, C extends IStorageChannel<T>> C getStorageChannel(@Nonnull Class<C> channel);
 
     /**
      * An unmodifiable collection of all registered factory instance.
-     *
+     * <p>
      * This is mainly used as helper to let storage grids construct their internal
      * storage for each type.
      */
@@ -94,7 +94,6 @@ public interface IStorageHelper {
      * load a crafting link from nbt data.
      *
      * @param data to be loaded data
-     *
      * @return crafting link
      */
     ICraftingLink loadCraftingLink(CompoundTag data, ICraftingRequester req);

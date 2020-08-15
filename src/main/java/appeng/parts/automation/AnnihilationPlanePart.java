@@ -21,30 +21,22 @@ package appeng.parts.automation;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.ToolMaterials;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -75,6 +67,8 @@ import appeng.hooks.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
+import appeng.mixins.tags.BlockTagsAccessor;
+import appeng.mixins.tags.ItemTagsAccessor;
 import appeng.parts.BasicStatePart;
 import appeng.util.FakePlayer;
 import appeng.util.IWorldCallable;
@@ -84,6 +78,10 @@ import appeng.util.item.AEItemStack;
 public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable, IWorldCallable<TickRateModulation> {
 
     public static final Identifier TAG_BLACKLIST = new Identifier(AppEng.MOD_ID, "blacklisted/annihilation_plane");
+
+    private static final Tag.Identified<Block> BLOCK_BLACKLIST = BlockTagsAccessor.register(TAG_BLACKLIST.toString());
+
+    private static final Tag.Identified<Item> ITEM_BLACKLIST = ItemTagsAccessor.register(TAG_BLACKLIST.toString());
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane", "part/annihilation_plane_on");
 
@@ -234,7 +232,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * Stores an {@link ItemStack} inside the network.
      *
      * @param item {@link ItemStack} to store
-     *
      * @return the leftover items, which could not be stored inside the network
      */
     private IAEItemStack storeItemStack(final ItemStack item) {
@@ -263,7 +260,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      *
      * @param entityItem the entity to update or destroy
      * @param overflow   the leftover {@link IAEItemStack}
-     *
      * @return true, if the entity was changed otherwise false.
      */
     private boolean handleOverflow(final ItemEntity entityItem, final IAEItemStack overflow) {
@@ -434,11 +430,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     /**
      * Checks if the network can store the possible drops.
-     *
+     * <p>
      * It also sets isAccepting to false, if the item can not be stored.
      *
      * @param itemStacks an array of {@link ItemStack} to test
-     *
      * @return true, if the network can store at least a single item of all drops or
      *         no drops are reported
      */
@@ -526,13 +521,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     public static boolean isBlockBlacklisted(Block b) {
-        Tag<Block> tag = BlockTags.getTagGroup().getTagOrEmpty(TAG_BLACKLIST);
-        return b.isIn(tag);
+        return BLOCK_BLACKLIST.contains(b);
     }
 
     public static boolean isItemBlacklisted(Item i) {
-        Tag<Item> tag = ItemTags.getTagGroup().getTagOrEmpty(TAG_BLACKLIST);
-        return i.isIn(tag);
+        return ITEM_BLACKLIST.contains(i);
     }
 
 }

@@ -1,4 +1,3 @@
-
 package appeng.me.storage;
 
 import net.minecraft.item.Item;

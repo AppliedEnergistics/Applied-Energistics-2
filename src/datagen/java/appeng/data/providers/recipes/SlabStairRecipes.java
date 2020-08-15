@@ -1,8 +1,6 @@
 package appeng.data.providers.recipes;
 
-import static net.minecraft.data.server.RecipesProvider.conditionsFromItem;
-import static net.minecraft.data.server.RecipesProvider.saveRecipe;
-import static net.minecraft.data.server.RecipesProvider.saveRecipeAdvancement;
+import static net.minecraft.data.server.RecipesProvider.*;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;
