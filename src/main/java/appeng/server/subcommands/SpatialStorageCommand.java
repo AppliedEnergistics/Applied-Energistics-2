@@ -92,7 +92,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private void teleportBack(ServerCommandSource source) {
 
         if (source.getWorld().getRegistryKey() != SpatialStorageDimensionIds.WORLD_ID) {
-            throw new CommandException(Text.of("Must be within the spatial storage world."));
+            throw new CommandException(new LiteralText("Must be within the spatial storage world."));
         }
 
         BlockPos playerPos = new BlockPos(source.getPosition());
@@ -181,7 +181,7 @@ public class SpatialStorageCommand implements ISubCommand {
             sendKeyValuePair(source, "Source", sourceLink);
             sendKeyValuePair(source, "When", lastTransition.getTimestamp().toString());
         } else {
-            source.sendFeedback(Text.of("Last Transition unknown"), true);
+            source.sendFeedback(new LiteralText("Last Transition unknown"), true);
         }
 
     }
@@ -265,7 +265,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
         return style -> style.withFormatting(Formatting.UNDERLINE)
                 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of(tooltip)));
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new LiteralText(tooltip)));
 
     }
 
@@ -281,7 +281,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private static SpatialStoragePlot getPlot(int plotId) {
         SpatialStoragePlot plot = SpatialStoragePlotManager.INSTANCE.getPlot(plotId);
         if (plot == null) {
-            throw new CommandException(Text.of("Plot not found: " + plotId));
+            throw new CommandException(new LiteralText("Plot not found: " + plotId));
         }
         return plot;
     }
@@ -293,7 +293,7 @@ public class SpatialStorageCommand implements ISubCommand {
     }
 
     private static void sendKeyValuePair(ServerCommandSource source, String label, String value) {
-        sendKeyValuePair(source, label, Text.of(value));
+        sendKeyValuePair(source, label, new LiteralText(value));
     }
 
     /**
@@ -301,7 +301,7 @@ public class SpatialStorageCommand implements ISubCommand {
      */
     private static SpatialStoragePlot getCurrentPlot(ServerCommandSource source) {
         if (source.getWorld().getRegistryKey() != SpatialStorageDimensionIds.WORLD_ID) {
-            throw new CommandException(Text.of("Must be within the spatial storage world."));
+            throw new CommandException(new LiteralText("Must be within the spatial storage world."));
         }
 
         BlockPos playerPos = new BlockPos(source.getPosition());
