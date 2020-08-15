@@ -60,6 +60,29 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+// Create version number
+ext.pr = System.getenv('PR_NUMBER') ?: ""
+if (ext.pr) {
+  version = version + "+pr." + ext.pr
+}
+
+ext.branch = System.getenv('BRANCH') ?: ""
+if (ext.branch) {
+  version = version + "+branch." + ext.branch
+}
+
+ext.tag = System.getenv('TAG') ?: ""
+if (ext.tag && ext.tag.startsWith("fabric/v")) {
+  version = ext.tag.substring("fabric/v".length())
+  // Validate that the rest is a semver version
+  if (version ==~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/) {
+    println("::set-env name=VERSION::${version}")
+  } else {
+    throw new GradleException("Invalid semver: $version")
+  }
+}
+
+// Maven group and artifact name
 group = artifact_group
 archivesBaseName = artifact_basename
 
@@ -151,17 +174,19 @@ processResources {
 apply from: 'gradle/scripts/artifacts.gradle'
 apply from: 'gradle/scripts/curseforge.gradle'
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = 'appliedenergistics2-fabric'
+if (!version.endsWith("-SNAPSHOT")) {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = 'appliedenergistics2-fabric'
 
-            // add all the jars that should be included when publishing to maven
-            artifact(remapJar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
+                // add all the jars that should be included when publishing to maven
+                artifact(remapJar) {
+                    builtBy remapJar
+                }
+                artifact(sourcesJar) {
+                    builtBy remapSourcesJar
+                }
             }
         }
     }

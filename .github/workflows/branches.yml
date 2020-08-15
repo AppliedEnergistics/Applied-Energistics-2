@@ -23,8 +23,7 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
       - name: Build with Gradle
         run: ./gradlew build
-      - name: Publish Snapshot
-        run: ./gradlew publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: github.ref == 'refs/heads/fabric/master'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: build/libs/

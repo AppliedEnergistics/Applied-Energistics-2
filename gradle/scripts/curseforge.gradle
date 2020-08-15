@@ -26,7 +26,7 @@ if (isAlpha) {
   cfReleaseType = "beta"
 }
 
-if (System.getenv("CURSEFORGE")) {
+if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT")) {
   curseforge {
     apiKey = System.getenv("CURSEFORGE")
     project {
