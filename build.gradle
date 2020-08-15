@@ -82,11 +82,19 @@ sourceSets {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }
+    siteexport {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
 }
 
 configurations {
     apiCompile.extendsFrom(compileClasspath)
     datagenCompile.extendsFrom(compileClasspath)
+    siteexportCompile.extendsFrom(compileClasspath)
+    siteexportRuntime.extendsFrom(runtimeClasspath)
 }
 
 apply from: 'gradle/scripts/spotless.gradle'
@@ -177,7 +185,7 @@ publishing {
 
 import net.fabricmc.loom.task.RunClientTask;
 
-task generateData(type: RunClientTask, dependsOn: downloadAssets, group: "ae2") {
+task generateData(type: RunClientTask, dependsOn: downloadAssets, group: "ae2", description: "Generates various JSON assets for the mod") {
     classpath = configurations.runtimeClasspath
     classpath sourceSets.api.output
     classpath sourceSets.main.output
@@ -185,3 +193,10 @@ task generateData(type: RunClientTask, dependsOn: downloadAssets, group: "ae2") 
     systemProperty "appeng.generateData", "true"
 }
 build.dependsOn generateData
+
+task runSiteExport(type: RunClientTask, dependsOn: downloadAssets, group: "ae2", description: "Export game assets for the website") {
+    classpath = configurations.runtimeClasspath
+    classpath sourceSets.api.output
+    classpath sourceSets.main.output
+    classpath sourceSets.siteexport.output
+}

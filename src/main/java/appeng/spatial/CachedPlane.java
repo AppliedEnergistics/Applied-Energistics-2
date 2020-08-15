@@ -334,7 +334,7 @@ public class CachedPlane {
         }
 
         // FIXME check if this makes any sense at all to send changes to players asap
-        ServerChunkManager serverChunkProvider = (ServerChunkManager) world.getChunkManager();
+        ServerChunkManager serverChunkProvider = world.getChunkManager();
         serverChunkProvider.tick(() -> false);
     }
 
