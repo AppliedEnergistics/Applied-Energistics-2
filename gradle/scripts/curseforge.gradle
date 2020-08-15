@@ -34,6 +34,17 @@ if (System.getenv("CURSEFORGE")) {
       changelogType = "markdown"
       changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
       releaseType = cfReleaseType
+      addGameVersion project.minecraft_version
+      addGameVersion "Fabric"
+      mainArtifact(remapJar.archiveFile) {
+        displayName = "${project.version} [FABRIC]"
+      }
+    }
+    options {
+      forgeGradleIntegration = false
+    }
+    afterEvaluate {
+      tasks.getByName("curseforge${project.curseforge_project}").dependsOn remapJar
     }
   }
 }
