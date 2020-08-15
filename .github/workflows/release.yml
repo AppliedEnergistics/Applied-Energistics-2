@@ -35,9 +35,9 @@ jobs:
       - name: Publish to github packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo "./gradlew publish"
+        run: ./gradlew publish
       - name: Upload to curseforge
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CURSEFORGE: ${{ secrets.CURSEFORGE }}
-        run: echo "./gradlew curseforge"
+        run: ./gradlew curseforge
