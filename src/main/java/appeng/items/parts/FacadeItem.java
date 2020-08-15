@@ -18,6 +18,7 @@
 
 package appeng.items.parts;
 
+import appeng.mixins.tags.BlockTagsAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvironmentInterface;
@@ -57,7 +58,8 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     /**
      * Block tag used to explicitly whitelist blocks for use in facades.
      */
-    private static final Identifier TAG_WHITELISTED = new Identifier(AppEng.MOD_ID, "whitelisted/facades");
+    private static final Tag.Identified<Block> BLOCK_WHITELIST = BlockTagsAccessor
+            .register(AppEng.makeId("whitelisted/facades").toString());
 
     private static final String NBT_ITEM_ID = "item";
 
@@ -104,8 +106,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         BlockState blockState = block.getDefaultState();
 
         final boolean areTileEntitiesEnabled = AEConfig.instance().isFeatureEnabled(AEFeature.TILE_ENTITY_FACADES);
-        Tag<Block> whitelistTag = BlockTags.getTagGroup().getTagOrEmpty(TAG_WHITELISTED);
-        final boolean isWhiteListed = block.isIn(whitelistTag);
+        final boolean isWhiteListed = BLOCK_WHITELIST.contains(block);
         final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 
         final BlockState defaultState = block.getDefaultState();

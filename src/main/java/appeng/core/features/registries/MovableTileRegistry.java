@@ -18,21 +18,25 @@
 
 package appeng.core.features.registries;
 
-import java.util.*;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
-
 import appeng.api.exceptions.AppEngException;
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.movable.IMovableTile;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.mixins.tags.BlockTagsAccessor;
 import appeng.spatial.DefaultSpatialHandler;
+import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tag.Tag;
+import net.minecraft.util.Identifier;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class MovableTileRegistry implements IMovableRegistry {
 
@@ -46,12 +50,12 @@ public class MovableTileRegistry implements IMovableRegistry {
     private final List<IMovableHandler> handlers = new ArrayList<>();
     private final DefaultSpatialHandler dsh = new DefaultSpatialHandler();
     private final IMovableHandler nullHandler = new DefaultSpatialHandler();
-    private final Tag<Block> blockTagWhiteList;
-    private final Tag<Block> blockTagBlackList;
+    private final Tag.Identified<Block> blockTagWhiteList;
+    private final Tag.Identified<Block> blockTagBlackList;
 
     public MovableTileRegistry() {
-        this.blockTagWhiteList = BlockTags.getTagGroup().getTagOrEmpty(TAG_WHITELIST);
-        this.blockTagBlackList = BlockTags.getTagGroup().getTagOrEmpty(TAG_BLACKLIST);
+        this.blockTagWhiteList = BlockTagsAccessor.register(TAG_WHITELIST.toString());
+        this.blockTagBlackList = BlockTagsAccessor.register(TAG_BLACKLIST.toString());
     }
 
     @Override
