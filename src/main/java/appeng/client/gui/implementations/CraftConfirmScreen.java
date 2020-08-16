@@ -227,7 +227,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                         str = Long.toString(stored.getStackSize() / 1000000) + 'm';
                     }
 
-                    str = GuiText.FromStorage.text() + ": " + str;
+                    str = GuiText.FromStorage.getLocal() + ": " + str;
                     final int w = 4 + this.textRenderer.getWidth(str);
                     this.textRenderer.draw(matrices, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
@@ -250,7 +250,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                         str = Long.toString(missingStack.getStackSize() / 1000000) + 'm';
                     }
 
-                    str = GuiText.Missing.text() + ": " + str;
+                    str = GuiText.Missing.getLocal() + ": " + str;
                     final int w = 4 + this.textRenderer.getWidth(str);
                     this.textRenderer.draw(matrices, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
@@ -273,7 +273,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                         str = Long.toString(pendingStack.getStackSize() / 1000000) + 'm';
                     }
 
-                    str = GuiText.ToCraft.text() + ": " + str;
+                    str = GuiText.ToCraft.getLocal() + ": " + str;
                     final int w = 4 + this.textRenderer.getWidth(str);
                     this.textRenderer.draw(matrices, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),

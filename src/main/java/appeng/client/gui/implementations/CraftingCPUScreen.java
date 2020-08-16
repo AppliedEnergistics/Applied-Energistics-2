@@ -224,7 +224,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 int downY = 0;
 
                 if (stored != null && stored.getStackSize() > 0) {
-                    final String str = GuiText.Stored.text() + ": "
+                    final String str = GuiText.Stored.getLocal() + ": "
                             + converter.toWideReadableForm(stored.getStackSize());
                     final int w = 4 + this.textRenderer.getWidth(str);
                     this.textRenderer.draw(matrices, str,
@@ -240,7 +240,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 }
 
                 if (activeStack != null && activeStack.getStackSize() > 0) {
-                    final String str = GuiText.Crafting.text() + ": "
+                    final String str = GuiText.Crafting.getLocal() + ": "
                             + converter.toWideReadableForm(activeStack.getStackSize());
                     final int w = 4 + this.textRenderer.getWidth(str);
 
@@ -257,7 +257,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 }
 
                 if (pendingStack != null && pendingStack.getStackSize() > 0) {
-                    final String str = GuiText.Scheduled.text() + ": "
+                    final String str = GuiText.Scheduled.getLocal() + ": "
                             + converter.toWideReadableForm(pendingStack.getStackSize());
                     final int w = 4 + this.textRenderer.getWidth(str);
 
