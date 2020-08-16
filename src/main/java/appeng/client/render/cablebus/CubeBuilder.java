@@ -49,7 +49,7 @@ public class CubeBuilder {
 
     private boolean useStandardUV = false;
 
-    private boolean renderFullBright;
+    private boolean emissiveMaterial;
 
     private final QuadEmitter emitter;
 
@@ -144,7 +144,7 @@ public class CubeBuilder {
                 break;
         }
 
-        if (renderFullBright) {
+        if (emissiveMaterial) {
             // Force Brightness to 15, this is for full bright mode
             // this vertex element will only be present in that case
             int lightmap = LightmapTextureManager.pack(15, 15);
@@ -409,8 +409,8 @@ public class CubeBuilder {
         this.setColorRGB((int) (r * 255) << 16 | (int) (g * 255) << 8 | (int) (b * 255));
     }
 
-    public void setRenderFullBright(boolean renderFullBright) {
-        this.renderFullBright = renderFullBright;
+    public void setEmissiveMaterial(boolean renderFullBright) {
+        this.emissiveMaterial = renderFullBright;
     }
 
     public void setCustomUv(Direction facing, float u1, float v1, float u2, float v2) {

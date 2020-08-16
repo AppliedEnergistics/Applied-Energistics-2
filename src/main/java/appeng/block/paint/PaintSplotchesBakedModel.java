@@ -76,10 +76,10 @@ class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
 
             if (s.isLumen()) {
                 builder.setColorRGB(s.getColor().whiteVariant);
-                builder.setRenderFullBright(true);
+                builder.setEmissiveMaterial(true);
             } else {
                 builder.setColorRGB(s.getColor().mediumVariant);
-                builder.setRenderFullBright(false);
+                builder.setEmissiveMaterial(false);
             }
 
             float offset = offsetConstant;

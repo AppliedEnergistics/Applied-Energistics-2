@@ -346,7 +346,7 @@ class CableBuilder {
             this.addBigCoveredCableSizedCube(facing, cubeBuilder);
 
             // Render the channel indicators brightly lit at night
-            cubeBuilder.setRenderFullBright(true);
+            cubeBuilder.setEmissiveMaterial(true);
 
             cubeBuilder.setTexture(oddChannel);
             cubeBuilder.setColorRGB(cableColor.blackVariant);
@@ -357,14 +357,14 @@ class CableBuilder {
             this.addBigCoveredCableSizedCube(facing, cubeBuilder);
 
             // Reset back to normal rendering for the rest
-            cubeBuilder.setRenderFullBright(false);
+            cubeBuilder.setEmissiveMaterial(false);
             cubeBuilder.setTexture(texture);
         }
 
         addCoveredCableSizedCube(facing, cubeBuilder);
 
         // Render the channel indicators brightly lit at night
-        cubeBuilder.setRenderFullBright(true);
+        cubeBuilder.setEmissiveMaterial(true);
 
         cubeBuilder.setTexture(oddChannel);
         cubeBuilder.setColorRGB(cableColor.blackVariant);
@@ -373,6 +373,9 @@ class CableBuilder {
         cubeBuilder.setTexture(evenChannel);
         cubeBuilder.setColorRGB(cableColor.whiteVariant);
         addCoveredCableSizedCube(facing, cubeBuilder);
+
+        // Reset back to default
+        cubeBuilder.setEmissiveMaterial(false);
     }
 
     public void addStraightSmartConnection(Direction facing, AEColor cableColor, int channels, QuadEmitter emitter) {
@@ -389,7 +392,7 @@ class CableBuilder {
         Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
-        cubeBuilder.setRenderFullBright(true);
+        cubeBuilder.setEmissiveMaterial(true);
 
         cubeBuilder.setTexture(oddChannel);
         cubeBuilder.setColorRGB(cableColor.blackVariant);
@@ -398,6 +401,9 @@ class CableBuilder {
         cubeBuilder.setTexture(evenChannel);
         cubeBuilder.setColorRGB(cableColor.whiteVariant);
         addStraightCoveredCableSizedCube(facing, cubeBuilder);
+
+        // Reset back to default
+        cubeBuilder.setEmissiveMaterial(false);
     }
 
     public void addConstrainedSmartConnection(Direction facing, AEColor cableColor, int distanceFromEdge, int channels,
@@ -420,7 +426,7 @@ class CableBuilder {
         Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
-        cubeBuilder.setRenderFullBright(true);
+        cubeBuilder.setEmissiveMaterial(true);
 
         cubeBuilder.setTexture(oddChannel);
         cubeBuilder.setColorRGB(cableColor.blackVariant);
@@ -429,6 +435,9 @@ class CableBuilder {
         cubeBuilder.setTexture(evenChannel);
         cubeBuilder.setColorRGB(cableColor.whiteVariant);
         addCoveredCableSizedCube(facing, distanceFromEdge, cubeBuilder);
+
+        // Reset back to default
+        cubeBuilder.setEmissiveMaterial(false);
     }
 
     public void addDenseCoveredConnection(Direction facing, AEColor cableColor, AECableType connectionType,
@@ -452,7 +461,7 @@ class CableBuilder {
         addDenseCableSizedCube(facing, cubeBuilder);
 
         // Reset back to normal rendering for the rest
-        cubeBuilder.setRenderFullBright(false);
+        cubeBuilder.setEmissiveMaterial(false);
         cubeBuilder.setTexture(texture);
     }
 
@@ -488,7 +497,7 @@ class CableBuilder {
         Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
-        cubeBuilder.setRenderFullBright(true);
+        cubeBuilder.setEmissiveMaterial(true);
 
         cubeBuilder.setTexture(oddChannel);
         cubeBuilder.setColorRGB(cableColor.blackVariant);
@@ -499,7 +508,7 @@ class CableBuilder {
         addDenseCableSizedCube(facing, cubeBuilder);
 
         // Reset back to normal rendering for the rest
-        cubeBuilder.setRenderFullBright(false);
+        cubeBuilder.setEmissiveMaterial(false);
         cubeBuilder.setTexture(texture);
     }
 
@@ -532,7 +541,7 @@ class CableBuilder {
         Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
-        cubeBuilder.setRenderFullBright(true);
+        cubeBuilder.setEmissiveMaterial(true);
 
         cubeBuilder.setTexture(oddChannel);
         cubeBuilder.setColorRGB(cableColor.blackVariant);
@@ -541,6 +550,9 @@ class CableBuilder {
         cubeBuilder.setTexture(evenChannel);
         cubeBuilder.setColorRGB(cableColor.whiteVariant);
         addStraightDenseCableSizedCube(facing, cubeBuilder);
+
+        // Reset back to default
+        cubeBuilder.setEmissiveMaterial(false);
     }
 
     private static void addDenseCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {

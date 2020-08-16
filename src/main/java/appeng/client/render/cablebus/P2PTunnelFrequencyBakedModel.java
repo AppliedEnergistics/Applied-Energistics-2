@@ -68,7 +68,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
 
         cb.setTexture(this.texture);
         cb.useStandardUV();
-        cb.setRenderFullBright(active);
+        cb.setEmissiveMaterial(active);
 
         for (int i = 0; i < 4; ++i) {
             final int[] offs = QUAD_OFFSETS[i];
@@ -88,6 +88,9 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
             }
 
         }
+
+        // Reset back to default
+        cb.setEmissiveMaterial(false);
 
         return meshBuilder.build();
     }

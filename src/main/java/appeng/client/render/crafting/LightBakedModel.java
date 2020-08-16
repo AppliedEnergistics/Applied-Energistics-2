@@ -50,8 +50,10 @@ class LightBakedModel extends CraftingCubeBakedModel {
         builder.addCube(x1, y1, z1, x2, y2, z2);
 
         boolean powered = state.get(AbstractCraftingUnitBlock.POWERED);
-        builder.setRenderFullBright(powered);
+        builder.setEmissiveMaterial(powered);
         builder.setTexture(this.lightTexture);
         builder.addCube(x1, y1, z1, x2, y2, z2);
+        // Reset back to default
+        builder.setEmissiveMaterial(false);
     }
 }
