@@ -18,13 +18,23 @@
 
 package appeng.integration.modules.jei;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
+import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.BaseBoundsHandler;
+import me.shedaniel.rei.api.DisplayHelper;
+import me.shedaniel.rei.api.EntryRegistry;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
@@ -34,12 +44,17 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.IParts;
 import appeng.api.features.AEFeature;
+import appeng.api.util.AEColor;
+import appeng.client.gui.AEBaseScreen;
 import appeng.container.implementations.CraftingTermContainer;
 import appeng.container.implementations.PatternTermContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.ApiItems;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.ReiFacade;
 import appeng.items.parts.FacadeItem;
@@ -47,20 +62,46 @@ import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 
 public class ReiPlugin implements REIPluginV0 {
+
     private static final Identifier ID = new Identifier(AppEng.MOD_ID, "core");
+
+    private final ApiBlocks blocks = Api.INSTANCE.definitions().blocks();
+
+    private final ApiItems items = Api.INSTANCE.definitions().items();
+
+    // Will be hidden if developer items are disabled in the config
+    private final List<Predicate<ItemStack>> developerItems = ImmutableList.of(blocks.cubeGenerator()::isSameAs,
+            blocks.chunkLoader()::isSameAs,
+            // FIXME FABRIC blocks.energyGenerator()::isSameAs,
+            blocks.itemGen()::isSameAs, blocks.phantomNode()::isSameAs,
+
+            items.toolDebugCard()::isSameAs, items.toolEraser()::isSameAs, items.toolMeteoritePlacer()::isSameAs,
+            items.toolReplicatorCard()::isSameAs);
+
+    // Will be hidden if colored cables are hidden
+    private final List<Predicate<ItemStack>> coloredCables;
+
+    public ReiPlugin() {
+        List<Predicate<ItemStack>> predicates = new ArrayList<>();
+
+        IParts parts = Api.instance().definitions().parts();
+        for (AEColor color : AEColor.values()) {
+            if (color == AEColor.TRANSPARENT) {
+                continue; // Keep the Fluix variant
+            }
+            predicates.add(stack -> parts.cableCovered().sameAs(color, stack));
+            predicates.add(stack -> parts.cableDenseCovered().sameAs(color, stack));
+            predicates.add(stack -> parts.cableGlass().sameAs(color, stack));
+            predicates.add(stack -> parts.cableSmart().sameAs(color, stack));
+            predicates.add(stack -> parts.cableDenseSmart().sameAs(color, stack));
+        }
+        coloredCables = ImmutableList.copyOf(predicates);
+    }
 
     @Override
     public Identifier getPluginIdentifier() {
         return ID;
     }
-
-    // FIXME FABRIC @Override
-    // FIXME FABRIC public void registerItemSubtypes(ISubtypeRegistration
-    // subtypeRegistry) {
-    // FIXME FABRIC final Optional<Item> maybeFacade =
-    // AEApi.instance().definitions().items().facade().maybeItem();
-    // FIXME FABRIC maybeFacade.ifPresent(subtypeRegistry::useNbtForSubtypes);
-    // FIXME FABRIC }
 
     @Override
     public void registerPluginCategories(RecipeHelper recipeHelper) {
@@ -91,9 +132,16 @@ public class ReiPlugin implements REIPluginV0 {
 
         registerWorkingStations(recipeHelper);
 
-        IDefinitions definitions = Api.instance().definitions();
-        recipeHelper.registerLiveRecipeGenerator(new FacadeRegistryGenerator(
-                (FacadeItem) definitions.items().facade().item(), definitions.parts().cableAnchor().stack(1)));
+        if (AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_FACADE_CRAFTING)) {
+            IDefinitions definitions = Api.instance().definitions();
+            recipeHelper.registerLiveRecipeGenerator(new FacadeRegistryGenerator(
+                    (FacadeItem) definitions.items().facade().item(), definitions.parts().cableAnchor().stack(1)));
+        }
+    }
+
+    @Override
+    public void registerEntries(EntryRegistry entryRegistry) {
+        entryRegistry.removeEntryIf(this::shouldEntryBeHidden);
     }
 
     @Override
@@ -102,6 +150,17 @@ public class ReiPlugin implements REIPluginV0 {
         registerDescriptions(definitions);
 
         ReiFacade.setInstance(new ReiRuntimeAdapter());
+    }
+
+    @Override
+    public void registerBounds(DisplayHelper displayHelper) {
+        BaseBoundsHandler baseBoundsHandler = BaseBoundsHandler.getInstance();
+
+        baseBoundsHandler.registerExclusionZones(AEBaseScreen.class, () -> {
+            AEBaseScreen<?> screen = (AEBaseScreen<?>) MinecraftClient.getInstance().currentScreen;
+            return ImmutableList.of(new Rectangle(screen.getX(), screen.getY(), screen.width, screen.height));
+        });
+
     }
 
     private void registerWorkingStations(RecipeHelper registration) {
@@ -160,47 +219,36 @@ public class ReiPlugin implements REIPluginV0 {
         RecipeHelper.getInstance().registerDisplay(info);
     }
 
-// FIXME FABRIC    @Override
-// FIXME FABRIC    public void registerAdvanced(IAdvancedRegistration registration) {
-// FIXME FABRIC
-// FIXME FABRIC        IDefinitions definitions = AEApi.instance().definitions();
-// FIXME FABRIC
-// FIXME FABRIC        if (AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_FACADE_CRAFTING)) {
-// FIXME FABRIC            FacadeItem itemFacade = (FacadeItem) definitions.items().facade().item();
-// FIXME FABRIC            ItemStack cableAnchor = definitions.parts().cableAnchor().stack(1);
-// FIXME FABRIC            registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
-// FIXME FABRIC        }
-// FIXME FABRIC    }
-// FIXME FABRIC
-// FIXME FABRIC    @Override
-// FIXME FABRIC    public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
-// FIXME FABRIC        JEIFacade.setInstance(new JeiRuntimeAdapter(jeiRuntime));
-// FIXME FABRIC        this.hideDebugTools(jeiRuntime);
-// FIXME FABRIC
-// FIXME FABRIC    }
-// FIXME FABRIC
-// FIXME FABRIC    private void hideDebugTools(IJeiRuntime jeiRuntime) {
-// FIXME FABRIC        Collection<ItemStack> toRemove = new ArrayList<>();
-// FIXME FABRIC
-// FIXME FABRIC        // We use the internal API here as exception as debug tools are not part of the
-// FIXME FABRIC        // public one by design.
-// FIXME FABRIC        toRemove.add(Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack(1).orElse(null));
-// FIXME FABRIC
-// FIXME FABRIC        if (!AEConfig.instance().isFeatureEnabled(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS)) {
-// FIXME FABRIC            toRemove.add(Api.INSTANCE.definitions().blocks().cubeGenerator().maybeStack(1).orElse(null));
-// FIXME FABRIC            toRemove.add(Api.INSTANCE.definitions().blocks().chunkLoader().maybeStack(1).orElse(null));
-// FIXME FABRIC            toRemove.add(Api.INSTANCE.definitions().blocks().energyGenerator().maybeStack(1).orElse(null));
-// FIXME FABRIC            toRemove.add(Api.INSTANCE.definitions().blocks().itemGen().maybeStack(1).orElse(null));
-// FIXME FABRIC            toRemove.add(Api.INSTANCE.definitions().blocks().phantomNode().maybeStack(1).orElse(null));
-// FIXME FABRIC
-// FIXME FABRIC            toRemove.add(Api.INSTANCE.definitions().items().toolDebugCard().maybeStack(1).orElse(null));
-// FIXME FABRIC            toRemove.add(Api.INSTANCE.definitions().items().toolEraser().maybeStack(1).orElse(null));
-// FIXME FABRIC            toRemove.add(Api.INSTANCE.definitions().items().toolMeteoritePlacer().maybeStack(1).orElse(null));
-// FIXME FABRIC            toRemove.add(Api.INSTANCE.definitions().items().toolReplicatorCard().maybeStack(1).orElse(null));
-// FIXME FABRIC        }
-// FIXME FABRIC
-// FIXME FABRIC        jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM,
-// FIXME FABRIC                toRemove);
-// FIXME FABRIC    }
+    private boolean shouldEntryBeHidden(EntryStack entryStack) {
+        if (entryStack.getType() != EntryStack.Type.ITEM) {
+            return false;
+        }
+        ItemStack stack = entryStack.getItemStack();
+
+        if (items.dummyFluidItem().isSameAs(stack) || items.facade().isSameAs(stack) // REI will add a broken facade
+                                                                                     // with no NBT
+                || blocks.multiPart().isSameAs(stack) || blocks.matrixFrame().isSameAs(stack)
+                || blocks.paint().isSameAs(stack)) {
+            return true;
+        }
+
+        if (!AEConfig.instance().isFeatureEnabled(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS)) {
+            for (Predicate<ItemStack> developerItem : developerItems) {
+                if (developerItem.test(stack)) {
+                    return true;
+                }
+            }
+        }
+
+        if (AEConfig.instance().isDisableColoredCableRecipesInJEI()) {
+            for (Predicate<ItemStack> predicate : coloredCables) {
+                if (predicate.test(stack)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
 }
