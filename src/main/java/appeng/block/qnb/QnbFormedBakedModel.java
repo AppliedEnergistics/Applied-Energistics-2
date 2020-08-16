@@ -117,7 +117,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
 
                 if (formedState.isPowered()) {
                     builder.setTexture(this.lightCornerTexture);
-                    builder.setRenderFullBright(true);
+                    builder.setEmissiveMaterial(true);
                     for (Direction facing : Direction.values()) {
                         // Offset the face by a slight amount so that it is drawn over the already drawn
                         // ring texture
@@ -131,6 +131,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
                                 DEFAULT_RENDER_MIN - zOffset, DEFAULT_RENDER_MAX + xOffset,
                                 DEFAULT_RENDER_MAX + yOffset, DEFAULT_RENDER_MAX + zOffset);
                     }
+                    builder.setEmissiveMaterial(false);
                 }
             } else {
                 builder.setTexture(this.ringTexture);
@@ -143,7 +144,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
 
                 if (formedState.isPowered()) {
                     builder.setTexture(this.lightTexture);
-                    builder.setRenderFullBright(true);
+                    builder.setEmissiveMaterial(true);
                     for (Direction facing : Direction.values()) {
                         // Offset the face by a slight amount so that it is drawn over the already drawn
                         // ring texture

@@ -117,7 +117,7 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
 
             if ((flags
                     & SpatialPylonTileEntity.DISPLAY_POWERED_ENABLED) == SpatialPylonTileEntity.DISPLAY_POWERED_ENABLED) {
-                builder.setRenderFullBright(true);
+                builder.setEmissiveMaterial(true);
             }
 
             builder.setTextures(this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.UP)),
@@ -134,6 +134,9 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
             builder.setTexture(this.textures.get(SpatialPylonTextureType.DIM));
             builder.addCube(0, 0, 0, 16, 16, 16);
         }
+
+        // Reset back to default
+        builder.setEmissiveMaterial(false);
 
         return builder.getOutput();
     }

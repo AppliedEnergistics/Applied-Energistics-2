@@ -78,7 +78,7 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
         AEColor color = getColor(modelData);
         boolean powered = state.get(CraftingMonitorBlock.POWERED);
 
-        builder.setRenderFullBright(powered);
+        builder.setEmissiveMaterial(powered);
 
         builder.setColorRGB(color.whiteVariant);
         builder.setTexture(this.lightBrightTexture);
@@ -92,6 +92,8 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
         builder.setTexture(this.lightDarkTexture);
         builder.addCube(x1, y1, z1, x2, y2, z2);
 
+        // Reset back to default
+        builder.setEmissiveMaterial(false);
     }
 
     private static AEColor getColor(IModelData modelData) {
