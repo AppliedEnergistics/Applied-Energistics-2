@@ -117,39 +117,39 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
                 return;
             }
 
-            stack.setCustomName(GuiText.InvalidPattern.text().copy().formatted(Formatting.RED));
+            stack.setCustomName(GuiText.InvalidPattern.text().shallowCopy().formatted(Formatting.RED));
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-            final Text label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
+            final Text label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text()).shallowCopy()
                     .append(": ");
-            final Text and = new LiteralText(" ").copy().append(GuiText.And.text()).copy().append(" ");
-            final Text with = GuiText.With.text().copy().append(": ");
+            final Text and = new LiteralText(" ").shallowCopy().append(GuiText.And.text()).shallowCopy().append(" ");
+            final Text with = GuiText.With.text().shallowCopy().append(": ");
 
             boolean first = true;
             for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
-                lines.add((first ? label : and).copy().append(output.getFormattedToolTip()));
+                lines.add((first ? label : and).shallowCopy().append(output.getFormattedToolTip()));
                 first = false;
             }
 
             first = true;
             for (final InvalidPatternHelper.PatternIngredient input : invalid.getInputs()) {
-                lines.add((first ? with : and).copy().append(input.getFormattedToolTip()));
+                lines.add((first ? with : and).shallowCopy().append(input.getFormattedToolTip()));
                 first = false;
             }
 
             if (invalid.isCraftable()) {
-                final Text substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+                final Text substitutionLabel = GuiText.Substitute.text().shallowCopy().append(" ");
                 final Text canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
 
-                lines.add(substitutionLabel.copy().append(canSubstitute));
+                lines.add(substitutionLabel.shallowCopy().append(canSubstitute));
             }
 
             return;
         }
 
         if (stack.hasCustomName()) {
-            stack.removeSubTag("display");
+            stack.removeCustomName();
         }
 
         final boolean isCrafting = details.isCraftable();
@@ -158,9 +158,9 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final Collection<IAEItemStack> in = details.getInputs();
         final Collection<IAEItemStack> out = details.getOutputs();
 
-        final Text label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).copy().append(": ");
-        final Text and = new LiteralText(" ").append(GuiText.And.text()).append(" ");
-        final Text with = GuiText.With.text().copy().append(": ");
+        final Text label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).shallowCopy().append(": ");
+        final Text and = new LiteralText(" ").shallowCopy().append(GuiText.And.text()).append(" ");
+        final Text with = GuiText.With.text().shallowCopy().append(": ");
 
         boolean first = true;
         for (final IAEItemStack anOut : out) {
@@ -168,7 +168,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
                 continue;
             }
 
-            lines.add((first ? label : and).copy().append(anOut.getStackSize() + "x ")
+            lines.add((first ? label : and).shallowCopy().append(anOut.getStackSize() + "x ")
                     .append(Platform.getItemDisplayName(anOut)));
             first = false;
         }
@@ -179,16 +179,16 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
                 continue;
             }
 
-            lines.add((first ? with : and).copy().append(anIn.getStackSize() + "x ")
+            lines.add((first ? with : and).shallowCopy().append(anIn.getStackSize() + "x ")
                     .append(Platform.getItemDisplayName(anIn)));
             first = false;
         }
 
         if (isCrafting) {
-            final MutableText substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+            final Text substitutionLabel = GuiText.Substitute.text().shallowCopy().append(" ");
             final Text canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
 
-            lines.add(substitutionLabel.append(canSubstitute));
+            lines.add(substitutionLabel.shallowCopy().append(canSubstitute));
         }
     }
 
