@@ -123,7 +123,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
 
             final Text label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
                     .append(": ");
-            final Text and = new LiteralText(" ").append(GuiText.And.text()).append(" ");
+            final Text and = new LiteralText(" ").copy().append(GuiText.And.text()).copy().append(" ");
             final Text with = GuiText.With.text().copy().append(": ");
 
             boolean first = true;
@@ -139,10 +139,10 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
             }
 
             if (invalid.isCraftable()) {
-                final MutableText substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+                final Text substitutionLabel = GuiText.Substitute.text().copy().append(" ");
                 final Text canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
 
-                lines.add(substitutionLabel.append(canSubstitute));
+                lines.add(substitutionLabel.copy().append(canSubstitute));
             }
 
             return;
