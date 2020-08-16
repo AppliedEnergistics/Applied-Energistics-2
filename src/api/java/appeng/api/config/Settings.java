@@ -36,7 +36,7 @@ public enum Settings {
 
     CONDENSER_OUTPUT(EnumSet.allOf(CondenserOutput.class)),
 
-    POWER_UNITS(EnumSet.allOf(PowerUnits.class)),
+    POWER_UNITS(EnumSet.of(PowerUnits.AE, PowerUnits.TR)),
 
     ACCESS(EnumSet.of(AccessRestriction.READ_WRITE, AccessRestriction.READ, AccessRestriction.WRITE)),
 

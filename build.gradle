@@ -34,6 +34,9 @@ repositories {
     maven {
         name = "BuildCraft"
         url = "https://mod-buildcraft.com/maven"
+        content {
+            includeGroup "alexiil.mc.lib"
+        }
     }
     maven {
         name = "HYWLA"
@@ -41,10 +44,6 @@ repositories {
         content {
             includeGroup "mcp.mobius.waila"
         }
-    }
-    maven {
-        name = 'Earthcomputer Mods'
-        url = 'https://dl.bintray.com/earthcomputer/mods'
     }
 }
 
@@ -141,6 +140,10 @@ dependencies {
     include "alexiil.mc.lib:libblockattributes-items:${libblockattributes_version}"
     include "alexiil.mc.lib:libblockattributes-fluids:${libblockattributes_version}"
 
+    // Energy API
+    modApi "teamreborn:energy:${tr_energy_version}"
+    include "teamreborn:energy:${tr_energy_version}"
+
     modCompileOnly("me.shedaniel:RoughlyEnoughItems:5.0.2-unstable") {
         exclude group: "net.fabricmc.fabric-api"
     }
@@ -148,6 +151,9 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
     modRuntime("me.shedaniel:RoughlyEnoughItems:5.0.2-unstable") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+    modRuntime("TechReborn:TechReborn-1.16:3.5.1+build.101") {
         exclude group: "net.fabricmc.fabric-api"
     }
 //    modRuntimeOnly "mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75"

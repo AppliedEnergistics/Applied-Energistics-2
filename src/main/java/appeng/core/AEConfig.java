@@ -18,22 +18,6 @@
 
 package appeng.core;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.DoubleSupplier;
-import java.util.stream.Collectors;
-
-import net.minecraft.world.dimension.DimensionType;
-
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -52,6 +36,21 @@ import appeng.core.config.IntegerOption;
 import appeng.core.config.StringListOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
+import net.minecraft.world.dimension.DimensionType;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.DoubleSupplier;
+import java.util.stream.Collectors;
 
 public final class AEConfig {
 
@@ -87,7 +86,7 @@ public final class AEConfig {
 
     // Default Energy Conversion Rates
     private static final double DEFAULT_IC2_EXCHANGE = 2.0;
-    private static final double DEFAULT_RF_EXCHANGE = 0.5;
+    private static final double DEFAULT_TR_EXCHANGE = 2.0;
 
     public static final String VERSION = "@version@";
     public static final String CHANNEL = "@aechannel@";
@@ -112,7 +111,6 @@ public final class AEConfig {
     private boolean useColoredCraftingStatus;
     private boolean disableColoredCableRecipesInJEI;
     private int craftingCalculationTimePerTick;
-    private PowerUnits selectedPowerUnit = PowerUnits.AE;
 
     // GUI Buttons
     private final int[] craftByStacks = new int[4];
@@ -157,9 +155,7 @@ public final class AEConfig {
         this.enableEffects = clientConfig.enableEffects.get();
         this.useLargeFonts = clientConfig.useLargeFonts.get();
         this.useColoredCraftingStatus = clientConfig.useColoredCraftingStatus.get();
-        this.selectedPowerUnit = clientConfig.selectedPowerUnit.get();
 
-        // load buttons..
         for (int btnNum = 0; btnNum < 4; btnNum++) {
             this.craftByStacks[btnNum] = clientConfig.craftByStacks.get(btnNum).get();
             this.priorityByStacks[btnNum] = clientConfig.priorityByStacks.get(btnNum).get();
@@ -169,7 +165,7 @@ public final class AEConfig {
 
     private void syncCommonConfig() {
         PowerUnits.EU.conversionRatio = commonConfig.powerRatioIc2.get();
-        PowerUnits.RF.conversionRatio = commonConfig.powerRatioForgeEnergy.get();
+        PowerUnits.TR.conversionRatio = commonConfig.powerRatioTechReborn.get();
         PowerMultiplier.CONFIG.multiplier = commonConfig.powerUsageMultiplier.get();
 
         CondenserOutput.MATTER_BALLS.requiredPower = commonConfig.condenserMatterBallsPower.get();
@@ -271,7 +267,6 @@ public final class AEConfig {
     }
 
     public void save() {
-        clientConfig.selectedPowerUnit.set(this.selectedPowerUnit);
     }
 
     /**
@@ -299,7 +294,7 @@ public final class AEConfig {
 
     @SuppressWarnings("unchecked")
     public void nextPowerUnit(final boolean backwards) {
-        PowerUnits selectedPowerUnit = EnumCycler.rotateEnum(this.selectedPowerUnit, backwards,
+        PowerUnits selectedPowerUnit = EnumCycler.rotateEnum(getSelectedPowerUnit(), backwards,
                 (EnumSet<PowerUnits>) Settings.POWER_UNITS.getPossibleValues());
         clientConfig.selectedPowerUnit.set(selectedPowerUnit);
     }
@@ -371,6 +366,10 @@ public final class AEConfig {
 
     public DoubleSupplier getChargedStaffBattery() {
         return () -> this.chargedStaffBattery;
+    }
+
+    public double getPowerTransactionLimitTechReborn() {
+        return commonConfig.powerTransactionLimitTechReborn.get();
     }
 
     public float getSpawnChargedChance() {
@@ -494,8 +493,11 @@ public final class AEConfig {
 
         // Power Ratios
         public final DoubleOption powerRatioIc2;
-        public final DoubleOption powerRatioForgeEnergy;
+        public final DoubleOption powerRatioTechReborn;
         public final DoubleOption powerUsageMultiplier;
+
+        // How much TR energy can be transfered at most in one operation
+        public final DoubleOption powerTransactionLimitTechReborn;
 
         // Condenser Power Requirement
         public final IntegerOption condenserMatterBallsPower;
@@ -578,8 +580,12 @@ public final class AEConfig {
 
             ConfigSection PowerRatios = root.subsection("PowerRatios");
             powerRatioIc2 = PowerRatios.addDouble("IC2", DEFAULT_IC2_EXCHANGE);
-            powerRatioForgeEnergy = PowerRatios.addDouble("ForgeEnergy", DEFAULT_RF_EXCHANGE);
+            powerRatioTechReborn = PowerRatios.addDouble("TechReborn", DEFAULT_TR_EXCHANGE);
             powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
+
+            ConfigSection integration = root.subsection("Integration");
+            powerTransactionLimitTechReborn = integration.addDouble("MaxTechRebornEnergyPerTransaction", 10000.0, 0.1, 1000000.0,
+                    "The maximum amount of TechReborn energy units that can be transfered per operation.");
 
             ConfigSection Condenser = root.subsection("Condenser");
             condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);

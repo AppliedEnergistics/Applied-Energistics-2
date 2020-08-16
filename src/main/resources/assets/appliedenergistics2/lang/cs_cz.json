@@ -256,7 +256,6 @@
   "gui.appliedenergistics2.security.security.tip": "Uživatel má přístupové a modifikační práva k bezpečnostnímu terminálu sítě.",
   "gui.appliedenergistics2.units.appliedenergstics": "AE",
   "gui.appliedenergistics2.units.ic2": "Jednotky energie",
-  "gui.appliedenergistics2.units.rf": "Ruditový Flux",
   "gui.tooltips.appliedenergistics2.ActiveOnPulse": "Aktivní jednou za pulz",
   "gui.tooltips.appliedenergistics2.ActiveWithSignal": "Aktivní se signálem",
   "gui.tooltips.appliedenergistics2.ActiveWithoutSignal": "Aktivní bez signálu",

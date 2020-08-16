@@ -141,7 +141,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
                 }
 
                 if (simulation.isAction()) {
-                    FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF,
+                    FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnits.TR,
                             amount.sub(overflowAmount).asInexactDouble() * 1000);
                 }
             } catch (GridAccessException ignored) {

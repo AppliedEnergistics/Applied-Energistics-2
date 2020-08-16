@@ -122,7 +122,7 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
                 }
 
                 if (!simulate) {
-                    FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
+                    FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.TR, total);
                 }
             } catch (GridAccessException ignored) {
             }
@@ -177,7 +177,7 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
             final int total = FEP2PTunnelPart.this.getAttachedEnergyStorage().extractEnergy(maxExtract, simulate);
 
             if (!simulate) {
-                FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
+                FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.TR, total);
             }
 
             return total;

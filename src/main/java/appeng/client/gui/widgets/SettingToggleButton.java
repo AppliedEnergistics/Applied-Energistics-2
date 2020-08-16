@@ -103,8 +103,8 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     PowerUnits.AE.textComponent());
             registerApp(16 * 10 + 1, Settings.POWER_UNITS, PowerUnits.EU, ButtonToolTips.PowerUnits,
                     PowerUnits.EU.textComponent());
-            registerApp(16 * 10 + 4, Settings.POWER_UNITS, PowerUnits.RF, ButtonToolTips.PowerUnits,
-                    PowerUnits.RF.textComponent());
+            registerApp(16 * 10 + 4, Settings.POWER_UNITS, PowerUnits.TR, ButtonToolTips.PowerUnits,
+                    PowerUnits.TR.textComponent());
 
             registerApp(3, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, ButtonToolTips.RedstoneMode,
                     ButtonToolTips.AlwaysActive);

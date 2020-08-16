@@ -290,7 +290,6 @@
   "gui.appliedenergistics2.security.security.tip": "Пользователь может работать с терминалом безопасности и настраивать его в сети.",
   "gui.appliedenergistics2.units.appliedenergstics": "AE",
   "gui.appliedenergistics2.units.ic2": "Energy Units",
-  "gui.appliedenergistics2.units.rf": "Redstone Flux",
   "gui.tooltips.appliedenergistics2.ActiveOnPulse": "Активируется раз за импульс",
   "gui.tooltips.appliedenergistics2.ActiveWithSignal": "Активен с сигналом",
   "gui.tooltips.appliedenergistics2.ActiveWithoutSignal": "Активен без сигнала",

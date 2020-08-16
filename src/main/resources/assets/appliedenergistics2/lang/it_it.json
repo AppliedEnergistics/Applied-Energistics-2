@@ -270,7 +270,6 @@
   "gui.appliedenergistics2.security.security.tip": "Utente ha il permesso di accedere e modificare il terminale di sicurezza del sistema.",
   "gui.appliedenergistics2.units.appliedenergstics": "AE",
   "gui.appliedenergistics2.units.ic2": "Energy Units",
-  "gui.appliedenergistics2.units.rf": "Redstone Flux",
   "gui.tooltips.appliedenergistics2.ActiveOnPulse": "Attivo una volta per impulso",
   "gui.tooltips.appliedenergistics2.ActiveWithSignal": "Attivo con segnale",
   "gui.tooltips.appliedenergistics2.ActiveWithoutSignal": "Attivo senza segnale",

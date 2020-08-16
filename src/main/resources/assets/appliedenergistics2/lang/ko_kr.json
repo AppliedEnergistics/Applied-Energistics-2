@@ -298,7 +298,6 @@
   "gui.appliedenergistics2.security.security.tip": "유저는 네트워크의 보안 단말기에 액세스하여 수정할 수 있습니다.",
   "gui.appliedenergistics2.units.appliedenergstics": "AE",
   "gui.appliedenergistics2.units.ic2": "EU",
-  "gui.appliedenergistics2.units.rf": "RF",
   "gui.tooltips.appliedenergistics2.ActiveOnPulse": "한 파동 당 활성화",
   "gui.tooltips.appliedenergistics2.ActiveWithSignal": "신호있는 활성화",
   "gui.tooltips.appliedenergistics2.ActiveWithoutSignal": "신호없는 활성화",

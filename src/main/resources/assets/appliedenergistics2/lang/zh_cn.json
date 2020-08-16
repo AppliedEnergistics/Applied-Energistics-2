@@ -300,7 +300,6 @@
   "gui.appliedenergistics2.security.security.tip": "用户可以访问修改网络的安全终端.",
   "gui.appliedenergistics2.units.appliedenergstics": "AE",
   "gui.appliedenergistics2.units.ic2": "EU",
-  "gui.appliedenergistics2.units.rf": "RF",
   "gui.tooltips.appliedenergistics2.ActiveOnPulse": "有脉冲信号时激活",
   "gui.tooltips.appliedenergistics2.ActiveWithSignal": "有信号时激活",
   "gui.tooltips.appliedenergistics2.ActiveWithoutSignal": "无信号时激活",

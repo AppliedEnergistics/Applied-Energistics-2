@@ -165,7 +165,7 @@ public class Platform {
         p = PowerUnits.AE.convertTo(displayUnits, p);
 
         final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
-        String unitName = displayUnits.name();
+        String unitName = displayUnits.getSymbolName();
 
         String level = "";
         int offset = 0;

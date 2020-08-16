@@ -18,31 +18,29 @@
 
 package appeng.tile.powersink;
 
-import java.util.EnumSet;
-import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
+import appeng.core.AEConfig;
 import appeng.tile.AEBaseInvBlockEntity;
+import com.google.common.collect.ImmutableSet;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import team.reborn.energy.EnergySide;
+import team.reborn.energy.EnergyStorage;
+import team.reborn.energy.EnergyTier;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
-        implements IAEPowerStorage, IExternalPowerSink, AttributeProvider {
+        implements IAEPowerStorage, IExternalPowerSink, EnergyStorage {
 
     // values that determine general function, are set by inheriting classes if
     // needed. These should generally remain static.
@@ -230,10 +228,37 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     }
 
     @Override
-    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
-        super.addAllAttributes(world, pos, state, to);
+    public double getMaxInput(EnergySide side) {
+        double attemptedInsert = AEConfig.instance().getPowerTransactionLimitTechReborn();
+        double overflow = this.injectExternalPower(PowerUnits.TR, attemptedInsert, Actionable.SIMULATE);
+        double couldInsert = attemptedInsert - overflow;
+        if (couldInsert < 0.001) {
+            return 0;
+        }
 
-        // FIXME FABRIC: Offer energy attributes
+        return PowerUnits.AE.convertTo(PowerUnits.TR, couldInsert);
+    }
+
+    @Override
+    public double getStored(EnergySide energySide) {
+        // This block acts as if it cannot actually store any energy
+        return 0.0;
+    }
+
+    @Override
+    public void setStored(double v) {
+        v = MathHelper.clamp(v, 0.001, getMaxStoredPower());
+        this.injectExternalPower(PowerUnits.TR, v, Actionable.MODULATE);
+    }
+
+    @Override
+    public double getMaxStoredPower() {
+        return AEConfig.instance().getPowerTransactionLimitTechReborn();
+    }
+
+    @Override
+    public EnergyTier getTier() {
+        return EnergyTier.INFINITE;
     }
 
 }

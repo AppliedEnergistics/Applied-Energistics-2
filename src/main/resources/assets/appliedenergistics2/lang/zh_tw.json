@@ -290,7 +290,6 @@
   "gui.appliedenergistics2.security.security.tip": "用戶可以訪問修改網絡的安全終端。",
   "gui.appliedenergistics2.units.appliedenergstics": "AE",
   "gui.appliedenergistics2.units.ic2": "EU",
-  "gui.appliedenergistics2.units.rf": "RF",
   "gui.tooltips.appliedenergistics2.ActiveOnPulse": "有脈沖信號時激活",
   "gui.tooltips.appliedenergistics2.ActiveWithSignal": "有信號時激活",
   "gui.tooltips.appliedenergistics2.ActiveWithoutSignal": "無信號時激活",

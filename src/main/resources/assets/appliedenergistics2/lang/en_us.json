@@ -307,7 +307,7 @@
   "gui.appliedenergistics2.security.security.tip": "User can access and modify the security terminal of the network.",
   "gui.appliedenergistics2.units.appliedenergstics": "AE",
   "gui.appliedenergistics2.units.ic2": "Energy Units",
-  "gui.appliedenergistics2.units.rf": "Redstone Flux",
+  "gui.appliedenergistics2.units.tr": "TechReborn Energy",
   "gui.tooltips.appliedenergistics2.ActiveOnPulse": "Activate once per pulse",
   "gui.tooltips.appliedenergistics2.ActiveWithSignal": "Active with signal",
   "gui.tooltips.appliedenergistics2.ActiveWithoutSignal": "Active without signal",

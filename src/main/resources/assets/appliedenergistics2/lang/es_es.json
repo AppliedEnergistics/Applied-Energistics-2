@@ -192,7 +192,6 @@
   "gui.appliedenergistics2.security.security.tip": "El usario puede acceder y modificar la configuración de seguridad de la red.",
   "gui.appliedenergistics2.units.appliedenergstics": "AE",
   "gui.appliedenergistics2.units.ic2": "Energy Units",
-  "gui.appliedenergistics2.units.rf": "Redstone Flux",
   "gui.tooltips.appliedenergistics2.ActiveOnPulse": "Activar una vez por pulso",
   "gui.tooltips.appliedenergistics2.ActiveWithSignal": "Activo con señal",
   "gui.tooltips.appliedenergistics2.ActiveWithoutSignal": "Active sin señal",

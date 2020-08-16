@@ -306,7 +306,6 @@
   "gui.appliedenergistics2.security.security.tip": "Användare kan komma åt och ändra nätverkets säkerhetsterminal.",
   "gui.appliedenergistics2.units.appliedenergstics": "AE",
   "gui.appliedenergistics2.units.ic2": "Energy Units",
-  "gui.appliedenergistics2.units.rf": "Redstone Flux",
   "gui.tooltips.appliedenergistics2.ActiveOnPulse": "Aktivera en gång per puls",
   "gui.tooltips.appliedenergistics2.ActiveWithSignal": "Aktiv med signal",
   "gui.tooltips.appliedenergistics2.ActiveWithoutSignal": "Aktiv utan signal",

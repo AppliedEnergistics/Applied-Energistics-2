@@ -283,7 +283,6 @@
   "gui.appliedenergistics2.security.security.tip": "Der Nutzer darf auf die Sicherheitskonsole des Netzwerks zugreifen.",
   "gui.appliedenergistics2.units.appliedenergstics": "AE",
   "gui.appliedenergistics2.units.ic2": "Energy Units",
-  "gui.appliedenergistics2.units.rf": "Redstone Flux",
   "gui.tooltips.appliedenergistics2.ActiveOnPulse": "Einmalig aktiv je Puls",
   "gui.tooltips.appliedenergistics2.ActiveWithSignal": "Aktiv mit Signal",
   "gui.tooltips.appliedenergistics2.ActiveWithoutSignal": "Aktiv ohne Signal",
