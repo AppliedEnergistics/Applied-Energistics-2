@@ -307,13 +307,26 @@ public class EncodedPatternItem extends AEBaseItem {
         final ListNBT tagIn = new ListNBT();
         final ListNBT tagOut = new ListNBT();
 
+        boolean hasInput = false;
         for (final ItemStack i : in) {
             tagIn.add(createItemTag(i));
+            if (!i.isEmpty()) {
+                hasInput = true;
+            }
         }
 
+        Preconditions.checkArgument(hasInput, "cannot encode a pattern that has no inputs.");
+
+        boolean hasNonEmptyOutput = false;
         for (final ItemStack i : out) {
             tagOut.add(createItemTag(i));
+            if (!i.isEmpty()) {
+                hasNonEmptyOutput = true;
+            }
         }
+
+        // Patterns without any outputs are corrupt! Never encode such a pattern.
+        Preconditions.checkArgument(hasNonEmptyOutput, "cannot encode a pattern that has no output.");
 
         encodedValue.put(EncodedPatternItem.NBT_INGREDIENTS, tagIn);
         encodedValue.put(EncodedPatternItem.NBT_PRODUCTS, tagOut);
