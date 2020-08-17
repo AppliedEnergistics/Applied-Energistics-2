@@ -142,7 +142,7 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
         public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
                 @Nonnull IModelData extraData) {
             if (side != null) {
-                side = r.rotate(side); // This fixes the incorrect lightmap position
+                side = r.resultingRotate(side); // This fixes the incorrect lightmap position
             }
             List<BakedQuad> quads = new ArrayList<>(super.getQuads(state, side, rand, extraData));
 
