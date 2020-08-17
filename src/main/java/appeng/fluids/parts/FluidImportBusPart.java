@@ -128,6 +128,10 @@ public class FluidImportBusPart extends SharedFluidBusPart {
                         aeFluidStack.decStackSize(notInserted.getStackSize());
                     }
 
+                    if (aeFluidStack.getStackSize() == 0) {
+                        return TickRateModulation.SLOWER;
+                    }
+
                     // Now we need to actually drain the fluid, and use the actual amount we just
                     // inserted
                     extractable.extract(filter, aeFluidStack.getAmount()); // FIXME: If there's a mismatch here, log?

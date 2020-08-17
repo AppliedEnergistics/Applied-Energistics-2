@@ -35,6 +35,10 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
+import team.reborn.energy.Energy;
+import team.reborn.energy.EnergyHandler;
+import team.reborn.energy.EnergyHolder;
+
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
@@ -42,6 +46,7 @@ import appeng.api.definitions.IParts;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWorldGen;
+import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -52,6 +57,7 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.CableRenderMode;
+import appeng.block.AEBaseBlockItemChargeable;
 import appeng.bootstrap.IBootstrapComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.client.render.effects.ParticleTypes;
@@ -108,6 +114,7 @@ import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.fluids.container.FluidTerminalContainer;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.hooks.ToolItemHook;
+import appeng.integration.modules.trenergy.ItemPowerStorageAdapter;
 import appeng.items.parts.FacadeItem;
 import appeng.items.tools.NetworkToolItem;
 import appeng.me.cache.CraftingGridCache;
@@ -164,6 +171,7 @@ public abstract class AppEngBase implements AppEng {
 
         setupInternalRegistries();
 
+        ItemPowerStorageAdapter.register();
     }
 
     public static void setupInternalRegistries() {

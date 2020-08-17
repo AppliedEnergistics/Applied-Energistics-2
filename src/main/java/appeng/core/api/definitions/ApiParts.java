@@ -105,8 +105,6 @@ public final class ApiParts implements IParts {
     private final IItemDefinition p2PTunnelRedstone;
     private final IItemDefinition p2PTunnelItems;
     private final IItemDefinition p2PTunnelFluids;
-    private final IItemDefinition p2PTunnelEU;
-    private final IItemDefinition p2PTunnelFE;
     private final IItemDefinition p2PTunnelLight;
     private final IItemDefinition cableAnchor;
     private final IItemDefinition monitor;
@@ -176,16 +174,10 @@ public final class ApiParts implements IParts {
                 RedstoneP2PTunnelPart::new);
         this.p2PTunnelItems = createPart("item_p2p_tunnel", ItemP2PTunnelPart.class, ItemP2PTunnelPart::new);
         this.p2PTunnelFluids = createPart("fluid_p2p_tunnel", FluidP2PTunnelPart.class, FluidP2PTunnelPart::new);
-// FIXME FABRIC         this.p2PTunnelEU = null; // FIXME createPart( "ic2_p2p_tunnel", PartType.P2P_TUNNEL_IC2,
-// FIXME FABRIC                                  // PartP2PIC2Power.class, PartP2PIC2Power::new);
-// FIXME FABRIC         this.p2PTunnelFE = createPart("fe_p2p_tunnel", FEP2PTunnelPart.class, FEP2PTunnelPart::new);
         this.p2PTunnelLight = createPart("light_p2p_tunnel", LightP2PTunnelPart.class, LightP2PTunnelPart::new);
         this.interfaceTerminal = createPart("interface_terminal", InterfaceTerminalPart.class,
                 InterfaceTerminalPart::new);
         this.fluidTerminal = createPart("fluid_terminal", FluidTerminalPart.class, FluidTerminalPart::new);
-
-        this.p2PTunnelEU = null;
-        this.p2PTunnelFE = null;
 
         this.registry = null;
         this.partModels = null;
@@ -322,16 +314,6 @@ public final class ApiParts implements IParts {
     @Override
     public IItemDefinition p2PTunnelFluids() {
         return this.p2PTunnelFluids;
-    }
-
-    @Override
-    public IItemDefinition p2PTunnelEU() {
-        return this.p2PTunnelEU;
-    }
-
-    @Override
-    public IItemDefinition p2PTunnelFE() {
-        return this.p2PTunnelFE;
     }
 
     @Override

@@ -218,16 +218,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                     newType = parts.p2PTunnelLight().maybeStack(1).orElse(ItemStack.EMPTY);
                     break;
 
-                case FE_POWER:
-                    newType = parts.p2PTunnelFE().maybeStack(1).orElse(ItemStack.EMPTY);
-                    break;
-
                 case FLUID:
                     newType = parts.p2PTunnelFluids().maybeStack(1).orElse(ItemStack.EMPTY);
-                    break;
-
-                case IC2_POWER:
-                    newType = parts.p2PTunnelEU().maybeStack(1).orElse(ItemStack.EMPTY);
                     break;
 
                 case ITEM:
@@ -241,12 +233,6 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                 case REDSTONE:
                     newType = parts.p2PTunnelRedstone().maybeStack(1).orElse(ItemStack.EMPTY);
                     break;
-
-                /*
-                 * case COMPUTER_MESSAGE: for( ItemStack stack :
-                 * parts.p2PTunnelOpenComputers().maybeStack( 1 ).asSet() ) { newType = stack; }
-                 * break;
-                 */
 
                 default:
                     newType = ItemStack.EMPTY;

@@ -34,6 +34,9 @@ public class ConventionTagProvider extends TagProvider {
         addItemTag("red_dyes", Items.RED_DYE);
         addItemTag("black_dyes", Items.BLACK_DYE);
 
+        addItemTag("certus_quartz_crystals", MATERIALS.certusQuartzCrystal(), MATERIALS.certusQuartzCrystalCharged());
+        addItemTag("certus_quartz_ores", BLOCKS.quartzOre(), BLOCKS.quartzOreCharged());
+
         addItemTag("iron_ingots", Items.IRON_INGOT);
         addItemTag("iron_ores", Items.IRON_ORE);
         addItemTag("gold_ingots", Items.GOLD_INGOT);
@@ -49,6 +52,7 @@ public class ConventionTagProvider extends TagProvider {
         addItemTag("wheat_crops", Items.WHEAT);
         addItemTag("redstone_dusts", Items.REDSTONE);
         addItemTag("ender_pearls", Items.ENDER_PEARL);
+        addItemTag("ender_pearl_dusts", MATERIALS.enderDust());
         addItemTag("terracotta_blocks", Items.TERRACOTTA, Items.WHITE_TERRACOTTA, Items.ORANGE_TERRACOTTA,
                 Items.MAGENTA_TERRACOTTA, Items.LIGHT_BLUE_TERRACOTTA, Items.YELLOW_TERRACOTTA, Items.LIME_TERRACOTTA,
                 Items.PINK_TERRACOTTA, Items.GRAY_TERRACOTTA, Items.LIGHT_GRAY_TERRACOTTA, Items.CYAN_TERRACOTTA,

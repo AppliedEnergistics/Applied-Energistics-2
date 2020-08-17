@@ -71,10 +71,6 @@ public interface IParts {
 
     IItemDefinition p2PTunnelFluids();
 
-    IItemDefinition p2PTunnelEU();
-
-    IItemDefinition p2PTunnelFE();
-
     IItemDefinition p2PTunnelLight();
 
     IItemDefinition cableAnchor();

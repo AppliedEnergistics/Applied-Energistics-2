@@ -18,6 +18,22 @@
 
 package appeng.core;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.DoubleSupplier;
+import java.util.stream.Collectors;
+
+import net.minecraft.world.dimension.DimensionType;
+
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -36,21 +52,6 @@ import appeng.core.config.IntegerOption;
 import appeng.core.config.StringListOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
-import net.minecraft.world.dimension.DimensionType;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.DoubleSupplier;
-import java.util.stream.Collectors;
 
 public final class AEConfig {
 
@@ -584,8 +585,8 @@ public final class AEConfig {
             powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
 
             ConfigSection integration = root.subsection("Integration");
-            powerTransactionLimitTechReborn = integration.addDouble("MaxTechRebornEnergyPerTransaction", 10000.0, 0.1, 1000000.0,
-                    "The maximum amount of TechReborn energy units that can be transfered per operation.");
+            powerTransactionLimitTechReborn = integration.addDouble("MaxTechRebornEnergyPerTransaction", 10000.0, 0.1,
+                    1000000.0, "The maximum amount of TechReborn energy units that can be transfered per operation.");
 
             ConfigSection Condenser = root.subsection("Condenser");
             condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);

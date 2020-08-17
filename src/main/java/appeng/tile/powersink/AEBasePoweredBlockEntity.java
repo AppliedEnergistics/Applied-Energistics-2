@@ -18,6 +18,21 @@
 
 package appeng.tile.powersink;
 
+import java.util.EnumSet;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+
+import team.reborn.energy.EnergySide;
+import team.reborn.energy.EnergyStorage;
+import team.reborn.energy.EnergyTier;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -26,18 +41,6 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.core.AEConfig;
 import appeng.tile.AEBaseInvBlockEntity;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import team.reborn.energy.EnergySide;
-import team.reborn.energy.EnergyStorage;
-import team.reborn.energy.EnergyTier;
-
-import java.util.EnumSet;
-import java.util.Set;
 
 public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         implements IAEPowerStorage, IExternalPowerSink, EnergyStorage {
