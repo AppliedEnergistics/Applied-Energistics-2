@@ -134,8 +134,8 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
             return;
         }
 
-        final Explosion ex = new Explosion(this.world, this, this.getX(), this.getY(), this.getZ(), 0.2f, false,
-                Explosion.DestructionType.BREAK);
+        final Explosion ex = new Explosion(this.world, this, null, null, this.getX(), this.getY(), this.getZ(), 0.2f,
+                false, Explosion.DestructionType.BREAK);
 
         final Box area = new Box(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5, this.getX() + 1.5,
                 this.getY() + 1.5, this.getZ() + 1.5);
