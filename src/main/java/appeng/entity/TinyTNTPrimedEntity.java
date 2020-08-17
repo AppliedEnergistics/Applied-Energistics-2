@@ -140,8 +140,8 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
             return;
         }
 
-        final Explosion ex = new Explosion(this.world, this, this.getPosX(), this.getPosY(), this.getPosZ(), 0.2f,
-                false, Mode.BREAK);
+        final Explosion ex = new Explosion(this.world, this, null, null, this.getPosX(), this.getPosY(), this.getPosZ(),
+                0.2f, false, Explosion.Mode.BREAK);
         final AxisAlignedBB area = new AxisAlignedBB(this.getPosX() - 1.5, this.getPosY() - 1.5f, this.getPosZ() - 1.5,
                 this.getPosX() + 1.5, this.getPosY() + 1.5, this.getPosZ() + 1.5);
         final List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, area);
