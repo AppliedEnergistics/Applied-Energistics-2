@@ -115,7 +115,12 @@ public class ApiCrafting implements ICraftingHelper {
         // We use the shared itemstack for an identity lookup.
         IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(is);
 
-        return new CraftingPatternDetails(ais, world);
+        try {
+            return new CraftingPatternDetails(ais, world);
+        } catch (IllegalStateException e) {
+            AELog.warn("Could not decode an invalid pattern %s: %s", is, e);
+            return null;
+        }
     }
 
     private boolean attemptRecovery(EncodedPatternItem patternItem, ItemStack itemStack, World world) {

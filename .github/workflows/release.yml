@@ -34,8 +34,19 @@ jobs:
           path: build/libs/
       - name: Publish to github packages
         env:
+          KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
+          KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
+          KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew publish
+        run: ./gradlew publishMavenPublicationToGitHubPackagesRepository --no-daemon --max-workers 1
+      - name: Publish to modmaven
+        env:
+          KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
+          KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
+          KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
+          MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
+          MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
+        run: ./gradlew publishMavenPublicationToModmavenRepository --no-daemon --max-workers 1
       - name: Upload to curseforge
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
