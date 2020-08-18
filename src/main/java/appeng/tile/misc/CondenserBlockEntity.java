@@ -73,7 +73,6 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
     // This is a FixedItemInv implementation to satisfy the UI, which is slot based
     private final CondenseItemHandler internalInputSlot = new CondenseItemHandler();
-    private final CondenseItemInsertable externalItemInput = new CondenseItemInsertable();
     private final FluidInsertable externalFluidInput = new FluidHandler();
     private final MEHandler meHandler = new MEHandler();
 
@@ -215,16 +214,6 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         to.offer(meHandler);
     }
 
-    private class CondenseItemInsertable implements ItemInsertable {
-        @Override
-        public ItemStack attemptInsertion(ItemStack itemStack, Simulation simulation) {
-            if (simulation == Simulation.ACTION && !itemStack.isEmpty()) {
-                CondenserBlockEntity.this.addPower(itemStack.getCount());
-            }
-            return ItemStack.EMPTY;
-        }
-    }
-
     private class CondenseItemHandler implements FixedItemInv {
         @Override
         public int getSlotCount() {
@@ -243,7 +232,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
         @Override
         public boolean setInvStack(int i, ItemStack itemStack, Simulation simulation) {
-            if (simulation == Simulation.ACTION) {
+            if (simulation == Simulation.ACTION && !itemStack.isEmpty()) {
                 CondenserBlockEntity.this.addPower(itemStack.getCount());
             }
             return true;
