@@ -11,7 +11,7 @@ import appeng.core.AppEng;
 public class ConventionTagProvider extends TagProvider {
 
     public ConventionTagProvider(Path outputPath) {
-        super(outputPath);
+        super("c", outputPath);
     }
 
     @Override
