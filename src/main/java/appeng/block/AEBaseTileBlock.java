@@ -232,7 +232,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
                     Platform.spawnDrops(world, pos, itemsToDrop);
                 }
 
-                return ActionResult.FAIL;
+                return ActionResult.SUCCESS;
             }
 
             if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof CableBusBlock)) {

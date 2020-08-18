@@ -19,11 +19,13 @@
 package appeng.items.tools.quartz;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.api.implementations.items.IAEWrench;
@@ -41,22 +43,37 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolIte
 
     @Override
     public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
-        if (!context.getPlayer().isInSneakingPose() && Platform
-                .hasPermissions(new DimensionalCoord(context.getWorld(), context.getBlockPos()), context.getPlayer())) {
+        PlayerEntity player = context.getPlayer();
+        if (player == null) {
+            return ActionResult.PASS;
+        }
 
-            Block block = context.getWorld().getBlockState(context.getBlockPos()).getBlock();
-            if (block instanceof AEBaseBlock) {
-                if (Platform.isClient()) {
-                    // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
-                    // Fix that in all Block#onItemUseFirst overrides.
-                    return !context.getWorld().isClient ? ActionResult.SUCCESS : ActionResult.PASS;
-                }
+        boolean isHoldingShift = player.isInSneakingPose();
+        if (!Platform.hasPermissions(new DimensionalCoord(context.getWorld(), context.getBlockPos()), player)) {
+            return ActionResult.FAIL;
+        }
 
-                AEBaseBlock aeBlock = (AEBaseBlock) block;
-                if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getBlockPos(), context.getSide())) {
-                    context.getPlayer().swingHand(context.getHand());
-                    return !context.getWorld().isClient ? ActionResult.SUCCESS : ActionResult.FAIL;
-                }
+        BlockState blockState = context.getWorld().getBlockState(context.getBlockPos());
+        Block block = blockState.getBlock();
+
+        if (isHoldingShift) {
+            // Pass the use onto the block...
+            return block.onUse(blockState, context.getWorld(), context.getBlockPos(), player, context.getHand(),
+                    new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(),
+                            context.hitsInsideBlock()));
+        }
+
+        if (block instanceof AEBaseBlock) {
+            if (Platform.isClient()) {
+                // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
+                // Fix that in all Block#onItemUseFirst overrides.
+                return !context.getWorld().isClient ? ActionResult.SUCCESS : ActionResult.PASS;
+            }
+
+            AEBaseBlock aeBlock = (AEBaseBlock) block;
+            if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getBlockPos(), context.getSide())) {
+                player.swingHand(context.getHand());
+                return !context.getWorld().isClient ? ActionResult.SUCCESS : ActionResult.FAIL;
             }
         }
         return ActionResult.PASS;
