@@ -24,7 +24,6 @@
     "SlotMixin",
     "TntAccessor",
     "ServerWorldCustomItemEntityMixin",
-    "HopperMixin",
     "BootstrapMixin"
   ],
   "client": [
