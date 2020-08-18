@@ -56,6 +56,7 @@ import appeng.hooks.BlockToolDispenseItemBehavior;
 import appeng.hooks.MatterCannonDispenseItemBehavior;
 import appeng.items.materials.MaterialType;
 import appeng.items.misc.CrystalSeedItem;
+import appeng.items.misc.CrystalSeedRendering;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.misc.PaintBallItemRendering;
@@ -299,24 +300,15 @@ public final class ApiItems implements IItems {
         this.certusCrystalSeed = registry
                 .item("certus_crystal_seed",
                         props -> new CrystalSeedItem(props, materials.purifiedCertusQuartzCrystal().item()))
-                .bootstrap(item -> new IClientSetupComponent() {
-                    @Override
-                    @OnlyIn(Dist.CLIENT)
-                    public void setup() {
-                        // Expose the growth of the seed to the model system
-                        ItemModelsProperties.func_239418_a_(item, new ResourceLocation("appliedenergistics2:growth"),
-                                (is, w, p) -> CrystalSeedItem.getGrowthTicks(is)
-                                        / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
-                    }
-                }).features(AEFeature.CRYSTAL_SEEDS).build();
+                .bootstrap(CrystalSeedRendering::new).features(AEFeature.CRYSTAL_SEEDS).build();
         this.fluixCrystalSeed = registry
                 .item("fluix_crystal_seed",
                         props -> new CrystalSeedItem(props, materials.purifiedFluixCrystal().item()))
-                .features(AEFeature.CRYSTAL_SEEDS).build();
+                .bootstrap(CrystalSeedRendering::new).features(AEFeature.CRYSTAL_SEEDS).build();
         this.netherQuartzSeed = registry
                 .item("nether_quartz_seed",
                         props -> new CrystalSeedItem(props, materials.purifiedNetherQuartzCrystal().item()))
-                .features(AEFeature.CRYSTAL_SEEDS).build();
+                .bootstrap(CrystalSeedRendering::new).features(AEFeature.CRYSTAL_SEEDS).build();
 
         GrowingCrystalEntity.TYPE = registry
                 .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, EntityClassification.MISC)
