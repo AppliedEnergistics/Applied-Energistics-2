@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
@@ -59,6 +60,15 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
             }
         }
         return ActionResultType.PASS;
+    }
+
+    /**
+     * The actual wrenching is implemented by the wrenched block, so sneaking must
+     * not prevent the block from activating its use callback.
+     */
+    @Override
+    public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
+        return true;
     }
 
     @Override
