@@ -180,11 +180,14 @@ processResources {
 apply from: 'gradle/scripts/artifacts.gradle'
 apply from: 'gradle/scripts/curseforge.gradle'
 
-if (!version.endsWith("-SNAPSHOT")) {
-    publishing {
+// configure the maven publication
+publishing {
+    if (!version.endsWith("-SNAPSHOT")) {
         publications {
-            mavenJava(MavenPublication) {
+            maven(MavenPublication) {
+                groupId = project.group
                 artifactId = 'appliedenergistics2-fabric'
+                version = project.version
 
                 // add all the jars that should be included when publishing to maven
                 artifact(remapJar) {
@@ -193,14 +196,11 @@ if (!version.endsWith("-SNAPSHOT")) {
                 artifact(sourcesJar) {
                     builtBy remapSourcesJar
                 }
+                artifact javadocJar
+                artifact apiJar
             }
         }
     }
-}
-
-// configure the maven publication
-publishing {
-    // select the repositories you want to publish to
     repositories {
         maven {
             credentials {
