@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
@@ -184,7 +185,9 @@ public final class AppEngClient extends AppEngBase {
 
         ModelsReloadCallback.EVENT.register(this::onModelsReloaded);
 
-        callDeferredBootstrapComponents(IClientSetupComponent.class, IClientSetupComponent::setup);
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            callDeferredBootstrapComponents(IClientSetupComponent.class, IClientSetupComponent::setup);
+        });
         registerModelProviders();
         registerParticleRenderers();
         registerEntityRenderers();

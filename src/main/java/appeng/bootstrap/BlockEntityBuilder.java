@@ -11,7 +11,6 @@ import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
@@ -19,6 +18,7 @@ import net.minecraft.util.registry.Registry;
 
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseTileBlock;
+import appeng.bootstrap.components.BlockEntityRendererComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AppEng;
@@ -115,7 +115,8 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
     @Environment(EnvType.CLIENT)
     private void buildClient() {
         if (tileEntityRendering.tileEntityRenderer != null) {
-            BlockEntityRendererRegistry.INSTANCE.register(type, tileEntityRendering.tileEntityRenderer);
+            factory.addBootstrapComponent(
+                    new BlockEntityRendererComponent<>(type, tileEntityRendering.tileEntityRenderer));
         }
     }
 
