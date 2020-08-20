@@ -32,6 +32,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -53,6 +54,7 @@ import appeng.core.sync.packets.ClickPacket;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
+import appeng.util.PartHostWrenching;
 import appeng.util.Platform;
 
 public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench, AEToolItem {
@@ -91,13 +93,17 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench, 
         final BlockEntity te = context.getWorld().getBlockEntity(context.getBlockPos());
 
         if (te instanceof IPartHost) {
-            final SelectedPart part = ((IPartHost) te).selectPart(mop.getPos());
+            Vec3d relativePosition = mop.getPos().subtract(mop.getBlockPos().getX(), mop.getBlockPos().getY(),
+                    mop.getBlockPos().getZ());
+            IPartHost host = (IPartHost) te;
+            final SelectedPart part = host.selectPart(relativePosition);
 
             if (part.part != null || part.facade != null) {
                 if (part.part instanceof INetworkToolAgent && !((INetworkToolAgent) part.part).showNetworkInfo(mop)) {
                     return ActionResult.FAIL;
                 } else if (context.getPlayer().isInSneakingPose()) {
-                    return ActionResult.PASS;
+                    PartHostWrenching.wrenchPart(context.getWorld(), context.getBlockPos(), host, part);
+                    return ActionResult.SUCCESS;
                 }
             }
         } else if (te instanceof INetworkToolAgent && !((INetworkToolAgent) te).showNetworkInfo(mop)) {
@@ -110,13 +116,6 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench, 
 
         return ActionResult.SUCCESS;
     }
-
-// FIXME FABRIC: No direct equivalent
-// FIXME FABRIC: Might already be handled by onItemUseFirst though
-// FIXME FABRIC    @Override
-// FIXME FABRIC    public boolean doesSneakBypassUse(ItemStack stack, WorldView world, BlockPos pos, PlayerEntity player) {
-// FIXME FABRIC        return true;
-// FIXME FABRIC    }
 
     public boolean serverSideToolLogic(ItemUsageContext useContext) {
         BlockPos pos = useContext.getBlockPos();

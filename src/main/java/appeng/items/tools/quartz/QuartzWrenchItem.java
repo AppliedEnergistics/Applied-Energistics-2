@@ -20,6 +20,7 @@ package appeng.items.tools.quartz;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,12 +28,18 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IAEWrench;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.AEBaseBlock;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.parts.PartPlacement;
+import appeng.util.PartHostWrenching;
 import appeng.util.Platform;
 
 public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolItem {
@@ -49,31 +56,52 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolIte
         }
 
         boolean isHoldingShift = player.isInSneakingPose();
-        if (!Platform.hasPermissions(new DimensionalCoord(context.getWorld(), context.getBlockPos()), player)) {
+        World world = context.getWorld();
+        BlockPos pos = context.getBlockPos();
+        if (!Platform.hasPermissions(new DimensionalCoord(world, pos), player)) {
             return ActionResult.FAIL;
         }
 
-        BlockState blockState = context.getWorld().getBlockState(context.getBlockPos());
+        BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
 
         if (isHoldingShift) {
+
+            // Wrenching parts of cable buses or other part hosts
+            BlockEntity tile = world.getBlockEntity(pos);
+            IPartHost host = null;
+            if (tile instanceof IPartHost) {
+                host = (IPartHost) tile;
+            }
+
+            if (host != null) {
+                if (!world.isClient) {
+                    // Build the relative position within the part
+                    Vec3d relPos = context.getHitPos().subtract(pos.getX(), pos.getY(), pos.getZ());
+
+                    final SelectedPart sp = PartPlacement.selectPart(player, host, relPos);
+
+                    PartHostWrenching.wrenchPart(world, pos, host, sp);
+                }
+                return ActionResult.SUCCESS;
+            }
+
             // Pass the use onto the block...
-            return block.onUse(blockState, context.getWorld(), context.getBlockPos(), player, context.getHand(),
-                    new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(),
-                            context.hitsInsideBlock()));
+            return block.onUse(blockState, world, pos, player, context.getHand(),
+                    new BlockHitResult(context.getHitPos(), context.getSide(), pos, context.hitsInsideBlock()));
         }
 
         if (block instanceof AEBaseBlock) {
             if (Platform.isClient()) {
                 // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
                 // Fix that in all Block#onItemUseFirst overrides.
-                return !context.getWorld().isClient ? ActionResult.SUCCESS : ActionResult.PASS;
+                return !world.isClient ? ActionResult.SUCCESS : ActionResult.PASS;
             }
 
             AEBaseBlock aeBlock = (AEBaseBlock) block;
-            if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getBlockPos(), context.getSide())) {
+            if (aeBlock.rotateAroundFaceAxis(world, pos, context.getSide())) {
                 player.swingHand(context.getHand());
-                return !context.getWorld().isClient ? ActionResult.SUCCESS : ActionResult.FAIL;
+                return !world.isClient ? ActionResult.SUCCESS : ActionResult.FAIL;
             }
         }
         return ActionResult.PASS;

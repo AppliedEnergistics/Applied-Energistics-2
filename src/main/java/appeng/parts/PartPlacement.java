@@ -18,9 +18,6 @@
 
 package appeng.parts;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -48,7 +45,6 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
@@ -84,56 +80,6 @@ public class PartPlacement {
                 RayTraceContext.FluidHandling.NONE, player);
         final BlockHitResult mop = world.rayTrace(rtc);
         ItemPlacementContext useContext = new ItemPlacementContext(new ItemUsageContext(player, hand, mop));
-
-        if (!held.isEmpty() && Platform.isWrench(player, held, pos) && player.isInSneakingPose()) {
-            if (!Platform.hasPermissions(new DimensionalCoord(world, pos), player)) {
-                return ActionResult.FAIL;
-            }
-
-            final BlockEntity tile = world.getBlockEntity(pos);
-            IPartHost host = null;
-
-            if (tile instanceof IPartHost) {
-                host = (IPartHost) tile;
-            }
-
-            if (host != null) {
-                if (!world.isClient) {
-                    if (mop.getType() == HitResult.Type.BLOCK) {
-                        final List<ItemStack> is = new ArrayList<>();
-                        final SelectedPart sp = selectPart(player, host,
-                                mop.getPos().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
-
-                        if (sp.part != null) {
-                            is.add(sp.part.getItemStack(PartItemStack.WRENCH));
-                            sp.part.getDrops(is, true);
-                            host.removePart(sp.side, false);
-                        }
-
-                        if (sp.facade != null) {
-                            is.add(sp.facade.getItemStack());
-                            host.getFacadeContainer().removeFacade(host, sp.side);
-                            Platform.notifyBlocksOfNeighbors(world, pos);
-                        }
-
-                        if (host.isEmpty()) {
-                            host.cleanup();
-                        }
-
-                        if (!is.isEmpty()) {
-                            Platform.spawnDrops(world, pos, is);
-                        }
-                    }
-                } else {
-                    player.swingHand(hand);
-                    NetworkHandler.instance()
-                            .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                }
-                return ActionResult.SUCCESS;
-            }
-
-            return ActionResult.FAIL;
-        }
 
         BlockEntity tile = world.getBlockEntity(pos);
         IPartHost host = null;
@@ -178,6 +124,7 @@ public class PartPlacement {
         if (held.isEmpty()) {
             if (host != null && player.isInSneakingPose() && world.isAir(pos)) {
                 if (mop.getType() == HitResult.Type.BLOCK) {
+                    // FIXME FABRIC: This looks wrong
                     Vec3d hitVec = mop.getPos().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ());
                     final SelectedPart sPart = selectPart(player, host, hitVec);
                     if (sPart != null && sPart.part != null) {
@@ -323,7 +270,7 @@ public class PartPlacement {
         return getEyeHeight();
     }
 
-    private static SelectedPart selectPart(final PlayerEntity player, final IPartHost host, final Vec3d pos) {
+    public static SelectedPart selectPart(final PlayerEntity player, final IPartHost host, final Vec3d pos) {
         AppEng.instance().setPartInteractionPlayer(player);
         try {
             return host.selectPart(pos);
@@ -401,8 +348,6 @@ public class PartPlacement {
 // FIXME FABRIC                    NetworkHandler.instance().sendToServer(new ClickPacket(event.getHand()));
 // FIXME FABRIC                }
 // FIXME FABRIC            }
-// FIXME FABRIC        } else if (event instanceof PlayerInteractEvent.RightClickBlock && !event.getPlayer().world.isClient) {
-// FIXME FABRIC
 // FIXME FABRIC        }
 // FIXME FABRIC    }
 
