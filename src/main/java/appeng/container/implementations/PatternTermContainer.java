@@ -261,13 +261,19 @@ public class PatternTermContainer extends MEMonitorableContainer
                 return new ItemStack[] { out };
             }
         } else {
+            boolean hasValue = false;
             final ItemStack[] list = new ItemStack[3];
 
             for (int i = 0; i < this.outputSlots.length; i++) {
                 final ItemStack out = this.outputSlots[i].getStack();
                 list[i] = out;
+                if (!out.isEmpty()) {
+                    hasValue = true;
+                }
             }
-            return list;
+            if (hasValue) {
+                return list;
+            }
         }
 
         return null;

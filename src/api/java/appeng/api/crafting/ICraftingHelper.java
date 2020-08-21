@@ -53,6 +53,8 @@ public interface ICraftingHelper {
      * @param stack If null, a new item will be created to hold the encoded pattern.
      *              Otherwise the given item must already contains an encoded
      *              pattern that will be overwritten.
+     * @throws IllegalArgumentException If either in or out contain only empty
+     *                                  ItemStacks.
      * @return A new encoded pattern, or the given stack with the pattern encoded in
      *         it.
      */
@@ -73,6 +75,8 @@ public interface ICraftingHelper {
      *                         operation by the ME system.
      * @param allowSubstitutes Controls whether the ME system will allow the use of
      *                         equivalent items to craft this recipe.
+     * @throws IllegalArgumentException If either in or out contain only empty
+     *                                  ItemStacks.
      */
     ItemStack encodeCraftingPattern(@Nullable ItemStack stack, ICraftingRecipe recipe, ItemStack[] in, ItemStack out,
             boolean allowSubstitutes);
