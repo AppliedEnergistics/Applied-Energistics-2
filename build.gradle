@@ -189,5 +189,13 @@ publishing {
             name = "GitHubPackages"
             url = "https://maven.pkg.github.com/AppliedEnergistics/Applied-Energistics-2"
         }
+        maven {
+            credentials {
+                username System.getenv("MODMAVEN_USER")
+                password System.getenv("MODMAVEN_PASSWORD")
+            }
+            name = "modmaven"
+            url = "https://modmaven.k-4u.nl/artifactory/local-releases/"
+        }
     }
 }
