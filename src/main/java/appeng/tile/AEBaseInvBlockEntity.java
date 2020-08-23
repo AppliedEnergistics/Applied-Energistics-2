@@ -59,6 +59,13 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
 
     public abstract @Nonnull FixedItemInv getInternalInventory();
 
+    /**
+     * Inventory offered to other mods accessing this block externally.
+     */
+    public @Nonnull FixedItemInv getExternalInventory() {
+        return getInternalInventory();
+    }
+
     @Override
     public CompoundTag toTag(final CompoundTag data) {
         super.toTag(data);
@@ -95,7 +102,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
             ItemStack added);
 
     protected @Nonnull FixedItemInv getItemHandlerForSide(@Nonnull Direction side) {
-        return this.getInternalInventory();
+        return this.getExternalInventory();
     }
 
     @Override
@@ -107,7 +114,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     private void offerItemInventory(AttributeList<?> to) {
         Direction searchDirection = to.getSearchDirection();
         if (searchDirection == null) {
-            to.offer(getInternalInventory());
+            to.offer(getExternalInventory());
         } else {
             Direction side = searchDirection.getOpposite();
             to.offer(getItemHandlerForSide(side));

@@ -56,6 +56,7 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICrankable, IGridTickable {
     private static final int POWER_MAXIMUM_AMOUNT = 1600;
@@ -137,6 +138,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
     @Override
     public FixedItemInv getInternalInventory() {
+        return inv;
+    }
+
+    @NotNull
+    @Override
+    public FixedItemInv getExternalInventory() {
         return externalInv;
     }
 
@@ -255,7 +262,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
         return true;
     }
 
-    private class ChargerInvFilter implements IAEItemFilter {
+    private static class ChargerInvFilter implements IAEItemFilter {
         @Override
         public boolean allowInsert(FixedItemInv inv, final int i, final ItemStack itemstack) {
             final IItemDefinition cert = Api.instance().definitions().materials().certusQuartzCrystal();
