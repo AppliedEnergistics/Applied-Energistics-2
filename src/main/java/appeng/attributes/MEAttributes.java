@@ -48,7 +48,7 @@ public final class MEAttributes {
             return null;
         }
 
-        return attribute.getFirstOrNull(world, be.getPos().offset(side), SearchOptions.inDirection(side.getOpposite()));
+        return attribute.getFirstOrNull(world, be.getPos(), SearchOptions.inDirection(side.getOpposite()));
     }
 
     // Convenience function to get an attribute of the block that is in front of a
