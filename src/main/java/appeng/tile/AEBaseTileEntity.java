@@ -304,6 +304,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         this.up = inUp;
         this.markForUpdate();
         Platform.notifyBlocksOfNeighbors(this.world, this.pos);
+        this.saveChanges();
     }
 
     public void onPlacement(BlockItemUseContext context) {
