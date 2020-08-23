@@ -20,6 +20,8 @@ package appeng.integration.modules.waila.tile;
 
 import java.util.List;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
@@ -45,6 +47,7 @@ import appeng.tile.misc.ChargerBlockEntity;
 public final class ChargerWailaDataProvider extends BaseWailaDataProvider {
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
 
         final BlockEntity te = accessor.getBlockEntity();
