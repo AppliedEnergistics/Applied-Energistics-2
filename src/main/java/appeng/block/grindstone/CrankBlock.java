@@ -161,4 +161,9 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
         }
 
     }
+
+    @Override
+    protected boolean hasCustomRotation() {
+        return true;
+    }
 }
