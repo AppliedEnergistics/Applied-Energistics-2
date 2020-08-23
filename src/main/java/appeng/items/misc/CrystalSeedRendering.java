@@ -1,12 +1,12 @@
 package appeng.items.misc;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.components.IClientSetupComponent;
+import appeng.core.AppEng;
 
 /**
  * Exposes a predicate "growth", which is used in the item model to
@@ -20,10 +20,10 @@ public class CrystalSeedRendering implements IClientSetupComponent {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setup() {
         // Expose the growth of the seed to the model system
-        ItemModelsProperties.func_239418_a_(item, new ResourceLocation("appliedenergistics2:growth"),
+        FabricModelPredicateProviderRegistry.register(item, AppEng.makeId("growth"),
                 (is, w, p) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }
 }

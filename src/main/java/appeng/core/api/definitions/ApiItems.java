@@ -141,12 +141,12 @@ public final class ApiItems implements IItems {
     private final AEColoredItemDefinition coloredLumenPaintBall;
 
     // unsupported dev tools
-    private IItemDefinition toolEraser;
-    private IItemDefinition toolMeteoritePlacer;
-    private IItemDefinition toolDebugCard;
-    private IItemDefinition toolReplicatorCard;
+    private final IItemDefinition toolEraser;
+    private final IItemDefinition toolMeteoritePlacer;
+    private final IItemDefinition toolDebugCard;
+    private final IItemDefinition toolReplicatorCard;
 
-    private IItemDefinition dummyFluidItem;
+    private final IItemDefinition dummyFluidItem;
 
     public ApiItems(FeatureFactory registry, ApiMaterials materials) {
         FeatureFactory certusTools = registry.features(AEFeature.CERTUS_QUARTZ_TOOLS);
