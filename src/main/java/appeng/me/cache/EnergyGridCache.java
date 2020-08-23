@@ -502,7 +502,7 @@ public class EnergyGridCache implements IEnergyGrid {
     private void removeRequester(IAEPowerStorage requester) {
         Preconditions.checkState(!ongoingInjectOperation,
                 "Cannot modify energy requesters while energy is being injected.");
-        this.requesters.add(requester);
+        this.requesters.remove(requester);
     }
 
     private void addProvider(IAEPowerStorage provider) {
