@@ -4,6 +4,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import net.minecraft.Bootstrap;
 import net.minecraft.data.DataGenerator;
@@ -15,8 +18,12 @@ import appeng.data.providers.tags.ToolTagProviders;
 
 public class Entrypoint implements PreLaunchEntrypoint {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public static void dump() throws Exception {
         Path output = Paths.get("../src/generated/resources");
+
+        LOGGER.info("Writing generated resources to {}", output.toAbsolutePath());
 
         DataGenerator generator = new DataGenerator(output, Collections.emptyList());
         generator.install(new BlockDropProvider(output));
