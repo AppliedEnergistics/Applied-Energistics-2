@@ -298,6 +298,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
         this.up = inUp;
         this.markForUpdate();
         Platform.notifyBlocksOfNeighbors(this.world, this.pos);
+        this.saveChanges();
     }
 
     public void onPlacement(ItemPlacementContext context) {
