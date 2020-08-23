@@ -23,10 +23,14 @@ jobs:
         run: chmod +x gradlew
       - name: Validate no assets
         run: test ! -d ./src/generated
+      - name: Generate resources
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew generateData
       - name: Build with Gradle
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew generateData build
+        run: ./gradlew build
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:

@@ -21,8 +21,10 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-      - name: Build with Gradle
-        run: ./gradlew generateData build
+      - name: Generate Resources
+        run: ./gradlew generateData
+      - name: Build
+        run: ./gradlew build
       - uses: actions/upload-artifact@v2
         with:
           name: dist
