@@ -1,5 +1,7 @@
 package appeng.client.render.tesr;
 
+import java.util.Random;
+
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.MinecraftClient;
@@ -9,12 +11,12 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -197,9 +199,12 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
 
             ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 
-            // heuristic to scale items down much further than blocks
-            boolean renderAsCube = (stack.getItem() instanceof BlockItem);
-            if (!renderAsCube) {
+            // heuristic to scale items down much further than blocks,
+            // the assumption here is that the generated item models will return their faces
+            // for direction=null, while a block-model will have their faces for
+            // cull-faces, but not direction=null
+            BakedModel model = itemRenderer.getModels().getModel(stack);
+            if (!model.getQuads(null, null, new Random()).isEmpty()) {
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
