@@ -176,7 +176,6 @@ public class Grid implements IGrid {
         }
 
         gridNode.getGridProxy().gridChanged();
-        // postEventTo( gridNode, networkChanged );
     }
 
     @Override
