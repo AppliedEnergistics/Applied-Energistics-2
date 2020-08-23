@@ -25,6 +25,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
@@ -36,6 +38,7 @@ import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -65,8 +68,6 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
-import appeng.util.inv.WrapperFilteredItemHandler;
-import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 /**
@@ -91,14 +92,16 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     private final AppEngInternalInventory bottomItemHandler = new AppEngInternalInventory(this, 1, 1);
     private final AppEngInternalInventory sideItemHandler = new AppEngInternalInventory(this, 2, 1);
 
-    private final FixedItemInv topItemHandlerExtern;
-    private final FixedItemInv bottomItemHandlerExtern;
-    private final FixedItemInv sideItemHandlerExtern;
+    private final LimitedFixedItemInv topItemHandlerExtern;
+    private final LimitedFixedItemInv bottomItemHandlerExtern;
+    private final LimitedFixedItemInv sideItemHandlerExtern;
 
     private InscriberRecipe cachedTask = null;
 
     private final FixedItemInv inv = new WrapperChainedItemHandler(this.topItemHandler, this.bottomItemHandler,
             this.sideItemHandler);
+
+    private final FixedItemInv externalInv;
 
     public InscriberBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -113,10 +116,30 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
 
         this.sideItemHandler.setMaxStackSize(1, 64);
 
-        final IAEItemFilter filter = new ItemHandlerFilter();
-        this.topItemHandlerExtern = new WrapperFilteredItemHandler(this.topItemHandler, filter);
-        this.bottomItemHandlerExtern = new WrapperFilteredItemHandler(this.bottomItemHandler, filter);
-        this.sideItemHandlerExtern = new WrapperFilteredItemHandler(this.sideItemHandler, filter);
+        this.topItemHandlerExtern = this.topItemHandler.createLimitedFixedInv();
+        this.topItemHandlerExtern.getAllRule().filterInserts(this::canInsertIntoTopOrBottom)
+                .filterExtracts(stack -> !isSmash());
+
+        this.bottomItemHandlerExtern = this.bottomItemHandler.createLimitedFixedInv();
+        this.bottomItemHandlerExtern.getAllRule().filterInserts(this::canInsertIntoTopOrBottom)
+                .filterExtracts(stack -> !isSmash());
+
+        this.sideItemHandlerExtern = this.sideItemHandler.createLimitedFixedInv();
+        this.sideItemHandlerExtern.getRule(0).disallowExtraction().filterInserts(stack -> !isSmash());
+        this.sideItemHandlerExtern.getRule(1).filterExtracts(stack -> !isSmash()).disallowInsertion();
+
+        this.externalInv = new WrapperChainedItemHandler(this.topItemHandlerExtern, this.bottomItemHandlerExtern,
+                this.sideItemHandlerExtern);
+    }
+
+    private boolean canInsertIntoTopOrBottom(ItemStack stack) {
+        if (isSmash()) {
+            return false;
+        }
+        if (Api.instance().definitions().materials().namePress().isSameAs(stack)) {
+            return true;
+        }
+        return InscriberRecipes.isValidOptionalIngredient(getWorld(), stack);
     }
 
     private int getUpgradeSlots() {
@@ -212,6 +235,12 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         return this.inv;
     }
 
+    @NotNull
+    @Override
+    public FixedItemInv getExternalInventory() {
+        return this.externalInv;
+    }
+
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
@@ -276,7 +305,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 if (out != null) {
                     final ItemStack outputCopy = out.getOutput().copy();
 
-                    if (this.sideItemHandler.setInvStack(1, outputCopy, Simulation.ACTION)) {
+                    if (this.sideItemHandler.getSlot(1).insert(outputCopy).isEmpty()) {
                         this.setProcessingTime(0);
                         if (out.getProcessType() == InscriberProcessType.PRESS) {
                             this.topItemHandler.setInvStack(0, ItemStack.EMPTY, Simulation.ACTION);
@@ -325,7 +354,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 final InscriberRecipe out = this.getTask();
                 if (out != null) {
                     final ItemStack outputCopy = out.getOutput().copy();
-                    if (this.sideItemHandler.setInvStack(1, outputCopy, Simulation.SIMULATE)) {
+                    if (this.sideItemHandler.getSlot(1).wouldAccept(outputCopy)) {
                         this.setSmash(true);
                         this.finalStep = 0;
                         this.markForUpdate();
@@ -403,42 +432,4 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         this.processingTime = processingTime;
     }
 
-    /**
-     * This is an item handler that exposes the inscribers inventory while providing
-     * simulation capabilities that do not reset the progress if there's already an
-     * item in a slot. Previously, the progress of the inscriber was reset when
-     * another mod attempted insertion of items when there were already items in the
-     * slot.
-     */
-    private class ItemHandlerFilter implements IAEItemFilter {
-        @Override
-        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
-            if (InscriberBlockEntity.this.isSmash()) {
-                return false;
-            }
-
-            return inv == InscriberBlockEntity.this.topItemHandler || inv == InscriberBlockEntity.this.bottomItemHandler
-                    || slot == 1;
-        }
-
-        @Override
-        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
-            // output slot
-            if (slot == 1) {
-                return false;
-            }
-
-            if (InscriberBlockEntity.this.isSmash()) {
-                return false;
-            }
-
-            if (inv == InscriberBlockEntity.this.topItemHandler || inv == InscriberBlockEntity.this.bottomItemHandler) {
-                if (Api.instance().definitions().materials().namePress().isSameAs(stack)) {
-                    return true;
-                }
-                return InscriberRecipes.isValidOptionalIngredient(getWorld(), stack);
-            }
-            return true;
-        }
-    }
 }

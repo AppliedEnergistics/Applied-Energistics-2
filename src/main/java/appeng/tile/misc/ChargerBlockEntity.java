@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -56,7 +58,6 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICrankable, IGridTickable {
     private static final int POWER_MAXIMUM_AMOUNT = 1600;
