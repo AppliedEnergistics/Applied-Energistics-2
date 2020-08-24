@@ -18,17 +18,16 @@
 
 package appeng.util.inv;
 
-import javax.annotation.Nonnull;
-
-import net.minecraft.item.ItemStack;
-
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemStackUtil;
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
 import alexiil.mc.lib.attributes.item.impl.DelegatingFixedItemInv;
-
 import appeng.util.inv.filter.IAEItemFilter;
+import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
 
 // FIXME: Needs to be double checked, LBA has better ways of doing this
 public class WrapperFilteredItemHandler extends DelegatingFixedItemInv {
@@ -37,6 +36,16 @@ public class WrapperFilteredItemHandler extends DelegatingFixedItemInv {
     public WrapperFilteredItemHandler(@Nonnull FixedItemInv handler, @Nonnull IAEItemFilter filter) {
         super(handler);
         this.filter = filter;
+    }
+
+    public static LimitedFixedItemInv create(FixedItemInv base, IAEItemFilter filter) {
+        LimitedFixedItemInv limited = base.createLimitedFixedInv();
+        for (int i = 0; i < base.getSlotCount(); i++) {
+            int slot = i;
+            limited.getRule(i).filterInserts(stack -> filter.allowInsert(base, slot, stack))
+                    .filterExtracts(stack -> filter.allowExtract(base, slot, stack.getCount()));
+        }
+        return limited;
     }
 
     @Override

@@ -165,7 +165,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case ORE:
                 return GrinderRecipes.isValidIngredient(p.player.world, stack);
             case FUEL:
-                return FuelRegistry.INSTANCE.get(stack.getItem()) > 0;
+                return FuelRegistry.INSTANCE.get(stack.getItem()) != null;
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:

@@ -18,27 +18,9 @@
 
 package appeng.tile.crafting;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
@@ -78,9 +60,24 @@ import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
-import appeng.util.inv.WrapperFilteredItemHandler;
-import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.List;
 
 public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState {
@@ -90,8 +87,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     private final CraftingInventory craftingInv;
     private final AppEngInternalInventory gridInv = new AppEngInternalInventory(this, 9 + 1, 1);
     private final AppEngInternalInventory patternInv = new AppEngInternalInventory(this, 1, 1);
-    private final FixedItemInv gridInvExt = new WrapperFilteredItemHandler(this.gridInv, new CraftingGridFilter());
     private final FixedItemInv internalInv = new WrapperChainedItemHandler(this.gridInv, this.patternInv);
+    private final LimitedFixedItemInv gridInvExt;
     private final IConfigManager settings;
     private final UpgradeInventory upgrades;
     private boolean isPowered = false;
@@ -116,6 +113,24 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         this.upgrades = new DefinitionUpgradeInventory(assembler, this, this.getUpgradeSlots());
         this.craftingInv = new CraftingInventory(new ContainerNull(), 3, 3);
 
+        gridInvExt = gridInv.createLimitedFixedInv();
+        // Limit the input slots to 1 of the respective crafting ingredient
+        for ( int i = 0; i < 9; i++) {
+            int slot = i;
+            gridInvExt.getRule(slot)
+                    .disallowExtraction()
+                    .limitInsertionCount(1)
+                    .filterInserts(stack -> isValidIngredientForSlot(slot, stack));
+        }
+        // Output slot
+        gridInvExt.getRule(9).disallowInsertion();
+    }
+
+    private boolean isValidIngredientForSlot(int slot, ItemStack stack) {
+        return this.myPlan != null
+                && !ItemHandlerUtil.isEmpty(this.patternInv)
+                && this.myPlan.isValidItemForSlot(slot, stack,
+                MolecularAssemblerBlockEntity.this.getWorld());
     }
 
     private int getUpgradeSlots() {
@@ -310,8 +325,9 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return this.internalInv;
     }
 
+    @NotNull
     @Override
-    protected FixedItemInv getItemHandlerForSide(Direction side) {
+    public FixedItemInv getExternalInventory() {
         return this.gridInvExt;
     }
 
@@ -554,28 +570,4 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return this.animationStatus;
     }
 
-    private class CraftingGridFilter implements IAEItemFilter {
-        private boolean hasPattern() {
-            return MolecularAssemblerBlockEntity.this.myPlan != null
-                    && !ItemHandlerUtil.isEmpty(MolecularAssemblerBlockEntity.this.patternInv);
-        }
-
-        @Override
-        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
-            return slot == 9;
-        }
-
-        @Override
-        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
-            if (slot >= 9) {
-                return false;
-            }
-
-            if (this.hasPattern()) {
-                return MolecularAssemblerBlockEntity.this.myPlan.isValidItemForSlot(slot, stack,
-                        MolecularAssemblerBlockEntity.this.getWorld());
-            }
-            return false;
-        }
-    }
 }

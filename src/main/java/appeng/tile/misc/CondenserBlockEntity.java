@@ -138,7 +138,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     private boolean canAddOutput(final ItemStack output) {
-        return this.outputSlot.getInsertable().attemptInsertion(output, Simulation.SIMULATE).isEmpty();
+        return this.outputSlot.getInsertable().wouldAccept(output);
     }
 
     /**
@@ -147,7 +147,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
      * @param output to be added output
      */
     private void addOutput(final ItemStack output) {
-        this.outputSlot.getInsertable().attemptInsertion(output, Simulation.ACTION);
+        this.outputSlot.getInsertable().insert(output);
     }
 
     FixedItemInv getOutputSlot() {
