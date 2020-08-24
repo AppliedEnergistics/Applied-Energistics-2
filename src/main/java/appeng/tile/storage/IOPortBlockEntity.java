@@ -22,6 +22,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -88,10 +89,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private final AppEngInternalInventory outputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
     private final FixedItemInv combinedInventory = new WrapperChainedItemHandler(this.inputCells, this.outputCells);
 
-    private final FixedItemInv inputCellsExt = new WrapperFilteredItemHandler(this.inputCells,
-            AEItemFilters.INSERT_ONLY);
-    private final FixedItemInv outputCellsExt = new WrapperFilteredItemHandler(this.outputCells,
-            AEItemFilters.EXTRACT_ONLY);
+    private final LimitedFixedItemInv inputCellsExt;
+    private final LimitedFixedItemInv outputCellsExt;
 
     private final UpgradeInventory upgrades;
     private final IActionSource mySrc;
@@ -111,6 +110,12 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
         final Block ioPortBlock = Api.instance().definitions().blocks().iOPort().maybeBlock().get();
         this.upgrades = new BlockUpgradeInventory(ioPortBlock, this, NUMBER_OF_UPGRADE_SLOTS);
+
+        inputCellsExt = inputCells.createLimitedFixedInv();
+        inputCellsExt.getAllRule().disallowExtraction();
+
+        outputCellsExt = outputCells.createLimitedFixedInv();
+        outputCellsExt.getAllRule().disallowInsertion();
     }
 
     @Override
