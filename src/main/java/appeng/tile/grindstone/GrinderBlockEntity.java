@@ -21,6 +21,7 @@ package appeng.tile.grindstone;
 import java.util.ArrayList;
 import java.util.List;
 
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
@@ -46,11 +47,18 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     private static final int SLOT_PROCESSING = 6;
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 7);
-    private final FixedItemInv invExt = new WrapperFilteredItemHandler(this.inv, new GrinderFilter());
+    private final LimitedFixedItemInv invExt;
     private int points;
 
     public GrinderBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
+
+        invExt = inv.createLimitedFixedInv();
+        invExt.getAllRule().disallowExtraction().disallowInsertion();
+        invExt.getSubRule(3, 6).allowExtraction();
+        invExt.getSubRule(0, 3)
+                .filterInserts(stack -> GrinderRecipes.isValidIngredient(world, stack))
+                .allowInsertion();
     }
 
     @Override
@@ -159,22 +167,6 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     @Override
     public boolean canCrankAttach(final Direction directionToCrank) {
         return this.getUp() == directionToCrank;
-    }
-
-    private class GrinderFilter implements IAEItemFilter {
-        @Override
-        public boolean allowExtract(FixedItemInv inv, int slotIndex, int amount) {
-            return slotIndex >= 3 && slotIndex <= 5;
-        }
-
-        @Override
-        public boolean allowInsert(FixedItemInv inv, int slotIndex, ItemStack stack) {
-            if (!GrinderRecipes.isValidIngredient(world, stack)) {
-                return false;
-            }
-
-            return slotIndex >= 0 && slotIndex <= 2;
-        }
     }
 
 }
