@@ -35,9 +35,10 @@ import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.items.misc.CrystalSeedItem;
+import appeng.mixins.ItemEntityAccessor;
 import appeng.util.Platform;
 
-public final class GrowingCrystalEntity extends AEBaseItemEntity {
+public class GrowingCrystalEntity extends AEBaseItemEntity {
 
     public static EntityType<GrowingCrystalEntity> TYPE;
 
@@ -49,13 +50,16 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
     public GrowingCrystalEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
         super(TYPE, w, x, y, z, is);
-        this.setCovetedItem();
-        // FIXME FABRIC This does not actually fix despawning, we need to Mixin,
-        // probably.
     }
 
     @Override
     public void tick() {
+        // Prevent the entity from despawning
+        ItemEntityAccessor accessor = (ItemEntityAccessor) this;
+        if (!this.world.isClient && accessor.getAge() >= 1000) {
+            accessor.setAge(0);
+        }
+
         super.tick();
 
         if (!AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_PURIFICATION)) {

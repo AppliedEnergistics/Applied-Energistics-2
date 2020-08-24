@@ -44,8 +44,6 @@ public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEnti
         this.yaw = this.random.nextFloat() * 360.0F;
         this.setVelocity(this.random.nextDouble() * 0.2D - 0.1D, 0.2D, this.random.nextDouble() * 0.2D - 0.1D);
         this.setStack(stack);
-        // FIXME FABRIC Needs replacement hook this.lifespan =
-        // stack.getEntityLifespan(world);
     }
 
     protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final Box region) {
