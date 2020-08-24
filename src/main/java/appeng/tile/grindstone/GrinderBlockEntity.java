@@ -21,7 +21,6 @@ package appeng.tile.grindstone;
 import java.util.ArrayList;
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
@@ -29,6 +28,7 @@ import net.minecraft.util.math.Direction;
 
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.recipes.handlers.GrinderOptionalResult;
@@ -40,8 +40,6 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperFilteredItemHandler;
-import appeng.util.inv.filter.IAEItemFilter;
 
 public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankable {
     private static final int SLOT_PROCESSING = 6;
@@ -56,9 +54,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
         invExt = inv.createLimitedFixedInv();
         invExt.getAllRule().disallowExtraction().disallowInsertion();
         invExt.getSubRule(3, 6).allowExtraction();
-        invExt.getSubRule(0, 3)
-                .filterInserts(stack -> GrinderRecipes.isValidIngredient(world, stack))
-                .allowInsertion();
+        invExt.getSubRule(0, 3).filterInserts(stack -> GrinderRecipes.isValidIngredient(world, stack)).allowInsertion();
     }
 
     @Override

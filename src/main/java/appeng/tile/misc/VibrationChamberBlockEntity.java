@@ -18,9 +18,23 @@
 
 package appeng.tile.misc;
 
+import java.io.IOException;
+
+import javax.annotation.Nonnull;
+
+import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.Direction;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -36,17 +50,6 @@ import appeng.tile.grid.AENetworkInvBlockEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.Direction;
-
-import javax.annotation.Nonnull;
-import java.io.IOException;
 
 public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity implements IGridTickable {
     public static final double POWER_PER_TICK = 5;
@@ -69,8 +72,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
         this.getProxy().setFlags();
 
         invExt = inv.createLimitedFixedInv();
-        invExt.getAllRule()
-                .filterInserts(stack -> FuelRegistry.INSTANCE.get(stack.getItem()) != null)
+        invExt.getAllRule().filterInserts(stack -> FuelRegistry.INSTANCE.get(stack.getItem()) != null)
                 .filterExtracts(stack -> FuelRegistry.INSTANCE.get(stack.getItem()) == null);
     }
 
@@ -124,7 +126,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         if (this.getBurnTime() <= 0) {
             if (this.canEatFuel()) {
                 try {

@@ -33,6 +33,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
+import alexiil.mc.lib.attributes.item.SingleItemSlot;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -57,8 +59,6 @@ import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.WrapperCursorItemHandler;
-import appeng.util.inv.WrapperFilteredItemHandler;
-import appeng.util.inv.filter.IAEItemFilter;
 
 public final class InterfaceTerminalContainer extends AEBaseContainer {
 
@@ -196,35 +196,37 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
             final InventoryAdaptor playerHand = new AdaptorFixedInv(new WrapperCursorItemHandler(player.inventory));
 
-            final FixedItemInv theSlot = new WrapperFilteredItemHandler(inv.server.getSubInv(slot, slot + 1),
-                    new PatternSlotFilter());
-            final InventoryAdaptor interfaceSlot = new AdaptorFixedInv(theSlot);
+            // Create a wrapper around the targetted slot that will only allow insertions of
+            // patterns
+            LimitedFixedItemInv limitedSlotInv = inv.server.createLimitedFixedInv();
+            limitedSlotInv.getAllRule().filterInserts(this::isValidPattern);
+            SingleItemSlot theSlot = limitedSlotInv.getSlot(slot);
 
             switch (action) {
                 case PICKUP_OR_SET_DOWN:
 
                     if (hasItemInHand) {
-                        ItemStack inSlot = theSlot.getInvStack(0);
+                        ItemStack inSlot = theSlot.get();
                         if (inSlot.isEmpty()) {
-                            player.inventory.setCursorStack(interfaceSlot.addItems(player.inventory.getCursorStack()));
+                            player.inventory.setCursorStack(theSlot.insert(player.inventory.getCursorStack()));
                         } else {
                             inSlot = inSlot.copy();
                             final ItemStack inHand = player.inventory.getCursorStack().copy();
 
-                            ItemHandlerUtil.setStackInSlot(theSlot, 0, ItemStack.EMPTY);
+                            theSlot.set(ItemStack.EMPTY);
                             player.inventory.setCursorStack(ItemStack.EMPTY);
 
-                            player.inventory.setCursorStack(interfaceSlot.addItems(inHand.copy()));
+                            player.inventory.setCursorStack(theSlot.insert(inHand.copy()));
 
                             if (player.inventory.getCursorStack().isEmpty()) {
                                 player.inventory.setCursorStack(inSlot);
                             } else {
                                 player.inventory.setCursorStack(inHand);
-                                ItemHandlerUtil.setStackInSlot(theSlot, 0, inSlot);
+                                theSlot.set(inSlot);
                             }
                         }
                     } else {
-                        ItemHandlerUtil.setStackInSlot(theSlot, 0, playerHand.addItems(theSlot.getInvStack(0)));
+                        theSlot.set(playerHand.addItems(theSlot.get()));
                     }
 
                     break;
@@ -233,18 +235,18 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                     if (hasItemInHand) {
                         ItemStack extra = playerHand.removeItems(1, ItemStack.EMPTY, null);
                         if (!extra.isEmpty()) {
-                            extra = interfaceSlot.addItems(extra);
+                            extra = theSlot.insert(extra);
                         }
                         if (!extra.isEmpty()) {
                             playerHand.addItems(extra);
                         }
                     } else if (!is.isEmpty()) {
-                        ItemStack extra = interfaceSlot.removeItems((is.getCount() + 1) / 2, ItemStack.EMPTY, null);
+                        ItemStack extra = theSlot.extract((is.getCount() + 1) / 2);
                         if (!extra.isEmpty()) {
                             extra = playerHand.addItems(extra);
                         }
                         if (!extra.isEmpty()) {
-                            interfaceSlot.addItems(extra);
+                            theSlot.insert(extra);
                         }
                     }
 
@@ -252,8 +254,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                 case SHIFT_CLICK:
 
                     final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(player);
-
-                    ItemHandlerUtil.setStackInSlot(theSlot, 0, playerInv.addItems(theSlot.getInvStack(0)));
+                    theSlot.set(playerInv.addItems(theSlot.get()));
 
                     break;
                 case MOVE_REGION:
@@ -277,6 +278,10 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
             this.updateHeld(player);
         }
+    }
+
+    private boolean isValidPattern(ItemStack stack) {
+        return !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem;
     }
 
     private void regenList(final CompoundTag data) {
@@ -369,15 +374,4 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
     }
 
-    private static class PatternSlotFilter implements IAEItemFilter {
-        @Override
-        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
-            return true;
-        }
-
-        @Override
-        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
-            return !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem;
-        }
-    }
 }

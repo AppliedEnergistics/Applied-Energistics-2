@@ -18,11 +18,13 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.integration.abstraction.IRei;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+
 import me.shedaniel.rei.api.REIHelper;
 import me.shedaniel.rei.gui.widget.TextFieldWidget;
+
+import appeng.integration.abstraction.IRei;
 
 class ReiRuntimeAdapter implements IRei {
 

@@ -22,7 +22,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -34,6 +33,7 @@ import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FullnessMode;
@@ -75,8 +75,6 @@ import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
-import appeng.util.inv.WrapperFilteredItemHandler;
-import appeng.util.inv.filter.AEItemFilters;
 
 public class IOPortBlockEntity extends AENetworkInvBlockEntity
         implements IUpgradeableHost, IConfigManagerHost, IGridTickable {

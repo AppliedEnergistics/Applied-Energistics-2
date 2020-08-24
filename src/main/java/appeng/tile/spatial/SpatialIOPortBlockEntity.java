@@ -20,7 +20,6 @@ package appeng.tile.spatial;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
@@ -31,6 +30,7 @@ import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -52,8 +52,6 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperFilteredItemHandler;
-import appeng.util.inv.filter.IAEItemFilter;
 
 public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements IWorldCallable<Void> {
 
