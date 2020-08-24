@@ -20,6 +20,7 @@ package appeng.tile.spatial;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
@@ -57,12 +58,16 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements IWorldCallable<Void> {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 2);
-    private final FixedItemInv invExt = new WrapperFilteredItemHandler(this.inv, new SpatialIOFilter());
+    private final LimitedFixedItemInv invExt;
     private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
     public SpatialIOPortBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
+
+        invExt = inv.createLimitedFixedInv();
+        invExt.getRule(0).disallowExtraction().allowInsertion().filterInserts(this::isSpatialCell);
+        invExt.getRule(1).disallowInsertion().allowExtraction();
     }
 
     @Override
@@ -186,16 +191,4 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
 
     }
 
-    private class SpatialIOFilter implements IAEItemFilter {
-        @Override
-        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
-            return slot == 1;
-        }
-
-        @Override
-        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
-            return (slot == 0 && SpatialIOPortBlockEntity.this.isSpatialCell(stack));
-        }
-
-    }
 }
