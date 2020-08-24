@@ -92,17 +92,13 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolIte
         }
 
         if (block instanceof AEBaseBlock) {
-            if (Platform.isClient()) {
-                // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
-                // Fix that in all Block#onItemUseFirst overrides.
-                return !world.isClient ? ActionResult.SUCCESS : ActionResult.PASS;
+            if (!world.isClient) {
+                AEBaseBlock aeBlock = (AEBaseBlock) block;
+                if (aeBlock.rotateAroundFaceAxis(world, pos, context.getSide())) {
+                    player.swingHand(context.getHand());
+                }
             }
-
-            AEBaseBlock aeBlock = (AEBaseBlock) block;
-            if (aeBlock.rotateAroundFaceAxis(world, pos, context.getSide())) {
-                player.swingHand(context.getHand());
-                return !world.isClient ? ActionResult.SUCCESS : ActionResult.FAIL;
-            }
+            return ActionResult.SUCCESS;
         }
         return ActionResult.PASS;
     }
