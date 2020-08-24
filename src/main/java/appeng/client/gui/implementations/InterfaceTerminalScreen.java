@@ -90,7 +90,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         this.searchField.setMaxStringLength(25);
         this.searchField.setTextColor(0xFFFFFF);
         this.searchField.setVisible(true);
-        this.searchField.setFocused2(true);
+        this.searchField.setResponder(str -> this.refreshList());
+        this.addListener(this.searchField);
+        this.changeFocus(true);
     }
 
     @Override
@@ -131,11 +133,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     @Override
     public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
-        if (this.searchField.mouseClicked(xCoord, yCoord, btn)) {
-            if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
-                this.searchField.setText("");
-                this.refreshList();
-            }
+        if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
+            this.searchField.setText("");
             return true;
         }
 
@@ -173,11 +172,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         if (character == ' ' && this.searchField.getText().isEmpty()) {
             return true;
         }
-        if (this.searchField.charTyped(character, key)) {
-            this.refreshList();
-            return true;
-        }
-        return false;
+        return super.charTyped(character, key);
     }
 
     @Override
@@ -245,7 +240,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     /**
      * Rebuilds the list of interfaces.
-     *
+     * <p>
      * Respects a search term if present (ignores case) and adding only matching
      * patterns.
      */
@@ -338,12 +333,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     /**
      * Tries to retrieve a cache for a with search term as keyword.
-     *
+     * <p>
      * If this cache should be empty, it will populate it with an earlier cache if
      * available or at least the cache for the empty string.
      *
      * @param searchTerm the corresponding search
-     *
      * @return a Set matching a superset of the search term
      */
     private Set<Object> getCacheForSearchTerm(final String searchTerm) {
