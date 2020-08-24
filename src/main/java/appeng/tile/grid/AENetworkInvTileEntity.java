@@ -80,6 +80,10 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity impleme
     @Override
     public void remove() {
         super.remove();
+        // if the cached block state is not current, the following method may call
+        // markForUpdate
+        // and cause the block state to be changed back to non-air
+        updateContainingBlockInfo();
         this.getProxy().remove();
     }
 
