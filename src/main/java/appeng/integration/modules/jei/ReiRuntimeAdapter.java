@@ -18,18 +18,18 @@
 
 package appeng.integration.modules.jei;
 
-import com.google.common.base.Strings;
-
-import me.shedaniel.rei.api.REIHelper;
-
 import appeng.integration.abstraction.IRei;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import me.shedaniel.rei.api.REIHelper;
+import me.shedaniel.rei.gui.widget.TextFieldWidget;
 
 class ReiRuntimeAdapter implements IRei {
 
     private final REIHelper runtime;
 
     ReiRuntimeAdapter() {
-        this.runtime = REIHelper.getInstance();
+        this.runtime = Preconditions.checkNotNull(REIHelper.getInstance(), "REI helper was null");
     }
 
     @Override
@@ -39,11 +39,18 @@ class ReiRuntimeAdapter implements IRei {
 
     @Override
     public String getSearchText() {
-        return Strings.nullToEmpty(this.runtime.getSearchTextField().getText());
+        TextFieldWidget searchField = this.runtime.getSearchTextField();
+        if (searchField == null) {
+            return "";
+        }
+        return Strings.nullToEmpty(searchField.getText());
     }
 
     @Override
     public void setSearchText(String searchText) {
-        this.runtime.getSearchTextField().setText(Strings.nullToEmpty(searchText));
+        TextFieldWidget searchField = this.runtime.getSearchTextField();
+        if (searchField != null) {
+            searchField.setText(Strings.nullToEmpty(searchText));
+        }
     }
 }
