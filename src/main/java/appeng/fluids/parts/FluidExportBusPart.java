@@ -126,7 +126,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
                                 // we'll deduct 1/1000th from storage.
                                 long remainderMillibuckets = remainder.getAmount_F().asInt(1000, RoundingMode.DOWN);
 
-                                toExtract.setStackSize(remainderMillibuckets);
+                                toExtract.decStackSize(remainderMillibuckets);
                                 inv.extractItems(toExtract, Actionable.MODULATE, this.source);
 
                                 return TickRateModulation.FASTER;
