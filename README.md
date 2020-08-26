@@ -72,12 +72,20 @@ The API for Applied Energistics 2. It is open source to discuss changes, improve
 
 ### Maven
 
-We use Github Packages as maven repository now. You can use the following snippet as example on how to add a repository to your gradle build file.
+Our authoritative Maven repository is Github Packages, which you can also use in your builds. Use of Github Packages 
+[requires special setup](https://docs.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages#authenticating-to-github-packages) 
+to authenticate with your personal access token.
+
+AE2 is also available without authentication from Modmaven. You can use the following snippet as example on how to add a repository to your gradle build file.
 
     repositories {
         maven {
-            name "AE2"
-            url "https://maven.pkg.github.com/AppliedEnergistics/Applied-Energistics-2"
+            name "Modmaven"
+            url "https://modmaven.k-4u.nl/"
+            // For Gradle 5.1 and above, limit it to just AE2
+            content {
+                includeGroup 'appeng'
+            }
         }
     }
 
