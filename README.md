@@ -76,7 +76,9 @@ Our authoritative Maven repository is Github Packages, which you can also use in
 [requires special setup](https://docs.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages#authenticating-to-github-packages) 
 to authenticate with your personal access token.
 
-AE2 is also available without authentication from Modmaven. You can use the following snippet as example on how to add a repository to your gradle build file.
+AE2 is also available without authentication from Modmaven. 
+
+You can use the following snippet as example on how to add a repository to your gradle build file.
 
     repositories {
         maven {
@@ -87,12 +89,24 @@ AE2 is also available without authentication from Modmaven. You can use the foll
                 includeGroup 'appeng'
             }
         }
+        
+        // Required for libblockattributes
+        maven {
+            name = "BuildCraft"
+            url = "https://mod-buildcraft.com/maven"
+            content {
+                includeGroup "alexiil.mc.lib"
+            }
+        }
     }
 
 When compiling against the AE2 API you can use gradle dependencies, just add
 
     dependencies {
-        compileOnly "appeng:appliedenergistics2:VERSION:api"
+        modCompileOnly "appeng:appliedenergistics2-fabric:VERSION:api"
+        
+        // Include only if you want AE2 at runtime
+        modRuntimeOnly "appeng:appliedenergistics2-fabric:VERSION"    
     }
 
 or add the `compileOnly` line to your existing dependencies task to your build.gradle.
