@@ -39,8 +39,8 @@ public class FluidSlotWidget extends CustomSlotWidget {
             // The tooltip area coincides with the area of the slot
             int x = getTooltipAreaX();
             int y = getTooltipAreaY();
-            int width = getTooltipAreaX();
-            int height = getTooltipAreaY();
+            int width = getTooltipAreaWidth();
+            int height = getTooltipAreaHeight();
             fs.getFluidStack().renderGuiRect(x, y, x + width, y + height);
         }
     }
