@@ -19,11 +19,8 @@
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
 import appeng.thirdparty.codechicken.lib.math.InterpHelper;
 
@@ -39,16 +36,11 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
 
     private final InterpHelper interpHelper = new InterpHelper();
 
-    private final MutableQuadViewImpl bufferQuad = new MutableQuadViewImpl() {
-        {
-            data = new int[EncodingFormat.TOTAL_STRIDE];
-        }
+    private final int[] originalSpriteColor = new int[4];
 
-        @Override
-        public QuadEmitter emit() {
-            throw new UnsupportedOperationException();
-        }
-    };
+    private final float[] originalSpriteU = new float[4];
+
+    private final float[] originalSpriteV = new float[4];
 
     public QuadReInterpolator() {
         super();
@@ -63,7 +55,13 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
                 quad.posByIndex(1, xIdx), quad.posByIndex(1, yIdx), //
                 quad.posByIndex(2, xIdx), quad.posByIndex(2, yIdx), //
                 quad.posByIndex(3, xIdx), quad.posByIndex(3, yIdx));
-        quad.copyTo(bufferQuad);
+
+        // Save the original properties of the quad's vertices
+        for (int i = 0; i < 4; i++) {
+            originalSpriteColor[i] = quad.spriteColor(i, 0);
+            originalSpriteU[i] = quad.spriteU(i, 0);
+            originalSpriteV[i] = quad.spriteV(i, 0);
+        }
     }
 
     @Override
@@ -89,10 +87,10 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
      * reference.
      */
     public void interpColorFrom(MutableQuadView quad, int vertexIndex) {
-        int p1 = bufferQuad.spriteColor(0, 0);
-        int p2 = bufferQuad.spriteColor(1, 0);
-        int p3 = bufferQuad.spriteColor(2, 0);
-        int p4 = bufferQuad.spriteColor(3, 0);
+        int p1 = this.originalSpriteColor[0];
+        int p2 = this.originalSpriteColor[1];
+        int p3 = this.originalSpriteColor[2];
+        int p4 = this.originalSpriteColor[3];
         if (p1 == p2 && p2 == p3 && p3 == p4) {
             return; // Don't bother for uniformly colored quads
         }
@@ -118,16 +116,16 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
      * reference.
      */
     public void interpUVFrom(MutableQuadView quad, int vertexIndex) {
-        float p1 = bufferQuad.spriteU(0, 0);
-        float p2 = bufferQuad.spriteU(1, 0);
-        float p3 = bufferQuad.spriteU(2, 0);
-        float p4 = bufferQuad.spriteU(3, 0);
+        float p1 = originalSpriteU[0];
+        float p2 = originalSpriteU[1];
+        float p3 = originalSpriteU[2];
+        float p4 = originalSpriteU[3];
         float u = interpHelper.interpolate(p1, p2, p3, p4);
 
-        p1 = bufferQuad.spriteV(0, 0);
-        p2 = bufferQuad.spriteV(1, 0);
-        p3 = bufferQuad.spriteV(2, 0);
-        p4 = bufferQuad.spriteV(3, 0);
+        p1 = originalSpriteV[0];
+        p2 = originalSpriteV[1];
+        p3 = originalSpriteV[2];
+        p4 = originalSpriteV[3];
         float v = interpHelper.interpolate(p1, p2, p3, p4);
         quad.sprite(vertexIndex, 0, u, v);
     }
