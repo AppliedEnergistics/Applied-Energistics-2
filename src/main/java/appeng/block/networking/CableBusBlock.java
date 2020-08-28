@@ -41,6 +41,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
@@ -80,8 +82,12 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
+    private static final IntProperty LIGHT_LEVEL = IntProperty.of("light_level", 0, 15);
+
     public CableBusBlock() {
-        super(defaultProps(AEMaterials.GLASS).nonOpaque().dropsNothing().dynamicBounds());
+        super(defaultProps(AEMaterials.GLASS).nonOpaque().dropsNothing().dynamicBounds()
+                .lightLevel(state -> state.get(LIGHT_LEVEL)));
+        setDefaultState(getDefaultState().with(LIGHT_LEVEL, 0));
     }
 
     static {
@@ -134,16 +140,13 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         // OPPOSITE!?
     }
 
-// FIXME Dynamic light seems unsupported (?) Must maybe use blockstates... :|
-// FIXME FABRIC   @Override
-// FIXME FABRIC   public int getLightValue(final BlockState state, final BlockView world, final BlockPos pos) {
-// FIXME FABRIC       if (state.getBlock() != this) {
-// FIXME FABRIC           return state.getLuminance();
-// FIXME FABRIC       }
-// FIXME FABRIC       return this.cb(world, pos).getLightValue();
-// FIXME FABRIC   }
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(LIGHT_LEVEL);
+    }
 
-// FIXME: Must hook isClimbing ourselves
+    // FIXME: Must hook isClimbing ourselves
 // FIXME FABRIC    @Override
 // FIXME FABRIC    public boolean isLadder(BlockState state, WorldView world, BlockPos pos, LivingEntity entity) {
 // FIXME FABRIC        return this.cb(world, pos).isLadder(entity);
@@ -397,6 +400,15 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
             // colliding with :|
             return te.getCableBus().getCollisionShape(entity);
         }
+    }
+
+    @Override
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, CableBusBlockEntity te) {
+        if (currentState.getBlock() != this) {
+            return currentState;
+        }
+        int lightLevel = te.getCableBus().getLightValue();
+        return super.updateBlockStateFromTileEntity(currentState, te).with(LIGHT_LEVEL, lightLevel);
     }
 
 }
