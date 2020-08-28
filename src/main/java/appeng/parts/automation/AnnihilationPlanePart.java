@@ -402,7 +402,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         ItemStack harvestTool = createHarvestTool(state);
 
         if (harvestTool == null) {
-            if (!state.getMaterial().isToolNotRequired()) {
+            if (state.getMaterial().isToolNotRequired()) {
                 harvestTool = ItemStack.EMPTY;
             } else {
                 // In case the block does NOT allow us to harvest it without a tool, or the
