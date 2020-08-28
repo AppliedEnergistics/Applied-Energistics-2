@@ -19,7 +19,6 @@
 package appeng.core;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
@@ -39,8 +38,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ModDimension;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -56,29 +53,10 @@ import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import appeng.block.paint.PaintSplotchesModel;
-import appeng.block.qnb.QnbFormedModel;
-import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.components.IPostInitComponent;
 import appeng.capabilities.Capabilities;
 import appeng.client.ClientHelper;
-import appeng.client.render.DummyFluidItemModel;
-import appeng.client.render.FacadeItemModel;
-import appeng.client.render.SimpleModelLoader;
-import appeng.client.render.cablebus.CableBusModelLoader;
-import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
-import appeng.client.render.crafting.CraftingCubeModelLoader;
-import appeng.client.render.crafting.EncodedPatternModelLoader;
-import appeng.client.render.model.BiometricCardModel;
-import appeng.client.render.model.ColorApplicatorModel;
-import appeng.client.render.model.DriveModel;
-import appeng.client.render.model.GlassModel;
-import appeng.client.render.model.MemoryCardModel;
-import appeng.client.render.model.SkyCompassModel;
-import appeng.client.render.model.UVLModelLoader;
-import appeng.client.render.spatial.SpatialPylonModel;
-import appeng.core.features.registries.PartModels;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
@@ -90,7 +68,6 @@ import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
 import appeng.parts.PartPlacement;
-import appeng.parts.automation.PlaneModelLoader;
 import appeng.server.ServerHelper;
 
 @Mod(AppEng.MOD_ID)
@@ -177,39 +154,6 @@ public final class AppEng {
         RenderingRegistry.registerEntityRenderingHandler(ChargedQuartzEntity.TYPE,
                 m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
 
-        // TODO: Do not use the internal API
-        final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        definitions.getRegistry().getBootstrapComponents(IClientSetupComponent.class)
-                .forEachRemaining(IClientSetupComponent::setup);
-
-        addBuiltInModel("glass", GlassModel::new);
-        addBuiltInModel("sky_compass", SkyCompassModel::new);
-        addBuiltInModel("dummy_fluid_item", DummyFluidItemModel::new);
-        addBuiltInModel("memory_card", MemoryCardModel::new);
-        addBuiltInModel("biometric_card", BiometricCardModel::new);
-        addBuiltInModel("drive", DriveModel::new);
-        addBuiltInModel("color_applicator", ColorApplicatorModel::new);
-        addBuiltInModel("spatial_pylon", SpatialPylonModel::new);
-        addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
-        addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
-        addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
-        addBuiltInModel("facade", FacadeItemModel::new);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "encoded_pattern"),
-                EncodedPatternModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "part_plane"),
-                PlaneModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"),
-                CraftingCubeModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "cable_bus"),
-                new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
-
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, id),
-                new SimpleModelLoader<>(modelFactory));
     }
 
     @Nonnull

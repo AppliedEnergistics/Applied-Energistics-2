@@ -18,6 +18,8 @@
 
 package appeng.core;
 
+import java.util.function.Supplier;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -48,6 +50,8 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.ModDimension;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
@@ -77,7 +81,10 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
+import appeng.block.paint.PaintSplotchesModel;
+import appeng.block.qnb.QnbFormedModel;
 import appeng.bootstrap.components.IBlockRegistrationComponent;
+import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
@@ -116,6 +123,13 @@ import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.implementations.VibrationChamberScreen;
 import appeng.client.gui.implementations.WirelessScreen;
 import appeng.client.gui.implementations.WirelessTermScreen;
+import appeng.client.render.DummyFluidItemModel;
+import appeng.client.render.FacadeItemModel;
+import appeng.client.render.SimpleModelLoader;
+import appeng.client.render.cablebus.CableBusModelLoader;
+import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
+import appeng.client.render.crafting.CraftingCubeModelLoader;
+import appeng.client.render.crafting.EncodedPatternModelLoader;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
@@ -125,8 +139,13 @@ import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.BiometricCardModel;
+import appeng.client.render.model.ColorApplicatorModel;
+import appeng.client.render.model.DriveModel;
+import appeng.client.render.model.GlassModel;
 import appeng.client.render.model.MemoryCardModel;
 import appeng.client.render.model.SkyCompassModel;
+import appeng.client.render.model.UVLModelLoader;
+import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.AEBaseContainer;
@@ -195,11 +214,10 @@ import appeng.me.cache.PathGridCache;
 import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
+import appeng.parts.automation.PlaneModelLoader;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
-import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.GrinderRecipeSerializer;
-import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
 import appeng.spatial.StorageCellBiome;
@@ -245,6 +263,40 @@ final class Registration {
     @OnlyIn(Dist.CLIENT)
     public void modelRegistryEvent(ModelRegistryEvent event) {
         registerSpecialModels();
+
+        // TODO: Do not use the internal API
+        final ApiDefinitions definitions = Api.INSTANCE.definitions();
+        definitions.getRegistry().getBootstrapComponents(IClientSetupComponent.class)
+                .forEachRemaining(IClientSetupComponent::setup);
+
+        addBuiltInModel("glass", GlassModel::new);
+        addBuiltInModel("sky_compass", SkyCompassModel::new);
+        addBuiltInModel("dummy_fluid_item", DummyFluidItemModel::new);
+        addBuiltInModel("memory_card", MemoryCardModel::new);
+        addBuiltInModel("biometric_card", BiometricCardModel::new);
+        addBuiltInModel("drive", DriveModel::new);
+        addBuiltInModel("color_applicator", ColorApplicatorModel::new);
+        addBuiltInModel("spatial_pylon", SpatialPylonModel::new);
+        addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
+        addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
+        addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
+        addBuiltInModel("facade", FacadeItemModel::new);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "encoded_pattern"),
+                EncodedPatternModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "part_plane"),
+                PlaneModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"),
+                CraftingCubeModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "cable_bus"),
+                new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
+
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, id),
+                new SimpleModelLoader<>(modelFactory));
     }
 
     /**
