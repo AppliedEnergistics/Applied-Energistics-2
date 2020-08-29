@@ -83,7 +83,9 @@ public class ClientHelper extends ServerHelper {
     private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
 
     public ClientHelper() {
-        registerModelLoaders();
+        if (Minecraft.getInstance() != null) {
+            registerModelLoaders();
+        }
     }
 
     // In later forge versions, this runs before resource loads, in 1.15 the
