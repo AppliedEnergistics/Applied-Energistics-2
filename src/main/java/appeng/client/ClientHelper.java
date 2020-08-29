@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -29,25 +30,50 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
+import appeng.block.paint.PaintSplotchesModel;
+import appeng.block.qnb.QnbFormedModel;
+import appeng.client.render.DummyFluidItemModel;
+import appeng.client.render.FacadeItemModel;
+import appeng.client.render.SimpleModelLoader;
+import appeng.client.render.cablebus.CableBusModelLoader;
+import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
+import appeng.client.render.crafting.CraftingCubeModelLoader;
+import appeng.client.render.crafting.EncodedPatternModelLoader;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.ParticleTypes;
+import appeng.client.render.model.BiometricCardModel;
+import appeng.client.render.model.ColorApplicatorModel;
+import appeng.client.render.model.DriveModel;
+import appeng.client.render.model.GlassModel;
+import appeng.client.render.model.MemoryCardModel;
+import appeng.client.render.model.SkyCompassModel;
+import appeng.client.render.model.UVLModelLoader;
+import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.features.registries.PartModels;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.IMouseWheelItem;
+import appeng.parts.automation.PlaneModelLoader;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
 
@@ -55,6 +81,43 @@ public class ClientHelper extends ServerHelper {
     private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
 
     private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
+
+    public ClientHelper() {
+        registerModelLoaders();
+    }
+
+    // In later forge versions, this runs before resource loads, in 1.15 the
+    // ModelRegistryEvent runs concurrently
+    // with resource reloading, which makes these non-deterministic
+    private void registerModelLoaders() {
+        addBuiltInModel("glass", GlassModel::new);
+        addBuiltInModel("sky_compass", SkyCompassModel::new);
+        addBuiltInModel("dummy_fluid_item", DummyFluidItemModel::new);
+        addBuiltInModel("memory_card", MemoryCardModel::new);
+        addBuiltInModel("biometric_card", BiometricCardModel::new);
+        addBuiltInModel("drive", DriveModel::new);
+        addBuiltInModel("color_applicator", ColorApplicatorModel::new);
+        addBuiltInModel("spatial_pylon", SpatialPylonModel::new);
+        addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
+        addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
+        addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
+        addBuiltInModel("facade", FacadeItemModel::new);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "encoded_pattern"),
+                EncodedPatternModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "part_plane"),
+                PlaneModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"),
+                CraftingCubeModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "cable_bus"),
+                new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, id),
+                new SimpleModelLoader<>(modelFactory));
+    }
 
     public void clientInit() {
         MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);
