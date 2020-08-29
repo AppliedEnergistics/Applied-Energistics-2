@@ -1,6 +1,7 @@
 package appeng.fluids.client.gui.widgets;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -73,7 +74,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
         if (clickStack.isEmpty() || mouseButton == 1) {
             this.setFluidStack(null);
         } else if (mouseButton == 0) {
-            final LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained(clickStack);
+            final Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(clickStack);
             fluidOpt.ifPresent(fluid -> {
                 this.setFluidStack(AEFluidStack.fromFluidStack(fluid));
             });

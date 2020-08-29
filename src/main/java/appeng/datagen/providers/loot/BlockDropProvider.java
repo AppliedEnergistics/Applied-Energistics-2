@@ -28,6 +28,7 @@ import net.minecraft.loot.RandomValueRange;
 import net.minecraft.loot.conditions.SurvivesExplosion;
 import net.minecraft.loot.functions.ApplyBonus;
 import net.minecraft.loot.functions.SetCount;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -62,12 +63,13 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
 
     @Override
     public void act(@Nonnull DirectoryCache cache) throws IOException {
-        for (Map.Entry<ResourceLocation, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
+        for (Map.Entry<RegistryKey<Block>, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
             LootTable.Builder builder;
-            if (entry.getKey().getNamespace().equals(AppEng.MOD_ID)) {
+            if (entry.getKey().func_240901_a_().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                IDataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, entry.getKey()));
+                IDataProvider.save(GSON, cache, toJson(builder),
+                        getPath(outputFolder, entry.getKey().func_240901_a_()));
             }
         }
     }

@@ -3,6 +3,7 @@ package appeng.fluids.container;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -39,7 +40,7 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
 
     @Override
     protected ItemStack transferStackToContainer(ItemStack input) {
-        LazyOptional<FluidStack> fsOpt = FluidUtil.getFluidContained(input);
+        Optional<FluidStack> fsOpt = FluidUtil.getFluidContained(input);
         if (fsOpt.isPresent()) {
             final IAEFluidTank t = this.getFluidConfigInventory();
             final IAEFluidStack stack = AEFluidStack.fromFluidStack(fsOpt.orElse(null));
