@@ -19,23 +19,27 @@
 package appeng.client.me;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.SlotItemHandler;
 
 import appeng.api.storage.data.IAEItemStack;
 
-public class SlotME extends SlotItemHandler {
+public class SlotME extends Slot {
 
-    private final InternalSlotME mySlot;
+    private static final IInventory EMPTY_INVENTORY = new Inventory(0);
 
-    public SlotME(final InternalSlotME me) {
-        super(null, 0, me.getxPosition(), me.getyPosition());
-        this.mySlot = me;
+    private final InternalSlotME slot;
+
+    public SlotME(final InternalSlotME slot) {
+        super(EMPTY_INVENTORY, 0, slot.getxPosition(), slot.getyPosition());
+        this.slot = slot;
     }
 
     public IAEItemStack getAEStack() {
-        if (this.mySlot.hasPower()) {
-            return this.mySlot.getAEStack();
+        if (this.slot.hasPower()) {
+            return this.slot.getAEStack();
         }
         return null;
     }
@@ -47,15 +51,15 @@ public class SlotME extends SlotItemHandler {
 
     @Override
     public ItemStack getStack() {
-        if (this.mySlot.hasPower()) {
-            return this.mySlot.getStack();
+        if (this.slot.hasPower()) {
+            return this.slot.getStack();
         }
         return ItemStack.EMPTY;
     }
 
     @Override
     public boolean getHasStack() {
-        if (this.mySlot.hasPower()) {
+        if (this.slot.hasPower()) {
             return !this.getStack().isEmpty();
         }
         return false;
