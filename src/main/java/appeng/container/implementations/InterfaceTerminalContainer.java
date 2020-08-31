@@ -42,7 +42,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.CompressedNBTPacket;
+import appeng.core.sync.packets.MEInterfaceUpdatePacket;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.InventoryAction;
@@ -177,7 +177,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
         if (!this.data.isEmpty()) {
             try {
-                NetworkHandler.instance().sendTo(new CompressedNBTPacket(this.data),
+                NetworkHandler.instance().sendTo(new MEInterfaceUpdatePacket(this.data),
                         (ServerPlayerEntity) this.getPlayerInv().player);
             } catch (final IOException e) {
                 // :P
