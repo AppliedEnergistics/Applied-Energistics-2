@@ -21,7 +21,6 @@ package appeng.client.render.cablebus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,11 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import javax.annotation.Nullable;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.Weigher;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
@@ -50,7 +54,10 @@ import appeng.api.util.AEColor;
 
 public class CableBusBakedModel implements IBakedModel {
 
-    private static final Map<CableBusRenderState, List<BakedQuad>> CABLE_MODEL_CACHE = new HashMap<>();
+    // The number of quads overall that will be cached
+    private static final int CACHE_QUAD_COUNT = 5000;
+
+    private final LoadingCache<CableBusRenderState, List<BakedQuad>> cableModelCache;
 
     private final CableBuilder cableBuilder;
 
@@ -66,6 +73,17 @@ public class CableBusBakedModel implements IBakedModel {
         this.facadeBuilder = facadeBuilder;
         this.partModels = partModels;
         this.particleTexture = particleTexture;
+        this.cableModelCache = CacheBuilder.newBuilder()//
+                .maximumWeight(CACHE_QUAD_COUNT)//
+                .weigher((Weigher<CableBusRenderState, List<BakedQuad>>) (key, value) -> value.size())//
+                .build(new CacheLoader<CableBusRenderState, List<BakedQuad>>() {
+                    @Override
+                    public List<BakedQuad> load(CableBusRenderState renderState) {
+                        final List<BakedQuad> model = new ArrayList<>();
+                        addCableQuads(renderState, model);
+                        return model;
+                    }
+                });
     }
 
     @Override
@@ -92,11 +110,7 @@ public class CableBusBakedModel implements IBakedModel {
         if (layer == RenderType.getCutout()) {
 
             // First, handle the cable at the center of the cable bus
-            final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent(renderState, k -> {
-                final List<BakedQuad> model = new ArrayList<>();
-                this.addCableQuads(renderState, model);
-                return model;
-            });
+            final List<BakedQuad> cableModel = cableModelCache.getUnchecked(renderState);
             quads.addAll(cableModel);
 
             // Then handle attachments
@@ -339,10 +353,6 @@ public class CableBusBakedModel implements IBakedModel {
     @Override
     public ItemOverrideList getOverrides() {
         return ItemOverrideList.EMPTY;
-    }
-
-    public static void clearCache() {
-        CABLE_MODEL_CACHE.clear();
     }
 
 }

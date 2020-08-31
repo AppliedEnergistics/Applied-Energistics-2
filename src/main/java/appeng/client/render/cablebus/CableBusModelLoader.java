@@ -18,7 +18,6 @@ public class CableBusModelLoader implements IModelLoader<CableBusModel> {
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-        CableBusBakedModel.clearCache();
     }
 
     @Override
