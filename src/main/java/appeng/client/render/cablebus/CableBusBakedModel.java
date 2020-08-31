@@ -92,12 +92,14 @@ public class CableBusBakedModel implements IBakedModel {
         if (layer == RenderType.getCutout()) {
 
             // First, handle the cable at the center of the cable bus
-            final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent(renderState, k -> {
-                final List<BakedQuad> model = new ArrayList<>();
-                this.addCableQuads(renderState, model);
-                return model;
-            });
-            quads.addAll(cableModel);
+            synchronized (CABLE_MODEL_CACHE) {
+                final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent(renderState, k -> {
+                    final List<BakedQuad> model = new ArrayList<>();
+                    this.addCableQuads(renderState, model);
+                    return model;
+                });
+                quads.addAll(cableModel);
+            }
 
             // Then handle attachments
             for (Direction facing : Direction.values()) {
@@ -342,7 +344,9 @@ public class CableBusBakedModel implements IBakedModel {
     }
 
     public static void clearCache() {
-        CABLE_MODEL_CACHE.clear();
+        synchronized (CABLE_MODEL_CACHE) {
+            CABLE_MODEL_CACHE.clear();
+        }
     }
 
 }
