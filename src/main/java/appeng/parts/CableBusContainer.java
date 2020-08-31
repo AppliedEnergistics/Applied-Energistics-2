@@ -125,7 +125,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
     @Override
     public IFacadeContainer getFacadeContainer() {
-        return new FacadeContainer(this);
+        return new FacadeContainer(this, this::invalidateShapes);
     }
 
     @Override
