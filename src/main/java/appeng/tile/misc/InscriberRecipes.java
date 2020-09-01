@@ -1,5 +1,7 @@
 package appeng.tile.misc;
 
+import java.util.stream.Stream;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -78,7 +80,7 @@ public final class InscriberRecipes {
             name += " " + tag.getString(MaterialItem.TAG_INSCRIBE_NAME);
         }
 
-        final Ingredient startingItem = Ingredient.ofStacks(input.copy());
+        final Ingredient startingItem = Ingredient.method_26964(Stream.of(input.copy()));
         final ItemStack renamedItem = input.copy();
 
         if (!name.isEmpty()) {
@@ -90,8 +92,8 @@ public final class InscriberRecipes {
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
         return new InscriberRecipe(NAMEPLATE_RECIPE_ID, "", startingItem, renamedItem,
-                plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.ofStacks(plateA),
-                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.ofStacks(plateB), type);
+                plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.method_26964(Stream.of(plateA)),
+                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.method_26964(Stream.of(plateB)), type);
     }
 
     /**
