@@ -143,9 +143,10 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
         private void makePlate() {
             if (Platform.isServer()) {
-                if (!this.takeStack(1).isEmpty()) {
+                if (!inSlot.getSlot(0).extract(1).isEmpty()) {
                     final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
                     final ItemStack before = item.copy();
+                    // FIXME FABRIC: Quartz Knife currently is not damageable due to recipe remainder concerns
                     item.damage(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
                         QuartzKnifeContainer.this.getPlayerInv()
                                 .setStack(QuartzKnifeContainer.this.getPlayerInv().selectedSlot, ItemStack.EMPTY);
