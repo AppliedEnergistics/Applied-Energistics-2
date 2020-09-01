@@ -29,6 +29,7 @@ import net.minecraft.nbt.CompoundNBT;
 import appeng.api.config.FuzzyMode;
 
 final class AESharedItemStack implements Comparable<AESharedItemStack> {
+
     private final ItemStack itemStack;
     private final int itemId;
     private final int itemDamage;
@@ -97,7 +98,8 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             return damageValue;
         }
 
-        return 0;
+        return System.identityHashCode(this.getDefinition().getTag())
+                - System.identityHashCode(b.getDefinition().getTag());
     }
 
     private int makeHashCode() {
@@ -183,4 +185,5 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
         }
 
     }
+
 }
