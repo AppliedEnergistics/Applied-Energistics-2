@@ -29,6 +29,10 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -39,11 +43,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.cache.Weigher;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -65,12 +64,15 @@ import appeng.api.util.AEColor;
 @Environment(EnvType.CLIENT)
 public class CableBusBakedModel implements BakedModel, FabricBakedModel {
 
+    private static final Mesh EMPTY_MESH = consumer -> {
+    };
+
     private static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
 
-    // The number of quads overall that will be cached
-    private static final int CACHE_QUAD_COUNT = 5000;
+    // The number of meshes overall that will be cached
+    private static final int CACHE_MESH_COUNT = 100;
 
-    private static final LoadingCache<CableBusRenderState, Mesh> cableModelCache = new HashMap<>();
+    private final LoadingCache<CableBusRenderState, Mesh> cableModelCache;
 
     private final CableBuilder cableBuilder;
 
@@ -87,14 +89,12 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
         this.partModels = partModels;
         this.particleTexture = particleTexture;
         this.cableModelCache = CacheBuilder.newBuilder()//
-                .maximumWeight(CACHE_QUAD_COUNT)//
-                .weigher((Weigher<CableBusRenderState, List<BakedQuad>>) (key, value) -> value.size())//
-                .build(new CacheLoader<CableBusRenderState, List<BakedQuad>>() {
+                .maximumSize(CACHE_MESH_COUNT)//
+                .build(new CacheLoader<CableBusRenderState, Mesh>() {
                     @Override
-                    public List<BakedQuad> load(CableBusRenderState renderState) {
-                        final List<BakedQuad> model = new ArrayList<>();
-                        addCableQuads(renderState, model);
-                        return model;
+                    public Mesh load(CableBusRenderState renderState) {
+                        Mesh mesh = buildCableModel(renderState);
+                        return mesh != null ? mesh : EMPTY_MESH;
                     }
                 });
     }
@@ -126,8 +126,8 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
         }
 
         // First, handle the cable at the center of the cable bus
-        final Mesh cableModel = CABLE_MODEL_CACHE.computeIfAbsent(renderState, this::buildCableModel);
-        if (cableModel != null) {
+        final Mesh cableModel = cableModelCache.getUnchecked(renderState);
+        if (cableModel != EMPTY_MESH) {
             context.meshConsumer().accept(cableModel);
         }
 

@@ -12,8 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 
-import appeng.client.me.SlotME;
-
 /**
  * A proxy for a slot that will always return an itemstack with size 1, if there
  * is an item in the slot. Used to prevent the default item count from
@@ -24,7 +22,7 @@ class Size1Slot extends Slot {
     private final Slot delegate;
 
     public Size1Slot(Slot delegate) {
-        super(delegate.inventory, -1, delegate.xPos, delegate.yPos);
+        super(delegate.inventory, -1, delegate.x, delegate.y);
         this.delegate = delegate;
     }
 

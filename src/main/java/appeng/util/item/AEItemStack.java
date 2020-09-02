@@ -125,7 +125,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         buffer.writeBoolean(this.isCraftable());
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
-        buffer.writeItemStack(getDefinition(), false);
+        buffer.writeItemStack(getDefinition());
     }
 
     @Override

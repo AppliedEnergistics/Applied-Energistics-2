@@ -19,9 +19,8 @@
 package appeng.client.me;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 
@@ -29,7 +28,7 @@ import appeng.api.storage.data.IAEItemStack;
 
 public class SlotME extends Slot {
 
-    private static final Inventory EMPTY_INVENTORY = new Inventory(0);
+    private static final Inventory EMPTY_INVENTORY = new SimpleInventory(0);
 
     private final InternalSlotME slot;
 

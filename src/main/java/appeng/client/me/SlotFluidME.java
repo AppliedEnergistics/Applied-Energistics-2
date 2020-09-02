@@ -21,9 +21,8 @@ package appeng.client.me;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 
@@ -32,7 +31,7 @@ import appeng.fluids.container.slots.IMEFluidSlot;
 
 public class SlotFluidME extends Slot implements IMEFluidSlot {
 
-    private static final IInventory EMPTY_INVENTORY = new Inventory(0);
+    private static final Inventory EMPTY_INVENTORY = new SimpleInventory(0);
 
     private final InternalFluidSlotME slot;
 
