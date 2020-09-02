@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.glfw.GLFW;
@@ -58,6 +59,7 @@ import net.minecraft.util.Identifier;
 import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
 import alexiil.mc.lib.attributes.fluid.render.FluidVolumeRenderer;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import me.shedaniel.math.Rectangle;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
@@ -803,4 +805,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
         }
     }
 
+    public List<Rectangle> getExclusionZones() {
+        return Lists.newArrayList(new Rectangle(x, y, backgroundWidth, backgroundHeight));
+    }
 }

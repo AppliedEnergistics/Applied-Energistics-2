@@ -20,6 +20,7 @@ package appeng.integration.modules.jei;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -158,7 +159,7 @@ public class ReiPlugin implements REIPluginV0 {
 
         baseBoundsHandler.registerExclusionZones(AEBaseScreen.class, () -> {
             AEBaseScreen<?> screen = (AEBaseScreen<?>) MinecraftClient.getInstance().currentScreen;
-            return ImmutableList.of(new Rectangle(screen.getX(), screen.getY(), screen.width, screen.height));
+            return screen != null ? screen.getExclusionZones() : Collections.emptyList();
         });
 
     }

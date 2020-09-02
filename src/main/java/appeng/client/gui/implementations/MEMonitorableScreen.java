@@ -28,6 +28,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 
+import me.shedaniel.math.Rectangle;
+
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -517,6 +519,16 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         this.children.removeAll(this.buttons);
         this.buttons.clear();
         this.init();
+    }
+
+    @Override
+    public List<Rectangle> getExclusionZones() {
+        List<Rectangle> zones = super.getExclusionZones();
+        // Button toolbar on the left
+        zones.add(new Rectangle(x - 18, y + 8, 18, 160));
+        // View-cells on the right
+        zones.add(new Rectangle(x + 197, y, 46, 128));
+        return zones;
     }
 
 }

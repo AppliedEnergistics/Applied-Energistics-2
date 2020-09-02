@@ -33,6 +33,8 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
+import me.shedaniel.math.Rectangle;
+
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -329,6 +331,13 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
     protected String getBackground() {
         return "guis/terminal.png";
+    }
+
+    @Override
+    public List<Rectangle> getExclusionZones() {
+        List<Rectangle> zones = super.getExclusionZones();
+        zones.add(new Rectangle(x - 18, y, 18, 40));
+        return zones;
     }
 
 }

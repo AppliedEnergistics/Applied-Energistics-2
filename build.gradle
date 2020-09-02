@@ -144,13 +144,13 @@ dependencies {
     modApi "teamreborn:energy:${tr_energy_version}"
     include "teamreborn:energy:${tr_energy_version}"
 
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems:5.0.2-unstable") {
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems:${rei_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
     modCompileOnly("mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75") {
         exclude group: "net.fabricmc.fabric-api"
     }
-    modRuntime("me.shedaniel:RoughlyEnoughItems:5.0.2-unstable") {
+    modRuntime("me.shedaniel:RoughlyEnoughItems:${rei_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
     modRuntime("TechReborn:TechReborn-1.16:3.5.1+build.101") {

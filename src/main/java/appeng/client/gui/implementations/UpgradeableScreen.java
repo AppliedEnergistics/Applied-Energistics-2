@@ -18,9 +18,13 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.List;
+
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
+
+import me.shedaniel.math.Rectangle;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -144,6 +148,13 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
 
     protected GuiText getName() {
         return this.bc instanceof ImportBusPart ? GuiText.ImportBus : GuiText.ExportBus;
+    }
+
+    @Override
+    public List<Rectangle> getExclusionZones() {
+        List<Rectangle> zones = super.getExclusionZones();
+        zones.add(new Rectangle(x - 18, y + 8, 18, 60));
+        return zones;
     }
 
 }
