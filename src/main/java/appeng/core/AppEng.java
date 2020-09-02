@@ -90,10 +90,10 @@ public final class AppEng {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AEConfig.CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AEConfig.COMMON_SPEC);
 
-        proxy = DistExecutor.safeRunForDist(() -> ClientHelper::new, () -> ServerHelper::new);
-
         CreativeTab.init();
         new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
+
+        proxy = DistExecutor.safeRunForDist(() -> ClientHelper::new, () -> ServerHelper::new);
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         registration = new Registration();
