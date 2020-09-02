@@ -19,12 +19,10 @@
 package appeng.core.sync.packets;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.BufferOverflowException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import javax.annotation.Nullable;
@@ -45,7 +43,6 @@ import appeng.client.gui.implementations.CraftConfirmScreen;
 import appeng.client.gui.implementations.CraftingCPUScreen;
 import appeng.client.gui.implementations.MEMonitorableScreen;
 import appeng.client.gui.implementations.NetworkStatusScreen;
-import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
@@ -53,8 +50,6 @@ import appeng.util.item.AEItemStack;
 public class MEInventoryUpdatePacket extends BasePacket {
     private static final int UNCOMPRESSED_PACKET_BYTE_LIMIT = 16 * 1024 * 1024;
     private static final int OPERATION_BYTE_LIMIT = 2 * 1024;
-    private static final int TEMP_BUFFER_SIZE = 1024;
-    private static final int STREAM_MASK = 0xff;
 
     // input.
     @Nullable
@@ -64,48 +59,18 @@ public class MEInventoryUpdatePacket extends BasePacket {
 
     @Nullable
     private final PacketByteBuf data;
-    @Nullable
-    private final GZIPOutputStream compressFrame;
 
     private int writtenBytes = 0;
     private boolean empty = true;
 
     public MEInventoryUpdatePacket(final PacketByteBuf stream) {
         this.data = null;
-        this.compressFrame = null;
         this.list = new ArrayList<>();
         this.ref = stream.readByte();
 
-        // int originalBytes = stream.readableBytes();
-
-        try (GZIPInputStream gzReader = new GZIPInputStream(new InputStream() {
-            @Override
-            public int read() {
-                if (stream.readableBytes() <= 0) {
-                    return -1;
-                }
-
-                return stream.readByte() & STREAM_MASK;
-            }
-        })) {
-            final PacketByteBuf uncompressed = new PacketByteBuf(Unpooled.buffer(stream.readableBytes()));
-            final byte[] tmp = new byte[TEMP_BUFFER_SIZE];
-
-            while (gzReader.available() != 0) {
-                final int bytes = gzReader.read(tmp);
-
-                if (bytes > 0) {
-                    uncompressed.writeBytes(tmp, 0, bytes);
-                }
-            }
-
-            while (uncompressed.readableBytes() > 0) {
-                this.list.add(AEItemStack.fromPacket(uncompressed));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to decompress packet.", e);
+        while (stream.readableBytes() > 0) {
+            this.list.add(AEItemStack.fromPacket(stream));
         }
-
         this.empty = this.list.isEmpty();
     }
 
@@ -120,14 +85,6 @@ public class MEInventoryUpdatePacket extends BasePacket {
         this.data = new PacketByteBuf(Unpooled.buffer(OPERATION_BYTE_LIMIT));
         this.data.writeInt(this.getPacketID());
         this.data.writeByte(this.ref);
-
-        this.compressFrame = new GZIPOutputStream(new OutputStream() {
-            @Override
-            public void write(final int value) {
-                MEInventoryUpdatePacket.this.data.writeByte(value);
-            }
-        });
-
         this.list = null;
     }
 
@@ -156,28 +113,19 @@ public class MEInventoryUpdatePacket extends BasePacket {
     @Nullable
     @Override
     public Packet<?> toPacket(NetworkSide direction) {
-        try {
-            this.compressFrame.close();
-
-            this.configureWrite(this.data);
-            return super.toPacket(direction);
-        } catch (final IOException e) {
-            AELog.debug(e);
-        }
-
-        return null;
+        this.configureWrite(this.data);
+        return super.toPacket(direction);
     }
 
     public void appendItem(final IAEItemStack is) throws IOException, BufferOverflowException {
         final PacketByteBuf tmp = new PacketByteBuf(Unpooled.buffer(OPERATION_BYTE_LIMIT));
         is.writeToPacket(tmp);
 
-        this.compressFrame.flush();
         if (this.writtenBytes + tmp.readableBytes() > UNCOMPRESSED_PACKET_BYTE_LIMIT) {
             throw new BufferOverflowException();
         } else {
             this.writtenBytes += tmp.readableBytes();
-            this.compressFrame.write(tmp.array(), 0, tmp.readableBytes());
+            this.data.writeBytes(tmp.array(), 0, tmp.readableBytes());
             this.empty = false;
         }
     }

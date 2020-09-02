@@ -23,7 +23,6 @@ public class CableBusModelLoader implements ModelResourceProvider {
     public UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context)
             throws ModelProviderException {
         if (CABLE_BUS_MODEL.equals(resourceId)) {
-            CableBusBakedModel.clearCache();
             return new CableBusModel(partModels);
         } else {
             return null;

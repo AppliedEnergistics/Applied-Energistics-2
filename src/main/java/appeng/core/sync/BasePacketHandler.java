@@ -29,7 +29,6 @@ import appeng.core.sync.packets.BlockTransitionEffectPacket;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.core.sync.packets.CompassRequestPacket;
 import appeng.core.sync.packets.CompassResponsePacket;
-import appeng.core.sync.packets.CompressedNBTPacket;
 import appeng.core.sync.packets.ConfigButtonPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.CraftRequestPacket;
@@ -39,6 +38,7 @@ import appeng.core.sync.packets.ItemTransitionEffectPacket;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.core.sync.packets.LightningPacket;
 import appeng.core.sync.packets.MEFluidInventoryUpdatePacket;
+import appeng.core.sync.packets.MEInterfaceUpdatePacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.core.sync.packets.MatterCannonPacket;
 import appeng.core.sync.packets.PaintedEntityPacket;
@@ -99,7 +99,7 @@ public class BasePacketHandler {
 
         PACKET_ASSEMBLER_ANIMATION(AssemblerAnimationPacket.class, AssemblerAnimationPacket::new),
 
-        PACKET_COMPRESSED_NBT(CompressedNBTPacket.class, CompressedNBTPacket::new),
+        PACKET_ME_INTERFACE_UPDATE(MEInterfaceUpdatePacket.class, MEInterfaceUpdatePacket::new),
 
         PACKET_PAINTED_ENTITY(PaintedEntityPacket.class, PaintedEntityPacket::new),
 

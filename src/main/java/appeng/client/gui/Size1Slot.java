@@ -21,10 +21,10 @@ import appeng.client.me.SlotME;
  */
 class Size1Slot extends Slot {
 
-    private final SlotME delegate;
+    private final Slot delegate;
 
-    public Size1Slot(SlotME delegate) {
-        super(delegate.inventory, -1, delegate.x, delegate.y);
+    public Size1Slot(Slot delegate) {
+        super(delegate.inventory, -1, delegate.xPos, delegate.yPos);
         this.delegate = delegate;
     }
 

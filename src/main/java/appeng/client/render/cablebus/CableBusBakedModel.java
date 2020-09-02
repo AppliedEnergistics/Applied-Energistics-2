@@ -20,7 +20,6 @@ package appeng.client.render.cablebus;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +39,11 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.Weigher;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -63,8 +67,10 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
 
     private static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
 
-    // FIXME: This entire cache seems dumb as shit
-    private static final Map<CableBusRenderState, Mesh> CABLE_MODEL_CACHE = new HashMap<>();
+    // The number of quads overall that will be cached
+    private static final int CACHE_QUAD_COUNT = 5000;
+
+    private static final LoadingCache<CableBusRenderState, Mesh> cableModelCache = new HashMap<>();
 
     private final CableBuilder cableBuilder;
 
@@ -80,6 +86,17 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
         this.facadeBuilder = facadeBuilder;
         this.partModels = partModels;
         this.particleTexture = particleTexture;
+        this.cableModelCache = CacheBuilder.newBuilder()//
+                .maximumWeight(CACHE_QUAD_COUNT)//
+                .weigher((Weigher<CableBusRenderState, List<BakedQuad>>) (key, value) -> value.size())//
+                .build(new CacheLoader<CableBusRenderState, List<BakedQuad>>() {
+                    @Override
+                    public List<BakedQuad> load(CableBusRenderState renderState) {
+                        final List<BakedQuad> model = new ArrayList<>();
+                        addCableQuads(renderState, model);
+                        return model;
+                    }
+                });
     }
 
     @Override
@@ -357,10 +374,6 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     @Override
     public ModelOverrideList getOverrides() {
         return ModelOverrideList.EMPTY;
-    }
-
-    public static void clearCache() {
-        CABLE_MODEL_CACHE.clear();
     }
 
     @Override

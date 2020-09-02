@@ -21,23 +21,23 @@ package appeng.client.me;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.fluids.container.slots.IMEFluidSlot;
 
-/**
- * @author BrockWS
- * @version rv6 - 22/05/2018
- * @since rv6 22/05/2018
- */
 public class SlotFluidME extends Slot implements IMEFluidSlot {
+
+    private static final IInventory EMPTY_INVENTORY = new Inventory(0);
 
     private final InternalFluidSlotME slot;
 
     public SlotFluidME(InternalFluidSlotME slot) {
-        super(null, 0, slot.getxPosition(), slot.getyPosition());
+        super(EMPTY_INVENTORY, 0, slot.getxPosition(), slot.getyPosition());
         this.slot = slot;
     }
 
@@ -69,7 +69,7 @@ public class SlotFluidME extends Slot implements IMEFluidSlot {
     }
 
     @Override
-    public void setStack(final ItemStack par1ItemStack) {
+    public void setStack(final ItemStack stack) {
 
     }
 
@@ -85,7 +85,7 @@ public class SlotFluidME extends Slot implements IMEFluidSlot {
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity par1PlayerEntity) {
+    public boolean canTakeItems(final PlayerEntity player) {
         return false;
     }
 }

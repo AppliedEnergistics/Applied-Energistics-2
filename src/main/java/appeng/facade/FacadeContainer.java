@@ -38,15 +38,18 @@ public class FacadeContainer implements IFacadeContainer {
 
     private final int facades = 6;
     private final CableBusStorage storage;
+    private final Runnable changeCallback;
 
-    public FacadeContainer(final CableBusStorage cbs) {
+    public FacadeContainer(final CableBusStorage cbs, Runnable changeCallback) {
         this.storage = cbs;
+        this.changeCallback = changeCallback;
     }
 
     @Override
     public boolean addFacade(final IFacadePart a) {
         if (this.getFacade(a.getSide()) == null) {
             this.storage.setFacade(a.getSide().ordinal(), a);
+            this.notifyChange();
             return true;
         }
         return false;
@@ -57,6 +60,7 @@ public class FacadeContainer implements IFacadeContainer {
         if (side != null && side != AEPartLocation.INTERNAL) {
             if (this.storage.getFacade(side.ordinal()) != null) {
                 this.storage.setFacade(side.ordinal(), null);
+                this.notifyChange();
                 if (host != null) {
                     host.markForUpdate();
                 }
@@ -85,6 +89,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (int x = 0; x < this.facades; x++) {
             this.storage.setFacade(x, newFacades[x]);
         }
+        this.notifyChange();
     }
 
     @Override
@@ -176,4 +181,9 @@ public class FacadeContainer implements IFacadeContainer {
         }
         return true;
     }
+
+    private void notifyChange() {
+        this.changeCallback.run();
+    }
+
 }

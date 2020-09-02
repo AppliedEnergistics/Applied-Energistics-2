@@ -41,11 +41,6 @@ import appeng.fluids.util.FluidSorters;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-/**
- * @author BrockWS
- * @version rv6 - 22/05/2018
- * @since rv6 22/05/2018
- */
 public class FluidRepo {
     private final IItemList<IAEFluidStack> list = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)
             .createList();

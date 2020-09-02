@@ -18,13 +18,7 @@
 
 package appeng.core.sync.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import io.netty.buffer.Unpooled;
 
@@ -33,6 +27,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.PacketByteBuf;
@@ -41,55 +39,24 @@ import appeng.client.gui.implementations.InterfaceTerminalScreen;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 
-//TODO, this is pointless, NBT is already compressed when written to a PacketBuffer.
-public class CompressedNBTPacket extends BasePacket {
+public class MEInterfaceUpdatePacket extends BasePacket {
 
     // input.
     private final CompoundTag in;
     // output...
     private final PacketByteBuf data;
-    private final GZIPOutputStream compressFrame;
 
-    public CompressedNBTPacket(final PacketByteBuf stream) {
+    public MEInterfaceUpdatePacket(final PacketByteBuf stream) {
         this.data = null;
-        this.compressFrame = null;
-
-        try (DataInputStream inStream = new DataInputStream(new GZIPInputStream(new InputStream() {
-
-            @Override
-            public int read() {
-                if (stream.readableBytes() <= 0) {
-                    return -1;
-                }
-
-                return stream.readByte() & 0xff;
-            }
-        }))) {
-            this.in = NbtIo.read(inStream);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to decompress packet.", e);
-        }
+        this.in = stream.readCompoundTag();
     }
 
     // api
-    public CompressedNBTPacket(final CompoundTag din) throws IOException {
-
+    public MEInterfaceUpdatePacket(final CompoundTag din) throws IOException {
+        this.in = null;
         this.data = new PacketByteBuf(Unpooled.buffer(2048));
         this.data.writeInt(this.getPacketID());
-
-        this.in = din;
-
-        this.compressFrame = new GZIPOutputStream(new OutputStream() {
-
-            @Override
-            public void write(final int value) {
-                CompressedNBTPacket.this.data.writeByte(value);
-            }
-        });
-
-        NbtIo.write(din, new DataOutputStream(this.compressFrame));
-        this.compressFrame.close();
-
+        this.data.writeCompoundTag(din);
         this.configureWrite(this.data);
     }
 
