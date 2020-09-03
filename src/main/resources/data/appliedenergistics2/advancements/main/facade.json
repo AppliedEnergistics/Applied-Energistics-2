@@ -1,7 +1,8 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:facade"
+      "item": "appliedenergistics2:facade",
+      "nbt": "{item:\"minecraft:stone\"}"
     },
     "title": {
       "translate": "achievement.ae2.Facade"
