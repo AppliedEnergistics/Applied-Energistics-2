@@ -10,7 +10,7 @@
     "sources": "https://github.com/AppliedEnergistics/Applied-Energistics-2/"
   },
   "license": "LGPL",
-  "icon": "assets/appliedenergistics2/icon.png",
+  "icon": "assets/appliedenergistics2/logo.png",
   "environment": "*",
   "entrypoints": {
     "client": ["appeng.core.AppEngClientStartup"],
