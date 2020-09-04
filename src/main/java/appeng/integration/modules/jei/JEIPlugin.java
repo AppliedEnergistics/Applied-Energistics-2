@@ -82,10 +82,13 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+
         // Allow recipe transfer from JEI to crafting and pattern terminal
-        registration.addRecipeTransferHandler(new RecipeTransferHandler<>(CraftingTermContainer.class),
+        registration.addRecipeTransferHandler(
+                new RecipeTransferHandler<>(CraftingTermContainer.class, registration.getTransferHelper()),
                 VanillaRecipeCategoryUid.CRAFTING);
-        registration.addRecipeTransferHandler(new RecipeTransferHandler<>(PatternTermContainer.class),
+        registration.addRecipeTransferHandler(
+                new RecipeTransferHandler<>(PatternTermContainer.class, registration.getTransferHelper()),
                 VanillaRecipeCategoryUid.CRAFTING);
     }
 

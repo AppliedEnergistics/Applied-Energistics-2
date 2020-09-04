@@ -18,36 +18,30 @@
 
 package appeng.integration.modules.jei;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Nullable;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
-import appeng.container.slot.CraftingMatrixSlot;
-import appeng.container.slot.FakeCraftingMatrixSlot;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.JEIRecipePacket;
-import appeng.util.Platform;
 
 class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandler<T> {
 
     private final Class<T> containerClass;
+    private final IRecipeTransferHandlerHelper helper;
 
-    RecipeTransferHandler(Class<T> containerClass) {
+    RecipeTransferHandler(Class<T> containerClass, IRecipeTransferHandlerHelper helper) {
         this.containerClass = containerClass;
+        this.helper = helper;
     }
 
     @Override
@@ -57,61 +51,21 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(T container, IRecipeLayout recipeLayout, PlayerEntity player,
-            boolean maxTransfer, boolean doTransfer) {
-        if (!doTransfer) {
-            return null;
+    public IRecipeTransferError transferRecipe(T container, Object recipe, IRecipeLayout recipeLayout,
+            PlayerEntity player, boolean maxTransfer, boolean doTransfer) {
+        if (recipe == null || !(recipe instanceof IRecipe)) {
+            return this.helper.createInternalError();
         }
 
-        Map<Integer, ? extends IGuiIngredient<ItemStack>> ingredients = recipeLayout.getItemStacks()
-                .getGuiIngredients();
+        final ResourceLocation recipeId = ((IRecipe<?>) recipe).getId();
 
-        final CompoundNBT recipe = new CompoundNBT();
-
-        int slotIndex = 0;
-        for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> ingredientEntry : ingredients.entrySet()) {
-            IGuiIngredient<ItemStack> ingredient = ingredientEntry.getValue();
-            if (!ingredient.isInput()) {
-                continue;
-            }
-
-            for (final Slot slot : container.inventorySlots) {
-                if (slot instanceof CraftingMatrixSlot || slot instanceof FakeCraftingMatrixSlot) {
-                    if (slot.getSlotIndex() == slotIndex) {
-                        final ListNBT tags = new ListNBT();
-                        final List<ItemStack> list = new ArrayList<>();
-                        final ItemStack displayed = ingredient.getDisplayedIngredient();
-
-                        // prefer currently displayed item
-                        if (displayed != null && !displayed.isEmpty()) {
-                            list.add(displayed);
-                        }
-
-                        // prefer pure crystals.
-                        for (ItemStack stack : ingredient.getAllIngredients()) {
-                            if (Platform.isRecipePrioritized(stack)) {
-                                list.add(0, stack);
-                            } else {
-                                list.add(stack);
-                            }
-                        }
-
-                        for (final ItemStack is : list) {
-                            final CompoundNBT tag = new CompoundNBT();
-                            is.write(tag);
-                            tags.add(tag);
-                        }
-
-                        recipe.put("#" + slot.getSlotIndex(), tags);
-                        break;
-                    }
-                }
-            }
-
-            slotIndex++;
+        if (recipeId == null) {
+            return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.missing_id"));
         }
 
-        NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipe));
+        if (doTransfer) {
+            NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipeId.toString()));
+        }
 
         return null;
     }

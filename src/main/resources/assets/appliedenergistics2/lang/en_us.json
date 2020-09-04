@@ -705,5 +705,6 @@
   "waila.appliedenergistics2.P2POutput": "Linked (Output Side)",
   "waila.appliedenergistics2.P2PUnlinked": "Unlinked",
   "waila.appliedenergistics2.Showing": "Showing",
-  "waila.appliedenergistics2.Unlocked": "Unlocked"
+  "waila.appliedenergistics2.Unlocked": "Unlocked",
+  "jei.appliedenergistics2.missing_id": "Cannot identify recipe"
 }
