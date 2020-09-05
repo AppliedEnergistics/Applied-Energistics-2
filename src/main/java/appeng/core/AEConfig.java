@@ -18,6 +18,18 @@
 
 package appeng.core;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.DoubleSupplier;
+import java.util.stream.Collectors;
+
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -36,18 +48,6 @@ import appeng.core.config.IntegerOption;
 import appeng.core.config.StringListOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.DoubleSupplier;
-import java.util.stream.Collectors;
 
 public final class AEConfig {
 
@@ -70,7 +70,7 @@ public final class AEConfig {
     }
 
     private static ConfigFileManager createConfigFileManager(ConfigSection commonRoot, File configDir,
-                                                             String filename) {
+            String filename) {
         File configFile = new File(configDir, filename);
         ConfigFileManager result = new ConfigFileManager(commonRoot, configFile);
         if (!configFile.exists()) {
@@ -120,7 +120,7 @@ public final class AEConfig {
     private final int[] craftByStacks = new int[4];
     private final int[] priorityByStacks = new int[4];
     private final int[] levelByStacks = new int[4];
-    private final int[] levelByMillibuckets = {10, 100, 1000, 10000};
+    private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -410,7 +410,7 @@ public final class AEConfig {
         public final EnumOption<PowerUnits> selectedPowerUnit;
 
         // GUI Buttons
-        private static final int[] BTN_BY_STACK_DEFAULTS = {1, 10, 100, 1000};
+        private static final int[] BTN_BY_STACK_DEFAULTS = { 1, 10, 100, 1000 };
         public final List<IntegerOption> craftByStacks;
         public final List<IntegerOption> priorityByStacks;
         public final List<IntegerOption> levelByStacks;
