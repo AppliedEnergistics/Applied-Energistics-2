@@ -404,6 +404,10 @@ public final class AEConfig {
         return COMMON.improvedFluidMultiplier.get().floatValue();
     }
 
+    public int getPrometheusMetricsServerPort() {
+        return COMMON.prometheusMetricsServer.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -474,6 +478,7 @@ public final class AEConfig {
         public final BooleanValue removeCrashingItemsOnLoad;
         public final ConfigValue<Integer> formationPlaneEntityLimit;
         public final ConfigValue<Integer> craftingCalculationTimePerTick;
+        public final ConfigValue<Integer> prometheusMetricsServer;
 
         // Spatial IO/Dimension
         public final ConfigValue<Double> spatialPowerExponent;
@@ -556,6 +561,12 @@ public final class AEConfig {
             removeCrashingItemsOnLoad = builder.comment(
                     "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!")
                     .define("removeCrashingItemsOnLoad", false);
+            builder.pop();
+
+            builder.push("metrics");
+            prometheusMetricsServer = builder.comment(
+                    "Enables the Prometheus Metrics exporting endpoint on 127.0.0.1 on this port number. 0 to disable.")
+                    .define("prometheusMetricsServer", 0);
             builder.pop();
 
             builder.push("automation");

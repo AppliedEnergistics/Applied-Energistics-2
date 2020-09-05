@@ -18,6 +18,7 @@
 
 package appeng.client.render.cablebus;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -51,11 +52,20 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.metrics.Metrics;
 
 public class CableBusBakedModel implements IBakedModel {
 
     // The number of quads overall that will be cached
     private static final int CACHE_QUAD_COUNT = 5000;
+
+    // Keep a weak-ref to the last created cache for reporting metrics
+    private static WeakReference<LoadingCache<CableBusRenderState, List<BakedQuad>>> cacheForMetrics = new WeakReference<>(
+            null);
+
+    static {
+        Metrics.cache("cable_bus_model_cache", () -> cacheForMetrics.get());
+    }
 
     private final LoadingCache<CableBusRenderState, List<BakedQuad>> cableModelCache;
 
@@ -74,6 +84,7 @@ public class CableBusBakedModel implements IBakedModel {
         this.partModels = partModels;
         this.particleTexture = particleTexture;
         this.cableModelCache = CacheBuilder.newBuilder()//
+                .recordStats()//
                 .maximumWeight(CACHE_QUAD_COUNT)//
                 .weigher((Weigher<CableBusRenderState, List<BakedQuad>>) (key, value) -> value.size())//
                 .build(new CacheLoader<CableBusRenderState, List<BakedQuad>>() {
@@ -84,6 +95,7 @@ public class CableBusBakedModel implements IBakedModel {
                         return model;
                     }
                 });
+        cacheForMetrics = new WeakReference<>(cableModelCache);
     }
 
     @Override

@@ -57,6 +57,7 @@ import appeng.core.AppEng;
 import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.crafting.CraftingJob;
 import appeng.me.Grid;
+import appeng.metrics.Metrics;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
@@ -75,6 +76,11 @@ public class TickHandler {
 
     public static TickHandler instance() {
         return INSTANCE;
+    }
+
+    static {
+        Metrics.gauge("ticking_network_count", () -> INSTANCE.server.networks.size());
+        Metrics.gauge("crafting_job_count", INSTANCE.craftingJobs::size);
     }
 
     public static void setup(IEventBus eventBus) {

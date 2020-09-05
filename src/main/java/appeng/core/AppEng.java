@@ -66,6 +66,7 @@ import appeng.entity.TinyTNTPrimedEntity;
 import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
+import appeng.metrics.endpoint.PrometheusEndpoint;
 import appeng.parts.PartPlacement;
 import appeng.server.ServerHelper;
 
@@ -89,6 +90,8 @@ public final class AppEng {
             throw new IllegalStateException();
         }
         INSTANCE = this;
+
+        startMetricsServer();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AEConfig.CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AEConfig.COMMON_SPEC);
@@ -148,6 +151,20 @@ public final class AppEng {
         registerNetworkHandler();
 
         AddonLoader.loadAddons(Api.INSTANCE);
+
+        startMetricsServer();
+    }
+
+    private void startMetricsServer() {
+        int prometheusPort = AEConfig.instance().getPrometheusMetricsServerPort();
+        if (prometheusPort != 0) {
+            try {
+                AELog.info("Starting Prometheus Metrics Server on Port %s", prometheusPort);
+                new PrometheusEndpoint("localhost", prometheusPort);
+            } catch (Exception e) {
+                AELog.warn("Failed to start Prometheus Metrics-Server: %s", e);
+            }
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

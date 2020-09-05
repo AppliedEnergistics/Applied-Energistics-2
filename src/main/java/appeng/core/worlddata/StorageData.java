@@ -157,4 +157,8 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
         return tag;
     }
 
+    public int size() {
+        return storage.size();
+    }
+
 }
