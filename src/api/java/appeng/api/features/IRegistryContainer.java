@@ -83,11 +83,6 @@ public interface IRegistryContainer {
     IPlayerRegistry players();
 
     /**
-     * get access to the world-gen api.
-     */
-    IWorldGen worldgen();
-
-    /**
      * Register your IPart models before using them.
      */
     IPartModels partModels();

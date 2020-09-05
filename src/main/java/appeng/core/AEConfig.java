@@ -18,22 +18,6 @@
 
 package appeng.core;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.DoubleSupplier;
-import java.util.stream.Collectors;
-
-import net.minecraft.world.dimension.DimensionType;
-
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -52,6 +36,18 @@ import appeng.core.config.IntegerOption;
 import appeng.core.config.StringListOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.DoubleSupplier;
+import java.util.stream.Collectors;
 
 public final class AEConfig {
 
@@ -74,13 +70,20 @@ public final class AEConfig {
     }
 
     private static ConfigFileManager createConfigFileManager(ConfigSection commonRoot, File configDir,
-            String filename) {
+                                                             String filename) {
         File configFile = new File(configDir, filename);
         ConfigFileManager result = new ConfigFileManager(commonRoot, configFile);
         if (!configFile.exists()) {
             result.save(); // Save a default file
         } else {
             result.load();
+
+            // Re-save immediately to write-out new defaults
+            try {
+                result.save();
+            } catch (Exception e) {
+                AELog.warn(e);
+            }
         }
         return result;
     }
@@ -117,7 +120,7 @@ public final class AEConfig {
     private final int[] craftByStacks = new int[4];
     private final int[] priorityByStacks = new int[4];
     private final int[] levelByStacks = new int[4];
-    private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
+    private final int[] levelByMillibuckets = {10, 100, 1000, 10000};
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -137,7 +140,6 @@ public final class AEConfig {
 
     // Meteors
     private int meteoriteMaximumSpawnHeight;
-    private Set<String> meteoriteDimensionWhitelist;
 
     // Wireless
     private double wirelessBaseCost;
@@ -175,7 +177,6 @@ public final class AEConfig {
         this.oreDoublePercentage = (float) commonConfig.oreDoublePercentage.get();
 
         this.meteoriteMaximumSpawnHeight = commonConfig.meteoriteMaximumSpawnHeight.get();
-        this.meteoriteDimensionWhitelist = new HashSet<>(commonConfig.meteoriteDimensionWhitelist.get());
 
         this.wirelessBaseCost = commonConfig.wirelessBaseCost.get();
         this.wirelessCostMultiplier = commonConfig.wirelessCostMultiplier.get();
@@ -389,11 +390,15 @@ public final class AEConfig {
         return this.meteoriteMaximumSpawnHeight;
     }
 
-    public Set<String> getMeteoriteDimensionWhitelist() {
-        return this.meteoriteDimensionWhitelist;
+    public List<String> getMeteoriteBiomeBlacklist() {
+        return commonConfig.meteoriteBiomeBlacklist.get();
     }
 
-    // Setters keep visibility as low as possible.
+    public List<String> getQuartzOreBiomeBlacklist() {
+        return commonConfig.quartzOreBiomeBlacklist.get();
+    }
+
+// Setters keep visibility as low as possible.
 
     private static class ClientConfig {
 
@@ -405,7 +410,7 @@ public final class AEConfig {
         public final EnumOption<PowerUnits> selectedPowerUnit;
 
         // GUI Buttons
-        private static final int[] BTN_BY_STACK_DEFAULTS = { 1, 10, 100, 1000 };
+        private static final int[] BTN_BY_STACK_DEFAULTS = {1, 10, 100, 1000};
         public final List<IntegerOption> craftByStacks;
         public final List<IntegerOption> priorityByStacks;
         public final List<IntegerOption> levelByStacks;
@@ -478,10 +483,11 @@ public final class AEConfig {
         public final DoubleOption spawnChargedChance;
         public final IntegerOption quartzOresPerCluster;
         public final IntegerOption quartzOresClusterAmount;
+        public final StringListOption quartzOreBiomeBlacklist;
 
         // Meteors
         public final IntegerOption meteoriteMaximumSpawnHeight;
-        public final StringListOption meteoriteDimensionWhitelist;
+        public final StringListOption meteoriteBiomeBlacklist;
 
         // Wireless
         public final DoubleOption wirelessBaseCost;
@@ -562,13 +568,13 @@ public final class AEConfig {
 
             this.spawnChargedChance = worldGen.addDouble("spawnChargedChance", 0.08, 0.0, 1.0);
             this.meteoriteMaximumSpawnHeight = worldGen.addInt("meteoriteMaximumSpawnHeight", 180);
-            List<String> defaultDimensionWhitelist = new ArrayList<>();
-            defaultDimensionWhitelist.add(DimensionType.OVERWORLD_REGISTRY_KEY.getValue().toString());
-            this.meteoriteDimensionWhitelist = worldGen.addStringList("meteoriteDimensionWhitelist",
-                    defaultDimensionWhitelist);
+            this.meteoriteBiomeBlacklist = worldGen.addStringList("meteoriteBiomeBlacklist", new ArrayList<>(),
+                    "Biome IDs in which meteorites should NOT be generated (i.e. minecraft:plains).");
 
             this.quartzOresPerCluster = worldGen.addInt("quartzOresPerCluster", 4);
             this.quartzOresClusterAmount = worldGen.addInt("quartzOresClusterAmount", 20);
+            this.quartzOreBiomeBlacklist = worldGen.addStringList("quartzOreBiomeBlacklist", new ArrayList<>(),
+                    "Biome IDs in which quartz ores should NOT be generated (i.e. minecraft:plains).");
 
             ConfigSection wireless = root.subsection("wireless");
             this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);

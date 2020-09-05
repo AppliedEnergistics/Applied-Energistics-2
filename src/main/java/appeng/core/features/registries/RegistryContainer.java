@@ -25,7 +25,6 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermRegistry;
-import appeng.api.features.IWorldGen;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.parts.IPartModels;
@@ -97,11 +96,6 @@ public class RegistryContainer implements IRegistryContainer {
     @Override
     public IPlayerRegistry players() {
         return this.playerRegistry;
-    }
-
-    @Override
-    public IWorldGen worldgen() {
-        return WorldGenRegistry.INSTANCE;
     }
 
     @Override
