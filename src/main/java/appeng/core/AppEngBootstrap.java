@@ -1,16 +1,9 @@
 package appeng.core;
 
-import appeng.api.features.AEFeature;
-import appeng.mixins.feature.ConfiguredFeaturesAccessor;
-import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
-import appeng.mixins.structure.StructureFeatureAccessor;
-import appeng.spatial.SpatialStorageChunkGenerator;
-import appeng.spatial.SpatialStorageDimensionIds;
-import appeng.worldgen.BiomeModifier;
-import appeng.worldgen.ChargedQuartzOreConfig;
-import appeng.worldgen.ChargedQuartzOreFeature;
-import appeng.worldgen.meteorite.MeteoriteStructure;
-import appeng.worldgen.meteorite.MeteoriteStructurePiece;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
@@ -27,9 +20,17 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import appeng.api.features.AEFeature;
+import appeng.mixins.feature.ConfiguredFeaturesAccessor;
+import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
+import appeng.mixins.structure.StructureFeatureAccessor;
+import appeng.spatial.SpatialStorageChunkGenerator;
+import appeng.spatial.SpatialStorageDimensionIds;
+import appeng.worldgen.BiomeModifier;
+import appeng.worldgen.ChargedQuartzOreConfig;
+import appeng.worldgen.ChargedQuartzOreFeature;
+import appeng.worldgen.meteorite.MeteoriteStructure;
+import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
 /**
  * Hooks into the very early bootstrapping phase to register things before the
@@ -67,22 +68,14 @@ public final class AppEngBootstrap {
         for (Map.Entry<RegistryKey<Biome>, Biome> entry : BuiltinRegistries.BIOME.getEntries()) {
             Identifier id = entry.getKey().getValue();
             Biome b = entry.getValue();
-            if (!meteoriteBiomeBlacklist.contains(id.toString())) {
-                addMeteoriteWorldGen(id, b);
-            }
-            if (!quartzOreBiomeBlacklist.contains(id.toString())) {
-                addQuartzWorldGen(id, b, quartzOreFeature, chargedQuartzOreFeature);
-            }
+            addMeteoriteWorldGen(id, b, meteoriteBiomeBlacklist);
+            addQuartzWorldGen(id, b, quartzOreFeature, chargedQuartzOreFeature, quartzOreBiomeBlacklist);
         }
 
         // Listen to added biomes for post-processing
         RegistryEntryAddedCallback.event(BuiltinRegistries.BIOME).register((i, id, biome) -> {
-            if (!meteoriteBiomeBlacklist.contains(id.toString())) {
-                addMeteoriteWorldGen(id, biome);
-            }
-            if (!quartzOreBiomeBlacklist.contains(id.toString())) {
-                addQuartzWorldGen(id, biome, quartzOreFeature, chargedQuartzOreFeature);
-            }
+            addMeteoriteWorldGen(id, biome, meteoriteBiomeBlacklist);
+            addQuartzWorldGen(id, biome, quartzOreFeature, chargedQuartzOreFeature, quartzOreBiomeBlacklist);
         });
 
         registerDimension();
@@ -102,12 +95,19 @@ public final class AppEngBootstrap {
                 MeteoriteStructure.CONFIGURED_INSTANCE);
     }
 
-    private static void addMeteoriteWorldGen(Identifier id, Biome b) {
+    private static void addMeteoriteWorldGen(Identifier id, Biome b, Set<String> biomeBlacklist) {
         if (!AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
+            AELog.debug("Not generating meteorites in %s because the feature is disabled", id);
             return;
         }
 
         if (b.getCategory() == Biome.Category.THEEND || b.getCategory() == Biome.Category.NETHER) {
+            AELog.debug("Not generating meteorites in %s because it's of category %s", id, b.getCategory());
+            return;
+        }
+
+        if (biomeBlacklist.contains(id.toString())) {
+            AELog.debug("Not generating meteorites in %s because the biome is blacklisted in the config", id);
             return;
         }
 
@@ -116,7 +116,7 @@ public final class AppEngBootstrap {
     }
 
     private static void addQuartzWorldGen(Identifier id, Biome b, ConfiguredFeature<?, ?> quartzOre,
-                                          ConfiguredFeature<?, ?> chargedQuartz) {
+            ConfiguredFeature<?, ?> chargedQuartz, Set<String> biomeBlacklist) {
         if (!AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
             AELog.debug("Not generating quartz-ore in %s because the feature is disabled", id);
             return;
@@ -127,8 +127,12 @@ public final class AppEngBootstrap {
             return;
         }
 
-        BiomeModifier modifier = new BiomeModifier(b);
+        if (biomeBlacklist.contains(id.toString())) {
+            AELog.debug("Not generating quartz-ore in %s because the biome is blacklisted in the config", id);
+            return;
+        }
 
+        BiomeModifier modifier = new BiomeModifier(b);
         modifier.addFeature(GenerationStep.Feature.UNDERGROUND_ORES, quartzOre);
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
