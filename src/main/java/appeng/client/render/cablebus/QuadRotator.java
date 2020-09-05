@@ -24,7 +24,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Quaternion;
@@ -92,10 +91,6 @@ public class QuadRotator implements RenderContext.QuadTransform {
                 quad.normal(i, tmp);
             }
         }
-
-        // FIXME FABRIC: Wait for Grondags response about this one
-        MutableQuadViewImpl quadImpl = (MutableQuadViewImpl) quad;
-        quadImpl.lightFace(rotation.rotate(quad.lightFace()));
 
         // Transform the nominal face, setting the cull face will also overwrite the
         // nominialFace,
