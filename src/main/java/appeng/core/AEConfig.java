@@ -35,6 +35,7 @@ import com.google.common.base.Strings;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
@@ -68,6 +69,17 @@ public final class AEConfig {
     // Default Energy Conversion Rates
     private static final double DEFAULT_IC2_EXCHANGE = 2.0;
     private static final double DEFAULT_RF_EXCHANGE = 0.5;
+
+    // Default growth tick progress per tick by number of adjacent accelerators
+    // Expressed as 1/1000th of a growth tick.
+    private static final int[] DEFAULT_GROWTH_TICK_PROGRESS = { 1, // no accelerators
+            40, // 1 accelerator
+            92, // 2 accelerators
+            159, // 3 accelerators
+            247, // 4 accelerators
+            361, // 5 accelerators
+            509 // 6 accelerators
+    };
 
     static {
         final Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
@@ -393,6 +405,15 @@ public final class AEConfig {
         return this.meteoriteDimensionWhitelist;
     }
 
+    /**
+     * Returns the growth tick progress per tick when the given number of powered
+     * accelerators is adjacent. Progress is in 1/1000th of a growth tick.
+     */
+    public int getCrystalGrowthTickProgressPerTick(int acceleratorCount) {
+        acceleratorCount = MathHelper.clamp(acceleratorCount, 0, 6);
+        return COMMON.growthTickProgressPerTick.get(acceleratorCount).get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -507,6 +528,10 @@ public final class AEConfig {
         public final ConfigValue<Integer> condenserMatterBallsPower;
         public final ConfigValue<Integer> condenserSingularityPower;
 
+        // In-World Purification
+        // 1/1000th growth ticks per tick by accelerator count
+        public final List<ConfigValue<Integer>> growthTickProgressPerTick;
+
         public final Map<TickRates, ConfigValue<Integer>> tickRateMin = new HashMap<>();
         public final Map<TickRates, ConfigValue<Integer>> tickRateMax = new HashMap<>();
 
@@ -615,6 +640,17 @@ public final class AEConfig {
             for (TickRates tickRate : TickRates.values()) {
                 tickRateMin.put(tickRate, builder.define(tickRate.name() + "Min", tickRate.getDefaultMin()));
                 tickRateMax.put(tickRate, builder.define(tickRate.name() + "Max", tickRate.getDefaultMax()));
+            }
+            builder.pop();
+
+            builder.comment(
+                    "Settings for in-world purification of crystals, which take 600 growth ticks to fully grow.")
+                    .push("inWorldPurification");
+            growthTickProgressPerTick = new ArrayList<>(7);
+            for (int i = 0; i <= 6; i++) {
+                growthTickProgressPerTick.add(
+                        builder.comment("1/1000th growth ticks per tick with " + i + " adjacent accelerator(s) present")
+                                .define("growthTickProgressPerTick" + i, DEFAULT_GROWTH_TICK_PROGRESS[i]));
             }
             builder.pop();
         }
