@@ -254,7 +254,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
             this.renderFragment |= 1;
         } else {
             // TODO: Optimize Network Load
-            if (this.world != null) {
+            if (this.world != null && !this.isRemoved()) {
                 this.requestModelDataUpdate();
 
                 boolean alreadyUpdated = false;
