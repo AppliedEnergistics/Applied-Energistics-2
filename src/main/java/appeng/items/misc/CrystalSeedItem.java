@@ -45,7 +45,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.implementations.items.IGrowableCrystal;
-import appeng.core.AppEng;
+import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.items.AEBaseItem;
@@ -55,13 +55,6 @@ import appeng.items.AEBaseItem;
  * throwing them into water (for that behavior, see the linked entity)
  */
 public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
-
-    /**
-     * This tag describes which fluids are suitable mediums for crystal
-     * purification.
-     */
-    public static final ResourceLocation TAG_EFFECTIVE_MEDIUM = new ResourceLocation(AppEng.MOD_ID,
-            "crystal_purification_medium");
 
     /**
      * Name of NBT tag used to store the growth progress value.
@@ -107,12 +100,22 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
 
     @Override
     public float getMultiplier(BlockState state, @Nullable World world, @Nullable BlockPos pos) {
-        ITag<Fluid> tag = FluidTags.getCollection().getOrCreate(TAG_EFFECTIVE_MEDIUM);
 
-        if (state.getFluidState().isTagged(tag)) {
-            return 1;
+        // Check for the improved fluid tag and return the improved multiplier
+        String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
+        if (improvedFluidTagName != null) {
+            ITag<Fluid> tag = FluidTags.getCollection().get(new ResourceLocation(improvedFluidTagName));
+            if (tag != null && state.getFluidState().isTagged(tag)) {
+                return AEConfig.instance().getImprovedFluidMultiplier();
+            }
+        }
+
+        // Check for the normal supported fluid
+        if (world != null && world.func_234923_W_() == World.field_234919_h_) {
+            // In the nether, use Lava as the "normal" fluid
+            return state.getFluidState().isTagged(FluidTags.LAVA) ? 1 : 0;
         } else {
-            return 0;
+            return state.getFluidState().isTagged(FluidTags.WATER) ? 1 : 0;
         }
     }
 

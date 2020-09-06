@@ -41,6 +41,18 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
     public static EntityType<GrowingCrystalEntity> TYPE;
 
+    // Growth tick progress per tick by number of adjacent accelerators
+    // Expressed as 1/1000th of a growth tick, applied to progress_1000
+    // each time this entity ticks.
+    private static final int[] GROWTH_TICK_PROGRESS = { 1, // no accelerators
+            40, // 1 accelerator
+            92, // 2 accelerators
+            159, // 3 accelerators
+            247, // 4 accelerators
+            361, // 5 accelerators
+            509 // 6 accelerators
+    };
+
     /**
      * The accumulated progress towards a single growth tick of the crystal in
      * 1/1000th of a growth tick.
@@ -150,7 +162,13 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     private int getSpeed(BlockPos pos) {
         int acceleratorCount = getAcceleratorCount(pos);
 
-        return AEConfig.instance().getCrystalGrowthTickProgressPerTick(acceleratorCount);
+        if (acceleratorCount < 0) {
+            return GROWTH_TICK_PROGRESS[0];
+        } else if (acceleratorCount >= GROWTH_TICK_PROGRESS.length) {
+            return GROWTH_TICK_PROGRESS[GROWTH_TICK_PROGRESS.length - 1];
+        } else {
+            return GROWTH_TICK_PROGRESS[acceleratorCount];
+        }
     }
 
     private int getAcceleratorCount(BlockPos pos) {
