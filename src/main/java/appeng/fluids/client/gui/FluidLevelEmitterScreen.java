@@ -12,6 +12,7 @@ import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
+import appeng.client.theme.ThemeColor;
 import appeng.core.localization.GuiText;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.FluidLevelEmitterContainer;
@@ -65,7 +66,8 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
 
-        this.font.drawString(matrixStack, GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
+        this.font.drawString(matrixStack, GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44,
+                ThemeColor.TEXT_HEADING.argb());
     }
 
     @Override

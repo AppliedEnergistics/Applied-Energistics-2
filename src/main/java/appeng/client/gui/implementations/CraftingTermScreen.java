@@ -26,6 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.widgets.ActionButton;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.CraftingTermContainer;
 import appeng.container.slot.CraftingMatrixSlot;
 import appeng.core.localization.GuiText;
@@ -67,7 +68,7 @@ public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContaine
             final int mouseY) {
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
         this.font.drawString(matrixStack, GuiText.CraftingTerminal.getLocal(), 8,
-                this.ySize - 96 + 1 - this.getReservedSpace(), 4210752);
+                this.ySize - 96 + 1 - this.getReservedSpace(), ThemeColor.TEXT_HEADING.argb());
     }
 
     @Override

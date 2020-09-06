@@ -34,6 +34,7 @@ import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.localization.GuiText;
 import appeng.parts.automation.ExportBusPart;
@@ -86,8 +87,10 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(this.getName().text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(this.getName().text()).getString(), 8, 6,
+                ThemeColor.TEXT_TITLE.argb());
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3,
+                ThemeColor.TEXT_TITLE.argb());
 
         if (this.redstoneMode != null) {
             this.redstoneMode.set(this.cvb.getRedStoneMode());

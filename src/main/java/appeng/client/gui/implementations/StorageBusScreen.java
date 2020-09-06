@@ -32,6 +32,7 @@ import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.PriorityContainer;
 import appeng.container.implementations.StorageBusContainer;
 import appeng.core.localization.GuiText;
@@ -71,8 +72,10 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.StorageBus.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.StorageBus.text()).getString(), 8, 6,
+                ThemeColor.TEXT_TITLE.argb());
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3,
+                ThemeColor.TEXT_TITLE.argb());
 
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.cvb.getFuzzyMode());

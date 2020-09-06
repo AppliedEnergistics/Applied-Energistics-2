@@ -42,10 +42,10 @@ import appeng.api.config.ViewItems;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.CraftingCPUContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
@@ -60,9 +60,6 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     private static final int GUI_WIDTH = 238;
 
     private static final int DISPLAYED_ROWS = 6;
-
-    private static final int TEXT_COLOR = 0x404040;
-    private static final int BACKGROUND_ALPHA = 0x5A000000;
 
     private static final int SECTION_LENGTH = 67;
 
@@ -175,7 +172,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
             title += " - " + etaTimeText;
         }
 
-        this.font.drawString(matrixStack, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR);
+        this.font.drawString(matrixStack, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, ThemeColor.TEXT_TITLE.argb());
 
         int x = 0;
         int y = 0;
@@ -217,8 +214,8 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 }
 
                 if (AEConfig.instance().isUseColoredCraftingStatus() && (active || scheduled)) {
-                    final int bgColor = (active ? AEColor.GREEN.blackVariant : AEColor.YELLOW.blackVariant)
-                            | BACKGROUND_ALPHA;
+                    final int bgColor = (active ? ThemeColor.FOREGROUND_CRAFTING_ACTIVE.argb()
+                            : ThemeColor.FOREGROUND_CRAFTING_SCHEDULED.argb());
                     final int startX = (x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET) * 2;
                     final int startY = ((y * offY + ITEMSTACK_TOP_OFFSET) - 3) * 2;
                     fill(matrixStack, startX, startY, startX + (SECTION_LENGTH * 2), startY + (offY * 2) - 2, bgColor);
@@ -234,7 +231,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                     this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
                                     * 2),
-                            (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
+                            (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, ThemeColor.TEXT_BODY.argb());
 
                     if (this.tooltip == z - viewStart) {
                         lineList.add(GuiText.Stored.getLocal() + ": " + Long.toString(stored.getStackSize()));
@@ -251,7 +248,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                     this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
                                     * 2),
-                            (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
+                            (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, ThemeColor.TEXT_BODY.argb());
 
                     if (this.tooltip == z - viewStart) {
                         lineList.add(GuiText.Crafting.getLocal() + ": " + Long.toString(activeStack.getStackSize()));
@@ -268,7 +265,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                     this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
                                     * 2),
-                            (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
+                            (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, ThemeColor.TEXT_BODY.argb());
 
                     if (this.tooltip == z - viewStart) {
                         lineList.add(GuiText.Scheduled.getLocal() + ": " + Long.toString(pendingStack.getStackSize()));

@@ -48,6 +48,7 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.InterfaceTerminalContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -94,8 +95,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()).getString(), 8, 6,
-                4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
+                ThemeColor.TEXT_TITLE.argb());
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3,
+                ThemeColor.TEXT_TITLE.argb());
 
         final int ex = this.getScrollBar().getCurrentScroll();
 
@@ -120,7 +122,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     name = name.substring(0, name.length() - 1);
                 }
 
-                this.font.drawString(matrixStack, name, 10, 6 + offset, 4210752);
+                this.font.drawString(matrixStack, name, 10, 6 + offset, ThemeColor.TEXT_BODY.argb());
             }
             offset += 18;
         }

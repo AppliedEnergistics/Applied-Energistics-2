@@ -28,6 +28,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.InscriberContainer;
 import appeng.core.localization.GuiText;
 
@@ -59,8 +60,10 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
         this.pb.setFullMsg(new StringTextComponent(
                 this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%"));
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Inscriber.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Inscriber.text()).getString(), 8, 6,
+                ThemeColor.TEXT_TITLE.argb());
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3,
+                ThemeColor.TEXT_TITLE.argb());
     }
 
     @Override

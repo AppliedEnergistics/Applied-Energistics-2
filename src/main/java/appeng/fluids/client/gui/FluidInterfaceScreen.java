@@ -26,6 +26,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.TabButton;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -68,10 +69,12 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
     @Override
     public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.FluidInterface.text()).getString(), 8, 6,
-                4210752);
-        this.font.drawString(matrixStack, GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
-        this.font.drawString(matrixStack, GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+                ThemeColor.TEXT_TITLE.argb());
+        this.font.drawString(matrixStack, GuiText.Config.getLocal(), 35, 6 + 11 + 7, ThemeColor.TEXT_HEADING.argb());
+        this.font.drawString(matrixStack, GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7,
+                ThemeColor.TEXT_HEADING.argb());
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3,
+                ThemeColor.TEXT_TITLE.argb());
     }
 
     @Override

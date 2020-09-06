@@ -40,6 +40,7 @@ import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.me.ItemRepo;
 import appeng.client.me.SlotME;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
@@ -104,20 +105,22 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, GuiText.NetworkDetails.getLocal(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.NetworkDetails.getLocal(), 8, 6, ThemeColor.TEXT_TITLE.argb());
 
         this.font.drawString(matrixStack,
                 GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong(container.getCurrentPower(), false),
-                13, 16, 4210752);
+                13, 16, ThemeColor.TEXT_HEADING.argb());
         this.font.drawString(matrixStack,
                 GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong(container.getMaxPower(), false), 13, 26,
-                4210752);
+                ThemeColor.TEXT_HEADING.argb());
 
-        this.font.drawString(matrixStack, GuiText.PowerInputRate.getLocal() + ": "
-                + Platform.formatPowerLong(container.getAverageAddition(), true), 13, 143 - 10, 4210752);
+        this.font.drawString(matrixStack,
+                GuiText.PowerInputRate.getLocal() + ": "
+                        + Platform.formatPowerLong(container.getAverageAddition(), true),
+                13, 143 - 10, ThemeColor.TEXT_HEADING.argb());
         this.font.drawString(matrixStack,
                 GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong(container.getPowerUsage(), true),
-                13, 143 - 20, 4210752);
+                13, 143 - 20, ThemeColor.TEXT_HEADING.argb());
 
         final int sectionLength = 30;
 
@@ -146,7 +149,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                 final int w = this.font.getStringWidth(str);
                 this.font.drawString(matrixStack, str,
                         (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * 18 + yo + 6) * 2,
-                        4210752);
+                        ThemeColor.TEXT_BODY.argb());
 
                 RenderSystem.popMatrix();
                 final int posX = x * sectionLength + xo + sectionLength - 18;

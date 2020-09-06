@@ -33,6 +33,7 @@ import appeng.api.config.YesNo;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.LevelEmitterContainer;
 import appeng.core.localization.GuiText;
 
@@ -102,7 +103,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
             if (notCraftingMode) {
                 if (currentLevelMode == LevelType.ENERGY_LEVEL) {
                     this.font.drawString(matrixStack, PowerUnits.AE.textComponent().getString(), 110, 44,
-                            COLOR_DARK_GRAY);
+                            ThemeColor.TEXT_HEADING.argb());
                 }
             }
         }

@@ -31,6 +31,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
@@ -63,8 +64,9 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()).getString(), 8, 6,
-                4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+                ThemeColor.TEXT_TITLE.argb());
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3,
+                ThemeColor.TEXT_TITLE.argb());
     }
 
     @Override

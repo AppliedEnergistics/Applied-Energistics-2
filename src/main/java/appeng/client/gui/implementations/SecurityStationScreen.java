@@ -26,6 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.client.gui.widgets.ToggleButton;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -86,7 +87,7 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
             final int mouseY) {
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
         this.font.drawString(matrixStack, GuiText.SecurityCardEditor.getLocal(), 8,
-                this.ySize - 96 + 1 - this.getReservedSpace(), 4210752);
+                this.ySize - 96 + 1 - this.getReservedSpace(), ThemeColor.TEXT_HEADING.argb());
     }
 
     @Override

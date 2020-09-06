@@ -27,6 +27,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.CraftAmountContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -75,7 +76,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, GuiText.SelectAmount.text().getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.SelectAmount.text().getString(), 8, 6, ThemeColor.TEXT_TITLE.argb());
     }
 
     @Override

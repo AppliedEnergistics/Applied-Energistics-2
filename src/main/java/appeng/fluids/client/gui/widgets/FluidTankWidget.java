@@ -33,8 +33,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.util.AEColor;
 import appeng.client.gui.widgets.ITooltip;
+import appeng.client.theme.ThemeColor;
 import appeng.fluids.util.IAEFluidTank;
 
 @OnlyIn(Dist.CLIENT)
@@ -54,7 +54,7 @@ public class FluidTankWidget extends Widget implements ITooltip {
             RenderSystem.disableBlend();
 
             fill(matrixStack, this.x, this.y, this.x + this.width, this.y + this.height,
-                    AEColor.GRAY.blackVariant | 0xFF000000);
+                    ThemeColor.FOREGROUND_SLOT_FLUID_EMPTY.argb());
 
             final IAEFluidStack fluidStack = this.tank.getFluidInSlot(this.slot);
             if (fluidStack != null && fluidStack.getStackSize() > 0) {

@@ -28,6 +28,7 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.ActionItems;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.PatternTermContainer;
 import appeng.container.slot.AppEngSlot;
 import appeng.core.localization.GuiText;
@@ -128,7 +129,7 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
 
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
         this.font.drawString(matrixStack, GuiText.PatternTerminal.getLocal(), 8,
-                this.ySize - 96 + 2 - this.getReservedSpace(), 4210752);
+                this.ySize - 96 + 2 - this.getReservedSpace(), ThemeColor.TEXT_HEADING.argb());
     }
 
     @Override

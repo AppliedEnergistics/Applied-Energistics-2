@@ -148,6 +148,7 @@ import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
+import appeng.client.theme.ThemeConfig;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CellWorkbenchContainer;
@@ -755,6 +756,7 @@ final class Registration {
     public void registerTextures(TextureStitchEvent.Pre event) {
         SkyChestTESR.registerTextures(event);
         InscriberTESR.registerTexture(event);
+        ThemeConfig.INSTANCE.reloadConfig(event);
     }
 
     public void registerCommands(final FMLServerStartingEvent evt) {

@@ -29,6 +29,7 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.ToggleButton;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.InterfaceContainer;
 import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
@@ -71,13 +72,16 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
             this.interfaceMode.setState(((InterfaceContainer) this.cvb).getInterfaceTerminalMode() == YesNo.YES);
         }
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Interface.text()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Interface.text()).getString(), 8, 6,
+                ThemeColor.TEXT_TITLE.argb());
 
-        this.font.drawString(matrixStack, GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752);
-        this.font.drawString(matrixStack, GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752);
-        this.font.drawString(matrixStack, GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752);
+        this.font.drawString(matrixStack, GuiText.Config.getLocal(), 8, 6 + 11 + 7, ThemeColor.TEXT_HEADING.argb());
+        this.font.drawString(matrixStack, GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7,
+                ThemeColor.TEXT_HEADING.argb());
+        this.font.drawString(matrixStack, GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, ThemeColor.TEXT_HEADING.argb());
 
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3,
+                ThemeColor.TEXT_TITLE.argb());
     }
 
     @Override

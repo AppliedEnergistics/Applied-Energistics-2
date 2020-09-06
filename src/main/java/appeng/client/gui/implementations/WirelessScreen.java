@@ -26,6 +26,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.CommonButtons;
+import appeng.client.theme.ThemeColor;
 import appeng.container.implementations.WirelessContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
@@ -47,8 +48,10 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Wireless.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Wireless.text()).getString(), 8, 6,
+                ThemeColor.TEXT_TITLE.argb());
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3,
+                ThemeColor.TEXT_TITLE.argb());
 
         if (container.getRange() > 0) {
             final String firstMessage = GuiText.Range.getLocal() + ": " + (container.getRange() / 10.0) + " m";
@@ -58,8 +61,8 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
             final int strWidth = Math.max(this.font.getStringWidth(firstMessage),
                     this.font.getStringWidth(secondMessage));
             final int cOffset = (this.xSize / 2) - (strWidth / 2);
-            this.font.drawString(matrixStack, firstMessage, cOffset, 20, 4210752);
-            this.font.drawString(matrixStack, secondMessage, cOffset, 20 + 12, 4210752);
+            this.font.drawString(matrixStack, firstMessage, cOffset, 20, ThemeColor.TEXT_HEADING.argb());
+            this.font.drawString(matrixStack, secondMessage, cOffset, 20 + 12, ThemeColor.TEXT_HEADING.argb());
         }
     }
 

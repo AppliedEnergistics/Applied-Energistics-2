@@ -51,6 +51,7 @@ import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.me.FluidRepo;
 import appeng.client.me.InternalFluidSlotME;
 import appeng.client.me.SlotFluidME;
+import appeng.client.theme.ThemeColor;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
@@ -129,8 +130,9 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
     @Override
     public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.font.drawString(matrixStack, "Fluid Terminal", 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, "Fluid Terminal", 8, 6, ThemeColor.TEXT_TITLE.argb());
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3,
+                ThemeColor.TEXT_TITLE.argb());
     }
 
     @Override
