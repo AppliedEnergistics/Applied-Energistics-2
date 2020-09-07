@@ -18,20 +18,22 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.core.AppEng;
-import appeng.items.parts.FacadeItem;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
-import mezz.jei.api.recipe.IFocus;
-import mezz.jei.api.recipe.advanced.IRecipeManagerPlugin;
-import mezz.jei.api.recipe.category.IRecipeCategory;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.Collections;
-import java.util.List;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.advanced.IRecipeManagerPlugin;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+
+import appeng.core.AppEng;
+import appeng.items.parts.FacadeItem;
 
 /**
  * This plugin will dynamically add facade recipes for any item that can be
