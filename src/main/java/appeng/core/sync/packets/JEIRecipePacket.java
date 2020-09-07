@@ -19,9 +19,11 @@
 package appeng.core.sync.packets;
 
 import java.util.Arrays;
-import java.util.Objects;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Pair;
 
 import io.netty.buffer.Unpooled;
 
@@ -30,7 +32,10 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -64,29 +69,92 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class JEIRecipePacket extends BasePacket {
 
+    /**
+     * Transmit only a recipe ID.
+     */
+    private static final int INLINE_RECIPE_NONE = 1;
+
+    /**
+     * Transmit the information about the recipe we actually need. This is
+     * explicitly limited since this is untrusted client->server info.
+     */
+    private static final int INLINE_RECIPE_SHAPED = 2;
+    private static final int INLINE_RECIPE_SHAPELESS = 3;
+
     private ResourceLocation recipeId;
+    /**
+     * This is optional, in case the client already knows it could not resolve the
+     * recipe id.
+     */
+    @Nullable
+    private IRecipe<?> recipe;
     private boolean crafting;
 
     public JEIRecipePacket(final PacketBuffer stream) {
+        this.crafting = stream.readBoolean();
         final String id = stream.readString(Short.MAX_VALUE);
         this.recipeId = new ResourceLocation(id);
-        this.crafting = stream.readBoolean();
+
+        int inlineRecipeType = stream.readVarInt();
+        switch (inlineRecipeType) {
+            case INLINE_RECIPE_NONE:
+                break;
+            case INLINE_RECIPE_SHAPED:
+                recipe = IRecipeSerializer.CRAFTING_SHAPED.read(this.recipeId, stream);
+                break;
+            case INLINE_RECIPE_SHAPELESS:
+                recipe = IRecipeSerializer.CRAFTING_SHAPELESS.read(this.recipeId, stream);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid inline recipe type.");
+        }
     }
 
-    // api
-    public JEIRecipePacket(final String recipeId, final boolean crafting) {
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
-
-        data.writeInt(this.getPacketID());
-        data.writeString(recipeId);
-        data.writeBoolean(crafting);
-
+    /**
+     * Sends a recipe identified by the given recipe ID to the server for either
+     * filling a crafting grid or a pattern.
+     */
+    public JEIRecipePacket(final ResourceLocation recipeId, final boolean crafting) {
+        PacketBuffer data = createCommonHeader(recipeId, crafting, INLINE_RECIPE_NONE);
         this.configureWrite(data);
     }
 
     /**
+     * Sends a recipe to the server for either filling a crafting grid or a pattern.
+     * <p>
+     * Prefer the id-based constructor above whereever possible.
+     */
+    public JEIRecipePacket(final ShapedRecipe recipe, final boolean crafting) {
+        PacketBuffer data = createCommonHeader(recipe.getId(), crafting, INLINE_RECIPE_SHAPED);
+        IRecipeSerializer.CRAFTING_SHAPED.write(data, recipe);
+        this.configureWrite(data);
+    }
+
+    /**
+     * Sends a recipe to the server for either filling a crafting grid or a pattern.
+     * <p>
+     * Prefer the id-based constructor above whereever possible.
+     */
+    public JEIRecipePacket(final ShapelessRecipe recipe, final boolean crafting) {
+        PacketBuffer data = createCommonHeader(recipe.getId(), crafting, INLINE_RECIPE_SHAPELESS);
+        IRecipeSerializer.CRAFTING_SHAPELESS.write(data, recipe);
+        this.configureWrite(data);
+    }
+
+    private PacketBuffer createCommonHeader(ResourceLocation recipeId, boolean crafting, int inlineRecipeType) {
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+
+        data.writeInt(this.getPacketID());
+        data.writeBoolean(crafting);
+        data.writeResourceLocation(recipeId);
+        data.writeVarInt(inlineRecipeType);
+
+        return data;
+    }
+
+    /**
      * Servside handler for this packet.
-     * 
+     * <p>
      * Makes use of {@link Preconditions#checkArgument(boolean)} as the
      * {@link BasePacketHandler} is catching them and in general these cases should
      * never happen except in an error case and should be logged then.
@@ -98,7 +166,13 @@ public class JEIRecipePacket extends BasePacket {
         final Container con = pmp.openContainer;
         Preconditions.checkArgument(con instanceof IContainerCraftingPacket);
 
-        final IRecipe<?> recipe = player.getEntityWorld().getRecipeManager().getRecipe(this.recipeId).orElse(null);
+        IRecipe<?> recipe = player.getEntityWorld().getRecipeManager().getRecipe(this.recipeId).orElse(null);
+        if (recipe == null && this.recipe != null) {
+            // Certain recipes (i.e. AE2 facades) are represented in JEI as ShapedRecipe's,
+            // while in reality they
+            // are special recipes. Those recipes are sent across the wire...
+            recipe = this.recipe;
+        }
         Preconditions.checkArgument(recipe != null);
 
         final IContainerCraftingPacket cct = (IContainerCraftingPacket) con;
@@ -164,6 +238,9 @@ public class JEIRecipePacket extends BasePacket {
                     if (out == null) {
                         out = findBestMatchingItemStack(ingredient, filter, storage, cct);
                     }
+                    if (out == null && ingredient.getMatchingStacks().length > 0) {
+                        out = AEItemStack.fromItemStack(ingredient.getMatchingStacks()[0]);
+                    }
                 }
 
                 if (out != null) {
@@ -174,14 +251,14 @@ public class JEIRecipePacket extends BasePacket {
             // If still nothing, search the player inventory.
             if (currentItem.isEmpty()) {
                 ItemStack[] matchingStacks = ingredient.getMatchingStacks();
-                for (int y = 0; y < matchingStacks.length; y++) {
+                for (ItemStack matchingStack : matchingStacks) {
                     if (currentItem.isEmpty()) {
                         AdaptorItemHandler ad = new AdaptorItemHandler(playerInventory);
 
                         if (cct.useRealItems()) {
-                            currentItem = ad.removeItems(1, matchingStacks[y], null);
+                            currentItem = ad.removeItems(1, matchingStack, null);
                         } else {
-                            currentItem = ad.simulateRemove(1, matchingStacks[y], null);
+                            currentItem = ad.simulateRemove(1, matchingStack, null);
                         }
                     }
                 }
@@ -198,12 +275,9 @@ public class JEIRecipePacket extends BasePacket {
 
     /**
      * Expand any recipe to a 3x3 matrix.
-     * 
+     * <p>
      * Will throw an {@link IllegalArgumentException} in case it has more than 9 or
      * a shaped recipe is either wider or higher than 3. ingredients.
-     * 
-     * @param recipe
-     * @return
      */
     private NonNullList<Ingredient> ensure3by3CraftingMatrix(IRecipe<?> recipe) {
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
@@ -211,7 +285,8 @@ public class JEIRecipePacket extends BasePacket {
 
         Preconditions.checkArgument(ingredients.size() <= 9);
 
-        // shaped recipes can be either 2x2, 2x3, 3x2, or 3x3. Expand to 3x3
+        // shaped recipes can be smaller than 3x3, expand to 3x3 to match the crafting
+        // matrix
         if (recipe instanceof IShapedRecipe) {
             IShapedRecipe<?> shapedRecipe = (IShapedRecipe<?>) recipe;
             int width = shapedRecipe.getRecipeWidth();
@@ -227,7 +302,7 @@ public class JEIRecipePacket extends BasePacket {
                 }
             }
         }
-        // Anything else should a flat list
+        // Anything else should be a flat list
         else {
             for (int i = 0; i < ingredients.size(); i++) {
                 expandedIngredients.set(i, ingredients.get(i));
@@ -238,10 +313,7 @@ public class JEIRecipePacket extends BasePacket {
     }
 
     /**
-     *
-     * @param ingredient
-     * @param slot
-     * @param is         itemstack
+     * @param is itemstack
      * @return is if it can be used, else EMPTY
      */
     private ItemStack canUseInSlot(Ingredient ingredient, ItemStack is) {
@@ -251,35 +323,25 @@ public class JEIRecipePacket extends BasePacket {
 
     /**
      * Finds the first matching itemstack with the highest stored amount.
-     * 
-     * @param ingredients
-     * @param filter
-     * @param storage
-     * @param cct
-     * @return
      */
     private IAEItemStack findBestMatchingItemStack(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
             IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
-        return Arrays.stream(ingredients.getMatchingStacks()).map(AEItemStack::fromItemStack)
-                .filter(r -> (filter == null || filter.isListed(r))).map(s -> s.setStackSize(Long.MAX_VALUE))
-                .map(s -> storage.extractItems(s, Actionable.SIMULATE, cct.getActionSource())).filter(Objects::nonNull)
-                .sorted((left, right) -> {
-                    return Long.compare(right.getStackSize(), left.getStackSize());
-                }).findFirst().orElse(null);
+        return Arrays.stream(ingredients.getMatchingStacks()).map(AEItemStack::fromItemStack) //
+                .filter(r -> r != null && (filter == null || filter.isListed(r))) //
+                .map(s -> {
+                    // Determine the stored count
+                    IAEItemStack stored = storage.extractItems(s.copy().setStackSize(Long.MAX_VALUE),
+                            Actionable.SIMULATE, cct.getActionSource());
+                    return Pair.of(s, stored != null ? stored.getStackSize() : 0);
+                }).min((left, right) -> Long.compare(right.getSecond(), left.getSecond()))//
+                .map(Pair::getFirst).orElse(null);
     }
 
     /**
      * This tries to find the first pattern matching the list of ingredients.
-     * 
+     * <p>
      * As additional condition, it sorts by the stored amount to return the one with
      * the highest stored amount.
-     * 
-     * @param ingredients
-     * @param filter
-     * @param crafting
-     * @param storage
-     * @param cct
-     * @return
      */
     private IAEItemStack findBestMatchingPattern(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
             ICraftingGrid crafting, IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {

@@ -43,8 +43,8 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
     }
 
     @Override
-    protected void sendPacket(ResourceLocation recipeId) {
-        NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipeId.toString(), true));
-
+    protected boolean isCrafting() {
+        return true;
     }
+
 }

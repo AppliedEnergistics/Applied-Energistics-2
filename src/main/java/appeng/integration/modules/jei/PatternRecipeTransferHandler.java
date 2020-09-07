@@ -20,6 +20,7 @@ package appeng.integration.modules.jei;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
@@ -46,7 +47,7 @@ public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternT
                     .createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.requires_processing_mode"));
         }
 
-        if (recipe.getRecipeOutput() == null) {
+        if (recipe.getRecipeOutput().isEmpty()) {
             return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.no_output"));
         }
 
@@ -54,7 +55,8 @@ public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternT
     }
 
     @Override
-    protected void sendPacket(ResourceLocation recipeId) {
-        NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipeId.toString(), false));
+    protected boolean isCrafting() {
+        return false;
     }
+
 }
