@@ -31,13 +31,13 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.JEIRecipePacket;
+import appeng.helpers.IContainerCraftingPacket;
 
-class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandler<T> {
+abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPacket>
+        implements IRecipeTransferHandler<T> {
 
     private final Class<T> containerClass;
-    private final IRecipeTransferHandlerHelper helper;
+    protected final IRecipeTransferHandlerHelper helper;
 
     RecipeTransferHandler(Class<T> containerClass, IRecipeTransferHandlerHelper helper) {
         this.containerClass = containerClass;
@@ -45,28 +45,43 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
     }
 
     @Override
-    public Class<T> getContainerClass() {
+    public final Class<T> getContainerClass() {
         return this.containerClass;
     }
 
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(T container, Object recipe, IRecipeLayout recipeLayout,
+    public final IRecipeTransferError transferRecipe(T container, Object recipe, IRecipeLayout recipeLayout,
             PlayerEntity player, boolean maxTransfer, boolean doTransfer) {
         if (recipe == null || !(recipe instanceof IRecipe)) {
             return this.helper.createInternalError();
         }
-
-        final ResourceLocation recipeId = ((IRecipe<?>) recipe).getId();
+        final IRecipe<?> irecipe = (IRecipe<?>) recipe;
+        final ResourceLocation recipeId = irecipe.getId();
 
         if (recipeId == null) {
             return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.missing_id"));
         }
 
+        if (!irecipe.canFit(3, 3)) {
+            return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.recipe_too_large"));
+        }
+
+        final IRecipeTransferError error = doTransferRecipe(container, irecipe, recipeLayout, player, maxTransfer);
+
+        if (error != null) {
+            return error;
+        }
+
         if (doTransfer) {
-            NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipeId.toString()));
+            this.sendPacket(recipeId);
         }
 
         return null;
     }
+
+    protected abstract IRecipeTransferError doTransferRecipe(T container, IRecipe<?> recipe, IRecipeLayout recipeLayout,
+            PlayerEntity player, boolean maxTransfer);
+
+    protected abstract void sendPacket(ResourceLocation recipeId);
 }

@@ -706,5 +706,8 @@
   "waila.appliedenergistics2.P2PUnlinked": "Unlinked",
   "waila.appliedenergistics2.Showing": "Showing",
   "waila.appliedenergistics2.Unlocked": "Unlocked",
-  "jei.appliedenergistics2.missing_id": "Cannot identify recipe"
+  "jei.appliedenergistics2.missing_id": "Cannot identify recipe",
+  "jei.appliedenergistics2.recipe_too_large": "Recipe larger than 3x3",
+  "jei.appliedenergistics2.requires_processing_mode": "Requires processing mode",
+  "jei.appliedenergistics2.no_output": "Recipe has no output"
 }

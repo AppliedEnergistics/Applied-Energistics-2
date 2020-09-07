@@ -48,6 +48,7 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.container.implementations.PatternTermContainer;
 import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
@@ -64,18 +65,21 @@ import appeng.util.prioritylist.IPartitionList;
 public class JEIRecipePacket extends BasePacket {
 
     private ResourceLocation recipeId;
+    private boolean crafting;
 
     public JEIRecipePacket(final PacketBuffer stream) {
         final String id = stream.readString(Short.MAX_VALUE);
         this.recipeId = new ResourceLocation(id);
+        this.crafting = stream.readBoolean();
     }
 
     // api
-    public JEIRecipePacket(final String recipeId) {
+    public JEIRecipePacket(final String recipeId, final boolean crafting) {
         final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeString(recipeId);
+        data.writeBoolean(crafting);
 
         this.configureWrite(data);
     }
@@ -151,7 +155,10 @@ public class JEIRecipePacket extends BasePacket {
 
                 if (cct.useRealItems()) {
                     IAEItemStack request = findBestMatchingItemStack(ingredient, filter, storage, cct);
-                    out = Platform.poweredExtraction(energy, storage, request.setStackSize(1), cct.getActionSource());
+                    out = request != null
+                            ? Platform.poweredExtraction(energy, storage, request.setStackSize(1),
+                                    cct.getActionSource())
+                            : null;
                 } else {
                     out = findBestMatchingPattern(ingredient, filter, crafting, storage, cct);
                     if (out == null) {
@@ -181,6 +188,11 @@ public class JEIRecipePacket extends BasePacket {
             }
             ItemHandlerUtil.setStackInSlot(craftMatrix, x, currentItem);
         }
+
+        if (!this.crafting) {
+            this.handleProcessing(con, cct, recipe);
+        }
+
         con.onCraftMatrixChanged(new WrapperInvItemHandler(craftMatrix));
     }
 
@@ -281,6 +293,18 @@ public class JEIRecipePacket extends BasePacket {
                     final int craftable = Boolean.compare(left.isCraftable(), right.isCraftable());
                     return craftable != 0 ? craftable : Long.compare(right.getStackSize(), left.getStackSize());
                 }).findFirst().orElse(null);
+    }
+
+    private void handleProcessing(Container con, IContainerCraftingPacket cct, IRecipe<?> recipe) {
+        if (con instanceof PatternTermContainer) {
+            PatternTermContainer patternTerm = (PatternTermContainer) con;
+            if (!patternTerm.craftingMode) {
+                final IItemHandler output = cct.getInventoryByName("output");
+                ItemHandlerUtil.setStackInSlot(output, 0, recipe.getRecipeOutput());
+                ItemHandlerUtil.setStackInSlot(output, 1, ItemStack.EMPTY);
+                ItemHandlerUtil.setStackInSlot(output, 2, ItemStack.EMPTY);
+            }
+        }
     }
 
 }
