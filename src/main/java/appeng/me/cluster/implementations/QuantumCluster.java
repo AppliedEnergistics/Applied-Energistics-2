@@ -22,7 +22,6 @@ import java.util.Iterator;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -159,12 +158,15 @@ public class QuantumCluster implements ILocatable, IAECluster {
         if (qc != null) {
             final World theWorld = qc.center.getWorld();
             if (!qc.isDestroyed) {
-                ChunkPos cPos = new ChunkPos(qc.center.getPos());
-                if (theWorld.getChunkProvider().isChunkLoaded(cPos)) {
+                // In future versions, we might actually want to delay the entire registration until the center
+                // tile begins ticking normally.
+                if (theWorld.isBlockLoaded(qc.center.getPos())) {
                     final World cur = theWorld.getServer().getWorld(theWorld.func_234923_W_());
 
                     final TileEntity te = theWorld.getTileEntity(qc.center.getPos());
                     return te != qc.center || theWorld != cur;
+                } else {
+                    AELog.warn("Found a registered QNB with serial %s whose chunk seems to be unloaded: %s", qe, qc);
                 }
             }
         }
@@ -275,4 +277,17 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private void setRing(final QuantumBridgeTileEntity[] ring) {
         this.Ring = ring;
     }
+
+    @Override
+    public String toString() {
+        if (center == null) {
+            return "QuantumCluster{no-center}";
+        }
+
+        World world = center.getWorld();
+        BlockPos pos = center.getPos();
+
+        return "QuantumCluster{" + world + "," + pos + "}";
+    }
+
 }
