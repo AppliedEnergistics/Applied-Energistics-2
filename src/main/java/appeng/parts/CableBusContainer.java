@@ -41,7 +41,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -82,7 +81,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     private final EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf(LayerFlags.class);
     private YesNo hasRedstone = YesNo.UNDECIDED;
     private IPartHost tcb;
-    // TODO 1.10.2-R - does somebody seriously want to make parts TESR??? Hope not.
     private boolean requiresDynamicRender = false;
     private boolean inWorld = false;
     // Cached collision shape for living entities
@@ -1096,11 +1094,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             }
         }
 
-        VoxelShape shape = VoxelShapes.empty();
-        for (final AxisAlignedBB bx : boxes) {
-            shape = VoxelShapes.or(shape, VoxelShapes.create(bx));
-        }
-        return shape;
+        return VoxelShapeCache.get(boxes);
     }
 
     private void invalidateShapes() {
