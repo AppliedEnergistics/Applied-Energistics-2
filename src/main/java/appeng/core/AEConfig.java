@@ -49,6 +49,8 @@ import appeng.core.config.StringListOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 
+import javax.annotation.Nullable;
+
 public final class AEConfig {
 
     public final ClientConfig clientConfig;
@@ -398,7 +400,16 @@ public final class AEConfig {
         return commonConfig.quartzOreBiomeBlacklist.get();
     }
 
-// Setters keep visibility as low as possible.
+    @Nullable
+    public String getImprovedFluidTag() {
+        return Strings.emptyToNull(commonConfig.improvedFluidTag.get());
+    }
+
+    public float getImprovedFluidMultiplier() {
+        return commonConfig.improvedFluidMultiplier.get().floatValue();
+    }
+
+    // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
 
@@ -510,6 +521,11 @@ public final class AEConfig {
         public final IntegerOption condenserMatterBallsPower;
         public final IntegerOption condenserSingularityPower;
 
+        // In-World Purification
+        // Settings for improved speed depending on fluid the crystal is in
+        public final StringOption improvedFluidTag;
+        public final DoubleOption improvedFluidMultiplier;
+
         public final Map<TickRates, IntegerOption> tickRateMin = new HashMap<>();
         public final Map<TickRates, IntegerOption> tickRateMax = new HashMap<>();
 
@@ -604,6 +620,12 @@ public final class AEConfig {
                 tickRateMin.put(tickRate, tickrates.addInt(tickRate.name() + "Min", tickRate.getDefaultMin()));
                 tickRateMax.put(tickRate, tickrates.addInt(tickRate.name() + "Max", tickRate.getDefaultMax()));
             }
+
+            ConfigSection inWorldPurification = root.subsection("inWorldPurification", "Settings for in-world purification of crystals.");
+
+            improvedFluidTag = inWorldPurification.addString("improvedFluidTag", "", "A fluid tag that identifies fluids that improve crystal purification speed. Does not affect purification with water/lava.");
+            improvedFluidMultiplier = inWorldPurification
+                    .addDouble("improvedFluidMultiplier", 2.0, 1.0, 10.0, "The speed multiplier to use when the crystals are submerged in the improved fluid.")
         }
 
     }

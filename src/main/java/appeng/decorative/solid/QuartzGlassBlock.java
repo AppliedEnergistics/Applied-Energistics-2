@@ -23,8 +23,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.util.math.Direction;
 
-import appeng.helpers.AEMaterials;
-
 public class QuartzGlassBlock extends AbstractGlassBlock {
 
     public QuartzGlassBlock(Settings props) {
@@ -33,8 +31,7 @@ public class QuartzGlassBlock extends AbstractGlassBlock {
 
     @Override
     public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
-        final Material mat = adjacentBlockState.getMaterial();
-        if (mat == Material.GLASS || mat == AEMaterials.GLASS) {
+        if (adjacentBlockState.getBlock() instanceof QuartzGlassBlock) {
             if (adjacentBlockState.getRenderType() == state.getRenderType()) {
                 return true;
             }

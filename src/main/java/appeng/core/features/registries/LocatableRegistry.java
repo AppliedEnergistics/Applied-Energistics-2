@@ -25,6 +25,7 @@ import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;
 import appeng.api.features.ILocatableRegistry;
+import appeng.core.AELog;
 import appeng.util.Platform;
 
 public final class LocatableRegistry implements ILocatableRegistry {
@@ -39,8 +40,10 @@ public final class LocatableRegistry implements ILocatableRegistry {
             }
 
             if (change == LocatableEvent.REGISTER) {
-                this.set.put(target.getLocatableSerial(), target);
+                AELog.debug("Registering locatable %s: %s", target.getLocatableSerial(), target);
+            this.set.put(target.getLocatableSerial(), target);
             } else if (change == LocatableEvent.UNREGISTER) {
+            AELog.debug("Unregistering locatable %s: %s", target.getLocatableSerial(), target);
                 this.set.remove(target.getLocatableSerial());
             }
         });

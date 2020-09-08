@@ -30,6 +30,7 @@ import net.minecraft.block.Material;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BlockSoundGroup;
 
@@ -267,17 +268,18 @@ public final class ApiBlocks implements IBlocks {
         this.chiseledQuartzBlock = deco.block("chiseled_quartz_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES))
                 .build();
 
-        this.quartzGlass = registry.features(AEFeature.QUARTZ_GLASS)
-                .block("quartz_glass", () -> new QuartzGlassBlock(glassProps()))
-                .rendering(new BlockRenderingCustomizer() {
-                    @Override
-                    @Environment(EnvType.CLIENT)
-                    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                        rendering.renderType(RenderLayer.getCutout());
-                    }
-                }).build();
+        AbstractBlock.TypedContextPredicate<EntityType<?>> neverAllowSpawn = (p1, p2, p3, p4) -> false;
+        this.quartzGlass = registry.features(AEFeature.QUARTZ_GLASS).block("quartz_glass", () -> {
+            return new QuartzGlassBlock(glassProps().allowsSpawning(neverAllowSpawn));
+        }).rendering(new BlockRenderingCustomizer() {
+            @Override
+            @Environment(EnvType.CLIENT)
+            public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+                rendering.renderType(RenderLayer.getCutout());
+            }
+        }).build();
         this.quartzVibrantGlass = deco
-                .block("quartz_vibrant_glass", () -> new QuartzLampBlock(glassProps().lightLevel(15)))
+                .block("quartz_vibrant_glass", () -> new QuartzLampBlock(glassProps().lightLevel(15).allowsSpawning(neverAllowSpawn)))
                 .addFeatures(AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS)
                 .rendering(new BlockRenderingCustomizer() {
                     @Override

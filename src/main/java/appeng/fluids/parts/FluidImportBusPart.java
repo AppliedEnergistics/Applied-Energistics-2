@@ -141,10 +141,10 @@ public class FluidImportBusPart extends SharedFluidBusPart {
 
                 return TickRateModulation.IDLE;
             } catch (GridAccessException e) {
-                e.printStackTrace();
+                    // skip
+                }
             }
         }
-
         return TickRateModulation.SLEEP;
     }
 

@@ -250,7 +250,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
             this.renderFragment |= 1;
         } else {
             // TODO: Optimize Network Load
-            if (this.world != null) {
+            if (this.world != null && !this.isRemoved() && !notLoaded()) {
                 boolean alreadyUpdated = false;
                 // Let the block update it's own state with our internal state changes
                 BlockState currentState = getCachedState();
