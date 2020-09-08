@@ -324,19 +324,19 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return w.setBlockState(pos, newState);
         }
 
+        if (blk instanceof CableBusBlock && p != null) {
+            return ((CableBusBlock) blk).recolorBlock(w, pos, side, newColor.dye, p);
+        }
+
         TileEntity be = w.getTileEntity(pos);
         if (be instanceof IColorableTile) {
             IColorableTile ct = (IColorableTile) be;
             AEColor c = ct.getColor();
             if (c != newColor) {
-                ct.recolourBlock(side, newColor, null);
+                ct.recolourBlock(side, newColor, p);
                 return true;
             }
             return false;
-        }
-
-        if (blk instanceof CableBusBlock && p != null) {
-            return ((CableBusBlock) blk).recolorBlock(w, pos, side, newColor.dye, p);
         }
 
         return false;
