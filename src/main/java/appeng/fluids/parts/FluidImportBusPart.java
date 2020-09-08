@@ -96,16 +96,15 @@ public class FluidImportBusPart extends SharedFluidBusPart {
         }
 
         final TileEntity te = this.getConnectedTE();
-        LazyOptional<IFluidHandler> fhOpt = LazyOptional.empty();
         if (te != null) {
-            te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite());
-        }
-        if (fhOpt.isPresent()) {
-            try {
-                final IFluidHandler fh = fhOpt.orElse(null);
-                final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory(this.getChannel());
+            LazyOptional<IFluidHandler> fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+                    this.getSide().getFacing().getOpposite());
 
-                if (fh != null) {
+            if (fhOpt.isPresent()) {
+                try {
+                    final IFluidHandler fh = fhOpt.orElseThrow(() -> new IllegalStateException());
+                    final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory(this.getChannel());
+
                     final FluidStack fluidStack = fh.drain(this.calculateAmountToSend(), FluidAction.SIMULATE);
 
                     if (this.filterEnabled() && !this.isInFilter(fluidStack)) {
@@ -128,12 +127,11 @@ public class FluidImportBusPart extends SharedFluidBusPart {
                     }
 
                     return TickRateModulation.IDLE;
+                } catch (GridAccessException e) {
+                    // skip
                 }
-            } catch (GridAccessException e) {
-                e.printStackTrace();
             }
         }
-
         return TickRateModulation.SLEEP;
     }
 

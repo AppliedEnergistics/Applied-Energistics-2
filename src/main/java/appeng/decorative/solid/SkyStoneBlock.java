@@ -29,7 +29,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.block.AEBaseBlock;
 import appeng.core.worlddata.WorldData;
@@ -43,11 +42,10 @@ public class SkyStoneBlock extends AEBaseBlock {
         super(props);
         this.type = type;
 
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.addListener(this::breakFaster);
     }
 
-    @SubscribeEvent
-    public void breakFaster(final PlayerEvent.BreakSpeed event) {
+    private void breakFaster(final PlayerEvent.BreakSpeed event) {
         if (event.getState().getBlock() == this && event.getPlayer() != null) {
             final ItemStack is = event.getPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND);
             int level = -1;

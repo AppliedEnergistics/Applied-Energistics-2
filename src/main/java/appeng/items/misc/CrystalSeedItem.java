@@ -24,15 +24,19 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -41,6 +45,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.implementations.items.IGrowableCrystal;
+import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.items.AEBaseItem;
@@ -94,8 +99,24 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public float getMultiplier(final Block blk, final Material mat) {
-        return 0.5f;
+    public float getMultiplier(BlockState state, @Nullable World world, @Nullable BlockPos pos) {
+
+        // Check for the improved fluid tag and return the improved multiplier
+        String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
+        if (improvedFluidTagName != null) {
+            ITag<Fluid> tag = FluidTags.getCollection().get(new ResourceLocation(improvedFluidTagName));
+            if (tag != null && state.getFluidState().isTagged(tag)) {
+                return AEConfig.instance().getImprovedFluidMultiplier();
+            }
+        }
+
+        // Check for the normal supported fluid
+        if (world != null && world.func_234923_W_() == World.field_234919_h_) {
+            // In the nether, use Lava as the "normal" fluid
+            return state.getFluidState().isTagged(FluidTags.LAVA) ? 1 : 0;
+        } else {
+            return state.getFluidState().isTagged(FluidTags.WATER) ? 1 : 0;
+        }
     }
 
     @Override

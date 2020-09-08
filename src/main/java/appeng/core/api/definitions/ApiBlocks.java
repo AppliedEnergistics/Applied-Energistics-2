@@ -20,7 +20,9 @@ package appeng.core.api.definitions;
 
 import static appeng.block.AEBaseBlock.defaultProps;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SoundType;
@@ -28,6 +30,7 @@ import net.minecraft.block.StairsBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
@@ -262,18 +265,20 @@ public final class ApiBlocks implements IBlocks {
         this.chiseledQuartzBlock = deco.block("chiseled_quartz_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES))
                 .build();
 
-        this.quartzGlass = registry.features(AEFeature.QUARTZ_GLASS)
-                .block("quartz_glass", () -> new QuartzGlassBlock(defaultProps(Material.GLASS).notSolid()))
-                .rendering(new BlockRenderingCustomizer() {
-                    @Override
-                    @OnlyIn(Dist.CLIENT)
-                    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                        rendering.renderType(RenderType.getCutout());
-                    }
-                }).build();
+        AbstractBlock.IExtendedPositionPredicate<EntityType<?>> neverAllowSpawn = (p1, p2, p3, p4) -> false;
+        this.quartzGlass = registry.features(AEFeature.QUARTZ_GLASS).block("quartz_glass", () -> {
+            return new QuartzGlassBlock(defaultProps(Material.GLASS).notSolid().setAllowsSpawn(neverAllowSpawn));
+        }).rendering(new BlockRenderingCustomizer() {
+            @Override
+            @OnlyIn(Dist.CLIENT)
+            public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+                rendering.renderType(RenderType.getCutout());
+            }
+        }).build();
         this.quartzVibrantGlass = deco
                 .block("quartz_vibrant_glass",
-                        () -> new QuartzLampBlock(defaultProps(Material.GLASS).setLightLevel(b -> 15).notSolid()))
+                        () -> new QuartzLampBlock(defaultProps(Material.GLASS).setLightLevel(b -> 15).notSolid()
+                                .setAllowsSpawn(neverAllowSpawn)))
                 .addFeatures(AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS)
                 .rendering(new BlockRenderingCustomizer() {
                     @Override

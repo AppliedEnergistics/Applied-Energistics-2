@@ -22,12 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;
 import appeng.api.features.ILocatableRegistry;
+import appeng.core.AELog;
 import appeng.util.Platform;
 
 public final class LocatableRegistry implements ILocatableRegistry {
@@ -35,18 +35,19 @@ public final class LocatableRegistry implements ILocatableRegistry {
 
     public LocatableRegistry() {
         this.set = new HashMap<>();
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.addListener(this::updateLocatable);
     }
 
-    @SubscribeEvent
-    public void updateLocatable(final LocatableEventAnnounce e) {
+    private void updateLocatable(final LocatableEventAnnounce e) {
         if (Platform.isClient()) {
             return; // IGNORE!
         }
 
         if (e.change == LocatableEvent.REGISTER) {
+            AELog.debug("Registering locatable %s: %s", e.target.getLocatableSerial(), e.target);
             this.set.put(e.target.getLocatableSerial(), e.target);
         } else if (e.change == LocatableEvent.UNREGISTER) {
+            AELog.debug("Unregistering locatable %s: %s", e.target.getLocatableSerial(), e.target);
             this.set.remove(e.target.getLocatableSerial());
         }
     }

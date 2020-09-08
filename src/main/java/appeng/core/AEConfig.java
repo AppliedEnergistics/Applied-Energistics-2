@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Strings;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -393,6 +395,15 @@ public final class AEConfig {
         return this.meteoriteDimensionWhitelist;
     }
 
+    @Nullable
+    public String getImprovedFluidTag() {
+        return Strings.emptyToNull(COMMON.improvedFluidTag.get());
+    }
+
+    public float getImprovedFluidMultiplier() {
+        return COMMON.improvedFluidMultiplier.get().floatValue();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -507,6 +518,11 @@ public final class AEConfig {
         public final ConfigValue<Integer> condenserMatterBallsPower;
         public final ConfigValue<Integer> condenserSingularityPower;
 
+        // In-World Purification
+        // Settings for improved speed depending on fluid the crystal is in
+        public final ConfigValue<String> improvedFluidTag;
+        public final ConfigValue<Double> improvedFluidMultiplier;
+
         public final Map<TickRates, ConfigValue<Integer>> tickRateMin = new HashMap<>();
         public final Map<TickRates, ConfigValue<Integer>> tickRateMax = new HashMap<>();
 
@@ -616,6 +632,17 @@ public final class AEConfig {
                 tickRateMin.put(tickRate, builder.define(tickRate.name() + "Min", tickRate.getDefaultMin()));
                 tickRateMax.put(tickRate, builder.define(tickRate.name() + "Max", tickRate.getDefaultMax()));
             }
+            builder.pop();
+
+            builder.comment("Settings for in-world purification of crystals.").push("inWorldPurification");
+
+            improvedFluidTag = builder.comment(
+                    "A fluid tag that identifies fluids that improve crystal purification speed. Does not affect purification with water/lava.")
+                    .define("improvedFluidTag", "");
+            improvedFluidMultiplier = builder
+                    .comment("The speed multiplier to use when the crystals are submerged in the improved fluid.")
+                    .defineInRange("improvedFluidMultiplier", 2.0, 1.0, 10.0);
+
             builder.pop();
         }
 
