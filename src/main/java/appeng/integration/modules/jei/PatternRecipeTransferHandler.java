@@ -20,9 +20,7 @@ package appeng.integration.modules.jei;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ResourceLocation;
 
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -30,8 +28,6 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.container.implementations.PatternTermContainer;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.JEIRecipePacket;
 
 public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternTermContainer> {
 

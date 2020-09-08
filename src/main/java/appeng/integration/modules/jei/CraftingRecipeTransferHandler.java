@@ -20,15 +20,12 @@ package appeng.integration.modules.jei;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ResourceLocation;
 
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.container.implementations.CraftingTermContainer;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.JEIRecipePacket;
 
 public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermContainer> {
 
