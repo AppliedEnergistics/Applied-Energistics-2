@@ -159,7 +159,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
                 // In future versions, we might actually want to delay the entire registration
                 // until the center
                 // tile begins ticking normally.
-                if (theWorld.isBlockLoaded(qc.center.getPos())) {
+                if (theWorld.isChunkLoaded(qc.center.getPos())) {
                     final World cur = theWorld.getServer().getWorld(theWorld.getRegistryKey());
 
                     final BlockEntity te = theWorld.getBlockEntity(qc.center.getPos());

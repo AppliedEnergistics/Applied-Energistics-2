@@ -58,6 +58,14 @@ public class ConfigSection {
         return option;
     }
 
+    public StringOption addString(String id, String defaultValue) {
+        return addString(id, defaultValue, comment);
+    }
+
+    public StringOption addString(String id, String defaultValue, String comment) {
+        return addOption(new StringOption(this, id, comment, defaultValue));
+    }
+
     public IntegerOption addInt(String id, int defaultValue) {
         return addInt(id, defaultValue, comment);
     }

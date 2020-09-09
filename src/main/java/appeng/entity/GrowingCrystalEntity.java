@@ -19,14 +19,14 @@
 package appeng.entity;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import appeng.api.features.AEFeature;
@@ -37,7 +37,6 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.items.misc.CrystalSeedItem;
 import appeng.mixins.ItemEntityAccessor;
-import appeng.util.Platform;
 
 public class GrowingCrystalEntity extends AEBaseItemEntity {
 
@@ -46,7 +45,8 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
     // Growth tick progress per tick by number of adjacent accelerators
     // Expressed as 1/1000th of a growth tick, applied to progress_1000
     // each time this entity ticks.
-    private static final int[] GROWTH_TICK_PROGRESS = { 1, // no accelerators
+    private static final int[] GROWTH_TICK_PROGRESS = { //
+            1, // no accelerators
             40, // 1 accelerator
             92, // 2 accelerators
             159, // 3 accelerators
@@ -94,9 +94,9 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
             return;
         }
 
-        final int x = MathHelper.floor(this.getPosX());
+        final int x = MathHelper.floor(this.getX());
         final int y = MathHelper.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
-        final int z = MathHelper.floor(this.getPosZ());
+        final int z = MathHelper.floor(this.getZ());
 
         BlockPos pos = new BlockPos(x, y, z);
         final BlockState state = this.world.getBlockState(pos);
@@ -111,7 +111,7 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
 
         final int progressPerTick = (int) Math.max(1, this.getSpeed(pos) * multiplier);
 
-        if (world.isRemote()) {
+        if (world.isClient()) {
             // On the client, we reuse the growth-tick-progress
             // as a tick-counter for particle effects
             int len = getTicksBetweenParticleEffects(progressPerTick);
@@ -183,7 +183,7 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
 
         BlockPos.Mutable testPos = new BlockPos.Mutable();
         for (Direction direction : Direction.values()) {
-            if (this.isPoweredAccelerator(testPos.func_239622_a_(pos, direction))) {
+            if (this.isPoweredAccelerator(testPos.set(pos, direction))) {
                 count++;
             }
         }
@@ -205,13 +205,13 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
         // automation based around dropping seeds between 5 CGAs, then catchiung
         // them on their way up.
         if (item.getItem() instanceof CrystalSeedItem) {
-            Vector3d v = this.getMotion();
+            Vec3d v = this.getVelocity();
 
             // Apply a much smaller acceleration to make them slowly sink
             double yAccel = this.hasNoGravity() ? 0 : -0.002;
 
             // Apply the x/z slow-down, and the y acceleration
-            this.setMotion(v.x * 0.99, v.y + yAccel, v.z * 0.99);
+            this.setVelocity(v.x * 0.99, v.y + yAccel, v.z * 0.99);
 
             return;
         }

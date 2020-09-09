@@ -18,36 +18,39 @@
 
 package appeng.items.misc;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.Material;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.hooks.AECustomEntityItem;
 import appeng.items.AEBaseItem;
+import com.google.common.base.Preconditions;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.tag.FluidTags;
+import net.minecraft.tag.Tag;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * This item reprents one of the seeds used to grow various forms of quartz by
@@ -70,9 +73,15 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
      */
     private final ItemConvertible grownItem;
 
+    private final Tag<Fluid> improvedFluidTag;
+
     public CrystalSeedItem(Settings properties, ItemConvertible grownItem) {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
+
+        String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
+        this.improvedFluidTag = improvedFluidTagName != null ?
+                TagRegistry.fluid(new Identifier(improvedFluidTagName)) : null;
     }
 
     @Nullable
@@ -101,20 +110,17 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
     public float getMultiplier(BlockState state, @Nullable World world, @Nullable BlockPos pos) {
 
         // Check for the improved fluid tag and return the improved multiplier
-        String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
-        if (improvedFluidTagName != null) {
-            ITag<Fluid> tag = FluidTags.getCollection().get(new ResourceLocation(improvedFluidTagName));
-            if (tag != null && state.getFluidState().isTagged(tag)) {
-                return AEConfig.instance().getImprovedFluidMultiplier();
-            }
+        FluidState fluidState = state.getFluidState();
+        if (improvedFluidTag != null && fluidState.isIn(improvedFluidTag)) {
+            return AEConfig.instance().getImprovedFluidMultiplier();
         }
 
         // Check for the normal supported fluid
-        if (world != null && world.func_234923_W_() == World.field_234919_h_) {
+        if (world != null && world.getRegistryKey() == World.NETHER) {
             // In the nether, use Lava as the "normal" fluid
-            return state.getFluidState().isTagged(FluidTags.LAVA) ? 1 : 0;
+            return fluidState.isIn(FluidTags.LAVA) ? 1 : 0;
         } else {
-            return state.getFluidState().isTagged(FluidTags.WATER) ? 1 : 0;
+            return fluidState.isIn(FluidTags.WATER) ? 1 : 0;
         }
     }
 

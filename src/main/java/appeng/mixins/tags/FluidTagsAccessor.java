@@ -1,6 +1,9 @@
 package appeng.mixins.tags;
 
+import net.minecraft.tag.RequiredTagList;
+import net.minecraft.tag.TagGroup;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.fluid.Fluid;
@@ -12,6 +15,11 @@ public interface FluidTagsAccessor {
 
     @Invoker("register")
     static Tag.Identified<Fluid> register(String id) {
+        throw new AssertionError();
+    }
+
+    @Accessor("REQUIRED_TAGS")
+    static RequiredTagList<Fluid> getRequiredTags() {
         throw new AssertionError();
     }
 

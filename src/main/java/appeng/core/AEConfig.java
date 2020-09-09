@@ -46,8 +46,10 @@ import appeng.core.config.DoubleOption;
 import appeng.core.config.EnumOption;
 import appeng.core.config.IntegerOption;
 import appeng.core.config.StringListOption;
+import appeng.core.config.StringOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
+import com.google.common.base.Strings;
 
 import javax.annotation.Nullable;
 
@@ -406,7 +408,7 @@ public final class AEConfig {
     }
 
     public float getImprovedFluidMultiplier() {
-        return commonConfig.improvedFluidMultiplier.get().floatValue();
+        return (float) commonConfig.improvedFluidMultiplier.get();
     }
 
     // Setters keep visibility as low as possible.
@@ -625,7 +627,7 @@ public final class AEConfig {
 
             improvedFluidTag = inWorldPurification.addString("improvedFluidTag", "", "A fluid tag that identifies fluids that improve crystal purification speed. Does not affect purification with water/lava.");
             improvedFluidMultiplier = inWorldPurification
-                    .addDouble("improvedFluidMultiplier", 2.0, 1.0, 10.0, "The speed multiplier to use when the crystals are submerged in the improved fluid.")
+                    .addDouble("improvedFluidMultiplier", 2.0, 1.0, 10.0, "The speed multiplier to use when the crystals are submerged in the improved fluid.");
         }
 
     }
