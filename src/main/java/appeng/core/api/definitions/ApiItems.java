@@ -312,7 +312,7 @@ public final class ApiItems implements IItems {
 
         GrowingCrystalEntity.TYPE = registry
                 .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, EntityClassification.MISC)
-                .customize(builder -> builder.size(0.25F, 0.25F)).build();
+                .customize(builder -> builder.size(0.25F, 0.4F)).build();
 
         // rv1
         this.encodedPattern = registry.item("encoded_pattern", EncodedPatternItem::new)
