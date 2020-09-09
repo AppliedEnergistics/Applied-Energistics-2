@@ -253,9 +253,11 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         if (this.renderFragment > 0) {
             this.renderFragment |= 1;
         } else {
+            // Clearing the cached model-data is always harmless regardless of status
+            this.requestModelDataUpdate();
+
             // TODO: Optimize Network Load
-            if (this.world != null) {
-                this.requestModelDataUpdate();
+            if (this.world != null && !this.isRemoved() && !notLoaded()) {
 
                 boolean alreadyUpdated = false;
                 // Let the block update it's own state with our internal state changes
@@ -367,7 +369,6 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * null means nothing to store...
      *
      * @param from source of settings
-     *
      * @return compound of source
      */
     public CompoundNBT downloadSettings(final SettingsFrom from) {
