@@ -30,6 +30,10 @@ import java.util.Map;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
+import com.google.common.base.Strings;
+
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -49,9 +53,6 @@ import appeng.core.config.StringListOption;
 import appeng.core.config.StringOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
-import com.google.common.base.Strings;
-
-import javax.annotation.Nullable;
 
 public final class AEConfig {
 
@@ -623,11 +624,13 @@ public final class AEConfig {
                 tickRateMax.put(tickRate, tickrates.addInt(tickRate.name() + "Max", tickRate.getDefaultMax()));
             }
 
-            ConfigSection inWorldPurification = root.subsection("inWorldPurification", "Settings for in-world purification of crystals.");
+            ConfigSection inWorldPurification = root.subsection("inWorldPurification",
+                    "Settings for in-world purification of crystals.");
 
-            improvedFluidTag = inWorldPurification.addString("improvedFluidTag", "", "A fluid tag that identifies fluids that improve crystal purification speed. Does not affect purification with water/lava.");
-            improvedFluidMultiplier = inWorldPurification
-                    .addDouble("improvedFluidMultiplier", 2.0, 1.0, 10.0, "The speed multiplier to use when the crystals are submerged in the improved fluid.");
+            improvedFluidTag = inWorldPurification.addString("improvedFluidTag", "",
+                    "A fluid tag that identifies fluids that improve crystal purification speed. Does not affect purification with water/lava.");
+            improvedFluidMultiplier = inWorldPurification.addDouble("improvedFluidMultiplier", 2.0, 1.0, 10.0,
+                    "The speed multiplier to use when the crystals are submerged in the improved fluid.");
         }
 
     }

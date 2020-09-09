@@ -279,7 +279,8 @@ public final class ApiBlocks implements IBlocks {
             }
         }).build();
         this.quartzVibrantGlass = deco
-                .block("quartz_vibrant_glass", () -> new QuartzLampBlock(glassProps().lightLevel(15).allowsSpawning(neverAllowSpawn)))
+                .block("quartz_vibrant_glass",
+                        () -> new QuartzLampBlock(glassProps().lightLevel(15).allowsSpawning(neverAllowSpawn)))
                 .addFeatures(AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS)
                 .rendering(new BlockRenderingCustomizer() {
                     @Override

@@ -18,23 +18,25 @@
 
 package appeng.parts;
 
+import java.util.List;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
-import java.util.List;
-
 /**
  * While creation of a {@link net.minecraft.util.shape.VoxelShape} with
- * {@link net.minecraft.util.shape.VoxelShapes#cuboid(Box)} is fast enough, combining voxel
- * shapes with {@link net.minecraft.util.shape.VoxelShapes#union(VoxelShape, VoxelShape)} or any other
- * combination method, as well as {@link VoxelShape#simplify()} are <b>extremely
- * slow</b>. For example: Creating a VoxelShape for a list of 5 bounding boxes
- * 10,000 times takes about 1.7 seconds.
+ * {@link net.minecraft.util.shape.VoxelShapes#cuboid(Box)} is fast enough,
+ * combining voxel shapes with
+ * {@link net.minecraft.util.shape.VoxelShapes#union(VoxelShape, VoxelShape)} or
+ * any other combination method, as well as {@link VoxelShape#simplify()} are
+ * <b>extremely slow</b>. For example: Creating a VoxelShape for a list of 5
+ * bounding boxes 10,000 times takes about 1.7 seconds.
  *
  * <p>
  * To reduce the impact of this on cables, we introduce a global voxel shape

@@ -23,12 +23,12 @@
 
 package appeng.api.implementations.items;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 
 public interface IGrowableCrystal {
 

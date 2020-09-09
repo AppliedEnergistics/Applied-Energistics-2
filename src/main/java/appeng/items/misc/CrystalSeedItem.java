@@ -18,13 +18,12 @@
 
 package appeng.items.misc;
 
-import appeng.api.implementations.items.IGrowableCrystal;
-import appeng.core.AEConfig;
-import appeng.core.localization.ButtonToolTips;
-import appeng.entity.GrowingCrystalEntity;
-import appeng.hooks.AECustomEntityItem;
-import appeng.items.AEBaseItem;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tag.TagRegistry;
@@ -49,8 +48,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import appeng.api.implementations.items.IGrowableCrystal;
+import appeng.core.AEConfig;
+import appeng.core.localization.ButtonToolTips;
+import appeng.entity.GrowingCrystalEntity;
+import appeng.hooks.AECustomEntityItem;
+import appeng.items.AEBaseItem;
 
 /**
  * This item reprents one of the seeds used to grow various forms of quartz by
@@ -80,8 +83,8 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
         this.grownItem = Preconditions.checkNotNull(grownItem);
 
         String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
-        this.improvedFluidTag = improvedFluidTagName != null ?
-                TagRegistry.fluid(new Identifier(improvedFluidTagName)) : null;
+        this.improvedFluidTag = improvedFluidTagName != null ? TagRegistry.fluid(new Identifier(improvedFluidTagName))
+                : null;
     }
 
     @Nullable
