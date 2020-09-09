@@ -37,6 +37,10 @@ class JeiRuntimeAdapter implements IJEI {
         return true;
     }
 
+    public IJeiRuntime getRuntime() {
+        return runtime;
+    }
+
     @Override
     public String getSearchText() {
         return Strings.nullToEmpty(this.runtime.getIngredientFilter().getFilterText());

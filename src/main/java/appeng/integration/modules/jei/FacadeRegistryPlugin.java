@@ -111,6 +111,8 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
         ingredients.set(7, Ingredient.fromStacks(cableAnchor));
         ingredients.set(4, Ingredient.fromStacks(textureItem));
 
+        result.setCount(4);
+
         return new ShapedRecipe(id, "", 3, 3, ingredients, result);
     }
 

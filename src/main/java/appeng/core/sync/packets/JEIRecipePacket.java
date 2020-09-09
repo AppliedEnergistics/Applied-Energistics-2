@@ -18,15 +18,27 @@
 
 package appeng.core.sync.packets;
 
+import java.util.Arrays;
+
+import javax.annotation.Nullable;
+
+import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Pair;
+
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -40,8 +52,10 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.container.implementations.PatternTermContainer;
 import appeng.core.Api;
 import appeng.core.sync.BasePacket;
+import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ViewCellItem;
@@ -54,152 +68,289 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class JEIRecipePacket extends BasePacket {
 
-    private ItemStack[][] recipe;
+    /**
+     * Transmit only a recipe ID.
+     */
+    private static final int INLINE_RECIPE_NONE = 1;
+
+    /**
+     * Transmit the information about the recipe we actually need. This is
+     * explicitly limited since this is untrusted client->server info.
+     */
+    private static final int INLINE_RECIPE_SHAPED = 2;
+
+    private ResourceLocation recipeId;
+    /**
+     * This is optional, in case the client already knows it could not resolve the
+     * recipe id.
+     */
+    @Nullable
+    private IRecipe<?> recipe;
+    private boolean crafting;
 
     public JEIRecipePacket(final PacketBuffer stream) {
-        final CompoundNBT comp = stream.readCompoundTag();
-        if (comp != null) {
-            this.recipe = new ItemStack[9][];
-            for (int x = 0; x < this.recipe.length; x++) {
-                final ListNBT list = comp.getList("#" + x, 10);
-                if (list.size() > 0) {
-                    this.recipe[x] = new ItemStack[list.size()];
-                    for (int y = 0; y < list.size(); y++) {
-                        this.recipe[x][y] = ItemStack.read(list.getCompound(y));
-                    }
-                }
-            }
-        }
-    }
+        this.crafting = stream.readBoolean();
+        final String id = stream.readString(Short.MAX_VALUE);
+        this.recipeId = new ResourceLocation(id);
 
-    // api
-    public JEIRecipePacket(final CompoundNBT recipe) {
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
-
-        data.writeInt(this.getPacketID());
-
-        data.writeCompoundTag(recipe);
-
-        this.configureWrite(data);
-    }
-
-    @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final ServerPlayerEntity pmp = (ServerPlayerEntity) player;
-        final Container con = pmp.openContainer;
-
-        if (!(con instanceof IContainerCraftingPacket)) {
-            return;
-        }
-
-        final IContainerCraftingPacket cct = (IContainerCraftingPacket) con;
-        final IGridNode node = cct.getNetworkNode();
-
-        if (node == null) {
-            return;
-        }
-
-        final IGrid grid = node.getGrid();
-        if (grid == null) {
-            return;
-        }
-
-        final IStorageGrid inv = grid.getCache(IStorageGrid.class);
-        final IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
-        final ISecurityGrid security = grid.getCache(ISecurityGrid.class);
-        final ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
-        final IItemHandler craftMatrix = cct.getInventoryByName("crafting");
-        final IItemHandler playerInventory = cct.getInventoryByName("player");
-
-        if (inv != null && this.recipe != null && security != null) {
-            final IMEMonitor<IAEItemStack> storage = inv
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-            final IPartitionList<IAEItemStack> filter = ViewCellItem.createFilter(cct.getViewCells());
-
-            for (int x = 0; x < craftMatrix.getSlots(); x++) {
-                ItemStack currentItem = craftMatrix.getStackInSlot(x);
-
-                // prepare slots
-                if (!currentItem.isEmpty()) {
-                    // already the correct item?
-                    ItemStack newItem = this.canUseInSlot(x, currentItem);
-
-                    // put away old item
-                    if (newItem != currentItem && security.hasPermission(player, SecurityPermissions.INJECT)) {
-                        final IAEItemStack in = AEItemStack.fromItemStack(currentItem);
-                        final IAEItemStack out = cct.useRealItems()
-                                ? Platform.poweredInsert(energy, storage, in, cct.getActionSource())
-                                : null;
-                        if (out != null) {
-                            currentItem = out.createItemStack();
-                        } else {
-                            currentItem = ItemStack.EMPTY;
-                        }
-                    }
-                }
-
-                if (currentItem.isEmpty() && this.recipe[x] != null) {
-                    // for each variant
-                    for (int y = 0; y < this.recipe[x].length && currentItem.isEmpty(); y++) {
-                        final IAEItemStack request = AEItemStack.fromItemStack(this.recipe[x][y]);
-                        if (request != null) {
-                            // try ae
-                            if ((filter == null || filter.isListed(request))
-                                    && security.hasPermission(player, SecurityPermissions.EXTRACT)) {
-                                request.setStackSize(1);
-                                IAEItemStack out;
-
-                                if (cct.useRealItems()) {
-                                    out = Platform.poweredExtraction(energy, storage, request, cct.getActionSource());
-                                } else {
-                                    // Query the crafting grid if there is a pattern providing the item
-                                    if (!crafting.getCraftingFor(request, null, 0, null).isEmpty()) {
-                                        out = request;
-                                    } else {
-                                        // Fall back using an existing item
-                                        out = storage.extractItems(request, Actionable.SIMULATE, cct.getActionSource());
-                                    }
-                                }
-
-                                if (out != null) {
-                                    currentItem = out.createItemStack();
-                                }
-                            }
-
-                            // try inventory
-                            if (currentItem.isEmpty()) {
-                                AdaptorItemHandler ad = new AdaptorItemHandler(playerInventory);
-
-                                if (cct.useRealItems()) {
-                                    currentItem = ad.removeItems(1, this.recipe[x][y], null);
-                                } else {
-                                    currentItem = ad.simulateRemove(1, this.recipe[x][y], null);
-                                }
-                            }
-                        }
-                    }
-                }
-                ItemHandlerUtil.setStackInSlot(craftMatrix, x, currentItem);
-            }
-            con.onCraftMatrixChanged(new WrapperInvItemHandler(craftMatrix));
+        int inlineRecipeType = stream.readVarInt();
+        switch (inlineRecipeType) {
+            case INLINE_RECIPE_NONE:
+                break;
+            case INLINE_RECIPE_SHAPED:
+                recipe = IRecipeSerializer.CRAFTING_SHAPED.read(this.recipeId, stream);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid inline recipe type.");
         }
     }
 
     /**
-     *
-     * @param slot
-     * @param is   itemstack
-     * @return is if it can be used, else EMPTY
+     * Sends a recipe identified by the given recipe ID to the server for either
+     * filling a crafting grid or a pattern.
      */
-    private ItemStack canUseInSlot(int slot, ItemStack is) {
-        if (this.recipe[slot] != null) {
-            for (ItemStack option : this.recipe[slot]) {
-                if (is.isItemEqual(option)) {
-                    return is;
+    public JEIRecipePacket(final ResourceLocation recipeId, final boolean crafting) {
+        PacketBuffer data = createCommonHeader(recipeId, crafting, INLINE_RECIPE_NONE);
+        this.configureWrite(data);
+    }
+
+    /**
+     * Sends a recipe to the server for either filling a crafting grid or a pattern.
+     * <p>
+     * Prefer the id-based constructor above whereever possible.
+     */
+    public JEIRecipePacket(final ShapedRecipe recipe, final boolean crafting) {
+        PacketBuffer data = createCommonHeader(recipe.getId(), crafting, INLINE_RECIPE_SHAPED);
+        IRecipeSerializer.CRAFTING_SHAPED.write(data, recipe);
+        this.configureWrite(data);
+    }
+
+    private PacketBuffer createCommonHeader(ResourceLocation recipeId, boolean crafting, int inlineRecipeType) {
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+
+        data.writeInt(this.getPacketID());
+        data.writeBoolean(crafting);
+        data.writeResourceLocation(recipeId);
+        data.writeVarInt(inlineRecipeType);
+
+        return data;
+    }
+
+    /**
+     * Servside handler for this packet.
+     * <p>
+     * Makes use of {@link Preconditions#checkArgument(boolean)} as the
+     * {@link BasePacketHandler} is catching them and in general these cases should
+     * never happen except in an error case and should be logged then.
+     */
+    @Override
+    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+        // Setup and verification
+        final ServerPlayerEntity pmp = (ServerPlayerEntity) player;
+        final Container con = pmp.openContainer;
+        Preconditions.checkArgument(con instanceof IContainerCraftingPacket);
+
+        IRecipe<?> recipe = player.getEntityWorld().getRecipeManager().getRecipe(this.recipeId).orElse(null);
+        if (recipe == null && this.recipe != null) {
+            // Certain recipes (i.e. AE2 facades) are represented in JEI as ShapedRecipe's,
+            // while in reality they
+            // are special recipes. Those recipes are sent across the wire...
+            recipe = this.recipe;
+        }
+        Preconditions.checkArgument(recipe != null);
+
+        final IContainerCraftingPacket cct = (IContainerCraftingPacket) con;
+        final IGridNode node = cct.getNetworkNode();
+
+        Preconditions.checkArgument(node != null);
+
+        final IGrid grid = node.getGrid();
+        Preconditions.checkArgument(grid != null);
+
+        final IStorageGrid inv = grid.getCache(IStorageGrid.class);
+        Preconditions.checkArgument(inv != null);
+
+        final ISecurityGrid security = grid.getCache(ISecurityGrid.class);
+        Preconditions.checkArgument(security != null);
+
+        final IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
+        final ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
+        final IItemHandler craftMatrix = cct.getInventoryByName("crafting");
+        final IItemHandler playerInventory = cct.getInventoryByName("player");
+
+        final IMEMonitor<IAEItemStack> storage = inv
+                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+        final IPartitionList<IAEItemStack> filter = ViewCellItem.createFilter(cct.getViewCells());
+        final NonNullList<Ingredient> ingredients = this.ensure3by3CraftingMatrix(recipe);
+
+        // Handle each slot
+        for (int x = 0; x < craftMatrix.getSlots(); x++) {
+            ItemStack currentItem = craftMatrix.getStackInSlot(x);
+            Ingredient ingredient = ingredients.get(x);
+
+            // prepare slots
+            if (!currentItem.isEmpty()) {
+                // already the correct item? True, skip everything else
+                ItemStack newItem = this.canUseInSlot(ingredient, currentItem);
+
+                // put away old item, if not correct
+                if (newItem != currentItem && security.hasPermission(player, SecurityPermissions.INJECT)) {
+                    final IAEItemStack in = AEItemStack.fromItemStack(currentItem);
+                    final IAEItemStack out = cct.useRealItems()
+                            ? Platform.poweredInsert(energy, storage, in, cct.getActionSource())
+                            : null;
+                    if (out != null) {
+                        currentItem = out.createItemStack();
+                    } else {
+                        currentItem = ItemStack.EMPTY;
+                    }
+                }
+            }
+
+            // Find item or pattern from the network
+            if (currentItem.isEmpty() && security.hasPermission(player, SecurityPermissions.EXTRACT)) {
+                IAEItemStack out;
+
+                if (cct.useRealItems()) {
+                    IAEItemStack request = findBestMatchingItemStack(ingredient, filter, storage, cct);
+                    out = request != null
+                            ? Platform.poweredExtraction(energy, storage, request.setStackSize(1),
+                                    cct.getActionSource())
+                            : null;
+                } else {
+                    out = findBestMatchingPattern(ingredient, filter, crafting, storage, cct);
+                    if (out == null) {
+                        out = findBestMatchingItemStack(ingredient, filter, storage, cct);
+                    }
+                    if (out == null && ingredient.getMatchingStacks().length > 0) {
+                        out = AEItemStack.fromItemStack(ingredient.getMatchingStacks()[0]);
+                    }
+                }
+
+                if (out != null) {
+                    currentItem = out.createItemStack();
+                }
+            }
+
+            // If still nothing, search the player inventory.
+            if (currentItem.isEmpty()) {
+                ItemStack[] matchingStacks = ingredient.getMatchingStacks();
+                for (ItemStack matchingStack : matchingStacks) {
+                    if (currentItem.isEmpty()) {
+                        AdaptorItemHandler ad = new AdaptorItemHandler(playerInventory);
+
+                        if (cct.useRealItems()) {
+                            currentItem = ad.removeItems(1, matchingStack, null);
+                        } else {
+                            currentItem = ad.simulateRemove(1, matchingStack, null);
+                        }
+                    }
+                }
+            }
+            ItemHandlerUtil.setStackInSlot(craftMatrix, x, currentItem);
+        }
+
+        if (!this.crafting) {
+            this.handleProcessing(con, cct, recipe);
+        }
+
+        con.onCraftMatrixChanged(new WrapperInvItemHandler(craftMatrix));
+    }
+
+    /**
+     * Expand any recipe to a 3x3 matrix.
+     * <p>
+     * Will throw an {@link IllegalArgumentException} in case it has more than 9 or
+     * a shaped recipe is either wider or higher than 3. ingredients.
+     */
+    private NonNullList<Ingredient> ensure3by3CraftingMatrix(IRecipe<?> recipe) {
+        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+        NonNullList<Ingredient> expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
+
+        Preconditions.checkArgument(ingredients.size() <= 9);
+
+        // shaped recipes can be smaller than 3x3, expand to 3x3 to match the crafting
+        // matrix
+        if (recipe instanceof IShapedRecipe) {
+            IShapedRecipe<?> shapedRecipe = (IShapedRecipe<?>) recipe;
+            int width = shapedRecipe.getRecipeWidth();
+            int height = shapedRecipe.getRecipeHeight();
+            Preconditions.checkArgument(width <= 3 && height <= 3);
+
+            for (int h = 0; h < height; h++) {
+                for (int w = 0; w < width; w++) {
+                    int source = w + h * width;
+                    int target = w + h * 3;
+                    Ingredient i = ingredients.get(source);
+                    expandedIngredients.set(target, i);
                 }
             }
         }
-        return ItemStack.EMPTY;
+        // Anything else should be a flat list
+        else {
+            for (int i = 0; i < ingredients.size(); i++) {
+                expandedIngredients.set(i, ingredients.get(i));
+            }
+        }
+
+        return expandedIngredients;
+    }
+
+    /**
+     * @param is itemstack
+     * @return is if it can be used, else EMPTY
+     */
+    private ItemStack canUseInSlot(Ingredient ingredient, ItemStack is) {
+        return Arrays.stream(ingredient.getMatchingStacks()).filter(p -> p.isItemEqual(is)).findFirst()
+                .orElse(ItemStack.EMPTY);
+    }
+
+    /**
+     * Finds the first matching itemstack with the highest stored amount.
+     */
+    private IAEItemStack findBestMatchingItemStack(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
+            IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
+        return Arrays.stream(ingredients.getMatchingStacks()).map(AEItemStack::fromItemStack) //
+                .filter(r -> r != null && (filter == null || filter.isListed(r))) //
+                .map(s -> {
+                    // Determine the stored count
+                    IAEItemStack stored = storage.extractItems(s.copy().setStackSize(Long.MAX_VALUE),
+                            Actionable.SIMULATE, cct.getActionSource());
+                    return Pair.of(s, stored != null ? stored.getStackSize() : 0);
+                }).min((left, right) -> Long.compare(right.getSecond(), left.getSecond()))//
+                .map(Pair::getFirst).orElse(null);
+    }
+
+    /**
+     * This tries to find the first pattern matching the list of ingredients.
+     * <p>
+     * As additional condition, it sorts by the stored amount to return the one with
+     * the highest stored amount.
+     */
+    private IAEItemStack findBestMatchingPattern(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
+            ICraftingGrid crafting, IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
+        return Arrays.stream(ingredients.getMatchingStacks()).map(AEItemStack::fromItemStack)
+                .filter(r -> r != null && (filter == null || filter.isListed(r)))
+                .map(s -> s.setCraftable(!crafting.getCraftingFor(s, null, 0, null).isEmpty()))
+                .filter(IAEItemStack::isCraftable).map(s -> {
+                    final IAEItemStack stored = storage.extractItems(s, Actionable.SIMULATE, cct.getActionSource());
+                    return s.setStackSize(stored != null ? stored.getStackSize() : 0);
+                }).min((left, right) -> {
+                    final int craftable = Boolean.compare(left.isCraftable(), right.isCraftable());
+                    return craftable != 0 ? craftable : Long.compare(right.getStackSize(), left.getStackSize());
+                }).orElse(null);
+    }
+
+    private void handleProcessing(Container con, IContainerCraftingPacket cct, IRecipe<?> recipe) {
+        if (con instanceof PatternTermContainer) {
+            PatternTermContainer patternTerm = (PatternTermContainer) con;
+            if (!patternTerm.craftingMode) {
+                final IItemHandler output = cct.getInventoryByName("output");
+                ItemHandlerUtil.setStackInSlot(output, 0, recipe.getRecipeOutput());
+                ItemHandlerUtil.setStackInSlot(output, 1, ItemStack.EMPTY);
+                ItemHandlerUtil.setStackInSlot(output, 2, ItemStack.EMPTY);
+            }
+        }
     }
 
 }
