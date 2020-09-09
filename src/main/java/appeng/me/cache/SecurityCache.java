@@ -83,8 +83,8 @@ public class SecurityCache implements ISecurityGrid {
 
         /**
          * Placing a security station will propagate the security station's owner to all
-         * connected grid nodes to prevent the network from not reforming due to different
-         * owners later.
+         * connected grid nodes to prevent the network from not reforming due to
+         * different owners later.
          */
         int newOwner = -1;
         if (this.securityProvider.size() == 1) {
