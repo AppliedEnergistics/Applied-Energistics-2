@@ -39,10 +39,6 @@ class ReiRuntimeAdapter implements IRei {
         return true;
     }
 
-    public IJeiRuntime getRuntime() {
-        return runtime;
-    }
-
     @Override
     public String getSearchText() {
         TextFieldWidget searchField = this.runtime.getSearchTextField();

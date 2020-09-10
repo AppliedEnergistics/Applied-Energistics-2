@@ -18,24 +18,21 @@
 
 package appeng.integration.modules.jei;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.crafting.IRecipe;
-
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.recipe.transfer.IRecipeTransferError;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import me.shedaniel.rei.api.AutoTransferHandler;
+import me.shedaniel.rei.api.RecipeDisplay;
+import me.shedaniel.rei.api.TransferRecipeDisplay;
 
 import appeng.container.implementations.CraftingTermContainer;
 
 public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermContainer> {
 
-    CraftingRecipeTransferHandler(Class<CraftingTermContainer> containerClass, IRecipeTransferHandlerHelper helper) {
-        super(containerClass, helper);
+    public CraftingRecipeTransferHandler(Class<CraftingTermContainer> containerClass) {
+        super(containerClass);
     }
 
     @Override
-    protected IRecipeTransferError doTransferRecipe(CraftingTermContainer container, IRecipe<?> recipe,
-            IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer) {
+    protected AutoTransferHandler.Result doTransferRecipe(CraftingTermContainer container, RecipeDisplay recipe,
+            AutoTransferHandler.Context context) {
         return null;
     }
 

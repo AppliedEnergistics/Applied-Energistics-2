@@ -291,20 +291,10 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         // Replace it if there is a custom entity
         if (is.getItem() instanceof AECustomEntityItem) {
-            Entity result = ((AECustomEntityItem) is.getItem()).replaceItemEntity(w, entity, is);
+            Entity result = ((AECustomEntityItem) is.getItem()).replaceItemEntity(w, (ItemEntity) entity, is);
             // Destroy the old one, in case it's spawned somehow and replace with the new
             // one.
             if (result != entity) {
-                entity.remove();
-                entity = result;
-            }
-        }
-
-        if (is.getItem().hasCustomEntity(is)) {
-            Entity result = is.getItem().createEntity(w, entity, is);
-            // Destroy the old one, in case it's spawned somehow and replace with the new
-            // one.
-            if (result != null) {
                 entity.remove();
                 entity = result;
             }
@@ -340,7 +330,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final double absoluteZ = centerZ + offsetZ;
 
         // Set to correct position and slow the motion down a bit
-        entity.setPosition(absoluteX, absoluteY, absoluteZ);
+        entity.setPos(absoluteX, absoluteY, absoluteZ);
         entity.setVelocity(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
 
         // Try to spawn it and destroy it in case it's not possible

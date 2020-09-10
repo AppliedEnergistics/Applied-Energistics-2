@@ -108,6 +108,8 @@ class FacadeRegistryGenerator implements LiveRecipeGenerator<DefaultShapedDispla
         ingredients.set(7, Ingredient.ofStacks(cableAnchor));
         ingredients.set(4, Ingredient.ofStacks(textureItem));
 
+        result.setCount(4);
+
         return new DefaultShapedDisplay(new ShapedRecipe(id, "", 3, 3, ingredients, result));
     }
 

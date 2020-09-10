@@ -18,33 +18,28 @@
 
 package appeng.integration.modules.jei;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.crafting.IRecipe;
-
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.recipe.transfer.IRecipeTransferError;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import me.shedaniel.rei.api.AutoTransferHandler;
+import me.shedaniel.rei.api.RecipeDisplay;
+import me.shedaniel.rei.api.TransferRecipeDisplay;
+import me.shedaniel.rei.plugin.DefaultPlugin;
 
 import appeng.container.implementations.PatternTermContainer;
 
 public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternTermContainer> {
 
-    PatternRecipeTransferHandler(Class<PatternTermContainer> containerClass, IRecipeTransferHandlerHelper helper) {
-        super(containerClass, helper);
+    PatternRecipeTransferHandler(Class<PatternTermContainer> containerClass) {
+        super(containerClass);
     }
 
-    protected IRecipeTransferError doTransferRecipe(PatternTermContainer container, IRecipe<?> recipe,
-            IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer) {
-        if (container.isCraftingMode()
-                && recipeLayout.getRecipeCategory().getUid() != VanillaRecipeCategoryUid.CRAFTING) {
-            return this.helper
-                    .createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.requires_processing_mode"));
+    protected AutoTransferHandler.Result doTransferRecipe(PatternTermContainer container, RecipeDisplay recipe,
+            AutoTransferHandler.Context context) {
+
+        if (container.isCraftingMode() && recipe.getRecipeCategory() != DefaultPlugin.CRAFTING) {
+            return AutoTransferHandler.Result.createFailed("jei.appliedenergistics2.requires_processing_mode");
         }
 
-        if (recipe.getRecipeOutput().isEmpty()) {
-            return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.no_output"));
+        if (recipe.getResultingEntries().isEmpty()) {
+            return AutoTransferHandler.Result.createFailed("jei.appliedenergistics2.no_output");
         }
 
         return null;

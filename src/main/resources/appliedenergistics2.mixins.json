@@ -25,7 +25,8 @@
     "TntAccessor",
     "ServerWorldCustomItemEntityMixin",
     "BootstrapMixin",
-    "ItemEntityAccessor"
+    "ItemEntityAccessor",
+    "IngredientAccessor"
   ],
   "client": [
     "spatial.SkyRenderMixin",

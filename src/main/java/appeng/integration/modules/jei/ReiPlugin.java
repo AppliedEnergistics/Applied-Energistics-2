@@ -32,7 +32,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
-import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.BaseBoundsHandler;
 import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryRegistry;
@@ -124,8 +123,8 @@ public class ReiPlugin implements REIPluginV0 {
     @Override
     public void registerOthers(RecipeHelper recipeHelper) {
         // Allow recipe transfer from JEI to crafting and pattern terminal
-        recipeHelper.registerAutoCraftingHandler(new RecipeTransferHandler<>(CraftingTermContainer.class));
-        recipeHelper.registerAutoCraftingHandler(new RecipeTransferHandler<>(PatternTermContainer.class));
+        recipeHelper.registerAutoCraftingHandler(new CraftingRecipeTransferHandler(CraftingTermContainer.class));
+        recipeHelper.registerAutoCraftingHandler(new PatternRecipeTransferHandler(PatternTermContainer.class));
 
         recipeHelper.removeAutoCraftButton(GrinderRecipeCategory.UID);
         recipeHelper.removeAutoCraftButton(InscriberRecipeCategory.UID);
@@ -227,7 +226,7 @@ public class ReiPlugin implements REIPluginV0 {
         ItemStack stack = entryStack.getItemStack();
 
         if (items.dummyFluidItem().isSameAs(stack) || items.facade().isSameAs(stack) // REI will add a broken facade
-                                                                                     // with no NBT
+        // with no NBT
                 || blocks.multiPart().isSameAs(stack) || blocks.matrixFrame().isSameAs(stack)
                 || blocks.paint().isSameAs(stack)) {
             return true;
