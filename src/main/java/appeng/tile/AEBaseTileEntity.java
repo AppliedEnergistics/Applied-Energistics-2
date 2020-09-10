@@ -39,10 +39,13 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.items.IItemHandler;
 
@@ -456,6 +459,17 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     @Override
     public IModelData getModelData() {
         return new AEModelData(up, forward);
+    }
+
+    /**
+     * AE Tile Entities will generally confine themselves to rendering within the
+     * bounding block. Forge however would retrieve the collision box here, which is
+     * very expensive.
+     */
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(pos, pos.add(1, 1, 1));
     }
 
 }
