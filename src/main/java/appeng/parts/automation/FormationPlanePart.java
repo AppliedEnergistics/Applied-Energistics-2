@@ -25,7 +25,6 @@ import java.util.Random;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AutomaticItemPlacementContext;
@@ -281,50 +280,72 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     private static boolean spawnItemEntity(ServerWorld w, BlockEntity te, AEPartLocation side, ItemStack is) {
-        // the item offset based on the entity height plus some offset
-        final double itemOffset = .55 + EntityType.ITEM.getHeight();
-
         // The center of the block the plane is located in
         final double centerX = te.getPos().getX() + .5;
-        final double centerY = te.getPos().getY() + .5;
+        final double centerY = te.getPos().getY();
         final double centerZ = te.getPos().getZ() + .5;
 
-        // When spawning downwards, we have to take the item height of 0.25 into account
-        // Otherwise it will get stuck and be spit out in a random direction as
-        // minecraft spawns it at its feet position and not center
-        final double additionalYOffset = side.yOffset == -1 ? -.3 : 0;
+        // Create an ItemEntity already at the position of the plane.
+        // We don't know the final position, but need it for its size.
+        Entity entity = new ItemEntity(w, centerX, centerY, centerZ, is.copy());
+
+        // Replace it if there is a custom entity
+        if (is.getItem() instanceof AECustomEntityItem) {
+            Entity result = ((AECustomEntityItem) is.getItem()).replaceItemEntity(w, entity, is);
+            // Destroy the old one, in case it's spawned somehow and replace with the new
+            // one.
+            if (result != entity) {
+                entity.remove();
+                entity = result;
+            }
+        }
+
+        if (is.getItem().hasCustomEntity(is)) {
+            Entity result = is.getItem().createEntity(w, entity, is);
+            // Destroy the old one, in case it's spawned somehow and replace with the new
+            // one.
+            if (result != null) {
+                entity.remove();
+                entity = result;
+            }
+        }
+
+        // When spawning downwards, we have to take into account that it spawns it at
+        // their "feet" and not center like x or z. So we move it up to be flush with
+        // the plane
+        final double additionalYOffset = side.yOffset == -1 ? 1 - entity.getHeight() : 0;
+
+        // Calculate the maximum spawn area so an entity hitbox will always be inside
+        // the block.
+        final double spawnAreaHeight = Math.max(0, 1 - entity.getHeight());
+        final double spawnAreaWidth = Math.max(0, 1 - entity.getWidth());
 
         // Calculate the offsets to spawn it into the adjacent block, taking the sign
         // into account.
         // Spawn it 0.8 blocks away from the center pos when facing in this direction
         // Every other direction will select a position in a .5 block area around the
         // block center.
-        final double offsetX = (side.xOffset == 0) ? ((RANDOM_OFFSET.nextFloat() / 2) - .25)
-                : (side.xOffset * itemOffset);
-        final double offsetY = (side.yOffset == 0) ? ((RANDOM_OFFSET.nextFloat() / 2) - .25)
-                : ((side.yOffset * itemOffset) + additionalYOffset);
-        final double offsetZ = (side.zOffset == 0) ? ((RANDOM_OFFSET.nextFloat() / 2) - .25)
-                : (side.zOffset * itemOffset);
+        final double offsetX = (side.xOffset == 0) //
+                ? ((RANDOM_OFFSET.nextFloat() * spawnAreaWidth) - spawnAreaWidth / 2)
+                : (side.xOffset * (.525 + entity.getWidth() / 2));
+        final double offsetY = (side.yOffset == 0) //
+                ? (RANDOM_OFFSET.nextFloat() * spawnAreaHeight)
+                : ((side.yOffset) + additionalYOffset);
+        final double offsetZ = (side.zOffset == 0) //
+                ? ((RANDOM_OFFSET.nextFloat() * spawnAreaWidth) - spawnAreaWidth / 2)
+                : (side.zOffset * (.525 + entity.getWidth() / 2));
 
         final double absoluteX = centerX + offsetX;
         final double absoluteY = centerY + offsetY;
         final double absoluteZ = centerZ + offsetZ;
 
-        final ItemEntity ei = new ItemEntity(w, absoluteX, absoluteY, absoluteZ, is.copy());
-        ei.setVelocity(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
+        // Set to correct position and slow the motion down a bit
+        entity.setPosition(absoluteX, absoluteY, absoluteZ);
+        entity.setVelocity(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
 
-        Entity result;
-        if (is.getItem() instanceof AECustomEntityItem) {
-            result = ((AECustomEntityItem) is.getItem()).replaceItemEntity(w, ei, is);
-            if (result != ei) {
-                ei.remove();
-            }
-        } else {
-            result = ei;
-        }
-
-        if (!w.spawnEntity(result)) {
-            result.remove();
+        // Try to spawn it and destroy it in case it's not possible
+        if (!w.spawnEntity(entity)) {
+            entity.remove();
             return false;
         }
         return true;

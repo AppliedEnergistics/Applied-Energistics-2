@@ -18,12 +18,18 @@
 
 package appeng.integration.abstraction;
 
+import mezz.jei.api.runtime.IJeiRuntime;
+
 import appeng.integration.IIntegrationModule;
 
 /**
  * Abstracts access to the JEI API functionality.
  */
 public interface IRei extends IIntegrationModule {
+
+    default IJeiRuntime getRuntime() {
+        return null;
+    }
 
     default String getSearchText() {
         return "";

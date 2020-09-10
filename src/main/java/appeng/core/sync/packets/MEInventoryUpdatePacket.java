@@ -19,11 +19,9 @@
 package appeng.core.sync.packets;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.BufferOverflowException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.GZIPOutputStream;
 
 import javax.annotation.Nullable;
 
