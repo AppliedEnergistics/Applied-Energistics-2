@@ -29,10 +29,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.container.interfaces.IFluidSyncContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.fluids.container.IFluidSyncContainer;
-import appeng.fluids.util.AEFluidStack;
+import appeng.util.fluid.AEFluidStack;
 
 public class FluidSlotPacket extends BasePacket {
     private final Map<Integer, IAEFluidStack> list;

@@ -45,7 +45,7 @@ import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
-import appeng.fluids.items.FluidDummyItem;
+import appeng.items.misc.FluidDummyItem;
 
 /**
  * This baked model class is used as a dispatcher to redirect the renderer to

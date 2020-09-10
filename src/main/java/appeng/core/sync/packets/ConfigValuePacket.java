@@ -38,6 +38,8 @@ import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.container.implementations.CraftConfirmContainer;
 import appeng.container.implementations.CraftingCPUContainer;
 import appeng.container.implementations.CraftingStatusContainer;
+import appeng.container.implementations.FluidLevelEmitterContainer;
+import appeng.container.implementations.FluidStorageBusContainer;
 import appeng.container.implementations.LevelEmitterContainer;
 import appeng.container.implementations.NetworkToolContainer;
 import appeng.container.implementations.PatternTermContainer;
@@ -47,8 +49,6 @@ import appeng.container.implementations.SecurityStationContainer;
 import appeng.container.implementations.StorageBusContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.fluids.container.FluidLevelEmitterContainer;
-import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.helpers.IMouseWheelItem;
 
 public class ConfigValuePacket extends BasePacket {

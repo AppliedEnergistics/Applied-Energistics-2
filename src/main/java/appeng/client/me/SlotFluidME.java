@@ -27,7 +27,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.fluids.container.slots.IMEFluidSlot;
+import appeng.container.slot.IMEFluidSlot;
 
 public class SlotFluidME extends Slot implements IMEFluidSlot {
 

@@ -70,6 +70,7 @@ import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotDisconnected;
 import appeng.client.me.SlotME;
+import appeng.client.render.FluidStackSizeRenderer;
 import appeng.client.render.StackSizeRenderer;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.AppEngCraftingSlot;
@@ -78,6 +79,7 @@ import appeng.container.slot.AppEngSlot.CalculatedValidity;
 import appeng.container.slot.CraftingTermSlot;
 import appeng.container.slot.DisabledSlot;
 import appeng.container.slot.FakeSlot;
+import appeng.container.slot.IMEFluidSlot;
 import appeng.container.slot.IOptionalSlot;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.OutputSlot;
@@ -88,8 +90,6 @@ import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
-import appeng.fluids.client.render.FluidStackSizeRenderer;
-import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
