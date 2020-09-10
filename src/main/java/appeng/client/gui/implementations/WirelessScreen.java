@@ -48,9 +48,9 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
         this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
 
         if (handler.getRange() > 0) {
-            final String firstMessage = GuiText.Range.text() + ": " + (handler.getRange() / 10.0) + " m";
-            final String secondMessage = GuiText.PowerUsageRate.text() + ": "
-                    + Platform.formatPowerLong(handler.getDrain(), true);
+            final Text firstMessage = GuiText.Range.withSuffix(": " + (handler.getRange() / 10.0) + " m");
+            final Text secondMessage = GuiText.PowerUsageRate
+                    .withSuffix(": " + Platform.formatPowerLong(handler.getDrain(), true));
 
             final int strWidth = Math.max(this.textRenderer.getWidth(firstMessage),
                     this.textRenderer.getWidth(secondMessage));
