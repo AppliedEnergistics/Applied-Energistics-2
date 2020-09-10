@@ -28,4 +28,9 @@ public enum GridNotification {
      * the visible connections for this node have changed, useful for cable.
      */
     CONNECTIONS_CHANGED,
+
+    /**
+     * the owner of the grid node has changed, and the node needs to be re-saved
+     */
+    OWNER_CHANGED
 }

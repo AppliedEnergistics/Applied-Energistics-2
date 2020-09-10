@@ -167,7 +167,6 @@ public class AENetworkProxy implements IGridBlock {
      * short cut!
      *
      * @return grid of node
-     *
      * @throws GridAccessException of node or grid is null
      */
     public IGrid getGrid() throws GridAccessException {
@@ -280,6 +279,11 @@ public class AENetworkProxy implements IGridBlock {
 
     @Override
     public void onGridNotification(final GridNotification notification) {
+        if (notification == GridNotification.OWNER_CHANGED) {
+            gp.saveChanges();
+            return;
+        }
+
         if (this.gp instanceof CablePart) {
             ((CablePart) this.gp).markForUpdate();
         }
