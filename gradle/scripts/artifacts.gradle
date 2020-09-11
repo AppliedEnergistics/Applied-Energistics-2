@@ -42,6 +42,32 @@ jar {
     }
 }
 
+shadowJar {
+    classifier = ''
+
+    from sourceSets.main.output.classesDirs
+    from sourceSets.api.output.classesDirs
+    from sourceSets.main.output.resourcesDir
+    from sourceSets.api.output.resourcesDir
+
+    exclude 'META-INF/micrometer*.properties'
+    exclude 'META-INF/maven/**'
+
+    dependencies {
+        include(dependency('io.micrometer:micrometer-registry-influx:.*'))
+        include(dependency('io.micrometer:micrometer-core:.*'))
+        include(dependency('org.slf4j:slf4j-api:.*'))
+    }
+    relocate 'io.micrometer', 'appeng.shadow.io.micrometer'
+    relocate 'org.slf4j', 'appeng.shadow.org.slf4j'
+
+    minimize()
+}
+
+reobf {
+    shadowJar {}
+}
+
 task javadocs(type: Javadoc) {
     classpath = sourceSets.main.compileClasspath
     source = sourceSets.api.java
@@ -75,6 +101,7 @@ task apiJar(type: Jar) {
 }
 
 artifacts {
+    archives shadowJar
     archives javadocJar
     archives sourcesJar
     archives apiJar
