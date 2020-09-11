@@ -330,7 +330,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final double absoluteZ = centerZ + offsetZ;
 
         // Set to correct position and slow the motion down a bit
-        entity.setPos(absoluteX, absoluteY, absoluteZ);
+        entity.updatePosition(absoluteX, absoluteY, absoluteZ);
         entity.setVelocity(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
 
         // Try to spawn it and destroy it in case it's not possible
