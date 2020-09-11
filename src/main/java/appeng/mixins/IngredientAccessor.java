@@ -10,8 +10,9 @@ import net.minecraft.recipe.Ingredient;
 @Mixin(Ingredient.class)
 public interface IngredientAccessor {
 
-    @Invoker
-    void callCacheMatchingStacks();
+    // Temporary fix for https://github.com/SpongePowered/Mixin/issues/430
+    @Invoker("cacheMatchingStacks")
+    void appeng_cacheMatchingStacks();
 
     @Accessor
     ItemStack[] getMatchingStacks();
