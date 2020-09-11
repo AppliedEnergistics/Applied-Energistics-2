@@ -66,6 +66,7 @@ import appeng.entity.TinyTNTPrimedEntity;
 import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
+import appeng.metrics.AEMetrics;
 import appeng.parts.PartPlacement;
 import appeng.server.ServerHelper;
 
@@ -239,6 +240,7 @@ public final class AppEng {
 
     private void onServerAboutToStart(final FMLServerAboutToStartEvent evt) {
         WorldData.onServerStarting(evt.getServer());
+        AEMetrics.init(AEConfig.instance().getMetricsEnabled(), AEConfig.instance().getMetricsRegistryType());
     }
 
     private void serverStopping(final FMLServerStoppingEvent event) {
@@ -248,6 +250,7 @@ public final class AppEng {
     private void serverStopped(final FMLServerStoppedEvent event) {
         WorldData.instance().onServerStoppped();
         TickHandler.instance().shutdown();
+        AEMetrics.stop();
     }
 
 }

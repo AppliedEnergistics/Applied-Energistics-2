@@ -28,6 +28,9 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
+    // common dependencies
+    compile "io.micrometer:micrometer-registry-influx:${micrometer_version}"
+
     // compile against provided APIs
     compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}:api"

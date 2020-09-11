@@ -57,6 +57,7 @@ import appeng.api.config.YesNo;
 import appeng.api.features.AEFeature;
 import appeng.client.gui.NumberEntryType;
 import appeng.core.settings.TickRates;
+import appeng.metrics.RegistryType;
 import appeng.util.EnumCycler;
 
 @Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -404,6 +405,39 @@ public final class AEConfig {
         return COMMON.improvedFluidMultiplier.get().floatValue();
     }
 
+    // AEMetrics
+    public boolean getMetricsEnabled() {
+        return COMMON.metricsEnabled.get();
+    }
+
+    public boolean getMetricsJVM() {
+        return COMMON.metricsJVM.get();
+    }
+
+    public RegistryType getMetricsRegistryType() {
+        return COMMON.metricsRegistryType.get();
+    }
+
+    public String getMetricsInfluxServer() {
+        return COMMON.metricsInfluxServer.get();
+    }
+
+    public String getMetricsInfluxDatabase() {
+        return COMMON.metricsInfluxDatabase.get();
+    }
+
+    public int getMetricsInfluxStep() {
+        return COMMON.metricsInfluxStep.get();
+    }
+
+    public String getMetricsInfluxUser() {
+        return COMMON.metricsInfluxUser.get();
+    }
+
+    public String getMetricsInfluxPassword() {
+        return COMMON.metricsInfluxPassword.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -522,6 +556,16 @@ public final class AEConfig {
         // Settings for improved speed depending on fluid the crystal is in
         public final ConfigValue<String> improvedFluidTag;
         public final ConfigValue<Double> improvedFluidMultiplier;
+
+        // AEMetrics
+        public final ConfigValue<Boolean> metricsEnabled;
+        public final ConfigValue<Boolean> metricsJVM;
+        public final ConfigValue<RegistryType> metricsRegistryType;
+        public final ConfigValue<String> metricsInfluxServer;
+        public final ConfigValue<String> metricsInfluxDatabase;
+        public final ConfigValue<Integer> metricsInfluxStep;
+        public final ConfigValue<String> metricsInfluxUser;
+        public final ConfigValue<String> metricsInfluxPassword;
 
         public final Map<TickRates, ConfigValue<Integer>> tickRateMin = new HashMap<>();
         public final Map<TickRates, ConfigValue<Integer>> tickRateMax = new HashMap<>();
@@ -644,6 +688,24 @@ public final class AEConfig {
                     .defineInRange("improvedFluidMultiplier", 2.0, 1.0, 10.0);
 
             builder.pop();
+
+            builder.push("metrics");
+
+            this.metricsEnabled = builder.comment("Enabled monitoring to a supported system").define("enabled", false);
+            this.metricsJVM = builder.comment("Enabled common jvm monitoring").define("jvm", false);
+            this.metricsRegistryType = builder.comment("Currently supported: influx").defineEnum("type",
+                    RegistryType.INFLUX);
+
+            builder.push("influx");
+            this.metricsInfluxServer = builder.define("server", "");
+            this.metricsInfluxDatabase = builder.define("database", "");
+            this.metricsInfluxStep = builder.comment("Monitor every N seconds").define("step", 1);
+            this.metricsInfluxUser = builder.define("user", "");
+            this.metricsInfluxPassword = builder.define("password", "");
+            builder.pop();
+
+            builder.pop();
+
         }
 
     }
