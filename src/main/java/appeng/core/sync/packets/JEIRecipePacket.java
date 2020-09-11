@@ -261,7 +261,7 @@ public class JEIRecipePacket extends BasePacket {
     @SuppressWarnings("ConstantConditions")
     private static ItemStack[] getMatchingStacks(Ingredient ingredient) {
         IngredientAccessor accessor = (IngredientAccessor) (Object) ingredient;
-//        accessor.callCacheMatchingStacks();
+        accessor.appeng_cacheMatchingStacks();
         if (ingredient.isEmpty()) {
             return new ItemStack[0];
         }
