@@ -96,7 +96,11 @@ public class CraftingGridCache
             nextDetail) -> nextDetail.getPriority() - firstDetail.getPriority();
 
     static {
-        final ThreadFactory factory = ar -> new Thread(ar, "AE Crafting Calculator");
+        final ThreadFactory factory = ar -> {
+            final Thread crafting = new Thread(ar, "AE Crafting Calculator");
+            crafting.setDaemon(true);
+            return crafting;
+        };
 
         CRAFTING_POOL = Executors.newCachedThreadPool(factory);
     }
