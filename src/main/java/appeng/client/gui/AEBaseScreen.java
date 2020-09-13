@@ -229,7 +229,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (this.getScrollBar() != null) {
-            this.getScrollBar().draw(this);
+            this.getScrollBar().draw(matrixStack, this);
         }
 
         this.drawFG(matrixStack, ox, oy, x, y);
@@ -291,22 +291,36 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             }
         }
 
-        if (this.getScrollBar() != null) {
-            this.getScrollBar().click(xCoord - this.guiLeft, yCoord - this.guiTop);
+        // Forward left mouse button down events to the scrollbar
+        if (btn == 0 && this.getScrollBar() != null) {
+            if (this.getScrollBar().mouseDown(xCoord - this.guiLeft, yCoord - this.guiTop)) {
+                return true;
+            }
         }
 
         return super.mouseClicked(xCoord, yCoord, btn);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        // Forward left mouse button up events to the scrollbar
+        if (button == 0 && this.getScrollBar() != null) {
+            if (this.getScrollBar().mouseUp(mouseX - this.guiLeft, mouseY - this.guiTop)) {
+                return true;
+            }
+        }
 
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
         final Slot slot = this.getSlot((int) mouseX, (int) mouseY);
         final ItemStack itemstack = getPlayer().inventory.getItemStack();
 
         if (this.getScrollBar() != null) {
             // FIXME: Coordinate system of mouseX/mouseY is unclear
-            this.getScrollBar().click((int) mouseX - this.guiLeft, (int) mouseY - this.guiTop);
+            this.getScrollBar().mouseDragged((int) mouseX - this.guiLeft, (int) mouseY - this.guiTop);
         }
 
         if (slot instanceof FakeSlot && !itemstack.isEmpty()) {
@@ -581,7 +595,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         if (slot instanceof SlotME) {
             final IAEItemStack item = ((SlotME) slot).getAEStack();
             if (item != null) {
-                ((AEBaseContainer) this.container).setTargetStack(item);
+                this.container.setTargetStack(item);
                 final InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
                 final int times = (int) Math.abs(wheel);
                 final int inventorySize = this.getInventorySlots().size();
@@ -796,6 +810,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public void tick() {
         super.tick();
+
+        if (this.getScrollBar() != null) {
+            this.getScrollBar().tick();
+        }
+
         for (IGuiEventListener child : children) {
             if (child instanceof ITickingWidget) {
                 ((ITickingWidget) child).tick();
