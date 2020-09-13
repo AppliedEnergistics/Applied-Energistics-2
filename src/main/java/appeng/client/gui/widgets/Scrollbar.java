@@ -18,13 +18,15 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.client.gui.AEBaseScreen;
+import java.time.Duration;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.util.ResourceLocation;
 
-import java.time.Duration;
+import appeng.client.gui.AEBaseScreen;
 
 public class Scrollbar extends AbstractGui implements IScrollSource {
 
@@ -86,10 +88,7 @@ public class Scrollbar extends AbstractGui implements IScrollSource {
      */
     private boolean dragging;
 
-    private final EventRepeater eventRepeater = new EventRepeater(
-            Duration.ofMillis(250),
-            Duration.ofMillis(150)
-    );
+    private final EventRepeater eventRepeater = new EventRepeater(Duration.ofMillis(250), Duration.ofMillis(150));
 
     /**
      * Draws the handle of the scrollbar.
@@ -101,7 +100,8 @@ public class Scrollbar extends AbstractGui implements IScrollSource {
         setBlitOffset(g.getBlitOffset());
 
         // Draw the track (nice for debugging)
-        // fill(matrices, displayX, displayY, this.displayX + width, this.displayY + height, 0xffff0000);
+        // fill(matrices, displayX, displayY, this.displayX + width, this.displayY +
+        // height, 0xffff0000);
 
         g.bindTexture(TEXTURE);
 
@@ -248,8 +248,9 @@ public class Scrollbar extends AbstractGui implements IScrollSource {
     }
 
     /**
-     * Ticks the scrollbar for the purposes of input-repeats (since mouse-downs are not repeat-triggered),
-     * used to repeatedly page-up or page-down when the mouse is held in the area above or below the scrollbar handle.
+     * Ticks the scrollbar for the purposes of input-repeats (since mouse-downs are
+     * not repeat-triggered), used to repeatedly page-up or page-down when the mouse
+     * is held in the area above or below the scrollbar handle.
      */
     public void tick() {
         this.eventRepeater.tick();
