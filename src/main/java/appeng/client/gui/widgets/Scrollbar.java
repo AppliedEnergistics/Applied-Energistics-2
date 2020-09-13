@@ -207,16 +207,16 @@ public class Scrollbar extends AbstractGui implements IScrollSource {
 
         if (relY < handleYOffset) {
             // Clicks above the handle will page up, repeatedly
-            repeatPageUp();
-            eventRepeater.repeat(this::repeatPageUp);
+            pageUp();
+            eventRepeater.repeat(this::pageUp);
 
         } else if (relY < handleYOffset + HANDLE_HEIGHT) {
             // Clicks on the handle will initiate dragging it
             this.dragging = true;
         } else {
             // Clicks below the handle will page down, repeatedly
-            repeatPageDown();
-            eventRepeater.repeat(this::repeatPageDown);
+            pageDown();
+            eventRepeater.repeat(this::pageDown);
         }
 
         return true;
@@ -255,14 +255,12 @@ public class Scrollbar extends AbstractGui implements IScrollSource {
         this.eventRepeater.tick();
     }
 
-    private void repeatPageUp() {
-        System.out.println("REPEAT PAGE UP");
+    private void pageUp() {
         this.currentScroll -= this.pageSize;
         this.applyRange();
     }
 
-    private void repeatPageDown() {
-        System.out.println("REPEAT PAGE DOWN");
+    private void pageDown() {
         this.currentScroll += this.pageSize;
         this.applyRange();
     }
