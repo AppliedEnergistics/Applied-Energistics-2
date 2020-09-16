@@ -283,6 +283,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         craftingGridOffsetX -= 25;
         craftingGridOffsetY -= 6;
 
+        this.setScrollBar();
+
     }
 
     @Override

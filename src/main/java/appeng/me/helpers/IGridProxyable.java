@@ -28,4 +28,7 @@ public interface IGridProxyable extends IGridHost {
     DimensionalCoord getLocation();
 
     void gridChanged();
+
+    void saveChanges();
+
 }

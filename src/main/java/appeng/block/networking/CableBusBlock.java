@@ -39,6 +39,8 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -82,8 +84,12 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
+    private static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
+
     public CableBusBlock() {
-        super(defaultProps(AEMaterials.GLASS).notSolid().noDrops().variableOpacity());
+        super(defaultProps(AEMaterials.GLASS).notSolid().noDrops().variableOpacity()
+                .setLightLevel(state -> state.get(LIGHT_LEVEL)));
+        setDefaultState(getDefaultState().with(LIGHT_LEVEL, 0));
     }
 
     @Override
@@ -126,11 +132,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public int getLightValue(final BlockState state, final IBlockReader world, final BlockPos pos) {
-        if (state.getBlock() != this) {
-            return state.getBlock().getLightValue(state, world, pos);
-        }
-        return this.cb(world, pos).getLightValue();
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(LIGHT_LEVEL);
     }
 
     @Override
@@ -384,6 +388,15 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         } else {
             return te.getCableBus().getCollisionShape(context.getEntity());
         }
+    }
+
+    @Override
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, CableBusTileEntity te) {
+        if (currentState.getBlock() != this) {
+            return currentState;
+        }
+        int lightLevel = te.getCableBus().getLightValue();
+        return super.updateBlockStateFromTileEntity(currentState, te).with(LIGHT_LEVEL, lightLevel);
     }
 
 }
