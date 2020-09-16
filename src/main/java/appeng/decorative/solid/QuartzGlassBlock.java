@@ -20,7 +20,6 @@ package appeng.decorative.solid;
 
 import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
 import net.minecraft.util.math.Direction;
 
 public class QuartzGlassBlock extends AbstractGlassBlock {

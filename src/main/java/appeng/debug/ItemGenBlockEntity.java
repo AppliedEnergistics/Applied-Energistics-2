@@ -36,7 +36,6 @@ import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemExtractable;
 import alexiil.mc.lib.attributes.item.filter.ExactItemStackFilter;
-import alexiil.mc.lib.attributes.item.filter.ItemFilter;
 
 import appeng.tile.AEBaseBlockEntity;
 

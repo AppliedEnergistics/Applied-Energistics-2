@@ -53,10 +53,10 @@ public interface ICraftingHelper {
      * @param stack If null, a new item will be created to hold the encoded pattern.
      *              Otherwise the given item must already contains an encoded
      *              pattern that will be overwritten.
-     * @throws IllegalArgumentException If either in or out contain only empty
-     *                                  ItemStacks.
      * @return A new encoded pattern, or the given stack with the pattern encoded in
      *         it.
+     * @throws IllegalArgumentException If either in or out contain only empty
+     *                                  ItemStacks.
      */
     ItemStack encodeProcessingPattern(@Nullable ItemStack stack, ItemStack[] in, ItemStack[] out);
 

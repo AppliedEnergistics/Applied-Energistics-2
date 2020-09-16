@@ -20,7 +20,6 @@ package appeng.integration.modules.jei;
 
 import me.shedaniel.rei.api.AutoTransferHandler;
 import me.shedaniel.rei.api.RecipeDisplay;
-import me.shedaniel.rei.api.TransferRecipeDisplay;
 
 import appeng.container.implementations.CraftingTermContainer;
 
