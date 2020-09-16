@@ -157,6 +157,9 @@ minecraft {
         data {
             property 'forge.logging.console.level', 'debug'
             workingDirectory project.file('run')
+            // ForgeGradle will just force-exit the Gradle Daemon which fails our builds in case
+            // a daemon is used for any reason.
+            forceExit false
             args '--mod', 'appliedenergistics2', '--all', '--output', file('src/generated/resources/')
             mods {
                 appliedenergistics2 {
