@@ -38,7 +38,6 @@ import appeng.core.Api;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.items.materials.MaterialItem;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.Platform;
 
 public class QuartzKnifeContainer extends AEBaseContainer {
 
@@ -148,7 +147,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         }
 
         private void makePlate() {
-            if (Platform.isServer()) {
+            if (isServer()) {
                 if (!this.getItemHandler().extractItem(0, 1, false).isEmpty()) {
                     final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
                     final ItemStack before = item.copy();

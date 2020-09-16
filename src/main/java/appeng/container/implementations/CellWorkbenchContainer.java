@@ -49,7 +49,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.tile.misc.CellWorkbenchTileEntity;
 import appeng.util.EnumCycler;
-import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperSupplierItemHandler;
 import appeng.util.iterators.NullIterator;
@@ -143,7 +142,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     @Override
     public void detectAndSendChanges() {
         final ItemStack is = this.workBench.getInventoryByName("cell").getStackInSlot(0);
-        if (Platform.isServer()) {
+        if (isServer()) {
             for (final IContainerListener listener : this.listeners) {
                 if (this.prevStack != is) {
                     // if the bars changed an item was probably made, so just send shit!

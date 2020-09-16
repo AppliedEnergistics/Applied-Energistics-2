@@ -33,7 +33,6 @@ import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.misc.CondenserTileEntity;
-import appeng.util.Platform;
 
 public class CondenserContainer extends AEBaseContainer implements IProgressProvider {
 
@@ -75,7 +74,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
 
     @Override
     public void detectAndSendChanges() {
-        if (Platform.isServer()) {
+        if (isServer()) {
             final double maxStorage = this.condenser.getStorage();
             final double requiredEnergy = this.condenser.getRequiredPower();
 

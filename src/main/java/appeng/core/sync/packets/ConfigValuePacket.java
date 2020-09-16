@@ -118,13 +118,13 @@ public class ConfigValuePacket extends BasePacket {
             sc.toggleSetting(this.Value, player);
         } else if (this.Name.equals("PriorityHost.Priority") && c instanceof PriorityContainer) {
             final PriorityContainer pc = (PriorityContainer) c;
-            pc.setPriority(Integer.parseInt(this.Value), player);
+            pc.setPriority(Integer.parseInt(this.Value));
         } else if (this.Name.equals("LevelEmitter.Value") && c instanceof LevelEmitterContainer) {
             final LevelEmitterContainer lvc = (LevelEmitterContainer) c;
-            lvc.setLevel(Long.parseLong(this.Value), player);
+            lvc.setReportingValue(Long.parseLong(this.Value));
         } else if (this.Name.equals("FluidLevelEmitter.Value") && c instanceof FluidLevelEmitterContainer) {
             final FluidLevelEmitterContainer lvc = (FluidLevelEmitterContainer) c;
-            lvc.setLevel(Long.parseLong(this.Value), player);
+            lvc.setReportingValue(Long.parseLong(this.Value));
         } else if (this.Name.startsWith("PatternTerminal.") && c instanceof PatternTermContainer) {
             final PatternTermContainer cpt = (PatternTermContainer) c;
             if (this.Name.equals("PatternTerminal.CraftMode")) {
@@ -192,9 +192,7 @@ public class ConfigValuePacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Container c = player.openContainer;
 
-        if (this.Name.equals("CustomName") && c instanceof AEBaseContainer) {
-            ((AEBaseContainer) c).setCustomName(this.Value);
-        } else if (this.Name.startsWith("SyncDat.")) {
+        if (this.Name.startsWith("SyncDat.")) {
             ((AEBaseContainer) c).stringSync(Integer.parseInt(this.Name.substring(8)), this.Value);
         } else if (this.Name.equals("CraftingStatus") && this.Value.equals("Clear")) {
             final Screen gs = Minecraft.getInstance().currentScreen;

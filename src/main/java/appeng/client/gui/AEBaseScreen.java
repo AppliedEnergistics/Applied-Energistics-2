@@ -628,15 +628,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     protected ITextComponent getGuiDisplayName(final ITextComponent in) {
-        return this.hasCustomInventoryName() ? new StringTextComponent(this.getInventoryName()) : in;
-    }
-
-    private boolean hasCustomInventoryName() {
-        return this.container.getCustomName() != null;
-    }
-
-    private String getInventoryName() {
-        return this.container.getCustomName();
+        return title.getString().isEmpty() ? in : title;
     }
 
     /**

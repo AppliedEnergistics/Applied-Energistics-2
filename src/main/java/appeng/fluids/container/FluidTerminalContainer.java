@@ -119,7 +119,7 @@ public class FluidTerminalContainer extends AEBaseContainer
         this.clientCM.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
         this.clientCM.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.serverCM = terminal.getConfigManager();
             this.monitor = terminal
                     .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
@@ -191,7 +191,7 @@ public class FluidTerminalContainer extends AEBaseContainer
     }
 
     private void queueInventory(final IContainerListener c) {
-        if (Platform.isServer() && c instanceof PlayerEntity && this.monitor != null) {
+        if (isServer() && c instanceof PlayerEntity && this.monitor != null) {
             try {
                 MEFluidInventoryUpdatePacket piu = new MEFluidInventoryUpdatePacket();
                 final IItemList<IAEFluidStack> monitorCache = this.monitor.getStorageList();
@@ -216,14 +216,14 @@ public class FluidTerminalContainer extends AEBaseContainer
 
     @Override
     public IConfigManager getConfigManager() {
-        if (Platform.isServer()) {
+        if (isServer()) {
             return this.serverCM;
         }
         return this.clientCM;
     }
 
     public void setTargetStack(final IAEFluidStack stack) {
-        if (Platform.isClient()) {
+        if (isClient()) {
             if (stack == null && this.clientRequestedTargetFluid == null) {
                 return;
             }
@@ -246,7 +246,7 @@ public class FluidTerminalContainer extends AEBaseContainer
 
     @Override
     public void detectAndSendChanges() {
-        if (Platform.isServer()) {
+        if (isServer()) {
             if (this.monitor != this.terminal
                     .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class))) {
                 this.setValidContainer(false);

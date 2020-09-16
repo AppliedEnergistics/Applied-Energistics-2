@@ -33,7 +33,7 @@ public class TabButton extends Button implements ITooltip {
     public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
             "textures/guis/states.png");
     private final ItemRenderer itemRenderer;
-    private int hideEdge = 0;
+    private boolean hideEdge;
     private int myIcon = -1;
     private ItemStack myItem;
 
@@ -71,14 +71,17 @@ public class TabButton extends Button implements ITooltip {
 
             RenderSystem.enableAlphaTest();
 
-            int uv_x = (this.hideEdge > 0 ? 11 : 13);
+            // Selects the button border from the sprite-sheet, where each type occupies a
+            // 2x2 slot
+            int uv_x = 8 + (this.hideEdge ? 0 : 2);
+            int uv_y = 12 + (this.isFocused() ? 2 : 0);
 
-            final int offsetX = this.hideEdge > 0 ? 1 : 0;
+            final int offsetX = this.hideEdge ? 1 : 0;
 
-            blit(matrixStack, this.x, this.y, uv_x * 16, 0, 25, 22);
+            blit(matrixStack, this.x, this.y, uv_x * 16, uv_y * 16, 25, 22);
 
             if (this.myIcon >= 0) {
-                final int uv_y = this.myIcon / 16;
+                uv_y = this.myIcon / 16;
                 uv_x = this.myIcon - uv_y * 16;
 
                 blit(matrixStack, offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16);
@@ -128,11 +131,11 @@ public class TabButton extends Button implements ITooltip {
         return this.visible;
     }
 
-    public int getHideEdge() {
+    public boolean getHideEdge() {
         return this.hideEdge;
     }
 
-    public void setHideEdge(final int hideEdge) {
+    public void setHideEdge(final boolean hideEdge) {
         this.hideEdge = hideEdge;
     }
 }

@@ -81,7 +81,7 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
     public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.tankSync.sendDiff(this.listeners);
         }
 

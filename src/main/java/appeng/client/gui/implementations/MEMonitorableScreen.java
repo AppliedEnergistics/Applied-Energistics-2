@@ -237,7 +237,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         if (this.viewCell || this instanceof WirelessTermScreen) {
             this.craftingStatusBtn = this.addButton(new TabButton(this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16,
                     GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus()));
-            this.craftingStatusBtn.setHideEdge(13);
+            this.craftingStatusBtn.setHideEdge(true);
         }
 
         this.isAutoFocus = SearchBoxMode.AUTOSEARCH == searchMode || SearchBoxMode.JEI_AUTOSEARCH == searchMode

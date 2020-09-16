@@ -55,35 +55,23 @@ final class AESubScreen {
             IPriorityHost priorityHost = (IPriorityHost) containerTarget;
             this.previousContainerIcon = priorityHost.getItemStackRepresentation();
             this.previousContainerType = ChestContainer.TYPE;
-        }
-
-        else if (containerTarget instanceof IPriorityHost) {
+        } else if (containerTarget instanceof IPriorityHost) {
             IPriorityHost priorityHost = (IPriorityHost) containerTarget;
             this.previousContainerIcon = priorityHost.getItemStackRepresentation();
             this.previousContainerType = priorityHost.getContainerType();
-        }
-
-        else if (containerTarget instanceof WirelessTerminalGuiObject) {
+        } else if (containerTarget instanceof WirelessTerminalGuiObject) {
             this.previousContainerIcon = definitions.items().wirelessTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
             this.previousContainerType = WirelessTermContainer.TYPE;
-        }
-
-        else if (containerTarget instanceof TerminalPart) {
+        } else if (containerTarget instanceof TerminalPart) {
             this.previousContainerIcon = parts.terminal().maybeStack(1).orElse(ItemStack.EMPTY);
             this.previousContainerType = MEMonitorableContainer.TYPE;
-        }
-
-        else if (containerTarget instanceof CraftingTerminalPart) {
+        } else if (containerTarget instanceof CraftingTerminalPart) {
             this.previousContainerIcon = parts.craftingTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
             this.previousContainerType = CraftingTermContainer.TYPE;
-        }
-
-        else if (containerTarget instanceof PatternTerminalPart) {
+        } else if (containerTarget instanceof PatternTerminalPart) {
             this.previousContainerIcon = parts.patternTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
             this.previousContainerType = PatternTermContainer.TYPE;
-        }
-
-        else {
+        } else {
             this.previousContainerIcon = null;
             this.previousContainerType = null;
         }

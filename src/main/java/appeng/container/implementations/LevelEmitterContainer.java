@@ -22,8 +22,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -32,13 +30,13 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.RestrictedInputSlot;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.parts.automation.LevelEmitterPart;
-import appeng.util.Platform;
 
 public class LevelEmitterContainer extends UpgradeableContainer {
 
@@ -48,38 +46,46 @@ public class LevelEmitterContainer extends UpgradeableContainer {
             LevelEmitterContainer::new, LevelEmitterPart.class, SecurityPermissions.BUILD);
 
     public static LevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
+        return helper.fromNetwork(windowId, inv, buf, (host, container, buffer) -> {
+            container.reportingValue = buffer.readVarLong();
+        });
     }
 
     public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
+        return helper.open(player, locator, (host, buffer) -> {
+            buffer.writeVarLong(host.getReportingValue());
+        });
     }
 
     private final LevelEmitterPart lvlEmitter;
 
-    @OnlyIn(Dist.CLIENT)
-    private NumberEntryWidget textField;
     @GuiSync(2)
     public LevelType lvType;
     @GuiSync(3)
-    public long EmitterValue = -1;
-    @GuiSync(4)
     public YesNo cmType;
+
+    // Only synced once on container-open, and only used on client
+    private long reportingValue;
 
     public LevelEmitterContainer(int id, final PlayerInventory ip, final LevelEmitterPart te) {
         super(TYPE, id, ip, te);
         this.lvlEmitter = te;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void setTextField(final NumberEntryWidget level) {
-        this.textField = level;
-        this.textField.setValue(this.EmitterValue);
+    public long getReportingValue() {
+        return reportingValue;
     }
 
-    public void setLevel(final long l, final PlayerEntity player) {
-        this.lvlEmitter.setReportingValue(l);
-        this.EmitterValue = l;
+    public void setReportingValue(long reportingValue) {
+        if (isClient()) {
+            if (reportingValue != this.reportingValue) {
+                this.reportingValue = reportingValue;
+                NetworkHandler.instance()
+                        .sendToServer(new ConfigValuePacket("LevelEmitter.Value", String.valueOf(reportingValue)));
+            }
+        } else {
+            this.lvlEmitter.setReportingValue(reportingValue);
+        }
     }
 
     @Override
@@ -115,7 +121,6 @@ public class LevelEmitterContainer extends UpgradeableContainer {
 
     @Override
     public int availableUpgrades() {
-
         return 1;
     }
 
@@ -123,8 +128,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
     public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (Platform.isServer()) {
-            this.EmitterValue = this.lvlEmitter.getReportingValue();
+        if (isServer()) {
             this.setCraftingMode(
                     (YesNo) this.getUpgradeable().getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE));
             this.setLevelMode((LevelType) this.getUpgradeable().getConfigManager().getSetting(Settings.LEVEL_TYPE));
@@ -134,15 +138,6 @@ public class LevelEmitterContainer extends UpgradeableContainer {
         }
 
         this.standardDetectAndSendChanges();
-    }
-
-    @Override
-    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
-        if (field.equals("EmitterValue")) {
-            if (this.textField != null) {
-                this.textField.setValue(this.EmitterValue);
-            }
-        }
     }
 
     @Override
@@ -162,4 +157,5 @@ public class LevelEmitterContainer extends UpgradeableContainer {
     private void setLevelMode(final LevelType lvType) {
         this.lvType = lvType;
     }
+
 }

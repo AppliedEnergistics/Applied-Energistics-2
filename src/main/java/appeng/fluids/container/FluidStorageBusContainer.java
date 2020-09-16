@@ -128,7 +128,7 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
     public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.setFuzzyMode((FuzzyMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FUZZY_MODE));
             this.setReadWriteMode(
                     (AccessRestriction) this.getUpgradeable().getConfigManager().getSetting(Settings.ACCESS));

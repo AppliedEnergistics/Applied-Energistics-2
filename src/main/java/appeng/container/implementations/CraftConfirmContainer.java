@@ -66,7 +66,6 @@ import appeng.me.helpers.PlayerSource;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.TerminalPart;
-import appeng.util.Platform;
 
 public class CraftConfirmContainer extends AEBaseContainer {
 
@@ -134,7 +133,7 @@ public class CraftConfirmContainer extends AEBaseContainer {
 
     @Override
     public void detectAndSendChanges() {
-        if (Platform.isClient()) {
+        if (isClient()) {
             return;
         }
 
