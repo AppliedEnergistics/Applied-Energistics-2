@@ -33,6 +33,7 @@ import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemExtractable;
 import alexiil.mc.lib.attributes.item.filter.ExactItemStackFilter;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
@@ -43,7 +44,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
 
     private static final Queue<ItemStack> POSSIBLE_ITEMS = new ArrayDeque<>();
 
-    private final ItemExtractable handler = new QueuedItemHandler();
+    private final QueuedItemHandler handler = new QueuedItemHandler();
 
     public ItemGenBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -77,22 +78,24 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         to.offer(handler);
     }
 
-    class QueuedItemHandler implements ItemExtractable {
+    static class QueuedItemHandler implements FixedItemInv {
 
         @Override
-        public ItemStack attemptExtraction(ItemFilter itemFilter, int maxAmount, Simulation simulation) {
-            // When item filter asks for a specific item, just return that
-            if (itemFilter instanceof ExactItemStackFilter) {
-                return ((ExactItemStackFilter) itemFilter).stack.copy();
-            }
+        public ItemExtractable getExtractable() {
+            return (itemFilter, i, simulation) -> {
+                // When item filter asks for a specific item, just return that
+                if (itemFilter instanceof ExactItemStackFilter) {
+                    return ((ExactItemStackFilter) itemFilter).stack.copy();
+                }
 
-            final ItemStack is = POSSIBLE_ITEMS.peek();
+                final ItemStack is = POSSIBLE_ITEMS.peek();
 
-            if (is == null || !itemFilter.matches(is)) {
-                return ItemStack.EMPTY;
-            }
+                if (is == null || !itemFilter.matches(is)) {
+                    return ItemStack.EMPTY;
+                }
 
-            return simulation == Simulation.SIMULATE ? is.copy() : this.getNextItem();
+                return simulation == Simulation.SIMULATE ? is.copy() : getNextItem();
+            };
         }
 
         private ItemStack getNextItem() {
@@ -101,7 +104,28 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
             POSSIBLE_ITEMS.add(is);
             return is.copy();
         }
-    }
 
-    ;
+        @Override
+        public int getSlotCount() {
+            return 1;
+        }
+
+        @Override
+        public ItemStack getInvStack(int i) {
+            return POSSIBLE_ITEMS.peek().copy();
+        }
+
+        @Override
+        public boolean isItemValidForSlot(int i, ItemStack itemStack) {
+            return false;
+        }
+
+        @Override
+        public boolean setInvStack(int i, ItemStack itemStack, Simulation simulation) {
+            if (itemStack.isEmpty()) {
+                getNextItem(); // Go to next item
+            }
+            return itemStack.isEmpty();
+        }
+    }
 }

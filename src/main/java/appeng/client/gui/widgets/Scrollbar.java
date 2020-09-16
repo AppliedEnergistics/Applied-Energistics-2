@@ -21,11 +21,9 @@ package appeng.client.gui.widgets;
 import java.time.Duration;
 
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.util.Rect2i;
 import net.minecraft.client.util.math.MatrixStack;
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import appeng.client.gui.AEBaseScreen;
@@ -55,20 +53,20 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
     /**
      * Texture containing the scrollbar handle sprites.
      */
-    private static final ResourceLocation TEXTURE = new ResourceLocation("minecraft",
+    private static final Identifier TEXTURE = new Identifier("minecraft",
             "textures/gui/container/creative_inventory/tabs.png");
 
     /**
      * Rectangle in the source texture that contains the sprite for an enabled
      * handle.
      */
-    private static final Rectangle2d ENABLED = new Rectangle2d(232, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
+    private static final Rect2i ENABLED = new Rect2i(232, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
 
     /**
      * Rectangle in the source texture that contains the sprite for a disabled
      * handle.
      */
-    private static final Rectangle2d DISABLED = new Rectangle2d(232 + HANDLE_WIDTH, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
+    private static final Rect2i DISABLED = new Rect2i(232 + HANDLE_WIDTH, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
 
     /**
      * The screen x-coordinate of the scrollbar's inner track.
@@ -115,7 +113,7 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
      * background.
      */
     public void draw(MatrixStack matrices, final AEBaseScreen<?> g) {
-        setBlitOffset(g.getBlitOffset());
+        setZOffset(g.getZOffset());
 
         // Draw the track (nice for debugging)
         // fill(matrices, displayX, displayY, this.displayX + width, this.displayY +
@@ -124,7 +122,7 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
         g.bindTexture(TEXTURE);
 
         int yOffset;
-        Rectangle2d sourceRect;
+        Rect2i sourceRect;
         if (this.getRange() == 0) {
             yOffset = 0;
             sourceRect = DISABLED;
@@ -133,7 +131,7 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
             sourceRect = ENABLED;
         }
 
-        blit(matrices, this.displayX, this.displayY + yOffset, sourceRect.getX(), sourceRect.getY(),
+        drawTexture(matrices, this.displayX, this.displayY + yOffset, sourceRect.getX(), sourceRect.getY(),
                 sourceRect.getWidth(), sourceRect.getHeight());
     }
 

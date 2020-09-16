@@ -314,7 +314,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         // Forward left mouse button up events to the scrollbar
         if (button == 0 && this.getScrollBar() != null) {
-            if (this.getScrollBar().mouseUp(mouseX - this.guiLeft, mouseY - this.guiTop)) {
+            if (this.getScrollBar().mouseUp(mouseX - this.x, mouseY - this.y)) {
                 return true;
             }
         }

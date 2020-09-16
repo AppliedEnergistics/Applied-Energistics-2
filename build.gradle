@@ -48,21 +48,42 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // compile against provided APIs
-    compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
-    compileOnly "mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}:api"
+    //Fabric api
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    // Runtime, Mods
-    runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
-    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}")
+    modImplementation "alexiil.mc.lib:libblockattributes-core:${libblockattributes_version}"
+    modImplementation "alexiil.mc.lib:libblockattributes-items:${libblockattributes_version}"
+    modImplementation "alexiil.mc.lib:libblockattributes-fluids:${libblockattributes_version}"
+    include "alexiil.mc.lib:libblockattributes-core:${libblockattributes_version}"
+    include "alexiil.mc.lib:libblockattributes-items:${libblockattributes_version}"
+    include "alexiil.mc.lib:libblockattributes-fluids:${libblockattributes_version}"
+
+    // Energy API
+    modApi "teamreborn:energy:${tr_energy_version}"
+    include "teamreborn:energy:${tr_energy_version}"
+
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems:${rei_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+    modCompileOnly("mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+    modRuntime("me.shedaniel:RoughlyEnoughItems:${rei_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+    modRuntime("TechReborn:TechReborn-1.16:3.5.1+build.101") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+//    modRuntimeOnly "mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75"
+
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     // unit test dependencies
     testCompile "junit:junit:4.13"
-
-    // Annotation Processors
-    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
 }
 group = artifact_group
 archivesBaseName = artifact_basename
@@ -81,7 +102,6 @@ tasks.withType(JavaCompile) {
 
 ///////////////////
 // Version Number
-version = version_major + "." + version_minor + "." + version_patch
 
 ext.pr = System.getenv('PR_NUMBER') ?: ""
 if (ext.pr) {
@@ -147,45 +167,6 @@ minecraft {
     accessWidener "src/main/resources/appliedenergistics2.accesswidener"
 }
 
-dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    //Fabric api
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-
-    modImplementation "alexiil.mc.lib:libblockattributes-core:${libblockattributes_version}"
-    modImplementation "alexiil.mc.lib:libblockattributes-items:${libblockattributes_version}"
-    modImplementation "alexiil.mc.lib:libblockattributes-fluids:${libblockattributes_version}"
-    include "alexiil.mc.lib:libblockattributes-core:${libblockattributes_version}"
-    include "alexiil.mc.lib:libblockattributes-items:${libblockattributes_version}"
-    include "alexiil.mc.lib:libblockattributes-fluids:${libblockattributes_version}"
-
-    // Energy API
-    modApi "teamreborn:energy:${tr_energy_version}"
-    include "teamreborn:energy:${tr_energy_version}"
-
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems:${rei_version}") {
-        exclude group: "net.fabricmc.fabric-api"
-    }
-    modCompileOnly("mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75") {
-        exclude group: "net.fabricmc.fabric-api"
-    }
-    modRuntime("me.shedaniel:RoughlyEnoughItems:${rei_version}") {
-        exclude group: "net.fabricmc.fabric-api"
-    }
-    modRuntime("TechReborn:TechReborn-1.16:3.5.1+build.101") {
-        exclude group: "net.fabricmc.fabric-api"
-    }
-//    modRuntimeOnly "mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75"
-
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-
-    // unit test dependencies
-    testCompile "junit:junit:4.13"
-}
-
 processResources {
     inputs.property "version", project.version
 
@@ -206,8 +187,7 @@ processResources {
 }
 
 jar {
-    finalizedBy 'reobfJar'
-    finalizedBy 'signJar'
+    finalizedBy 'remapJar'
 
     from sourceSets.main.output.classesDirs
     from sourceSets.api.output.classesDirs
@@ -242,10 +222,13 @@ task javadocJar(type: Jar, dependsOn: javadocs) {
     classifier = "javadoc"
     from javadoc.destinationDir
 }
-task sourcesJar(type: Jar) {
+// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+// if it is present.
+// If you remove this task, sources will not be generated.
+task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = "sources"
-    from sourceSets.main.allJava
-    from sourceSets.api.allJava
+    from sourceSets.main.allSource
+    from sourceSets.api.allSource
 }
 
 task apiJar(type: Jar) {
@@ -345,7 +328,7 @@ spotless {
 
 ////////////////
 // Curse Forge
-if (System.getenv("CURSEFORGE")) {
+if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT")) {
     def cfReleaseType = "release"
     if (ext.isAlpha) {
       cfReleaseType = "alpha"
@@ -360,6 +343,17 @@ if (System.getenv("CURSEFORGE")) {
             changelogType = "markdown"
             changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
             releaseType = cfReleaseType
+            addGameVersion project.minecraft_version
+            addGameVersion "Fabric"
+            mainArtifact(remapJar.archiveFile) {
+                displayName = "${project.version} [FABRIC]"
+            }
+        }
+        options {
+            forgeGradleIntegration = false
+        }
+        afterEvaluate {
+            tasks.getByName("curseforge${project.curseforge_project}").dependsOn remapJar
         }
     }
 }
