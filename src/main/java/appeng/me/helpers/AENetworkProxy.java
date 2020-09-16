@@ -279,6 +279,11 @@ public class AENetworkProxy implements IGridBlock {
 
     @Override
     public void onGridNotification(final GridNotification notification) {
+        if (notification == GridNotification.OWNER_CHANGED) {
+            gp.saveChanges();
+            return;
+        }
+
         if (this.gp instanceof CablePart) {
             ((CablePart) this.gp).markForUpdate();
         }

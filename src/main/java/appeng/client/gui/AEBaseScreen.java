@@ -300,22 +300,36 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
             }
         }
 
-        if (this.getScrollBar() != null) {
-            this.getScrollBar().click(xCoord - this.x, yCoord - this.y);
+        // Forward left mouse button down events to the scrollbar
+        if (btn == 0 && this.getScrollBar() != null) {
+            if (this.getScrollBar().mouseDown(xCoord - this.x, yCoord - this.y)) {
+                return true;
+            }
         }
 
         return super.mouseClicked(xCoord, yCoord, btn);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        // Forward left mouse button up events to the scrollbar
+        if (button == 0 && this.getScrollBar() != null) {
+            if (this.getScrollBar().mouseUp(mouseX - this.guiLeft, mouseY - this.guiTop)) {
+                return true;
+            }
+        }
 
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
         final Slot slot = this.getSlot((int) mouseX, (int) mouseY);
         final ItemStack itemstack = getPlayer().inventory.getCursorStack();
 
         if (this.getScrollBar() != null) {
             // FIXME: Coordinate system of mouseX/mouseY is unclear
-            this.getScrollBar().click((int) mouseX - this.x, (int) mouseY - this.y);
+            this.getScrollBar().mouseDragged((int) mouseX - this.x, (int) mouseY - this.y);
         }
 
         if (slot instanceof FakeSlot && !itemstack.isEmpty()) {
@@ -798,6 +812,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
 
     public void tick() {
         super.tick();
+
+        if (this.getScrollBar() != null) {
+            this.getScrollBar().tick();
+        }
+
         for (Element child : children) {
             if (child instanceof ITickingWidget) {
                 ((ITickingWidget) child).tick();

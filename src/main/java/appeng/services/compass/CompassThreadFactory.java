@@ -33,7 +33,9 @@ public final class CompassThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(@Nonnull final Runnable job) {
         Preconditions.checkNotNull(job);
+        final Thread compass = new Thread(job, "AE Compass Service");
+        compass.setDaemon(true);
 
-        return new Thread(job, "AE Compass Service");
+        return compass;
     }
 }

@@ -47,6 +47,26 @@ repositories {
     }
 }
 
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // compile against provided APIs
+    compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
+    compileOnly "mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}:api"
+
+    // Runtime, Mods
+    runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
+    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}")
+
+    // unit test dependencies
+    testCompile "junit:junit:4.13"
+
+    // Annotation Processors
+    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
+}
+group = artifact_group
+archivesBaseName = artifact_basename
+
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 compileJava {
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
@@ -59,7 +79,10 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-// Create version number
+///////////////////
+// Version Number
+version = version_major + "." + version_minor + "." + version_patch
+
 ext.pr = System.getenv('PR_NUMBER') ?: ""
 if (ext.pr) {
   version = version + "+pr." + ext.pr
@@ -81,9 +104,8 @@ if (ext.tag && ext.tag.startsWith("fabric/v")) {
   }
 }
 
-// Maven group and artifact name
-group = artifact_group
-archivesBaseName = artifact_basename
+ext.isAlpha = project.version.contains("alpha")
+ext.isBeta = project.version.contains("beta")
 
 sourceSets {
     api
@@ -119,8 +141,8 @@ configurations {
     siteexportRuntime.extendsFrom(runtimeClasspath)
 }
 
-apply from: 'gradle/scripts/spotless.gradle'
-
+////////////////////
+// Forge/Minecraft
 minecraft {
     accessWidener "src/main/resources/appliedenergistics2.accesswidener"
 }
@@ -177,10 +199,74 @@ processResources {
     }
 }
 
-apply from: 'gradle/scripts/artifacts.gradle'
-apply from: 'gradle/scripts/curseforge.gradle'
+//////////////
+// Aritfacts
+processResources {
+    exclude '.cache'
+}
 
-// configure the maven publication
+jar {
+    finalizedBy 'reobfJar'
+    finalizedBy 'signJar'
+
+    from sourceSets.main.output.classesDirs
+    from sourceSets.api.output.classesDirs
+    from sourceSets.main.output.resourcesDir
+    from sourceSets.api.output.resourcesDir
+
+    manifest {
+        attributes([
+                "Specification-Title": "Applied Energistics 2",
+                "Specification-Vendor": "TeamAppliedEnergistics",
+                "Specification-Version": "${project.version}",
+                "Implementation-Title": "${project.name}",
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" :"TeamAppliedEnergistics",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": "appliedenergistics2.mixins.json"
+        ])
+    }
+}
+
+task javadocs(type: Javadoc) {
+    classpath = sourceSets.main.compileClasspath
+    source = sourceSets.api.java
+    include "appeng/api/**"
+
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+}
+
+task javadocJar(type: Jar, dependsOn: javadocs) {
+    classifier = "javadoc"
+    from javadoc.destinationDir
+}
+task sourcesJar(type: Jar) {
+    classifier = "sources"
+    from sourceSets.main.allJava
+    from sourceSets.api.allJava
+}
+
+task apiJar(type: Jar) {
+    classifier = "api"
+    from sourceSets.api.output
+    include "appeng/api/**"
+
+    // TODO: when FG bug is fixed, remove allJava from the api jar.
+    // https://github.com/MinecraftForge/ForgeGradle/issues/369
+    // Gradle should be able to pull them from the -sources jar.
+    from sourceSets.api.allJava
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+    archives apiJar
+}
+
+//////////////////
+// Maven publish
 publishing {
     if (!version.endsWith("-SNAPSHOT")) {
         publications {
@@ -238,4 +324,54 @@ task runSiteExport(type: RunClientTask, dependsOn: downloadAssets, group: "ae2",
     classpath sourceSets.api.output
     classpath sourceSets.main.output
     classpath sourceSets.siteexport.output
+}
+
+/////////////
+// Spotless
+spotless {
+    java {
+        target 'src/*/java/appeng/**/*.java'
+
+        indentWithSpaces()
+        eclipse().configFile 'codeformat/codeformat.xml'
+        importOrderFile 'codeformat/ae2.importorder'
+    }
+    format 'json', {
+        target 'src/*/resources/**/*.json'
+        targetExclude 'src/generated/resources/**'
+        prettier().config(['parser': 'json'])
+    }
+}
+
+////////////////
+// Curse Forge
+if (System.getenv("CURSEFORGE")) {
+    def cfReleaseType = "release"
+    if (ext.isAlpha) {
+      cfReleaseType = "alpha"
+    } else if (ext.isBeta) {
+      cfReleaseType = "beta"
+    }
+
+    curseforge {
+        apiKey = System.getenv("CURSEFORGE")
+        project {
+            id = project.curseforge_project
+            changelogType = "markdown"
+            changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
+            releaseType = cfReleaseType
+        }
+    }
+}
+
+////////////////
+// IntelliJ Project Import
+// The Mixin annotation process does not have an obfuscation source when running through the IntelliJ compiler,
+// thus we have to prevent it from being activated as part of importing this Gradle project into IntelliJ.
+if (System.getProperty("idea.sync.active") == "true") {
+    afterEvaluate {
+        tasks.withType(JavaCompile).all {
+            it.options.annotationProcessorPath = files()
+        }
+    }
 }

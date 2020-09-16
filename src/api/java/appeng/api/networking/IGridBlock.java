@@ -87,7 +87,8 @@ public interface IGridBlock {
     AEColor getGridColor();
 
     /**
-     * Notifies your IGridBlock that changes were made to your connections
+     * Called by the {@link IGridNode} to notify its {@link IGridBlock} about
+     * events.
      */
     void onGridNotification(@Nonnull GridNotification notification);
 

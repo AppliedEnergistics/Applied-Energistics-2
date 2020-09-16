@@ -93,6 +93,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
         addButton(new ButtonWidget(this.x + 6, this.y + this.backgroundHeight - 25, 50, 20, GuiText.Cancel.text(),
                 btn -> subGui.goBack()));
+
+        this.setScrollBar();
     }
 
     @Override

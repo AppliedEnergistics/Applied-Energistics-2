@@ -327,8 +327,9 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public void setPlayerID(final int playerID) {
-        if (playerID >= 0) {
+        if (playerID >= 0 && this.playerID != playerID) {
             this.playerID = playerID;
+            gridProxy.onGridNotification(GridNotification.OWNER_CHANGED);
         }
     }
 

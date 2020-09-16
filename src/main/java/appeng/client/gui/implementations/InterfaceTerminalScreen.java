@@ -70,8 +70,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
-        final Scrollbar scrollbar = new Scrollbar();
-        this.setScrollBar(scrollbar);
+        this.setScrollBar(new Scrollbar().setLeft(175).setTop(18).setHeight(106));
         this.backgroundWidth = 195;
         this.backgroundHeight = 222;
     }
@@ -79,10 +78,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     @Override
     public void init() {
         super.init();
-
-        this.getScrollBar().setLeft(175);
-        this.getScrollBar().setHeight(106);
-        this.getScrollBar().setTop(18);
 
         this.searchField = new AETextField(this.textRenderer, this.x + 104, this.y + 4, 65, 12);
         this.searchField.setHasBorder(false);

@@ -19,6 +19,7 @@
 package appeng.core.sync.packets;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -325,15 +326,10 @@ public class JEIRecipePacket extends BasePacket {
      */
     private IAEItemStack findBestMatchingItemStack(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
             IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
-        return Arrays.stream(getMatchingStacks(ingredients)).map(AEItemStack::fromItemStack) //
-                .filter(r -> r != null && (filter == null || filter.isListed(r))) //
-                .map(s -> {
-                    // Determine the stored count
-                    IAEItemStack stored = storage.extractItems(s.copy().setStackSize(Long.MAX_VALUE),
-                            Actionable.SIMULATE, cct.getActionSource());
-                    return Pair.of(s, stored != null ? stored.getStackSize() : 0);
-                }).min((left, right) -> Long.compare(right.getSecond(), left.getSecond()))//
-                .map(Pair::getFirst).orElse(null);
+        Stream<AEItemStack> stacks = Arrays.stream(getMatchingStacks(ingredients))//
+                .map(AEItemStack::fromItemStack) //
+                .filter(r -> r != null && (filter == null || filter.isListed(r)));
+        return getMostStored(stacks, storage, cct);
     }
 
     /**
@@ -344,16 +340,30 @@ public class JEIRecipePacket extends BasePacket {
      */
     private IAEItemStack findBestMatchingPattern(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
             ICraftingGrid crafting, IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
-        return Arrays.stream(getMatchingStacks(ingredients)).map(AEItemStack::fromItemStack)
-                .filter(r -> r != null && (filter == null || filter.isListed(r)))
-                .map(s -> s.setCraftable(!crafting.getCraftingFor(s, null, 0, null).isEmpty()))
-                .filter(IAEItemStack::isCraftable).map(s -> {
-                    final IAEItemStack stored = storage.extractItems(s, Actionable.SIMULATE, cct.getActionSource());
-                    return s.setStackSize(stored != null ? stored.getStackSize() : 0);
-                }).min((left, right) -> {
-                    final int craftable = Boolean.compare(left.isCraftable(), right.isCraftable());
-                    return craftable != 0 ? craftable : Long.compare(right.getStackSize(), left.getStackSize());
-                }).orElse(null);
+        Stream<IAEItemStack> stacks = Arrays.stream(getMatchingStacks(ingredients))//
+                .map(AEItemStack::fromItemStack)//
+                .filter(r -> r != null && (filter == null || filter.isListed(r)))//
+                .map(s -> s.setCraftable(!crafting.getCraftingFor(s, null, 0, null).isEmpty()))//
+                .filter(IAEItemStack::isCraftable);
+        return getMostStored(stacks, storage, cct);
+    }
+
+    /**
+     * From a stream of AE item stacks, pick the one with the highest available
+     * amount in the network. Returns null if the stream is empty.
+     */
+    private static IAEItemStack getMostStored(Stream<? extends IAEItemStack> stacks, IMEMonitor<IAEItemStack> storage,
+            IContainerCraftingPacket cct) {
+        return stacks//
+                .map(s -> {
+                    // Determine the stored count
+                    IAEItemStack stored = storage.extractItems(s.copy().setStackSize(Long.MAX_VALUE),
+                            Actionable.SIMULATE, cct.getActionSource());
+                    return Pair.of(s, stored != null ? stored.getStackSize() : 0);
+                })//
+                .min((left, right) -> Long.compare(right.getSecond(), left.getSecond()))//
+                .map(Pair::getFirst)//
+                .orElse(null);
     }
 
     private void handleProcessing(ScreenHandler con, IContainerCraftingPacket cct, Recipe<?> recipe) {

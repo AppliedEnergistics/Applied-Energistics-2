@@ -81,8 +81,16 @@ public class SecurityCache implements ISecurityGrid {
     private void updateSecurityKey() {
         final long lastCode = this.securityKey;
 
+        /**
+         * Placing a security station will propagate the security station's owner to all
+         * connected grid nodes to prevent the network from not reforming due to
+         * different owners later.
+         */
+        int newOwner = -1;
         if (this.securityProvider.size() == 1) {
-            this.securityKey = this.securityProvider.get(0).getSecurityKey();
+            ISecurityProvider securityProvider = this.securityProvider.get(0);
+            this.securityKey = securityProvider.getSecurityKey();
+            newOwner = securityProvider.getOwner();
         } else {
             this.securityKey = -1;
         }
@@ -90,7 +98,11 @@ public class SecurityCache implements ISecurityGrid {
         if (lastCode != this.securityKey) {
             this.getGrid().postEvent(new MENetworkSecurityChange());
             for (final IGridNode n : this.getGrid().getNodes()) {
-                ((GridNode) n).setLastSecurityKey(this.securityKey);
+                GridNode gridNode = (GridNode) n;
+                gridNode.setLastSecurityKey(this.securityKey);
+                if (gridNode.getPlayerID() != newOwner) {
+                    gridNode.setPlayerID(newOwner);
+                }
             }
         }
     }
