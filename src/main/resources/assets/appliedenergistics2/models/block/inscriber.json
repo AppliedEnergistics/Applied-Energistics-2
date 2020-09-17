@@ -2,7 +2,12 @@
   "parent": "block/orientable",
   "textures": {
     "particle": "appliedenergistics2:block/inscriber",
-    "side": "appliedenergistics2:block/inscriber",
+
+    "bottom": "appliedenergistics2:block/inscriber_bottom",
+    "front": "appliedenergistics2:block/inscriber_front",
+    "side": "appliedenergistics2:block/inscriber_side",
+    "top": "appliedenergistics2:block/inscriber_top",
+
     "inside": "appliedenergistics2:block/inscriber_inside"
   },
   "elements": [

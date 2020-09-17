@@ -10,22 +10,34 @@
         "down": {
           "texture": "#indicator",
           "tintindex": 1,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         },
         "up": {
           "texture": "#indicator",
           "tintindex": 1,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         },
         "east": {
           "texture": "#indicator",
           "tintindex": 1,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         },
         "west": {
           "texture": "#indicator",
           "tintindex": 1,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         }
       }
     }
