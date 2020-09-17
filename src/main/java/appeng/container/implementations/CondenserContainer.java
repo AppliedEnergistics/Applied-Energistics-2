@@ -81,7 +81,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
 
             this.requiredEnergy = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min(requiredEnergy, maxStorage);
             this.storedPower = (int) this.condenser.getStoredPower();
-            this.setOutput((CondenserOutput) this.condenser.getConfigManager().getSetting(Settings.CONDENSER_OUTPUT));
+            this.output = (CondenserOutput) this.condenser.getConfigManager().getSetting(Settings.CONDENSER_OUTPUT);
         }
 
         super.detectAndSendChanges();
@@ -101,7 +101,4 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
         return this.output;
     }
 
-    private void setOutput(final CondenserOutput output) {
-        this.output = output;
-    }
 }
