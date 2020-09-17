@@ -90,7 +90,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     }
 
     private void selectNextInterfaceMode() {
-        final boolean backwards = getMinecraft().mouseHelper.isRightDown();
+        final boolean backwards = isHandlingRightClick();
         NetworkHandler.instance().sendToServer(new ConfigButtonPacket(Settings.INTERFACE_TERMINAL, backwards));
     }
 

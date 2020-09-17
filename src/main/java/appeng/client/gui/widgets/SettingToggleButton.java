@@ -25,6 +25,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -47,6 +48,7 @@ import appeng.api.config.StorageFilter;
 import appeng.api.config.TerminalStyle;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
+import appeng.client.gui.AEBaseScreen;
 import appeng.core.localization.ButtonToolTips;
 import appeng.util.EnumCycler;
 
@@ -232,7 +234,13 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     private void triggerPress() {
-        boolean backwards = Minecraft.getInstance().mouseHelper.isRightDown();
+        boolean backwards = false;
+        // This isn't great, but we don't get any information about right-clicks
+        // otherwise
+        Screen currentScreen = Minecraft.getInstance().currentScreen;
+        if (currentScreen instanceof AEBaseScreen) {
+            backwards = ((AEBaseScreen<?>) currentScreen).isHandlingRightClick();
+        }
         onPress.handle(this, backwards);
     }
 

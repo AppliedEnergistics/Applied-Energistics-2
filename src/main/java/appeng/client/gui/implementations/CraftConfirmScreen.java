@@ -27,6 +27,8 @@ import com.google.common.base.Joiner;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
@@ -76,10 +78,6 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         this.setScrollBar(scrollbar);
     }
 
-    boolean isAutoStart() {
-        return this.container.isAutoStart();
-    }
-
     @Override
     public void init() {
         super.init();
@@ -90,8 +88,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         this.addButton(this.start);
 
         this.selectCPU = new Button(this.guiLeft + (219 - 180) / 2, this.guiTop + this.ySize - 68, 180, 20,
-                new StringTextComponent(GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic),
-                btn -> selectNextCpu());
+                getNextCpuButtonLabel(), btn -> selectNextCpu());
         this.selectCPU.active = false;
         this.addButton(this.selectCPU);
 
@@ -139,22 +136,22 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     private void updateCPUButtonText() {
-        String btnTextText = GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic.getLocal();
-        if (this.container.getSelectedCpu() >= 0)// && status.selectedCpu < status.cpus.size() )
-        {
-            if (this.container.getName() != null) {
-                final String name = this.container.getName().getStringTruncated(20);
-                btnTextText = GuiText.CraftingCPU.getLocal() + ": " + name;
-            } else {
-                btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + this.container.getSelectedCpu();
-            }
-        }
+        this.selectCPU.setMessage(getNextCpuButtonLabel());
+    }
 
+    private ITextComponent getNextCpuButtonLabel() {
         if (this.container.hasNoCPU()) {
-            btnTextText = GuiText.NoCraftingCPUs.getLocal();
+            return GuiText.NoCraftingCPUs.text();
         }
 
-        this.selectCPU.setMessage(new StringTextComponent(btnTextText));
+        ITextComponent cpuName;
+        if (this.container.cpuName == null) {
+            cpuName = GuiText.Automatic.text();
+        } else {
+            cpuName = this.container.cpuName;
+        }
+
+        return GuiText.CraftingCPU.withSuffix(": ").append(cpuName);
     }
 
     private boolean isSimulation() {
@@ -447,7 +444,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
         if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
-            if (keyCode == 28) {
+            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
                 this.start();
                 return true;
             }
@@ -456,7 +453,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     private void selectNextCpu() {
-        final boolean backwards = minecraft.mouseHelper.isRightDown();
+        final boolean backwards = isHandlingRightClick();
         NetworkHandler.instance().sendToServer(new ConfigValuePacket("Terminal.Cpu", backwards ? "Prev" : "Next"));
     }
 
