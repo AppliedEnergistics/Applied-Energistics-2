@@ -113,7 +113,7 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
         return quads;
     }
 
-    private void addRing(CubeBuilder builder, @Nullable Direction side, EnumSet<Direction> connections) {
+    private void addRing(CubeBuilder builder, Direction side, EnumSet<Direction> connections) {
         // Fill in the corners
         builder.setTexture(this.ringCorner);
         this.addCornerCap(builder, connections, side, Direction.UP, Direction.EAST, Direction.NORTH);
