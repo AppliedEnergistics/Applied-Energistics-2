@@ -46,6 +46,8 @@ import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
@@ -101,6 +103,13 @@ public class MEMonitorableContainer extends AEBaseContainer
     public boolean canAccessViewCells = false;
     @GuiSync(98)
     public boolean hasPower = false;
+    /**
+     * The number of active crafting jobs in the network. -1 means unknown and will
+     * hide the label on the screen.
+     */
+    @GuiSync(100)
+    public int activeCraftingJobs = -1;
+
     private IConfigManagerHost gui;
     private IConfigManager serverCM;
     private IGridNode networkNode;
@@ -188,6 +197,8 @@ public class MEMonitorableContainer extends AEBaseContainer
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))) {
                 this.setValidContainer(false);
             }
+
+            this.updateActiveCraftingJobs();
 
             for (final Settings set : this.serverCM.getSettings()) {
                 final Enum<?> sideLocal = this.serverCM.getSetting(set);
@@ -284,6 +295,36 @@ public class MEMonitorableContainer extends AEBaseContainer
         super.addListener(c);
 
         this.queueInventory(c);
+    }
+
+    private void updateActiveCraftingJobs() {
+        IGridNode hostNode = networkNode;
+        if (hostNode == null) {
+            // Wireless terminals do not directly expose the target grid (even though they
+            // have one)
+            if (host instanceof IActionHost) {
+                hostNode = ((IActionHost) host).getActionableNode();
+            }
+        }
+        IGrid grid = null;
+        if (hostNode != null) {
+            grid = hostNode.getGrid();
+        }
+
+        if (grid == null) {
+            // No grid to query crafting jobs from
+            this.activeCraftingJobs = -1;
+            return;
+        }
+
+        int activeJobs = 0;
+        ICraftingGrid craftingGrid = grid.getCache(ICraftingGrid.class);
+        for (ICraftingCPU cpus : craftingGrid.getCpus()) {
+            if (cpus.isBusy()) {
+                activeJobs++;
+            }
+        }
+        this.activeCraftingJobs = activeJobs;
     }
 
     private void queueInventory(final IContainerListener c) {
