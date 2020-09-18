@@ -1,7 +1,10 @@
 {
-  "variants": {
-    "": {
-      "model": "appliedenergistics2:block/quartz_ore"
-    }
-  }
+	"variants": {
+		"": [ 
+			{ "model": "appliedenergistics2:block/quartz_ore0", "weight":1 },
+			{ "model": "appliedenergistics2:block/quartz_ore1", "weight":1 },
+			{ "model": "appliedenergistics2:block/quartz_ore2", "weight":1 },
+			{ "model": "appliedenergistics2:block/quartz_ore3", "weight":1 }
+		]
+	}
 }
