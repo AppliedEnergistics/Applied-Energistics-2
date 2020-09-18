@@ -3,8 +3,7 @@ name: 'Build PRs'
 on:
   pull_request:
     branches:
-      - master
-      - '[0-9.x]+-[0-9.]+'
+      - '*'
 
 jobs:
   build:
