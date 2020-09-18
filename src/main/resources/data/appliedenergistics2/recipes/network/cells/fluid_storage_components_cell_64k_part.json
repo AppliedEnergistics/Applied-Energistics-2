@@ -9,7 +9,7 @@
       "item": "appliedenergistics2:quartz_glass"
     },
     "a": {
-      "item": "minecraft:lapis_lazuli"
+      "tag": "forge:dyes/green"
     },
     "c": {
       "item": "appliedenergistics2:16k_fluid_cell_component"

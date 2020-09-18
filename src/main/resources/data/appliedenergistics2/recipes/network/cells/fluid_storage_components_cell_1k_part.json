@@ -6,7 +6,7 @@
   "pattern": ["aba", "bcb", "aba"],
   "key": {
     "a": {
-      "item": "minecraft:lapis_lazuli"
+      "tag": "forge:dyes/green"
     },
     "b": {
       "tag": "appliedenergistics2:crystals/certus"

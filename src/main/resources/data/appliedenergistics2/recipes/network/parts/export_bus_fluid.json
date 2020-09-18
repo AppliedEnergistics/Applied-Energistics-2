@@ -15,7 +15,7 @@
       "item": "minecraft:piston"
     },
     "l": {
-      "item": "minecraft:lapis_lazuli"
+      "tag": "forge:dyes/green"
     }
   }
 }

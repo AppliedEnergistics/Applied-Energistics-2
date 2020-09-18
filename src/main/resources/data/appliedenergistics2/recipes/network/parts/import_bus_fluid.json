@@ -15,7 +15,7 @@
       "item": "appliedenergistics2:annihilation_core"
     },
     "l": {
-      "item": "minecraft:lapis_lazuli"
+      "tag": "forge:dyes/green"
     }
   }
 }

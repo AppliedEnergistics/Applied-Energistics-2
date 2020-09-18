@@ -21,6 +21,7 @@ package appeng.tile.networking;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.MathHelper;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -67,15 +68,9 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
      * determining the item model.
      */
     public static int getStorageLevelFromFillFactor(double fillFactor) {
-        byte boundMetadata = (byte) (8.0 * (fillFactor));
+        byte factor = (byte) (8.0 * (fillFactor));
 
-        if (boundMetadata > 7) {
-            boundMetadata = 7;
-        }
-        if (boundMetadata < 0) {
-            boundMetadata = 0;
-        }
-        return boundMetadata;
+        return MathHelper.clamp(factor, 0, EnergyCellBlock.MAX_FULLNESS);
     }
 
     private void changePowerLevel() {
