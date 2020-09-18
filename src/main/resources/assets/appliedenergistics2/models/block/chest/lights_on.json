@@ -1,5 +1,4 @@
 {
-  "loader": "appliedenergistics2:uvlightmap",
   "textures": {
     "lights_bright": "appliedenergistics2:block/chest/lights_on_bright",
     "lights_medium": "appliedenergistics2:block/chest/lights_on_medium",
@@ -13,10 +12,7 @@
         "up": {
           "texture": "#lights_bright",
           "tintindex": 3,
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         }
       }
     },
@@ -27,10 +23,7 @@
         "up": {
           "texture": "#lights_medium",
           "tintindex": 2,
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         }
       }
     },
@@ -41,10 +34,7 @@
         "up": {
           "texture": "#lights_dark",
           "tintindex": 1,
-          "uvlightmap": {
-            "block": 0.007,
-            "sky": 0.007
-          }
+          "unlit": true
         }
       }
     }

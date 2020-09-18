@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "appliedenergistics2:block/energy_cell0"
+    "all": "appliedenergistics2:block/energy_cell_5"
   }
 }

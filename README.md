@@ -25,9 +25,9 @@ A Mod about Matter, Energy and using them to conquer the world..
 ## Contacts
 
 * [Website](http://ae-mod.info/)
-* [IRC #appliedenergistics on esper.net](http://webchat.esper.net/?channels=appliedenergistics&prompt=1)
-* [GitHub](https://github.com/AppliedEnergistics/Applied-Energistics-2)
 * [Discord](https://discord.gg/GygKjjm)
+* [GitHub](https://github.com/AppliedEnergistics/Applied-Energistics-2)
+* [IRC #appliedenergistics on esper.net](http://webchat.esper.net/?channels=appliedenergistics&prompt=1)
 
 ## License
 
@@ -38,7 +38,7 @@ A Mod about Matter, Energy and using them to conquer the world..
   - (c) 2013 - 2020 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-LGPLv3-blue.svg?style=flat-square)](https://raw.githubusercontent.com/AppliedEnergistics/Applied-Energistics-2/rv2/LICENSE)
 * Textures and Models
-  - (c) 2013 - 2020 AlgorithmX2 et al
+  - (c) 2020, [Ridanisaurus Rid](https://github.com/Ridanisaurus/), (c) 2013 - 2020 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-yellow.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc-sa/3.0/)
 * Text and Translations
   - [![License](https://img.shields.io/badge/License-No%20Restriction-green.svg?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
@@ -185,4 +185,5 @@ Thanks to
 * Notch et al for Minecraft
 * Lex et al for MinecraftForge
 * AlgorithmX2 for AppliedEnergistics2
+* [Ridanisaurus Rid](https://github.com/Ridanisaurus/) for the new 2020 textures
 * all [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors)

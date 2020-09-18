@@ -1,5 +1,4 @@
 {
-  "loader": "appliedenergistics2:uvlightmap",
   "textures": {
     "indicator": "appliedenergistics2:part/monitor_sides_status_on"
   },
@@ -11,34 +10,22 @@
         "down": {
           "texture": "#indicator",
           "tintindex": 1,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "up": {
           "texture": "#indicator",
           "tintindex": 1,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "east": {
           "texture": "#indicator",
           "tintindex": 1,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         },
         "west": {
           "texture": "#indicator",
           "tintindex": 1,
-          "uvlightmap": {
-            "sky": 0.007,
-            "block": 0.007
-          }
+          "unlit": true
         }
       }
     }

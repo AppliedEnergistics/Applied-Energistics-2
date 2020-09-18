@@ -8,7 +8,7 @@
       "item": "appliedenergistics2:terminal"
     },
     {
-      "item": "minecraft:lapis_lazuli"
+      "tag": "forge:dyes/green"
     },
     {
       "item": "appliedenergistics2:logic_processor"
