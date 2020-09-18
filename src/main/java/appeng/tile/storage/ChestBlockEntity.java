@@ -49,6 +49,7 @@ import alexiil.mc.lib.attributes.fluid.filter.ConstantFluidFilter;
 import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -111,7 +112,6 @@ import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
-import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
@@ -123,7 +123,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private static final int BIT_CELL_STATE_MASK = 0b111;
     private static final int BIT_CELL_STATE_BITS = 3;
     private final AppEngInternalInventory inputInventory = new AppEngInternalInventory(this, 1);
+    private final LimitedFixedItemInv externalInputInventory;
     private final AppEngInternalInventory cellInventory = new AppEngInternalInventory(this, 1);
+    private final LimitedFixedItemInv externalCellInventory;
     private final FixedItemInv internalInventory = new WrapperChainedItemHandler(this.inputInventory,
             this.cellInventory);
 
@@ -154,12 +156,33 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.setInternalPublicPowerStorage(true);
         this.setInternalPowerFlow(AccessRestriction.WRITE);
 
-        this.inputInventory.setFilter(new InputInventoryFilter());
-        this.cellInventory.setFilter(new CellInventoryFilter());
+        this.externalInputInventory = inputInventory.createLimitedFixedInv();
+        this.externalInputInventory.getAllRule().disallowExtraction().filterInserts(this::canInsertItemsExternally);
+
+        this.externalCellInventory = cellInventory.createLimitedFixedInv();
+        this.externalCellInventory.getAllRule().filterInserts(ChestBlockEntity::canInsertCell);
+    }
+
+    private static boolean canInsertCell(ItemStack stack) {
+        return Api.instance().registries().cell().getHandler(stack) != null;
     }
 
     public ItemStack getCell() {
         return this.cellInventory.getInvStack(0);
+    }
+
+    private boolean canInsertItemsExternally(ItemStack stack) {
+        if (ChestBlockEntity.this.isPowered()) {
+            ChestBlockEntity.this.updateHandler();
+            if (this.cellHandler == null) {
+                return false;
+            }
+
+            IItemStorageChannel itemChannel = Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+            return this.cellHandler.getChannel() == itemChannel
+                    && this.cellHandler.canAccept(AEItemStack.fromItemStack(stack));
+        }
+        return false;
     }
 
     @Override
@@ -475,9 +498,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     @Override
     protected FixedItemInv getItemHandlerForSide(@Nonnull Direction side) {
         if (side == this.getForward()) {
-            return this.cellInventory;
+            return this.externalCellInventory;
         } else {
-            return this.inputInventory;
+            return this.externalInputInventory;
         }
     }
 
@@ -703,7 +726,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             to.offer(fluidInsertable);
         }
 
-        // FIXME FABRIC: STORAGE_MONITORABLE_ACCESSOR
+        if (accessor != null && to.getSearchDirection() != getForward()) {
+            to.offer(accessor);
+        }
     }
 
     private class Accessor implements IStorageMonitorableAccessor {
@@ -754,37 +779,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         public FluidFilter getInsertionFilter() {
             ChestBlockEntity.this.updateHandler();
             return canAcceptLiquids() ? ConstantFluidFilter.ANYTHING : ConstantFluidFilter.NOTHING;
-        }
-
-    }
-
-    private class InputInventoryFilter implements IAEItemFilter {
-        @Override
-        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
-            return false;
-        }
-
-        @Override
-        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
-            if (ChestBlockEntity.this.isPowered()) {
-                ChestBlockEntity.this.updateHandler();
-                return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler
-                        .getChannel() == Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
-            }
-            return false;
-        }
-    }
-
-    private static class CellInventoryFilter implements IAEItemFilter {
-
-        @Override
-        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
-            return true;
-        }
-
-        @Override
-        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
-            return Api.instance().registries().cell().getHandler(stack) != null;
         }
 
     }
