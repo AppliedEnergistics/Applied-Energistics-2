@@ -1,4 +1,5 @@
 {
+  "loader": "appliedenergistics2:uvlightmap",
   "ambientocclusion": false,
   "textures": {
     "lights": "appliedenergistics2:part/monitor_light"
@@ -12,7 +13,10 @@
         "north": {
           "texture": "#lights",
           "tintindex": 3,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         }
       }
     }

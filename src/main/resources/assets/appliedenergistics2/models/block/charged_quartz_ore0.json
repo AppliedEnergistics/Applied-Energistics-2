@@ -1,8 +1,9 @@
 {
+  "loader": "appliedenergistics2:uvlightmap",
   "parent": "block/block",
   "textures": {
     "block": "block/stone",
-    "quartz": "appliedenergistics2:block/charged_quartz_ore_light",
+    "quartz": "appliedenergistics2:block/charged_quartz_ore_light0",
     "particle": "appliedenergistics2:block/charged_quartz_ore"
   },
   "elements": [
@@ -41,32 +42,50 @@
         "down": {
           "texture": "#quartz",
           "cullface": "down",
-          "unlit": true
+          "uvlightmap": {
+            "block": 0.007,
+            "sky": 0.007
+          }
         },
         "east": {
           "texture": "#quartz",
           "cullface": "east",
-          "unlit": true
+          "uvlightmap": {
+            "block": 0.007,
+            "sky": 0.007
+          }
         },
         "north": {
           "texture": "#quartz",
           "cullface": "north",
-          "unlit": true
+          "uvlightmap": {
+            "block": 0.007,
+            "sky": 0.007
+          }
         },
         "south": {
           "texture": "#quartz",
           "cullface": "south",
-          "unlit": true
+          "uvlightmap": {
+            "block": 0.007,
+            "sky": 0.007
+          }
         },
         "up": {
           "texture": "#quartz",
           "cullface": "up",
-          "unlit": true
+          "uvlightmap": {
+            "block": 0.007,
+            "sky": 0.007
+          }
         },
         "west": {
           "texture": "#quartz",
           "cullface": "west",
-          "unlit": true
+          "uvlightmap": {
+            "block": 0.007,
+            "sky": 0.007
+          }
         }
       },
       "from": [0, 0, 0],
