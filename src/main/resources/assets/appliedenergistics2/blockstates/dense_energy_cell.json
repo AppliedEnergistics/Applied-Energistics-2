@@ -1,19 +1,19 @@
 {
   "variants": {
     "fullness=0": {
-      "model": "appliedenergistics2:block/energy_cell/dense_energy_cell0"
+      "model": "appliedenergistics2:block/energy_cell/dense_energy_cell_0"
     },
     "fullness=1": {
-      "model": "appliedenergistics2:block/energy_cell/dense_energy_cell1"
+      "model": "appliedenergistics2:block/energy_cell/dense_energy_cell_1"
     },
     "fullness=2": {
-      "model": "appliedenergistics2:block/energy_cell/dense_energy_cell2"
+      "model": "appliedenergistics2:block/energy_cell/dense_energy_cell_2"
     },
     "fullness=3": {
-      "model": "appliedenergistics2:block/energy_cell/dense_energy_cell3"
+      "model": "appliedenergistics2:block/energy_cell/dense_energy_cell_3"
     },
     "fullness=4": {
-      "model": "appliedenergistics2:block/energy_cell/dense_energy_cell4"
+      "model": "appliedenergistics2:block/energy_cell/dense_energy_cell_4"
     }
   }
 }
