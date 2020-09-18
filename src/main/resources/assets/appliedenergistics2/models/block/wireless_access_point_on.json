@@ -1,4 +1,5 @@
 {
+  "loader": "appliedenergistics2:uvlightmap",
   "ambientocclusion": false,
   "textures": {
     "torch": "appliedenergistics2:block/wireless_access_point_on"
@@ -38,7 +39,10 @@
           "texture": "#torch",
           "uv": [7, 7, 9, 9],
           "rotation": 270,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         }
       }
     },
@@ -51,13 +55,19 @@
           "texture": "#torch",
           "uv": [6, 6, 10, 10],
           "rotation": 90,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         },
         "down": {
           "texture": "#torch",
           "uv": [6, 6, 10, 10],
           "rotation": 270,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         }
       }
     },
@@ -69,13 +79,19 @@
         "west": {
           "texture": "#torch",
           "uv": [6, 6, 10, 10],
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         },
         "east": {
           "texture": "#torch",
           "uv": [6, 6, 10, 10],
           "rotation": 180,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         }
       }
     }

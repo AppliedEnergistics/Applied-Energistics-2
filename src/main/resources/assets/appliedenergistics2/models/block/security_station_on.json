@@ -1,4 +1,5 @@
 {
+  "loader": "appliedenergistics2:uvlightmap",
   "parent": "block/block",
   "textures": {
     "particle": "appliedenergistics2:block/security_station_side",
@@ -41,7 +42,10 @@
         "up": {
           "texture": "#lightsBright",
           "tintindex": 3,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         }
       }
     },
@@ -52,7 +56,10 @@
         "up": {
           "texture": "#lightsMedium",
           "tintindex": 2,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         }
       }
     },
@@ -63,7 +70,10 @@
         "up": {
           "texture": "#lightsDark",
           "tintindex": 1,
-          "unlit": true
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
         }
       }
     }

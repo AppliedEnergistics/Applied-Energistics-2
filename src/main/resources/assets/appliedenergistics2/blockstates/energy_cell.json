@@ -14,15 +14,6 @@
     },
     "fullness=4": {
       "model": "appliedenergistics2:block/energy_cell/energy_cell4"
-    },
-    "fullness=5": {
-      "model": "appliedenergistics2:block/energy_cell/energy_cell5"
-    },
-    "fullness=6": {
-      "model": "appliedenergistics2:block/energy_cell/energy_cell6"
-    },
-    "fullness=7": {
-      "model": "appliedenergistics2:block/energy_cell/energy_cell7"
     }
   }
 }

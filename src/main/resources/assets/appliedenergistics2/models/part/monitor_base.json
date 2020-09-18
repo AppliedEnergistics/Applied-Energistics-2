@@ -1,4 +1,5 @@
 {
+  "loader": "appliedenergistics2:uvlightmap",
   "textures": {
     "sides": "appliedenergistics2:part/monitor_sides",
     "back": "appliedenergistics2:part/monitor_back",
