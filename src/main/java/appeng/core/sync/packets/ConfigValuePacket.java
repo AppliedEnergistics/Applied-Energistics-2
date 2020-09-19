@@ -37,7 +37,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.container.implementations.CraftConfirmContainer;
 import appeng.container.implementations.CraftingCPUContainer;
-import appeng.container.implementations.CraftingStatusContainer;
+import appeng.container.implementations.CraftingCPUCyclingContainer;
 import appeng.container.implementations.LevelEmitterContainer;
 import appeng.container.implementations.NetworkToolContainer;
 import appeng.container.implementations.PatternTermContainer;
@@ -98,12 +98,9 @@ public class ConfigValuePacket extends BasePacket {
             final ItemStack is = player.getHeldItem(hand);
             final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
             si.onWheel(is, this.Value.equals("WheelUp"));
-        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingStatusContainer) {
-            final CraftingStatusContainer qk = (CraftingStatusContainer) c;
-            qk.cycleCpu(this.Value.equals("Next"));
-        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftConfirmContainer) {
-            final CraftConfirmContainer qk = (CraftConfirmContainer) c;
-            qk.cycleCpu(this.Value.equals("Next"));
+        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingCPUCyclingContainer) {
+            final CraftingCPUCyclingContainer qk = (CraftingCPUCyclingContainer) c;
+            qk.cycleSelectedCPU(this.Value.equals("Next"));
         } else if (this.Name.equals("Terminal.Start") && c instanceof CraftConfirmContainer) {
             final CraftConfirmContainer qk = (CraftConfirmContainer) c;
             qk.startJob();

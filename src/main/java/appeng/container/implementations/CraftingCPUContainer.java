@@ -66,7 +66,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
 
     private final IItemList<IAEItemStack> list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
-    private IGrid network;
+    private final IGrid network;
     private CraftingCPUCluster monitor = null;
 
     @GuiSync(0)
@@ -81,7 +81,9 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
         final IActionHost host = (IActionHost) (te instanceof IActionHost ? te : null);
 
         if (host != null && host.getActionableNode() != null) {
-            this.setNetwork(host.getActionableNode().getGrid());
+            this.network = host.getActionableNode().getGrid();
+        } else {
+            this.network = null;
         }
 
         if (te instanceof CraftingTileEntity) {
@@ -118,13 +120,13 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
         }
 
         if (c instanceof CraftingCPUCluster) {
-            this.setMonitor((CraftingCPUCluster) c);
+            this.monitor = (CraftingCPUCluster) c;
             this.list.resetStatus();
             this.getMonitor().getListOfItem(this.list, CraftingItemList.ALL);
             this.getMonitor().addListener(this, null);
             this.setEstimatedTime(0);
         } else {
-            this.setMonitor(null);
+            this.monitor = null;
             this.setEstimatedTime(-1);
         }
     }
@@ -232,15 +234,8 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
         return this.monitor;
     }
 
-    private void setMonitor(final CraftingCPUCluster monitor) {
-        this.monitor = monitor;
-    }
-
     IGrid getNetwork() {
         return this.network;
     }
 
-    private void setNetwork(final IGrid network) {
-        this.network = network;
-    }
 }

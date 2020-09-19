@@ -25,16 +25,16 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.api.networking.crafting.ICraftingCPU;
 
 public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
-    private final ITextComponent myName;
     private final ICraftingCPU cpu;
     private final long size;
     private final int processors;
+    private ITextComponent name;
 
     public CraftingCPURecord(final long size, final int coProcessors, final ICraftingCPU server) {
         this.size = size;
         this.processors = coProcessors;
         this.cpu = server;
-        this.myName = server.getName();
+        this.name = server.getName();
     }
 
     @Override
@@ -50,10 +50,6 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
         return this.cpu;
     }
 
-    ITextComponent getName() {
-        return this.myName;
-    }
-
     int getProcessors() {
         return this.processors;
     }
@@ -61,4 +57,13 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
     long getSize() {
         return this.size;
     }
+
+    public ITextComponent getName() {
+        return name;
+    }
+
+    public void setName(ITextComponent name) {
+        this.name = name;
+    }
+
 }
