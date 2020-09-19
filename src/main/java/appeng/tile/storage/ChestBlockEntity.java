@@ -722,11 +722,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
         super.addAllAttributes(world, pos, state, to);
 
-        if (fluidInsertable != null && to.getSearchDirection() != getForward()) {
+        if (fluidInsertable != null && to.getSearchDirection() != getForward().getOpposite()) {
             to.offer(fluidInsertable);
         }
 
-        if (accessor != null && to.getSearchDirection() != getForward()) {
+        if (accessor != null && to.getSearchDirection() != getForward().getOpposite()) {
             to.offer(accessor);
         }
     }
