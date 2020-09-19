@@ -126,8 +126,6 @@ public class Platform {
 
     public static final int DEF_OFFSET = 16;
 
-    private static final boolean CLIENT_INSTALL = FMLEnvironment.dist.isClient();
-
     /*
      * random source, use it for item drop locations...
      */
@@ -221,13 +219,6 @@ public class Platform {
      */
     public static boolean isClient() {
         return Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER;
-    }
-
-    /*
-     * returns true if client classes are available.
-     */
-    public static boolean isClientInstall() {
-        return CLIENT_INSTALL;
     }
 
     public static boolean hasPermissions(final DimensionalCoord dc, final PlayerEntity player) {
