@@ -23,7 +23,7 @@ import appeng.spatial.SpatialStorageDimensionIds;
  * registry manager long before our mod is initialized.
  */
 @Mixin(BiomeKeys.class)
-public class BiomesMixin {
+public class BiomeKeysMixin {
 
     @Unique
     private static final Logger LOGGER = LogManager.getLogger();
