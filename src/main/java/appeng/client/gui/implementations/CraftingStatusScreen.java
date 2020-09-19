@@ -16,10 +16,6 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-/**
- *
- */
-
 package appeng.client.gui.implementations;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -27,7 +23,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 import appeng.container.implementations.CraftingStatusContainer;
 import appeng.core.localization.GuiText;
@@ -50,14 +45,13 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     public void init() {
         super.init();
 
-        this.selectCPU = new Button(this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20,
-                new StringTextComponent(GuiText.CraftingCPU.getLocal() + ": " + GuiText.NoCraftingCPUs),
+        this.selectCPU = new Button(this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, getNextCpuButtonLabel(),
                 btn -> selectNextCpu());
         this.addButton(this.selectCPU);
 
         subGui.addBackButton(btn -> {
             addButton(btn);
-            btn.setHideEdge(13);
+            btn.setHideEdge(true);
         }, 213, -4);
     }
 
@@ -68,23 +62,14 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     }
 
     private void updateCPUButtonText() {
-        String btnTextText = GuiText.NoCraftingJobs.getLocal();
+        this.selectCPU.setMessage(getNextCpuButtonLabel());
+    }
 
-        if (this.container.selectedCpu >= 0)// && status.selectedCpu < status.cpus.size() )
-        {
-            if (this.container.myName != null) {
-                final String name = this.container.myName.getStringTruncated(20);
-                btnTextText = GuiText.CPUs.getLocal() + ": " + name;
-            } else {
-                btnTextText = GuiText.CPUs.getLocal() + ": #" + this.container.selectedCpu;
-            }
-        }
-
+    private ITextComponent getNextCpuButtonLabel() {
         if (this.container.noCPU) {
-            btnTextText = GuiText.NoCraftingJobs.getLocal();
+            return GuiText.NoCraftingJobs.text();
         }
-
-        this.selectCPU.setMessage(new StringTextComponent(btnTextText));
+        return GuiText.CraftingCPU.withSuffix(": ").append(container.cpuName);
     }
 
     @Override
@@ -92,9 +77,8 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
         return in; // the cup name is on the button
     }
 
-    // FIXME: Extract to separate class? Shared with GuiCraftConfirm
     private void selectNextCpu() {
-        final boolean backwards = minecraft.mouseHelper.isRightDown();
+        final boolean backwards = isHandlingRightClick();
         NetworkHandler.instance().sendToServer(new ConfigValuePacket("Terminal.Cpu", backwards ? "Prev" : "Next"));
     }
 

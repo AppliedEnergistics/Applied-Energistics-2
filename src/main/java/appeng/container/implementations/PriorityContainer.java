@@ -23,17 +23,14 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPart;
-import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
-import appeng.container.guisync.GuiSync;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.IPriorityHost;
-import appeng.util.Platform;
 
 public class PriorityContainer extends AEBaseContainer {
 
@@ -43,60 +40,53 @@ public class PriorityContainer extends AEBaseContainer {
             PriorityContainer::new, IPriorityHost.class, SecurityPermissions.BUILD);
 
     public static PriorityContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
+        return helper.fromNetwork(windowId, inv, buf, (host, container, buffer) -> {
+            container.priorityValue = buffer.readVarInt();
+        });
     }
 
     public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
+        return helper.open(player, locator, (host, buffer) -> buffer.writeVarInt(host.getPriority()));
     }
 
     private final IPriorityHost priHost;
 
-    @OnlyIn(Dist.CLIENT)
-    private NumberEntryWidget textField;
-
-    @GuiSync(2)
-    public long PriorityValue = -1;
+    private int priorityValue;
 
     public PriorityContainer(int id, final PlayerInventory ip, final IPriorityHost te) {
         super(TYPE, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
                 (IPart) (te instanceof IPart ? te : null));
         this.priHost = te;
+        this.priorityValue = te.getPriority();
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void setTextField(final NumberEntryWidget level) {
-        this.textField = level;
-        this.textField.setValue(this.PriorityValue, true);
-    }
-
-    public void setPriority(final int newValue, final PlayerEntity player) {
-        this.priHost.setPriority(newValue);
-        this.PriorityValue = newValue;
+    public void setPriority(final int newValue) {
+        if (newValue != priorityValue) {
+            if (isClient()) {
+                // If for whatever reason the client enters the value first, do not update based
+                // on incoming server data
+                this.priorityValue = newValue;
+                NetworkHandler.instance()
+                        .sendToServer(new ConfigValuePacket("PriorityHost.Priority", String.valueOf(newValue)));
+            } else {
+                this.priHost.setPriority(newValue);
+                this.priorityValue = newValue;
+            }
+        }
     }
 
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         this.verifyPermissions(SecurityPermissions.BUILD, false);
-
-        if (Platform.isServer()) {
-            this.PriorityValue = this.priHost.getPriority();
-        }
     }
 
-    @Override
-    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
-        if (field.equals("PriorityValue")) {
-            if (this.textField != null) {
-                this.textField.setValue(this.PriorityValue, true);
-            }
-        }
-
-        super.onUpdate(field, oldValue, newValue);
+    public int getPriorityValue() {
+        return priorityValue;
     }
 
     public IPriorityHost getPriorityHost() {
         return this.priHost;
     }
+
 }

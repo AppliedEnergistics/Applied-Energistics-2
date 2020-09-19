@@ -291,9 +291,9 @@ public class PatternTermContainer extends MEMonitorableContainer
     @Override
     public boolean isSlotEnabled(final int idx) {
         if (idx == 1) {
-            return Platform.isServer() ? !this.getPatternTerminal().isCraftingRecipe() : !this.isCraftingMode();
+            return isServer() ? !this.getPatternTerminal().isCraftingRecipe() : !this.isCraftingMode();
         } else if (idx == 2) {
-            return Platform.isServer() ? this.getPatternTerminal().isCraftingRecipe() : this.isCraftingMode();
+            return isServer() ? this.getPatternTerminal().isCraftingRecipe() : this.isCraftingMode();
         } else {
             return false;
         }
@@ -395,7 +395,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-        if (Platform.isServer()) {
+        if (isServer()) {
             if (this.isCraftingMode() != this.getPatternTerminal().isCraftingRecipe()) {
                 this.setCraftingMode(this.getPatternTerminal().isCraftingRecipe());
                 this.updateOrderOfOutputSlots();
@@ -417,7 +417,7 @@ public class PatternTermContainer extends MEMonitorableContainer
 
     @Override
     public void onSlotChange(final Slot s) {
-        if (s == this.patternSlotOUT && Platform.isServer()) {
+        if (s == this.patternSlotOUT && isServer()) {
             for (final IContainerListener listener : this.listeners) {
                 for (final Slot slot : this.inventorySlots) {
                     if (slot instanceof OptionalFakeSlot || slot instanceof FakeCraftingMatrixSlot) {
@@ -431,7 +431,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             this.detectAndSendChanges();
         }
 
-        if (s == this.craftSlot && Platform.isClient()) {
+        if (s == this.craftSlot && isClient()) {
             this.getAndUpdateOutput();
         }
     }

@@ -37,7 +37,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.container.implementations.CraftConfirmContainer;
 import appeng.container.implementations.CraftingCPUContainer;
-import appeng.container.implementations.CraftingStatusContainer;
+import appeng.container.implementations.CraftingCPUCyclingContainer;
 import appeng.container.implementations.LevelEmitterContainer;
 import appeng.container.implementations.NetworkToolContainer;
 import appeng.container.implementations.PatternTermContainer;
@@ -98,12 +98,9 @@ public class ConfigValuePacket extends BasePacket {
             final ItemStack is = player.getHeldItem(hand);
             final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
             si.onWheel(is, this.Value.equals("WheelUp"));
-        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingStatusContainer) {
-            final CraftingStatusContainer qk = (CraftingStatusContainer) c;
-            qk.cycleCpu(this.Value.equals("Next"));
-        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftConfirmContainer) {
-            final CraftConfirmContainer qk = (CraftConfirmContainer) c;
-            qk.cycleCpu(this.Value.equals("Next"));
+        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingCPUCyclingContainer) {
+            final CraftingCPUCyclingContainer qk = (CraftingCPUCyclingContainer) c;
+            qk.cycleSelectedCPU(this.Value.equals("Next"));
         } else if (this.Name.equals("Terminal.Start") && c instanceof CraftConfirmContainer) {
             final CraftConfirmContainer qk = (CraftConfirmContainer) c;
             qk.startJob();
@@ -118,13 +115,13 @@ public class ConfigValuePacket extends BasePacket {
             sc.toggleSetting(this.Value, player);
         } else if (this.Name.equals("PriorityHost.Priority") && c instanceof PriorityContainer) {
             final PriorityContainer pc = (PriorityContainer) c;
-            pc.setPriority(Integer.parseInt(this.Value), player);
+            pc.setPriority(Integer.parseInt(this.Value));
         } else if (this.Name.equals("LevelEmitter.Value") && c instanceof LevelEmitterContainer) {
             final LevelEmitterContainer lvc = (LevelEmitterContainer) c;
-            lvc.setLevel(Long.parseLong(this.Value), player);
+            lvc.setReportingValue(Long.parseLong(this.Value));
         } else if (this.Name.equals("FluidLevelEmitter.Value") && c instanceof FluidLevelEmitterContainer) {
             final FluidLevelEmitterContainer lvc = (FluidLevelEmitterContainer) c;
-            lvc.setLevel(Long.parseLong(this.Value), player);
+            lvc.setReportingValue(Long.parseLong(this.Value));
         } else if (this.Name.startsWith("PatternTerminal.") && c instanceof PatternTermContainer) {
             final PatternTermContainer cpt = (PatternTermContainer) c;
             if (this.Name.equals("PatternTerminal.CraftMode")) {
@@ -192,9 +189,7 @@ public class ConfigValuePacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Container c = player.openContainer;
 
-        if (this.Name.equals("CustomName") && c instanceof AEBaseContainer) {
-            ((AEBaseContainer) c).setCustomName(this.Value);
-        } else if (this.Name.startsWith("SyncDat.")) {
+        if (this.Name.startsWith("SyncDat.")) {
             ((AEBaseContainer) c).stringSync(Integer.parseInt(this.Name.substring(8)), this.Value);
         } else if (this.Name.equals("CraftingStatus") && this.Value.equals("Clear")) {
             final Screen gs = Minecraft.getInstance().currentScreen;

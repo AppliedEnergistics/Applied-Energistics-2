@@ -48,22 +48,28 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     public void init() {
         super.init();
 
-        this.amountToCraft = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.CRAFT_ITEM_COUNT, value -> {
-        });
+        this.amountToCraft = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.CRAFT_ITEM_COUNT);
         this.amountToCraft.setValue(1);
         this.amountToCraft.setTextFieldBounds(62, 57, 50);
         this.amountToCraft.setMinValue(1);
+        this.amountToCraft.setHideValidationIcon(true);
         this.amountToCraft.addButtons(children::add, this::addButton);
 
         this.next = this.addButton(
                 new Button(this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.text(), this::confirm));
+        this.amountToCraft.setOnConfirm(() -> this.confirm(this.next));
 
         subGui.addBackButton(this::addButton, 154, 0);
+
+        changeFocus(true);
     }
 
     private void confirm(Button button) {
-        NetworkHandler.instance()
-                .sendToServer(new CraftRequestPacket((int) this.amountToCraft.getValue(), hasShiftDown()));
+        int amount = this.amountToCraft.getIntValue().orElse(0);
+        if (amount <= 0) {
+            return;
+        }
+        NetworkHandler.instance().sendToServer(new CraftRequestPacket(amount, hasShiftDown()));
     }
 
     @Override
@@ -80,23 +86,9 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         this.bindTexture("guis/craft_amt.png");
         GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
 
-        this.next.active = this.amountToCraft.getValue() > 0;
+        this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;
 
         this.amountToCraft.render(matrixStack, offsetX, offsetY, partialTicks);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (keyCode == 28) {
-            this.next.onPress();
-            return true;
-        } else {
-            return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
-        }
-    }
-
-    protected String getBackground() {
-        return "guis/craftAmt.png";
     }
 
 }

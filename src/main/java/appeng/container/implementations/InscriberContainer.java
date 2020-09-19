@@ -35,7 +35,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.tile.misc.InscriberRecipes;
 import appeng.tile.misc.InscriberTileEntity;
-import appeng.util.Platform;
 
 /**
  * @author AlgorithmX2
@@ -119,7 +118,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     public void detectAndSendChanges() {
         this.standardDetectAndSendChanges();
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.maxProcessingTime = this.ti.getMaxProcessingTime();
             this.processingTime = this.ti.getProcessingTime();
         }
