@@ -57,7 +57,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
 
         subGui.addBackButton(btn -> {
             addButton(btn);
-            btn.setHideEdge(13);
+            btn.setHideEdge(true);
         }, 213, -4);
     }
 

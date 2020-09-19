@@ -35,7 +35,6 @@ import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.parts.automation.FormationPlanePart;
-import appeng.util.Platform;
 
 public class FormationPlaneContainer extends UpgradeableContainer {
 
@@ -107,7 +106,7 @@ public class FormationPlaneContainer extends UpgradeableContainer {
     public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.setFuzzyMode((FuzzyMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FUZZY_MODE));
             this.setPlaceMode((YesNo) this.getUpgradeable().getConfigManager().getSetting(Settings.PLACE_BLOCK));
         }

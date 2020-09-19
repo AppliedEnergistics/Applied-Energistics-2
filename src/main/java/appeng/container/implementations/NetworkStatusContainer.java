@@ -43,7 +43,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 public class NetworkStatusContainer extends AEBaseContainer {
@@ -83,7 +82,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
             }
         }
 
-        if (this.network == null && Platform.isServer()) {
+        if (this.network == null && isServer()) {
             this.setValidContainer(false);
         }
     }
@@ -100,7 +99,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
     @Override
     public void detectAndSendChanges() {
         this.delay++;
-        if (Platform.isServer() && this.delay > 15 && this.network != null) {
+        if (isServer() && this.delay > 15 && this.network != null) {
             this.delay = 0;
 
             final IEnergyGrid eg = this.network.getCache(IEnergyGrid.class);

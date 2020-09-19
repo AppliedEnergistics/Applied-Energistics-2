@@ -36,7 +36,6 @@ import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.util.Platform;
 
 public class CraftingStatusContainer extends CraftingCPUContainer {
 
@@ -67,7 +66,7 @@ public class CraftingStatusContainer extends CraftingCPUContainer {
 
     @Override
     public void detectAndSendChanges() {
-        if (Platform.isServer() && this.getNetwork() != null) {
+        if (isServer() && this.getNetwork() != null) {
             final ICraftingGrid cc = this.getNetwork().getCache(ICraftingGrid.class);
             final ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
 

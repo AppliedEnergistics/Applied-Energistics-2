@@ -22,6 +22,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
@@ -35,6 +36,10 @@ public abstract class IconButton extends Button implements ITooltip {
 
     private boolean halfSize = false;
 
+    private boolean disableClickSound = false;
+
+    private boolean disableBackground = false;
+
     public IconButton(final int x, final int y, IPressable onPress) {
         super(x, y, 16, 16, StringTextComponent.EMPTY, onPress);
     }
@@ -42,6 +47,13 @@ public abstract class IconButton extends Button implements ITooltip {
     public void setVisibility(final boolean vis) {
         this.visible = vis;
         this.active = vis;
+    }
+
+    @Override
+    public void playDownSound(SoundHandler soundHandler) {
+        if (!disableClickSound) {
+            super.playDownSound(soundHandler);
+        }
     }
 
     @Override
@@ -74,7 +86,9 @@ public abstract class IconButton extends Button implements ITooltip {
                 final int uv_y = iconIndex / 16;
                 final int uv_x = iconIndex - uv_y * 16;
 
-                GuiUtils.drawTexturedModalRect(0, 0, 256 - 16, 256 - 16, 16, 16, 0);
+                if (!disableBackground) {
+                    GuiUtils.drawTexturedModalRect(0, 0, 256 - 16, 256 - 16, 16, 16, 0);
+                }
                 GuiUtils.drawTexturedModalRect(0, 0, uv_x * 16, uv_y * 16, 16, 16, 0);
                 RenderSystem.popMatrix();
             } else {
@@ -87,12 +101,18 @@ public abstract class IconButton extends Button implements ITooltip {
                 final int uv_y = iconIndex / 16;
                 final int uv_x = iconIndex - uv_y * 16;
 
-                GuiUtils.drawTexturedModalRect(this.x, this.y, 256 - 16, 256 - 16, 16, 16, 0);
+                if (!disableBackground) {
+                    GuiUtils.drawTexturedModalRect(this.x, this.y, 256 - 16, 256 - 16, 16, 16, 0);
+                }
                 GuiUtils.drawTexturedModalRect(this.x, this.y, uv_x * 16, uv_y * 16, 16, 16, 0);
             }
             RenderSystem.enableDepthTest();
+            RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+            if (isHovered()) {
+                renderToolTip(matrixStack, mouseX, mouseY);
+            }
         }
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     protected abstract int getIconIndex();
@@ -133,6 +153,22 @@ public abstract class IconButton extends Button implements ITooltip {
 
     public void setHalfSize(final boolean halfSize) {
         this.halfSize = halfSize;
+    }
+
+    public boolean isDisableClickSound() {
+        return disableClickSound;
+    }
+
+    public void setDisableClickSound(boolean disableClickSound) {
+        this.disableClickSound = disableClickSound;
+    }
+
+    public boolean isDisableBackground() {
+        return disableBackground;
+    }
+
+    public void setDisableBackground(boolean disableBackground) {
+        this.disableBackground = disableBackground;
     }
 
 }

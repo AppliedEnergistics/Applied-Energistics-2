@@ -26,7 +26,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -46,24 +46,28 @@ import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
-import appeng.helpers.ICustomNameObject;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.CraftingTileEntity;
-import appeng.util.Platform;
 
-public class CraftingCPUContainer extends AEBaseContainer
-        implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject {
+public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
     public static ContainerType<CraftingCPUContainer> TYPE;
 
     private static final ContainerHelper<CraftingCPUContainer, CraftingTileEntity> helper = new ContainerHelper<>(
-            CraftingCPUContainer::new, CraftingTileEntity.class, SecurityPermissions.CRAFT);
+            CraftingCPUContainer::new, CraftingTileEntity.class, SecurityPermissions.CRAFT)
+                    .withContainerTitle(craftingTileEntity -> {
+                        // Use the cluster's custom name instead of the right-clicked block entities one
+                        CraftingCPUCluster cluster = craftingTileEntity.getCluster();
+                        if (cluster != null && cluster.getName() != null) {
+                            return cluster.getName();
+                        }
+                        return StringTextComponent.EMPTY;
+                    });
 
     private final IItemList<IAEItemStack> list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
     private IGrid network;
     private CraftingCPUCluster monitor = null;
-    private ITextComponent cpuName = null;
 
     @GuiSync(0)
     public long eta = -1;
@@ -84,7 +88,7 @@ public class CraftingCPUContainer extends AEBaseContainer
             this.setCPU(((CraftingTileEntity) te).getCluster());
         }
 
-        if (this.getNetwork() == null && Platform.isServer()) {
+        if (this.getNetwork() == null && isServer()) {
             this.setValidContainer(false);
         }
     }
@@ -114,7 +118,6 @@ public class CraftingCPUContainer extends AEBaseContainer
         }
 
         if (c instanceof CraftingCPUCluster) {
-            this.cpuName = c.getName();
             this.setMonitor((CraftingCPUCluster) c);
             this.list.resetStatus();
             this.getMonitor().getListOfItem(this.list, CraftingItemList.ALL);
@@ -122,7 +125,6 @@ public class CraftingCPUContainer extends AEBaseContainer
             this.setEstimatedTime(0);
         } else {
             this.setMonitor(null);
-            this.cpuName = null;
             this.setEstimatedTime(-1);
         }
     }
@@ -153,7 +155,7 @@ public class CraftingCPUContainer extends AEBaseContainer
 
     @Override
     public void detectAndSendChanges() {
-        if (Platform.isServer() && this.getMonitor() != null && !this.list.isEmpty()) {
+        if (isServer() && this.getMonitor() != null && !this.list.isEmpty()) {
             try {
                 if (this.getEstimatedTime() >= 0) {
                     final long elapsedTime = this.getMonitor().getElapsedTime();
@@ -216,16 +218,6 @@ public class CraftingCPUContainer extends AEBaseContainer
     @Override
     public void onListUpdate() {
 
-    }
-
-    @Override
-    public ITextComponent getCustomInventoryName() {
-        return this.cpuName;
-    }
-
-    @Override
-    public boolean hasCustomInventoryName() {
-        return this.cpuName != null;
     }
 
     public long getEstimatedTime() {

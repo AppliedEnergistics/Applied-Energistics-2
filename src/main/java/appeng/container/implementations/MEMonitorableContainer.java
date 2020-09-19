@@ -73,7 +73,6 @@ import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
-import appeng.util.Platform;
 
 public class MEMonitorableContainer extends AEBaseContainer
         implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack> {
@@ -122,7 +121,7 @@ public class MEMonitorableContainer extends AEBaseContainer
         this.clientCM.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.serverCM = monitorable.getConfigManager();
 
             this.monitor = monitorable
@@ -183,7 +182,7 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     @Override
     public void detectAndSendChanges() {
-        if (Platform.isServer()) {
+        if (isServer()) {
             if (this.monitor != this.host
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))) {
                 this.setValidContainer(false);
@@ -287,7 +286,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     private void queueInventory(final IContainerListener c) {
-        if (Platform.isServer() && c instanceof PlayerEntity && this.monitor != null) {
+        if (isServer() && c instanceof PlayerEntity && this.monitor != null) {
             try {
                 MEInventoryUpdatePacket piu = new MEInventoryUpdatePacket();
                 final IItemList<IAEItemStack> monitorCache = this.monitor.getStorageList();
@@ -356,7 +355,7 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     @Override
     public IConfigManager getConfigManager() {
-        if (Platform.isServer()) {
+        if (isServer()) {
             return this.serverCM;
         }
         return this.clientCM;
