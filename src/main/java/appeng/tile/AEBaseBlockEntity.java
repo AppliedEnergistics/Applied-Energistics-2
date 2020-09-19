@@ -20,7 +20,6 @@ package appeng.tile;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,6 @@ import javax.annotation.Nullable;
 import io.netty.buffer.Unpooled;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -69,24 +67,8 @@ import appeng.util.SettingsFrom;
 public class AEBaseBlockEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject,
         BlockEntityClientSerializable, RenderAttachmentBlockEntity, AttributeProvider {
 
-    // FIXME: should probably remove at start of next server tick!
     static {
-        ServerChunkEvents.CHUNK_UNLOAD.register((serverWorld, worldChunk) -> {
-            List<AEBaseBlockEntity> entitiesToRemove = null;
-            for (BlockEntity value : worldChunk.getBlockEntities().values()) {
-                if (value instanceof AEBaseBlockEntity) {
-                    if (entitiesToRemove == null) {
-                        entitiesToRemove = new ArrayList<>();
-                    }
-                    entitiesToRemove.add((AEBaseBlockEntity) value);
-                }
-            }
-            if (entitiesToRemove != null) {
-                for (AEBaseBlockEntity blockEntity : entitiesToRemove) {
-                    blockEntity.onChunkUnloaded();
-                }
-            }
-        });
+        DeferredTileEntityUnloader.register();
     }
 
     protected void onChunkUnloaded() {
