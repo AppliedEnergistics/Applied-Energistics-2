@@ -58,7 +58,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
      * uses an identity hashmap internally.
      */
     public static final Codec<SpatialStorageChunkGenerator> CODEC = RegistryLookupCodec
-            .func_244331_a(Registry.BIOME_KEY)
+            .getLookUpCodec(Registry.BIOME_KEY)
             .xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();
 
     private final Registry<Biome> biomeRegistry;
@@ -85,8 +85,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     private static SingleBiomeProvider createBiomeSource(Registry<Biome> biomeRegistry) {
-        return new SingleBiomeProvider(
-                biomeRegistry.func_243576_d/* getOrThrow */(SpatialStorageDimensionIds.BIOME_KEY));
+        return new SingleBiomeProvider(biomeRegistry.getOrThrow(SpatialStorageDimensionIds.BIOME_KEY));
     }
 
     public Registry<Biome> getBiomeRegistry() {

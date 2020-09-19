@@ -16,16 +16,16 @@ import net.minecraft.world.gen.feature.StructureFeature;
 @Mixin(BiomeGenerationSettings.class)
 public interface GenerationSettingsAccessor {
 
-    @Accessor("field_242484_f")
+    @Accessor("features")
     List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures();
 
-    @Accessor("field_242484_f")
+    @Accessor("features")
     void setFeatures(List<List<Supplier<ConfiguredFeature<?, ?>>>> features);
 
-    @Accessor("field_242485_g")
+    @Accessor("structures")
     List<Supplier<StructureFeature<?, ?>>> getStructureFeatures();
 
-    @Accessor("field_242485_g")
+    @Accessor("structures")
     void setStructureFeatures(List<Supplier<StructureFeature<?, ?>>> structureFeatures);
 
 }

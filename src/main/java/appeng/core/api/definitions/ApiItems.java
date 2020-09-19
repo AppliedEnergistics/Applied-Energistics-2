@@ -221,7 +221,7 @@ public final class ApiItems implements IItems {
                     @OnlyIn(Dist.CLIENT)
                     public void setup() {
                         ColorApplicatorItem colorApplicatorItem = (ColorApplicatorItem) item;
-                        ItemModelsProperties.func_239418_a_(item, new ResourceLocation(AppEng.MOD_ID, "colored"),
+                        ItemModelsProperties.registerProperty(item, new ResourceLocation(AppEng.MOD_ID, "colored"),
                                 (itemStack, world, entity) -> {
                                     // If the stack has no color, don't use the colored model since the impact of
                                     // calling getColor for every quad is extremely high, if the stack tries to

@@ -433,7 +433,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         }
 
         @Override
-        public boolean func_225518_g_() {
+        public boolean hasSecondaryUseForPlayer() {
             return false;
         }
 

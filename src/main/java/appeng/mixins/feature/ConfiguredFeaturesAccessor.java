@@ -10,7 +10,7 @@ import net.minecraft.world.gen.feature.IFeatureConfig;
 @Mixin(Features.class)
 public interface ConfiguredFeaturesAccessor {
 
-    @Invoker("func_243968_a")
+    @Invoker("register")
     static <FC extends IFeatureConfig> ConfiguredFeature<FC, ?> register(String id,
             ConfiguredFeature<FC, ?> configuredFeature) {
         throw new AssertionError();

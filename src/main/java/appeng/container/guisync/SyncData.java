@@ -127,7 +127,7 @@ public class SyncData {
                     String json = (String) val;
                     ITextComponent text = null;
                     if (!json.isEmpty()) {
-                        text = ITextComponent.Serializer.func_240643_a_((String) val);
+                        text = ITextComponent.Serializer.getComponentFromJson((String) val);
                     }
                     this.updateTextComponent(text);
                 } else {

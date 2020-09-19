@@ -25,7 +25,7 @@ public final class BiomeModifier {
     @SuppressWarnings("ConstantConditions")
     public BiomeModifier(Biome biome) {
         this.biomeAccessor = (BiomeAccessor) (Object) biome;
-        this.generationSettingsAccessor = (GenerationSettingsAccessor) biome.func_242440_e();
+        this.generationSettingsAccessor = (GenerationSettingsAccessor) biome.getGenerationSettings();
     }
 
     public void addFeature(GenerationStage.Decoration step, ConfiguredFeature<?, ?> feature) {
@@ -55,7 +55,7 @@ public final class BiomeModifier {
         // Add it to the structures that will generate pieces within this biome,
         // this is only half-correct since a structure can start in an adjacent biome
         // and extend into biomes that would usually not start the structure
-        Map<Integer, List<Structure<?>>> structuresByStage = biomeAccessor.getField_242421_g();
+        Map<Integer, List<Structure<?>>> structuresByStage = biomeAccessor.getBiomeStructures();
         int step = structure.field_236268_b_.func_236396_f_().ordinal();
         if (!structuresByStage.containsKey(step)) {
             structuresByStage.put(step, new ArrayList<>());

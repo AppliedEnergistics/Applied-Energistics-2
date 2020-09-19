@@ -86,8 +86,8 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
         // This determines diffuse lighting in the UI, and since we want to render
         // the outputModel in the UI, we need to use it's setting here
         @Override
-        public boolean func_230044_c_() {
-            return outputModel.func_230044_c_();
+        public boolean isSideLit() {
+            return outputModel.isSideLit();
         }
 
     }
@@ -112,7 +112,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
 
         @Nullable
         @Override
-        public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
+        public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
                 @Nullable LivingEntity entity) {
             boolean shiftHeld = Screen.hasShiftDown();
             if (shiftHeld) {
@@ -122,12 +122,12 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
                     IBakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelMesher()
                             .getItemModel(output);
                     // Give the item model a chance to handle the overrides as well
-                    realModel = realModel.getOverrides().func_239290_a_(realModel, output, world, entity);
+                    realModel = realModel.getOverrides().getOverrideModel(realModel, output, world, entity);
                     return new ShiftHoldingModelWrapper(getBaseModel(), realModel);
                 }
             }
 
-            return getBaseModel().getOverrides().func_239290_a_(originalModel, stack, world, entity);
+            return getBaseModel().getOverrides().getOverrideModel(originalModel, stack, world, entity);
         }
     }
 

@@ -158,7 +158,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     }
 
     @Override
-    protected void func_230459_a_(MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void renderHoveredTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
         final Slot slot = this.getSlot(mouseX, mouseY);
 
         if (slot instanceof IMEFluidSlot && slot.isEnabled()) {
@@ -181,7 +181,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
                 return;
             }
         }
-        super.func_230459_a_(matrixStack, mouseX, mouseY);
+        super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
 
     private <S extends Enum<S>> void toggleServerSetting(SettingToggleButton<S> btn, boolean backwards) {

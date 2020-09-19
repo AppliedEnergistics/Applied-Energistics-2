@@ -149,7 +149,7 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
             for (int i = 0; i < quads.size(); i++) {
                 BakedQuad quad = quads.get(i);
                 quads.set(i, new BakedQuad(quad.getVertexData(), quad.getTintIndex(), r.rotate(quad.getFace()),
-                        quad.func_187508_a(), quad.func_239287_f_()));
+                        quad.getSprite(), quad.applyDiffuseLighting()));
             }
 
             return quads;

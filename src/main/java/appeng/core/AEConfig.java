@@ -595,7 +595,7 @@ public final class AEConfig {
             this.spawnChargedChance = builder.defineInRange("spawnChargedChance", 0.08, 0.0, 1.0);
             this.meteoriteMaximumSpawnHeight = builder.define("meteoriteMaximumSpawnHeight", 180);
             List<String> defaultDimensionWhitelist = new ArrayList<>();
-            defaultDimensionWhitelist.add(World.field_234918_g_.getRegistryName().toString());
+            defaultDimensionWhitelist.add(World.OVERWORLD.getRegistryName().toString());
             this.meteoriteDimensionWhitelist = builder.defineList("meteoriteDimensionWhitelist",
                     defaultDimensionWhitelist, obj -> true);
 

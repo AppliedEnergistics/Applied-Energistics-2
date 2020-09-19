@@ -90,7 +90,7 @@ public class SpatialStorageCommand implements ISubCommand {
      */
     private void teleportBack(CommandSource source) {
 
-        if (source.getWorld().func_234923_W_() != SpatialStorageDimensionIds.WORLD_ID) {
+        if (source.getWorld().getDimensionKey() != SpatialStorageDimensionIds.WORLD_ID) {
             throw new CommandException(new StringTextComponent("Must be within the spatial storage world."));
         }
 
@@ -156,7 +156,7 @@ public class SpatialStorageCommand implements ISubCommand {
         sendKeyValuePair(source, "Size", formatBlockPos(plot.getSize(), "x"));
 
         // Show the plot's origin and make it clickable to teleport directly to it
-        String teleportToPlotCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.func_240901_a_(),
+        String teleportToPlotCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.getLocation(),
                 plot.getOrigin());
         sendKeyValuePair(source, "Origin", new StringTextComponent(formatBlockPos(plot.getOrigin(), ","))
                 .modifyStyle(makeCommandLink(teleportToPlotCommand, "Teleport into plot")));
@@ -188,7 +188,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private static void teleportToPlot(CommandSource source, int plotId) {
         SpatialStoragePlot plot = getPlot(plotId);
 
-        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.func_240901_a_(),
+        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.getLocation(),
                 plot.getOrigin());
 
         runCommandFor(source, teleportCommand);
@@ -302,7 +302,7 @@ public class SpatialStorageCommand implements ISubCommand {
      * Gets the spatial storage plot that the command source is currently in.
      */
     private static SpatialStoragePlot getCurrentPlot(CommandSource source) {
-        if (source.getWorld().func_234923_W_() != SpatialStorageDimensionIds.WORLD_ID) {
+        if (source.getWorld().getDimensionKey() != SpatialStorageDimensionIds.WORLD_ID) {
             throw new CommandException(new StringTextComponent("Must be within the spatial storage world."));
         }
 

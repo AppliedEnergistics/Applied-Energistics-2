@@ -211,7 +211,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                 try {
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
                     final CompoundNBT invData = in.getCompound(key);
-                    ITextComponent un = ITextComponent.Serializer.func_240643_a_(invData.getString("un"));
+                    ITextComponent un = ITextComponent.Serializer.getComponentFromJson(invData.getString("un"));
                     final ClientDCInternalInv current = this.getById(id, invData.getLong("sortBy"), un);
 
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {

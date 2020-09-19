@@ -68,8 +68,8 @@ public class TestOreGenCommand implements ISubCommand {
             world = player.getServerWorld();
             center = new BlockPos(player.getPosX(), 0, player.getPosZ());
         } catch (CommandSyntaxException e) {
-            world = srv.getWorld(World.field_234918_g_);
-            center = world.func_241135_u_();
+            world = srv.getWorld(World.OVERWORLD);
+            center = world.getSpawnPoint();
         }
 
         ChunkPos tl = new ChunkPos(center.add(-radius, 0, -radius));

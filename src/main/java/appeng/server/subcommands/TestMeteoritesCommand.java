@@ -87,8 +87,8 @@ public class TestMeteoritesCommand implements ISubCommand {
             world = player.getServerWorld();
             centerBlock = new BlockPos(player.getPosX(), 0, player.getPosZ());
         } else {
-            world = srv.getWorld(World.field_234918_g_);
-            centerBlock = world.func_241135_u_();
+            world = srv.getWorld(World.OVERWORLD);
+            centerBlock = world.getSpawnPoint();
         }
 
         ChunkPos center = new ChunkPos(centerBlock);
@@ -172,7 +172,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             msg.append(getClickablePosition(world, settings, pos)).append(restOfLine);
 
             // Add a tooltip
-            String biomeId = world.func_242406_i(pos).map(bk -> bk.func_240901_a_().toString()).orElse("unknown");
+            String biomeId = world.func_242406_i(pos).map(bk -> bk.getLocation().toString()).orElse("unknown");
             ITextComponent tooltip = new StringTextComponent(settings.toString() + "\nBiome: ").deepCopy()
                     .appendString(biomeId);
             msg.modifyStyle(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));

@@ -111,7 +111,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         }
 
         // Check for the normal supported fluid
-        if (world != null && world.func_234923_W_() == World.field_234919_h_) {
+        if (world != null && world.getDimensionKey() == World.THE_NETHER) {
             // In the nether, use Lava as the "normal" fluid
             return state.getFluidState().isTagged(FluidTags.LAVA) ? 1 : 0;
         } else {

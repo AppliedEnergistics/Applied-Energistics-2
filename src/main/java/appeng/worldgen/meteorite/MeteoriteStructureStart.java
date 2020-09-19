@@ -27,9 +27,9 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
 
-    private final ITag<Block> sandTag = BlockTags.getCollection().func_241834_b(new ResourceLocation("minecraft:sand"));
+    private final ITag<Block> sandTag = BlockTags.getCollection().getTagByID(new ResourceLocation("minecraft:sand"));
     private final ITag<Block> terracottaTag = BlockTags.getCollection()
-            .func_241834_b(new ResourceLocation("forge:terracotta"));
+            .getTagByID(new ResourceLocation("forge:terracotta"));
 
     public MeteoriteStructureStart(Structure<NoFeatureConfig> p_i225815_1_, int p_i225815_2_, int p_i225815_3_,
             MutableBoundingBox p_i225815_4_, int p_i225815_5_, long p_i225815_6_) {
@@ -76,7 +76,8 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
         boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius);
         CraterType craterType = this.determineCraterType(spawnBiome);
         boolean pureCrater = this.rand.nextFloat() > .9f;
-        FalloutMode fallout = getFalloutFromBaseBlock(spawnBiome.func_242440_e().func_242502_e().getTop());
+        FalloutMode fallout = getFalloutFromBaseBlock(
+                spawnBiome.getGenerationSettings().getSurfaceBuilderConfig().getTop());
 
         components.add(
                 new MeteoriteStructurePiece(actualPos, meteoriteRadius, craterType, fallout, pureCrater, craterLake));
@@ -121,7 +122,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
     private CraterType determineCraterType(Biome biome) {
         // The temperature thresholds below are taken from older Vanilla code
         // (temperature categories)
-        final float temp = biome.func_242445_k();
+        final float temp = biome.getTemperature();
         final Category category = biome.getCategory();
 
         // No craters in oceans

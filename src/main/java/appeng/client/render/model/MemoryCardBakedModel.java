@@ -105,7 +105,7 @@ class MemoryCardBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;// TODO
     }
 
@@ -128,7 +128,7 @@ class MemoryCardBakedModel implements IBakedModel {
     public ItemOverrideList getOverrides() {
         return new ItemOverrideList() {
             @Override
-            public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, ClientWorld world,
+            public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, ClientWorld world,
                     LivingEntity entity) {
                 try {
                     if (stack.getItem() instanceof IMemoryCard) {

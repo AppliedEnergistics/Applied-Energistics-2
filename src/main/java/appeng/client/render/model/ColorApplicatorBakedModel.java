@@ -50,19 +50,19 @@ class ColorApplicatorBakedModel implements IBakedModel {
         for (BakedQuad quad : quads) {
             int tint;
 
-            if (quad.func_187508_a() == texDark) {
+            if (quad.getSprite() == texDark) {
                 tint = 1;
-            } else if (quad.func_187508_a() == texMedium) {
+            } else if (quad.getSprite() == texMedium) {
                 tint = 2;
-            } else if (quad.func_187508_a() == texBright) {
+            } else if (quad.getSprite() == texBright) {
                 tint = 3;
             } else {
                 result.add(quad);
                 continue;
             }
 
-            BakedQuad newQuad = new BakedQuad(quad.getVertexData(), tint, quad.getFace(), quad.func_187508_a(),
-                    quad.func_239287_f_());
+            BakedQuad newQuad = new BakedQuad(quad.getVertexData(), tint, quad.getFace(), quad.getSprite(),
+                    quad.applyDiffuseLighting());
             result.add(newQuad);
         }
 
@@ -88,7 +88,7 @@ class ColorApplicatorBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;// TODO
     }
 

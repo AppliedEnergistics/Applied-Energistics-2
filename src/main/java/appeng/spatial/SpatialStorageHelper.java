@@ -109,7 +109,7 @@ public class SpatialStorageHelper {
         newWorld.getChunkProvider().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
-        if (entity instanceof ServerPlayerEntity && link.dim.func_234923_W_() == SpatialStorageDimensionIds.WORLD_ID) {
+        if (entity instanceof ServerPlayerEntity && link.dim.getDimensionKey() == SpatialStorageDimensionIds.WORLD_ID) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 

@@ -67,7 +67,7 @@ public final class WorldGenRegistry implements IWorldGen {
             throw new IllegalArgumentException("Bad Provider Passed");
         }
 
-        ResourceLocation id = w.func_234923_W_().func_240901_a_();
+        ResourceLocation id = w.getDimensionKey().getLocation();
         final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains(id);
         final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains(id);
 
