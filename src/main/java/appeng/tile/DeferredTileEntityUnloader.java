@@ -17,14 +17,15 @@
  */
 package appeng.tile;
 
-import appeng.hooks.TickHandler;
-import appeng.util.IWorldCallable;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.hooks.TickHandler;
+import appeng.util.IWorldCallable;
 
 /**
  * We need to defer actually unloading tile entities until the end of the tick,
