@@ -55,8 +55,7 @@ import appeng.core.AppEng;
 @OnlyIn(Dist.CLIENT)
 public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAssemblerTileEntity> {
 
-    public static final ResourceLocation LIGHTS_MODEL = new ResourceLocation(AppEng.MOD_ID,
-            "block/molecular_assembler_lights");
+    public static final ResourceLocation LIGHTS_MODEL = AppEng.makeId("block/molecular_assembler_lights");
 
     private static final RenderType MC_161917_RENDERTYPE_FIX = createRenderType();
 

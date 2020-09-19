@@ -20,6 +20,7 @@ package appeng.client.render.cablebus;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,6 +29,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -88,6 +91,9 @@ public class FacadeBuilder {
             new AxisAlignedBB(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
             new AxisAlignedBB(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
+    // Pre-rotated transparent facade quads
+    private final Map<Direction, List<BakedQuad>> transparentFacadeQuads;
+
     private final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial(() -> BakedPipeline.builder()
             // Clamper is responsible for clamping the vertex to the bounds specified.
             .addElement("clamper", QuadClamper.FACTORY)
@@ -103,6 +109,29 @@ public class FacadeBuilder {
             .addElement("transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride(0x4C / 255F)).build()//
     );
     private final ThreadLocal<Quad> collectors = ThreadLocal.withInitial(Quad::new);
+
+    public FacadeBuilder() {
+        // This constructor is used for item models where transparent facades are not a
+        // concern
+        this.transparentFacadeQuads = new EnumMap<>(Direction.class);
+        for (Direction facing : Direction.values()) {
+            this.transparentFacadeQuads.put(facing, Collections.emptyList());
+        }
+    }
+
+    public FacadeBuilder(IBakedModel transparentFacadeModel) {
+        // Pre-rotate the transparent facade model to all possible sides so that we can
+        // add it quicker later
+        List<BakedQuad> partQuads = transparentFacadeModel.getQuads(null, null, new Random(), EmptyModelData.INSTANCE);
+        this.transparentFacadeQuads = new EnumMap<>(Direction.class);
+
+        for (Direction facing : Direction.values()) {
+            // Rotate quads accordingly
+            QuadRotator rotator = new QuadRotator();
+            List<BakedQuad> rotated = rotator.rotateQuads(partQuads, facing, Direction.UP);
+            this.transparentFacadeQuads.put(facing, ImmutableList.copyOf(rotated));
+        }
+    }
 
     public void buildFacadeQuads(RenderType layer, CableBusRenderState renderState, Random rand, List<BakedQuad> quads,
             Function<ResourceLocation, IBakedModel> modelLookup) {
@@ -130,14 +159,20 @@ public class FacadeBuilder {
                             Direction.UP));
                 }
             }
-            // If we are forcing transparency and this isn't the Translucent layer.
-            if (transparent && layer != RenderType.getTranslucent()) {
+
+            // When we're forcing transparent facades, add a "border" model that indicates
+            // where the facade is,
+            // But otherwise skip the rest.
+            if (transparent) {
+                if (layer != RenderType.getCutout()) {
+                    quads.addAll(transparentFacadeQuads.get(side));
+                }
                 continue;
             }
 
             BlockState blockState = facadeRenderState.getSourceBlock();
             // If we aren't forcing transparency let the block decide if it should render.
-            if (!transparent && layer != null) {
+            if (layer != null) {
                 if (!RenderTypeLookup.canRenderInLayer(blockState, layer)) {
                     continue;
                 }
@@ -198,7 +233,7 @@ public class FacadeBuilder {
             List<BakedQuad> modelQuads = new ArrayList<>();
             // If we are forcing transparent facades, fake the render layer, and grab all
             // quads.
-            if (transparent || layer == null) {
+            if (layer == null) {
                 for (RenderType forcedLayer : RenderType.getBlockRenderTypes()) {
                     // Check if the block renders on the layer we want to force.
                     if (RenderTypeLookup.canRenderInLayer(blockState, forcedLayer)) {
