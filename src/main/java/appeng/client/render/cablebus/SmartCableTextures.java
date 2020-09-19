@@ -47,7 +47,8 @@ public class SmartCableTextures {
                     new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_12"), //
                     new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_13"), //
                     new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_14")//
-            }).map(e -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, e)).toArray(SpriteIdentifier[]::new);
+            }).map(e -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, e))
+            .toArray(SpriteIdentifier[]::new);
 
     // Textures used to display channels on smart cables. There's two sets of 5
     // textures each, and

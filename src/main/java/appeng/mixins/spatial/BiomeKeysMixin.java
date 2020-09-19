@@ -13,6 +13,7 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import appeng.spatial.SpatialStorageBiome;

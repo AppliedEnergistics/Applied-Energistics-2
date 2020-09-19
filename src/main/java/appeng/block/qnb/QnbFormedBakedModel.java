@@ -40,12 +40,12 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
             new Identifier(AppEng.MOD_ID, "block/quantum_link"));
     private static final SpriteIdentifier TEXTURE_RING = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "block/quantum_ring"));
-    private static final SpriteIdentifier TEXTURE_RING_LIGHT = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "block/quantum_ring_light"));
+    private static final SpriteIdentifier TEXTURE_RING_LIGHT = new SpriteIdentifier(
+            SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier(AppEng.MOD_ID, "block/quantum_ring_light"));
     private static final SpriteIdentifier TEXTURE_RING_LIGHT_CORNER = new SpriteIdentifier(
             SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
-    private static final SpriteIdentifier TEXTURE_CABLE_GLASS = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "part/cable/glass/transparent"));
+    private static final SpriteIdentifier TEXTURE_CABLE_GLASS = new SpriteIdentifier(
+            SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier(AppEng.MOD_ID, "part/cable/glass/transparent"));
     private static final SpriteIdentifier TEXTURE_COVERED_CABLE = new SpriteIdentifier(
             SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier(AppEng.MOD_ID, "part/cable/covered/transparent"));
 

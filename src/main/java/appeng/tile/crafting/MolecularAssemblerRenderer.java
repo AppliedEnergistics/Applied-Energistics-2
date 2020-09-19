@@ -145,8 +145,8 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
      * model from occluding our particles.
      */
     private static RenderLayer createRenderType() {
-        RenderPhase.Texture mipmapBlockAtlasTexture = new RenderPhase.Texture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, false,
-                true);
+        RenderPhase.Texture mipmapBlockAtlasTexture = new RenderPhase.Texture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+                false, true);
         RenderPhase.Lightmap disableLightmap = new RenderPhase.Lightmap(false);
         RenderLayer.MultiPhaseParameters glState = RenderLayer.MultiPhaseParameters.builder()
                 .texture(mipmapBlockAtlasTexture).transparency(RenderPhaseMixin.getTranslucentTransparency())
