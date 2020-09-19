@@ -60,6 +60,6 @@ public class ValidationIcon extends IconButton {
             return;
         }
 
-        screen.renderToolTip(matrices, this.tooltip, x, y, client.fontRenderer);
+        screen.func_243308_b(matrices, this.tooltip, x, y);
     }
 }
