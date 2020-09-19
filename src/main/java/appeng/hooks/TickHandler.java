@@ -35,8 +35,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
@@ -73,7 +73,7 @@ public class TickHandler {
         ServerTickEvents.END_SERVER_TICK.register(this::onAfterServerTick);
         ServerTickEvents.START_WORLD_TICK.register(this::onBeforeWorldTick);
         ServerTickEvents.END_WORLD_TICK.register(this::onAfterWorldTick);
-        ServerLifecycleEvents.SERVER_STOPPING.register(this::onServerStopping);
+        ServerWorldEvents.UNLOAD.register(this::onUnloadWorld);
     }
 
     public static TickHandler instance() {
@@ -135,38 +135,13 @@ public class TickHandler {
         this.getRepo().clear();
     }
 
-// FIXME FABRIC It does not look like worlds can ever unload in Fabric.
-// FIXME FABRIC    public void unloadWorld(final WorldEvent.Unload ev) {
-// FIXME FABRIC        if (Platform.isServer()) // for no there is no reason to care about this on the client...
-// FIXME FABRIC        {
-// FIXME FABRIC            final List<IGridNode> toDestroy = new ArrayList<>();
-// FIXME FABRIC
-// FIXME FABRIC            this.getRepo().updateNetworks();
-// FIXME FABRIC            for (final Grid g : this.getRepo().networks) {
-// FIXME FABRIC                for (final IGridNode n : g.getNodes()) {
-// FIXME FABRIC                    if (n.getWorld() == ev.getWorld()) {
-// FIXME FABRIC                        toDestroy.add(n);
-// FIXME FABRIC                    }
-// FIXME FABRIC                }
-// FIXME FABRIC            }
-// FIXME FABRIC
-// FIXME FABRIC            for (final IGridNode n : toDestroy) {
-// FIXME FABRIC                n.destroy();
-// FIXME FABRIC            }
-// FIXME FABRIC        }
-// FIXME FABRIC    }
-
-    /**
-     * This is primarily useful for an integrated server being stopped, and can be
-     * fully replaced by the event above once world unload events hit.
-     */
-    private void onServerStopping(MinecraftServer server) {
+    public void onUnloadWorld(MinecraftServer server, ServerWorld world) {
         final List<IGridNode> toDestroy = new ArrayList<>();
-        this.server.updateNetworks();
-        for (final Grid g : this.server.networks) {
+
+        this.getRepo().updateNetworks();
+        for (final Grid g : this.getRepo().networks) {
             for (final IGridNode n : g.getNodes()) {
-                WorldAccess nodeWorld = n.getWorld();
-                if (nodeWorld instanceof ServerWorld && ((ServerWorld) nodeWorld).getServer() == server) {
+                if (n.getWorld() == world) {
                     toDestroy.add(n);
                 }
             }
