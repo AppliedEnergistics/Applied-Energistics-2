@@ -49,7 +49,7 @@ public class DimensionTypeMixin {
                 dimensionType);
     }
 
-    @Inject(method = "method_28517", at = @At("RETURN"))
+    @Inject(method = "createDefaultDimensionOptions", at = @At("RETURN"))
     private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,
             Registry<ChunkGeneratorSettings> chunkGeneratorSettings, long seed,
             CallbackInfoReturnable<SimpleRegistry<DimensionOptions>> cir) {
