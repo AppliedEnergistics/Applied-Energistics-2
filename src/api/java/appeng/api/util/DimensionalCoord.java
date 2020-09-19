@@ -46,19 +46,19 @@ public class DimensionalCoord extends WorldCoord {
     public DimensionalCoord(final TileEntity tileEntity) {
         super(tileEntity);
         this.world = tileEntity.getWorld();
-        this.dimension = this.world.func_230315_m_();
+        this.dimension = this.world.getDimensionType();
     }
 
     public DimensionalCoord(final World world, final int x, final int y, final int z) {
         super(x, y, z);
         this.world = world;
-        this.dimension = world.func_230315_m_();
+        this.dimension = world.getDimensionType();
     }
 
     public DimensionalCoord(final World world, final BlockPos pos) {
         super(pos);
         this.world = world;
-        this.dimension = world.func_230315_m_();
+        this.dimension = world.getDimensionType();
     }
 
     @Override

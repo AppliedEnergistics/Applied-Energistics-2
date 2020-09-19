@@ -36,7 +36,7 @@ public class FalloutCopy extends Fallout {
     public FalloutCopy(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
         super(putter, skyStone);
         this.putter = putter;
-        this.block = w.getBiome(pos).func_242440_e().func_242502_e().getTop();
+        this.block = w.getBiome(pos).getGenerationSettings().getSurfaceBuilderConfig().getTop();
     }
 
     @Override

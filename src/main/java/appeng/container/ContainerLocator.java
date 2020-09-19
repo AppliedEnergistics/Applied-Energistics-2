@@ -69,7 +69,7 @@ public final class ContainerLocator {
     private final AEPartLocation side;
 
     private ContainerLocator(Type type, int itemIndex, World world, BlockPos blockPos, AEPartLocation side) {
-        this(type, itemIndex, world.func_234923_W_().func_240901_a_(), blockPos, side);
+        this(type, itemIndex, world.getDimensionKey().getLocation(), blockPos, side);
     }
 
     private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,

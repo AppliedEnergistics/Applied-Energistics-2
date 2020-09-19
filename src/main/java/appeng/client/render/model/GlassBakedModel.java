@@ -157,7 +157,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         // TODO: Forge: Auto-generated method stub
         return false;
     }

@@ -146,7 +146,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         RenderSystem.popMatrix();
         RenderSystem.enableDepthTest();
 
-        this.func_230459_a_(matrixStack, mouseX, mouseY);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
 
         for (final Object c : this.buttons) {
             if (c instanceof ITooltip) {

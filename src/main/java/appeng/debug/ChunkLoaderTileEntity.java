@@ -64,7 +64,7 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements ITickable
             ServerWorld serverWorld = (ServerWorld) world;
 
             if (!serverWorld.getForcedChunks().contains(chunkPos.asLong())) {
-                AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.func_234923_W_());
+                AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.getDimensionKey());
                 serverWorld.forceChunk(chunkPos.x, chunkPos.z, false);
             }
         }

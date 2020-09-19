@@ -652,7 +652,7 @@ final class Registration {
          * world gen
          */
         for (final IWorldGen.WorldGenType type : IWorldGen.WorldGenType.values()) {
-            registries.worldgen().disableWorldGenForDimension(type, World.field_234919_h_.getRegistryName());
+            registries.worldgen().disableWorldGenForDimension(type, World.THE_NETHER.getRegistryName());
         }
 
         // whitelist from config

@@ -20,8 +20,8 @@ public class BiomesMixin {
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void registerBiomes(CallbackInfo ci) {
-        WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243657_i,
-                SpatialStorageDimensionIds.BIOME_KEY.func_240901_a_(), SpatialStorageBiome.INSTANCE);
+        WorldGenRegistries.register(WorldGenRegistries.BIOME, SpatialStorageDimensionIds.BIOME_KEY.getLocation(),
+                SpatialStorageBiome.INSTANCE);
     }
 
 }

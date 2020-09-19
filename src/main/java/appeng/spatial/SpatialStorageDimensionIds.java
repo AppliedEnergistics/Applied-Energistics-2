@@ -22,7 +22,7 @@ public final class SpatialStorageDimensionIds {
      * This is defined in {@link DimensionTypeMixin}.
      */
     public static final RegistryKey<DimensionType> DIMENSION_TYPE_ID = RegistryKey
-            .func_240903_a_(Registry.DIMENSION_TYPE_KEY, AppEng.makeId("spatial_storage"));
+            .getOrCreateKey(Registry.DIMENSION_TYPE_KEY, AppEng.makeId("spatial_storage"));
 
     /**
      * ID of the {@link net.minecraft.world.gen.ChunkGenerator} used for the spatial
@@ -34,7 +34,7 @@ public final class SpatialStorageDimensionIds {
      * ID of the {@link net.minecraft.world.biome.Biome} used for the spatial
      * storage world.
      */
-    public static final RegistryKey<Biome> BIOME_KEY = RegistryKey.func_240903_a_(Registry.BIOME_KEY,
+    public static final RegistryKey<Biome> BIOME_KEY = RegistryKey.getOrCreateKey(Registry.BIOME_KEY,
             AppEng.makeId("spatial_storage"));
 
     /**
@@ -42,14 +42,14 @@ public final class SpatialStorageDimensionIds {
      * <p>
      * This is defined in {@link appeng.mixins.spatial.DimensionTypeMixin}.
      */
-    public static final RegistryKey<Dimension> DIMENSION_ID = RegistryKey.func_240903_a_(Registry.DIMENSION_KEY,
+    public static final RegistryKey<Dimension> DIMENSION_ID = RegistryKey.getOrCreateKey(Registry.DIMENSION_KEY,
             AppEng.makeId("spatial_storage"));
 
     /**
      * ID of the {@link World} that is instantiated from the dimension/dimension
      * type.
      */
-    public static final RegistryKey<World> WORLD_ID = RegistryKey.func_240903_a_(Registry.WORLD_KEY,
+    public static final RegistryKey<World> WORLD_ID = RegistryKey.getOrCreateKey(Registry.WORLD_KEY,
             AppEng.makeId("spatial_storage"));
 
     /**

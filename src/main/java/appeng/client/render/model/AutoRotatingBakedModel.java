@@ -107,7 +107,7 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
             // when piping it
             // to the AO lighter, thus fixing our problem.
             BakedQuad packedQuad = new BakedQuad(unpackedQuad.getVertexData(), quad.getTintIndex(),
-                    unpackedQuad.getFace(), quad.func_187508_a(), quad.func_239287_f_());
+                    unpackedQuad.getFace(), quad.getSprite(), quad.applyDiffuseLighting());
             rotated.add(packedQuad);
         }
         return rotated;

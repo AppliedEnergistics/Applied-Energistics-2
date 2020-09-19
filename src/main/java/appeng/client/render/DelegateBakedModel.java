@@ -47,8 +47,8 @@ public abstract class DelegateBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean func_230044_c_() {
-        return baseModel.func_230044_c_();
+    public boolean isSideLit() {
+        return baseModel.isSideLit();
     }
 
     @Override

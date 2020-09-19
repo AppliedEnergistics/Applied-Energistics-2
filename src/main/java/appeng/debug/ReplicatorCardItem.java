@@ -101,7 +101,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 tag.putInt("y", y);
                 tag.putInt("z", z);
                 tag.putInt("side", side.ordinal());
-                tag.putString("w", world.func_234923_W_().func_240901_a_().toString());
+                tag.putString("w", world.getDimensionKey().getLocation().toString());
                 tag.putInt("r", 0);
 
                 this.outputMsg(player, "Set replicator source");
@@ -117,7 +117,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 final int src_side = ish.getInt("side");
                 final String worldId = ish.getString("w");
                 final World src_w = world.getServer()
-                        .getWorld(RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(worldId)));
+                        .getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
                 final TileEntity te = src_w.getTileEntity(new BlockPos(src_x, src_y, src_z));

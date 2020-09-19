@@ -160,7 +160,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
                 @Override
                 @OnlyIn(Dist.CLIENT)
                 public void setup() {
-                    ItemModelsProperties.func_239418_a_(item, new ResourceLocation("appliedenergistics2:fill_level"),
+                    ItemModelsProperties.registerProperty(item, new ResourceLocation("appliedenergistics2:fill_level"),
                             (is, world, entity) -> {
                                 double curPower = chargeable.getAECurrentPower(is);
                                 double maxPower = chargeable.getAEMaxPower(is);

@@ -23,7 +23,7 @@ public class SkyRenderMixin {
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "renderSky(Lcom/mojang/blaze3d/matrix/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
     public void renderSky(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        if (mc.world.func_234923_W_() == SpatialStorageDimensionIds.WORLD_ID) {
+        if (mc.world.getDimensionKey() == SpatialStorageDimensionIds.WORLD_ID) {
             SpatialSkyRender.getInstance().render(matrices);
             ci.cancel();
         }

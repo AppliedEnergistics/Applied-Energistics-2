@@ -61,7 +61,7 @@ public final class WorldData implements IWorldData {
         Preconditions.checkNotNull(overworld);
 
         // Attach shared data to the server's overworld dimension
-        if (overworld.func_234923_W_() != ServerWorld.field_234918_g_) {
+        if (overworld.getDimensionKey() != ServerWorld.OVERWORLD) {
             throw new IllegalStateException("The server doesn't have an overworld we could store our data on!");
         }
 
@@ -94,7 +94,7 @@ public final class WorldData implements IWorldData {
                 throw new IllegalStateException("No server set.");
             }
 
-            ServerWorld overworld = server.getWorld(ServerWorld.field_234918_g_);
+            ServerWorld overworld = server.getWorld(ServerWorld.OVERWORLD);
             instance = new WorldData(overworld);
         }
         return instance;

@@ -31,14 +31,14 @@ import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 public class SpatialStorageBiome {
 
     public static final Biome INSTANCE = new Biome.Builder()
-            .func_242457_a(new BiomeGenerationSettings.Builder().func_242517_a(
+            .withGenerationSettings(new BiomeGenerationSettings.Builder().withSurfaceBuilder(
                     new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_STONE_GRAVEL_CONFIG))
-                    .func_242508_a())
+                    .build())
             .precipitation(Biome.RainType.NONE).category(Biome.Category.NONE).depth(0).scale(1)
             // Copied from the vanilla void biome
             .temperature(0.5F).downfall(0.5F)
-            .func_235097_a_(new BiomeAmbience.Builder().setWaterColor(4159204).setWaterFogColor(329011).setFogColor(0)
-                    .func_242539_d(0x111111).build())
-            .func_242458_a(new MobSpawnInfo.Builder().func_242572_a(0).func_242577_b()).func_242455_a();
+            .setEffects(new BiomeAmbience.Builder().setWaterColor(4159204).setWaterFogColor(329011).setFogColor(0)
+                    .withSkyColor(0x111111).build())
+            .withMobSpawnSettings(new MobSpawnInfo.Builder().withCreatureSpawnProbability(0).copy()).build();
 
 }

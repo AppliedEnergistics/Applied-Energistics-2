@@ -22,7 +22,7 @@ public class EntityMixin {
     @Inject(method = "func_241829_a", at = @At("HEAD"), cancellable = true, allow = 1)
     public void getTeleportTarget(ServerWorld destination, CallbackInfoReturnable<PortalInfo> cri) {
         // Check if a destination has been set for the entity currently being teleported
-        if (destination.func_234923_W_() == SpatialStorageDimensionIds.WORLD_ID) {
+        if (destination.getDimensionKey() == SpatialStorageDimensionIds.WORLD_ID) {
             PortalInfo target = SpatialStorageHelper.getInstance().getTeleportTarget();
             if (target != null) {
                 cri.setReturnValue(target);

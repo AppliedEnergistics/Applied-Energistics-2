@@ -122,7 +122,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;
     }
 
@@ -149,7 +149,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
          */
         return new ItemOverrideList() {
             @Override
-            public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
+            public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
                     @Nullable LivingEntity entity) {
                 // FIXME: This check prevents compasses being held by OTHERS from getting the
                 // rotation, BUT do we actually still need this???

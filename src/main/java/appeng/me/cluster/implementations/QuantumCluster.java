@@ -162,7 +162,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
                 // until the center
                 // tile begins ticking normally.
                 if (theWorld.isBlockLoaded(qc.center.getPos())) {
-                    final World cur = theWorld.getServer().getWorld(theWorld.func_234923_W_());
+                    final World cur = theWorld.getServer().getWorld(theWorld.getDimensionKey());
 
                     final TileEntity te = theWorld.getTileEntity(qc.center.getPos());
                     return te != qc.center || theWorld != cur;

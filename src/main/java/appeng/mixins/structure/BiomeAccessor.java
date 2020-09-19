@@ -20,6 +20,6 @@ import net.minecraft.world.gen.feature.structure.Structure;
 public interface BiomeAccessor {
 
     @Accessor
-    Map<Integer, List<Structure<?>>> getField_242421_g();
+    Map<Integer, List<Structure<?>>> getBiomeStructures();
 
 }

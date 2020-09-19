@@ -176,7 +176,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
         BlockPos.Mutable testPos = new BlockPos.Mutable();
         for (Direction direction : Direction.values()) {
-            if (this.isPoweredAccelerator(testPos.func_239622_a_(pos, direction))) {
+            if (this.isPoweredAccelerator(testPos.setAndMove(pos, direction))) {
                 count++;
             }
         }

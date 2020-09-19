@@ -39,28 +39,28 @@ public class DimensionTypeMixin {
         throw new AssertionError();
     }
 
-    @Inject(method = "func_236027_a_", at = @At("TAIL"))
+    @Inject(method = "registerTypes", at = @At("TAIL"))
     private static void addRegistryDefaults(DynamicRegistries.Impl registryTracker, CallbackInfoReturnable<?> cir) {
         DimensionType dimensionType = create(OptionalLong.of(12000), false, false, false, false, 1.0, false, false,
                 false, false, 256, BlockTags.INFINIBURN_OVERWORLD.getName(),
                 SpatialStorageDimensionIds.SKY_PROPERTIES_ID, 1.0f);
 
-        Registry.register(registryTracker.func_230520_a_(),
-                SpatialStorageDimensionIds.DIMENSION_TYPE_ID.func_240901_a_(), dimensionType);
+        Registry.register(registryTracker.func_230520_a_(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.getLocation(),
+                dimensionType);
     }
 
     /**
      * Insert our custom dimension into the initial registry. <em>This is what will
      * ultimately lead to the creation of a new World.</em>
      */
-    @Inject(method = "func_242718_a", at = @At("RETURN"))
+    @Inject(method = "getDefaultSimpleRegistry", at = @At("RETURN"))
     private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,
             Registry<DimensionSettings> dimensionSettings, long seed,
             CallbackInfoReturnable<SimpleRegistry<Dimension>> cir) {
         SimpleRegistry<Dimension> simpleregistry = cir.getReturnValue();
 
         simpleregistry.register(SpatialStorageDimensionIds.DIMENSION_ID, new Dimension(() -> {
-            return dimensionTypes.func_243576_d(SpatialStorageDimensionIds.DIMENSION_TYPE_ID);
+            return dimensionTypes.getOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID);
         }, new SpatialStorageChunkGenerator(biomes)), Lifecycle.stable());
 
     }

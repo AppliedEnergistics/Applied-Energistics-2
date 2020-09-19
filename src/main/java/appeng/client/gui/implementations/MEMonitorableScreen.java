@@ -302,7 +302,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
             // The stack size renderer expects a 16x16 slot, while the button is normally
             // bigger
             int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
-            int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getWidth_CLASH() - 16) / 2;
+            int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeightRealms() - 16) / 2;
             StackSizeRenderer.renderSizeLabel(font, x - this.guiLeft, y - this.guiTop,
                     String.valueOf(container.activeCraftingJobs));
         }

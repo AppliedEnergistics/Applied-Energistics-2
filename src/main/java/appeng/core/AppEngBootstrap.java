@@ -54,7 +54,7 @@ public final class AppEngBootstrap {
     public synchronized static void enhanceBiomes() {
         // add to all standard biomes
         // TODO: This means we'll not add these things to newly created biomes
-        WorldGenRegistries.field_243657_i.forEach(b -> {
+        WorldGenRegistries.BIOME.forEach(b -> {
             addMeteoriteWorldGen(b);
             addQuartzWorldGen(b, quartzOreFeature, chargedQuartzOreFeature);
         });
