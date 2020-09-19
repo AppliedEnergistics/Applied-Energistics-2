@@ -54,7 +54,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import appeng.api.config.Actionable;
@@ -219,7 +219,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     // considered for onItemUse
     @Override
     public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
-        final BlockHitResult target = rayTrace(w, p, RayTraceContext.FluidHandling.ANY);
+        final BlockHitResult target = raycast(w, p, RaycastContext.FluidHandling.ANY);
 
         if (target.getType() != HitResult.Type.BLOCK) {
             BlockPos pos = target.getBlockPos();

@@ -74,6 +74,6 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
     @Override
     public Identifier getTexture(final TinyTNTPrimedEntity entity) {
-        return SpriteAtlasTexture.BLOCK_ATLAS_TEX;
+        return SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE;
     }
 }

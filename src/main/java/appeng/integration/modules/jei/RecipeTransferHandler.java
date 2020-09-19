@@ -111,7 +111,7 @@ abstract class RecipeTransferHandler<T extends ScreenHandler & IContainerCraftin
                     if (i < flatIngredients.size()) {
                         ItemStack displayedIngredient = first.getItemStack();
                         if (displayedIngredient != null) {
-                            flatIngredients.set(i, Ingredient.method_26964(Stream.of(displayedIngredient)));
+                            flatIngredients.set(i, Ingredient.ofStacks(Stream.of(displayedIngredient)));
                         }
                     }
                 }

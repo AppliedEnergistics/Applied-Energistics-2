@@ -26,11 +26,11 @@ public class ColorApplicatorModel implements BasicUnbakedModel {
 
     private static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "item/color_applicator_colored");
 
-    private static final SpriteIdentifier TEXTURE_DARK = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_DARK = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "item/color_applicator_tip_dark"));
-    private static final SpriteIdentifier TEXTURE_MEDIUM = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_MEDIUM = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "item/color_applicator_tip_medium"));
-    private static final SpriteIdentifier TEXTURE_BRIGHT = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_BRIGHT = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "item/color_applicator_tip_bright"));
 
     @Override

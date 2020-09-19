@@ -25,7 +25,7 @@ import appeng.core.AppEng;
 public class BiometricCardModel implements BasicUnbakedModel {
 
     public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "item/biometric_card_base");
-    private static final SpriteIdentifier TEXTURE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "item/biometric_card_hash"));
 
     @Override

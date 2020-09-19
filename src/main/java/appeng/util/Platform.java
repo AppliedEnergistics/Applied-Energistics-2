@@ -61,7 +61,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
@@ -715,7 +715,7 @@ public class Platform {
                     f1 = 0.3F;
                     // FIXME: Three different bounding boxes available, should double-check
                     final Box boundingBox = entity1.getBoundingBox().expand(f1, f1, f1);
-                    final Vec3d rtResult = boundingBox.rayTrace(vec3, vec31).orElse(null);
+                    final Vec3d rtResult = boundingBox.raycast(vec3, vec31).orElse(null);
 
                     if (rtResult != null) {
                         final double nd = vec3.squaredDistanceTo(rtResult);
@@ -735,8 +735,8 @@ public class Platform {
         if (hitBlocks) {
             vec = new Vec3d(d0, d1, d2);
             // FIXME: passing p as entity here might be incorrect
-            pos = w.rayTrace(new RayTraceContext(vec3, vec31, RayTraceContext.ShapeType.COLLIDER,
-                    RayTraceContext.FluidHandling.ANY, p));
+            pos = w.raycast(new RaycastContext(vec3, vec31, RaycastContext.ShapeType.COLLIDER,
+                    RaycastContext.FluidHandling.ANY, p));
         }
 
         if (entity != null && pos != null && pos.getPos().squaredDistanceTo(vec) > closest) {

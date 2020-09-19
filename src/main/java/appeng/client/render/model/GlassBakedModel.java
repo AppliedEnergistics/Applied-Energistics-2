@@ -62,13 +62,13 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     private static final byte[][][] OFFSETS = generateOffsets();
 
     // Alternating textures based on position
-    static final SpriteIdentifier TEXTURE_A = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    static final SpriteIdentifier TEXTURE_A = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_a"));
-    static final SpriteIdentifier TEXTURE_B = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    static final SpriteIdentifier TEXTURE_B = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_b"));
-    static final SpriteIdentifier TEXTURE_C = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    static final SpriteIdentifier TEXTURE_C = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_c"));
-    static final SpriteIdentifier TEXTURE_D = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    static final SpriteIdentifier TEXTURE_D = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_d"));
 
     // Frame texture
@@ -81,7 +81,7 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     private static SpriteIdentifier[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
                 .map(s -> new Identifier("appliedenergistics2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, rl))
+                .map(rl -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, rl))
                 .toArray(SpriteIdentifier[]::new);
     }
 

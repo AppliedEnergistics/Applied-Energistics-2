@@ -43,9 +43,9 @@ public class PlaneModel implements BasicUnbakedModel {
     private final SpriteIdentifier backTexture;
 
     public PlaneModel(Identifier frontTexture, Identifier sidesTexture, Identifier backTexture) {
-        this.frontTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, frontTexture);
-        this.sidesTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, sidesTexture);
-        this.backTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, backTexture);
+        this.frontTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, frontTexture);
+        this.sidesTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, sidesTexture);
+        this.backTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, backTexture);
     }
 
     @Nullable

@@ -104,7 +104,7 @@ class CableBuilder {
                 throw new IllegalStateException("Cable type " + cableType + " does not support connections.");
         }
 
-        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
                 new Identifier(AppEng.MOD_ID, textureFolder + color.name().toLowerCase(Locale.ROOT)));
     }
 

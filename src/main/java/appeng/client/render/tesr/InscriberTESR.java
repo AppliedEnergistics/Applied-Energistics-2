@@ -38,7 +38,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final SpriteIdentifier TEXTURE_INSIDE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_INSIDE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "block/inscriber_inside"));
 
     public static final ImmutableList<SpriteIdentifier> SPRITES = ImmutableList.of(TEXTURE_INSIDE);

@@ -86,7 +86,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 
     public CableBusBlock() {
         super(defaultProps(AEMaterials.GLASS).nonOpaque().dropsNothing().dynamicBounds()
-                .lightLevel(state -> state.get(LIGHT_LEVEL)));
+                .luminance(state -> state.get(LIGHT_LEVEL)));
         setDefaultState(getDefaultState().with(LIGHT_LEVEL, 0));
     }
 

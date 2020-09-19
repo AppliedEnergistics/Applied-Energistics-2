@@ -18,7 +18,7 @@ import appeng.core.AppEng;
 
 public class P2PTunnelFrequencyModel implements BasicUnbakedModel {
 
-    private static final SpriteIdentifier TEXTURE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "part/p2p_tunnel_frequency"));
 
     @Nullable

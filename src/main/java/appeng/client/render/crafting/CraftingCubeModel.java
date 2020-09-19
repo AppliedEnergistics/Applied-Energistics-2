@@ -115,7 +115,7 @@ public class CraftingCubeModel implements BasicUnbakedModel {
     }
 
     private static SpriteIdentifier texture(String name) {
-        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
                 new Identifier(AppEng.MOD_ID, "block/crafting/" + name));
     }
 }

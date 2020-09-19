@@ -12,8 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-
+import net.minecraft.world.biome.BiomeKeys;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import appeng.spatial.SpatialStorageBiome;
@@ -23,7 +22,7 @@ import appeng.spatial.SpatialStorageDimensionIds;
  * This only needs to be here because the server-side will create a dynamic
  * registry manager long before our mod is initialized.
  */
-@Mixin(Biomes.class)
+@Mixin(BiomeKeys.class)
 public class BiomesMixin {
 
     @Unique

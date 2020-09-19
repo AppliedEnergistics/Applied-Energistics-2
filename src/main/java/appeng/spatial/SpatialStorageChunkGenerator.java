@@ -84,7 +84,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     private static FixedBiomeSource createBiomeSource(Registry<Biome> biomeRegistry) {
-        return new FixedBiomeSource(biomeRegistry.method_31140(SpatialStorageDimensionIds.BIOME_KEY));
+        return new FixedBiomeSource(biomeRegistry.getOrThrow(SpatialStorageDimensionIds.BIOME_KEY));
     }
 
     public Registry<Biome> getBiomeRegistry() {

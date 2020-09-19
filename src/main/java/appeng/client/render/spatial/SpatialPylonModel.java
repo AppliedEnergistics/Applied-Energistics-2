@@ -59,7 +59,7 @@ public class SpatialPylonModel implements BasicUnbakedModel {
     }
 
     private static SpriteIdentifier getTexturePath(SpatialPylonTextureType type) {
-        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
                 new Identifier(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
     }
 

@@ -38,11 +38,11 @@ import appeng.helpers.Splotch;
  */
 class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
 
-    private static final SpriteIdentifier TEXTURE_PAINT1 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_PAINT1 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "block/paint1"));
-    private static final SpriteIdentifier TEXTURE_PAINT2 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_PAINT2 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "block/paint2"));
-    private static final SpriteIdentifier TEXTURE_PAINT3 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_PAINT3 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "block/paint3"));
 
     private final Sprite[] textures;

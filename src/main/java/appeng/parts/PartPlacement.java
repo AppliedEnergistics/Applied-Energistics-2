@@ -38,7 +38,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import appeng.api.definitions.IBlockDefinition;
@@ -76,9 +76,9 @@ public class PartPlacement {
 
         // FIXME: This was changed alot.
         final LookDirection dir = Platform.getPlayerRay(player);
-        RayTraceContext rtc = new RayTraceContext(dir.getA(), dir.getB(), RayTraceContext.ShapeType.OUTLINE,
-                RayTraceContext.FluidHandling.NONE, player);
-        final BlockHitResult mop = world.rayTrace(rtc);
+        RaycastContext rtc = new RaycastContext(dir.getA(), dir.getB(), RaycastContext.ShapeType.OUTLINE,
+                RaycastContext.FluidHandling.NONE, player);
+        final BlockHitResult mop = world.raycast(rtc);
         ItemPlacementContext useContext = new ItemPlacementContext(new ItemUsageContext(player, hand, mop));
 
         BlockEntity tile = world.getBlockEntity(pos);

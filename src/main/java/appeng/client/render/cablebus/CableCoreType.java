@@ -74,7 +74,7 @@ public enum CableCoreType {
     }
 
     public SpriteIdentifier getTexture(AEColor color) {
-        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
                 new Identifier(AppEng.MOD_ID, this.textureFolder + "/" + color.name().toLowerCase(Locale.ROOT)));
     }
 

@@ -48,7 +48,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -200,7 +200,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 final float f1 = 0.3F;
 
                 final Box boundingBox = entity1.getBoundingBox().expand(f1, f1, f1);
-                final Vec3d intersection = boundingBox.rayTrace(Vec3d, Vec3d1).orElse(null);
+                final Vec3d intersection = boundingBox.raycast(Vec3d, Vec3d1).orElse(null);
 
                 if (intersection != null) {
                     final double nd = Vec3d.squaredDistanceTo(intersection);
@@ -214,9 +214,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
         }
 
-        RayTraceContext rayTraceContext = new RayTraceContext(Vec3d, Vec3d1, RayTraceContext.ShapeType.COLLIDER,
-                RayTraceContext.FluidHandling.NONE, p);
-        HitResult pos = w.rayTrace(rayTraceContext);
+        RaycastContext rayTraceContext = new RaycastContext(Vec3d, Vec3d1, RaycastContext.ShapeType.COLLIDER,
+                RaycastContext.FluidHandling.NONE, p);
+        HitResult pos = w.raycast(rayTraceContext);
 
         final Vec3d vec = new Vec3d(d0, d1, d2);
         if (entity != null && pos.getType() != HitResult.Type.MISS && pos.getPos().squaredDistanceTo(vec) > closest) {
@@ -307,7 +307,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         final float f1 = 0.3F;
 
                         final Box boundingBox = entity1.getBoundingBox().expand(f1, f1, f1);
-                        final Vec3d intersection = boundingBox.rayTrace(Vec3d, Vec3d1).orElse(null);
+                        final Vec3d intersection = boundingBox.raycast(Vec3d, Vec3d1).orElse(null);
 
                         if (intersection != null) {
                             final double nd = Vec3d.squaredDistanceTo(intersection);
@@ -322,10 +322,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 }
             }
 
-            RayTraceContext rayTraceContext = new RayTraceContext(Vec3d, Vec3d1, RayTraceContext.ShapeType.COLLIDER,
-                    RayTraceContext.FluidHandling.NONE, p);
+            RaycastContext rayTraceContext = new RaycastContext(Vec3d, Vec3d1, RaycastContext.ShapeType.COLLIDER,
+                    RaycastContext.FluidHandling.NONE, p);
             final Vec3d vec = new Vec3d(d0, d1, d2);
-            HitResult pos = w.rayTrace(rayTraceContext);
+            HitResult pos = w.raycast(rayTraceContext);
             if (entity != null && pos.getType() != HitResult.Type.MISS
                     && pos.getPos().squaredDistanceTo(vec) > closest) {
                 pos = new EntityHitResult(entity, entityIntersection);

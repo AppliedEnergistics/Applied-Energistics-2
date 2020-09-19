@@ -47,6 +47,6 @@ public final class Tracer {
         BlockState blockState = world.getBlockState(pos);
 
         LookDirection playerRay = Platform.getPlayerRay(player);
-        return blockState.getCollisionShape(world, pos).rayTrace(playerRay.getA(), playerRay.getB(), pos);
+        return blockState.getCollisionShape(world, pos).raycast(playerRay.getA(), playerRay.getB(), pos);
     }
 }

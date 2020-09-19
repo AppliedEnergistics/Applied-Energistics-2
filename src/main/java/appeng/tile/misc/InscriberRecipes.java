@@ -80,7 +80,7 @@ public final class InscriberRecipes {
             name += " " + tag.getString(MaterialItem.TAG_INSCRIBE_NAME);
         }
 
-        final Ingredient startingItem = Ingredient.method_26964(Stream.of(input.copy()));
+        final Ingredient startingItem = Ingredient.ofStacks(Stream.of(input.copy()));
         final ItemStack renamedItem = input.copy();
 
         if (!name.isEmpty()) {
@@ -92,8 +92,8 @@ public final class InscriberRecipes {
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
         return new InscriberRecipe(NAMEPLATE_RECIPE_ID, "", startingItem, renamedItem,
-                plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.method_26964(Stream.of(plateA)),
-                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.method_26964(Stream.of(plateB)), type);
+                plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.ofStacks(Stream.of(plateA)),
+                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.ofStacks(Stream.of(plateB)), type);
     }
 
     /**
