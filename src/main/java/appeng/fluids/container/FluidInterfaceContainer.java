@@ -36,7 +36,6 @@ import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.util.IAEFluidTank;
-import appeng.util.Platform;
 
 public class FluidInterfaceContainer extends FluidConfigurableContainer {
 

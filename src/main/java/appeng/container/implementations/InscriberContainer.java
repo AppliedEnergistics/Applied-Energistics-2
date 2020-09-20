@@ -36,7 +36,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.tile.misc.InscriberBlockEntity;
 import appeng.tile.misc.InscriberRecipes;
-import appeng.tile.misc.InscriberTileEntity;
 
 /**
  * @author AlgorithmX2

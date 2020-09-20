@@ -52,15 +52,15 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_ITEM_COUNT);
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.addButtons(children::add, this::addButton);
-        this.level.setValue(container.getReportingValue());
+        this.level.setValue(handler.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
-        this.level.setOnConfirm(this::closeScreen);
+        this.level.setOnConfirm(this::onClose);
 
         this.changeFocus(true);
     }
 
     private void saveReportingValue() {
-        this.level.getLongValue().ifPresent(container::setReportingValue);
+        this.level.getLongValue().ifPresent(handler::setReportingValue);
     }
 
     @Override

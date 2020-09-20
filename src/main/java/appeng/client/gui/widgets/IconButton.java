@@ -21,8 +21,8 @@ package appeng.client.gui.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -48,9 +48,9 @@ public abstract class IconButton extends ButtonWidget implements ITooltip {
     }
 
     @Override
-    public void playDownSound(SoundHandler soundHandler) {
+    public void playDownSound(SoundManager soundManager) {
         if (!disableClickSound) {
-            super.playDownSound(soundHandler);
+            super.playDownSound(soundManager);
         }
     }
 
@@ -108,7 +108,7 @@ public abstract class IconButton extends ButtonWidget implements ITooltip {
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
 
             if (isHovered()) {
-                renderToolTip(matrixStack, mouseX, mouseY);
+                renderToolTip(matrices, mouseX, mouseY);
             }
         }
     }

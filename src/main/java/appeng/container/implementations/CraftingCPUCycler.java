@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.text.LiteralText;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -75,7 +75,7 @@ class CraftingCPUCycler {
             for (int i = 0; i < this.cpus.size(); i++) {
                 CraftingCPURecord cpu = cpus.get(i);
                 if (cpu.getName() == null) {
-                    cpu.setName(new StringTextComponent("#" + (i + 1)));
+                    cpu.setName(new LiteralText("#" + (i + 1)));
                 }
             }
 

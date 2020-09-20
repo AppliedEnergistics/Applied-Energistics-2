@@ -642,7 +642,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
         this.itemRenderer.zOffset = 0.0F;
     }
 
-    protected ITextComponent getGuiDisplayName(final Text in) {
+    protected Text getGuiDisplayName(final Text in) {
         return title.getString().isEmpty() ? in : title;
     }
 

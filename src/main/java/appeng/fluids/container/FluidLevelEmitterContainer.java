@@ -1,7 +1,5 @@
 package appeng.fluids.container;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketByteBuf;
@@ -16,7 +14,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.IAEFluidTank;
-import appeng.util.Platform;
 
 public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     public static ScreenHandlerType<FluidLevelEmitterContainer> TYPE;

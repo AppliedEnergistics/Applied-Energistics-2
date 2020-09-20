@@ -26,7 +26,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -61,7 +61,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
                         if (cluster != null && cluster.getName() != null) {
                             return cluster.getName();
                         }
-                        return StringTextComponent.EMPTY;
+                        return LiteralText.EMPTY;
                     });
 
     private final IItemList<IAEItemStack> list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)

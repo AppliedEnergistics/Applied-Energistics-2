@@ -3,18 +3,17 @@ package appeng.client.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 
 /**
  * Displays a small icon that shows validation errors for some input control.
  */
 public class ValidationIcon extends IconButton {
 
-    private final List<ITextComponent> tooltip = new ArrayList<>();
+    private final List<Text> tooltip = new ArrayList<>();
 
     private boolean valid;
 
@@ -33,7 +32,7 @@ public class ValidationIcon extends IconButton {
         }
     }
 
-    public void setTooltip(List<ITextComponent> lines) {
+    public void setTooltip(List<Text> lines) {
         this.tooltip.clear();
         this.tooltip.addAll(lines);
     }
@@ -54,12 +53,12 @@ public class ValidationIcon extends IconButton {
             return;
         }
 
-        Minecraft client = Minecraft.getInstance();
+        MinecraftClient client = MinecraftClient.getInstance();
         Screen screen = client.currentScreen;
         if (screen == null) {
             return;
         }
 
-        screen.func_243308_b(matrices, this.tooltip, x, y);
+        screen.renderTooltip(matrices, this.tooltip, x, y);
     }
 }

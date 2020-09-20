@@ -18,13 +18,14 @@
 
 package appeng.fluids.helper;
 
+import java.math.RoundingMode;
 import java.util.Optional;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 
 import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;
@@ -319,8 +320,8 @@ public class DualityFluidInterface
                 toStore.setStackSize(-toStore.getStackSize());
 
                 // make sure strange things didn't happen...
-                final FluidVolume canExtract = this.tanks.drain(slot, toStore.getFluidStack(), false);
-                if (canExtract.isEmpty() || canExtract.getAmount() != toStore.getStackSize()) {
+                final FluidAmount canExtract = this.tanks.drain(slot, toStore.getFluidStack(), false);
+                if (canExtract.isZero() || canExtract.asLong(1000, RoundingMode.DOWN) != toStore.getStackSize()) {
                     changed = true;
                 } else {
                     IAEFluidStack notStored = Platform.poweredInsert(src, dest, toStore, this.interfaceRequestSource);
@@ -329,8 +330,8 @@ public class DualityFluidInterface
                     if (toStore.getStackSize() > 0) {
                         // extract items!
                         changed = true;
-                        final FluidVolume removed = this.tanks.drain(slot, toStore.getFluidStack(), true);
-                        if (removed.isEmpty() || toStore.getStackSize() != removed.getAmount()) {
+                        final FluidAmount removed = this.tanks.drain(slot, toStore.getFluidStack(), true);
+                        if (removed.isZero() || toStore.getStackSize() != removed.asLong(1000, RoundingMode.DOWN)) {
                             throw new IllegalStateException("bad attempt at managing tanks. ( drain )");
                         }
                     }

@@ -6,14 +6,14 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
 
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.TranslatableText;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
@@ -27,8 +27,7 @@ import appeng.core.AEConfig;
  */
 public class NumberEntryWidget extends DrawableHelper {
 
-    private static final ITextComponent INVALID_NUMBER = new TranslationTextComponent(
-            "gui.appliedenergistics2.validation.InvalidNumber");
+    private static final Text INVALID_NUMBER = new TranslatableText("gui.appliedenergistics2.validation.InvalidNumber");
     private static final String NUMBER_LESS_THAN_MIN_VALUE = "gui.appliedenergistics2.validation.NumberLessThanMinValue";
     private static final Text PLUS = Text.of("+");
     private static final Text MINUS = Text.of("-");
@@ -60,18 +59,17 @@ public class NumberEntryWidget extends DrawableHelper {
         this.y = y;
         this.type = type;
 
-        FontRenderer font = parent.getMinecraft().fontRenderer;
-        int inputX = parent.getGuiLeft() + x;
-        int inputY = parent.getGuiTop() + y;
-        this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.FONT_HEIGHT,
-                StringTextComponent.EMPTY);
-        this.textField.setEnableBackgroundDrawing(false);
-        this.textField.setMaxStringLength(16);
-        this.textField.setTextColor(TEXT_COLOR_NORMAL);
+        TextRenderer font = parent.getClient().textRenderer;
+        int inputX = parent.getX() + x;
+        int inputY = parent.getY() + y;
+        this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.fontHeight, LiteralText.EMPTY);
+        this.textField.setHasBorder(false);
+        this.textField.setMaxLength(16);
+        this.textField.setEditableColor(TEXT_COLOR_NORMAL);
         this.textField.setVisible(true);
-        this.textField.setFocused2(true);
-        parent.setFocusedDefault(this.textField);
-        this.textField.setResponder(text -> {
+        this.textField.setSelected(true);
+        parent.setInitialFocus(this.textField);
+        this.textField.setChangedListener(text -> {
             validate();
             if (onChange != null) {
                 this.onChange.run();
@@ -190,8 +188,8 @@ public class NumberEntryWidget extends DrawableHelper {
 
     public void setValue(long value) {
         this.textField.setText(String.valueOf(Math.max(minValue, value)));
-        this.textField.setCursorPositionEnd();
-        this.textField.setSelectionPos(0);
+        this.textField.setCursorToEnd();
+        this.textField.setSelectionStart(0);
         validate();
     }
 
@@ -204,20 +202,20 @@ public class NumberEntryWidget extends DrawableHelper {
     }
 
     private void validate() {
-        List<ITextComponent> validationErrors = new ArrayList<>();
+        List<Text> validationErrors = new ArrayList<>();
 
         String text = textField.getText().trim();
         try {
             long value = Long.parseLong(text, 10);
             if (value < minValue) {
-                validationErrors.add(new TranslationTextComponent(NUMBER_LESS_THAN_MIN_VALUE, minValue));
+                validationErrors.add(new TranslatableText(NUMBER_LESS_THAN_MIN_VALUE, minValue));
             }
         } catch (NumberFormatException ignored) {
             validationErrors.add(INVALID_NUMBER);
         }
 
         boolean valid = validationErrors.isEmpty();
-        this.textField.setTextColor(valid ? TEXT_COLOR_NORMAL : TEXT_COLOR_ERROR);
+        this.textField.setEditableColor(valid ? TEXT_COLOR_NORMAL : TEXT_COLOR_ERROR);
         if (this.validationIcon != null) {
             this.validationIcon.setValid(valid);
             this.validationIcon.setTooltip(validationErrors);

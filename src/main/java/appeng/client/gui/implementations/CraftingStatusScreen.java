@@ -63,11 +63,11 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
         this.selectCPU.setMessage(getNextCpuButtonLabel());
     }
 
-    private ITextComponent getNextCpuButtonLabel() {
+    private Text getNextCpuButtonLabel() {
         if (this.handler.noCPU) {
             return GuiText.NoCraftingJobs.text();
         }
-        return GuiText.CraftingCPU.withSuffix(": ").append(container.cpuName);
+        return GuiText.CraftingCPU.withSuffix(": ").append(handler.cpuName);
     }
 
     @Override

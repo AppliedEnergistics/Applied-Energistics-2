@@ -26,6 +26,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import me.shedaniel.math.Rectangle;
@@ -297,13 +298,13 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         this.currentMouseY = mouseY;
 
         // Show the number of active crafting jobs
-        if (this.craftingStatusBtn != null && container.activeCraftingJobs != -1) {
+        if (this.craftingStatusBtn != null && handler.activeCraftingJobs != -1) {
             // The stack size renderer expects a 16x16 slot, while the button is normally
             // bigger
             int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
-            int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeightRealms() - 16) / 2;
-            StackSizeRenderer.renderSizeLabel(font, x - this.guiLeft, y - this.guiTop,
-                    String.valueOf(container.activeCraftingJobs));
+            int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeight() - 16) / 2;
+            StackSizeRenderer.renderSizeLabel(textRenderer, x - this.x, y - this.y,
+                    new LiteralText(String.valueOf(handler.activeCraftingJobs)));
         }
     }
 

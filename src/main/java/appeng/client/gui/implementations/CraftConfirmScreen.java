@@ -136,16 +136,16 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         this.selectCPU.setMessage(getNextCpuButtonLabel());
     }
 
-    private ITextComponent getNextCpuButtonLabel() {
-        if (this.container.hasNoCPU()) {
+    private Text getNextCpuButtonLabel() {
+        if (this.handler.hasNoCPU()) {
             return GuiText.NoCraftingCPUs.text();
         }
 
-        ITextComponent cpuName;
-        if (this.container.cpuName == null) {
+        Text cpuName;
+        if (this.handler.cpuName == null) {
             cpuName = GuiText.Automatic.text();
         } else {
-            cpuName = this.container.cpuName;
+            cpuName = this.handler.cpuName;
         }
 
         return GuiText.CraftingCPU.withSuffix(": ").append(cpuName);

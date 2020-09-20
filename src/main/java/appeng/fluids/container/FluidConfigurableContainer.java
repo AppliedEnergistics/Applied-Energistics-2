@@ -21,7 +21,6 @@ import appeng.container.implementations.UpgradeableContainer;
 import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidTank;
-import appeng.util.Platform;
 
 public abstract class FluidConfigurableContainer extends UpgradeableContainer implements IFluidSyncContainer {
     private FluidSyncHelper sync = null;

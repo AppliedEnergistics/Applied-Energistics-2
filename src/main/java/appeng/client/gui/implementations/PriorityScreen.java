@@ -40,8 +40,8 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
         this.subGui = new AESubScreen(this, container.getPriorityHost());
 
         // This is the effective size of the background image
-        xSize = 175;
-        ySize = 128;
+        backgroundWidth = 175;
+        backgroundHeight = 128;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
         this.priority = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.PRIORITY);
         this.priority.setTextFieldBounds(62, 57, 50);
         this.priority.setMinValue(Integer.MIN_VALUE);
-        this.priority.setValue(this.container.getPriorityValue());
+        this.priority.setValue(this.handler.getPriorityValue());
         this.priority.addButtons(children::add, this::addButton);
 
         this.subGui.addBackButton(this::addButton, 154, 0);
@@ -68,7 +68,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     private void savePriority() {
         OptionalInt priority = this.priority.getIntValue();
         if (priority.isPresent()) {
-            container.setPriority(priority.getAsInt());
+            handler.setPriority(priority.getAsInt());
         }
     }
 

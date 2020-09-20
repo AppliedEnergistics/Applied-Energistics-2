@@ -1,11 +1,11 @@
 package appeng.container.implementations;
 
+import java.util.function.Function;
+
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.entity.BlockEntity;
-import java.util.function.Function;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -14,12 +14,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IWirelessTermHandler;
@@ -49,7 +44,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     private final SecurityPermissions requiredPermission;
 
-    private Function<I, ITextComponent> containerTitleStrategy = this::getDefaultContainerTitle;
+    private Function<I, Text> containerTitleStrategy = this::getDefaultContainerTitle;
 
     public ContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass) {
         this(factory, interfaceClass, null);
@@ -64,11 +59,11 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     /**
      * Specifies a custom strategy for obtaining a custom container name.
-     *
-     * The stratgy should return {@link StringTextComponent#EMPTY} if there's no
-     * custom name.
+     * <p>
+     * The stratgy should return {@link LiteralText#EMPTY} if there's no custom
+     * name.
      */
-    public ContainerHelper<C, I> withContainerTitle(Function<I, ITextComponent> containerTitleStrategy) {
+    public ContainerHelper<C, I> withContainerTitle(Function<I, Text> containerTitleStrategy) {
         this.containerTitleStrategy = containerTitleStrategy;
         return this;
     }
@@ -86,7 +81,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
      * Same as {@link #open}, but allows or additional data to be read from the
      * packet, and passed onto the container.
      */
-    public C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf,
+    public C fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf packetBuf,
             InitialDataDeserializer<C, I> initialDataDeserializer) {
         I host = getHostFromLocator(inv.player, ContainerLocator.read(packetBuf));
         if (host != null) {
@@ -121,7 +116,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
         Text title = containerTitleStrategy.apply(accessInterface);
 
-        player.openHandledScreen(new HandlerFactory(locator, title, accessInterface));
+        player.openHandledScreen(new HandlerFactory(locator, title, accessInterface, initialDataSerializer));
 
         return true;
     }
@@ -134,10 +129,14 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
         private final Text title;
 
-        public HandlerFactory(ContainerLocator locator, Text title, I accessInterface) {
+        private final InitialDataSerializer<I> initialDataSerializer;
+
+        public HandlerFactory(ContainerLocator locator, Text title, I accessInterface,
+                InitialDataSerializer<I> initialDataSerializer) {
             this.locator = locator;
             this.title = title;
             this.accessInterface = accessInterface;
+            this.initialDataSerializer = initialDataSerializer;
         }
 
         @Override
@@ -245,7 +244,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
      */
     @FunctionalInterface
     public interface InitialDataSerializer<I> {
-        void serializeInitialData(I host, PacketBuffer buffer);
+        void serializeInitialData(I host, PacketByteBuf buffer);
     }
 
     /**
@@ -254,7 +253,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
      */
     @FunctionalInterface
     public interface InitialDataDeserializer<C, I> {
-        void deserializeInitialData(I host, C container, PacketBuffer buffer);
+        void deserializeInitialData(I host, C container, PacketByteBuf buffer);
     }
 
     private boolean checkPermission(PlayerEntity player, Object accessInterface) {

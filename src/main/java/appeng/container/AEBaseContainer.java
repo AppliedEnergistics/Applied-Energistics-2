@@ -1001,7 +1001,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
      * Returns whether this container instance lives on the client.
      */
     protected boolean isClient() {
-        return invPlayer.player.getEntityWorld().isRemote();
+        return invPlayer.player.getEntityWorld().isClient();
     }
 
     /**
