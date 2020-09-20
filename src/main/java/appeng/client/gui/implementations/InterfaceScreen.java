@@ -87,7 +87,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     }
 
     private void selectNextInterfaceMode() {
-        final boolean backwards = getClient().mouse.wasRightButtonClicked();
+        final boolean backwards = isHandlingRightClick();
         NetworkHandler.instance().sendToServer(new ConfigButtonPacket(Settings.INTERFACE_TERMINAL, backwards));
     }
 

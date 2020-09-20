@@ -297,9 +297,9 @@ public class PatternTermContainer extends MEMonitorableContainer
     @Override
     public boolean isSlotEnabled(final int idx) {
         if (idx == 1) {
-            return Platform.isServer() ? !this.getPatternTerminal().isCraftingRecipe() : !this.isCraftingMode();
+            return isServer() ? !this.getPatternTerminal().isCraftingRecipe() : !this.isCraftingMode();
         } else if (idx == 2) {
-            return Platform.isServer() ? this.getPatternTerminal().isCraftingRecipe() : this.isCraftingMode();
+            return isServer() ? this.getPatternTerminal().isCraftingRecipe() : this.isCraftingMode();
         } else {
             return false;
         }
@@ -401,7 +401,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     @Override
     public void sendContentUpdates() {
         super.sendContentUpdates();
-        if (Platform.isServer()) {
+        if (isServer()) {
             if (this.isCraftingMode() != this.getPatternTerminal().isCraftingRecipe()) {
                 this.setCraftingMode(this.getPatternTerminal().isCraftingRecipe());
                 this.updateOrderOfOutputSlots();
@@ -423,7 +423,7 @@ public class PatternTermContainer extends MEMonitorableContainer
 
     @Override
     public void onSlotChange(final Slot s) {
-        if (s == this.patternSlotOUT && Platform.isServer()) {
+        if (s == this.patternSlotOUT && isServer()) {
             for (final ScreenHandlerListener listener : this.getListeners()) {
                 for (int i = 0; i < this.slots.size(); i++) {
                     Slot slot = this.slots.get(i);
@@ -438,7 +438,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             this.sendContentUpdates();
         }
 
-        if (s == this.craftSlot && Platform.isClient()) {
+        if (s == this.craftSlot && isClient()) {
             this.getAndUpdateOutput();
         }
     }

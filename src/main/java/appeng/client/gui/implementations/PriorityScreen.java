@@ -18,6 +18,8 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.OptionalInt;
+
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
@@ -26,8 +28,6 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 
 public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
@@ -38,24 +38,38 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     public PriorityScreen(PriorityContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.subGui = new AESubScreen(this, container.getPriorityHost());
+
+        // This is the effective size of the background image
+        xSize = 175;
+        ySize = 128;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.priority = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.PRIORITY, this::onPriorityChange);
+        this.priority = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.PRIORITY);
         this.priority.setTextFieldBounds(62, 57, 50);
         this.priority.setMinValue(Integer.MIN_VALUE);
-        handler.setTextField(this.priority);
+        this.priority.setValue(this.container.getPriorityValue());
         this.priority.addButtons(children::add, this::addButton);
 
         this.subGui.addBackButton(this::addButton, 154, 0);
+
+        this.priority.setOnChange(this::savePriority);
+        this.priority.setOnConfirm(() -> {
+            savePriority();
+            this.subGui.goBack();
+        });
+
+        changeFocus(true);
     }
 
-    private void onPriorityChange(long priority) {
-        NetworkHandler.instance()
-                .sendToServer(new ConfigValuePacket("PriorityHost.Priority", String.valueOf(priority)));
+    private void savePriority() {
+        OptionalInt priority = this.priority.getIntValue();
+        if (priority.isPresent()) {
+            container.setPriority(priority.getAsInt());
+        }
     }
 
     @Override
@@ -66,13 +80,10 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
-        this.bindTexture(getBackground());
+        this.bindTexture("guis/priority.png");
         drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
         this.priority.render(matrices, mouseX, mouseY, partialTicks);
     }
 
-    protected String getBackground() {
-        return "guis/priority.png";
-    }
 }

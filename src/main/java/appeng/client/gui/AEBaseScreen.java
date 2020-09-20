@@ -106,6 +106,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
     private ItemStack dbl_whichItem = ItemStack.EMPTY;
     private Slot bl_clicked;
+    private boolean handlingRightClick;
     protected final List<CustomSlotWidget> guiSlots = new ArrayList<>();
 
     public AEBaseScreen(T container, PlayerInventory playerInventory, Text title) {
@@ -284,12 +285,18 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
         this.drag_click.clear();
 
+        // Forward right-clicks as-if they were left-clicks
         if (btn == 1) {
-            for (final Object o : this.buttons) {
-                final AbstractButtonWidget widget = (AbstractButtonWidget) o;
-                if (widget.isMouseOver(xCoord, yCoord)) {
-                    return super.mouseClicked(xCoord, yCoord, 0);
+            handlingRightClick = true;
+            try {
+                for (final Object o : this.buttons) {
+                    final AbstractButtonWidget widget = (AbstractButtonWidget) o;
+                    if (widget.isMouseOver(xCoord, yCoord)) {
+                        return super.mouseClicked(xCoord, yCoord, 0);
+                    }
                 }
+            } finally {
+                handlingRightClick = false;
             }
         }
 
@@ -635,16 +642,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
         this.itemRenderer.zOffset = 0.0F;
     }
 
-    protected Text getGuiDisplayName(final Text in) {
-        return this.hasCustomInventoryName() ? new LiteralText(this.getInventoryName()) : in;
-    }
-
-    private boolean hasCustomInventoryName() {
-        return this.handler.getCustomName() != null;
-    }
-
-    private String getInventoryName() {
-        return this.handler.getCustomName();
+    protected ITextComponent getGuiDisplayName(final Text in) {
+        return title.getString().isEmpty() ? in : title;
     }
 
     /**
@@ -822,6 +821,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
                 ((ITickingWidget) child).tick();
             }
         }
+    }
+
+    /**
+     * Returns true while the current event being handled is a click of the right
+     * mouse button.
+     */
+    public boolean isHandlingRightClick() {
+        return handlingRightClick;
     }
 
     public List<Rectangle> getExclusionZones() {

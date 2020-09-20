@@ -289,6 +289,8 @@
   "gui.appliedenergistics2.With": "with",
   "gui.appliedenergistics2.Yellow": "Yellow",
   "gui.appliedenergistics2.Yes": "Yes",
+  "gui.appliedenergistics2.validation.InvalidNumber": "Please enter a number",
+  "gui.appliedenergistics2.validation.NumberLessThanMinValue": "Please enter a number greater than or equal to %d",
   "gui.appliedenergistics2.inWorldCraftingPresses": "Crafting Presses are found in the center of meteorites which can be found in around the world, they can be located by using a meteorite compass.",
   "gui.appliedenergistics2.inWorldFluix": "Drop 1 Charged Certus Quartz + 1 Nether Quartz + Redstone Dust into a puddle next to one another and wait a moment to receive 2 Fluix Crystals.",
   "gui.appliedenergistics2.inWorldPurificationCertus": "Drop a Certus Quartz Seed made from Certus Quartz Dust and Sand into a puddle of water; to make the process faster add Crystal Growth Accelerators.",

@@ -78,7 +78,7 @@ public class CraftingStorageBlockEntity extends CraftingBlockEntity {
             return 0;
         }
 
-        final AbstractCraftingUnitBlock unit = (AbstractCraftingUnitBlock) this.world.getBlockState(this.pos)
+        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.world.getBlockState(this.pos)
                 .getBlock();
         switch (unit.type) {
             default:

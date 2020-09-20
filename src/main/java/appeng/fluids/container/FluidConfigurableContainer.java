@@ -76,7 +76,7 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
 
     @Override
     protected void standardDetectAndSendChanges() {
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.getSyncHelper().sendDiff(this.getListeners());
 
             // clear out config items that are no longer valid (eg capacity upgrade removed)

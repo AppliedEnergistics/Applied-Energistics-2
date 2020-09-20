@@ -66,10 +66,8 @@ import appeng.container.slot.PlayerInvSlot;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.TargetItemStackPacket;
-import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
 import appeng.mixins.ScreenHandlerListeners;
@@ -88,11 +86,9 @@ public abstract class AEBaseContainer extends ScreenHandler {
     private final IGuiItemObject obj;
     private final HashMap<Integer, SyncData> syncData = new HashMap<>();
     private boolean isContainerValid = true;
-    private String customName;
     private ContainerLocator locator;
     private IMEInventoryHandler<IAEItemStack> cellInv;
     private IEnergySource powerSrc;
-    private boolean sentCustomName;
     private int ticksSinceCheck = 900;
     private IAEItemStack clientRequestedTargetItem = null;
 
@@ -317,9 +313,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
 
     @Override
     public void sendContentUpdates() {
-        this.sendCustomName();
-
-        if (Platform.isServer()) {
+        if (isServer()) {
             if (this.tileEntity != null
                     && this.tileEntity.getWorld().getBlockEntity(this.tileEntity.getPos()) != this.tileEntity) {
                 this.setValidContainer(false);
@@ -886,43 +880,6 @@ public abstract class AEBaseContainer extends ScreenHandler {
         this.sendContentUpdates();
     }
 
-    private void sendCustomName() {
-        // FIXME: Trash this, this is handled by NamedContainerProvider now
-        if (!this.sentCustomName) {
-            this.sentCustomName = true;
-            if (Platform.isServer()) {
-                ICustomNameObject name = null;
-
-                if (this.part instanceof ICustomNameObject) {
-                    name = (ICustomNameObject) this.part;
-                }
-
-                if (this.tileEntity instanceof ICustomNameObject) {
-                    name = (ICustomNameObject) this.tileEntity;
-                }
-
-                if (this.obj instanceof ICustomNameObject) {
-                    name = (ICustomNameObject) this.obj;
-                }
-
-                if (this instanceof ICustomNameObject) {
-                    name = (ICustomNameObject) this;
-                }
-
-                if (name != null) {
-                    if (name.hasCustomInventoryName()) {
-                        this.setCustomName(name.getCustomInventoryName().getString());
-                    }
-
-                    if (this.getCustomName() != null) {
-                        NetworkHandler.instance().sendTo(new ConfigValuePacket("CustomName", this.getCustomName()),
-                                (ServerPlayerEntity) this.getPlayerInventory().player);
-                    }
-                }
-            }
-        }
-    }
-
     public void swapSlotContents(final int slotA, final int slotB) {
         final Slot a = this.getSlot(slotA);
         final Slot b = this.getSlot(slotB);
@@ -1012,14 +969,6 @@ public abstract class AEBaseContainer extends ScreenHandler {
         this.cellInv = cellInv;
     }
 
-    public String getCustomName() {
-        return this.customName;
-    }
-
-    public void setCustomName(final String customName) {
-        this.customName = customName;
-    }
-
     public PlayerInventory getPlayerInventory() {
         return this.invPlayer;
     }
@@ -1046,6 +995,20 @@ public abstract class AEBaseContainer extends ScreenHandler {
 
     public void setPowerSource(final IEnergySource powerSrc) {
         this.powerSrc = powerSrc;
+    }
+
+    /**
+     * Returns whether this container instance lives on the client.
+     */
+    protected boolean isClient() {
+        return invPlayer.player.getEntityWorld().isRemote();
+    }
+
+    /**
+     * Returns whether this container instance lives on the server.
+     */
+    protected boolean isServer() {
+        return !isClient();
     }
 
 }

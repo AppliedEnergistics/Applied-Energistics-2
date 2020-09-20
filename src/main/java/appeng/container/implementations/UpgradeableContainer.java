@@ -52,7 +52,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.NetworkToolItem;
 import appeng.parts.automation.ExportBusPart;
-import appeng.util.Platform;
 
 public class UpgradeableContainer extends AEBaseContainer implements IOptionalSlotHost {
 
@@ -200,7 +199,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     public void sendContentUpdates() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             final IConfigManager cm = this.getUpgradeable().getConfigManager();
             this.loadSettingsFromHost(cm);
         }

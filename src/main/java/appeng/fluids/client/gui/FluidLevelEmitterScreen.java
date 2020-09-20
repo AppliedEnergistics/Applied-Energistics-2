@@ -11,8 +11,6 @@ import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 
@@ -28,15 +26,22 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     public void init() {
         super.init();
 
-        this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_FLUID_VOLUME,
-                this::onLevelChange);
+        this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_FLUID_VOLUME);
         this.level.setTextFieldBounds(25, 44, 75);
-        handler.setTextField(this.level);
         this.level.addButtons(children::add, this::addButton);
+        this.level.setValue(container.getReportingValue());
+        this.level.setOnChange(this::saveReportingValue);
+        this.level.setOnConfirm(this::closeScreen);
+
+        this.changeFocus(true);
 
         final int y = 40;
         final int x = 80 + 57;
         this.guiSlots.add(new FluidSlotWidget(this.handler.getFluidConfigInventory(), 0, 0, x, y));
+    }
+
+    private void saveReportingValue() {
+        this.level.getLongValue().ifPresent(container::setReportingValue);
     }
 
     @Override
@@ -77,10 +82,6 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
 
     @Override
     protected void handleButtonVisibility() {
-    }
-
-    private void onLevelChange(long level) {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("FluidLevelEmitter.Value", String.valueOf(level)));
     }
 
 }

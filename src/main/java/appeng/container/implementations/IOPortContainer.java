@@ -35,7 +35,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.storage.IOPortBlockEntity;
-import appeng.util.Platform;
 
 public class IOPortContainer extends UpgradeableContainer {
 
@@ -112,7 +111,7 @@ public class IOPortContainer extends UpgradeableContainer {
     public void sendContentUpdates() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.setOperationMode(
                     (OperationMode) this.getUpgradeable().getConfigManager().getSetting(Settings.OPERATION_MODE));
             this.setFullMode(

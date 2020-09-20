@@ -46,24 +46,28 @@ import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
-import appeng.helpers.ICustomNameObject;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.CraftingBlockEntity;
-import appeng.util.Platform;
 
-public class CraftingCPUContainer extends AEBaseContainer
-        implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject {
+public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
     public static ScreenHandlerType<CraftingCPUContainer> TYPE;
 
     private static final ContainerHelper<CraftingCPUContainer, CraftingBlockEntity> helper = new ContainerHelper<>(
-            CraftingCPUContainer::new, CraftingBlockEntity.class, SecurityPermissions.CRAFT);
+            CraftingCPUContainer::new, CraftingBlockEntity.class, SecurityPermissions.CRAFT)
+                    .withContainerTitle(craftingTileEntity -> {
+                        // Use the cluster's custom name instead of the right-clicked block entities one
+                        CraftingCPUCluster cluster = craftingTileEntity.getCluster();
+                        if (cluster != null && cluster.getName() != null) {
+                            return cluster.getName();
+                        }
+                        return StringTextComponent.EMPTY;
+                    });
 
     private final IItemList<IAEItemStack> list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
-    private IGrid network;
+    private final IGrid network;
     private CraftingCPUCluster monitor = null;
-    private Text cpuName = null;
 
     @GuiSync(0)
     public long eta = -1;
@@ -77,14 +81,16 @@ public class CraftingCPUContainer extends AEBaseContainer
         final IActionHost host = (IActionHost) (te instanceof IActionHost ? te : null);
 
         if (host != null && host.getActionableNode() != null) {
-            this.setNetwork(host.getActionableNode().getGrid());
+            this.network = host.getActionableNode().getGrid();
+        } else {
+            this.network = null;
         }
 
         if (te instanceof CraftingBlockEntity) {
             this.setCPU(((CraftingBlockEntity) te).getCluster());
         }
 
-        if (this.getNetwork() == null && Platform.isServer()) {
+        if (this.getNetwork() == null && isServer()) {
             this.setValidContainer(false);
         }
     }
@@ -114,15 +120,13 @@ public class CraftingCPUContainer extends AEBaseContainer
         }
 
         if (c instanceof CraftingCPUCluster) {
-            this.cpuName = c.getName();
-            this.setMonitor((CraftingCPUCluster) c);
+            this.monitor = (CraftingCPUCluster) c;
             this.list.resetStatus();
             this.getMonitor().getListOfItem(this.list, CraftingItemList.ALL);
             this.getMonitor().addListener(this, null);
             this.setEstimatedTime(0);
         } else {
-            this.setMonitor(null);
-            this.cpuName = null;
+            this.monitor = null;
             this.setEstimatedTime(-1);
         }
     }
@@ -153,7 +157,7 @@ public class CraftingCPUContainer extends AEBaseContainer
 
     @Override
     public void sendContentUpdates() {
-        if (Platform.isServer() && this.getMonitor() != null && !this.list.isEmpty()) {
+        if (isServer() && this.getMonitor() != null && !this.list.isEmpty()) {
             try {
                 if (this.getEstimatedTime() >= 0) {
                     final long elapsedTime = this.getMonitor().getElapsedTime();
@@ -218,16 +222,6 @@ public class CraftingCPUContainer extends AEBaseContainer
 
     }
 
-    @Override
-    public Text getCustomInventoryName() {
-        return this.cpuName;
-    }
-
-    @Override
-    public boolean hasCustomInventoryName() {
-        return this.cpuName != null;
-    }
-
     public long getEstimatedTime() {
         return this.eta;
     }
@@ -240,15 +234,8 @@ public class CraftingCPUContainer extends AEBaseContainer
         return this.monitor;
     }
 
-    private void setMonitor(final CraftingCPUCluster monitor) {
-        this.monitor = monitor;
-    }
-
     IGrid getNetwork() {
         return this.network;
     }
 
-    private void setNetwork(final IGrid network) {
-        this.network = network;
-    }
 }

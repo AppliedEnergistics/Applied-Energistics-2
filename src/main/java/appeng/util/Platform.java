@@ -219,13 +219,6 @@ public class Platform {
         return !AppEng.instance().isOnServerThread();
     }
 
-    /*
-     * returns true if client classes are available.
-     */
-    public static boolean isClientInstall() {
-        return CLIENT_INSTALL;
-    }
-
     public static boolean hasPermissions(final DimensionalCoord dc, final PlayerEntity player) {
         if (!dc.isInWorld(player.world)) {
             return false;

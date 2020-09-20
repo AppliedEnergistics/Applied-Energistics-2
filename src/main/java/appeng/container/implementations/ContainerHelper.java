@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.entity.BlockEntity;
+import java.util.function.Function;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -15,6 +17,9 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IWirelessTermHandler;
@@ -44,6 +49,8 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     private final SecurityPermissions requiredPermission;
 
+    private Function<I, ITextComponent> containerTitleStrategy = this::getDefaultContainerTitle;
+
     public ContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass) {
         this(factory, interfaceClass, null);
     }
@@ -56,18 +63,46 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
     }
 
     /**
+     * Specifies a custom strategy for obtaining a custom container name.
+     *
+     * The stratgy should return {@link StringTextComponent#EMPTY} if there's no
+     * custom name.
+     */
+    public ContainerHelper<C, I> withContainerTitle(Function<I, ITextComponent> containerTitleStrategy) {
+        this.containerTitleStrategy = containerTitleStrategy;
+        return this;
+    }
+
+    /**
      * Opens a container that is based around a single block entity. The tile
      * entity's position is encoded in the packet buffer.
      */
     public C fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf packetBuf) {
+        return fromNetwork(windowId, inv, packetBuf, (accessObj, container, buffer) -> {
+        });
+    }
+
+    /**
+     * Same as {@link #open}, but allows or additional data to be read from the
+     * packet, and passed onto the container.
+     */
+    public C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf,
+            InitialDataDeserializer<C, I> initialDataDeserializer) {
         I host = getHostFromLocator(inv.player, ContainerLocator.read(packetBuf));
         if (host != null) {
-            return factory.create(windowId, inv, host);
+            C container = factory.create(windowId, inv, host);
+            initialDataDeserializer.deserializeInitialData(host, container, packetBuf);
+            return container;
         }
         return null;
     }
 
     public boolean open(PlayerEntity player, ContainerLocator locator) {
+        return open(player, locator, (accessObj, buffer) -> {
+        });
+    }
+
+    public boolean open(PlayerEntity player, ContainerLocator locator, InitialDataSerializer<I> initialDataSerializer) {
         if (!(player instanceof ServerPlayerEntity)) {
             // Cannot open containers on the client or for non-players
             // FIXME logging?
@@ -84,7 +119,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             return false;
         }
 
-        Text title = findContainerTitle(player.world, locator, accessInterface);
+        Text title = containerTitleStrategy.apply(accessInterface);
 
         player.openHandledScreen(new HandlerFactory(locator, title, accessInterface));
 
@@ -108,6 +143,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         @Override
         public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
             locator.write(buf);
+            initialDataSerializer.serializeInitialData(accessInterface, buf);
         }
 
         @Override
@@ -124,28 +160,6 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             c.setLocator(locator);
             return c;
         }
-
-    }
-
-    private Text findContainerTitle(World world, ContainerLocator locator, I accessInterface) {
-
-        if (accessInterface instanceof ICustomNameObject) {
-            ICustomNameObject customNameObject = (ICustomNameObject) accessInterface;
-            if (customNameObject.hasCustomInventoryName()) {
-                return customNameObject.getCustomInventoryName();
-            }
-        }
-
-        // Use block name at position
-        // FIXME: this is not right, we'd need to check the part's item stack, or custom
-        // naming interface impl
-        // FIXME: Should move this up, because at this point, it's hard to know where
-        // the terminal host came from (part or tile)
-        if (locator.hasBlockPos()) {
-            return new TranslatableText(world.getBlockState(locator.getBlockPos()).getBlock().getTranslationKey());
-        }
-
-        return new LiteralText("Unknown");
 
     }
 
@@ -225,6 +239,24 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         C create(int windowId, PlayerInventory playerInv, I accessObj);
     }
 
+    /**
+     * Strategy used to serialize initial data for opening the container on the
+     * client-side into the packet that is sent to the client.
+     */
+    @FunctionalInterface
+    public interface InitialDataSerializer<I> {
+        void serializeInitialData(I host, PacketBuffer buffer);
+    }
+
+    /**
+     * Strategy used to deserialize initial data for opening the container on the
+     * client-side from the packet received by the server.
+     */
+    @FunctionalInterface
+    public interface InitialDataDeserializer<C, I> {
+        void deserializeInitialData(I host, C container, PacketBuffer buffer);
+    }
+
     private boolean checkPermission(PlayerEntity player, Object accessInterface) {
 
         if (requiredPermission != null) {
@@ -233,6 +265,17 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
         return true;
 
+    }
+
+    private Text getDefaultContainerTitle(I accessInterface) {
+        if (accessInterface instanceof ICustomNameObject) {
+            ICustomNameObject customNameObject = (ICustomNameObject) accessInterface;
+            if (customNameObject.hasCustomInventoryName()) {
+                return customNameObject.getCustomInventoryName();
+            }
+        }
+
+        return LiteralText.EMPTY;
     }
 
 }

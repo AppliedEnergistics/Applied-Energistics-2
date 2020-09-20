@@ -42,7 +42,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.tile.crafting.MolecularAssemblerBlockEntity;
-import appeng.util.Platform;
 
 public class MolecularAssemblerContainer extends UpgradeableContainer implements IProgressProvider {
 
@@ -148,7 +147,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     public void sendContentUpdates() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.setRedStoneMode(
                     (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED));
         }

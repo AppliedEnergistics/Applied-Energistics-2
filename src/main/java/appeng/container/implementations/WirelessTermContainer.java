@@ -28,7 +28,6 @@ import appeng.container.ContainerLocator;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.util.Platform;
 
 public class WirelessTermContainer extends MEPortableCellContainer {
 
@@ -57,7 +56,7 @@ public class WirelessTermContainer extends MEPortableCellContainer {
         super.sendContentUpdates();
 
         if (!this.wirelessTerminalGUIObject.rangeCheck()) {
-            if (Platform.isServer() && this.isValidContainer()) {
+            if (isServer() && this.isValidContainer()) {
                 this.getPlayerInv().player.sendSystemMessage(PlayerMessages.OutOfRange.get(), Util.NIL_UUID);
             }
 

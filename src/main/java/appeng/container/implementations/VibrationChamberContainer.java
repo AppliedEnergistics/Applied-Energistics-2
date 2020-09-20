@@ -29,7 +29,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.misc.VibrationChamberBlockEntity;
-import appeng.util.Platform;
 
 public class VibrationChamberContainer extends AEBaseContainer implements IProgressProvider {
 
@@ -65,7 +64,7 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
 
     @Override
     public void sendContentUpdates() {
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.remainingBurnTime = this.vibrationChamber.getMaxBurnTime() <= 0 ? 0
                     : (int) (100.0 * this.vibrationChamber.getBurnTime() / this.vibrationChamber.getMaxBurnTime());
             this.burnSpeed = this.remainingBurnTime <= 0 ? 0 : this.vibrationChamber.getBurnSpeed();

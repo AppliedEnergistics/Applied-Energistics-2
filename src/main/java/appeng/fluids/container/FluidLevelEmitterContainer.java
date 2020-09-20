@@ -10,10 +10,10 @@ import net.minecraft.screen.ScreenHandlerType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.container.ContainerLocator;
-import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerHelper;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
@@ -25,34 +25,41 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
             FluidLevelEmitterContainer::new, FluidLevelEmitterPart.class, SecurityPermissions.BUILD);
 
     public static FluidLevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
-        return helper.fromNetwork(windowId, inv, buf);
+        return helper.fromNetwork(windowId, inv, buf, (host, container, buffer) -> {
+            container.reportingValue = buffer.readVarLong();
+        });
     }
 
     public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
+        return helper.open(player, locator, (host, buffer) -> {
+            buffer.writeVarLong(host.getReportingValue());
+        });
     }
 
     private final FluidLevelEmitterPart lvlEmitter;
 
-    @Environment(EnvType.CLIENT)
-    private NumberEntryWidget textField;
-    @GuiSync(3)
-    public long EmitterValue = -1;
+    // Only synced once on container-open, and only used on client
+    private long reportingValue;
 
     public FluidLevelEmitterContainer(int id, final PlayerInventory ip, final FluidLevelEmitterPart te) {
         super(TYPE, id, ip, te);
         this.lvlEmitter = te;
     }
 
-    @Environment(EnvType.CLIENT)
-    public void setTextField(final NumberEntryWidget level) {
-        this.textField = level;
-        this.textField.setValue(this.EmitterValue);
+    public long getReportingValue() {
+        return reportingValue;
     }
 
-    public void setLevel(final long l, final PlayerEntity player) {
-        this.lvlEmitter.setReportingValue(l);
-        this.EmitterValue = l;
+    public void setReportingValue(long reportingValue) {
+        if (isClient()) {
+            if (reportingValue != this.reportingValue) {
+                this.reportingValue = reportingValue;
+                NetworkHandler.instance()
+                        .sendToServer(new ConfigValuePacket("FluidLevelEmitter.Value", String.valueOf(reportingValue)));
+            }
+        } else {
+            this.lvlEmitter.setReportingValue(reportingValue);
+        }
     }
 
     @Override
@@ -74,22 +81,12 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     public void sendContentUpdates() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (Platform.isServer()) {
-            this.EmitterValue = this.lvlEmitter.getReportingValue();
+        if (isServer()) {
             this.setRedStoneMode(
                     (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
         }
 
         this.standardDetectAndSendChanges();
-    }
-
-    @Override
-    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
-        if (field.equals("EmitterValue")) {
-            if (this.textField != null) {
-                this.textField.setValue(this.EmitterValue);
-            }
-        }
     }
 
     @Override

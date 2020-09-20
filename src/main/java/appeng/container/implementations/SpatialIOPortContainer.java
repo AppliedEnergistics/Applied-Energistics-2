@@ -35,7 +35,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.spatial.SpatialIOPortBlockEntity;
-import appeng.util.Platform;
 
 public class SpatialIOPortContainer extends AEBaseContainer {
 
@@ -65,7 +64,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     public SpatialIOPortContainer(int id, final PlayerInventory ip, final SpatialIOPortBlockEntity spatialIOPort) {
         super(TYPE, id, ip, spatialIOPort, null);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.network = spatialIOPort.getGridNode(AEPartLocation.INTERNAL).getGrid();
         }
 
@@ -89,7 +88,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     public void sendContentUpdates() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.delay++;
             if (this.delay > 15 && this.network != null) {
                 this.delay = 0;

@@ -51,6 +51,7 @@ import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.ItemRepo;
+import appeng.client.render.StackSizeRenderer;
 import appeng.container.implementations.CraftingStatusContainer;
 import appeng.container.implementations.MEMonitorableContainer;
 import appeng.container.slot.AppEngSlot;
@@ -237,7 +238,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         if (this.viewCell || this instanceof WirelessTermScreen) {
             this.craftingStatusBtn = this.addButton(new TabButton(this.x + 170, this.y - 4, 2 + 11 * 16,
                     GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus()));
-            this.craftingStatusBtn.setHideEdge(13);
+            this.craftingStatusBtn.setHideEdge(true);
         }
 
         this.isAutoFocus = SearchBoxMode.AUTOSEARCH == searchMode || SearchBoxMode.JEI_AUTOSEARCH == searchMode
@@ -294,6 +295,16 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
+
+        // Show the number of active crafting jobs
+        if (this.craftingStatusBtn != null && container.activeCraftingJobs != -1) {
+            // The stack size renderer expects a 16x16 slot, while the button is normally
+            // bigger
+            int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
+            int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeightRealms() - 16) / 2;
+            StackSizeRenderer.renderSizeLabel(font, x - this.guiLeft, y - this.guiTop,
+                    String.valueOf(container.activeCraftingJobs));
+        }
     }
 
     @Override
@@ -358,6 +369,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         if (this.searchField != null) {
             this.searchField.render(matrices, mouseX, mouseY, partialTicks);
         }
+
     }
 
     protected String getBackground() {

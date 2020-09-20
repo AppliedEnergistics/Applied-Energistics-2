@@ -55,7 +55,6 @@ import appeng.parts.reporting.InterfaceTerminalPart;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.misc.InterfaceBlockEntity;
 import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.WrapperCursorItemHandler;
@@ -88,7 +87,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     public InterfaceTerminalContainer(int id, final PlayerInventory ip, final InterfaceTerminalPart anchor) {
         super(TYPE, id, ip, anchor);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.grid = anchor.getActionableNode().getGrid();
         }
 
@@ -97,7 +96,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
     @Override
     public void sendContentUpdates() {
-        if (Platform.isClient()) {
+        if (isClient()) {
             return;
         }
 

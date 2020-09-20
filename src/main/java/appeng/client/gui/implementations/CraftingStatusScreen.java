@@ -44,12 +44,12 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
         super.init();
 
         this.selectCPU = new ButtonWidget(this.x + 8, this.y + this.backgroundHeight - 25, 150, 20,
-                GuiText.CraftingCPU.withSuffix(": ").append(GuiText.NoCraftingCPUs.text()), btn -> selectNextCpu());
+                getNextCpuButtonLabel(), btn -> selectNextCpu());
         this.addButton(this.selectCPU);
 
         subGui.addBackButton(btn -> {
             addButton(btn);
-            btn.setHideEdge(13);
+            btn.setHideEdge(true);
         }, 213, -4);
     }
 
@@ -60,23 +60,14 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     }
 
     private void updateCPUButtonText() {
-        Text btnTextText = GuiText.NoCraftingJobs.text();
+        this.selectCPU.setMessage(getNextCpuButtonLabel());
+    }
 
-        if (this.handler.selectedCpu >= 0)// && status.selectedCpu < status.cpus.size() )
-        {
-            if (this.handler.myName != null) {
-                final String name = this.handler.myName.asTruncatedString(20);
-                btnTextText = GuiText.CPUs.withSuffix(": " + name);
-            } else {
-                btnTextText = GuiText.CPUs.withSuffix(": #" + this.handler.selectedCpu);
-            }
-        }
-
+    private ITextComponent getNextCpuButtonLabel() {
         if (this.handler.noCPU) {
-            btnTextText = GuiText.NoCraftingJobs.text();
+            return GuiText.NoCraftingJobs.text();
         }
-
-        this.selectCPU.setMessage(btnTextText);
+        return GuiText.CraftingCPU.withSuffix(": ").append(container.cpuName);
     }
 
     @Override
@@ -84,9 +75,8 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
         return in; // the cup name is on the button
     }
 
-    // FIXME: Extract to separate class? Shared with GuiCraftConfirm
     private void selectNextCpu() {
-        final boolean backwards = client.mouse.wasRightButtonClicked();
+        final boolean backwards = isHandlingRightClick();
         NetworkHandler.instance().sendToServer(new ConfigValuePacket("Terminal.Cpu", backwards ? "Prev" : "Next"));
     }
 

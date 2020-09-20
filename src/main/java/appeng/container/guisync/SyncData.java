@@ -89,6 +89,8 @@ public class SyncData {
                 NetworkHandler.instance().sendTo(new ConfigValuePacket("SyncDat." + this.channel, json),
                         (ServerPlayerEntity) o);
             }
+            this.clientVersion = val;
+            return;
         }
 
         // Types other than Text must be non-null

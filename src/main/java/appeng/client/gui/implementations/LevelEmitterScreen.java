@@ -34,8 +34,6 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.LevelEmitterContainer;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 
 public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer> {
 
@@ -51,15 +49,18 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     public void init() {
         super.init();
 
-        this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_ITEM_COUNT,
-                this::onLevelChange);
+        this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_ITEM_COUNT);
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.addButtons(children::add, this::addButton);
-        handler.setTextField(this.level);
+        this.level.setValue(container.getReportingValue());
+        this.level.setOnChange(this::saveReportingValue);
+        this.level.setOnConfirm(this::closeScreen);
+
+        this.changeFocus(true);
     }
 
-    private void onLevelChange(long level) {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("LevelEmitter.Value", String.valueOf(level)));
+    private void saveReportingValue() {
+        this.level.getLongValue().ifPresent(container::setReportingValue);
     }
 
     @Override

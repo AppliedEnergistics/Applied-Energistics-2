@@ -46,6 +46,8 @@ import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
@@ -73,7 +75,6 @@ import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
-import appeng.util.Platform;
 
 public class MEMonitorableContainer extends AEBaseContainer
         implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack> {
@@ -101,6 +102,13 @@ public class MEMonitorableContainer extends AEBaseContainer
     public boolean canAccessViewCells = false;
     @GuiSync(98)
     public boolean hasPower = false;
+    /**
+     * The number of active crafting jobs in the network. -1 means unknown and will
+     * hide the label on the screen.
+     */
+    @GuiSync(100)
+    public int activeCraftingJobs = -1;
+
     private IConfigManagerHost gui;
     private IConfigManager serverCM;
     private IGridNode networkNode;
@@ -122,7 +130,7 @@ public class MEMonitorableContainer extends AEBaseContainer
         this.clientCM.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
-        if (Platform.isServer()) {
+        if (isServer()) {
             this.serverCM = monitorable.getConfigManager();
 
             this.monitor = monitorable
@@ -183,11 +191,13 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     @Override
     public void sendContentUpdates() {
-        if (Platform.isServer()) {
+        if (isServer()) {
             if (this.monitor != this.host
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))) {
                 this.setValidContainer(false);
             }
+
+            this.updateActiveCraftingJobs();
 
             for (final Settings set : this.serverCM.getSettings()) {
                 final Enum<?> sideLocal = this.serverCM.getSetting(set);
@@ -286,8 +296,38 @@ public class MEMonitorableContainer extends AEBaseContainer
         this.queueInventory(c);
     }
 
+    private void updateActiveCraftingJobs() {
+        IGridNode hostNode = networkNode;
+        if (hostNode == null) {
+            // Wireless terminals do not directly expose the target grid (even though they
+            // have one)
+            if (host instanceof IActionHost) {
+                hostNode = ((IActionHost) host).getActionableNode();
+            }
+        }
+        IGrid grid = null;
+        if (hostNode != null) {
+            grid = hostNode.getGrid();
+        }
+
+        if (grid == null) {
+            // No grid to query crafting jobs from
+            this.activeCraftingJobs = -1;
+            return;
+        }
+
+        int activeJobs = 0;
+        ICraftingGrid craftingGrid = grid.getCache(ICraftingGrid.class);
+        for (ICraftingCPU cpus : craftingGrid.getCpus()) {
+            if (cpus.isBusy()) {
+                activeJobs++;
+            }
+        }
+        this.activeCraftingJobs = activeJobs;
+    }
+
     private void queueInventory(final ScreenHandlerListener c) {
-        if (Platform.isServer() && c instanceof PlayerEntity && this.monitor != null) {
+        if (isServer() && c instanceof PlayerEntity && this.monitor != null) {
             try {
                 MEInventoryUpdatePacket piu = new MEInventoryUpdatePacket();
                 final IItemList<IAEItemStack> monitorCache = this.monitor.getStorageList();
@@ -356,7 +396,7 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     @Override
     public IConfigManager getConfigManager() {
-        if (Platform.isServer()) {
+        if (isServer()) {
             return this.serverCM;
         }
         return this.clientCM;
