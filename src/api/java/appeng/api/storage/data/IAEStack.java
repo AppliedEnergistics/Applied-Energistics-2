@@ -145,8 +145,7 @@ public interface IAEStack<T extends IAEStack<T>> {
     boolean equals(Object obj);
 
     /**
-     * Compare the same subtype of {@link IAEStack} with another using a fuzzy
-     * comparison.
+     * Compare the same subtype of {@link IAEStack} with another using a fuzzy comparison.
      *
      * @param other The stack to compare.
      * @param mode  Which {@link FuzzyMode} should be used.

@@ -29,9 +29,8 @@ import appeng.helpers.Splotch;
 import appeng.tile.misc.PaintSplotchesTileEntity;
 
 /**
- * Renders paint blocks, which render multiple "splotches" that have been
- * applied to the sides of adjacent blocks using a matter cannon with paint
- * balls.
+ * Renders paint blocks, which render multiple "splotches" that have been applied to the sides of adjacent blocks using
+ * a matter cannon with paint balls.
  */
 class PaintSplotchesBakedModel implements IDynamicBakedModel {
 

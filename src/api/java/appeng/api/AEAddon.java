@@ -25,8 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use this annotation on a class in your Mod to have it instantiated during the
- * initialization phase of Applied Energistics.
+ * Use this annotation on a class in your Mod to have it instantiated during the initialization phase of Applied
+ * Energistics.
  * 
  * The class also needs to implement {@link IAEAddon}.
  * 

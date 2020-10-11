@@ -40,8 +40,8 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 /**
- * Common implementation of a simple class that monitors injection/extraction of
- * a inventory to send events to a list of listeners.
+ * Common implementation of a simple class that monitors injection/extraction of a inventory to send events to a list of
+ * listeners.
  *
  * @param <T>
  *

@@ -106,37 +106,37 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
         ingredients.setOutputs(VanillaTypes.ITEM, outputs);
     }
 
-// FIXME USE SPECIAL INGREDIENT TYPE
-// FIXME	@Override
-// FIXME	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY )
-// FIXME	{
-// FIXME
-// FIXME		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-// FIXME
-// FIXME		int x = 118;
-// FIXME
-// FIXME		final float scale = 0.85f;
-// FIXME		final float invScale = 1 / scale;
-// FIXME		GlStateManager.scale( scale, scale, 1 );
-// FIXME
-// FIXME		if( this.recipe.getOptionalOutput() != null )
-// FIXME		{
-// FIXME			String text = String.format( "%d%%", (int) ( this.recipe.getOptionalChance() * 100 ) );
-// FIXME			float width = fr.getStringWidth( text ) * scale;
-// FIXME			int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
-// FIXME			fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
-// FIXME			x += 18;
-// FIXME		}
-// FIXME
-// FIXME		if( this.recipe.getSecondOptionalOutput() != null )
-// FIXME		{
-// FIXME			String text = String.format( "%d%%", (int) ( this.recipe.getSecondOptionalChance() * 100 ) );
-// FIXME			float width = fr.getStringWidth( text ) * scale;
-// FIXME			int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
-// FIXME			fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
-// FIXME		}
-// FIXME
-// FIXME		GlStateManager.scale( invScale, invScale, 1 );
-// FIXME	}
+    // FIXME USE SPECIAL INGREDIENT TYPE
+    // FIXME @Override
+    // FIXME public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY )
+    // FIXME {
+    // FIXME
+    // FIXME FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+    // FIXME
+    // FIXME int x = 118;
+    // FIXME
+    // FIXME final float scale = 0.85f;
+    // FIXME final float invScale = 1 / scale;
+    // FIXME GlStateManager.scale( scale, scale, 1 );
+    // FIXME
+    // FIXME if( this.recipe.getOptionalOutput() != null )
+    // FIXME {
+    // FIXME String text = String.format( "%d%%", (int) ( this.recipe.getOptionalChance() * 100 ) );
+    // FIXME float width = fr.getStringWidth( text ) * scale;
+    // FIXME int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
+    // FIXME fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
+    // FIXME x += 18;
+    // FIXME }
+    // FIXME
+    // FIXME if( this.recipe.getSecondOptionalOutput() != null )
+    // FIXME {
+    // FIXME String text = String.format( "%d%%", (int) ( this.recipe.getSecondOptionalChance() * 100 ) );
+    // FIXME float width = fr.getStringWidth( text ) * scale;
+    // FIXME int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
+    // FIXME fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
+    // FIXME }
+    // FIXME
+    // FIXME GlStateManager.scale( invScale, invScale, 1 );
+    // FIXME }
 
 }

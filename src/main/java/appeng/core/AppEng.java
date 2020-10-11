@@ -181,42 +181,6 @@ public final class AppEng {
         return this.registration.advancementTriggers;
     }
 
-//	@EventHandler
-//	private void preInit( final FMLPreInitializationEvent event )
-//	{
-//		final Stopwatch watch = Stopwatch.createStarted();
-//		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
-//
-//		final File configFile = new File( this.configDirectory, "AppliedEnergistics2.cfg" );
-//		final File facadeFile = new File( this.configDirectory, "Facades.cfg" );
-//		final File versionFile = new File( this.configDirectory, "VersionChecker.cfg" );
-//		final File recipeFile = new File( this.configDirectory, "CustomRecipes.cfg" );
-//		final Configuration recipeConfiguration = new Configuration( recipeFile );
-//
-//		AEConfig.init( configFile );
-//		FacadeConfig.init( facadeFile );
-//
-//		AELog.info( "Pre Initialization ( started )" );
-//
-//
-//		for( final IntegrationType type : IntegrationType.values() )
-//		{
-//			IntegrationRegistry.INSTANCE.add( type );
-//		}
-//
-//		this.registration.preInitialize( event );
-//
-//		if( Platform.isClient() )
-//		{
-//			AppEng.proxy.preinit();
-//		}
-//
-//		IntegrationRegistry.INSTANCE.preInit();
-//
-//		AELog.info( "Pre Initialization ( ended after " + watch.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
-//
-//	}
-
     private void startService(final String serviceName, final Thread thread) {
         thread.setName(serviceName);
         thread.setPriority(Thread.MIN_PRIORITY);

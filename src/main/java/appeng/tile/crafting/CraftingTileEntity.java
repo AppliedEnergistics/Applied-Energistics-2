@@ -356,8 +356,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     /**
-     * When the block state changes (i.e. becoming formed or unformed), we need to
-     * update the model data since it contains connections to neighboring tiles.
+     * When the block state changes (i.e. becoming formed or unformed), we need to update the model data since it
+     * contains connections to neighboring tiles.
      */
     @Override
     public void updateContainingBlockInfo() {

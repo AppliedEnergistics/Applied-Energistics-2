@@ -46,15 +46,13 @@ import appeng.parts.AEBasePart;
 import appeng.util.Platform;
 
 /**
- * The most basic class for any part reporting information, like terminals or
- * monitors. This can also include basic panels which just provide light.
+ * The most basic class for any part reporting information, like terminals or monitors. This can also include basic
+ * panels which just provide light.
  *
- * It deals with the most basic functionalities like network data, grid
- * registration or the rotation of the actual part.
+ * It deals with the most basic functionalities like network data, grid registration or the rotation of the actual part.
  *
- * The direct abstract subclasses are usually a better entry point for adding
- * new concrete ones. But this might be an ideal starting point to completely
- * new type, which does not resemble any existing one.
+ * The direct abstract subclasses are usually a better entry point for adding new concrete ones. But this might be an
+ * ideal starting point to completely new type, which does not resemble any existing one.
  *
  * @author AlgorithmX2
  * @author yueh
@@ -271,8 +269,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     /**
-     * Should the part emit light. This actually only affects the light level, light
-     * source use a level of 15 and non light source 9.
+     * Should the part emit light. This actually only affects the light level, light source use a level of 15 and non
+     * light source 9.
      */
     public abstract boolean isLightSource();
 

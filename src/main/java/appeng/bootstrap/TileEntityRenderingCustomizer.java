@@ -24,9 +24,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.tile.AEBaseTileEntity;
 
 /**
- * A callback that allows the rendering of a tile entity to be customized. Sadly
- * this class is required and no lambdas can be used due to them not being able
- * to be annotated with @OnlyIn(CLIENT).
+ * A callback that allows the rendering of a tile entity to be customized. Sadly this class is required and no lambdas
+ * can be used due to them not being able to be annotated with @OnlyIn(CLIENT).
  */
 public abstract class TileEntityRenderingCustomizer<T extends AEBaseTileEntity> {
 

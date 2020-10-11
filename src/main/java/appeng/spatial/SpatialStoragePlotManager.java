@@ -73,9 +73,8 @@ public final class SpatialStoragePlotManager {
     }
 
     /**
-     * Sets the last source for a spatial storage transition into the given plot.
-     * This is used to allow the server-admin commands to know where the content of
-     * a given plot came from.
+     * Sets the last source for a spatial storage transition into the given plot. This is used to allow the server-admin
+     * commands to know where the content of a given plot came from.
      */
     public void setLastTransition(int plotId, TransitionInfo info) {
         getWorldData().setLastTransition(plotId, info);

@@ -33,8 +33,7 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 import appeng.thirdparty.codechicken.lib.math.InterpHelper;
 
 /**
- * A simple easy to manipulate quad format. Can be reset and then used on a
- * different format.
+ * A simple easy to manipulate quad format. Can be reset and then used on a different format.
  *
  * @author covers1624
  */
@@ -226,8 +225,8 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     }
 
     /**
-     * Copies the data inside the given quad to this one. This ignores VertexFormat,
-     * please make sure your quads are in the same format.
+     * Copies the data inside the given quad to this one. This ignores VertexFormat, please make sure your quads are in
+     * the same format.
      *
      * @param quad The Quad to copy from.
      *
@@ -333,8 +332,8 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         }
 
         /**
-         * Pulls references to the individual element's arrays inside raw. Modifying the
-         * individual element arrays will update raw.
+         * Pulls references to the individual element's arrays inside raw. Modifying the individual element arrays will
+         * update raw.
          */
         public void preProcess() {
             if (this.format.hasPosition) {
@@ -388,8 +387,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         }
 
         /**
-         * Interpolates the new color values for this Vertex using the others as a
-         * reference.
+         * Interpolates the new color values for this Vertex using the others as a reference.
          *
          * @param interpHelper The InterpHelper to use.
          * @param others       The other Vertices to use as a template.
@@ -411,8 +409,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         }
 
         /**
-         * Interpolates the new UV values for this Vertex using the others as a
-         * reference.
+         * Interpolates the new UV values for this Vertex using the others as a reference.
          *
          * @param interpHelper The InterpHelper to use.
          * @param others       The other Vertices to use as a template.
@@ -433,8 +430,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         }
 
         /**
-         * Interpolates the new LightMap values for this Vertex using the others as a
-         * reference.
+         * Interpolates the new LightMap values for this Vertex using the others as a reference.
          *
          * @param interpHelper The InterpHelper to use.
          * @param others       The other Vertices to use as a template.

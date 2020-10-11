@@ -27,8 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 /**
- * Implemented on many of AE's non Tile Entity Blocks as a way to get a
- * IOrientable.
+ * Implemented on many of AE's non Tile Entity Blocks as a way to get a IOrientable.
  */
 public interface IOrientableBlock {
 

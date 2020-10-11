@@ -137,14 +137,12 @@ class GlassBakedModel implements IDynamicBakedModel {
         quads.add(this.createQuad(side, corners, glassTexture, u, v));
 
         /*
-         * This needs some explanation: The bit-field contains 4-bits, one for each
-         * direction that a frame may be drawn. Converted to a number, the bit-field is
-         * then used as an index into the list of frame textures, which have been
-         * created in such a way that their filenames indicate, in which directions they
-         * contain borders. i.e. bitmask = 0101 means a border should be drawn up and
-         * down (in terms of u,v space). Converted to a number, this bitmask is 5. So
-         * the texture at index 5 is used. That texture had "0101" in its filename to
-         * indicate this.
+         * This needs some explanation: The bit-field contains 4-bits, one for each direction that a frame may be drawn.
+         * Converted to a number, the bit-field is then used as an index into the list of frame textures, which have
+         * been created in such a way that their filenames indicate, in which directions they contain borders. i.e.
+         * bitmask = 0101 means a border should be drawn up and down (in terms of u,v space). Converted to a number,
+         * this bitmask is 5. So the texture at index 5 is used. That texture had "0101" in its filename to indicate
+         * this.
          */
         final int edgeBitmask = makeBitmask(glassState, side);
         final TextureAtlasSprite sideSprite = this.frameTextures[edgeBitmask];
@@ -163,8 +161,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     /**
-     * Creates the bitmask that indicates, in which directions (in terms of u,v
-     * space) a border should be drawn.
+     * Creates the bitmask that indicates, in which directions (in terms of u,v space) a border should be drawn.
      */
     private static int makeBitmask(GlassState state, Direction side) {
         switch (side) {
@@ -232,9 +229,8 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     /*
-     * This method is as complicated as it is, because the order in which we push
-     * data into the vertexbuffer actually has to be precisely the order in which
-     * the vertex elements had been declared in the vertex format.
+     * This method is as complicated as it is, because the order in which we push data into the vertexbuffer actually
+     * has to be precisely the order in which the vertex elements had been declared in the vertex format.
      */
     private void putVertex(BakedQuadBuilder builder, Vector3d normal, double x, double y, double z,
             TextureAtlasSprite sprite, float u, float v) {

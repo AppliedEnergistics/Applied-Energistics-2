@@ -41,8 +41,7 @@ public interface IBiometricCard {
     void setProfile(ItemStack itemStack, GameProfile username);
 
     /**
-     * @return {@link GameProfile} of the player encoded on this card, or a blank
-     *         string.
+     * @return {@link GameProfile} of the player encoded on this card, or a blank string.
      */
     GameProfile getProfile(ItemStack is);
 
@@ -79,8 +78,7 @@ public interface IBiometricCard {
     void addPermission(ItemStack itemStack, SecurityPermissions permission);
 
     /**
-     * lets you handle submission of security values on the card for custom
-     * behavior.
+     * lets you handle submission of security values on the card for custom behavior.
      *
      * @param registry security registry
      * @param pr       player registry

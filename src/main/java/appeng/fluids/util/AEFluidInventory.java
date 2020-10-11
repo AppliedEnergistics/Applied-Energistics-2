@@ -15,9 +15,8 @@ import appeng.util.Platform;
 public class AEFluidInventory implements IAEFluidTank {
 
     /**
-     * While this may seem redundant, it helps since this class heavily mixes AE
-     * fluids stacks, which use null to represent "nothing", and Minecraft's
-     * FluidStack, which uses #isEmpty() to represent nothing.
+     * While this may seem redundant, it helps since this class heavily mixes AE fluids stacks, which use null to
+     * represent "nothing", and Minecraft's FluidStack, which uses #isEmpty() to represent nothing.
      */
     private static final IAEFluidStack EMPTY_AE_FLUIDSTACK = null;
 

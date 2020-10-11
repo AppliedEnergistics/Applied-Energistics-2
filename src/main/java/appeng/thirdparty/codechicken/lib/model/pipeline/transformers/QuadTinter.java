@@ -25,8 +25,7 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
 import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
 
 /**
- * This transformer tints quads.. Feed it the output of
- * BlockColors.colorMultiplier.
+ * This transformer tints quads.. Feed it the output of BlockColors.colorMultiplier.
  *
  * @author covers1624
  */

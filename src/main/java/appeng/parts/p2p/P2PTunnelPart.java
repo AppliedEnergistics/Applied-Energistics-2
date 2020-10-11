@@ -245,9 +245,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                     break;
 
                 /*
-                 * case COMPUTER_MESSAGE: for( ItemStack stack :
-                 * parts.p2PTunnelOpenComputers().maybeStack( 1 ).asSet() ) { newType = stack; }
-                 * break;
+                 * case COMPUTER_MESSAGE: for( ItemStack stack : parts.p2PTunnelOpenComputers().maybeStack( 1 ).asSet()
+                 * ) { newType = stack; } break;
                  */
 
                 default:

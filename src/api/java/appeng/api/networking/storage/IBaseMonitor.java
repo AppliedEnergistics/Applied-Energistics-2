@@ -29,8 +29,7 @@ import appeng.api.storage.data.IAEStack;
 public interface IBaseMonitor<T extends IAEStack<T>> {
 
     /**
-     * add a new Listener to the monitor, be sure to properly remove yourself when
-     * your done.
+     * add a new Listener to the monitor, be sure to properly remove yourself when your done.
      */
     void addListener(IMEMonitorHandlerReceiver<T> l, Object verificationToken);
 

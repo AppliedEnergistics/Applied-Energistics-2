@@ -25,8 +25,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 
 /**
- * A simple VertexFormat cache. This caches the existence of attributes and
- * their indexes.
+ * A simple VertexFormat cache. This caches the existence of attributes and their indexes.
  *
  * @author covers1624
  */

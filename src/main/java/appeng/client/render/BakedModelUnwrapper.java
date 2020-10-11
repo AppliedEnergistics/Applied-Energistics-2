@@ -3,8 +3,7 @@ package appeng.client.render;
 import net.minecraft.client.renderer.model.IBakedModel;
 
 /**
- * Helper to get a specific baked model class out of a chain of delegating baked
- * models.
+ * Helper to get a specific baked model class out of a chain of delegating baked models.
  */
 public final class BakedModelUnwrapper {
 

@@ -48,9 +48,8 @@ import net.minecraftforge.fluids.FluidStack;
 import appeng.fluids.items.FluidDummyItem;
 
 /**
- * This baked model class is used as a dispatcher to redirect the renderer to
- * the *real* model that should be used based on the item stack. A custom Item
- * Override List is used to accomplish this.
+ * This baked model class is used as a dispatcher to redirect the renderer to the *real* model that should be used based
+ * on the item stack. A custom Item Override List is used to accomplish this.
  */
 public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
     private final Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter;

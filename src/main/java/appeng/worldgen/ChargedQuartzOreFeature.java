@@ -13,9 +13,8 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
 
 /**
- * Extends {@link net.minecraft.world.gen.feature.OreFeature} by also allowing
- * for a replacement chance. In addition, the feature will check every block in
- * the chunk.
+ * Extends {@link net.minecraft.world.gen.feature.OreFeature} by also allowing for a replacement chance. In addition,
+ * the feature will check every block in the chunk.
  */
 public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
 

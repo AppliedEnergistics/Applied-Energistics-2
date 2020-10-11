@@ -28,8 +28,7 @@ import net.minecraft.util.Direction;
 /**
  * Crank/Crankable API,
  *
- * Tiles that Implement this can receive power, from the crank, and have the
- * crank placed on them.
+ * Tiles that Implement this can receive power, from the crank, and have the crank placed on them.
  *
  * Tiles that access other tiles that implement this method can act as Cranks.
  *

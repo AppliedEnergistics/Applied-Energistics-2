@@ -685,10 +685,9 @@ class CableBuilder {
     }
 
     /**
-     * This renders a slightly bigger covered cable connection to the specified
-     * side. This is used to connect cable cores with adjacent machines that do not
-     * want to be connected to using a glass cable connection. This applies to most
-     * machines (interfaces, etc.)
+     * This renders a slightly bigger covered cable connection to the specified side. This is used to connect cable
+     * cores with adjacent machines that do not want to be connected to using a glass cable connection. This applies to
+     * most machines (interfaces, etc.)
      */
     private void addBigCoveredCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {

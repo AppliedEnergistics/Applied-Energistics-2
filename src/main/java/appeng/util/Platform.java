@@ -277,8 +277,7 @@ public class Platform {
     }
 
     /*
-     * Generates Item entities in the world similar to how items are generally
-     * dropped.
+     * Generates Item entities in the world similar to how items are generally dropped.
      */
     public static void spawnDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
         if (isServer()) {
@@ -407,8 +406,8 @@ public class Platform {
             try {
                 // TODO: Build Craft Wrench?
                 /*
-                 * if( eq.getItem() instanceof IToolWrench ) { IToolWrench wrench =
-                 * (IToolWrench) eq.getItem(); return wrench.canWrench( player, x, y, z ); }
+                 * if( eq.getItem() instanceof IToolWrench ) { IToolWrench wrench = (IToolWrench) eq.getItem(); return
+                 * wrench.canWrench( player, x, y, z ); }
                  */
 
                 // FIXME if( eq.getItem() instanceof cofh.api.item.IToolHammer )
@@ -1064,11 +1063,8 @@ public class Platform {
             if (items != null && checkFuzzy) {
                 for (final IAEItemStack x : items) {
                     final ItemStack sh = x.getDefinition();
-                    if ((Platform.itemComparisons().isEqualItemType(providedTemplate,
-                            sh) /* FIXME || ae_req.sameOre( x ) */ ) && !ItemStack.areItemsEqual(sh, output)) { // Platform.isSameItemType(
-                                                                                                                // sh,
-                                                                                                                // providedTemplate
-                                                                                                                // )
+                    if ((Platform.itemComparisons().isEqualItemType(providedTemplate, sh))
+                            && !ItemStack.areItemsEqual(sh, output)) {
                         final ItemStack cp = sh.copy();
                         cp.setCount(1);
                         ci.setInventorySlotContents(slot, cp);
@@ -1092,9 +1088,8 @@ public class Platform {
     }
 
     /**
-     * Gets the container item for the given item or EMPTY. A container item is what
-     * remains when the item is used for crafting, i.E. the empty bucket for a
-     * bucket of water.
+     * Gets the container item for the given item or EMPTY. A container item is what remains when the item is used for
+     * crafting, i.E. the empty bucket for a bucket of water.
      */
     public static ItemStack getContainerItem(final ItemStack stackInSlot) {
         if (stackInSlot == null) {

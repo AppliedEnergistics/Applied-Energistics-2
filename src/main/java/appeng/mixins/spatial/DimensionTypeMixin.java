@@ -24,9 +24,8 @@ import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 
 /**
- * Adds the storage cell world dimension type as a built-in dimension type. This
- * can be registered as a JSON file as well, but doing so will trigger an
- * experimental feature warning when the world is being loaded.
+ * Adds the storage cell world dimension type as a built-in dimension type. This can be registered as a JSON file as
+ * well, but doing so will trigger an experimental feature warning when the world is being loaded.
  */
 @Mixin(value = DimensionType.class)
 public class DimensionTypeMixin {
@@ -50,8 +49,8 @@ public class DimensionTypeMixin {
     }
 
     /**
-     * Insert our custom dimension into the initial registry. <em>This is what will
-     * ultimately lead to the creation of a new World.</em>
+     * Insert our custom dimension into the initial registry. <em>This is what will ultimately lead to the creation of a
+     * new World.</em>
      */
     @Inject(method = "getDefaultSimpleRegistry", at = @At("RETURN"))
     private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,

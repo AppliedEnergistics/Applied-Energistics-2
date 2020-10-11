@@ -284,8 +284,7 @@ final class Registration {
     }
 
     /**
-     * Registers any JSON model files with Minecraft that are not referenced via
-     * blockstates or item IDs
+     * Registers any JSON model files with Minecraft that are not referenced via blockstates or item IDs
      */
     @OnlyIn(Dist.CLIENT)
     private void registerSpecialModels() {
@@ -646,12 +645,13 @@ final class Registration {
         blocks.energyCell().maybeItem().ifPresent(cell -> registries.charger().addChargeRate(cell, 8000d));
         blocks.energyCellDense().maybeItem().ifPresent(cell -> registries.charger().addChargeRate(cell, 16000d));
 
-// FIXME		// add villager trading to black smiths for a few basic materials
-// FIXME		if( AEConfig.instance().isFeatureEnabled( AEFeature.VILLAGER_TRADING ) )
-// FIXME		{
-// FIXME			// TODO: VILLAGER TRADING
-// FIXME			// VillagerRegistry.instance().getRegisteredVillagers().registerVillageTradeHandler( 3, new AETrading() );
-// FIXME		}
+        // FIXME // add villager trading to black smiths for a few basic materials
+        // FIXME if( AEConfig.instance().isFeatureEnabled( AEFeature.VILLAGER_TRADING ) )
+        // FIXME {
+        // FIXME // TODO: VILLAGER TRADING
+        // FIXME // VillagerRegistry.instance().getRegisteredVillagers().registerVillageTradeHandler( 3, new AETrading()
+        // );
+        // FIXME }
 
         final IMovableRegistry mr = registries.movable();
 

@@ -28,8 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public interface IItemRendering {
 
     /**
-     * Registers a custom item color definition that inspects an item stack and tint
-     * and returns a color multiplier.
+     * Registers a custom item color definition that inspects an item stack and tint and returns a color multiplier.
      */
     @OnlyIn(Dist.CLIENT)
     IItemRendering color(IItemColor itemColor);

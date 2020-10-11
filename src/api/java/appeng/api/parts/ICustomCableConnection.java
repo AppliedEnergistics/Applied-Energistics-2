@@ -28,8 +28,7 @@ import appeng.api.util.AECableType;
 public interface ICustomCableConnection {
 
     /**
-     * @return This controls the cable connection to the node. -1 to render
-     *         connection yourself.
+     * @return This controls the cable connection to the node. -1 to render connection yourself.
      */
     float getCableConnectionLength(AECableType cable);
 

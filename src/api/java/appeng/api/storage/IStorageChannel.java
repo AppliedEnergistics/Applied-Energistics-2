@@ -41,8 +41,8 @@ public interface IStorageChannel<T extends IAEStack<T>> {
     /**
      * Can be used as factor for transferring stacks of a channel.
      *
-     * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the item channel
-     * transferring a full bucket per operation.
+     * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the item channel transferring a full bucket per
+     * operation.
      *
      * @return
      */
@@ -51,9 +51,8 @@ public interface IStorageChannel<T extends IAEStack<T>> {
     }
 
     /**
-     * The number of units (eg item count, or millibuckets) that can be stored per
-     * byte in a storage cell. Standard value for items is 8, and for fluids it's
-     * 8000
+     * The number of units (eg item count, or millibuckets) that can be stored per byte in a storage cell. Standard
+     * value for items is 8, and for fluids it's 8000
      *
      * @return number of units
      */
@@ -72,13 +71,10 @@ public interface IStorageChannel<T extends IAEStack<T>> {
     /**
      * Create a new {@link IAEStack} subtype of the specific object.
      *
-     * The parameter is unbound to allow a slightly more flexible approach. But the
-     * general intention is about converting an {@link ItemStack} or
-     * {@link FluidStack} into the corresponding {@link IAEStack}. Another valid
-     * case might be to use it instead of {@link IAEStack#copy()}, but this might
-     * not be supported by all types. IAEStacks that use custom items for
-     * {@link IAEStack#asItemStackRepresentation()} must also be able to convert
-     * these.
+     * The parameter is unbound to allow a slightly more flexible approach. But the general intention is about
+     * converting an {@link ItemStack} or {@link FluidStack} into the corresponding {@link IAEStack}. Another valid case
+     * might be to use it instead of {@link IAEStack#copy()}, but this might not be supported by all types. IAEStacks
+     * that use custom items for {@link IAEStack#asItemStackRepresentation()} must also be able to convert these.
      *
      * @param input The object to turn into an {@link IAEStack}
      * @return The converted stack or null

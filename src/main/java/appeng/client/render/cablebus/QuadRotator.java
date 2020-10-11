@@ -34,8 +34,8 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.BakedPipeline;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadMatrixTransformer;
 
 /**
- * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates
- * a given list of quads to the desired facing
+ * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates a given list of quads to the desired
+ * facing
  */
 public class QuadRotator {
     private static final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial(() -> //

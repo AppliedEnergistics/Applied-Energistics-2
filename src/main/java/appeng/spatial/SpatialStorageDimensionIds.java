@@ -25,14 +25,12 @@ public final class SpatialStorageDimensionIds {
             .getOrCreateKey(Registry.DIMENSION_TYPE_KEY, AppEng.makeId("spatial_storage"));
 
     /**
-     * ID of the {@link net.minecraft.world.gen.ChunkGenerator} used for the spatial
-     * storage world.
+     * ID of the {@link net.minecraft.world.gen.ChunkGenerator} used for the spatial storage world.
      */
     public static final ResourceLocation CHUNK_GENERATOR_ID = AppEng.makeId("spatial_storage");
 
     /**
-     * ID of the {@link net.minecraft.world.biome.Biome} used for the spatial
-     * storage world.
+     * ID of the {@link net.minecraft.world.biome.Biome} used for the spatial storage world.
      */
     public static final RegistryKey<Biome> BIOME_KEY = RegistryKey.getOrCreateKey(Registry.BIOME_KEY,
             AppEng.makeId("spatial_storage"));
@@ -46,15 +44,13 @@ public final class SpatialStorageDimensionIds {
             AppEng.makeId("spatial_storage"));
 
     /**
-     * ID of the {@link World} that is instantiated from the dimension/dimension
-     * type.
+     * ID of the {@link World} that is instantiated from the dimension/dimension type.
      */
     public static final RegistryKey<World> WORLD_ID = RegistryKey.getOrCreateKey(Registry.WORLD_KEY,
             AppEng.makeId("spatial_storage"));
 
     /**
-     * ID of the {@link net.minecraft.client.world.DimensionRenderInfo} used for the
-     * spatial storage world.
+     * ID of the {@link net.minecraft.client.world.DimensionRenderInfo} used for the spatial storage world.
      */
     public static ResourceLocation SKY_PROPERTIES_ID = AppEng.makeId("spatial_storage");
 

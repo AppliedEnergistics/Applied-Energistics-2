@@ -36,8 +36,8 @@ import appeng.api.features.AEFeature;
 
 public interface IItemDefinition extends IComparableDefinition, IItemProvider {
     /**
-     * @return the unique name of the definition which will be used to register the
-     *         underlying structure. Will never be null
+     * @return the unique name of the definition which will be used to register the underlying structure. Will never be
+     *         null
      */
     @Nonnull
     String identifier();

@@ -30,15 +30,13 @@ import mcjty.theoneprobe.api.ProbeMode;
 import appeng.tile.AEBaseTileEntity;
 
 /**
- * Similar to {@link IProbeInfoProvider}, but already providing the
- * {@link AEBaseTileEntity} being looked at.
+ * Similar to {@link IProbeInfoProvider}, but already providing the {@link AEBaseTileEntity} being looked at.
  *
  */
 public interface ITileProbInfoProvider {
 
     /**
-     * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, EntityPlayer,
-     *      World, IBlockState, IProbeHitData)
+     * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, EntityPlayer, World, IBlockState, IProbeHitData)
      */
     void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
             BlockState blockState, IProbeHitData data);

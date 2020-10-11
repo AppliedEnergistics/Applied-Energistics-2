@@ -26,8 +26,7 @@ package appeng.api.exceptions;
 /**
  * Exception due to trying to connect one or more null values.
  *
- * Intended to signal an internal exception and not intended to be thrown by any
- * 3rd party module.
+ * Intended to signal an internal exception and not intended to be thrown by any 3rd party module.
  *
  * @author yueh
  * @version rv3

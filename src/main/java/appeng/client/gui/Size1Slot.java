@@ -10,9 +10,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * A proxy for a slot that will always return an itemstack with size 1, if there
- * is an item in the slot. Used to prevent the default item count from
- * rendering.
+ * A proxy for a slot that will always return an itemstack with size 1, if there is an item in the slot. Used to prevent
+ * the default item count from rendering.
  */
 class Size1Slot extends Slot {
 

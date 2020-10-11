@@ -28,8 +28,7 @@ import appeng.items.parts.PartModels;
 /**
  * A very simple part for emitting light.
  *
- * Opposed to the other subclass of {@link AbstractReportingPart}, it will only
- * use the bright front texture.
+ * Opposed to the other subclass of {@link AbstractReportingPart}, it will only use the bright front texture.
  *
  * @author AlgorithmX2
  * @author yueh
@@ -51,9 +50,8 @@ public abstract class AbstractPanelPart extends AbstractReportingPart {
     }
 
     /**
-     * How bright the color the panel should appear. Usually it depends on a
-     * {@link AEColor} variant. This does not affect the actual light level of the
-     * part.
+     * How bright the color the panel should appear. Usually it depends on a {@link AEColor} variant. This does not
+     * affect the actual light level of the part.
      *
      * @return the brightness to be used.
      */

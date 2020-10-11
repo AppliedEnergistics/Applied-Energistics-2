@@ -30,14 +30,12 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 
 /**
- * Used to access information about AE's various power accepting blocks for
- * monitoring purposes.
+ * Used to access information about AE's various power accepting blocks for monitoring purposes.
  */
 public interface IAEPowerStorage extends IEnergySource {
 
     /**
-     * Inject amt, power into the device, it will store what it can, and return the
-     * amount unable to be stored.
+     * Inject amt, power into the device, it will store what it can, and return the amount unable to be stored.
      *
      * @param amt  to be injected amount
      * @param mode action mode
@@ -57,16 +55,15 @@ public interface IAEPowerStorage extends IEnergySource {
     double getAECurrentPower();
 
     /**
-     * Checked on network reset to see if your block can be used as a public power
-     * storage ( use getPowerFlow to control the behavior )
+     * Checked on network reset to see if your block can be used as a public power storage ( use getPowerFlow to control
+     * the behavior )
      *
      * @return true if it can be used as a public power storage
      */
     boolean isAEPublicPowerStorage();
 
     /**
-     * Control the power flow by telling what the network can do, either add? or
-     * subtract? or both!
+     * Control the power flow by telling what the network can do, either add? or subtract? or both!
      *
      * @return access restriction what the network can do
      */
@@ -76,12 +73,10 @@ public interface IAEPowerStorage extends IEnergySource {
     /**
      * The priority to use this energy storage.
      * 
-     * A higher value means it is more likely to be extracted from first, and less
-     * likely to be inserted into first.
+     * A higher value means it is more likely to be extracted from first, and less likely to be inserted into first.
      * 
-     * The value needs to be constant once added to a {@link IGrid}. Should it ever
-     * need to be changed, it has to be removed from the grid, then update the
-     * value, and finally added back to the grid.
+     * The value needs to be constant once added to a {@link IGrid}. Should it ever need to be changed, it has to be
+     * removed from the grid, then update the value, and finally added back to the grid.
      * 
      * This should never use {@link Integer#MIN_VALUE} or {@link Integer#MAX_VALUE}.
      * 

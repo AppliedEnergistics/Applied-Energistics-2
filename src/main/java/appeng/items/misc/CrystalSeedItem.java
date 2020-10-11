@@ -51,8 +51,8 @@ import appeng.entity.GrowingCrystalEntity;
 import appeng.items.AEBaseItem;
 
 /**
- * This item reprents one of the seeds used to grow various forms of quartz by
- * throwing them into water (for that behavior, see the linked entity)
+ * This item reprents one of the seeds used to grow various forms of quartz by throwing them into water (for that
+ * behavior, see the linked entity)
  */
 public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
 

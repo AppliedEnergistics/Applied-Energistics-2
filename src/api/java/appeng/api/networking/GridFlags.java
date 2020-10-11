@@ -28,8 +28,7 @@ package appeng.api.networking;
  */
 public enum GridFlags {
     /**
-     * import/export buses, terminals, and other devices that use network features,
-     * will use this setting.
+     * import/export buses, terminals, and other devices that use network features, will use this setting.
      */
     REQUIRE_CHANNEL,
 
@@ -49,20 +48,20 @@ public enum GridFlags {
     CANNOT_CARRY_COMPRESSED,
 
     /**
-     * This node can transmit 32 signals, this should only apply to Tier2 Cable, P2P
-     * Tunnels, and Quantum Network Bridges.
+     * This node can transmit 32 signals, this should only apply to Tier2 Cable, P2P Tunnels, and Quantum Network
+     * Bridges.
      */
     DENSE_CAPACITY,
 
     /**
-     * This block is part of a multiblock, used in conjunction with REQUIRE_CHANNEL,
-     * and {@link IGridMultiblock} see this interface for details.
+     * This block is part of a multiblock, used in conjunction with REQUIRE_CHANNEL, and {@link IGridMultiblock} see
+     * this interface for details.
      */
     MULTIBLOCK,
 
     /**
-     * Indicates which path might be preferred, this only matters if two routes of
-     * equal length exist, ad only changes the order they are processed in.
+     * Indicates which path might be preferred, this only matters if two routes of equal length exist, ad only changes
+     * the order they are processed in.
      */
     PREFERRED
 }

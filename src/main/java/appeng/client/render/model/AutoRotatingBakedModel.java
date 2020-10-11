@@ -214,9 +214,9 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
         private static final float EPS = 0.0001f;
 
         /**
-         * This tries to snap the coordinate to the edges of the block frame, because
-         * Vanilla uses direct equals comparisons to 0 and 1 for checking if a face
-         * extends fully towards the edge. This is used primarily for AO calculations.
+         * This tries to snap the coordinate to the edges of the block frame, because Vanilla uses direct equals
+         * comparisons to 0 and 1 for checking if a face extends fully towards the edge. This is used primarily for AO
+         * calculations.
          */
         private static float snap(float x) {
             if (Math.abs(x) <= EPS) {

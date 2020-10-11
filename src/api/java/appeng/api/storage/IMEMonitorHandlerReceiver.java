@@ -39,16 +39,14 @@ public interface IMEMonitorHandlerReceiver<T extends IAEStack<T>> {
     boolean isValid(Object verificationToken);
 
     /**
-     * called when changes are made to the Monitor, but only if listener is still
-     * valid.
+     * called when changes are made to the Monitor, but only if listener is still valid.
      *
      * @param change done change
      */
     void postChange(IBaseMonitor<T> monitor, Iterable<T> change, IActionSource actionSource);
 
     /**
-     * called when the list updates its contents, this is mostly for handling power
-     * events.
+     * called when the list updates its contents, this is mostly for handling power events.
      */
     void onListUpdate();
 }

@@ -14,8 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import appeng.hooks.UnlitQuadHooks;
 
 /**
- * The only job of this mixin is to only enable the unlit extensions if the
- * model is whitelisted for it, which is decided in {@link UnlitQuadHooks}.
+ * The only job of this mixin is to only enable the unlit extensions if the model is whitelisted for it, which is
+ * decided in {@link UnlitQuadHooks}.
  */
 @Mixin(ModelBakery.class)
 public class ModelBakeryMixin {

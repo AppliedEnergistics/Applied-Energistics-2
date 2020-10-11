@@ -159,8 +159,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * This builds a tag with the actual data that should be sent to the client for
-     * update syncs. If the tile entity doesn't need update syncs, it returns null.
+     * This builds a tag with the actual data that should be sent to the client for update syncs. If the tile entity
+     * doesn't need update syncs, it returns null.
      */
     private CompoundNBT writeUpdateData() {
         final CompoundNBT data = new CompoundNBT();
@@ -201,8 +201,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * Handles tile entites that are being sent to the client as part of a full
-     * chunk.
+     * Handles tile entites that are being sent to the client as part of a full chunk.
      */
     @Override
     public CompoundNBT getUpdateTag() {
@@ -219,8 +218,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * Handles tile entites that are being received by the client as part of a full
-     * chunk.
+     * Handles tile entites that are being received by the client as part of a full chunk.
      */
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {
@@ -283,8 +281,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * By default all blocks can have orientation, this handles saving, and loading,
-     * as well as synchronization.
+     * By default all blocks can have orientation, this handles saving, and loading, as well as synchronization.
      *
      * @return true if tile can be rotated
      */
@@ -320,8 +317,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * depending on the from, different settings will be accepted, don't call this
-     * with null
+     * depending on the from, different settings will be accepted, don't call this with null
      *
      * @param from     source of settings
      * @param compound compound of source
@@ -353,8 +349,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * returns the contents of the tile entity, into the world, defaults to dropping
-     * everything in the inventory.
+     * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
      *
      * @param w     world
      * @param pos   block position
@@ -423,8 +418,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * Checks if this tile entity is remote (we are running on the logical client
-     * side).
+     * Checks if this tile entity is remote (we are running on the logical client side).
      */
     public boolean isRemote() {
         World world = getWorld();
@@ -462,9 +456,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * AE Tile Entities will generally confine themselves to rendering within the
-     * bounding block. Forge however would retrieve the collision box here, which is
-     * very expensive.
+     * AE Tile Entities will generally confine themselves to rendering within the bounding block. Forge however would
+     * retrieve the collision box here, which is very expensive.
      */
     @OnlyIn(Dist.CLIENT)
     @Override

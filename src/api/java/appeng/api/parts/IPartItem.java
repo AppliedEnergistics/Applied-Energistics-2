@@ -28,11 +28,9 @@ import net.minecraft.item.ItemStack;
 //@formatter:off
 
 /**
- * This is a pretty basic requirement, once you implement the interface, and
- * createPartFromItemStack
+ * This is a pretty basic requirement, once you implement the interface, and createPartFromItemStack
  *
- * you must register your bus with the Bus renderer, using
- * AEApi.INSTANCE().partHelper().setItemBusRenderer( this );
+ * you must register your bus with the Bus renderer, using AEApi.INSTANCE().partHelper().setItemBusRenderer( this );
  *
  * then simply add this, and call AE's Bus Placement Code.
  *

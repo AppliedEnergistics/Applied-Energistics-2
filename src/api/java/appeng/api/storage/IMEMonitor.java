@@ -37,8 +37,7 @@ public interface IMEMonitor<T extends IAEStack<T>> extends IMEInventoryHandler<T
     IItemList<T> getAvailableItems(IItemList<T> out);
 
     /**
-     * Get access to the full item list of the network, preferred over
-     * {@link IMEInventory} .getAvailableItems(...)
+     * Get access to the full item list of the network, preferred over {@link IMEInventory} .getAvailableItems(...)
      *
      * @return full storage list.
      */

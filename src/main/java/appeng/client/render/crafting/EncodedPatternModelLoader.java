@@ -9,8 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelLoader;
 
 /**
- * Provides our custom {@link EncodedPatternBakedModel encoded pattern item
- * model}.
+ * Provides our custom {@link EncodedPatternBakedModel encoded pattern item model}.
  */
 public class EncodedPatternModelLoader implements IModelLoader<EncodedPatternModel> {
 

@@ -48,9 +48,8 @@ import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
 
 /**
- * This baked model combines the quads of a compass base and the quads of a
- * compass pointer, which will be rotated around the Y-axis to get the compass
- * to point in the right direction.
+ * This baked model combines the quads of a compass base and the quads of a compass pointer, which will be rotated
+ * around the Y-axis to get the compass to point in the right direction.
  */
 public class SkyCompassBakedModel implements IDynamicBakedModel {
     // Rotation is expressed as radians
@@ -144,8 +143,8 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
     @Override
     public ItemOverrideList getOverrides() {
         /*
-         * This handles setting the rotation of the compass when being held in hand. If
-         * it's not held in hand, it'll animate using the spinning animation.
+         * This handles setting the rotation of the compass when being held in hand. If it's not held in hand, it'll
+         * animate using the spinning animation.
          */
         return new ItemOverrideList() {
             @Override
@@ -170,8 +169,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
     }
 
     /**
-     * Gets the effective, animated rotation for the compass given the current
-     * position of the compass.
+     * Gets the effective, animated rotation for the compass given the current position of the compass.
      */
     public static float getAnimatedRotation(@Nullable BlockPos pos, boolean prefetch) {
 

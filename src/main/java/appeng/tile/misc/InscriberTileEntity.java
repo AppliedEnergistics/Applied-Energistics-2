@@ -403,11 +403,9 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     /**
-     * This is an item handler that exposes the inscribers inventory while providing
-     * simulation capabilities that do not reset the progress if there's already an
-     * item in a slot. Previously, the progress of the inscriber was reset when
-     * another mod attempted insertion of items when there were already items in the
-     * slot.
+     * This is an item handler that exposes the inscribers inventory while providing simulation capabilities that do not
+     * reset the progress if there's already an item in a slot. Previously, the progress of the inscriber was reset when
+     * another mod attempted insertion of items when there were already items in the slot.
      */
     private class ItemHandlerFilter implements IAEItemFilter {
         @Override

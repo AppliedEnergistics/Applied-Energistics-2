@@ -49,8 +49,7 @@ public enum PowerUnits {
      *
      * Example: PowerUnits.EU.convertTo( PowerUnits.AE, 32 );
      *
-     * will normally returns 64, as it will convert the EU, to AE with AE's power
-     * settings.
+     * will normally returns 64, as it will convert the EU, to AE with AE's power settings.
      *
      * @param target target power unit
      * @param value  value

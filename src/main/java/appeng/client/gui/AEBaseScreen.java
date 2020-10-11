@@ -639,8 +639,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     /**
-     * This overrides the base-class method through some access transformer
-     * hackery...
+     * This overrides the base-class method through some access transformer hackery...
      */
     @Override
     public void moveItems(MatrixStack matrices, Slot s) {
@@ -822,8 +821,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     /**
-     * Returns true while the current event being handled is a click of the right
-     * mouse button.
+     * Returns true while the current event being handled is a click of the right mouse button.
      */
     public boolean isHandlingRightClick() {
         return handlingRightClick;

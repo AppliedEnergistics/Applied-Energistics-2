@@ -36,8 +36,7 @@ import appeng.tile.AEBaseTileEntity;
 
 public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ITickableTileEntity, IEnergyStorage {
     /**
-     * The base energy injected each tick. Adjacent TileEnergyGenerators will
-     * increase it to pow(base, #generators).
+     * The base energy injected each tick. Adjacent TileEnergyGenerators will increase it to pow(base, #generators).
      */
     private static final int BASE_ENERGY = 8;
 

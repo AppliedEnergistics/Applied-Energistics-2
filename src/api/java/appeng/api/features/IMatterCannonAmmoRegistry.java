@@ -30,8 +30,7 @@ import net.minecraft.util.ResourceLocation;
 public interface IMatterCannonAmmoRegistry {
 
     /**
-     * register a new ammo, generally speaking this is based off of atomic weight to
-     * make it easier to guess at
+     * register a new ammo, generally speaking this is based off of atomic weight to make it easier to guess at
      *
      * @param ammo   new ammo
      * @param weight atomic weight
@@ -39,8 +38,7 @@ public interface IMatterCannonAmmoRegistry {
     void registerAmmoItem(Item ammo, double weight);
 
     /**
-     * register a new ammo, generally speaking this is based off of atomic weight to
-     * make it easier to guess at
+     * register a new ammo, generally speaking this is based off of atomic weight to make it easier to guess at
      *
      * @param ammoTag item tag id
      * @param weight  atomic weight

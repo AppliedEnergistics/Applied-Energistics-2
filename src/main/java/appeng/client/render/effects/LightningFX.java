@@ -144,16 +144,16 @@ public class LightningFX extends SpriteTexturedParticle {
         for (int layer = 0; layer < 2; layer++) {
             if (layer == 0) {
                 scale = 0.04;
-//				FIXME offX *= 0.001;
-//				FIXME offY *= 0.001;
-//				FIXME offZ *= 0.001;
+                // FIXME offX *= 0.001;
+                // FIXME offY *= 0.001;
+                // FIXME offZ *= 0.001;
                 red = this.particleRed * j * 0.4f;
                 green = this.particleGreen * j * 0.25f;
                 blue = this.particleBlue * j * 0.45f;
             } else {
-//				FIXME offX = 0;
-//				FIXME offY = 0;
-//				FIXME offZ = 0;
+                // FIXME offX = 0;
+                // FIXME offY = 0;
+                // FIXME offZ = 0;
                 scale = 0.02;
                 red = this.particleRed * j * 0.9f;
                 green = this.particleGreen * j * 0.65f;

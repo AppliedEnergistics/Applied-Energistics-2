@@ -51,8 +51,8 @@ import appeng.util.inv.InvOperation;
 /**
  * Anything resembling an network terminal with view cells can reuse this.
  *
- * Note this applies only to terminals like the ME Terminal. It does not apply
- * for more specialized terminals like the Interface Terminal.
+ * Note this applies only to terminals like the ME Terminal. It does not apply for more specialized terminals like the
+ * Interface Terminal.
  *
  * @author AlgorithmX2
  * @author yueh

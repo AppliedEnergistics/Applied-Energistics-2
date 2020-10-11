@@ -47,7 +47,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     public AEBasePoweredItem(final DoubleSupplier powerCapacity, Properties props) {
         super(props);
-// FIXME this.setFull3D();
+        // FIXME this.setFull3D();
 
         this.powerCapacity = powerCapacity;
     }

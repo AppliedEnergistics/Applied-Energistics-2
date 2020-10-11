@@ -26,9 +26,8 @@ package appeng.api.storage;
 import appeng.api.storage.data.IAEStack;
 
 /**
- * Exposes the monitorable network inventories of a grid node that choses to
- * export them. This interface can only be obtained using Forge capabilities for
- * {@link IStorageMonitorableAccessor}.
+ * Exposes the monitorable network inventories of a grid node that choses to export them. This interface can only be
+ * obtained using Forge capabilities for {@link IStorageMonitorableAccessor}.
  */
 public interface IStorageMonitorable {
 

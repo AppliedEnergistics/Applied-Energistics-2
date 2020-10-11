@@ -30,8 +30,8 @@ import appeng.thirdparty.codechicken.lib.model.ISmartVertexConsumer;
 import appeng.thirdparty.codechicken.lib.model.Quad;
 
 /**
- * Base class for a simple QuadTransformer. Operates on BakedQuads.
- * QuadTransformers can be piped into each other at no performance penalty.
+ * Base class for a simple QuadTransformer. Operates on BakedQuads. QuadTransformers can be piped into each other at no
+ * performance penalty.
  *
  * @author covers1624
  */

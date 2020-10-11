@@ -27,8 +27,7 @@ import appeng.api.crafting.ICraftingHelper;
 import appeng.api.storage.data.IAEItemStack;
 
 /**
- * Passed to a ICraftingProvider as a interface to manipulate the available
- * crafting jobs.
+ * Passed to a ICraftingProvider as a interface to manipulate the available crafting jobs.
  */
 public interface ICraftingProviderHelper {
 

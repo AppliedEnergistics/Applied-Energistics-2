@@ -114,8 +114,7 @@ public final class CompassService {
     }
 
     /**
-     * Notifies the compass service that a skystone block has either been placed or
-     * replaced at the give position.
+     * Notifies the compass service that a skystone block has either been placed or replaced at the give position.
      */
     public void notifyBlockChange(final ServerWorld w, BlockPos pos) {
         IChunk chunk = w.getChunk(pos);

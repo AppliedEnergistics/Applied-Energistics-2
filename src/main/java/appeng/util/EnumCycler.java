@@ -3,8 +3,8 @@ package appeng.util;
 import java.util.EnumSet;
 
 /**
- * Simple utility class to help with select the "next" or "previous" value in a
- * list of options represented by an enumeration.
+ * Simple utility class to help with select the "next" or "previous" value in a list of options represented by an
+ * enumeration.
  */
 public final class EnumCycler {
 

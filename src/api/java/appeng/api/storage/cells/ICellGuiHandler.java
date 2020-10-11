@@ -29,9 +29,8 @@ public interface ICellGuiHandler {
     }
 
     /**
-     * Called when the storage cell is placed in an ME Chest and the user tries to
-     * open the terminal side, if your item is not available via ME Chests simply
-     * tell the user they can't use it, or something, other wise you should open
+     * Called when the storage cell is placed in an ME Chest and the user tries to open the terminal side, if your item
+     * is not available via ME Chests simply tell the user they can't use it, or something, other wise you should open
      * your gui and display the cell to the user.
      *
      * @param player      player opening chest gui

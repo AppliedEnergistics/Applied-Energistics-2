@@ -11,8 +11,7 @@ import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.vector.Vector3d;
 
 /**
- * Contains the target point of the lightning arc (the source point is infered
- * from the particle starting position).
+ * Contains the target point of the lightning arc (the source point is infered from the particle starting position).
  */
 public class LightningArcParticleData implements IParticleData {
 
