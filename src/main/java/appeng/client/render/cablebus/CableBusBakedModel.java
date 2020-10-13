@@ -142,6 +142,7 @@ public class CableBusBakedModel implements IBakedModel {
                 }
             }
         }
+
         this.facadeBuilder.buildFacadeQuads(layer, renderState, rand, quads, this.partModels::get);
 
         return quads;
@@ -327,12 +328,12 @@ public class CableBusBakedModel implements IBakedModel {
 
     @Override
     public boolean isGui3d() {
-        return false;
+        return false; // This model is never used in an UI
     }
 
     @Override
     public boolean isSideLit() {
-        return false;// TODO
+        return false; // This model is never used in an UI
     }
 
     @Override

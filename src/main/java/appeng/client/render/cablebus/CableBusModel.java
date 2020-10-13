@@ -18,7 +18,9 @@
 
 package appeng.client.render.cablebus;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -37,12 +39,15 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import appeng.api.util.AEColor;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.features.registries.PartModels;
 
 /**
  * The built-in model for the cable bus block.
  */
 public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
+
+    public static final ResourceLocation TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
 
     private final PartModels partModels;
 
@@ -53,7 +58,9 @@ public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
     @Override
     public Collection<ResourceLocation> getModelDependencies() {
         partModels.setInitialized(true);
-        return partModels.getModels();
+        List<ResourceLocation> models = new ArrayList<>(partModels.getModels());
+        models.add(TRANSLUCENT_FACADE_MODEL);
+        return models;
     }
 
     @Override
@@ -68,7 +75,11 @@ public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
         Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels(bakery, spriteGetter, modelTransform);
 
         CableBuilder cableBuilder = new CableBuilder(spriteGetter);
-        FacadeBuilder facadeBuilder = new FacadeBuilder();
+
+        IBakedModel translucentFacadeModel = bakery.getBakedModel(TRANSLUCENT_FACADE_MODEL, modelTransform,
+                spriteGetter);
+
+        FacadeBuilder facadeBuilder = new FacadeBuilder(translucentFacadeModel);
 
         // This should normally not be used, but we *have* to provide a particle texture
         // or otherwise damage models will
