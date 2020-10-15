@@ -233,8 +233,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                     final String savedName = memoryCard.getSettingsName(heldItem);
                     final CompoundNBT data = memoryCard.getData(heldItem);
 
-                    if (this.getTranslationKey().equals(savedName)) {
-                        tileEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data);
+                    if (tileEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data)) {
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                     } else {
                         memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);

@@ -111,10 +111,12 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
     }
 
     @Override
-    public void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+    public boolean uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
         if (from == SettingsFrom.DISMANTLE_ITEM) {
             this.internalCurrentPower = compound.getDouble("internalCurrentPower");
+            return true;
         }
+        return false;
     }
 
     @Override
