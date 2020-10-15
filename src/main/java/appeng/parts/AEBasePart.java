@@ -335,7 +335,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             }
             success = true;
         }
-        return true;
+        return success;
     }
 
     /**
