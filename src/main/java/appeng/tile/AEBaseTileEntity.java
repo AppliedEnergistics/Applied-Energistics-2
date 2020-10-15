@@ -325,8 +325,14 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      *
      * @param from     source of settings
      * @param compound compound of source
+     *
+     * @return If the upload was successful
      */
-    public void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+    public boolean uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+        boolean success = false;
+        final String priorityTag = "priority";
+        final String configTag = "config";
+
         if (this instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
             if (cm != null) {
@@ -334,22 +340,25 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
             }
         }
 
-        if (this instanceof IPriorityHost) {
+        if (this instanceof IPriorityHost && compound.contains(priorityTag)) {
             final IPriorityHost pHost = (IPriorityHost) this;
             pHost.setPriority(compound.getInt("priority"));
+            success = true;
         }
 
         if (this instanceof ISegmentedInventory) {
-            final IItemHandler inv = ((ISegmentedInventory) this).getInventoryByName("config");
-            if (inv instanceof AppEngInternalAEInventory) {
+            final IItemHandler inv = ((ISegmentedInventory) this).getInventoryByName(configTag);
+            if (inv instanceof AppEngInternalAEInventory && compound.contains(configTag)) {
                 final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
                 final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
                 tmp.readFromNBT(compound, "config");
                 for (int x = 0; x < tmp.getSlots(); x++) {
                     target.setStackInSlot(x, tmp.getStackInSlot(x));
                 }
+                success = true;
             }
         }
+        return success;
     }
 
     /**

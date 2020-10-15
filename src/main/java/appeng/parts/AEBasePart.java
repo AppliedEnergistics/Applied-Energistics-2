@@ -304,8 +304,14 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      *
      * @param from     source of settings
      * @param compound compound of source
+     *
+     * @return If the upload was successful
      */
-    private void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+    private boolean uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+        boolean success = false;
+        final String priorityTag = "priority";
+        final String configTag = "config";
+
         if (compound != null) {
             final IConfigManager cm = this.getConfigManager();
             if (cm != null) {
@@ -313,20 +319,23 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             }
         }
 
-        if (this instanceof IPriorityHost) {
+        if (this instanceof IPriorityHost && compound.contains(priorityTag)) {
             final IPriorityHost pHost = (IPriorityHost) this;
-            pHost.setPriority(compound.getInt("priority"));
+            pHost.setPriority(compound.getInt(priorityTag));
+            success = true;
         }
 
-        final IItemHandler inv = this.getInventoryByName("config");
-        if (inv instanceof AppEngInternalAEInventory) {
+        final IItemHandler inv = this.getInventoryByName(configTag);
+        if (inv instanceof AppEngInternalAEInventory && compound.contains(configTag)) {
             final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
             final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
-            tmp.readFromNBT(compound, "config");
+            tmp.readFromNBT(compound, configTag);
             for (int x = 0; x < tmp.getSlots(); x++) {
                 target.setStackInSlot(x, tmp.getStackInSlot(x));
             }
+            success = true;
         }
+        return success;
     }
 
     /**
@@ -389,8 +398,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             } else {
                 final String storedName = memoryCard.getSettingsName(memCardIS);
                 final CompoundNBT data = memoryCard.getData(memCardIS);
-                if (name.equals(storedName)) {
-                    this.uploadSettings(SettingsFrom.MEMORY_CARD, data);
+                if (this.uploadSettings(SettingsFrom.MEMORY_CARD, data)) {
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                 } else {
                     memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
