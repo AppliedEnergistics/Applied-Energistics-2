@@ -396,7 +396,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                 }
             } else {
-                final String storedName = memoryCard.getSettingsName(memCardIS);
                 final CompoundNBT data = memoryCard.getData(memCardIS);
                 if (this.uploadSettings(SettingsFrom.MEMORY_CARD, data)) {
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);

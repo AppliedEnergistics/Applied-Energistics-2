@@ -230,7 +230,6 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                     }
                 } else {
-                    final String savedName = memoryCard.getSettingsName(heldItem);
                     final CompoundNBT data = memoryCard.getData(heldItem);
 
                     if (tileEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data)) {
