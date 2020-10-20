@@ -430,14 +430,18 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				this.requireWork[slot] = req.copy();
 				return;
 			}
-			else if( req.isSameType( stored ) ) // same type ( qty different? )!
+			else if( req.isSameType( stored ) ) // same type and quantity  )!
 			{
-				if( req.getStackSize() != stored.getCount() )
+				if( req.getStackSize() == stored.getCount())
+				{
+					this.requireWork[slot] = null;
+				}
+			else								// same type ( qty different? )!
 				{
 					this.requireWork[slot] = req.copy();
 					this.requireWork[slot].setStackSize( req.getStackSize() - stored.getCount() );
-					return;
 				}
+				return;
 			}
 			else
 			// Stored != null; dispose!
