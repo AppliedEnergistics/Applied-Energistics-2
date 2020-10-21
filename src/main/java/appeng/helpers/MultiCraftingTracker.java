@@ -131,14 +131,14 @@ public class MultiCraftingTracker
 				if( this.getLink( x ) == null )
 				{
 					final IAEItemStack aisC = ais.copy();
-					if (this.failedCraftTriesSlot[x] == 0) {
+					if (this.failedCraftTriesSlot[x] <= 0) {
 						aisC.setStackSize(itemToCraft);
 						this.setJob(x, cg.beginCraftingJob(w, g, mySrc, aisC, null));
 					}
 					if (getJob(x) != null) this.failedCraftTriesSlot[x] = 0;
-					else this.failedCraftTriesSlot[x] += 2;
+					else this.failedCraftTriesSlot[x] += 20;
 				}
-				this.failedCraftTriesSlot[x] += 2;
+				this.failedCraftTriesSlot[x] -= 1;
 			}
 		}
 		return false;

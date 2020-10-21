@@ -39,6 +39,7 @@ import appeng.api.util.IReadOnlyCollection;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.util.ReadOnlyCollection;
+import appeng.me.cache.CraftingGridCache;
 
 
 public class Grid implements IGrid
@@ -219,7 +220,10 @@ public class Grid implements IGrid
 	@Override
 	public MENetworkEvent postEvent( final MENetworkEvent ev )
 	{
-		return this.eventBus.postEvent( this, ev );
+		CraftingGridCache.pauseRebuilds();
+		final MENetworkEvent ret = this.eventBus.postEvent( this, ev );
+		CraftingGridCache.unpauseRebuilds();
+		return ret;
 	}
 
 	@Override
