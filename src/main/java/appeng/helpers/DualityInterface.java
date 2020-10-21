@@ -88,6 +88,8 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -897,6 +899,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		};
 	}
 
+	private static boolean invIsBlocked(InventoryAdaptor inv) {
+		if (AEConfig.instance().isFeatureEnabled(AEFeature.INSANE_BLOCKING_MODE))
+			return !inv.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty();
+		else
+			return inv.containsItems();
+	}
+
 	@Override
 	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
 	{
@@ -945,7 +954,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			{
 				if( this.isBlocking() )
 				{
-					if( !ad.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty() )
+					if( invIsBlocked(ad) )
 					{
 						continue;
 					}
@@ -996,7 +1005,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
-					if( ad.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty() )
+					if( !invIsBlocked(ad) )
 					{
 						allAreBusy = false;
 						break;

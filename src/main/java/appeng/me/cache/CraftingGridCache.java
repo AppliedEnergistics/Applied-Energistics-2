@@ -114,6 +114,8 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	private IStorageGrid storageGrid;
 	private IEnergyGrid energyGrid;
 	private boolean updateList = false;
+	private static int pauseRebuilds = 0;
+	private static Set<CraftingGridCache> rebuildNeeded = new HashSet<>();
 
 	public CraftingGridCache( final IGrid grid )
 	{
@@ -240,8 +242,34 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		// nothing!
 	}
 
+	public static void pauseRebuilds()
+	{
+		pauseRebuilds++;
+	}
+
+	public static void unpauseRebuilds()
+	{
+		pauseRebuilds--;
+		if (pauseRebuilds == 0 && rebuildNeeded.size() > 0)
+		{
+			ImmutableSet<CraftingGridCache> needed = ImmutableSet.copyOf(rebuildNeeded);
+			rebuildNeeded.clear();
+			for ( CraftingGridCache cache: needed )
+			{
+				cache.updatePatterns();
+			}
+		}
+	}
+
 	private void updatePatterns()
 	{
+		// coalesce change events during a grid traversal to a single rebuild
+		if (pauseRebuilds != 0)
+		{
+			rebuildNeeded.add(this);
+			return;
+		}
+
 		final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = this.craftableItems;
 
 		// erase list.
