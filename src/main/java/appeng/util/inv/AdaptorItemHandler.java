@@ -21,6 +21,7 @@ package appeng.util.inv;
 
 import java.util.Iterator;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -31,6 +32,7 @@ import appeng.util.Platform;
 
 public class AdaptorItemHandler extends InventoryAdaptor
 {
+	final static ItemStack integratedCircuit = new ItemStack((Item.getByNameOrId("gregtech:meta_item_1")),1,32766); // Gregtech Community Edition Integrated Circuit
 	protected final IItemHandler itemHandler;
 
 	public AdaptorItemHandler( IItemHandler itemHandler )
@@ -264,4 +266,18 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	{
 		return new ItemHandlerIterator( this.itemHandler );
 	}
+
+	@Override
+	public boolean canRemoveAllExceptCircuits()
+	{
+		int slots = this.itemHandler.getSlots();
+		for( int slot = 0; slot < slots; slot++ )
+		{
+			ItemStack is = this.itemHandler.getStackInSlot( slot );
+			if ( is.isEmpty() || is.isItemEqual(integratedCircuit)) continue;
+			return false;
+		}
+		return true;
+	}
+
 }

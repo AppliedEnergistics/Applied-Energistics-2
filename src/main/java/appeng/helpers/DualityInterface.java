@@ -46,6 +46,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -900,8 +901,10 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	private static boolean invIsBlocked(InventoryAdaptor inv) {
-		if (AEConfig.instance().isFeatureEnabled(AEFeature.INSANE_BLOCKING_MODE))
-			return !inv.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty();
+		if (AEConfig.instance().isFeatureEnabled(AEFeature.INSANE_BLOCKING_MODE)) {
+			if (Loader.isModLoaded("gregtech")) return !inv.canRemoveAllExceptCircuits();
+			else return !inv.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty();
+		}
 		else
 			return inv.containsItems();
 	}

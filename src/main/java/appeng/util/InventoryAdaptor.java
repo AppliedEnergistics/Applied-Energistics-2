@@ -69,6 +69,8 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 
 	public abstract ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination );
 
+	public abstract boolean canRemoveAllExceptCircuits();
+
 	// return what was extracted.
 	public abstract ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination );
 

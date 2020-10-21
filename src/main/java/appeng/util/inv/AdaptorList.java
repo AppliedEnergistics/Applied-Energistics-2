@@ -225,4 +225,10 @@ public class AdaptorList extends InventoryAdaptor
 	{
 		return new StackToSlotIterator( this.i.iterator() );
 	}
+
+	@Override
+	public boolean canRemoveAllExceptCircuits() {
+		return false;
+	}
+
 }
