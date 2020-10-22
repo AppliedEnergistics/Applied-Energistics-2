@@ -773,7 +773,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource );
 
 					if (crafted) this.failedCraftTriesSlot[x] = 0;
-					else this.failedCraftTriesSlot[x] += 20;
+					else this.failedCraftTriesSlot[x] += 5;
 				}
 				this.failedCraftTriesSlot[x] -= 1;
 

@@ -70,7 +70,7 @@ import appeng.util.item.AEItemStack;
 
 public class PartExportBus extends PartSharedItemBus implements ICraftingRequester
 {
-	private int failedCraftTriesSlot[] = {0,0,0,0,0,0,0,0,0};
+	private final int[] failedCraftTriesSlot = {0,0,0,0,0,0,0,0,0};
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/export_bus_base" );
 
@@ -159,7 +159,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 										this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
 
 								if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
-								else this.failedCraftTriesSlot[x] += 20;
+								else this.failedCraftTriesSlot[x] += 5;
 							}
 							this.failedCraftTriesSlot[x] -= 1;
 						}
@@ -192,7 +192,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
 
 							if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
-							else this.failedCraftTriesSlot[x] += 20;
+							else this.failedCraftTriesSlot[x] += 5;
 						}
 						this.failedCraftTriesSlot[x] -= 1;
 					}
