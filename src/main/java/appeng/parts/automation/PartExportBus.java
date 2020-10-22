@@ -70,6 +70,7 @@ import appeng.util.item.AEItemStack;
 
 public class PartExportBus extends PartSharedItemBus implements ICraftingRequester
 {
+	private int failedCraftTriesSlot[] = {0,0,0,0,0,0,0,0,0};
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/export_bus_base" );
 
@@ -149,12 +150,18 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					final IAEItemStack ais = this.getConfig().getAEStackInSlot( slotToExport );
 
-					if( ais == null || this.itemToSend <= 0 || this.craftOnly() )
-					{
-						if( this.isCraftingEnabled() )
+					if( ais == null || this.itemToSend <= 0 || this.craftOnly() ) {
+						if (this.isCraftingEnabled())
 						{
-							this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
-									this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
+							if (this.failedCraftTriesSlot[x] <= 0) {
+
+								this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
+										this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
+
+								if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
+								else this.failedCraftTriesSlot[x] += 20;
+							}
+							this.failedCraftTriesSlot[x] -= 1;
 						}
 						continue;
 					}
@@ -179,8 +186,15 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					if( this.itemToSend == before && this.isCraftingEnabled() )
 					{
-						this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
-								this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
+						if (this.failedCraftTriesSlot[x] <= 0) {
+
+							this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
+									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
+
+							if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
+							else this.failedCraftTriesSlot[x] += 20;
+						}
+						this.failedCraftTriesSlot[x] -= 1;
 					}
 				}
 

@@ -46,7 +46,6 @@ public class MultiCraftingTracker
 
 	private Future<ICraftingJob>[] jobs = null;
 	private ICraftingLink[] links = null;
-	private int failedCraftTriesSlot[] = {0,0,0,0,0,0,0,0,0};
 
 	public MultiCraftingTracker( final ICraftingRequester o, final int size )
 	{
@@ -131,14 +130,10 @@ public class MultiCraftingTracker
 				if( this.getLink( x ) == null )
 				{
 					final IAEItemStack aisC = ais.copy();
-					if (this.failedCraftTriesSlot[x] <= 0) {
-						aisC.setStackSize(itemToCraft);
-						this.setJob(x, cg.beginCraftingJob(w, g, mySrc, aisC, null));
-					}
-					if (getJob(x) != null) this.failedCraftTriesSlot[x] = 0;
-					else this.failedCraftTriesSlot[x] += 20;
+					aisC.setStackSize( itemToCraft );
+
+					this.setJob( x, cg.beginCraftingJob( w, g, mySrc, aisC, null ) );
 				}
-				this.failedCraftTriesSlot[x] -= 1;
 			}
 		}
 		return false;
