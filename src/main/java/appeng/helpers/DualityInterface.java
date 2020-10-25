@@ -29,6 +29,8 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import appeng.integration.modules.gregtech.GTCEInventoryAdaptor;
+import appeng.util.*;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
@@ -46,7 +48,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -102,10 +103,6 @@ import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
-import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.IInventoryDestination;
@@ -146,6 +143,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private IMEInventory<IAEItemStack> destination;
 	private int isWorking = -1;
 	private final Accessor accessor = new Accessor();
+	private GTCEInventoryAdaptor GTad;
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
@@ -910,12 +908,16 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	private static boolean invIsBlocked(InventoryAdaptor inv) {
-		if (AEConfig.instance().isFeatureEnabled(AEFeature.INSANE_BLOCKING_MODE)) {
-			if (Loader.isModLoaded("gregtech")) return !inv.canRemoveAllExceptCircuits();
-			else return !inv.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty();
+		if (AEConfig.instance().isFeatureEnabled(AEFeature.INSANE_BLOCKING_MODE))
+		{
+			return !inv.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty();
 		}
-		else
-			return inv.containsItems();
+		else return inv.containsItems();
+	}
+
+	private static boolean invIsBlockedGTCE(GTCEInventoryAdaptor inv)
+	{
+		return (!inv.canRemoveAllExceptCircuits());
 	}
 
 	@Override
@@ -962,13 +964,24 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 
 			final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
-			if( ad != null )
+				if( ad != null )
 			{
 				if( this.isBlocking() )
 				{
-					if( invIsBlocked(ad) )
+					if (te.getBlockType().getRegistryName().getResourceDomain().equals("gregtech"))
 					{
-						continue;
+						GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
+						if (invIsBlockedGTCE(GTad))
+						{
+							continue;
+						}
+					}
+					else
+					{
+						if (invIsBlocked(ad))
+						{
+							continue;
+						}
 					}
 				}
 
@@ -1017,17 +1030,28 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
-					if( !invIsBlocked(ad) )
+					if (te.getBlockType().getRegistryName().getResourceDomain().equals("gregtech"))
 					{
-						allAreBusy = false;
-						break;
+						GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
+						if ( !invIsBlockedGTCE(GTad) )
+						{
+							allAreBusy = false;
+							break;
+						}
+					}
+					else
+					{
+						if( !invIsBlocked(ad) )
+						{
+							allAreBusy = false;
+							break;
+						}
+
 					}
 				}
 			}
-
 			busy = allAreBusy;
 		}
-
 		return busy;
 	}
 

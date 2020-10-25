@@ -204,9 +204,4 @@ public class IMEAdaptor extends InventoryAdaptor
 		this.maxSlots = maxSlots;
 	}
 
-	@Override
-	public boolean canRemoveAllExceptCircuits() {
-		return false;
-	}
-
 }
