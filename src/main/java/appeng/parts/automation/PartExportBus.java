@@ -150,19 +150,18 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					final IAEItemStack ais = this.getConfig().getAEStackInSlot( slotToExport );
 
-					if( ais == null || this.itemToSend <= 0 || this.craftOnly() ) {
-						if (this.isCraftingEnabled())
-						{
-							if (this.failedCraftTriesSlot[x] <= 0) {
+					if( ais == null || this.itemToSend <= 0 ) continue;
 
-								this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
-										this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
+					if ( this.craftOnly() ) {
+						if (this.failedCraftTriesSlot[x] <= 0) {
 
-								if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
-								else this.failedCraftTriesSlot[x] += 5;
-							}
-							this.failedCraftTriesSlot[x] -= 1;
+							this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
+									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
+
+							if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
+							else this.failedCraftTriesSlot[x] += 4;
 						}
+						this.failedCraftTriesSlot[x] -= 1;
 						continue;
 					}
 
@@ -192,7 +191,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
 
 							if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
-							else this.failedCraftTriesSlot[x] += 5;
+							else this.failedCraftTriesSlot[x] += 4;
 						}
 						this.failedCraftTriesSlot[x] -= 1;
 					}
