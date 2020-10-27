@@ -319,7 +319,7 @@ publishing {
                 password System.getenv("MODMAVEN_PASSWORD")
             }
             name = "modmaven"
-            url = "https://modmaven.k-4u.nl/artifactory/local-releases/"
+            url = "https://modmaven.dev/artifactory/local-releases/"
         }
     }
 }
