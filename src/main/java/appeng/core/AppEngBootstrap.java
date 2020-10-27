@@ -14,15 +14,12 @@ import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 
 import appeng.api.features.AEFeature;
 import appeng.mixins.feature.ConfiguredFeaturesAccessor;
-import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
-import appeng.mixins.structure.StructureFeatureAccessor;
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.worldgen.BiomeModifier;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
-import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
 /**
  * Hooks into the very early bootstrapping phase to register things before the
@@ -43,8 +40,6 @@ public final class AppEngBootstrap {
         }
         initialized = true;
 
-        registerStructures();
-
         quartzOreFeature = registerQuartzOreFeature();
         chargedQuartzOreFeature = registerChargedQuartzOreFeature();
 
@@ -58,20 +53,6 @@ public final class AppEngBootstrap {
             addMeteoriteWorldGen(b);
             addQuartzWorldGen(b, quartzOreFeature, chargedQuartzOreFeature);
         });
-    }
-
-    private static void registerStructures() {
-
-        MeteoriteStructurePiece.register();
-
-        // Registering into the registry alone is INSUFFICIENT!
-        // There's a bidirectional map in the Structure class itself primarily for the
-        // purposes of NBT serialization
-        StructureFeatureAccessor.register(MeteoriteStructure.ID.toString(), MeteoriteStructure.INSTANCE,
-                GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
-
-        ConfiguredStructureFeaturesAccessor.register(MeteoriteStructure.ID.toString(),
-                MeteoriteStructure.CONFIGURED_INSTANCE);
     }
 
     private static void addMeteoriteWorldGen(Biome b) {
@@ -114,9 +95,6 @@ public final class AppEngBootstrap {
     }
 
     private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {
-        // Tell Minecraft about our configured charged quartz ore feature
-        Registry.register(Registry.FEATURE, AppEng.makeId("charged_quartz_ore"), ChargedQuartzOreFeature.INSTANCE);
-
         BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
         BlockState chargedQuartzOreState = Api.instance().definitions().blocks().quartzOreCharged().block()
                 .getDefaultState();

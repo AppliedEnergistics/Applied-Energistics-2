@@ -28,12 +28,6 @@ public class MeteoriteStructure extends Structure<NoFeatureConfig> {
     }
 
     @Override
-    public String getStructureName() {
-        String s = super.getStructureName();
-        return s;
-    }
-
-    @Override
     protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider biomeSource, long seed,
             SharedSeedRandom randIn, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos2,
             NoFeatureConfig featureConfig) {

@@ -34,6 +34,8 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -108,6 +110,8 @@ public final class AppEng {
         modEventBus.addGenericListener(TileEntityType.class, registration::registerTileEntities);
         modEventBus.addGenericListener(ContainerType.class, registration::registerContainerTypes);
         modEventBus.addGenericListener(IRecipeSerializer.class, registration::registerRecipeSerializers);
+        modEventBus.addGenericListener(Structure.class, registration::registerStructures);
+        modEventBus.addGenericListener(Feature.class, registration::registerFeatures);
 
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);
