@@ -81,7 +81,7 @@ AE2 is also available without authentication from Modmaven. You can use the foll
     repositories {
         maven {
             name "Modmaven"
-            url "https://modmaven.k-4u.nl/"
+            url "https://modmaven.dev/"
             // For Gradle 5.1 and above, limit it to just AE2
             content {
                 includeGroup 'appeng'
