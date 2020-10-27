@@ -51,7 +51,7 @@ repositories {
     mavenCentral()
     maven { // modmaven, maven proxy
         name 'modmaven'
-        url "https://modmaven.k-4u.nl/"
+        url "https://modmaven.dev/"
     }
 }
 
