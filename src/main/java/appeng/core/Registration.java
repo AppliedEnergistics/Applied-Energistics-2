@@ -18,6 +18,7 @@
 
 package appeng.core;
 
+import java.util.Locale;
 import java.util.function.Supplier;
 
 import net.minecraft.advancements.CriteriaTriggers;
@@ -32,7 +33,11 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -200,6 +205,7 @@ import appeng.me.cache.PathGridCache;
 import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
+import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
 import appeng.parts.automation.PlaneModelLoader;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
@@ -208,6 +214,9 @@ import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
+import appeng.worldgen.ChargedQuartzOreFeature;
+import appeng.worldgen.meteorite.MeteoriteStructure;
+import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
 final class Registration {
 
@@ -475,6 +484,37 @@ final class Registration {
         registry.register(ParticleTypes.VIBRANT);
     }
 
+    public void registerStructures(RegistryEvent.Register<Structure<?>> event) {
+        MeteoriteStructurePiece.register();
+
+        // Registering into the registry alone is INSUFFICIENT!
+        // There's a bidirectional map in the Structure class itself primarily for the
+        // purposes of NBT serialization
+        registerStructure(event.getRegistry(), MeteoriteStructure.ID.toString(), MeteoriteStructure.INSTANCE,
+                GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
+
+        ConfiguredStructureFeaturesAccessor.register(MeteoriteStructure.ID.toString(),
+                MeteoriteStructure.CONFIGURED_INSTANCE);
+    }
+
+    // This mirrors the Vanilla registration method for structures, but uses the
+    // Forge registry instead
+    private static <F extends Structure<?>> void registerStructure(IForgeRegistry<Structure<?>> registry, String name,
+            F structure, GenerationStage.Decoration stage) {
+        Structure.field_236365_a_.put(name.toLowerCase(Locale.ROOT), structure);
+        Structure.field_236385_u_.put(structure, stage);
+        structure.setRegistryName(name.toLowerCase(Locale.ROOT));
+        registry.register(structure);
+    }
+
+    public void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
+        IForgeRegistry<Feature<?>> registry = event.getRegistry();
+
+        // Tell Minecraft about our charged quartz ore feature
+        ChargedQuartzOreFeature.INSTANCE.setRegistryName(AppEng.makeId("charged_quartz_ore"));
+        registry.register(ChargedQuartzOreFeature.INSTANCE);
+    }
+
     @OnlyIn(Dist.CLIENT)
     public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
         ParticleManager particles = Minecraft.getInstance().particles;
@@ -699,4 +739,5 @@ final class Registration {
         modEventBus.addListener(this::registerItemColors);
         modEventBus.addListener(this::handleModelBake);
     }
+
 }
