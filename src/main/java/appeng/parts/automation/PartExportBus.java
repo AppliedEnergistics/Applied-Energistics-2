@@ -159,7 +159,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
 
 							if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
-							else this.failedCraftTriesSlot[x] += 4;
+							else this.failedCraftTriesSlot[x] += 2;
 						}
 						this.failedCraftTriesSlot[x] -= 1;
 						continue;
@@ -191,7 +191,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
 
 							if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
-							else this.failedCraftTriesSlot[x] += 4;
+							else this.failedCraftTriesSlot[x] += 2;
 						}
 						this.failedCraftTriesSlot[x] -= 1;
 					}
