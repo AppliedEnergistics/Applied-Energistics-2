@@ -112,8 +112,6 @@ import appeng.util.item.AEItemStack;
 
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
 {
-	private int[] failedCraftTriesSlot = {0,0,0,0,0,0,0,0,0};
-
 	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
 	public static final int NUMBER_OF_CONFIG_SLOTS = 9;
 	public static final int NUMBER_OF_PATTERN_SLOTS = 9;
@@ -761,21 +759,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	private boolean handleCrafting( final int x, final InventoryAdaptor d, final IAEItemStack itemStack )
 	{
-		try
-		{
-			if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 && itemStack != null )
-			{
-				if (this.failedCraftTriesSlot[x] <= 0)
-				{
-					boolean crafted = this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorld(),
-						this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource );
+		try {
+			if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
+				this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorld(),
+						this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource);
 
-					if (crafted) this.failedCraftTriesSlot[x] = 0;
-					else{
-						this.failedCraftTriesSlot[x] += 4;
-					}
-				}
-				this.failedCraftTriesSlot[x] -= 1;
 			}
 		}
 		catch( final GridAccessException e )
