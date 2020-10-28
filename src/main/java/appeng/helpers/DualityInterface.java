@@ -128,11 +128,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private final AppEngInternalInventory storage = new AppEngInternalInventory( this, NUMBER_OF_STORAGE_SLOTS );
 	private final AppEngInternalInventory patterns = new AppEngInternalInventory( this, NUMBER_OF_PATTERN_SLOTS );
 	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), AEApi.instance()
-			.storage()
-			.getStorageChannel( IItemStorageChannel.class ) );
+																																	.storage()
+																																	.getStorageChannel( IItemStorageChannel.class ) );
 	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>( new NullInventory<IAEFluidStack>(), AEApi.instance()
-			.storage()
-			.getStorageChannel( IFluidStorageChannel.class ) );
+																																	   .storage()
+																																	   .getStorageChannel( IFluidStorageChannel.class ) );
 	private final UpgradeInventory upgrades;
 	private boolean hasConfig = false;
 	private int priority;
@@ -432,11 +432,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 			else if( req.isSameType( stored ) ) // same type and quantity  )!
 			{
-				if( req.getStackSize() == stored.getCount())
+				if( req.getStackSize() == stored.getCount() )
 				{
 					this.requireWork[slot] = null;
 				}
-			else								// same type ( qty different? )!
+				else                                // same type ( qty different? )!
 				{
 					this.requireWork[slot] = req.copy();
 					this.requireWork[slot].setStackSize( req.getStackSize() - stored.getCount() );
@@ -693,9 +693,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						throw new IllegalStateException( "bad attempt at managing inventory. ( addItems )" );
 					}
 				}
-				else 
+				else
 				{
-					changed = this.handleCrafting(x, adaptor, itemStack) || changed;
+					changed = this.handleCrafting( x, adaptor, itemStack ) || changed;
 				}
 			}
 			else if( itemStack.getStackSize() < 0 )
@@ -759,10 +759,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	private boolean handleCrafting( final int x, final InventoryAdaptor d, final IAEItemStack itemStack )
 	{
-		try {
-			if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
-				this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorld(),
-						this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource);
+		try
+		{
+			if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 && itemStack != null )
+			{
+				this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorld(),
+						this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource );
 
 			}
 		}
@@ -896,17 +898,18 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		};
 	}
 
-	private static boolean invIsBlocked(InventoryAdaptor inv) {
-		if (AEConfig.instance().isFeatureEnabled(AEFeature.INSANE_BLOCKING_MODE))
+	private static boolean invIsBlocked( InventoryAdaptor inv )
+	{
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.INSANE_BLOCKING_MODE ) )
 		{
 			return !inv.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty();
 		}
 		else return inv.containsItems();
 	}
 
-	private static boolean invIsBlockedGTCE(GTCEInventoryAdaptor inv)
+	private static boolean invIsBlockedGTCE( GTCEInventoryAdaptor inv )
 	{
-		return (!inv.canRemoveAllExceptCircuits());
+		return ( !inv.canRemoveAllExceptCircuits() );
 	}
 
 	@Override
@@ -953,21 +956,21 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 
 			final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
-				if( ad != null )
+			if( ad != null )
 			{
 				if( this.isBlocking() )
 				{
-					if (te.getBlockType().getRegistryName().getResourceDomain().equals("gregtech"))
+					if( te.getBlockType().getRegistryName().getResourceDomain().equals( "gregtech" ) )
 					{
 						GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
-						if (invIsBlockedGTCE(GTad))
+						if( invIsBlockedGTCE( GTad ) )
 						{
 							continue;
 						}
 					}
 					else
 					{
-						if (invIsBlocked(ad))
+						if( invIsBlocked( ad ) )
 						{
 							continue;
 						}
@@ -1019,10 +1022,10 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
-					if (te.getBlockType().getRegistryName().getResourceDomain().equals("gregtech"))
+					if( te.getBlockType().getRegistryName().getResourceDomain().equals( "gregtech" ) )
 					{
 						GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
-						if ( !invIsBlockedGTCE(GTad) )
+						if( !invIsBlockedGTCE( GTad ) )
 						{
 							allAreBusy = false;
 							break;
@@ -1030,7 +1033,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					}
 					else
 					{
-						if( !invIsBlocked(ad) )
+						if( !invIsBlocked( ad ) )
 						{
 							allAreBusy = false;
 							break;
