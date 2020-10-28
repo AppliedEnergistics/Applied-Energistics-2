@@ -70,6 +70,8 @@ import appeng.util.item.AEItemStack;
 
 public class PartExportBus extends PartSharedItemBus implements ICraftingRequester
 {
+	private final int[] failedCraftTriesSlot = {0,0,0,0,0,0,0,0,0};
+
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/export_bus_base" );
 
 	@PartModels
@@ -151,8 +153,15 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 					if( ais == null || this.itemToSend <= 0 ) continue;
 
 					if ( this.craftOnly() ) {
+						if (this.failedCraftTriesSlot[x] <= 0) {
+
 							this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
 									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
+
+							if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
+							else this.failedCraftTriesSlot[x] += 4;
+						}
+						this.failedCraftTriesSlot[x] -= 1;
 						continue;
 					}
 
@@ -176,8 +185,15 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					if( this.itemToSend == before && this.isCraftingEnabled() )
 					{
+						if (this.failedCraftTriesSlot[x] <= 0) {
+
 							this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
 									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
+
+							if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
+							else this.failedCraftTriesSlot[x] += 4;
+						}
+						this.failedCraftTriesSlot[x] -= 1;
 					}
 				}
 
