@@ -32,7 +32,6 @@ public final class AppEngServer extends AppEngBase {
         this.tickHandler = new TickHandler();
 
         ServerLifecycleEvents.SERVER_STARTING.register(this::onServerStarting);
-        ServerLifecycleEvents.SERVER_STOPPING.register(WorldData::onServerStopping);
         ServerLifecycleEvents.SERVER_STOPPED.register(WorldData::onServerStoppped);
     }
 

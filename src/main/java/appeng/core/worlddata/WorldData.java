@@ -112,14 +112,11 @@ public final class WorldData implements IWorldData {
         WorldData.server = server;
     }
 
-    public static void onServerStopping(MinecraftServer server) {
-        if (WorldData.server == server && instance != null) {
-            instance.compassData.service().kill();
-        }
-    }
-
     public static void onServerStoppped(MinecraftServer server) {
         if (WorldData.server == server) {
+            if (instance != null) {
+                instance.compassData.service().kill();
+            }
             instance = null;
             WorldData.server = null;
         }
