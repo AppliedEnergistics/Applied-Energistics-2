@@ -23,8 +23,8 @@ import appeng.client.gui.widgets.ValidationIcon;
 import appeng.core.AEConfig;
 
 /**
- * A utility widget that consists of a text-field to enter a number with
- * attached buttons to increment/decrement the number in fixed intervals.
+ * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
+ * number in fixed intervals.
  */
 public class NumberEntryWidget extends AbstractGui {
 
@@ -156,8 +156,8 @@ public class NumberEntryWidget extends AbstractGui {
     }
 
     /**
-     * Returns the integer value currently in the text-field, if it is a valid
-     * number and is within the allowed min/max value.
+     * Returns the integer value currently in the text-field, if it is a valid number and is within the allowed min/max
+     * value.
      */
     public OptionalInt getIntValue() {
         String text = textField.getText().trim();
@@ -173,8 +173,8 @@ public class NumberEntryWidget extends AbstractGui {
     }
 
     /**
-     * Returns the long value currently in the text-field, if it is a valid number
-     * and is within the allowed min/max value.
+     * Returns the long value currently in the text-field, if it is a valid number and is within the allowed min/max
+     * value.
      */
     public OptionalLong getLongValue() {
         String text = textField.getText().trim();

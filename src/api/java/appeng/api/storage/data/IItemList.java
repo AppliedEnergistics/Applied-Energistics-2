@@ -32,33 +32,30 @@ import appeng.api.storage.IStorageChannel;
  *
  * Don't Implement.
  *
- * Construct with - For items: Api.INSTANCE.storage().getStorageChannel(
- * IItemStorageChannel.class).createList() - For fluids:
- * Api.INSTANCE.storage().getStorageChannel(
- * IFluidStorageChannel.class).createList() - Replace with the corresponding
- * {@link IStorageChannel} type for non native channels
+ * Construct with - For items: Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class).createList() - For
+ * fluids: Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class).createList() - Replace with the
+ * corresponding {@link IStorageChannel} type for non native channels
  */
 public interface IItemList<T extends IAEStack<T>> extends IItemContainer<T>, Iterable<T> {
 
     /**
-     * add a stack to the list stackSize is used to add to stackSize, this will
-     * merge the stack with an item already in the list if found.
+     * add a stack to the list stackSize is used to add to stackSize, this will merge the stack with an item already in
+     * the list if found.
      *
      * @param option stacktype option
      */
     void addStorage(T option); // adds a stack as stored
 
     /**
-     * add a stack to the list as craftable, this will merge the stack with an item
-     * already in the list if found.
+     * add a stack to the list as craftable, this will merge the stack with an item already in the list if found.
      *
      * @param option stacktype option
      */
     void addCrafting(T option);
 
     /**
-     * add a stack to the list, stack size is used to add to requestable, this will
-     * merge the stack with an item already in the list if found.
+     * add a stack to the list, stack size is used to add to requestable, this will merge the stack with an item already
+     * in the list if found.
      *
      * @param option stacktype option
      */

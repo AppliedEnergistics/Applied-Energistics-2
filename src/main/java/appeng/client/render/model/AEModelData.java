@@ -11,9 +11,8 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 /**
- * This implementation of IModelData allows us to know precisely which data is
- * part of the model data. This is relevant for {@link AutoRotatingBakedModel}
- * and {@link AutoRotatingCacheKey}.
+ * This implementation of IModelData allows us to know precisely which data is part of the model data. This is relevant
+ * for {@link AutoRotatingBakedModel} and {@link AutoRotatingCacheKey}.
  */
 public class AEModelData implements IModelData {
 

@@ -37,8 +37,8 @@ import appeng.client.render.FacingToRotation;
 import appeng.tile.grindstone.CrankTileEntity;
 
 /**
- * This FastTESR only handles the animated model of the turning crank. When the
- * crank is at rest, it is rendered using a normal model.
+ * This FastTESR only handles the animated model of the turning crank. When the crank is at rest, it is rendered using a
+ * normal model.
  */
 @OnlyIn(Dist.CLIENT)
 public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {

@@ -33,8 +33,8 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * A registry for 3D models used to render storage cells in the world, when they
- * are inserted into a drive or similar machines.
+ * A registry for 3D models used to render storage cells in the world, when they are inserted into a drive or similar
+ * machines.
  */
 public interface ICellModelRegistry {
 
@@ -42,13 +42,11 @@ public interface ICellModelRegistry {
      * Register a new model for a storage cell item.
      * 
      * <p>
-     * You are responsible for ensuring that the given model is actually loaded by
-     * the game. See
+     * You are responsible for ensuring that the given model is actually loaded by the game. See
      * {@see net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
      * 
-     * This method only maps an {@link Item} to a {@link ResourceLocation} which can
-     * be looked up from the {@link ModelBakery}. No validation about missing models
-     * will be done.
+     * This method only maps an {@link Item} to a {@link ResourceLocation} which can be looked up from the
+     * {@link ModelBakery}. No validation about missing models will be done.
      * 
      * Will throw an exception in case a model is already registered for an item.
      * 
@@ -61,8 +59,8 @@ public interface ICellModelRegistry {
     void registerModel(@Nonnull Item item, @Nonnull ResourceLocation model);
 
     /**
-     * The {@link ResourceLocation} of the model used to render the given storage
-     * cell {@link Item} when inserted into a drive or similar.
+     * The {@link ResourceLocation} of the model used to render the given storage cell {@link Item} when inserted into a
+     * drive or similar.
      * 
      * @param item
      * @return null, if no model is registered.
@@ -79,8 +77,7 @@ public interface ICellModelRegistry {
     Map<Item, ResourceLocation> models();
 
     /**
-     * Returns the default model, which can be used when no explicit model is
-     * registered.
+     * Returns the default model, which can be used when no explicit model is registered.
      */
     @Nonnull
     ResourceLocation getDefaultModel();

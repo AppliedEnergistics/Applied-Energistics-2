@@ -29,8 +29,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Allows for client-side rendering to be customized in the context of
- * block/item registration.
+ * Allows for client-side rendering to be customized in the context of block/item registration.
  */
 public interface IBlockRendering {
 

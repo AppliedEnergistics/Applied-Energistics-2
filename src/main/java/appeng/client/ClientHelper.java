@@ -169,16 +169,16 @@ public class ClientHelper extends ServerHelper {
     }
 
     private void postPlayerRender(final RenderLivingEvent.Pre p) {
-//	FIXME	final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );
-//	FIXME	if( player != null )
-//	FIXME	{
-//	FIXME		final AEColor col = player.myColor;
-//	FIXME		final float r = 0xff & ( col.mediumVariant >> 16 );
-//	FIXME		final float g = 0xff & ( col.mediumVariant >> 8 );
-//	FIXME		final float b = 0xff & ( col.mediumVariant );
-//	FIXME		// FIXME: This is most certainly not going to work!
-//	FIXME		GlStateManager.color4f( r / 255.0f, g / 255.0f, b / 255.0f, 1.0f );
-//	FIXME	}
+        // FIXME final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );
+        // FIXME if( player != null )
+        // FIXME {
+        // FIXME final AEColor col = player.myColor;
+        // FIXME final float r = 0xff & ( col.mediumVariant >> 16 );
+        // FIXME final float g = 0xff & ( col.mediumVariant >> 8 );
+        // FIXME final float b = 0xff & ( col.mediumVariant );
+        // FIXME // FIXME: This is most certainly not going to work!
+        // FIXME GlStateManager.color4f( r / 255.0f, g / 255.0f, b / 255.0f, 1.0f );
+        // FIXME }
     }
 
     private void spawnVibrant(final World w, final double x, final double y, final double z) {

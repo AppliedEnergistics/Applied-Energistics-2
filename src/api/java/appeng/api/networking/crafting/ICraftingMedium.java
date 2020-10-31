@@ -26,14 +26,13 @@ package appeng.api.networking.crafting;
 import net.minecraft.inventory.CraftingInventory;
 
 /**
- * A place to send Items for crafting purposes, this is considered part of AE's
- * External crafting system.
+ * A place to send Items for crafting purposes, this is considered part of AE's External crafting system.
  */
 public interface ICraftingMedium {
 
     /**
-     * instruct a medium to create the item represented by the pattern+details, the
-     * items on the table, and where if possible the output should be directed.
+     * instruct a medium to create the item represented by the pattern+details, the items on the table, and where if
+     * possible the output should be directed.
      *
      * @param patternDetails details
      * @param table          crafting table
@@ -43,8 +42,7 @@ public interface ICraftingMedium {
     boolean pushPattern(ICraftingPatternDetails patternDetails, CraftingInventory table);
 
     /**
-     * @return if this is false, the crafting engine will refuse to send new jobs to
-     *         this medium.
+     * @return if this is false, the crafting engine will refuse to send new jobs to this medium.
      */
     boolean isBusy();
 }

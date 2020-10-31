@@ -31,8 +31,7 @@ import net.minecraftforge.client.model.IModelLoader;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 
 /**
- * Loader that allows access to the built-in crafting cube model from
- * block-model JSONs.
+ * Loader that allows access to the built-in crafting cube model from block-model JSONs.
  */
 public class CraftingCubeModelLoader implements IModelLoader<CraftingCubeModel> {
 

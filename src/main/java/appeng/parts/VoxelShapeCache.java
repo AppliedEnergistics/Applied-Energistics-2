@@ -30,16 +30,14 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 
 /**
- * While creation of a {@link VoxelShape} with
- * {@link VoxelShapes#create(AxisAlignedBB)} is fast enough, combining voxel
- * shapes with {@link VoxelShapes#or(VoxelShape, VoxelShape)} or any other
- * combination method, as well as {@link VoxelShape#simplify()} are <b>extremely
- * slow</b>. For example: Creating a VoxelShape for a list of 5 bounding boxes
- * 10,000 times takes about 1.7 seconds.
+ * While creation of a {@link VoxelShape} with {@link VoxelShapes#create(AxisAlignedBB)} is fast enough, combining voxel
+ * shapes with {@link VoxelShapes#or(VoxelShape, VoxelShape)} or any other combination method, as well as
+ * {@link VoxelShape#simplify()} are <b>extremely slow</b>. For example: Creating a VoxelShape for a list of 5 bounding
+ * boxes 10,000 times takes about 1.7 seconds.
  *
  * <p>
- * To reduce the impact of this on cables, we introduce a global voxel shape
- * cache so that cables can share their combined voxel shapes better.
+ * To reduce the impact of this on cables, we introduce a global voxel shape cache so that cables can share their
+ * combined voxel shapes better.
  */
 final class VoxelShapeCache {
 

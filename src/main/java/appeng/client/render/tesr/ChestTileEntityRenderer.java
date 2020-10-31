@@ -54,8 +54,8 @@ import appeng.core.Api;
 import appeng.tile.storage.ChestTileEntity;
 
 /**
- * The tile entity renderer for ME chests takes care of rendering the right
- * model for the inserted cell, as well as the LED.
+ * The tile entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
+ * LED.
  */
 public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity> {
 
@@ -125,9 +125,8 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
     }
 
     /**
-     * The actual vertex data will be transformed using the matrix stack, but the
-     * faces will not be correctly rotated so the incorrect lighting data would be
-     * used to apply diffuse lighting and the lightmap texture.
+     * The actual vertex data will be transformed using the matrix stack, but the faces will not be correctly rotated so
+     * the incorrect lighting data would be used to apply diffuse lighting and the lightmap texture.
      */
     private static class FaceRotatingModel extends DelegateBakedModel {
         private final FacingToRotation r;

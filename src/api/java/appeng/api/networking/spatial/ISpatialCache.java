@@ -29,8 +29,8 @@ import appeng.api.util.DimensionalCoord;
 public interface ISpatialCache extends IGridCache {
 
     /**
-     * @return true if a region is defined at all, it doesn't have to be valid, but
-     *         all points must be in the same world.
+     * @return true if a region is defined at all, it doesn't have to be valid, but all points must be in the same
+     *         world.
      */
     boolean hasRegion();
 

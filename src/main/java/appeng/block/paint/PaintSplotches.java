@@ -9,8 +9,7 @@ import com.google.common.collect.ImmutableList;
 import appeng.helpers.Splotch;
 
 /**
- * Used to transfer the state about paint splotches from the game thread to the
- * render thread.
+ * Used to transfer the state about paint splotches from the game thread to the render thread.
  */
 public class PaintSplotches {
 

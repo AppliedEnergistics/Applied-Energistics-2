@@ -33,8 +33,7 @@ import javax.annotation.Nonnull;
 public interface IGridCacheRegistry {
 
     /**
-     * Register a new grid cache for use during operation, must be called during the
-     * loading phase.
+     * Register a new grid cache for use during operation, must be called during the loading phase.
      *
      * @param iface   grid cache class
      * @param factory Factory for creating a new instance for each constructed grid
@@ -46,8 +45,7 @@ public interface IGridCacheRegistry {
      *
      * @param grid grid
      *
-     * @return a new Map of IGridCaches from the registry, called from IGrid when
-     *         constructing a new grid.
+     * @return a new Map of IGridCaches from the registry, called from IGrid when constructing a new grid.
      */
     Map<Class<? extends IGridCache>, IGridCache> createCacheInstance(IGrid grid);
 }

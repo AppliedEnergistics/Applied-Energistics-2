@@ -423,8 +423,7 @@ public class CubeBuilder {
     }
 
     /**
-     * Sets the vertex color for future vertices to the given RGB value, and forces
-     * the alpha component to 255.
+     * Sets the vertex color for future vertices to the given RGB value, and forces the alpha component to 255.
      */
     public void setColorRGB(int color) {
         this.setColor(color | 0xFF000000);
@@ -453,8 +452,7 @@ public class CubeBuilder {
     }
 
     /**
-     * CubeBuilder uses UV optimized for cables by default. This switches to
-     * standard UV coordinates.
+     * CubeBuilder uses UV optimized for cables by default. This switches to standard UV coordinates.
      */
     public void useStandardUV() {
         this.useStandardUV = true;

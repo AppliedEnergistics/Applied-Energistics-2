@@ -37,8 +37,8 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 
 /**
- * Implemented on the {@link IPart}s cable objects that can be placed at
- * {@link AEPartLocation}.UNKNOWN in {@link IPartHost}s
+ * Implemented on the {@link IPart}s cable objects that can be placed at {@link AEPartLocation}.UNKNOWN in
+ * {@link IPartHost}s
  */
 public interface ICablePart extends IPart, IGridHost {
 
@@ -58,8 +58,7 @@ public interface ICablePart extends IPart, IGridHost {
     AECableType getCableConnectionType();
 
     /**
-     * Change the color of the cable, this should cost a small amount of dye, or
-     * something.
+     * Change the color of the cable, this should cost a small amount of dye, or something.
      *
      * @param newColor new color
      *

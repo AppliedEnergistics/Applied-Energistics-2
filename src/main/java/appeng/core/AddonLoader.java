@@ -33,8 +33,7 @@ import appeng.api.IAEAddon;
 import appeng.api.IAppEngApi;
 
 /**
- * Loads AE addons on startup and provides them with an {@link IAppEngApi}
- * instance.
+ * Loads AE addons on startup and provides them with an {@link IAppEngApi} instance.
  */
 class AddonLoader {
 

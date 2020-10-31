@@ -27,8 +27,8 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 
 /**
- * posted by the network when the networks Storage Changes, you can use the
- * currentItems list to check levels, and update status.
+ * posted by the network when the networks Storage Changes, you can use the currentItems list to check levels, and
+ * update status.
  *
  * this is the least useful method of getting info about changes in the network.
  *

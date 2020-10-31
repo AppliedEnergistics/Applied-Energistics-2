@@ -48,8 +48,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     private static final String TAG_PLOT_ID = "plot_id";
 
     /**
-     * This is only stored in the itemstack to display in the tooltip on the
-     * client-side.
+     * This is only stored in the itemstack to display in the tooltip on the client-side.
      */
     private static final String TAG_PLOT_SIZE = "plot_size";
 

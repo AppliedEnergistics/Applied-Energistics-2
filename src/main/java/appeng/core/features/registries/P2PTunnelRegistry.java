@@ -73,22 +73,23 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
         this.addNewAttunement(blocks.energyCell(), TunnelType.FE_POWER);
         this.addNewAttunement(blocks.energyCellCreative(), TunnelType.FE_POWER);
 
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 0 ), TunnelType.FE_POWER );
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 1 ), TunnelType.FE_POWER );
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 2 ), TunnelType.FE_POWER );
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 3 ), TunnelType.FE_POWER );
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 4 ), TunnelType.FE_POWER );
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 5 ), TunnelType.FE_POWER );
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 0 ), TunnelType.FE_POWER );
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 1 ), TunnelType.FE_POWER );
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 2 ), TunnelType.FE_POWER );
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 3 ), TunnelType.FE_POWER );
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 4 ), TunnelType.FE_POWER );
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 5 ), TunnelType.FE_POWER );
 
         /**
          * EU tunnel items
          */
 
-// FIXME		this.addNewAttunement( this.getModItem( "ic2", "cable", 0 ), TunnelType.IC2_POWER ); // Copper cable
-// FIXME		this.addNewAttunement( this.getModItem( "ic2", "cable", 1 ), TunnelType.IC2_POWER ); // Glass fibre cable
-// FIXME		this.addNewAttunement( this.getModItem( "ic2", "cable", 2 ), TunnelType.IC2_POWER ); // Gold cable
-// FIXME		this.addNewAttunement( this.getModItem( "ic2", "cable", 3 ), TunnelType.IC2_POWER ); // HV cable
-// FIXME		this.addNewAttunement( this.getModItem( "ic2", "cable", 4 ), TunnelType.IC2_POWER ); // Tin cable
+        // FIXME this.addNewAttunement( this.getModItem( "ic2", "cable", 0 ), TunnelType.IC2_POWER ); // Copper cable
+        // FIXME this.addNewAttunement( this.getModItem( "ic2", "cable", 1 ), TunnelType.IC2_POWER ); // Glass fibre
+        // cable
+        // FIXME this.addNewAttunement( this.getModItem( "ic2", "cable", 2 ), TunnelType.IC2_POWER ); // Gold cable
+        // FIXME this.addNewAttunement( this.getModItem( "ic2", "cable", 3 ), TunnelType.IC2_POWER ); // HV cable
+        // FIXME this.addNewAttunement( this.getModItem( "ic2", "cable", 4 ), TunnelType.IC2_POWER ); // Tin cable
 
         /**
          * attune based on most redstone base items.
@@ -115,15 +116,19 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
         this.addNewAttunement(new ItemStack(Blocks.HOPPER), TunnelType.ITEM);
         this.addNewAttunement(new ItemStack(Blocks.CHEST), TunnelType.ITEM);
         this.addNewAttunement(new ItemStack(Blocks.TRAPPED_CHEST), TunnelType.ITEM);
-// FIXME		this.addNewAttunement( this.getModItem( "extrautilities", "extractor_base", 0 ), TunnelType.ITEM );
-// FIXME		this.addNewAttunement( this.getModItem( "mekanism", "parttransmitter", 9 ), TunnelType.ITEM );
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 0 ), TunnelType.ITEM ); // itemduct
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 1 ), TunnelType.ITEM ); // itemduct
-// FIXME																										// (opaque)
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 2 ), TunnelType.ITEM ); // impulse
-// FIXME																										// itemduct
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 3 ), TunnelType.ITEM ); // impulse
-// FIXME																										// itemduct
+        // FIXME this.addNewAttunement( this.getModItem( "extrautilities", "extractor_base", 0 ), TunnelType.ITEM );
+        // FIXME this.addNewAttunement( this.getModItem( "mekanism", "parttransmitter", 9 ), TunnelType.ITEM );
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 0 ), TunnelType.ITEM ); //
+        // itemduct
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 1 ), TunnelType.ITEM ); //
+        // itemduct
+        // FIXME // (opaque)
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 2 ), TunnelType.ITEM ); //
+        // impulse
+        // FIXME // itemduct
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 3 ), TunnelType.ITEM ); //
+        // impulse
+        // FIXME // itemduct
         // (opaque)
 
         /**
@@ -133,18 +138,22 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
         this.addNewAttunement(new ItemStack(Items.LAVA_BUCKET), TunnelType.FLUID);
         this.addNewAttunement(new ItemStack(Items.MILK_BUCKET), TunnelType.FLUID);
         this.addNewAttunement(new ItemStack(Items.WATER_BUCKET), TunnelType.FLUID);
-// FIXME		this.addNewAttunement( this.getModItem( "mekanism", "machineblock2", 11 ), TunnelType.FLUID );
-// FIXME		this.addNewAttunement( this.getModItem( "mekanism", "parttransmitter", 4 ), TunnelType.FLUID );
-// FIXME		this.addNewAttunement( this.getModItem( "extrautilities", "extractor_base", 6 ), TunnelType.FLUID );
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 0 ), TunnelType.FLUID ); // fluiduct
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 1 ), TunnelType.FLUID ); // fluiduct
-// FIXME																										// (opaque)
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 2 ), TunnelType.FLUID ); // fluiduct
-// FIXME																										// hardened
-// FIXME		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 3 ), TunnelType.FLUID ); // fluiduct
-// FIXME																										// hardened
-// FIXME																										// (opaque)
-// FIXME
+        // FIXME this.addNewAttunement( this.getModItem( "mekanism", "machineblock2", 11 ), TunnelType.FLUID );
+        // FIXME this.addNewAttunement( this.getModItem( "mekanism", "parttransmitter", 4 ), TunnelType.FLUID );
+        // FIXME this.addNewAttunement( this.getModItem( "extrautilities", "extractor_base", 6 ), TunnelType.FLUID );
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 0 ), TunnelType.FLUID ); //
+        // fluiduct
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 1 ), TunnelType.FLUID ); //
+        // fluiduct
+        // FIXME // (opaque)
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 2 ), TunnelType.FLUID ); //
+        // fluiduct
+        // FIXME // hardened
+        // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 3 ), TunnelType.FLUID ); //
+        // fluiduct
+        // FIXME // hardened
+        // FIXME // (opaque)
+        // FIXME
         for (final AEColor c : AEColor.values()) {
             this.addNewAttunement(parts.cableGlass().stack(c, 1), TunnelType.ME);
             this.addNewAttunement(parts.cableCovered().stack(c, 1), TunnelType.ME);

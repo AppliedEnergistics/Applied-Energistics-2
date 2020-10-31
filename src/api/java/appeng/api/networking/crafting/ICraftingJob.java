@@ -29,8 +29,8 @@ import appeng.api.storage.data.IItemList;
 public interface ICraftingJob {
 
     /**
-     * @return if this job is a simulation, simulations cannot be submitted and only
-     *         represent 1 possible future crafting job with fake items.
+     * @return if this job is a simulation, simulations cannot be submitted and only represent 1 possible future
+     *         crafting job with fake items.
      */
     boolean isSimulation();
 
@@ -40,8 +40,8 @@ public interface ICraftingJob {
     long getByteTotal();
 
     /**
-     * Populates the plan list with stack size, and requestable values that
-     * represent the stored, and crafting job contents respectively.
+     * Populates the plan list with stack size, and requestable values that represent the stored, and crafting job
+     * contents respectively.
      *
      * @param plan plan
      */

@@ -33,8 +33,7 @@ public interface IGridVisitor {
     /**
      * Called for each node on the network.
      *
-     * By returning false your informing the host to stop visiting nodes beyond the
-     * current node.
+     * By returning false your informing the host to stop visiting nodes beyond the current node.
      *
      * @param n the current node.
      *

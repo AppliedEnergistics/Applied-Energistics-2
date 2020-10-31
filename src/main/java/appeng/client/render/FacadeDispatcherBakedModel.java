@@ -33,9 +33,8 @@ import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.items.parts.FacadeItem;
 
 /**
- * This baked model class is used as a dispatcher to redirect the renderer to
- * the *real* model that should be used based on the item stack. A custom Item
- * Override List is used to accomplish this.
+ * This baked model class is used as a dispatcher to redirect the renderer to the *real* model that should be used based
+ * on the item stack. A custom Item Override List is used to accomplish this.
  */
 public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     private final FacadeBuilder facadeBuilder;

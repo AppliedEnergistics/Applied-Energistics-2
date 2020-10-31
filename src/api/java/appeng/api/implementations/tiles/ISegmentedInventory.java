@@ -28,9 +28,8 @@ import net.minecraftforge.items.IItemHandler;
 public interface ISegmentedInventory {
 
     /**
-     * Access an internal inventory, note, not all inventories contain real items,
-     * some may be ghost items, and treating them a real inventories will result in
-     * duplication.
+     * Access an internal inventory, note, not all inventories contain real items, some may be ghost items, and treating
+     * them a real inventories will result in duplication.
      *
      * @param name inventory name
      *

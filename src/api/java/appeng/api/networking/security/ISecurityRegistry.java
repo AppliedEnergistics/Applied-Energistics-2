@@ -30,8 +30,7 @@ import javax.annotation.Nonnull;
 import appeng.api.config.SecurityPermissions;
 
 /**
- * Used by vanilla Security Terminal to post biometric data into the security
- * cache.
+ * Used by vanilla Security Terminal to post biometric data into the security cache.
  */
 public interface ISecurityRegistry {
 

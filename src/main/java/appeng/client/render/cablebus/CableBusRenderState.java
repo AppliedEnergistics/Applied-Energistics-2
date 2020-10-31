@@ -37,8 +37,8 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 
 /**
- * This class captures the entire rendering state needed for a cable bus and
- * transports it to the rendering thread for processing.
+ * This class captures the entire rendering state needed for a cable bus and transports it to the rendering thread for
+ * processing.
  */
 public class CableBusRenderState {
 

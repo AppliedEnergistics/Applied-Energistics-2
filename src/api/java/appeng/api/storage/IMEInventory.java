@@ -29,16 +29,14 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 /**
- * AE's Equivalent to IInventory, used to reading contents, and manipulating
- * contents of ME Inventories.
+ * AE's Equivalent to IInventory, used to reading contents, and manipulating contents of ME Inventories.
  *
- * Implementations should COMPLETELY ignore stack size limits from an external
- * view point, Meaning that you can inject Integer.MAX_VALUE items and it should
- * work as defined, or be able to extract Integer.MAX_VALUE and have it work as
+ * Implementations should COMPLETELY ignore stack size limits from an external view point, Meaning that you can inject
+ * Integer.MAX_VALUE items and it should work as defined, or be able to extract Integer.MAX_VALUE and have it work as
  * defined, Translations to MC's max stack size are external to the AE API.
  *
- * If you want to request a stack of an item, you should should determine that
- * prior to requesting the stack from the inventory.
+ * If you want to request a stack of an item, you should should determine that prior to requesting the stack from the
+ * inventory.
  */
 public interface IMEInventory<T extends IAEStack<T>> {
 

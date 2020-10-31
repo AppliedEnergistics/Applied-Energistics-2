@@ -29,9 +29,8 @@ import javax.annotation.Nonnegative;
  */
 public interface IWideReadableNumberConverter {
     /**
-     * Converts a number into a human readable form. It will not round the number,
-     * but down it. Will try to cut the number down 1 decimal later if width can be
-     * below 4. Can only handle non negative numbers
+     * Converts a number into a human readable form. It will not round the number, but down it. Will try to cut the
+     * number down 1 decimal later if width can be below 4. Can only handle non negative numbers
      *
      * Example: 10000L -> 10K 9999L -> 9999
      *

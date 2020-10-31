@@ -23,9 +23,8 @@ import appeng.items.materials.MaterialItem;
 import appeng.recipes.handlers.InscriberRecipe;
 
 /**
- * This class indexes all inscriber recipes to find valid inputs for the top and
- * bottom optional slots. This speeds up checks whether inputs for those two
- * slots are valid.
+ * This class indexes all inscriber recipes to find valid inputs for the top and bottom optional slots. This speeds up
+ * checks whether inputs for those two slots are valid.
  */
 public final class InscriberRecipes {
 
@@ -103,9 +102,8 @@ public final class InscriberRecipes {
     }
 
     /**
-     * Checks if there is an inscriber recipe that supports the given combination of
-     * top/bottom presses. Both the given combination and the reverse will be
-     * searched.
+     * Checks if there is an inscriber recipe that supports the given combination of top/bottom presses. Both the given
+     * combination and the reverse will be searched.
      */
     public static boolean isValidOptionalIngredientCombination(World world, ItemStack pressA, ItemStack pressB) {
         for (InscriberRecipe recipe : getRecipes(world)) {
@@ -119,9 +117,8 @@ public final class InscriberRecipes {
     }
 
     /**
-     * Checks if there is an inscriber recipe that would use the given item stack as
-     * an optional ingredient. Bottom and top can be used interchangeably here,
-     * because the inscriber will flip the recipe if needed.
+     * Checks if there is an inscriber recipe that would use the given item stack as an optional ingredient. Bottom and
+     * top can be used interchangeably here, because the inscriber will flip the recipe if needed.
      */
     public static boolean isValidOptionalIngredient(World world, ItemStack is) {
         for (InscriberRecipe recipe : getRecipes(world)) {

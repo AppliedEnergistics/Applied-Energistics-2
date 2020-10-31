@@ -27,8 +27,7 @@ import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.me.cache.EnergyGridCache;
 
 /**
- * Maintain my interests, and a global watch list, they should always be fully
- * synchronized.
+ * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
 public class EnergyWatcher implements IEnergyWatcher {
 

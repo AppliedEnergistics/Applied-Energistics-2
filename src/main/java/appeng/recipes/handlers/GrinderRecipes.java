@@ -13,8 +13,7 @@ public final class GrinderRecipes {
     }
 
     /**
-     * Search all available Grinder recipes for a recipe matching the given input or
-     * null;
+     * Search all available Grinder recipes for a recipe matching the given input or null;
      */
     @Nullable
     public static GrinderRecipe findForInput(World world, ItemStack input) {
@@ -28,8 +27,7 @@ public final class GrinderRecipes {
     }
 
     /**
-     * Checks if the given item stack is an ingredient in any grinder recipe,
-     * disregarding its current size.
+     * Checks if the given item stack is an ingredient in any grinder recipe, disregarding its current size.
      */
     public static boolean isValidIngredient(World world, ItemStack stack) {
         for (IRecipe<IInventory> recipe : world.getRecipeManager().getRecipes(GrinderRecipe.TYPE).values()) {

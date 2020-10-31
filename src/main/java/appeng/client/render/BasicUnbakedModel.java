@@ -16,8 +16,7 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 /**
- * An unbaked model that has standard models as a dependency and produces a
- * custom baked model as a result.
+ * An unbaked model that has standard models as a dependency and produces a custom baked model as a result.
  */
 public interface BasicUnbakedModel<T extends IModelGeometry<T>> extends IModelGeometry<T> {
 

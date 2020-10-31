@@ -27,9 +27,8 @@ import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.client.render.cablebus.CubeBuilder;
 
 /**
- * Crafting cube baked model that adds a full-bright light texture on top of a
- * normal base texture onto the inner cube. The light texture is only drawn
- * fullbright if the multiblock is currently powered.
+ * Crafting cube baked model that adds a full-bright light texture on top of a normal base texture onto the inner cube.
+ * The light texture is only drawn fullbright if the multiblock is currently powered.
  */
 class LightBakedModel extends CraftingCubeBakedModel {
 

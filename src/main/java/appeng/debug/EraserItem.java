@@ -121,8 +121,7 @@ public class EraserItem extends AEBaseItem {
     }
 
     /**
-     * Filling needs to be deferred as the tags might not be populated at
-     * construction time.
+     * Filling needs to be deferred as the tags might not be populated at construction time.
      * 
      * @return
      */

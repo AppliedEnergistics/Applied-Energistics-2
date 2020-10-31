@@ -28,8 +28,7 @@ import javax.annotation.Nonnull;
 import appeng.api.exceptions.FailedConnectionException;
 
 /**
- * A helper responsible for creating new {@link IGridNode},
- * {@link IGridConnection} or potentially similar tasks.
+ * A helper responsible for creating new {@link IGridNode}, {@link IGridConnection} or potentially similar tasks.
  *
  * @author yueh
  * @version rv5
@@ -40,8 +39,8 @@ public interface IGridHelper {
     /**
      * Create a grid node for your {@link IGridHost}
      *
-     * The passed {@link IGridBlock} represents the definition for properties like
-     * connectable sides. Refer to its documentation for further details.
+     * The passed {@link IGridBlock} represents the definition for properties like connectable sides. Refer to its
+     * documentation for further details.
      *
      * @param block grid block
      *
@@ -53,8 +52,7 @@ public interface IGridHelper {
     /**
      * Create a direct connection between two {@link IGridNode}.
      *
-     * This will be considered as having a distance of 1, regardless of the location
-     * of both nodes.
+     * This will be considered as having a distance of 1, regardless of the location of both nodes.
      *
      * @param a to be connected gridnode
      * @param b to be connected gridnode

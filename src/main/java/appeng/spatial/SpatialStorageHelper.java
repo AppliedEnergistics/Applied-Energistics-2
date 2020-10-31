@@ -55,8 +55,7 @@ public class SpatialStorageHelper {
     private final ThreadLocal<PortalInfo> teleportTarget = new ThreadLocal<>();
 
     /**
-     * If an entity is currently being teleported, this will return the target
-     * within the target dimension.
+     * If an entity is currently being teleported, this will return the target within the target dimension.
      */
     public PortalInfo getTeleportTarget() {
         return teleportTarget.get();

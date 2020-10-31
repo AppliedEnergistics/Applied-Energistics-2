@@ -30,15 +30,13 @@ import mcjty.theoneprobe.api.ProbeMode;
 import appeng.api.parts.IPart;
 
 /**
- * Similar to {@link IProbeInfoProvider}, but already providing the
- * {@link IPart} being looked at.
+ * Similar to {@link IProbeInfoProvider}, but already providing the {@link IPart} being looked at.
  *
  */
 public interface IPartProbInfoProvider {
 
     /**
-     * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, EntityPlayer,
-     *      World, IBlockState, IProbeHitData)
+     * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, EntityPlayer, World, IBlockState, IProbeHitData)
      */
     void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
             BlockState blockState, IProbeHitData data);

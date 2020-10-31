@@ -45,25 +45,20 @@ public interface IStorageHelper {
     /**
      * Register a new storage channel.
      *
-     * AE2 already provides native channels for {@link IAEItemStack} and
-     * {@link IAEFluidStack}.
+     * AE2 already provides native channels for {@link IAEItemStack} and {@link IAEFluidStack}.
      *
-     * Each {@link IAEStack} subtype can only have a single factory instance.
-     * Overwriting is not intended. Each subtype should be a direct one, this might
-     * be enforced at any time.
+     * Each {@link IAEStack} subtype can only have a single factory instance. Overwriting is not intended. Each subtype
+     * should be a direct one, this might be enforced at any time.
      *
-     * Channel class and factory instance can be used interchangeable as identifier.
-     * In most cases the factory instance is used as key as having direct access the
-     * methods is more beneficial compared to being forced to query the registry
-     * each time.
+     * Channel class and factory instance can be used interchangeable as identifier. In most cases the factory instance
+     * is used as key as having direct access the methods is more beneficial compared to being forced to query the
+     * registry each time.
      *
-     * Caching the factory instance in a field or local variable is perfectly for
-     * performance reasons. But do not use any AE2 internal field as they can change
-     * randomly between releases.
+     * Caching the factory instance in a field or local variable is perfectly for performance reasons. But do not use
+     * any AE2 internal field as they can change randomly between releases.
      *
      * @param channel The channel type, must be a subtype of {@link IStorageChannel}
-     * @param factory An instance implementing the channel, must be be an instance
-     *                of channel
+     * @param factory An instance implementing the channel, must be be an instance of channel
      */
     @Nonnull
     <T extends IAEStack<T>, C extends IStorageChannel<T>> void registerStorageChannel(@Nonnull Class<C> channel,
@@ -84,8 +79,7 @@ public interface IStorageHelper {
     /**
      * An unmodifiable collection of all registered factory instance.
      *
-     * This is mainly used as helper to let storage grids construct their internal
-     * storage for each type.
+     * This is mainly used as helper to let storage grids construct their internal storage for each type.
      */
     @Nonnull
     Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels();
@@ -126,8 +120,8 @@ public interface IStorageHelper {
             final IActionSource src, final Actionable mode);
 
     /**
-     * Posts alteration of stored items to the provided {@link IStorageGrid}. This
-     * can be used by cell containers to notify the grid of storage cell changes.
+     * Posts alteration of stored items to the provided {@link IStorageGrid}. This can be used by cell containers to
+     * notify the grid of storage cell changes.
      *
      * @param gs          the storage grid.
      * @param removedCell the removed cell itemstack

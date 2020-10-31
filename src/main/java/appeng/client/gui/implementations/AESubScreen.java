@@ -29,8 +29,7 @@ import appeng.parts.reporting.TerminalPart;
 import appeng.tile.storage.ChestTileEntity;
 
 /**
- * Utility class for sub-screens of other containers that allow returning to the
- * primary container UI.
+ * Utility class for sub-screens of other containers that allow returning to the primary container UI.
  */
 final class AESubScreen {
 
@@ -39,8 +38,8 @@ final class AESubScreen {
     private final ItemStack previousContainerIcon;
 
     /**
-     * Based on the container we're opening for, try to determine what it's
-     * "primary" GUI would be so that we can go back to it.
+     * Based on the container we're opening for, try to determine what it's "primary" GUI would be so that we can go
+     * back to it.
      */
     public AESubScreen(AEBaseScreen<?> gui, Object containerTarget) {
         this.gui = gui;

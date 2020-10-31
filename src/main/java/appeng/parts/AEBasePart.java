@@ -299,8 +299,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     /**
-     * depending on the from, different settings will be accepted, don't call this
-     * with null
+     * depending on the from, different settings will be accepted, don't call this with null
      *
      * @param from     source of settings
      * @param compound compound of source

@@ -34,8 +34,7 @@ import appeng.api.config.SecurityPermissions;
 public interface ISecurityProvider {
 
     /**
-     * used to represent the security key for the network, should be based on a
-     * unique timestamp.
+     * used to represent the security key for the network, should be based on a unique timestamp.
      *
      * @return unique key.
      */

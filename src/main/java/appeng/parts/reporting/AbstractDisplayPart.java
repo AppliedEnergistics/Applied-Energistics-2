@@ -27,9 +27,8 @@ import appeng.items.parts.PartModels;
 /**
  * A more sophisticated part overlapping all 3 textures.
  *
- * Subclass this if you need want a new part and need all 3 textures. For more
- * concrete implementations, the direct abstract subclasses might be a better
- * alternative.
+ * Subclass this if you need want a new part and need all 3 textures. For more concrete implementations, the direct
+ * abstract subclasses might be a better alternative.
  *
  * @author AlgorithmX2
  * @author yueh

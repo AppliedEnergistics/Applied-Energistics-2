@@ -61,15 +61,12 @@ import appeng.api.util.AEPartLocation;
 public interface IPart extends ICustomCableConnection {
 
     /**
-     * get an ItemStack that represents the bus, should contain the settings for
-     * whatever, can also be used in conjunction with removePart to take a part off
-     * and drop it or something.
+     * get an ItemStack that represents the bus, should contain the settings for whatever, can also be used in
+     * conjunction with removePart to take a part off and drop it or something.
      *
-     * This is used to drop the bus, and to save the bus, when saving the bus,
-     * wrenched is false, and writeToNBT will be called to save important details
-     * about the part, if the part is wrenched include in your NBT Data any settings
-     * you might want to keep around, you can restore those settings when
-     * constructing your part.
+     * This is used to drop the bus, and to save the bus, when saving the bus, wrenched is false, and writeToNBT will be
+     * called to save important details about the part, if the part is wrenched include in your NBT Data any settings
+     * you might want to keep around, you can restore those settings when constructing your part.
      *
      * @param type , what kind of ItemStack to return?
      *
@@ -78,9 +75,8 @@ public interface IPart extends ICustomCableConnection {
     ItemStack getItemStack(PartItemStack type);
 
     /**
-     * Render dynamic portions of this part, as part of the cable bus TESR. This
-     * part has to return true for {@link #requireDynamicRender()} in order for this
-     * method to be called.
+     * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for
+     * {@link #requireDynamicRender()} in order for this method to be called.
      */
     @OnlyIn(Dist.CLIENT)
     default void renderDynamic(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers,
@@ -95,8 +91,7 @@ public interface IPart extends ICustomCableConnection {
     boolean requireDynamicRender();
 
     /**
-     * @return if the bus has a solid side, and you can place random stuff on it
-     *         like torches or levers
+     * @return if the bus has a solid side, and you can place random stuff on it like torches or levers
      */
     boolean isSolid();
 
@@ -106,9 +101,8 @@ public interface IPart extends ICustomCableConnection {
     boolean canConnectRedstone();
 
     /**
-     * Write the part information for saving, the part will be saved with
-     * getItemStack(false) and this method will be called after to load settings,
-     * inventory or other values from the world.
+     * Write the part information for saving, the part will be saved with getItemStack(false) and this method will be
+     * called after to load settings, inventory or other values from the world.
      *
      * @param data to be written nbt data
      */
@@ -171,8 +165,8 @@ public interface IPart extends ICustomCableConnection {
     boolean readFromStream(PacketBuffer data) throws IOException;
 
     /**
-     * get the Grid Node for the Bus, be sure your IGridBlock is NOT
-     * isWorldAccessible, if it is your going to cause crashes.
+     * get the Grid Node for the Bus, be sure your IGridBlock is NOT isWorldAccessible, if it is your going to cause
+     * crashes.
      *
      * or null if you don't have a grid node.
      *
@@ -200,8 +194,8 @@ public interface IPart extends ICustomCableConnection {
     /**
      * used for tunnels.
      *
-     * @return a grid node that represents the external facing side, these must be
-     *         isWorldAccessible with the correct faces marked as external
+     * @return a grid node that represents the external facing side, these must be isWorldAccessible with the correct
+     *         faces marked as external
      */
     IGridNode getExternalFacingNode();
 
@@ -231,8 +225,7 @@ public interface IPart extends ICustomCableConnection {
      * @param hand   hand used
      * @param pos    position of block
      *
-     * @return if your activate method performed something, you should use false
-     *         unless you really need it.
+     * @return if your activate method performed something, you should use false unless you really need it.
      */
     boolean onShiftActivate(PlayerEntity player, Hand hand, Vector3d pos);
 
@@ -243,32 +236,28 @@ public interface IPart extends ICustomCableConnection {
      * @param hand   hand used
      * @param pos    position of block
      *
-     * @return if your activate method performed something, you should use false
-     *         unless you really need it.
+     * @return if your activate method performed something, you should use false unless you really need it.
      */
     default boolean onClicked(PlayerEntity player, Hand hand, Vector3d pos) {
         return false;
     }
 
     /**
-     * Called when you shift-left click the part, very similar to
-     * Block.onBlockClicked
+     * Called when you shift-left click the part, very similar to Block.onBlockClicked
      *
      * @param player shift-left clicking player
      * @param hand   hand used
      * @param pos    position of block
      *
-     * @return if your activate method performed something, you should use false
-     *         unless you really need it.
+     * @return if your activate method performed something, you should use false unless you really need it.
      */
     default boolean onShiftClicked(PlayerEntity player, Hand hand, Vector3d pos) {
         return false;
     }
 
     /**
-     * Add drops to the items being dropped into the world, if your item stores its
-     * contents when wrenched use the wrenched boolean to control what data is saved
-     * vs dropped when it is broken.
+     * Add drops to the items being dropped into the world, if your item stores its contents when wrenched use the
+     * wrenched boolean to control what data is saved vs dropped when it is broken.
      *
      * @param drops    item drops if wrenched
      * @param wrenched control flag for wrenched vs broken
@@ -276,8 +265,8 @@ public interface IPart extends ICustomCableConnection {
     void getDrops(List<ItemStack> drops, boolean wrenched);
 
     /**
-     * @return 0 - 8, reasonable default 3-4, this controls the cable connection to
-     *         the node. -1 to render connection yourself.
+     * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node. -1 to render connection
+     *         yourself.
      */
     @Override
     float getCableConnectionLength(AECableType cable);
@@ -303,8 +292,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * Used to determine which parts can be placed on what cables.
      *
-     * Dense cables are not allowed for functional (getGridNode returns a node)
-     * parts. Doing so will result in crashes.
+     * Dense cables are not allowed for functional (getGridNode returns a node) parts. Doing so will result in crashes.
      *
      * @param what placed part
      *
@@ -313,28 +301,23 @@ public interface IPart extends ICustomCableConnection {
     boolean canBePlacedOn(BusSupport what);
 
     /**
-     * This method is used when a chunk is rebuilt to determine how this part should
-     * be rendered. The returned models should represent the part oriented north.
-     * They will be automatically rotated to match the part's actual orientation.
-     * Tint indices 1-4 can be used in the models to access the parts color.
+     * This method is used when a chunk is rebuilt to determine how this part should be rendered. The returned models
+     * should represent the part oriented north. They will be automatically rotated to match the part's actual
+     * orientation. Tint indices 1-4 can be used in the models to access the parts color.
      *
      * <dl>
      * <dt>Tint Index 1</dt>
-     * <dd>The {@link AEColor#blackVariant dark variant color} of the cable that
-     * this part is attached to.</dd>
+     * <dd>The {@link AEColor#blackVariant dark variant color} of the cable that this part is attached to.</dd>
      * <dt>Tint Index 2</dt>
-     * <dd>The {@link AEColor#mediumVariant color} of the cable that this part is
-     * attached to.</dd>
+     * <dd>The {@link AEColor#mediumVariant color} of the cable that this part is attached to.</dd>
      * <dt>Tint Index 3</dt>
-     * <dd>The {@link AEColor#whiteVariant bright variant color} of the cable that
-     * this part is attached to.</dd>
+     * <dd>The {@link AEColor#whiteVariant bright variant color} of the cable that this part is attached to.</dd>
      * <dt>Tint Index 4</dt>
-     * <dd>A color variant that is between the cable's {@link AEColor#mediumVariant
-     * color} and its {@link AEColor#whiteVariant bright variant}.</dd>
+     * <dd>A color variant that is between the cable's {@link AEColor#mediumVariant color} and its
+     * {@link AEColor#whiteVariant bright variant}.</dd>
      * </dl>
      *
-     * <b>Important:</b> All models must have been registered via the
-     * {@link IPartModels} API before use.
+     * <b>Important:</b> All models must have been registered via the {@link IPartModels} API before use.
      */
     @Nonnull
     default IPartModel getStaticModels() {
@@ -343,12 +326,10 @@ public interface IPart extends ICustomCableConnection {
     }
 
     /**
-     * Implement this method if your part exposes capabilitys. Any requests for
-     * capabilities on the cable bus will be forwarded to parts on the appropriate
-     * side.
+     * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be
+     * forwarded to parts on the appropriate side.
      *
-     * @see CapabilityProvider#getCapability(Capability,
-     *      net.minecraft.util.Direction)
+     * @see CapabilityProvider#getCapability(Capability, net.minecraft.util.Direction)
      *
      * @return The capability
      */
@@ -360,8 +341,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * Additional model data to be passed to the models for rendering this part.
      *
-     * @return The model data to pass to the model. Only useful if custom models are
-     *         used.
+     * @return The model data to pass to the model. Only useful if custom models are used.
      */
     @Nonnull
     default IModelData getModelData() {
@@ -376,9 +356,8 @@ public interface IPart extends ICustomCableConnection {
     void getBoxes(final IPartCollisionHelper bch);
 
     /**
-     * This will be used by the core to add information about this part to a crash
-     * report if it is attached to a host that caused a crash during tick
-     * processing.
+     * This will be used by the core to add information about this part to a crash report if it is attached to a host
+     * that caused a crash during tick processing.
      *
      * @param section The crash report section the information will be added to.
      */

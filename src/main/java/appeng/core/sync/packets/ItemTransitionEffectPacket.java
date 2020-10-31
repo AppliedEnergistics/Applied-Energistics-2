@@ -35,8 +35,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
 /**
- * Plays a transition particle effect into the supplied direction. Used
- * primarily by annihilation planes.
+ * Plays a transition particle effect into the supplied direction. Used primarily by annihilation planes.
  */
 public class ItemTransitionEffectPacket extends BasePacket {
 

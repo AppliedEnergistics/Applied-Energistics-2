@@ -39,8 +39,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.parts.AEBasePart;
 
 /**
- * Describes how a container the player has opened was originally located. This
- * can be one of three ways:
+ * Describes how a container the player has opened was originally located. This can be one of three ways:
  *
  * <ul>
  * <li>A tile entity at a given block position.</li>
@@ -56,8 +55,8 @@ public final class ContainerLocator {
          */
         PLAYER_INVENTORY,
         /**
-         * An item used from the player's inventory, but right-clicked on a block face,
-         * has block position and side in addition to the above.
+         * An item used from the player's inventory, but right-clicked on a block face, has block position and side in
+         * addition to the above.
          */
         PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, BLOCK, PART
     }
@@ -96,9 +95,8 @@ public final class ContainerLocator {
     }
 
     /**
-     * Construct a container locator for an item being used on a block. The item
-     * could still open a container for itself, but it might also open a special
-     * container for the block being right-clicked.
+     * Construct a container locator for an item being used on a block. The item could still open a container for
+     * itself, but it might also open a special container for the block being right-clicked.
      */
     public static ContainerLocator forItemUseContext(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();

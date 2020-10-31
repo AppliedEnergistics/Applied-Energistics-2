@@ -28,9 +28,8 @@ import appeng.api.storage.cells.ICellContainer;
 import appeng.api.storage.data.IAEStack;
 
 /**
- * Thin logic layer that can be swapped with different IMEInventory
- * implementations, used to handle features related to storage, that are
- * Separate from the storage medium itself.
+ * Thin logic layer that can be swapped with different IMEInventory implementations, used to handle features related to
+ * storage, that are Separate from the storage medium itself.
  *
  * @param <T>
  */
@@ -44,9 +43,8 @@ public interface IMEInventoryHandler<T extends IAEStack<T>> extends IMEInventory
     AccessRestriction getAccess();
 
     /**
-     * determine if a particular item is prioritized for this inventory handler, if
-     * it is, then it will be added to this inventory prior to any non-prioritized
-     * inventories.
+     * determine if a particular item is prioritized for this inventory handler, if it is, then it will be added to this
+     * inventory prior to any non-prioritized inventories.
      *
      * @param input - item that might be added
      *
@@ -73,18 +71,16 @@ public interface IMEInventoryHandler<T extends IAEStack<T>> extends IMEInventory
     /**
      * pass back value for blinkCell.
      *
-     * @return the slot index for the cell that this represents in the storage unit,
-     *         the method on the {@link ICellContainer} will be called with this
-     *         value, only trust the return value of this method if you are the
-     *         implementer of this.
+     * @return the slot index for the cell that this represents in the storage unit, the method on the
+     *         {@link ICellContainer} will be called with this value, only trust the return value of this method if you
+     *         are the implementer of this.
      */
     int getSlot();
 
     /**
-     * AE Uses a two pass placement system, the first pass checks contents and tries
-     * to find a place where the item belongs, however in some cases you can save
-     * processor time, or require that the second, or first pass is simply ignored,
-     * this allows you to do that.
+     * AE Uses a two pass placement system, the first pass checks contents and tries to find a place where the item
+     * belongs, however in some cases you can save processor time, or require that the second, or first pass is simply
+     * ignored, this allows you to do that.
      *
      * @param i - pass number ( 1 or 2 )
      *

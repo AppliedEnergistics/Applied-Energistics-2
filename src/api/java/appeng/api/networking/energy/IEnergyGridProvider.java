@@ -39,11 +39,9 @@ public interface IEnergyGridProvider {
      *
      * Can return a list of providers behind the current.
      *
-     * An example would be something acting as proxy between different
-     * {@link IEnergyGrid}s.
+     * An example would be something acting as proxy between different {@link IEnergyGrid}s.
      *
-     * This can contain duplicate entries, AE will ensure that each provider is only
-     * visited once.
+     * This can contain duplicate entries, AE will ensure that each provider is only visited once.
      *
      * internal use only
      */
@@ -55,8 +53,8 @@ public interface IEnergyGridProvider {
      *
      * Extracts the requested amount from the provider.
      *
-     * This should never forward a call to another {@link IEnergyGridProvider},
-     * instead return them via {@link IEnergyGridProvider#providers()}
+     * This should never forward a call to another {@link IEnergyGridProvider}, instead return them via
+     * {@link IEnergyGridProvider#providers()}
      *
      * @return the used amount
      */
@@ -66,8 +64,8 @@ public interface IEnergyGridProvider {
     /**
      * Injects the offered amount into the provider.
      *
-     * This should never forward a call to another {@link IEnergyGridProvider},
-     * instead return them via {@link IEnergyGridProvider#providers()}
+     * This should never forward a call to another {@link IEnergyGridProvider}, instead return them via
+     * {@link IEnergyGridProvider#providers()}
      *
      * internal use only
      *
@@ -81,8 +79,8 @@ public interface IEnergyGridProvider {
      *
      * Returns the current demand of an provider.
      *
-     * This should never forward a call to another {@link IEnergyGridProvider},
-     * instead return them via {@link IEnergyGridProvider#providers()}
+     * This should never forward a call to another {@link IEnergyGridProvider}, instead return them via
+     * {@link IEnergyGridProvider#providers()}
      *
      *
      * @param d the max amount offered, the demand should never exceed it.
@@ -96,9 +94,8 @@ public interface IEnergyGridProvider {
      *
      * AE currently uses this to enqueue the next visited provider.
      *
-     * There is no guarantee that this works on in a perfect way. It can be limited
-     * to the returns of the past {@link IEnergyGridProvider#providers()}, but not
-     * any future one discovered by visiting further providers.
+     * There is no guarantee that this works on in a perfect way. It can be limited to the returns of the past
+     * {@link IEnergyGridProvider#providers()}, but not any future one discovered by visiting further providers.
      *
      * E.g. inject into the the lowest one first or extract from the highest one.
      *
@@ -114,9 +111,8 @@ public interface IEnergyGridProvider {
      *
      * AE currently uses this to enqueue the next visited provider.
      *
-     * There is no guarantee that this works on in a perfect way. It can be limited
-     * to the returns of the past {@link IEnergyGridProvider#providers()}, but not
-     * any future one discovered by visiting further providers.
+     * There is no guarantee that this works on in a perfect way. It can be limited to the returns of the past
+     * {@link IEnergyGridProvider#providers()}, but not any future one discovered by visiting further providers.
      *
      * E.g. inject into the the lowest one first or extract from the highest one.
      *

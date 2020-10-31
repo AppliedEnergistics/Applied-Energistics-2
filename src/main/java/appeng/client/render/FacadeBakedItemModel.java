@@ -37,8 +37,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.client.render.cablebus.FacadeBuilder;
 
 /**
- * This model used the provided FacadeBuilder to "slice" the item quads for the
- * facade provided.
+ * This model used the provided FacadeBuilder to "slice" the item quads for the facade provided.
  *
  * @author covers1624
  */

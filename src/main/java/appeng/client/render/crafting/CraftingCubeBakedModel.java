@@ -40,10 +40,9 @@ import appeng.tile.crafting.CraftingCubeModelData;
 import appeng.util.Platform;
 
 /**
- * The base model for baked models used by components of the crafting cube
- * multi-block in it's formed state. Primarily this base class handles adding
- * the "ring" that frames the multi-block structure and delegates rendering of
- * the "inner" part of each block to the subclasses of this class.
+ * The base model for baked models used by components of the crafting cube multi-block in it's formed state. Primarily
+ * this base class handles adding the "ring" that frames the multi-block structure and delegates rendering of the
+ * "inner" part of each block to the subclasses of this class.
  */
 abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
 
@@ -219,8 +218,7 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
     }
 
     /**
-     * Adds a 3x3x3 corner cap to the cube builder if there are no adjacent crafting
-     * cubes on that corner.
+     * Adds a 3x3x3 corner cap to the cube builder if there are no adjacent crafting cubes on that corner.
      */
     private void addCornerCap(CubeBuilder builder, EnumSet<Direction> connections, Direction side, Direction down,
             Direction west, Direction north) {

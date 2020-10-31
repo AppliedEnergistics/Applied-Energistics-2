@@ -34,8 +34,7 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.ProgressBarPacket;
 
 /**
- * This class is responsible for synchronizing Container-fields from server to
- * client.
+ * This class is responsible for synchronizing Container-fields from server to client.
  */
 public class SyncData {
 

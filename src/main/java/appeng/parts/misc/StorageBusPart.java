@@ -536,9 +536,8 @@ public class StorageBusPart extends UpgradeablePart
     /*
      * @Override
      *
-     * @Method( iname = IntegrationType.BuildCraftTransport ) public ConnectOverride
-     * overridePipeConnection( PipeType type, ForgeDirection with ) { return type ==
-     * PipeType.ITEM && with == this.getSide() ? ConnectOverride.CONNECT :
+     * @Method( iname = IntegrationType.BuildCraftTransport ) public ConnectOverride overridePipeConnection( PipeType
+     * type, ForgeDirection with ) { return type == PipeType.ITEM && with == this.getSide() ? ConnectOverride.CONNECT :
      * ConnectOverride.DISCONNECT; }
      */
     @Override

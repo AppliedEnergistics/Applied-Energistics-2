@@ -19,8 +19,8 @@ import appeng.core.AppEng;
 import appeng.mixins.unlitquad.BakedQuadAccessor;
 
 /**
- * Implementation details of allowing quads to be defined as "unlit" in JSON
- * models by specifying an "unlit" boolean property on the face.
+ * Implementation details of allowing quads to be defined as "unlit" in JSON models by specifying an "unlit" boolean
+ * property on the face.
  */
 public class UnlitQuadHooks {
 
@@ -34,14 +34,13 @@ public class UnlitQuadHooks {
     private static final int UNLIT_LIGHT_UV = LightTexture.packLight(15, 15);
 
     /**
-     * Thread-Local flag to indicate that an enhanced Applied Energistics model is
-     * currently being deserialized.
+     * Thread-Local flag to indicate that an enhanced Applied Energistics model is currently being deserialized.
      */
     private static final ThreadLocal<Boolean> ENABLE_UNLIT_EXTENSIONS = new ThreadLocal<>();
 
     /**
-     * Notify the unlit model system that a specific model is about to be
-     * deserialized by {@link net.minecraft.client.renderer.model.ModelBakery}.
+     * Notify the unlit model system that a specific model is about to be deserialized by
+     * {@link net.minecraft.client.renderer.model.ModelBakery}.
      */
     public static void beginDeserializingModel(ResourceLocation location) {
         String namespace = location.getNamespace();
@@ -72,10 +71,9 @@ public class UnlitQuadHooks {
     }
 
     /**
-     * Creates a new quad from the given quad and pre-bakes it to not be affected by
-     * lighting (neither diffuse lighting nor the prebaked lightmap). This works on
-     * the assumption that Vanilla will not modify a quad's lightmap data if it's
-     * not zero.
+     * Creates a new quad from the given quad and pre-bakes it to not be affected by lighting (neither diffuse lighting
+     * nor the prebaked lightmap). This works on the assumption that Vanilla will not modify a quad's lightmap data if
+     * it's not zero.
      */
     public static BakedQuad makeUnlit(BakedQuad quad) {
         int[] vertexData = quad.getVertexData().clone();
@@ -91,9 +89,8 @@ public class UnlitQuadHooks {
     }
 
     /**
-     * This subclass is used as a marker to indicate this face deserialized from
-     * JSON is supposed to be unlit, which translates to processing by
-     * {@link #makeUnlit(BakedQuad)}.
+     * This subclass is used as a marker to indicate this face deserialized from JSON is supposed to be unlit, which
+     * translates to processing by {@link #makeUnlit(BakedQuad)}.
      */
     public static class UnlitBlockPartFace extends BlockPartFace {
         public UnlitBlockPartFace(Direction cullFaceIn, int tintIndexIn, String textureIn, BlockFaceUV blockFaceUVIn) {
@@ -102,8 +99,8 @@ public class UnlitQuadHooks {
     }
 
     /**
-     * Find the index in the BakedQuad vertex data (for vertex 0) where the lightmap
-     * coordinates are. Assumes the BLOCK vertex format.
+     * Find the index in the BakedQuad vertex data (for vertex 0) where the lightmap coordinates are. Assumes the BLOCK
+     * vertex format.
      */
     private static int getLightOffset() {
         VertexFormat format = DefaultVertexFormats.BLOCK;

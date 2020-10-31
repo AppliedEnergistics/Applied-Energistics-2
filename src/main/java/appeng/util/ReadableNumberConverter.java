@@ -46,8 +46,7 @@ public enum ReadableNumberConverter implements ISlimReadableNumberConverter, IWi
     private final Format format;
 
     /**
-     * Initializes the specific decimal format with special format for negative and
-     * positive numbers
+     * Initializes the specific decimal format with special format for negative and positive numbers
      */
     ReadableNumberConverter() {
         final DecimalFormatSymbols symbols = new DecimalFormatSymbols();

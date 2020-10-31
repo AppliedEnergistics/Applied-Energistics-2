@@ -49,14 +49,12 @@ public interface IWirelessTermRegistry {
 
     /**
      * @param is item with handler PlayerEntity
-     * @return a register handler for the item in question, or null if there isn't
-     *         one
+     * @return a register handler for the item in question, or null if there isn't one
      */
     IWirelessTermHandler getWirelessTerminalHandler(ItemStack is);
 
     /**
-     * opens the wireless terminal gui, the wireless terminal item, must be in the
-     * active slot on the tool bar.
+     * opens the wireless terminal gui, the wireless terminal item, must be in the active slot on the tool bar.
      */
     void openWirelessTerminalGui(ItemStack item, IBlockReader world, PlayerEntity player, Hand hand);
 }

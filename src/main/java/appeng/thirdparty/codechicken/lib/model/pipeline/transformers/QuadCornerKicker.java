@@ -31,12 +31,10 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
 import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
 
 /**
- * This transformer is a little complicated. Basically a Facade / Cover can use
- * this to 'kick' the edges in of quads to fix z-Fighting in the corners. Use it
- * by specifying the side of the block you are on, the bitmask for where the
- * other Facades / Cover's are, the bounding box of the facade, NOT the hole
- * piece, and the thickness of your Facade / Cover, this is used as the kick
- * amount.
+ * This transformer is a little complicated. Basically a Facade / Cover can use this to 'kick' the edges in of quads to
+ * fix z-Fighting in the corners. Use it by specifying the side of the block you are on, the bitmask for where the other
+ * Facades / Cover's are, the bounding box of the facade, NOT the hole piece, and the thickness of your Facade / Cover,
+ * this is used as the kick amount.
  *
  * @author covers1624
  */
@@ -78,8 +76,7 @@ public class QuadCornerKicker extends QuadTransformer {
     }
 
     /**
-     * Sets the bitmask of Facades / Covers in the blockspace. This is as simple as,
-     * mask = (1 << side)
+     * Sets the bitmask of Facades / Covers in the blockspace. This is as simple as, mask = (1 << side)
      *
      * @param mask The mask.
      */
@@ -88,8 +85,7 @@ public class QuadCornerKicker extends QuadTransformer {
     }
 
     /**
-     * Sets the bounding box of the Facade / Cover, this should be the full box, not
-     * just a piece of the hole's 'ring'.
+     * Sets the bounding box of the Facade / Cover, this should be the full box, not just a piece of the hole's 'ring'.
      *
      * @param box The BoundingBox.
      */
@@ -159,10 +155,9 @@ public class QuadCornerKicker extends QuadTransformer {
         }
 
         /**
-         * Used to find what corner is at the 3 sides. This method assumes you pass in
-         * the X axis side, Y axis side, and Z axis side, it will NOT complain about an
-         * invalid side, you will just get garbage data. This method also does not care
-         * what order the 3 axes are in.
+         * Used to find what corner is at the 3 sides. This method assumes you pass in the X axis side, Y axis side, and
+         * Z axis side, it will NOT complain about an invalid side, you will just get garbage data. This method also
+         * does not care what order the 3 axes are in.
          *
          * @param sideA Side one.
          * @param sideB Side two.

@@ -33,9 +33,8 @@ import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.ItemSlot;
 
 /**
- * Universal Facade for other inventories. Used to conveniently interact with
- * various types of inventories. This is not used for actually monitoring an
- * inventory. It is just for insertion and extraction, and is primarily used by
+ * Universal Facade for other inventories. Used to conveniently interact with various types of inventories. This is not
+ * used for actually monitoring an inventory. It is just for insertion and extraction, and is primarily used by
  * import/export buses.
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot> {

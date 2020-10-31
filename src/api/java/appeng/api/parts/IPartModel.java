@@ -31,14 +31,13 @@ import javax.annotation.Nonnull;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * A container to store a collection of {@link ResourceLocation} as models for a
- * part as well as other properties.
+ * A container to store a collection of {@link ResourceLocation} as models for a part as well as other properties.
  */
 public interface IPartModel {
 
     /**
-     * A solid {@link IPartModel} indicates that the rendering requires a cable
-     * connection, which will also result in creating an intersection for the cable.
+     * A solid {@link IPartModel} indicates that the rendering requires a cable connection, which will also result in
+     * creating an intersection for the cable.
      *
      * This should be true for pretty much all parts.
      *

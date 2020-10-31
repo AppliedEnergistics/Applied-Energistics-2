@@ -24,19 +24,16 @@ import java.util.Collection;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * Allows registration of part models that can then be used in
- * {@link IPart#getStaticModels()}.
+ * Allows registration of part models that can then be used in {@link IPart#getStaticModels()}.
  */
 public interface IPartModels {
 
     /**
-     * Allows registration of part models that can then be used in
-     * {@link IPart#getStaticModels()}.
+     * Allows registration of part models that can then be used in {@link IPart#getStaticModels()}.
      *
      * Models can be registered multiple times without causing issues.
      *
-     * This method must be called during the pre-init phase (as part of your
-     * plugin's constructor).
+     * This method must be called during the pre-init phase (as part of your plugin's constructor).
      */
     void registerModels(Collection<ResourceLocation> partModels);
 

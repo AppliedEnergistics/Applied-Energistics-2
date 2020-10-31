@@ -35,8 +35,8 @@ import appeng.api.storage.data.IAEStack;
 public interface ICellHandler {
 
     /**
-     * return true if the provided item is handled by your cell handler. ( AE May
-     * choose to skip this method, and just request a handler )
+     * return true if the provided item is handled by your cell handler. ( AE May choose to skip this method, and just
+     * request a handler )
      *
      * @param is to be checked item
      *
@@ -48,10 +48,9 @@ public interface ICellHandler {
      * If you cannot handle the provided item, return null
      *
      * @param is      a storage cell item.
-     * @param host    anytime the contents of your storage cell changes it should
-     *                use this to request a save, please note, this value can be
-     *                null. If provided, the host is responsible for persisting the
-     *                cell content.
+     * @param host    anytime the contents of your storage cell changes it should use this to request a save, please
+     *                note, this value can be null. If provided, the host is responsible for persisting the cell
+     *                content.
      * @param channel the storage channel requested.
      *
      * @return a new IMEHandler for the provided item
@@ -69,8 +68,7 @@ public interface ICellHandler {
      * 3 - red, ( usually means the cell is 100% full )
      *
      * @param is      the cell item. ( use the handler for any details you can )
-     * @param handler the handler for the cell is provides for reference, you can
-     *                cast this to your handler.
+     * @param handler the handler for the cell is provides for reference, you can cast this to your handler.
      *
      * @return get the status of the cell based on its contents.
      */

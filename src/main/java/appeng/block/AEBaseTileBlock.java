@@ -259,12 +259,10 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     /**
-     * Returns the BlockState based on the given BlockState while considering the
-     * state of the given TileEntity.
+     * Returns the BlockState based on the given BlockState while considering the state of the given TileEntity.
      *
-     * If the given TileEntity is not of the right type for this block, the state is
-     * returned unchanged, this is also the case if the given block state does not
-     * belong to this block.
+     * If the given TileEntity is not of the right type for this block, the state is returned unchanged, this is also
+     * the case if the given block state does not belong to this block.
      */
     public final BlockState getTileEntityBlockState(BlockState current, TileEntity te) {
         if (current.getBlock() != this || !tileEntityClass.isInstance(te)) {
@@ -275,11 +273,10 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     /**
-     * Reimplement this in subclasses to allow tile-entities to update the state of
-     * their block when their own state changes.
+     * Reimplement this in subclasses to allow tile-entities to update the state of their block when their own state
+     * changes.
      *
-     * It is guaranteed that te is not-null and the block of the given block state
-     * is this exact block instance.
+     * It is guaranteed that te is not-null and the block of the given block state is this exact block instance.
      */
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, T te) {
         return currentState;

@@ -36,8 +36,7 @@ import appeng.core.AppEng;
 import appeng.items.parts.FacadeItem;
 
 /**
- * This plugin will dynamically add facade recipes for any item that can be
- * turned into a facade.
+ * This plugin will dynamically add facade recipes for any item that can be turned into a facade.
  */
 class FacadeRegistryPlugin implements IRecipeManagerPlugin {
 

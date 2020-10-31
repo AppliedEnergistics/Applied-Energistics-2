@@ -34,10 +34,9 @@ import appeng.api.util.INetworkToolAgent;
 public interface IStorageMonitorPart extends IMonitorPart, IPart, IGridHost, INetworkToolAgent {
 
     /**
-     * @return the item being displayed on the storage monitor, in AEStack Form, can
-     *         be either a IAEItemStack or an IAEFluidStack the quantity is
-     *         important remember to use getStackSize() on the IAEStack, and not on
-     *         the FluidStack/ItemStack acquired from it.
+     * @return the item being displayed on the storage monitor, in AEStack Form, can be either a IAEItemStack or an
+     *         IAEFluidStack the quantity is important remember to use getStackSize() on the IAEStack, and not on the
+     *         FluidStack/ItemStack acquired from it.
      */
     IAEStack<?> getDisplayed();
 

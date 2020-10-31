@@ -12,8 +12,8 @@ import appeng.spatial.SpatialStorageBiome;
 import appeng.spatial.SpatialStorageDimensionIds;
 
 /**
- * This only needs to be here because the server-side will create a dynamic
- * registry manager long before our mod is initialized.
+ * This only needs to be here because the server-side will create a dynamic registry manager long before our mod is
+ * initialized.
  */
 @Mixin(BiomeRegistry.class)
 public class BiomesMixin {

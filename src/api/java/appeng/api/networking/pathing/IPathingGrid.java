@@ -35,8 +35,7 @@ public interface IPathingGrid extends IGridCache {
     boolean isNetworkBooting();
 
     /**
-     * @return the controller state of the network, useful if you want to require a
-     *         controller for a feature.
+     * @return the controller state of the network, useful if you want to require a controller for a feature.
      */
     @Nonnull
     ControllerState getControllerState();

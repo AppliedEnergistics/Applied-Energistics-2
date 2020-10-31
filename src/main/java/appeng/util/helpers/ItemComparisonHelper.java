@@ -33,11 +33,10 @@ import appeng.api.config.FuzzyMode;
 public class ItemComparisonHelper {
 
     /**
-     * Compare the two {@link ItemStack}s based on the same {@link Item} and damage
-     * value.
+     * Compare the two {@link ItemStack}s based on the same {@link Item} and damage value.
      *
-     * In case of the item being damageable, only the {@link Item} will be
-     * considered. If not it will also compare both damage values.
+     * In case of the item being damageable, only the {@link Item} will be considered. If not it will also compare both
+     * damage values.
      *
      * Ignores NBT.
      *
@@ -50,8 +49,8 @@ public class ItemComparisonHelper {
     /**
      * Compares two {@link ItemStack} and their NBT tag for equality.
      *
-     * Use this when a precise check is required and the same item is required. Not
-     * just something with different NBT tags.
+     * Use this when a precise check is required and the same item is required. Not just something with different NBT
+     * tags.
      *
      * @return true, if both are identical.
      */
@@ -60,13 +59,11 @@ public class ItemComparisonHelper {
     }
 
     /**
-     * Similar to {@link ItemComparisonHelper#isEqualItem(ItemStack, ItemStack)},
-     * but it can further check, if both match the same {@link FuzzyMode} or are
-     * considered equal by the {@link OreDictionary}
+     * Similar to {@link ItemComparisonHelper#isEqualItem(ItemStack, ItemStack)}, but it can further check, if both
+     * match the same {@link FuzzyMode} or are considered equal by the {@link OreDictionary}
      *
      * @param mode how to compare the two {@link ItemStack}s
-     * @return true, if both are matching the mode or considered equal by the
-     *         {@link OreDictionary}
+     * @return true, if both are matching the mode or considered equal by the {@link OreDictionary}
      */
     public boolean isFuzzyEqualItem(final ItemStack a, final ItemStack b, final FuzzyMode mode) {
         if (a.isEmpty() && b.isEmpty()) {
@@ -90,24 +87,14 @@ public class ItemComparisonHelper {
                 return (percentDamagedOfA > mode.breakPoint) == (percentDamagedOfB > mode.breakPoint);
             }
         }
-// FIXME
-//		final OreReference aOR = OreHelper.INSTANCE.getOre( a ).orElse( null );
-//		final OreReference bOR = OreHelper.INSTANCE.getOre( b ).orElse( null );
-//
-//		if( OreHelper.INSTANCE.sameOre( aOR, bOR ) )
-//		{
-//			return true;
-//		}
 
         return a.isItemEqual(b);
     }
 
     /**
-     * recursive test for NBT Equality, this was faster then trying to compare /
-     * generate hashes, its also more reliable then the vanilla version which likes
-     * to fail when NBT Compound data changes order, it is pretty expensive
-     * performance wise, so try an use shared tag compounds as long as the system
-     * remains in AE.
+     * recursive test for NBT Equality, this was faster then trying to compare / generate hashes, its also more reliable
+     * then the vanilla version which likes to fail when NBT Compound data changes order, it is pretty expensive
+     * performance wise, so try an use shared tag compounds as long as the system remains in AE.
      */
     public boolean isNbtTagEqual(final CompoundNBT left, final CompoundNBT right) {
         if (left == right) {

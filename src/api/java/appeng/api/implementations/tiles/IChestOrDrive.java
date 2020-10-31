@@ -47,8 +47,7 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable {
     CellState getCellStatus(int slot);
 
     /**
-     * @return if the device is online you should check this before providing any
-     *         other information.
+     * @return if the device is online you should check this before providing any other information.
      */
     boolean isPowered();
 

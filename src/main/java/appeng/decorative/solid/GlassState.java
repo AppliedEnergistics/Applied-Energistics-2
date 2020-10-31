@@ -23,8 +23,8 @@ import java.util.EnumSet;
 import net.minecraft.util.Direction;
 
 /**
- * Immutable (and thus thread-safe) class that encapsulates the rendering state
- * required for a connected texture glass block.
+ * Immutable (and thus thread-safe) class that encapsulates the rendering state required for a connected texture glass
+ * block.
  */
 public final class GlassState {
 

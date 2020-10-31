@@ -35,8 +35,7 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import appeng.client.render.BasicUnbakedModel;
 
 /**
- * The parent model for the compass baked model. Declares the dependencies for
- * the base and pointer submodels mostly.
+ * The parent model for the compass baked model. Declares the dependencies for the base and pointer submodels mostly.
  */
 public class SkyCompassModel implements BasicUnbakedModel<SkyCompassModel> {
 

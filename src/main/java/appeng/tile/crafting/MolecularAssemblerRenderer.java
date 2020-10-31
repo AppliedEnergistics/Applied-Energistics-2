@@ -49,8 +49,7 @@ import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
 
 /**
- * Renders the item currently being crafted by the molecular assembler, as well
- * as the light strip when it's powered.
+ * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
 @OnlyIn(Dist.CLIENT)
 public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAssemblerTileEntity> {
@@ -140,10 +139,9 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
     }
 
     /**
-     * See above for when this can be removed. It creates a RenderType that is
-     * equivalent to {@link RenderType#getTranslucent()}, but enables alpha testing.
-     * This prevents the fully transparents parts of the rendered block model from
-     * occluding our particles.
+     * See above for when this can be removed. It creates a RenderType that is equivalent to
+     * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of the
+     * rendered block model from occluding our particles.
      */
     private static RenderType createRenderType() {
         RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper
