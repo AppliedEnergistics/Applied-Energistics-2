@@ -68,14 +68,14 @@ public class FluidTankWidget extends AbstractButtonWidget implements ITooltip {
                     int y1 = top;
                     int x2 = x1 + 16;
                     int y2 = y1 + iconHeightRemainder;
-                    volume.renderGuiRect(x1, y2, x2, y2);
+                    volume.renderGuiRect(x1, y1, x2, y2);
                 }
                 for (int i = 0; i < scaledHeight / 16; i++) {
                     int x1 = this.x;
                     int y1 = top - (i + 1) * 16;
                     int x2 = x1 + 16;
                     int y2 = y1 + 16;
-                    volume.renderGuiRect(x1, y2, x2, y2);
+                    volume.renderGuiRect(x1, y1, x2, y2);
                 }
             }
 
