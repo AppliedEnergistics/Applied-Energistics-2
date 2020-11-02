@@ -127,7 +127,7 @@ public class AEFluidInventory implements IAEFluidTank {
 
         final IAEFluidStack fluid = this.fluids[slot];
 
-        if (fluid != EMPTY_AE_FLUIDSTACK && !fluid.getFluidStack().equals(resource)) {
+        if (fluid != EMPTY_AE_FLUIDSTACK && !FluidVolume.areEqualExceptAmounts(fluid.getFluidStack(), resource)) {
             return 0;
         }
 
@@ -153,7 +153,8 @@ public class AEFluidInventory implements IAEFluidTank {
 
     public FluidAmount drain(final int slot, final FluidVolume resource, final boolean doDrain) {
         final IAEFluidStack fluid = this.fluids[slot];
-        if (resource.isEmpty() || fluid == EMPTY_AE_FLUIDSTACK || !fluid.getFluidStack().equals(resource)) {
+        if (resource.isEmpty() || fluid == EMPTY_AE_FLUIDSTACK
+                || !FluidVolume.areEqualExceptAmounts(fluid.getFluidStack(), resource)) {
             return FluidAmount.ZERO;
         }
         int toDrain = (int) resource.getAmount_F().asLong(1000, RoundingMode.DOWN);
