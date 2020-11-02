@@ -216,7 +216,7 @@ public class Platform {
      * returns true if the code is on the client.
      */
     public static boolean isClient() {
-        return !AppEng.instance().isOnServerThread();
+        return AppEng.instance() != null && !AppEng.instance().isOnServerThread();
     }
 
     public static boolean hasPermissions(final DimensionalCoord dc, final PlayerEntity player) {
