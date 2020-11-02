@@ -101,7 +101,7 @@ public final class AppEngBootstrap {
             return;
         }
 
-        if (b.getCategory() == Biome.Category.THEEND || b.getCategory() == Biome.Category.NETHER) {
+        if (isBlacklistedBiomeCategory(b.getCategory())) {
             AELog.debug("Not generating meteorites in %s because it's of category %s", id, b.getCategory());
             return;
         }
@@ -122,7 +122,7 @@ public final class AppEngBootstrap {
             return;
         }
 
-        if (b.getCategory() == Biome.Category.THEEND || b.getCategory() == Biome.Category.NETHER) {
+        if (isBlacklistedBiomeCategory(b.getCategory())) {
             AELog.debug("Not generating quartz ore in %s because it's of category %s", id, b.getCategory());
             return;
         }
@@ -138,6 +138,11 @@ public final class AppEngBootstrap {
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
             modifier.addFeature(GenerationStep.Feature.UNDERGROUND_DECORATION, chargedQuartz);
         }
+    }
+
+    private static boolean isBlacklistedBiomeCategory(Biome.Category category) {
+        return category == Biome.Category.THEEND || category == Biome.Category.NETHER
+                || category == Biome.Category.NONE;
     }
 
     private static ConfiguredFeature<?, ?> registerQuartzOreFeature() {
