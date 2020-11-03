@@ -14,7 +14,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.IAEFluidTank;
-import appeng.util.Platform;
 
 public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     public static ContainerType<FluidLevelEmitterContainer> TYPE;

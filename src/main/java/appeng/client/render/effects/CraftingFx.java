@@ -129,8 +129,8 @@ public class CraftingFx extends SpriteTexturedParticle {
     public static class Factory implements IParticleFactory<BasicParticleType> {
         private final IAnimatedSprite spriteSet;
 
-        public Factory(IAnimatedSprite p_i50477_1_) {
-            this.spriteSet = p_i50477_1_;
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
         }
 
         @Override

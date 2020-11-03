@@ -525,7 +525,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         super.handleMouseClick(slot, slotIdx, mouseButton, clickType);
     }
 
-    protected boolean func_195363_d(int keyCode, int scanCode) {
+    protected boolean itemStackMoved(int keyCode, int scanCode) {
         return checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode));
     }
 

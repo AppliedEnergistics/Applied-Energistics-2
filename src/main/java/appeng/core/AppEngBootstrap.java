@@ -87,10 +87,11 @@ public final class AppEngBootstrap {
         // Tell Minecraft about our configured quartz ore feature
         BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
         return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(), Feature.ORE
-                .withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.field_241882_a, quartzOreState,
-                        AEConfig.instance().getQuartzOresPerCluster()))
-                .withPlacement(Placement.field_242907_l/* RANGE */.configure(new TopSolidRangeConfig(12, 12, 72)))
-                .func_242728_a/* spreadHorizontally */()
+                .withConfiguration(
+                        new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
+                                AEConfig.instance().getQuartzOresPerCluster()))
+                .withPlacement(Placement.RANGE/* RANGE */.configure(new TopSolidRangeConfig(12, 12, 72)))
+                .square/* spreadHorizontally */()
                 .func_242731_b/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
     }
 
@@ -102,7 +103,7 @@ public final class AppEngBootstrap {
                 ChargedQuartzOreFeature.INSTANCE
                         .withConfiguration(new ChargedQuartzOreConfig(quartzOreState, chargedQuartzOreState,
                                 AEConfig.instance().getSpawnChargedChance()))
-                        .withPlacement(Placement.NOPE.configure(NoPlacementConfig.field_236556_b_)));
+                        .withPlacement(Placement.NOPE.configure(NoPlacementConfig.INSTANCE)));
     }
 
     private static void registerDimension() {

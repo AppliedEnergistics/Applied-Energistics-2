@@ -11,7 +11,7 @@ import net.minecraft.world.gen.feature.structure.StructureFeatures;
 @Mixin(StructureFeatures.class)
 public interface ConfiguredStructureFeaturesAccessor {
 
-    @Invoker("func_244162_a")
+    @Invoker("register")
     static <FC extends IFeatureConfig, F extends Structure<FC>> StructureFeature<FC, F> register(String id,
             StructureFeature<FC, F> configuredStructureFeature) {
         throw new AssertionError();

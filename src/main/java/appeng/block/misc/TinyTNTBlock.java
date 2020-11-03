@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -50,7 +51,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     private static final VoxelShape SHAPE = VoxelShapes
             .create(new AxisAlignedBB(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
-    public TinyTNTBlock(Block.Properties props) {
+    public TinyTNTBlock(AbstractBlock.Properties props) {
         super(defaultProps(Material.TNT).notSolid());
     }
 

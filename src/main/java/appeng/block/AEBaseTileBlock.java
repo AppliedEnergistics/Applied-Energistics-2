@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -62,7 +63,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     @Nonnull
     private Supplier<T> tileEntityFactory;
 
-    public AEBaseTileBlock(final Block.Properties props) {
+    public AEBaseTileBlock(final AbstractBlock.Properties props) {
         super(props);
     }
 

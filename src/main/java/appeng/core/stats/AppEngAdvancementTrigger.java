@@ -86,7 +86,7 @@ public class AppEngAdvancementTrigger
     }
 
     @Override
-    public Instance deserialize(JsonObject p_230307_1_, ConditionArrayParser p_230307_2_) {
+    public Instance deserialize(JsonObject object, ConditionArrayParser conditions) {
         return new AppEngAdvancementTrigger.Instance(this.getId());
     }
 
@@ -116,7 +116,7 @@ public class AppEngAdvancementTrigger
         }
 
         @Override
-        public JsonObject serialize(ConditionArraySerializer p_230240_1_) {
+        public JsonObject serialize(ConditionArraySerializer conditions) {
             return new JsonObject();
         }
     }

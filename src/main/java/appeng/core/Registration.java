@@ -33,7 +33,6 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
@@ -500,8 +499,8 @@ final class Registration {
     // Forge registry instead
     private static <F extends Structure<?>> void registerStructure(IForgeRegistry<Structure<?>> registry, String name,
             F structure, GenerationStage.Decoration stage) {
-        Structure.field_236365_a_.put(name.toLowerCase(Locale.ROOT), structure);
-        Structure.field_236385_u_.put(structure, stage);
+        Structure.NAME_STRUCTURE_BIMAP.put(name.toLowerCase(Locale.ROOT), structure);
+        Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, stage);
         structure.setRegistryName(name.toLowerCase(Locale.ROOT));
         registry.register(structure);
     }

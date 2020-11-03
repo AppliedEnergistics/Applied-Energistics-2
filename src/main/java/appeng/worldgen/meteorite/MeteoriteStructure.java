@@ -21,7 +21,7 @@ public class MeteoriteStructure extends Structure<NoFeatureConfig> {
     public static final Structure<NoFeatureConfig> INSTANCE = new MeteoriteStructure(NoFeatureConfig.field_236558_a_);
 
     public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_INSTANCE = INSTANCE
-            .func_236391_a_(NoFeatureConfig.field_236559_b_);
+            .withConfiguration(NoFeatureConfig.field_236559_b_);
 
     public MeteoriteStructure(Codec<NoFeatureConfig> configCodec) {
         super(configCodec);

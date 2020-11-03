@@ -18,6 +18,7 @@
 
 package appeng.block.crafting;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,7 +40,7 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public MolecularAssemblerBlock(Block.Properties props) {
+    public MolecularAssemblerBlock(AbstractBlock.Properties props) {
         super(props);
         setDefaultState(getDefaultState().with(POWERED, false));
     }

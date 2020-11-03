@@ -95,7 +95,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public boolean isReplaceable(BlockState p_225541_1_, Fluid p_225541_2_) {
+    public boolean isReplaceable(BlockState state, Fluid fluid) {
         return true;
     }
 

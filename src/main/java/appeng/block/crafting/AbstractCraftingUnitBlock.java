@@ -18,6 +18,7 @@
 
 package appeng.block.crafting;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,7 +45,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
 
     public final CraftingUnitType type;
 
-    public AbstractCraftingUnitBlock(Block.Properties props, final CraftingUnitType type) {
+    public AbstractCraftingUnitBlock(AbstractBlock.Properties props, final CraftingUnitType type) {
         super(props);
         this.type = type;
         this.setDefaultState(getDefaultState().with(FORMED, false).with(POWERED, false));

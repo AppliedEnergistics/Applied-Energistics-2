@@ -18,6 +18,7 @@
 
 package appeng.block.qnb;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
@@ -44,7 +45,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
         SHAPE = VoxelShapes.create(new AxisAlignedBB(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
     }
 
-    public QuantumBaseBlock(Block.Properties props) {
+    public QuantumBaseBlock(AbstractBlock.Properties props) {
         super(props);
         this.setDefaultState(this.getDefaultState().with(FORMED, false));
     }

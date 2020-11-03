@@ -56,7 +56,7 @@ public final class BiomeModifier {
         // this is only half-correct since a structure can start in an adjacent biome
         // and extend into biomes that would usually not start the structure
         Map<Integer, List<Structure<?>>> structuresByStage = biomeAccessor.getBiomeStructures();
-        int step = structure.field_236268_b_.func_236396_f_().ordinal();
+        int step = structure.field_236268_b_.getDecorationStage().ordinal();
         if (!structuresByStage.containsKey(step)) {
             structuresByStage.put(step, new ArrayList<>());
         }

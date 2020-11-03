@@ -25,7 +25,7 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
     }
 
     @Override
-    public boolean func_241855_a(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos,
+    public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos,
             ChargedQuartzOreConfig config) {
         ChunkPos chunkPos = new ChunkPos(pos);
 

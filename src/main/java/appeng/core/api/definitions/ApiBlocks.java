@@ -21,8 +21,6 @@ package appeng.core.api.definitions;
 import static appeng.block.AEBaseBlock.defaultProps;
 
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SoundType;
@@ -241,10 +239,12 @@ public final class ApiBlocks implements IBlocks {
     private final IBlockDefinition cubeGenerator;
     private final IBlockDefinition energyGenerator;
 
-    private static final Block.Properties QUARTZ_PROPERTIES = defaultProps(Material.ROCK).hardnessAndResistance(3, 5);
+    private static final AbstractBlock.Properties QUARTZ_PROPERTIES = defaultProps(Material.ROCK)
+            .hardnessAndResistance(3, 5);
 
-    private static final Block.Properties SKYSTONE_PROPERTIES = defaultProps(Material.ROCK).hardnessAndResistance(50,
-            150);
+    private static final AbstractBlock.Properties SKYSTONE_PROPERTIES = defaultProps(Material.ROCK)
+            .hardnessAndResistance(50,
+                    150);
 
     public ApiBlocks(FeatureFactory registry) {
         this.quartzOre = registry.block("quartz_ore", () -> new QuartzOreBlock(QUARTZ_PROPERTIES))
@@ -317,7 +317,8 @@ public final class ApiBlocks implements IBlocks {
                 .block("sky_stone_small_brick", () -> new SkyStoneBlock(SkystoneType.SMALL_BRICK, SKYSTONE_PROPERTIES))
                 .addFeatures(AEFeature.SKY_STONE).build();
 
-        Block.Properties skyStoneChestProps = defaultProps(Material.ROCK).hardnessAndResistance(50, 150).notSolid();
+        AbstractBlock.Properties skyStoneChestProps = defaultProps(Material.ROCK).hardnessAndResistance(50, 150)
+                .notSolid();
 
         TileEntityDefinition skyChestTile = registry
                 .tileEntity("sky_chest", SkyChestTileEntity.class, SkyChestTileEntity::new)
@@ -495,7 +496,7 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity("crafting_unit", CraftingTileEntity.class, CraftingTileEntity::new).build();
 
         FeatureFactory crafting = registry.features(AEFeature.CRAFTING_CPU);
-        Block.Properties craftingBlockProps = defaultProps(Material.IRON);
+        AbstractBlock.Properties craftingBlockProps = defaultProps(Material.IRON);
         this.craftingUnit = crafting
                 .block("crafting_unit", () -> new CraftingUnitBlock(craftingBlockProps, CraftingUnitType.UNIT))
                 .rendering(new CraftingCubeRendering()).tileEntity(craftingUnit).build();

@@ -18,6 +18,7 @@
 
 package appeng.block;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -40,22 +41,22 @@ public abstract class AEBaseBlock extends Block {
 
     private boolean isInventory = false;
 
-    protected AEBaseBlock(final Block.Properties props) {
+    protected AEBaseBlock(final AbstractBlock.Properties props) {
         super(props);
     }
 
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static Block.Properties defaultProps(Material material) {
+    public static AbstractBlock.Properties defaultProps(Material material) {
         return defaultProps(material, material.getColor());
     }
 
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static Block.Properties defaultProps(Material material, MaterialColor color) {
-        return Block.Properties.create(material, color)
+    public static AbstractBlock.Properties defaultProps(Material material, MaterialColor color) {
+        return AbstractBlock.Properties.create(material, color)
                 // These values previousls were encoded in AEBaseBlock
                 .hardnessAndResistance(2.2f, 11.f).harvestTool(ToolType.PICKAXE).harvestLevel(0)
                 .sound(getDefaultSoundByMaterial(material));

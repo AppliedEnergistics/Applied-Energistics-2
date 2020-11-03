@@ -91,7 +91,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
      * @return true, if it found a single block of water
      */
     private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius) {
-        final int seaLevel = generator.func_230356_f_();
+        final int seaLevel = generator.getSeaLevel();
         final int maxY = seaLevel - 1;
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
 

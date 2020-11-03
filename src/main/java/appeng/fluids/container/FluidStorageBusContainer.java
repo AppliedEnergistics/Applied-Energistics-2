@@ -43,7 +43,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.fluids.parts.FluidStorageBusPart;
 import appeng.fluids.util.IAEFluidTank;
-import appeng.util.Platform;
 import appeng.util.iterators.NullIterator;
 
 /**

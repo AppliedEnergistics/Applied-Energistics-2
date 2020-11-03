@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -37,7 +38,7 @@ import appeng.tile.misc.SkyCompassTileEntity;
 
 public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
 
-    public SkyCompassBlock(Block.Properties props) {
+    public SkyCompassBlock(AbstractBlock.Properties props) {
         super(props);
     }
 
