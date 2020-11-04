@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.features.IWorldGen;
 
@@ -39,6 +40,19 @@ public final class WorldGenRegistry implements IWorldGen {
         for (WorldGenType type : WorldGenType.values()) {
             settings.put(type, new TypeSet());
         }
+    }
+
+    @Override
+    public void enableWorldGenForDimension(WorldGenType type, ResourceLocation dimID) {
+    }
+
+    @Override
+    public void disableWorldGenForDimension(WorldGenType type, ResourceLocation dimID) {
+    }
+
+    @Override
+    public boolean isWorldGenEnabled(WorldGenType type, ServerWorld w) {
+        return true;
     }
 
     @Override
