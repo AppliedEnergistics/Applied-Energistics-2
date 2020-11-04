@@ -18,73 +18,63 @@
 
 package appeng.core.features.registries;
 
+import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.features.IWorldGen;
 
 public final class WorldGenRegistry implements IWorldGen {
 
     public static final WorldGenRegistry INSTANCE = new WorldGenRegistry();
-    private final TypeSet[] types;
 
-    private WorldGenRegistry() {
+    private final Map<WorldGenType, TypeSet> settings = new EnumMap<>(WorldGenType.class);
 
-        this.types = new TypeSet[WorldGenType.values().length];
-
-        for (final WorldGenType type : WorldGenType.values()) {
-            this.types[type.ordinal()] = new TypeSet();
+    public WorldGenRegistry() {
+        for (WorldGenType type : WorldGenType.values()) {
+            settings.put(type, new TypeSet());
         }
     }
 
     @Override
-    public void enableWorldGenForDimension(final WorldGenType type, final ResourceLocation dimensionID) {
-        if (type == null) {
-            throw new IllegalArgumentException("Bad Type Passed");
-        }
+    public void disableWorldGenForBiome(final WorldGenType type, final ResourceLocation biomeId) {
+        Objects.requireNonNull(type);
+        Objects.requireNonNull(biomeId);
 
-        this.types[type.ordinal()].enabledDimensions.add(dimensionID);
+        settings.get(type).modBiomeBlacklist.add(biomeId);
     }
 
     @Override
-    public void disableWorldGenForDimension(final WorldGenType type, final ResourceLocation dimensionID) {
-        if (type == null) {
-            throw new IllegalArgumentException("Bad Type Passed");
-        }
-
-        this.types[type.ordinal()].badDimensions.add(dimensionID);
+    public boolean isWorldGenDisabledForBiome(WorldGenType type, ResourceLocation biomeId) {
+        TypeSet typeSettings = settings.get(type);
+        return typeSettings.configBiomeBlacklist.contains(biomeId)
+                || typeSettings.modBiomeBlacklist.contains(biomeId);
     }
 
-    @Override
-    public boolean isWorldGenEnabled(final WorldGenType type, final ServerWorld w) {
-        if (type == null) {
-            throw new IllegalArgumentException("Bad Type Passed");
-        }
-
-        if (w == null) {
-            throw new IllegalArgumentException("Bad Provider Passed");
-        }
-
-        ResourceLocation id = w.getDimensionKey().getLocation();
-        final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains(id);
-        final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains(id);
-
-        if (isBadDimension) {
-            return false;
-        }
-
-        if (!isGoodDimension && type == WorldGenType.METEORITES) {
-            return false;
-        }
-
-        return true;
+    public void setConfigBlacklists(
+            List<ResourceLocation> quartzBiomeBlacklist,
+            List<ResourceLocation> meteoriteBiomeBlacklist) {
+        settings.get(WorldGenType.CERTUS_QUARTZ).configBiomeBlacklist.clear();
+        settings.get(WorldGenType.CERTUS_QUARTZ).configBiomeBlacklist.addAll(quartzBiomeBlacklist);
+        settings.get(WorldGenType.CHARGED_CERTUS_QUARTZ).configBiomeBlacklist.clear();
+        settings.get(WorldGenType.CHARGED_CERTUS_QUARTZ).configBiomeBlacklist.addAll(quartzBiomeBlacklist);
+        settings.get(WorldGenType.METEORITES).configBiomeBlacklist.clear();
+        settings.get(WorldGenType.METEORITES).configBiomeBlacklist.addAll(meteoriteBiomeBlacklist);
     }
 
     private static class TypeSet {
-
-        final HashSet<ResourceLocation> badDimensions = new HashSet<>();
-        final HashSet<ResourceLocation> enabledDimensions = new HashSet<>();
+        /**
+         * Biomes blacklisted by other mods.
+         */
+        final Set<ResourceLocation> modBiomeBlacklist = new HashSet<>();
+        /**
+         * Biomes blacklisted in the user's config.
+         */
+        final Set<ResourceLocation> configBiomeBlacklist = new HashSet<>();
     }
 }

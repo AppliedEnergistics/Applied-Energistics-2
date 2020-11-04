@@ -24,17 +24,23 @@
 package appeng.api.features;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
 
 public interface IWorldGen {
+    /**
+     * Forces a given AE2 world-generation type to be disabled for a given biome.
+     */
+    void disableWorldGenForBiome(WorldGenType type, ResourceLocation biomeId);
 
-    void enableWorldGenForDimension(WorldGenType type, ResourceLocation dimID);
-
-    void disableWorldGenForDimension(WorldGenType type, ResourceLocation dimID);
-
-    boolean isWorldGenEnabled(WorldGenType type, ServerWorld w);
+    /**
+     * Checks if the given world-generation type is disabled for the given biome id.
+     * <p>
+     * This also takes AE2's configuration file into account.
+     */
+    boolean isWorldGenDisabledForBiome(WorldGenType type, ResourceLocation biomeId);
 
     enum WorldGenType {
-        CERTUS_QUARTZ, CHARGED_CERTUS_QUARTZ, METEORITES
+        CERTUS_QUARTZ,
+        CHARGED_CERTUS_QUARTZ,
+        METEORITES
     }
 }

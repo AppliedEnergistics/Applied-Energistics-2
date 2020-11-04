@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.particle.ParticleManager;
@@ -33,10 +34,16 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.placement.NoPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -49,6 +56,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -61,6 +69,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IParts;
+import appeng.api.features.AEFeature;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWorldGen;
@@ -204,6 +213,7 @@ import appeng.me.cache.PathGridCache;
 import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
+import appeng.mixins.feature.ConfiguredFeaturesAccessor;
 import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
 import appeng.parts.automation.PlaneModelLoader;
 import appeng.recipes.game.DisassembleRecipe;
@@ -211,8 +221,11 @@ import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.handlers.GrinderRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
+import appeng.spatial.SpatialStorageChunkGenerator;
+import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
+import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
@@ -220,6 +233,9 @@ import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 final class Registration {
 
     static AdvancementTriggers advancementTriggers;
+
+    private static ConfiguredFeature<?, ?> quartzOreFeature;
+    private static ConfiguredFeature<?, ?> chargedQuartzOreFeature;
 
     public static void setupInternalRegistries() {
         // TODO: Do not use the internal API
@@ -511,6 +527,10 @@ final class Registration {
         // Tell Minecraft about our charged quartz ore feature
         ChargedQuartzOreFeature.INSTANCE.setRegistryName(AppEng.makeId("charged_quartz_ore"));
         registry.register(ChargedQuartzOreFeature.INSTANCE);
+
+        // Register the configured versions of our features
+        quartzOreFeature = registerQuartzOreFeature();
+        chargedQuartzOreFeature = registerChargedQuartzOreFeature();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -686,20 +706,6 @@ final class Registration {
          * Whitelist AE2
          */
         mr.whiteListTileEntity(AEBaseTileEntity.class);
-
-        /*
-         * world gen
-         */
-        for (final IWorldGen.WorldGenType type : IWorldGen.WorldGenType.values()) {
-            registries.worldgen().disableWorldGenForDimension(type, World.THE_NETHER.getRegistryName());
-        }
-
-        // whitelist from config
-        for (final String dimension : AEConfig.instance().getMeteoriteDimensionWhitelist()) {
-            registries.worldgen().enableWorldGenForDimension(IWorldGen.WorldGenType.METEORITES,
-                    new ResourceLocation(dimension));
-        }
-
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -737,6 +743,86 @@ final class Registration {
         modEventBus.addListener(this::modelRegistryEvent);
         modEventBus.addListener(this::registerItemColors);
         modEventBus.addListener(this::handleModelBake);
+    }
+
+    public void addWorldGenToBiome(BiomeLoadingEvent e) {
+        addMeteoriteWorldGen(e);
+        addQuartzWorldGen(e);
+    }
+
+    private void addMeteoriteWorldGen(BiomeLoadingEvent e) {
+        if (shouldGenerateIn(e.getName(), AEFeature.METEORITE_WORLD_GEN, IWorldGen.WorldGenType.METEORITES,
+                e.getCategory())) {
+            e.getGeneration().withStructure(MeteoriteStructure.CONFIGURED_INSTANCE);
+        }
+    }
+
+    private void addQuartzWorldGen(BiomeLoadingEvent e) {
+        if (shouldGenerateIn(e.getName(), AEFeature.CERTUS_QUARTZ_WORLD_GEN, IWorldGen.WorldGenType.CERTUS_QUARTZ,
+                e.getCategory())) {
+            e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, quartzOreFeature);
+
+            if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
+                e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
+                        chargedQuartzOreFeature);
+            }
+        }
+    }
+
+    static boolean shouldGenerateIn(ResourceLocation id,
+            AEFeature feature,
+            IWorldGen.WorldGenType worldGenType,
+            Biome.Category category) {
+        if (id == null) {
+            return false; // We don't add to unnamed biomes
+        }
+
+        if (!AEConfig.instance().isFeatureEnabled(feature)) {
+            AELog.debug("Not generating %s in %s because the feature is disabled", feature, id);
+            return false;
+        }
+
+        if (category == Biome.Category.THEEND || category == Biome.Category.NETHER
+                || category == Biome.Category.NONE) {
+            AELog.debug("Not generating %s in %s because it's of category %s", feature, id, category);
+            return false;
+        }
+
+        if (Api.instance().registries().worldgen().isWorldGenDisabledForBiome(worldGenType, id)) {
+            AELog.debug("Not generating %s in %s because the biome is blacklisted by another mod or the config",
+                    feature, id);
+            return false;
+        }
+
+        return true;
+    }
+
+    private static ConfiguredFeature<?, ?> registerQuartzOreFeature() {
+        // Tell Minecraft about our configured quartz ore feature
+        BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
+        return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(), Feature.ORE
+                .withConfiguration(
+                        new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
+                                AEConfig.instance().getQuartzOresPerCluster()))
+                .withPlacement(Placement.RANGE/* RANGE */.configure(new TopSolidRangeConfig(12, 12, 72)))
+                .square/* spreadHorizontally */()
+                .func_242731_b/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
+    }
+
+    private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {
+        BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
+        BlockState chargedQuartzOreState = Api.instance().definitions().blocks().quartzOreCharged().block()
+                .getDefaultState();
+        return ConfiguredFeaturesAccessor.register(AppEng.makeId("charged_quartz_ore").toString(),
+                ChargedQuartzOreFeature.INSTANCE
+                        .withConfiguration(new ChargedQuartzOreConfig(quartzOreState, chargedQuartzOreState,
+                                AEConfig.instance().getSpawnChargedChance()))
+                        .withPlacement(Placement.NOPE.configure(NoPlacementConfig.INSTANCE)));
+    }
+
+    public void registerDimension(RegistryEvent.NewRegistry e) {
+        Registry.register(Registry.CHUNK_GENERATOR_CODEC, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+                SpatialStorageChunkGenerator.CODEC);
     }
 
 }
