@@ -71,7 +71,20 @@ public interface IItems {
 
     IItemDefinition networkTool();
 
+    /**
+     * @see IItems#portableCell1k()
+     * @return
+     */
+    @Deprecated
     IItemDefinition portableCell();
+
+    IItemDefinition portableCell1k();
+
+    IItemDefinition portableCell4k();
+
+    IItemDefinition portableCell16k();
+
+    IItemDefinition portableCell64k();
 
     IItemDefinition cellCreative();
 

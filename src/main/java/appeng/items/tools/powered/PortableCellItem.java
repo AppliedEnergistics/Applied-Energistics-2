@@ -53,8 +53,12 @@ import appeng.items.contents.PortableCellViewer;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 
 public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem {
-    public PortableCellItem(Item.Properties props) {
+
+    private final StorageTier tier;
+
+    public PortableCellItem(StorageTier tier, Item.Properties props) {
         super(AEConfig.instance().getPortableCellBattery(), props);
+        this.tier = tier;
     }
 
     @Override
@@ -77,17 +81,17 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     public int getBytes(final ItemStack cellItem) {
-        return 512;
+        return this.tier.getBytes();
     }
 
     @Override
     public int getBytesPerType(final ItemStack cellItem) {
-        return 8;
+        return this.tier.getBytesPerType();
     }
 
     @Override
     public int getTotalTypes(final ItemStack cellItem) {
-        return 27;
+        return this.tier.getTypes();
     }
 
     @Override
@@ -153,5 +157,35 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
+    }
+
+    public enum StorageTier {
+        SIZE_1K(512, 27, 8),
+        SIZE_4K(2048, 36, 32),
+        SIZE_16K(8192, 45, 128),
+        SIZE_64K(16834, 54, 512);
+
+        private final int bytes;
+        private final int types;
+        private final int bytesPerType;
+
+        private StorageTier(int bytes, int types, int bytesPerType) {
+            this.bytes = bytes;
+            this.types = types;
+            this.bytesPerType = bytesPerType;
+        }
+
+        public int getBytes() {
+            return bytes;
+        }
+
+        public int getTypes() {
+            return types;
+        }
+
+        public int getBytesPerType() {
+            return bytesPerType;
+        }
+
     }
 }
