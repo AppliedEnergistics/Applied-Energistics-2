@@ -34,12 +34,15 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
@@ -70,6 +73,8 @@ import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
 import appeng.parts.PartPlacement;
 import appeng.server.ServerHelper;
+import appeng.spatial.SpatialStorageChunkGenerator;
+import appeng.spatial.SpatialStorageDimensionIds;
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng {
@@ -102,7 +107,7 @@ public final class AppEng {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         registration = new Registration();
-        modEventBus.addListener(this::bootstrap);
+        modEventBus.addListener(registration::registerDimension);
         modEventBus.addGenericListener(Block.class, registration::registerBlocks);
         modEventBus.addGenericListener(Item.class, registration::registerItems);
         modEventBus.addGenericListener(EntityType.class, registration::registerEntities);
@@ -128,17 +133,11 @@ public final class AppEng {
         MinecraftForge.EVENT_BUS.addListener(registration::registerCommands);
 
         MinecraftForge.EVENT_BUS.register(new PartPlacement());
-    }
+        MinecraftForge.EVENT_BUS.addListener(registration::addWorldGenToBiome);
 
-    private void bootstrap(RegistryEvent.NewRegistry e) {
-        // This has to be here so it's not run in parallel with other registrations
-        AppEngBootstrap.initialize();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        // This must run here because the config is not available earlier
-        DeferredWorkQueue.runLater(AppEngBootstrap::enhanceBiomes);
-
         ApiDefinitions definitions = Api.INSTANCE.definitions();
         definitions.getRegistry().getBootstrapComponents(IInitComponent.class)
                 .forEachRemaining(IInitComponent::initialize);

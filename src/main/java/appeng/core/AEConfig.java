@@ -21,13 +21,12 @@ package appeng.core;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,7 @@ import com.google.common.base.Strings;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -56,6 +55,7 @@ import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
 import appeng.api.features.AEFeature;
 import appeng.client.gui.NumberEntryType;
+import appeng.core.features.registries.WorldGenRegistry;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 
@@ -124,7 +124,6 @@ public final class AEConfig {
 
     // Meteors
     private int meteoriteMaximumSpawnHeight;
-    private Set<String> meteoriteDimensionWhitelist;
 
     // Wireless
     private double wirelessBaseCost;
@@ -174,7 +173,6 @@ public final class AEConfig {
         this.oreDoublePercentage = COMMON.oreDoublePercentage.get().floatValue();
 
         this.meteoriteMaximumSpawnHeight = COMMON.meteoriteMaximumSpawnHeight.get();
-        this.meteoriteDimensionWhitelist = new HashSet<>(COMMON.meteoriteDimensionWhitelist.get());
 
         this.wirelessBaseCost = COMMON.wirelessBaseCost.get();
         this.wirelessCostMultiplier = COMMON.wirelessCostMultiplier.get();
@@ -217,6 +215,12 @@ public final class AEConfig {
         this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
 
         this.removeCrashingItemsOnLoad = COMMON.removeCrashingItemsOnLoad.get();
+
+        WorldGenRegistry.INSTANCE.setConfigBlacklists(
+                COMMON.quartzOresBiomeBlacklist.get().stream().map(ResourceLocation::new)
+                        .collect(Collectors.toList()),
+                COMMON.meteoriteBiomeBlacklist.get().stream().map(ResourceLocation::new)
+                        .collect(Collectors.toList()));
     }
 
     public static AEConfig instance() {
@@ -391,10 +395,6 @@ public final class AEConfig {
         return this.meteoriteMaximumSpawnHeight;
     }
 
-    public Set<String> getMeteoriteDimensionWhitelist() {
-        return this.meteoriteDimensionWhitelist;
-    }
-
     @Nullable
     public String getImprovedFluidTag() {
         return Strings.emptyToNull(COMMON.improvedFluidTag.get());
@@ -495,10 +495,11 @@ public final class AEConfig {
         public final DoubleValue spawnChargedChance;
         public final ConfigValue<Integer> quartzOresPerCluster;
         public final ConfigValue<Integer> quartzOresClusterAmount;
+        public final ConfigValue<List<? extends String>> quartzOresBiomeBlacklist;
 
         // Meteors
         public final ConfigValue<Integer> meteoriteMaximumSpawnHeight;
-        public final ConfigValue<List<? extends String>> meteoriteDimensionWhitelist;
+        public final ConfigValue<List<? extends String>> meteoriteBiomeBlacklist;
 
         // Wireless
         public final ConfigValue<Double> wirelessBaseCost;
@@ -594,13 +595,15 @@ public final class AEConfig {
 
             this.spawnChargedChance = builder.defineInRange("spawnChargedChance", 0.08, 0.0, 1.0);
             this.meteoriteMaximumSpawnHeight = builder.define("meteoriteMaximumSpawnHeight", 180);
-            List<String> defaultDimensionWhitelist = new ArrayList<>();
-            defaultDimensionWhitelist.add(World.OVERWORLD.getRegistryName().toString());
-            this.meteoriteDimensionWhitelist = builder.defineList("meteoriteDimensionWhitelist",
-                    defaultDimensionWhitelist, obj -> true);
+            this.meteoriteBiomeBlacklist = builder.defineList("meteoriteBiomeBlacklist",
+                    Collections.emptyList(),
+                    obj -> obj instanceof String && ResourceLocation.isResouceNameValid((String) obj));
 
             this.quartzOresPerCluster = builder.define("quartzOresPerCluster", 4);
             this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 20);
+            this.quartzOresBiomeBlacklist = builder.defineList("quartzOresBiomeBlacklist",
+                    Collections.emptyList(),
+                    obj -> obj instanceof String && ResourceLocation.isResouceNameValid((String) obj));
 
             builder.pop();
 
