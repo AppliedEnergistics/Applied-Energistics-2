@@ -160,10 +160,10 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     public enum StorageTier {
-        SIZE_1K(512, 27, 8),
-        SIZE_4K(2048, 36, 32),
-        SIZE_16K(8192, 45, 128),
-        SIZE_64K(16834, 54, 512);
+        SIZE_1K(512, 54, 8),
+        SIZE_4K(2048, 45, 32),
+        SIZE_16K(8192, 36, 128),
+        SIZE_64K(16834, 27, 512);
 
         private final int bytes;
         private final int types;
