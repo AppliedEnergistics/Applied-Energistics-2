@@ -659,7 +659,13 @@ final class Registration {
         // Charge Rates
         items.chargedStaff().maybeItem()
                 .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 320d));
-        items.portableCell().maybeItem()
+        items.portableCell1k().maybeItem()
+                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
+        items.portableCell4k().maybeItem()
+                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
+        items.portableCell16k().maybeItem()
+                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
+        items.portableCell64k().maybeItem()
                 .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
         items.colorApplicator().maybeItem()
                 .ifPresent(colorApplicator -> registries.charger().addChargeRate(colorApplicator, 800d));
