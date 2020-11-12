@@ -269,6 +269,74 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		output.setTagCompound( encodedValue );
 	}
 
+	public void multiply(int multiple)
+	{
+		ItemStack[] input = new ItemStack[9];
+		ItemStack[] output = new ItemStack[3];
+
+		input = getInputs();
+		output = getOutputs();
+		boolean canMultiplyInputs = true;
+		boolean canMultiplyOutputs = true;
+
+		for( int x = 0; x < this.craftingSlots.length; x++ )
+		{
+			input[x] = this.craftingSlots[x].getStack();
+			if( input[x].getCount() * multiple > 64 )
+			{
+				canMultiplyInputs = false;
+			}
+		}
+
+		if( this.isCraftingMode() )
+		{
+			output[0] = this.outputSlots[0].getStack();
+			if( output[0].getCount() * multiple > 64 )
+			{
+				canMultiplyOutputs = false;
+			}
+		}
+
+		else
+		{
+			int outSlot=0;
+			for( final OptionalSlotFake outputSlot : this.outputSlots )
+			{
+				final ItemStack out = outputSlot.getStack();
+				if( out.getCount() * multiple > 64 )
+				{
+					canMultiplyOutputs = false;
+				}
+				outSlot++;
+			}
+		}
+
+		if( canMultiplyInputs && canMultiplyOutputs )
+		{
+			for( int x = 0; x < this.craftingSlots.length; x++ )
+			{
+				ItemStack stack = this.craftingSlots[x].getStack();
+				this.craftingSlots[x].getStack().setCount( stack.getCount() * multiple );
+			}
+
+			if( this.isCraftingMode() )
+			{
+				ItemStack stackOut = this.craftingSlots[0].getStack();
+
+				this.outputSlots[0].getStack().setCount( stackOut.getCount() * multiple);
+			}
+			else
+			{
+				for( int x = 0; x < this.outputSlots.length; x++ )
+				{
+					ItemStack stack = this.outputSlots[x].getStack();
+					this.outputSlots[x].getStack().setCount( stack.getCount() * multiple );
+				}
+			}
+		}
+
+	}
+
 	private ItemStack[] getInputs()
 	{
 		final ItemStack[] input = new ItemStack[9];

@@ -181,6 +181,14 @@ public class PacketValueConfig extends AppEngPacket
 			{
 				cpt.clear();
 			}
+			else if( this.Name.equals( "PatternTerminal.MultiplyByTwo" ) )
+			{
+				cpt.multiply(2);
+			}
+
+
+
+
 			else if( this.Name.equals( "PatternTerminal.Substitute" ) )
 			{
 				cpt.getPatternTerminal().setSubstitution( this.Value.equals( "1" ) );

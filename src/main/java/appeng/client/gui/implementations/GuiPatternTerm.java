@@ -100,6 +100,19 @@ public class GuiPatternTerm extends GuiMEMonitorable
 				NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.Clear", "1" ) );
 			}
 
+			if( this.x2Btn == btn )
+			{
+				NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.MultiplyByTwo", "1" ) );
+			}
+
+
+
+
+
+
+
+
+
 			if( this.substitutionsEnabledBtn == btn || this.substitutionsDisabledBtn == btn )
 			{
 				NetworkHandler.instance()
