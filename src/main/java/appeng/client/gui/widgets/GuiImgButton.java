@@ -134,6 +134,14 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			this.registerApp( 6, Settings.ACTIONS, ActionItems.CLOSE, ButtonToolTips.Clear, ButtonToolTips.ClearSettings );
 			this.registerApp( 6, Settings.ACTIONS, ActionItems.STASH, ButtonToolTips.Stash, ButtonToolTips.StashDesc );
 
+			this.registerApp( 6 + 4 * 16, Settings.ACTIONS, ActionItems.MULTIPLY_BY_TWO, ButtonToolTips.MultiplyByTwo, ButtonToolTips.MultiplyByTwoDesc );
+			this.registerApp( 7 + 4 * 16, Settings.ACTIONS, ActionItems.MULTIPLY_BY_THREE, ButtonToolTips.MultiplyByThree, ButtonToolTips.MultiplyByThreeDesc );
+			this.registerApp( 8 + 4 * 16, Settings.ACTIONS, ActionItems.INCREASE_BY_ONE, ButtonToolTips.IncreaseByOne, ButtonToolTips.IncreaseByOneDesc );
+			this.registerApp( 9 + 4 * 16, Settings.ACTIONS, ActionItems.DIVIDE_BY_TWO, ButtonToolTips.DivideByTwo, ButtonToolTips.DivideByTwoDesc );
+			this.registerApp( 10 + 4 * 16, Settings.ACTIONS, ActionItems.DIVIDE_BY_THREE, ButtonToolTips.DivideByThree, ButtonToolTips.DivideByThreeDesc );
+			this.registerApp( 11 + 4 * 16, Settings.ACTIONS, ActionItems.DECREASE_BY_ONE, ButtonToolTips.DecreaseByOne, ButtonToolTips.DecreaseByOneDesc );
+			this.registerApp( 12 + 4 * 16, Settings.ACTIONS, ActionItems.MAX_COUNT, ButtonToolTips.MaxCount, ButtonToolTips.MaxCountDesc );
+
 			this.registerApp( 8, Settings.ACTIONS, ActionItems.ENCODE, ButtonToolTips.Encode, ButtonToolTips.EncodeDescription );
 			this.registerApp( 4 + 3 * 16, Settings.ACTIONS, ItemSubstitution.ENABLED, ButtonToolTips.Substitutions, ButtonToolTips.SubstitutionsDescEnabled );
 			this.registerApp( 7 + 3 * 16, Settings.ACTIONS, ItemSubstitution.DISABLED, ButtonToolTips.Substitutions, ButtonToolTips.SubstitutionsDescDisabled );

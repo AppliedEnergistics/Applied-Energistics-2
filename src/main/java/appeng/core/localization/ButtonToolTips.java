@@ -137,6 +137,21 @@ public enum ButtonToolTips
 	BlockPlacementYes,
 	BlockPlacementNo,
 
+	MultiplyByTwo,
+	MultiplyByTwoDesc,
+	MultiplyByThree,
+	MultiplyByThreeDesc,
+	IncreaseByOne,
+	IncreaseByOneDesc,
+	DivideByTwo,
+	DivideByTwoDesc,
+	DivideByThree,
+	DivideByThreeDesc,
+	DecreaseByOne,
+	DecreaseByOneDesc,
+	MaxCount,
+	MaxCountDesc,
+
 	// Used in the tooltips of the items in the terminal, when moused over
 	ItemsStored,
 	ItemsRequestable,

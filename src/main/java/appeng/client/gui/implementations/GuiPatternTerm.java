@@ -60,6 +60,13 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	private GuiImgButton substitutionsDisabledBtn;
 	private GuiImgButton encodeBtn;
 	private GuiImgButton clearBtn;
+	private GuiImgButton x2Btn;
+	private GuiImgButton x3Btn;
+	private GuiImgButton plusOneBtn;
+	private GuiImgButton divTwoBtn;
+	private GuiImgButton divThreeBtn;
+	private GuiImgButton minusOneBtn;
+	private GuiImgButton maxCountBtn;
 
 	public GuiPatternTerm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
@@ -126,6 +133,34 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		this.substitutionsDisabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.DISABLED );
 		this.substitutionsDisabledBtn.setHalfSize( true );
 		this.buttonList.add( this.substitutionsDisabledBtn );
+
+		this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE );
+		this.clearBtn.setHalfSize( true );
+		this.buttonList.add( this.clearBtn );
+
+		this.x2Btn = new GuiImgButton( this.guiLeft + 106, this.guiTop + this.ySize - 152, Settings.ACTIONS, ActionItems.MULTIPLY_BY_TWO );
+		this.x2Btn.setHalfSize( true );
+		this.buttonList.add( this.x2Btn );
+
+		this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE );
+		this.clearBtn.setHalfSize( true );
+		this.buttonList.add( this.clearBtn );
+
+		this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE );
+		this.clearBtn.setHalfSize( true );
+		this.buttonList.add( this.clearBtn );
+
+		this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE );
+		this.clearBtn.setHalfSize( true );
+		this.buttonList.add( this.clearBtn );
+
+		this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE );
+		this.clearBtn.setHalfSize( true );
+		this.buttonList.add( this.clearBtn );
+
+		this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE );
+		this.clearBtn.setHalfSize( true );
+		this.buttonList.add( this.clearBtn );
 
 		this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE );
 		this.clearBtn.setHalfSize( true );
