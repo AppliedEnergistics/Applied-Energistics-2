@@ -74,6 +74,7 @@ import appeng.items.tools.powered.ColorApplicatorItemRendering;
 import appeng.items.tools.powered.EntropyManipulatorItem;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.items.tools.powered.PortableCellItem;
+import appeng.items.tools.powered.PortableCellItem.StorageTier;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.items.tools.quartz.QuartzAxeItem;
 import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
@@ -110,7 +111,11 @@ public final class ApiItems implements IItems {
     private final IItemDefinition massCannon;
     private final IItemDefinition memoryCard;
     private final IItemDefinition networkTool;
-    private final IItemDefinition portableCell;
+
+    private final IItemDefinition portableCell1k;
+    private final IItemDefinition portableCell4k;
+    private final IItemDefinition portableCell16k;
+    private final IItemDefinition portableCell64k;
 
     private final IItemDefinition cellCreative;
     private final IItemDefinition viewCell;
@@ -212,7 +217,22 @@ public final class ApiItems implements IItems {
                 .addFeatures(AEFeature.CHARGED_STAFF).build();
         this.massCannon = powerTools.item("matter_cannon", MatterCannonItem::new).props(chargedDefaults)
                 .addFeatures(AEFeature.MATTER_CANNON).dispenserBehavior(MatterCannonDispenseItemBehavior::new).build();
-        this.portableCell = powerTools.item("portable_cell", PortableCellItem::new).props(chargedDefaults)
+        // TODO: change id in 9.0 to 1k_portable_cell
+        this.portableCell1k = powerTools
+                .item("portable_cell", props -> new PortableCellItem(StorageTier.SIZE_1K, props))
+                .props(chargedDefaults)
+                .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
+        this.portableCell4k = powerTools
+                .item("4k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_4K, props))
+                .props(chargedDefaults)
+                .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
+        this.portableCell16k = powerTools
+                .item("16k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_16K, props))
+                .props(chargedDefaults)
+                .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
+        this.portableCell64k = powerTools
+                .item("64k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_64K, props))
+                .props(chargedDefaults)
                 .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
         this.colorApplicator = powerTools.item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
                 .addFeatures(AEFeature.COLOR_APPLICATOR).dispenserBehavior(BlockToolDispenseItemBehavior::new)
@@ -458,9 +478,30 @@ public final class ApiItems implements IItems {
         return this.networkTool;
     }
 
+    @Deprecated
     @Override
     public IItemDefinition portableCell() {
-        return this.portableCell;
+        return this.portableCell1k;
+    }
+
+    @Override
+    public IItemDefinition portableCell1k() {
+        return this.portableCell1k;
+    }
+
+    @Override
+    public IItemDefinition portableCell4k() {
+        return this.portableCell4k;
+    }
+
+    @Override
+    public IItemDefinition portableCell16k() {
+        return this.portableCell16k;
+    }
+
+    @Override
+    public IItemDefinition portableCell64k() {
+        return this.portableCell64k;
     }
 
     @Override

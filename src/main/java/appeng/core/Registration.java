@@ -615,8 +615,14 @@ final class Registration {
         Upgrades.FUZZY.registerItem(items.cell64k(), 1, storageCellGroup);
         Upgrades.INVERTER.registerItem(items.cell64k(), 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(items.portableCell(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(items.portableCell(), 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(items.portableCell1k(), 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(items.portableCell4k(), 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(items.portableCell16k(), 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(items.portableCell64k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.portableCell1k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.portableCell4k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.portableCell16k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.portableCell64k(), 1, storageCellGroup);
 
         Upgrades.FUZZY.registerItem(items.viewCell(), 1);
         Upgrades.INVERTER.registerItem(items.viewCell(), 1);
@@ -653,7 +659,13 @@ final class Registration {
         // Charge Rates
         items.chargedStaff().maybeItem()
                 .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 320d));
-        items.portableCell().maybeItem()
+        items.portableCell1k().maybeItem()
+                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
+        items.portableCell4k().maybeItem()
+                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
+        items.portableCell16k().maybeItem()
+                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
+        items.portableCell64k().maybeItem()
                 .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
         items.colorApplicator().maybeItem()
                 .ifPresent(colorApplicator -> registries.charger().addChargeRate(colorApplicator, 800d));

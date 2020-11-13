@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "appliedenergistics2:item/4k_portable_cell"
+  }
+}
