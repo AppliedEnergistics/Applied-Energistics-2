@@ -349,6 +349,20 @@ gui.tooltips.appliedenergistics2.FilterModeClear=Clear on each opening.
 gui.tooltips.appliedenergistics2.ItemsStored=Items Stored: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Items Requestable: %s
 gui.tooltips.appliedenergistics2.P2PFrequency=Frequency: %s
+gui.tooltips.appliedenergistics2.MultiplyByTwo=Double the items set
+gui.tooltips.appliedenergistics2.MultiplyByTwoDesc=Will try to double the items set in the crafting slots
+gui.tooltips.appliedenergistics2.MultiplyByThree=Tripe the items set
+gui.tooltips.appliedenergistics2.MultiplyByThreeDesc=Will try to triple the items set in the crafting slots
+gui.tooltips.appliedenergistics2.IncreaseByOne=Add one
+gui.tooltips.appliedenergistics2.IncreaseByOneDesc=Will try to add increase the items set in the crafting slots by one. DOES NOT MAINTAIN INGREDIENT RATIO
+gui.tooltips.appliedenergistics2.DivideByTwo=Divide items set by two
+gui.tooltips.appliedenergistics2.DivideByTwoDesc=Will try to divide by 2 the items set in the crafting slots
+gui.tooltips.appliedenergistics2.DivideByThree=Divide items set by three
+gui.tooltips.appliedenergistics2.DivideByThreeDesc=Will try to divide by 3 the items set in the crafting slots
+gui.tooltips.appliedenergistics2.DecreaseByOne=Decrease one
+gui.tooltips.appliedenergistics2.DecreaseByOneDesc=Will try to add decrease the items set in the crafting slots by one DOES NOT MAINTAIN INGREDIENT RATIO
+gui.tooltips.appliedenergistics2.MaxCount=Maximize slot count
+gui.tooltips.appliedenergistics2.MaxCountDesc=Will maximize the output maintaing the input ratio of the items set in the crafting slots
 
 // Units
 gui.appliedenergistics2.units.appliedenergstics=AE

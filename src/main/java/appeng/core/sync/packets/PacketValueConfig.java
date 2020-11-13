@@ -185,10 +185,30 @@ public class PacketValueConfig extends AppEngPacket
 			{
 				cpt.multiply(2);
 			}
-
-
-
-
+			else if( this.Name.equals( "PatternTerminal.MultiplyByThree" ) )
+			{
+				cpt.multiply(3);
+			}
+			else if( this.Name.equals( "PatternTerminal.DivideByTwo" ) )
+			{
+				cpt.divide(2);
+			}
+			else if( this.Name.equals( "PatternTerminal.DivideByThree" ) )
+			{
+				cpt.divide(3);
+			}
+			else if( this.Name.equals( "PatternTerminal.IncreaseByOne" ) )
+			{
+				cpt.increase(1);
+			}
+			else if( this.Name.equals( "PatternTerminal.DecreaseByOne" ) )
+			{
+				cpt.decrease(1);
+			}
+			else if( this.Name.equals( "PatternTerminal.MaximizeCount" ) )
+			{
+				cpt.maximizeCount();
+			}
 			else if( this.Name.equals( "PatternTerminal.Substitute" ) )
 			{
 				cpt.getPatternTerminal().setSubstitution( this.Value.equals( "1" ) );
