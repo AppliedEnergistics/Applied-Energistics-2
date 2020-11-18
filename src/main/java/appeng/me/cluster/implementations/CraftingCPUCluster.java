@@ -779,10 +779,6 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 							if( details.isCraftable() )
 							{
-								FMLCommonHandler.instance()
-										.firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.getWorld() ),
-												details.getOutput( ic, this.getWorld() ), ic );
-
 								for( int x = 0; x < ic.getSizeInventory(); x++ )
 								{
 									final ItemStack output = Platform.getContainerItem( ic.getStackInSlot( x ) );

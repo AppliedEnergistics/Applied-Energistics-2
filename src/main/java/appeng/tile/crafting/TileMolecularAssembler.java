@@ -458,8 +458,6 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			final ItemStack output = this.myPlan.getOutput( this.craftingInv, this.getWorld() );
 			if( !output.isEmpty() )
 			{
-				FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.getWorld() ), output, this.craftingInv );
-
 				this.pushOut( output.copy() );
 
 				for( int x = 0; x < this.craftingInv.getSizeInventory(); x++ )

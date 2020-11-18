@@ -77,8 +77,6 @@ public class CraftingTreeProcess
 				ic.setInventorySlotContents( x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack() );
 			}
 
-			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) world ), details.getOutput( ic, world ), ic );
-
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
 				final ItemStack g = ic.getStackInSlot( x );
@@ -200,8 +198,6 @@ public class CraftingTreeProcess
 
 				ic.setInventorySlotContents( entry.getKey().getSlot(), stack.createItemStack() );
 			}
-
-			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.world ), this.details.getOutput( ic, this.world ), ic );
 
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
