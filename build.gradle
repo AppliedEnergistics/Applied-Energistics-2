@@ -218,19 +218,12 @@ task signJar(type: net.minecraftforge.gradle.common.task.SignJar, dependsOn: 're
 
 //////////////
 // Aritfacts
-task generateModsToml(type: Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.main.resources.srcDirs) {
-        include "META-INF/mods.toml"
-        expand 'version': version, 'minecraft_version': project.minecraft_version_range, 'forge_version': project.forge_version_range
-    }
-    into "$buildDir/resources/main/"
-}
-
 processResources {
     exclude '.cache'
-    exclude 'META-INF/mods.toml'
-    finalizedBy generateModsToml
+
+    filesMatching("META-INF/mods.toml") {
+        expand 'version': version, 'minecraft_version': project.minecraft_version_range, 'forge_version': project.forge_version_range
+    }
 }
 
 jar {

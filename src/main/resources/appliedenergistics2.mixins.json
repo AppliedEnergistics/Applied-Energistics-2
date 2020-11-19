@@ -11,8 +11,6 @@
     "spatial.BiomesMixin",
     "structure.DimensionStructuresSettingsMixin",
     "structure.ConfiguredStructureFeaturesAccessor",
-    "structure.GenerationSettingsAccessor",
-    "structure.BiomeAccessor",
     "feature.ConfiguredFeaturesAccessor"
   ],
   "client": [
