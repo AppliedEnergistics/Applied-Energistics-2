@@ -83,7 +83,7 @@ You can use the following snippet as example on how to add a repository to your 
     repositories {
         maven {
             name "Modmaven"
-            url "https://modmaven.k-4u.nl/"
+            url "https://modmaven.dev/"
             // For Gradle 5.1 and above, limit it to just AE2
             content {
                 includeGroup 'appeng'

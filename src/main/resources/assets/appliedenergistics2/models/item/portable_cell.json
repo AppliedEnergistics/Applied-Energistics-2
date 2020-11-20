@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "appliedenergistics2:item/portable_cell"
+    "layer0": "appliedenergistics2:item/1k_portable_cell"
   }
 }

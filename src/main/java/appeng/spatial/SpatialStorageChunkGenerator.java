@@ -136,7 +136,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public int getHeight(int p_222529_1_, int p_222529_2_, Heightmap.Type heightmapType) {
+    public int getHeight(int x, int z, Heightmap.Type heightmapType) {
         return 0;
     }
 
