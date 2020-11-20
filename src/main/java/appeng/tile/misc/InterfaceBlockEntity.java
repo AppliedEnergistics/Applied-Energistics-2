@@ -296,8 +296,6 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
-        super.addAllAttributes(world, pos, state, to);
-
         duality.addAllAttributes(to);
     }
 

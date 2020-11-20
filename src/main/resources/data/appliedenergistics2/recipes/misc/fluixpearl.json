@@ -6,7 +6,7 @@
   "pattern": ["aba", "bcb", "aba"],
   "key": {
     "c": {
-      "tag": "forge:ender_pearls"
+      "tag": "c:ender_pearls"
     },
     "a": {
       "tag": "appliedenergistics2:dusts/fluix"
