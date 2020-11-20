@@ -111,11 +111,12 @@ if (ext.branch) {
 }
 
 ext.tag = System.getenv('TAG') ?: ""
-if (ext.tag && ext.tag.startsWith("fabric/v")) {
+if (ext.tag && ext.tag.startsWith("fabric/v") && System.getenv("GITHUB_ENV")) {
   version = ext.tag.substring("fabric/v".length())
+  def envFile = new File(System.getenv("GITHUB_ENV"))
   // Validate that the rest is a semver version
   if (version ==~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/) {
-    println("::set-env name=VERSION::${version}")
+    envFile.append("VERSION=${version}")
   } else {
     throw new GradleException("Invalid semver: $version")
   }
