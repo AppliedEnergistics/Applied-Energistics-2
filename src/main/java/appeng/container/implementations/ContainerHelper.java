@@ -31,8 +31,7 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
 
 /**
- * Helper for containers that can be opened for a part <em>or</em> tile given
- * that either implements a given interface.
+ * Helper for containers that can be opened for a part <em>or</em> tile given that either implements a given interface.
  *
  * @param <C>
  */
@@ -60,8 +59,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
     /**
      * Specifies a custom strategy for obtaining a custom container name.
      * <p>
-     * The stratgy should return {@link LiteralText#EMPTY} if there's no custom
-     * name.
+     * The stratgy should return {@link LiteralText#EMPTY} if there's no custom name.
      */
     public ContainerHelper<C, I> withContainerTitle(Function<I, Text> containerTitleStrategy) {
         this.containerTitleStrategy = containerTitleStrategy;
@@ -69,8 +67,8 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
     }
 
     /**
-     * Opens a container that is based around a single block entity. The tile
-     * entity's position is encoded in the packet buffer.
+     * Opens a container that is based around a single block entity. The tile entity's position is encoded in the packet
+     * buffer.
      */
     public C fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf packetBuf) {
         return fromNetwork(windowId, inv, packetBuf, (accessObj, container, buffer) -> {
@@ -78,8 +76,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
     }
 
     /**
-     * Same as {@link #open}, but allows or additional data to be read from the
-     * packet, and passed onto the container.
+     * Same as {@link #open}, but allows or additional data to be read from the packet, and passed onto the container.
      */
     public C fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf packetBuf,
             InitialDataDeserializer<C, I> initialDataDeserializer) {
@@ -239,8 +236,8 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
     }
 
     /**
-     * Strategy used to serialize initial data for opening the container on the
-     * client-side into the packet that is sent to the client.
+     * Strategy used to serialize initial data for opening the container on the client-side into the packet that is sent
+     * to the client.
      */
     @FunctionalInterface
     public interface InitialDataSerializer<I> {
@@ -248,8 +245,8 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
     }
 
     /**
-     * Strategy used to deserialize initial data for opening the container on the
-     * client-side from the packet received by the server.
+     * Strategy used to deserialize initial data for opening the container on the client-side from the packet received
+     * by the server.
      */
     @FunctionalInterface
     public interface InitialDataDeserializer<C, I> {

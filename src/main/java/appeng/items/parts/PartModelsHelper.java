@@ -14,8 +14,7 @@ import appeng.api.parts.IPartModel;
 import appeng.core.AELog;
 
 /**
- * Helps with the reflection magic needed to gather all models for AE2 cable bus
- * parts.
+ * Helps with the reflection magic needed to gather all models for AE2 cable bus parts.
  */
 public class PartModelsHelper {
 

@@ -14,9 +14,8 @@ import appeng.api.util.AEPartLocation;
 import appeng.parts.AEBasePart;
 
 /**
- * Helps plane parts (annihilation, formation) with determining and checking for
- * connections to adjacent plane parts of the same type to form a visually
- * larger plane.
+ * Helps plane parts (annihilation, formation) with determining and checking for connections to adjacent plane parts of
+ * the same type to form a visually larger plane.
  */
 public final class PlaneConnectionHelper {
 
@@ -27,8 +26,7 @@ public final class PlaneConnectionHelper {
     }
 
     /**
-     * Gets on which sides this part has adjacent planes that it visually connects
-     * to
+     * Gets on which sides this part has adjacent planes that it visually connects to
      */
     public PlaneConnections getConnections() {
         BlockEntity hostTileEntity = getHostBlockEntity();
@@ -131,8 +129,7 @@ public final class PlaneConnectionHelper {
     }
 
     /**
-     * Call this when an adjacent block has changed since the connections need to be
-     * recalculated.
+     * Call this when an adjacent block has changed since the connections need to be recalculated.
      */
     public void updateConnections() {
         // Not needed in Fabric, since model data is automatically updated

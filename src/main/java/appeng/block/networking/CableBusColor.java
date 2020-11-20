@@ -33,8 +33,7 @@ import appeng.parts.CableBusContainer;
 import appeng.tile.networking.CableBusBlockEntity;
 
 /**
- * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium
- * variant) and 2 (bright variant).
+ * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium variant) and 2 (bright variant).
  */
 @Environment(EnvType.CLIENT)
 public class CableBusColor implements BlockColorProvider {

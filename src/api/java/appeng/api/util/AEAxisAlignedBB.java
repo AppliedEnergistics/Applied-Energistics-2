@@ -21,11 +21,9 @@ package appeng.api.util;
 import net.minecraft.util.math.Box;
 
 /**
- * Mutable stand in for Axis Aligned BB, this was used to prevent GC Thrashing..
- * Related code could also be re-written.
+ * Mutable stand in for Axis Aligned BB, this was used to prevent GC Thrashing.. Related code could also be re-written.
  * <p>
- * TODO: Replace with interface and maybe factory should it ever be needed for
- * addons.
+ * TODO: Replace with interface and maybe factory should it ever be needed for addons.
  */
 public class AEAxisAlignedBB {
     public double minX;

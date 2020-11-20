@@ -63,9 +63,8 @@ public interface IGrid {
     MENetworkEvent postEventTo(@Nonnull IGridNode node, @Nonnull MENetworkEvent ev);
 
     /**
-     * get a list of the diversity of classes, you can use this to better detect
-     * which machines your interested in, rather then iterating the entire grid to
-     * test them.
+     * get a list of the diversity of classes, you can use this to better detect which machines your interested in,
+     * rather then iterating the entire grid to test them.
      *
      * @return IReadOnlyCollection of all available host types (Of Type IGridHost).
      */
@@ -82,8 +81,7 @@ public interface IGrid {
     IMachineSet getMachines(@Nonnull Class<? extends IGridHost> gridHostClass);
 
     /**
-     * @return IReadOnlyCollection for all nodes on the network, node visitors are
-     *         preferred.
+     * @return IReadOnlyCollection for all nodes on the network, node visitors are preferred.
      */
     @Nonnull
     IReadOnlyCollection<IGridNode> getNodes();

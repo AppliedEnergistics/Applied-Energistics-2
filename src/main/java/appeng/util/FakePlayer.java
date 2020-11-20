@@ -23,8 +23,7 @@ public class FakePlayer extends ServerPlayerEntity {
     }
 
     /**
-     * DO NOT COPY THE PLAYER ANYWHERE! It will keep the world alive, always call
-     * this method if you need it.
+     * DO NOT COPY THE PLAYER ANYWHERE! It will keep the world alive, always call this method if you need it.
      */
     public static FakePlayer getOrCreate(ServerWorld world) {
         Objects.requireNonNull(world);

@@ -40,8 +40,7 @@ public class InterpHelper {
     private int p01;
 
     /**
-     * Resets the interp helper with the given quad. Does not care what order the
-     * vertices are in.
+     * Resets the interp helper with the given quad. Does not care what order the vertices are in.
      */
     public void reset(float dx0, float dy0, float dx1, float dy1, float dx2, float dy2, float dx3, float dy3) {
 

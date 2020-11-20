@@ -11,8 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 
 /**
- * A plot inside the storage cell world that is assigned to a specific storage
- * cell.
+ * A plot inside the storage cell world that is assigned to a specific storage cell.
  */
 public class SpatialStoragePlot {
 
@@ -34,15 +33,13 @@ public class SpatialStoragePlot {
     private final int id;
 
     /**
-     * The storage size of this dimension. This is dictated by the pylon structure
-     * size used to perform the first transfer into this dimension. Once it's set,
-     * it cannot be changed anymore.
+     * The storage size of this dimension. This is dictated by the pylon structure size used to perform the first
+     * transfer into this dimension. Once it's set, it cannot be changed anymore.
      */
     private final BlockPos size;
 
     /**
-     * AE2 player id of who primarily owned the network when the storage plot was
-     * allocated.
+     * AE2 player id of who primarily owned the network when the storage plot was allocated.
      */
     private final int owner;
 
@@ -103,15 +100,13 @@ public class SpatialStoragePlot {
      * <p>
      * To map an integer to a specific position, it uses the following algorithm.
      * <p>
-     * The 2 least significant bits determine the sign for the x and z axis. Every
-     * other pack of 2 bits locate the plot within a quadrant of a increasing area
-     * by the bit position.
+     * The 2 least significant bits determine the sign for the x and z axis. Every other pack of 2 bits locate the plot
+     * within a quadrant of a increasing area by the bit position.
      * <p>
-     * The first 2 bits after the sign address a quadrant within 1024x1024 blocks
-     * (or 4 region files)
+     * The first 2 bits after the sign address a quadrant within 1024x1024 blocks (or 4 region files)
      * <p>
-     * Every further will continue to double both x and z values. E.g. 2048x2048 for
-     * the 3rd pack and 4096x4096 for the 4th.
+     * Every further will continue to double both x and z values. E.g. 2048x2048 for the 3rd pack and 4096x4096 for the
+     * 4th.
      *
      * @see #getSize()
      */

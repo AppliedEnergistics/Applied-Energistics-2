@@ -42,8 +42,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     private final PlayerEntity thePlayer;
 
     /**
-     * The number of items that have been crafted so far. Gets passed to
-     * ItemStack.onCrafted before being reset.
+     * The number of items that have been crafted so far. Gets passed to ItemStack.onCrafted before being reset.
      */
     private int amountCrafted;
 
@@ -55,8 +54,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     }
 
     /**
-     * Check if the stack is a valid item for this slot. Always true beside for the
-     * armor slots.
+     * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
      */
     @Override
     public boolean canInsert(final ItemStack stack) {
@@ -64,9 +62,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
     }
 
     /**
-     * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not
-     * ore and wood. Typically increases an internal count then calls
-     * onCrafted(item).
+     * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood. Typically increases an
+     * internal count then calls onCrafted(item).
      */
     @Override
     protected void onCrafted(final ItemStack par1ItemStack, final int par2) {
@@ -75,8 +72,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     }
 
     /**
-     * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not
-     * ore and wood.
+     * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
      */
     @Override
     protected void onCrafted(final ItemStack par1ItemStack) {
@@ -124,8 +120,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
     }
 
     /**
-     * Decrease the size of the stack in slot (first int arg) by the amount of the
-     * second int arg. Returns the new stack.
+     * Decrease the size of the stack in slot (first int arg) by the amount of the second int arg. Returns the new
+     * stack.
      */
     @Override
     public ItemStack takeStack(final int par1) {

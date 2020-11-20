@@ -31,8 +31,8 @@ import net.minecraft.util.math.Quaternion;
 import appeng.client.render.FacingToRotation;
 
 /**
- * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates
- * a given list of quads to the desired facing
+ * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates a given list of quads to the desired
+ * facing
  */
 @Environment(EnvType.CLIENT)
 public class QuadRotator implements RenderContext.QuadTransform {

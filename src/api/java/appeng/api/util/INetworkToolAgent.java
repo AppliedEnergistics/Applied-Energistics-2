@@ -26,8 +26,7 @@ package appeng.api.util;
 import net.minecraft.util.hit.HitResult;
 
 /**
- * Implement on Tile or part to customize if the info gui opens, or an action is
- * preformed.
+ * Implement on Tile or part to customize if the info gui opens, or an action is preformed.
  */
 public interface INetworkToolAgent {
 

@@ -36,9 +36,8 @@ import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.data.IAEStack;
 
 /**
- * Storage Cell Registry, used for specially implemented cells, if you just want
- * to make a item act like a cell, or new cell with different bytes, then you
- * should probably consider IStorageCell instead its considerably simpler.
+ * Storage Cell Registry, used for specially implemented cells, if you just want to make a item act like a cell, or new
+ * cell with different bytes, then you should probably consider IStorageCell instead its considerably simpler.
  * <p>
  * Do not Implement, obtained via {@link IAppEngApi}.getCellRegistry()
  */
@@ -47,9 +46,8 @@ public interface ICellRegistry {
     /**
      * Register a new handler.
      * <p>
-     * Never be call before
-     * {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent} was
-     * handled by AE2. Will throw an exception otherwise.
+     * Never be call before {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent} was handled by AE2. Will
+     * throw an exception otherwise.
      *
      * @param handler cell handler
      */
@@ -66,8 +64,8 @@ public interface ICellRegistry {
      * return true, if you can get a InventoryHandler for the item passed.
      *
      * @param is to be checked item
-     * @return true if the provided item, can be handled by a handler in AE, ( AE
-     *         May choose to skip this and just get the handler instead. )
+     * @return true if the provided item, can be handled by a handler in AE, ( AE May choose to skip this and just get
+     *         the handler instead. )
      */
     boolean isCellHandled(ItemStack is);
 
@@ -91,12 +89,10 @@ public interface ICellRegistry {
     <T extends IAEStack<T>> ICellGuiHandler getGuiHandler(IStorageChannel<T> channel, ItemStack is);
 
     /**
-     * returns an ICellInventoryHandler for the provided item by querying all
-     * registered handlers.
+     * returns an ICellInventoryHandler for the provided item by querying all registered handlers.
      *
      * @param is   item with inventory handler
-     * @param host can be null. If provided, the host is responsible for persisting
-     *             the cell content.
+     * @param host can be null. If provided, the host is responsible for persisting the cell content.
      * @param chan the storage channel to request the handler for.
      * @return new ICellInventoryHandler, or null if there isn't one.
      */

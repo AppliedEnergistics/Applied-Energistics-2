@@ -34,16 +34,14 @@ import appeng.api.networking.energy.IAEPowerStorage;
  */
 public interface IAEItemPowerStorage {
     /**
-     * Inject amt, power into the device, it will store what it can, and return the
-     * amount unable to be stored.
+     * Inject amt, power into the device, it will store what it can, and return the amount unable to be stored.
      *
      * @return amount unable to be stored
      */
     double injectAEPower(ItemStack stack, double amount, Actionable mode);
 
     /**
-     * Attempt to extract power from the device, it will extract what it can and
-     * return it.
+     * Attempt to extract power from the device, it will extract what it can and return it.
      *
      * @param amount to be extracted power from device
      * @return what it could extract
@@ -61,8 +59,7 @@ public interface IAEItemPowerStorage {
     double getAECurrentPower(ItemStack stack);
 
     /**
-     * Control the power flow by telling what the network can do, either add? or
-     * subtract? or both!
+     * Control the power flow by telling what the network can do, either add? or subtract? or both!
      *
      * @return access restriction of network
      */

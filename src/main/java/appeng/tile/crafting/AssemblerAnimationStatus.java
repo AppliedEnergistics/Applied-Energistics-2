@@ -3,8 +3,7 @@ package appeng.tile.crafting;
 import net.minecraft.item.ItemStack;
 
 /**
- * Stores client-side only state about the ongoing animation for a molecular
- * assembler.
+ * Stores client-side only state about the ongoing animation for a molecular assembler.
  */
 public class AssemblerAnimationStatus {
 

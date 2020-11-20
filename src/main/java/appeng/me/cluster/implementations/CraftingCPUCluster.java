@@ -137,8 +137,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     /**
-     * add a new Listener to the monitor, be sure to properly remove yourself when
-     * your done.
+     * add a new Listener to the monitor, be sure to properly remove yourself when your done.
      */
     @Override
     public void addListener(final IMEMonitorHandlerReceiver<IAEItemStack> l, final Object verificationToken) {

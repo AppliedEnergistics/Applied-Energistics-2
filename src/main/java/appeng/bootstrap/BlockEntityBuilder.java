@@ -28,8 +28,7 @@ import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;
 
 /**
- * Used to define our block entities and all of their properties that are
- * relevant to registering them.
+ * Used to define our block entities and all of their properties that are relevant to registering them.
  *
  * @param <T>
  */

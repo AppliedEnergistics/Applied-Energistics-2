@@ -49,8 +49,8 @@ public interface IPartHost extends ICustomCableConnection {
     IFacadeContainer getFacadeContainer();
 
     /**
-     * Test if you can add a part to the specified side of the Part Host,
-     * {@link AEPartLocation}.UNKNOWN is used to represent the cable in the middle.
+     * Test if you can add a part to the specified side of the Part Host, {@link AEPartLocation}.UNKNOWN is used to
+     * represent the cable in the middle.
      *
      * @param part to be added part
      * @param side part placed onto side
@@ -59,14 +59,13 @@ public interface IPartHost extends ICustomCableConnection {
     boolean canAddPart(ItemStack part, AEPartLocation side);
 
     /**
-     * try to add a new part to the specified side, returns false if it failed to be
-     * added.
+     * try to add a new part to the specified side, returns false if it failed to be added.
      *
      * @param is    new part
      * @param side  onto side
      * @param owner with owning player
-     * @return null if the item failed to add, the side it was placed on other wise
-     *         ( may different for cables, {@link AEPartLocation}.UNKNOWN )
+     * @return null if the item failed to add, the side it was placed on other wise ( may different for cables,
+     *         {@link AEPartLocation}.UNKNOWN )
      */
     AEPartLocation addPart(ItemStack is, AEPartLocation side, PlayerEntity owner, Hand hand);
 
@@ -79,8 +78,7 @@ public interface IPartHost extends ICustomCableConnection {
     IPart getPart(AEPartLocation side);
 
     /**
-     * Get part by side, this method cannot aquire the center part, you must use the
-     * other varient of getPart.
+     * Get part by side, this method cannot aquire the center part, you must use the other varient of getPart.
      *
      * @param side side of part
      * @return the part located on the specified side, or null if there is no part.
@@ -88,15 +86,13 @@ public interface IPartHost extends ICustomCableConnection {
     IPart getPart(Direction side);
 
     /**
-     * removes the part on the side, this doesn't drop it or anything, if you don't
-     * do something with it, its just "gone" and its never coming back; think about
-     * it.
+     * removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just
+     * "gone" and its never coming back; think about it.
      * <p>
      * if you want to drop the part you must request it prior to removing it.
      *
      * @param side           side of part
-     * @param suppressUpdate - used if you need to replace a part's INSTANCE,
-     *                       without really removing it first.
+     * @param suppressUpdate - used if you need to replace a part's INSTANCE, without really removing it first.
      */
     void removePart(AEPartLocation side, boolean suppressUpdate);
 
@@ -111,15 +107,13 @@ public interface IPartHost extends ICustomCableConnection {
     DimensionalCoord getLocation();
 
     /**
-     * @return the block entity for the host, this can either be an FMP tile, or a
-     *         AE tile
+     * @return the block entity for the host, this can either be an FMP tile, or a AE tile
      */
     BlockEntity getTile();
 
     /**
-     * @return the color of the host type ( this is determined by the middle cable.
-     *         ) if no cable is present, it returns {@link AEColor} .Transparent
-     *         other wise it returns the color of the cable in the center.
+     * @return the color of the host type ( this is determined by the middle cable. ) if no cable is present, it returns
+     *         {@link AEColor} .Transparent other wise it returns the color of the cable in the center.
      */
     AEColor getColor();
 

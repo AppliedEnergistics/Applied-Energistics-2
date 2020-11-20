@@ -30,8 +30,8 @@ import appeng.api.util.AEPartLocation;
 /**
  * Access to AE's internal grid connections.
  * <p>
- * Messing with connection is generally completely unnecessary, you should be
- * able to just use IGridNode.updateState() to have AE manage them for you.
+ * Messing with connection is generally completely unnecessary, you should be able to just use IGridNode.updateState()
+ * to have AE manage them for you.
  * <p>
  * Don't Implement.
  */
@@ -56,8 +56,8 @@ public interface IGridConnection {
     AEPartLocation getDirection(IGridNode gridNode);
 
     /**
-     * by destroying a connection you may create new grids, and trigger un-expected
-     * behavior, you should only destroy connections if you created them.
+     * by destroying a connection you may create new grids, and trigger un-expected behavior, you should only destroy
+     * connections if you created them.
      */
     void destroy();
 

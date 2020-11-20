@@ -251,8 +251,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     /**
-     * A fluid handler that exposes a 1 bucket tank that can only be filled, and -
-     * when filled - will add power to this condenser.
+     * A fluid handler that exposes a 1 bucket tank that can only be filled, and - when filled - will add power to this
+     * condenser.
      */
     private class FluidHandler implements FluidInsertable {
 
@@ -277,9 +277,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     /**
-     * This is used to expose a fake ME subnetwork that is only composed of this
-     * condenser tile. The purpose of this is to enable the condenser to override
-     * the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method
+     * This is used to expose a fake ME subnetwork that is only composed of this condenser tile. The purpose of this is
+     * to enable the condenser to override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method
      * to make sure a condenser is only ever used if an item can't go anywhere else.
      */
     private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable {

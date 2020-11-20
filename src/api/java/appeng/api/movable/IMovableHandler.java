@@ -30,8 +30,8 @@ import net.minecraft.world.World;
 public interface IMovableHandler {
 
     /**
-     * if you return true from this, your saying you can handle the class, not that
-     * single entity, you cannot opt out of single entities.
+     * if you return true from this, your saying you can handle the class, not that single entity, you cannot opt out of
+     * single entities.
      *
      * @param myClass block entity class
      * @param tile    block entity
@@ -40,9 +40,8 @@ public interface IMovableHandler {
     boolean canHandle(Class<? extends BlockEntity> myClass, BlockEntity tile);
 
     /**
-     * request that the handler move the the tile from its current location to the
-     * new one. the tile has already been invalidated, and the blocks have already
-     * been fully moved.
+     * request that the handler move the the tile from its current location to the new one. the tile has already been
+     * invalidated, and the blocks have already been fully moved.
      * <p>
      * Potential Example:
      *

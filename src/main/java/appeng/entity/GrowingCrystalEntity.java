@@ -56,8 +56,7 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
     };
 
     /**
-     * The accumulated progress towards a single growth tick of the crystal in
-     * 1/1000th of a growth tick.
+     * The accumulated progress towards a single growth tick of the crystal in 1/1000th of a growth tick.
      */
     private int progress_1000 = 0;
 
@@ -163,8 +162,7 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     /**
-     * Gets the extra progress per tick in 1/1000th of a growth tick based on the
-     * surrounding accelerators.
+     * Gets the extra progress per tick in 1/1000th of a growth tick based on the surrounding accelerators.
      */
     private int getSpeed(BlockPos pos) {
         int acceleratorCount = getAcceleratorCount(pos);

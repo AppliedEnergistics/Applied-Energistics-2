@@ -23,8 +23,7 @@ import net.minecraft.util.StringIdentifiable;
 import appeng.api.storage.cells.CellState;
 
 /**
- * Describes the different states a single slot of a BlockDrive can be in in
- * terms of rendering.
+ * Describes the different states a single slot of a BlockDrive can be in in terms of rendering.
  */
 public enum DriveSlotState implements StringIdentifiable {
 

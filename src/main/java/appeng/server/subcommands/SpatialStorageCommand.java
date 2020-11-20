@@ -86,8 +86,7 @@ public class SpatialStorageCommand implements ISubCommand {
     }
 
     /**
-     * If the player is currently within a spatial storage plot, teleports them back
-     * to the last source of transition.
+     * If the player is currently within a spatial storage plot, teleports them back to the last source of transition.
      */
     private void teleportBack(ServerCommandSource source) {
 

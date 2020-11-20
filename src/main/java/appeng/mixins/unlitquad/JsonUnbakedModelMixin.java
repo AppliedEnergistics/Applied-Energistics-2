@@ -17,10 +17,8 @@ import net.minecraft.util.math.Direction;
 import appeng.hooks.UnlitQuadHooks;
 
 /**
- * This mixin hooks into conversion from {@link ModelElementFace} to
- * {@link BakedQuad} to apply our unlit extensions if the block part face is an
- * instance of our marker class
- * {@link appeng.hooks.UnlitQuadHooks.UnlitModelElementFace}.
+ * This mixin hooks into conversion from {@link ModelElementFace} to {@link BakedQuad} to apply our unlit extensions if
+ * the block part face is an instance of our marker class {@link appeng.hooks.UnlitQuadHooks.UnlitModelElementFace}.
  */
 @Mixin(JsonUnbakedModel.class)
 public class JsonUnbakedModelMixin {

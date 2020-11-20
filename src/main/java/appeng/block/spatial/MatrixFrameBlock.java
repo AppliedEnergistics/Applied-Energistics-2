@@ -38,8 +38,8 @@ import net.minecraft.world.explosion.Explosion;
 import appeng.block.AEBaseBlock;
 
 /**
- * This block is used to fill empty space in spatial dimensions and delinates
- * the border of a spatial dimensions's usable space.
+ * This block is used to fill empty space in spatial dimensions and delinates the border of a spatial dimensions's
+ * usable space.
  */
 public class MatrixFrameBlock extends AEBaseBlock {
 

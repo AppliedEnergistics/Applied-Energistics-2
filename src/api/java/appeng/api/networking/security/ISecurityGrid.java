@@ -57,8 +57,7 @@ public interface ISecurityGrid extends IGridCache {
     boolean hasPermission(@Nonnegative int playerID, @Nonnull SecurityPermissions perm);
 
     /**
-     * @return PlayerID of the admin, or owner, this is the person who placed the
-     *         security block.
+     * @return PlayerID of the admin, or owner, this is the person who placed the security block.
      */
     int getOwner();
 }

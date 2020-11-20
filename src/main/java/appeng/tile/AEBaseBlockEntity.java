@@ -194,8 +194,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     /**
-     * Handles tile entites that are being received by the client as part of a full
-     * chunk.
+     * Handles tile entites that are being received by the client as part of a full chunk.
      */
     @Override
     public void fromClientTag(CompoundTag tag) {
@@ -254,8 +253,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     /**
-     * By default all blocks can have orientation, this handles saving, and loading,
-     * as well as synchronization.
+     * By default all blocks can have orientation, this handles saving, and loading, as well as synchronization.
      *
      * @return true if tile can be rotated
      */
@@ -291,8 +289,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     /**
-     * depending on the from, different settings will be accepted, don't call this
-     * with null
+     * depending on the from, different settings will be accepted, don't call this with null
      *
      * @param from     source of settings
      * @param compound compound of source
@@ -324,8 +321,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     /**
-     * returns the contents of the block entity, into the world, defaults to
-     * dropping everything in the inventory.
+     * returns the contents of the block entity, into the world, defaults to dropping everything in the inventory.
      *
      * @param w     world
      * @param pos   block position
@@ -393,8 +389,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     /**
-     * Checks if this block entity is remote (we are running on the logical client
-     * side).
+     * Checks if this block entity is remote (we are running on the logical client side).
      */
     public boolean isClient() {
         World world = getWorld();

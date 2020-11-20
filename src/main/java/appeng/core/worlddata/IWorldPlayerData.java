@@ -31,12 +31,10 @@ import com.mojang.authlib.GameProfile;
  */
 public interface IWorldPlayerData {
     /**
-     * Gets the UUID of the Minecraft profile associated with the given ME player
-     * id.
+     * Gets the UUID of the Minecraft profile associated with the given ME player id.
      *
      * @param playerID An ME player id.
-     * @return Null if the ME player id is unknown, otherwise the unique id of the
-     *         Minecraft profile it originates from.
+     * @return Null if the ME player id is unknown, otherwise the unique id of the Minecraft profile it originates from.
      */
     @Nullable
     UUID getProfileId(int playerID);

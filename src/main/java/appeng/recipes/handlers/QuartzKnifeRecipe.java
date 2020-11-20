@@ -11,8 +11,7 @@ import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
 import appeng.mixins.ShapelessRecipeMixin;
 
 /**
- * An extended version of ShapelessRecipe to support damaging the QuartzKnife
- * whenever it is used to craft something.
+ * An extended version of ShapelessRecipe to support damaging the QuartzKnife whenever it is used to craft something.
  */
 public class QuartzKnifeRecipe extends ShapelessRecipe {
 

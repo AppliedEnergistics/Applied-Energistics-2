@@ -39,8 +39,8 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
 import appeng.core.AppEng;
 
 /**
- * The model class for facades. Since facades wrap existing models, they don't
- * declare any dependencies here other than the cable anchor.
+ * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other than
+ * the cable anchor.
  */
 public class DummyFluidItemModel implements BasicUnbakedModel {
     // We use this to get the default item transforms and make our lives easier

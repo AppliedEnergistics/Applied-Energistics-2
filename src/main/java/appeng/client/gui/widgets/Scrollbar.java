@@ -29,14 +29,12 @@ import net.minecraft.util.math.MathHelper;
 import appeng.client.gui.AEBaseScreen;
 
 /**
- * Implements a vertical scrollbar using Vanilla's scrollbar handle texture from
- * the creative tab.
+ * Implements a vertical scrollbar using Vanilla's scrollbar handle texture from the creative tab.
  * <p>
- * It is expected that the background of the UI contains a pre-baked scrollbar
- * track border, and that the exact rectangle of that track is set on this
- * object via {@link #setLeft(int)}, {@link #setTop(int)} and
- * {@link #setHeight(int)}. While the width of the track can also be set, the
- * drawn handle will use vanilla's sprite width (see {@link #HANDLE_WIDTH}.
+ * It is expected that the background of the UI contains a pre-baked scrollbar track border, and that the exact
+ * rectangle of that track is set on this object via {@link #setLeft(int)}, {@link #setTop(int)} and
+ * {@link #setHeight(int)}. While the width of the track can also be set, the drawn handle will use vanilla's sprite
+ * width (see {@link #HANDLE_WIDTH}.
  */
 public class Scrollbar extends DrawableHelper implements IScrollSource {
 
@@ -57,14 +55,12 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
             "textures/gui/container/creative_inventory/tabs.png");
 
     /**
-     * Rectangle in the source texture that contains the sprite for an enabled
-     * handle.
+     * Rectangle in the source texture that contains the sprite for an enabled handle.
      */
     private static final Rect2i ENABLED = new Rect2i(232, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
 
     /**
-     * Rectangle in the source texture that contains the sprite for a disabled
-     * handle.
+     * Rectangle in the source texture that contains the sprite for a disabled handle.
      */
     private static final Rect2i DISABLED = new Rect2i(232 + HANDLE_WIDTH, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
 
@@ -98,9 +94,8 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
      */
     private boolean dragging;
     /**
-     * The y-coordinate relative to the upper edge of the scrollbar handle, where
-     * the user pressed the mouse button to drag. While dragging, this is applied as
-     * an offset to the effective scrollbar position.
+     * The y-coordinate relative to the upper edge of the scrollbar handle, where the user pressed the mouse button to
+     * drag. While dragging, this is applied as an offset to the effective scrollbar position.
      */
     private int dragYOffset;
 
@@ -109,8 +104,7 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
     /**
      * Draws the handle of the scrollbar.
      * <p>
-     * The GUI is assumed to already contain a prebaked scrollbar track in its
-     * background.
+     * The GUI is assumed to already contain a prebaked scrollbar track in its background.
      */
     public void draw(MatrixStack matrices, final AEBaseScreen<?> g) {
         setZOffset(g.getZOffset());
@@ -136,8 +130,7 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
     }
 
     /**
-     * Returns the y-position of the scrollbar handle in relation to the upper edge
-     * of the scrollbar's track.
+     * Returns the y-position of the scrollbar handle in relation to the upper edge of the scrollbar's track.
      */
     private int getHandleYOffset() {
         if (getRange() == 0) {
@@ -282,9 +275,8 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
     }
 
     /**
-     * Ticks the scrollbar for the purposes of input-repeats (since mouse-downs are
-     * not repeat-triggered), used to repeatedly page-up or page-down when the mouse
-     * is held in the area above or below the scrollbar handle.
+     * Ticks the scrollbar for the purposes of input-repeats (since mouse-downs are not repeat-triggered), used to
+     * repeatedly page-up or page-down when the mouse is held in the area above or below the scrollbar handle.
      */
     public void tick() {
         this.eventRepeater.tick();

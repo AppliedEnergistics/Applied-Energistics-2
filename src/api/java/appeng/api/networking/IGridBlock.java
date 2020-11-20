@@ -53,8 +53,7 @@ public interface IGridBlock {
     double getIdlePowerUsage();
 
     /**
-     * Various flags that AE uses to modify basic behavior for various parts of the
-     * network.
+     * Various flags that AE uses to modify basic behavior for various parts of the network.
      *
      * @return Set of flags for this IGridBlock
      */
@@ -62,18 +61,16 @@ public interface IGridBlock {
     EnumSet<GridFlags> getFlags();
 
     /**
-     * Generally speaking you will return true for this, the one exception is buses,
-     * or worm holes where the node represents something that isn't a real
-     * connection in the world, but rather one represented internally to the block.
+     * Generally speaking you will return true for this, the one exception is buses, or worm holes where the node
+     * represents something that isn't a real connection in the world, but rather one represented internally to the
+     * block.
      *
-     * @return if the world can connect to this node, and the node can connect to
-     *         the world.
+     * @return if the world can connect to this node, and the node can connect to the world.
      */
     boolean isWorldAccessible();
 
     /**
-     * Must not return when {@link #isWorldAccessible()} is true. Otherwise the
-     * behavior is unspecified.
+     * Must not return when {@link #isWorldAccessible()} is true. Otherwise the behavior is unspecified.
      *
      * @return current location of this node
      */
@@ -87,36 +84,32 @@ public interface IGridBlock {
     AEColor getGridColor();
 
     /**
-     * Called by the {@link IGridNode} to notify its {@link IGridBlock} about
-     * events.
+     * Called by the {@link IGridNode} to notify its {@link IGridBlock} about events.
      */
     void onGridNotification(@Nonnull GridNotification notification);
 
     /**
-     * Determine which sides of the block can be connected too, only used when
-     * isWorldAccessible returns true, not used for {@link IPart} implementations.
+     * Determine which sides of the block can be connected too, only used when isWorldAccessible returns true, not used
+     * for {@link IPart} implementations.
      */
     @Nonnull
     EnumSet<Direction> getConnectableSides();
 
     /**
-     * @return the IGridHost for the node, this will be an IGridPart or a TileEntity
-     *         generally speaking.
+     * @return the IGridHost for the node, this will be an IGridPart or a TileEntity generally speaking.
      */
     @Nonnull
     IGridHost getMachine();
 
     /**
-     * called when the grid for the node has changed, the general grid state should
-     * not be trusted at this point.
+     * called when the grid for the node has changed, the general grid state should not be trusted at this point.
      */
     void gridChanged();
 
     /**
      * Determines what item stack is used to render this node in the GUI.
      *
-     * @return the render item stack to use to render this node. Returning an empty
-     *         ItemStack will not show this node.
+     * @return the render item stack to use to render this node. Returning an empty ItemStack will not show this node.
      */
     @Nonnull
     ItemStack getMachineRepresentation();

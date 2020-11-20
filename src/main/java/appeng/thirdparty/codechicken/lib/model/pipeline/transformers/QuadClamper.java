@@ -25,9 +25,8 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 
 /**
- * This transformer simply clamps the vertices inside the provided box. You
- * probably want to Re-Interpolate the UV's, Color, and Lmap, see
- * {@link QuadReInterpolator}
+ * This transformer simply clamps the vertices inside the provided box. You probably want to Re-Interpolate the UV's,
+ * Color, and Lmap, see {@link QuadReInterpolator}
  *
  * @author covers1624
  */

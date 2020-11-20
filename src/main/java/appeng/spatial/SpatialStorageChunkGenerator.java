@@ -50,12 +50,11 @@ import appeng.core.Api;
 public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     /**
-     * This codec is necessary to restore the actual instance of the Biome we use,
-     * since it is sources from the dynamic registries and <em>must be the same
-     * object as in the registry!</em>.
+     * This codec is necessary to restore the actual instance of the Biome we use, since it is sources from the dynamic
+     * registries and <em>must be the same object as in the registry!</em>.
      * <p>
-     * If it was not the same object, then the Object->ID lookup would fail since it
-     * uses an identity hashmap internally.
+     * If it was not the same object, then the Object->ID lookup would fail since it uses an identity hashmap
+     * internally.
      */
     public static final Codec<SpatialStorageChunkGenerator> CODEC = RegistryLookupCodec.of(Registry.BIOME_KEY)
             .xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();

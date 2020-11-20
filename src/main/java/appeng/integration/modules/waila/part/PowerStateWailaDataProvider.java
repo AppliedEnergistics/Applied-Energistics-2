@@ -56,8 +56,7 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
     }
 
     /**
-     * Gets the corresponding tool tip for different values of {@code #isActive} and
-     * {@code #isPowered}
+     * Gets the corresponding tool tip for different values of {@code #isActive} and {@code #isPowered}
      *
      * @param isActive  if part is active
      * @param isPowered if part is powered

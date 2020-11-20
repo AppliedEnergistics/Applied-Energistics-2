@@ -48,8 +48,7 @@ public final class AELog {
     }
 
     /**
-     * Returns a {@link Logger} logger suitable for the effective side
-     * (client/server).
+     * Returns a {@link Logger} logger suitable for the effective side (client/server).
      *
      * @return a suitable logger instance
      */
@@ -71,15 +70,14 @@ public final class AELog {
     /**
      * Logs a formatted message with a specific log level.
      * <p>
-     * This uses {@link String#format(String, Object...)} as opposed to the
-     * {@link ParameterizedMessage} to allow a more flexible formatting.
+     * This uses {@link String#format(String, Object...)} as opposed to the {@link ParameterizedMessage} to allow a more
+     * flexible formatting.
      * <p>
      * The output can be globally disabled via the configuration file.
      *
      * @param level   the intended level.
      * @param message the message to be formatted.
-     * @param params  the parameters used for
-     *                {@link String#format(String, Object...)}.
+     * @param params  the parameters used for {@link String#format(String, Object...)}.
      */
     public static void log(@Nonnull final Level level, @Nonnull final String message, final Object... params) {
         if (AELog.isLogEnabled()) {
@@ -91,16 +89,14 @@ public final class AELog {
     }
 
     /**
-     * Log an exception with a custom message formated via
-     * {@link String#format(String, Object...)}
+     * Log an exception with a custom message formated via {@link String#format(String, Object...)}
      * <p>
      * Similar to {@link AELog#log(Level, String, Object...)}.
      *
      * @param level     the intended level.
      * @param exception
      * @param message   the message to be formatted.
-     * @param params    the parameters used for
-     *                  {@link String#format(String, Object...)}.
+     * @param params    the parameters used for {@link String#format(String, Object...)}.
      * @see AELog#log(Level, String, Object...)
      */
     public static void log(@Nonnull final Level level, @Nonnull final Throwable exception, @Nonnull String message,
@@ -257,8 +253,7 @@ public final class AELog {
     //
 
     /**
-     * A specialized logging for grinder recipes, can be disabled inside
-     * configuration file.
+     * A specialized logging for grinder recipes, can be disabled inside configuration file.
      *
      * @param message String to be logged
      */
@@ -269,8 +264,7 @@ public final class AELog {
     }
 
     /**
-     * A specialized logging for mod integration errors, can be disabled inside
-     * configuration file.
+     * A specialized logging for mod integration errors, can be disabled inside configuration file.
      *
      * @param exception
      */

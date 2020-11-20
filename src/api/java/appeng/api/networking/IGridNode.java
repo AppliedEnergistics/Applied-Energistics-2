@@ -44,22 +44,21 @@ import appeng.api.util.IReadOnlyCollection;
 public interface IGridNode {
 
     /**
-     * lets you walk the grid stating at the current node using a IGridVisitor,
-     * generally not needed, please use only if required.
+     * lets you walk the grid stating at the current node using a IGridVisitor, generally not needed, please use only if
+     * required.
      *
      * @param visitor visitor
      */
     void beginVisit(@Nonnull IGridVisitor visitor);
 
     /**
-     * inform the node that your IGridBlock has changed its internal state, and
-     * force the node to update.
+     * inform the node that your IGridBlock has changed its internal state, and force the node to update.
      * <p>
-     * ALWAYS make sure that your block entity is in the world, and has its node
-     * properly saved to be returned from the host before updating state,
+     * ALWAYS make sure that your block entity is in the world, and has its node properly saved to be returned from the
+     * host before updating state,
      * <p>
-     * If your entity is not in the world, or if you IGridHost returns a different
-     * node for the same side you will likely crash the game.
+     * If your entity is not in the world, or if you IGridHost returns a different node for the same side you will
+     * likely crash the game.
      */
     void updateState();
 
@@ -80,8 +79,8 @@ public interface IGridNode {
     IGrid getGrid();
 
     /**
-     * By destroying your node, you destroy any connections, and its existence in
-     * the grid, use in invalidate, or onChunkUnload
+     * By destroying your node, you destroy any connections, and its existence in the grid, use in invalidate, or
+     * onChunkUnload
      */
     void destroy();
 
@@ -92,8 +91,7 @@ public interface IGridNode {
     WorldAccess getWorld();
 
     /**
-     * @return a set of the connected sides, INTERNAL represents an invisible
-     *         connection
+     * @return a set of the connected sides, INTERNAL represents an invisible connection
      */
     @Nonnull
     EnumSet<AEPartLocation> getConnectedSides();
@@ -113,17 +111,16 @@ public interface IGridNode {
     IGridBlock getGridBlock();
 
     /**
-     * Reflects the networks status, returns true only if the network is powered,
-     * and the network is not booting, this also takes into account channels.
+     * Reflects the networks status, returns true only if the network is powered, and the network is not booting, this
+     * also takes into account channels.
      *
      * @return true if is Network node active, and participating.
      */
     boolean isActive();
 
     /**
-     * this should be called for each node you create, if you have a nodeData
-     * compound to load from, you can store all your nods on a single compound using
-     * name.
+     * this should be called for each node you create, if you have a nodeData compound to load from, you can store all
+     * your nods on a single compound using name.
      * <p>
      * Important: You must call this before updateState.
      *
@@ -133,9 +130,8 @@ public interface IGridNode {
     void loadFromNBT(@Nonnull String name, @Nonnull CompoundTag nodeData);
 
     /**
-     * this should be called for each node you maintain, you can save all your nodes
-     * to the same tag with different names, if you fail to complete the load / save
-     * procedure, network state may be lost between game load/saves.
+     * this should be called for each node you maintain, you can save all your nodes to the same tag with different
+     * names, if you fail to complete the load / save procedure, network state may be lost between game load/saves.
      *
      * @param name     nbt name
      * @param nodeData to be saved data
@@ -143,8 +139,8 @@ public interface IGridNode {
     void saveToNBT(@Nonnull String name, @Nonnull CompoundTag nodeData);
 
     /**
-     * @return if the node's channel requirements are currently met, use this for
-     *         display purposes, use isActive for status.
+     * @return if the node's channel requirements are currently met, use this for display purposes, use isActive for
+     *         status.
      */
     boolean meetsChannelRequirements();
 
@@ -162,10 +158,9 @@ public interface IGridNode {
     int getPlayerID();
 
     /**
-     * tell the node who was responsible for placing it, failure to do this may
-     * result in in-compatibility with the security system. Called instead of
-     * loadFromNBT when initially placed, once set never required again, the value
-     * is saved with the Node NBT.
+     * tell the node who was responsible for placing it, failure to do this may result in in-compatibility with the
+     * security system. Called instead of loadFromNBT when initially placed, once set never required again, the value is
+     * saved with the Node NBT.
      *
      * @param playerID new player id
      */

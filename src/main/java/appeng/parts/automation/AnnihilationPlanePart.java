@@ -122,8 +122,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     /**
-     * @return An object describing which adjacent planes this plane connects to
-     *         visually.
+     * @return An object describing which adjacent planes this plane connects to visually.
      */
     public PlaneConnections getConnections() {
         return connectionHelper.getConnections();
@@ -213,8 +212,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     /**
-     * Stores an {@link ItemEntity} inside the network and either marks it as dead
-     * or sets it to the leftover stackSize.
+     * Stores an {@link ItemEntity} inside the network and either marks it as dead or sets it to the leftover stackSize.
      *
      * @param entityItem {@link ItemEntity} to store
      */
@@ -254,9 +252,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     /**
-     * Handles a possible overflow or none at all. It will update the entity to
-     * match the leftover stack size as well as mark it as dead without any leftover
-     * amount.
+     * Handles a possible overflow or none at all. It will update the entity to match the leftover stack size as well as
+     * mark it as dead without any leftover amount.
      *
      * @param entityItem the entity to update or destroy
      * @param overflow   the leftover {@link IAEItemStack}
@@ -434,8 +431,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * It also sets isAccepting to false, if the item can not be stored.
      *
      * @param itemStacks an array of {@link ItemStack} to test
-     * @return true, if the network can store at least a single item of all drops or
-     *         no drops are reported
+     * @return true, if the network can store at least a single item of all drops or no drops are reported
      */
     private boolean canStoreItemStacks(final List<ItemStack> itemStacks) {
         boolean canStore = itemStacks.isEmpty();
@@ -505,8 +501,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             Items.DIAMOND_SHOVEL, };
 
     /**
-     * Creates the fake (and temporary) tool that will be used to calculate the loot
-     * tables of a block this plane wants to break.
+     * Creates the fake (and temporary) tool that will be used to calculate the loot tables of a block this plane wants
+     * to break.
      *
      * @param state The state of the block about to be broken.
      */

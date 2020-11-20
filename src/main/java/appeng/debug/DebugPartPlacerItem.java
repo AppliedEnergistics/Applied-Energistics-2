@@ -26,9 +26,8 @@ import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
 
 /**
- * This tool will try to place anything that is registered as a {@link PartItem}
- * (and not a colored one) onto an existing cable to quickly test parts and
- * their rendering.
+ * This tool will try to place anything that is registered as a {@link PartItem} (and not a colored one) onto an
+ * existing cable to quickly test parts and their rendering.
  */
 public class DebugPartPlacerItem extends AEBaseItem implements AEToolItem {
 

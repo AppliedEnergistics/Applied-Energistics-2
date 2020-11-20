@@ -32,9 +32,8 @@ import appeng.core.AppEng;
 import appeng.helpers.Splotch;
 
 /**
- * Renders paint blocks, which render multiple "splotches" that have been
- * applied to the sides of adjacent blocks using a matter cannon with paint
- * balls.
+ * Renders paint blocks, which render multiple "splotches" that have been applied to the sides of adjacent blocks using
+ * a matter cannon with paint balls.
  */
 class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
 

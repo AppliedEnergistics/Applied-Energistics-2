@@ -35,8 +35,8 @@ import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.core.AppEng;
 
 /**
- * The model class for facades. Since facades wrap existing models, they don't
- * declare any dependencies here other than the cable anchor.
+ * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other than
+ * the cable anchor.
  */
 public class FacadeItemModel implements BasicUnbakedModel {
 

@@ -27,8 +27,7 @@ import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
 
 /**
- * Customizes the rendering behavior for cable busses, which are the biggest
- * multipart of AE2.
+ * Customizes the rendering behavior for cable busses, which are the biggest multipart of AE2.
  */
 public class CableBusRendering extends BlockRenderingCustomizer {
 

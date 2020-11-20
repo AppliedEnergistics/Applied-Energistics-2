@@ -299,8 +299,7 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     }
 
     /**
-     * Gets a list of texture sprites appropriate for particles (digging, etc.)
-     * given the render state for a cable bus.
+     * Gets a list of texture sprites appropriate for particles (digging, etc.) given the render state for a cable bus.
      */
     public List<Sprite> getParticleTextures(CableBusRenderState renderState) {
         CableCoreType coreType = CableCoreType.fromCableType(renderState.getCableType());

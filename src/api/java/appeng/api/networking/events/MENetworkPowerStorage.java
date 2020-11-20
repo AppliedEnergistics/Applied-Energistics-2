@@ -26,14 +26,13 @@ package appeng.api.networking.events;
 import appeng.api.networking.energy.IAEPowerStorage;
 
 /**
- * informs the network, that a {@link IAEPowerStorage} block that had either
- * run, out of power, or was full, is no longer in that state.
+ * informs the network, that a {@link IAEPowerStorage} block that had either run, out of power, or was full, is no
+ * longer in that state.
  * <p>
- * failure to post this event when your {@link IAEPowerStorage} changes state
- * will result in your block not charging, or not-discharging.
+ * failure to post this event when your {@link IAEPowerStorage} changes state will result in your block not charging, or
+ * not-discharging.
  * <p>
- * you do not need to send this event when your node is added / removed from the
- * grid.
+ * you do not need to send this event when your node is added / removed from the grid.
  */
 public class MENetworkPowerStorage extends MENetworkEvent {
 

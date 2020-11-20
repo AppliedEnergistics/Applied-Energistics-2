@@ -66,9 +66,8 @@ public interface AppEng {
     CableRenderMode getCableRenderMode();
 
     /**
-     * Sets the player that is currently interacting with a cable or part attached
-     * to a cable. This will return that player's cable render mode from calls to
-     * {@link #getCableRenderMode()}, until another player or null is set.
+     * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that
+     * player's cable render mode from calls to {@link #getCableRenderMode()}, until another player or null is set.
      *
      * @param player Null to revert to the default cable render mode.
      */
@@ -77,8 +76,8 @@ public interface AppEng {
     boolean isActionKey(@Nonnull final ActionKey key, int keyCode, int scanCode);
 
     /**
-     * Get the currently running server. On the client-side this may throw if no
-     * server is currently running or a remote server has been joined.
+     * Get the currently running server. On the client-side this may throw if no server is currently running or a remote
+     * server has been joined.
      *
      * @return The current server. Never null.
      */

@@ -29,8 +29,7 @@ import appeng.core.AppEng;
 import appeng.parts.PartModel;
 
 /**
- * Contains a mapping from a Plane's connections to the models to use for that
- * state.
+ * Contains a mapping from a Plane's connections to the models to use for that state.
  */
 public class PlaneModels {
 

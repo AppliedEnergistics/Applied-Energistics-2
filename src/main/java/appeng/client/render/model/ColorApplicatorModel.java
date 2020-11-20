@@ -19,8 +19,8 @@ import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
 /**
- * A color applicator uses the base model, and extends it with additional layers
- * that are colored according to the selected color of the applicator.
+ * A color applicator uses the base model, and extends it with additional layers that are colored according to the
+ * selected color of the applicator.
  */
 public class ColorApplicatorModel implements BasicUnbakedModel {
 

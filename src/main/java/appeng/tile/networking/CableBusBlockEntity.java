@@ -98,8 +98,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
     }
 
     /**
-     * Changes this tile to the TESR version if any of the parts require dynamic
-     * rendering.
+     * Changes this tile to the TESR version if any of the parts require dynamic rendering.
      */
     protected void updateTileSetting() {
         // FIXME: potentially invalidate voxel shape cache?

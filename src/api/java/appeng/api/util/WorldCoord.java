@@ -27,8 +27,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 
 /**
- * Represents a relative coordinate, either relative to another object, or
- * relative to the origin of a dimension.
+ * Represents a relative coordinate, either relative to another object, or relative to the origin of a dimension.
  * <p>
  * TODO: Consider replacing with {@link BlockPos}
  */

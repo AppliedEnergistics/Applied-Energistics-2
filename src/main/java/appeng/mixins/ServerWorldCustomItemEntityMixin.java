@@ -13,9 +13,8 @@ import net.minecraft.server.world.ServerWorld;
 import appeng.hooks.AECustomEntityItem;
 
 /**
- * This Mixin will replace newly spawned ItemEntities with custom entities if
- * the item wants it. This is not applied retroactively to entities that are
- * already spawned and just re-added to the world when a chunk is loaded.
+ * This Mixin will replace newly spawned ItemEntities with custom entities if the item wants it. This is not applied
+ * retroactively to entities that are already spawned and just re-added to the world when a chunk is loaded.
  */
 @Mixin(value = ServerWorld.class, priority = 9999)
 public class ServerWorldCustomItemEntityMixin {

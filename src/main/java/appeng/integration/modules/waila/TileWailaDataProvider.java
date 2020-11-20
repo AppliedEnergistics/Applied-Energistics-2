@@ -40,8 +40,7 @@ import appeng.integration.modules.waila.tile.PowerStateWailaDataProvider;
 import appeng.integration.modules.waila.tile.PowerStorageWailaDataProvider;
 
 /**
- * Delegation provider for tiles through
- * {@link mcp.mobius.waila.api.IComponentProvider}
+ * Delegation provider for tiles through {@link mcp.mobius.waila.api.IComponentProvider}
  *
  * @author thatsIch
  * @version rv2

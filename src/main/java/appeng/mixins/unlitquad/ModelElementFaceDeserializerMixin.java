@@ -15,8 +15,8 @@ import net.minecraft.client.render.model.json.ModelElementFace;
 import appeng.hooks.UnlitQuadHooks;
 
 /**
- * This mixin will call the hook to deserialize the unlit property, but only if
- * we are currently deserializing an AE2 model.
+ * This mixin will call the hook to deserialize the unlit property, but only if we are currently deserializing an AE2
+ * model.
  */
 @Mixin(ModelElementFace.Deserializer.class)
 public class ModelElementFaceDeserializerMixin {

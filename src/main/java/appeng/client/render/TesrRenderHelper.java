@@ -40,8 +40,8 @@ public class TesrRenderHelper {
     private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
 
     /**
-     * Rotate the current coordinate system so it is on the face of the given block
-     * side. This can be used to render on the given face as if it was a 2D canvas.
+     * Rotate the current coordinate system so it is on the face of the given block side. This can be used to render on
+     * the given face as if it was a 2D canvas.
      */
     public static void rotateToFace(MatrixStack mStack, Direction face, byte spin) {
         switch (face) {
@@ -105,8 +105,7 @@ public class TesrRenderHelper {
      *
      * @param matrixStack
      * @param buffers
-     * @param spacing           Specifies how far apart the item and the item stack
-     *                          amount are rendered.
+     * @param spacing           Specifies how far apart the item and the item stack amount are rendered.
      * @param combinedLightIn
      * @param combinedOverlayIn
      */

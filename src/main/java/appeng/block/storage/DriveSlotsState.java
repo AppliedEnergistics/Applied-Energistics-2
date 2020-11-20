@@ -26,8 +26,7 @@ import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.cells.CellState;
 
 /**
- * Contains the full information about what the state of the slots in a
- * BlockDrive is.
+ * Contains the full information about what the state of the slots in a BlockDrive is.
  */
 public class DriveSlotsState {
 
@@ -60,8 +59,7 @@ public class DriveSlotsState {
     }
 
     /**
-     * Retrieve an array that describes the state of each slot in this drive or
-     * chest.
+     * Retrieve an array that describes the state of each slot in this drive or chest.
      */
     public static DriveSlotsState fromChestOrDrive(IChestOrDrive chestOrDrive) {
         DriveSlotState[] states = new DriveSlotState[chestOrDrive.getCellCount()];

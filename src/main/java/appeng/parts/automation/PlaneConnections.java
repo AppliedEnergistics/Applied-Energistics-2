@@ -24,9 +24,8 @@ import java.util.List;
 import com.google.common.base.Strings;
 
 /**
- * Models in which directions - looking at the front face - a plane
- * (annihilation, formation, etc.) is connected to other planes of the same
- * type.
+ * Models in which directions - looking at the front face - a plane (annihilation, formation, etc.) is connected to
+ * other planes of the same type.
  */
 public final class PlaneConnections {
 

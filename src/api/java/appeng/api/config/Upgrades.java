@@ -62,8 +62,7 @@ public enum Upgrades {
     }
 
     /**
-     * @return list of Items/Blocks that support this upgrade, and how many it
-     *         supports.
+     * @return list of Items/Blocks that support this upgrade, and how many it supports.
      */
     public List<Supported> getSupported() {
         return this.supported;
@@ -78,10 +77,8 @@ public enum Upgrades {
      *
      * @param item         machine in which this upgrade can be installed
      * @param maxSupported amount how many upgrades can be installed
-     * @param tooltipGroup If more than one item of the same group are supported,
-     *                     the tooltip will show this translation key instead. If
-     *                     the items have different maxSupported values, the highest
-     *                     will be shown.
+     * @param tooltipGroup If more than one item of the same group are supported, the tooltip will show this translation
+     *                     key instead. If the items have different maxSupported values, the highest will be shown.
      */
     public void registerItem(final ItemConvertible item, final int maxSupported, @Nullable String tooltipGroup) {
         Preconditions.checkNotNull(item);

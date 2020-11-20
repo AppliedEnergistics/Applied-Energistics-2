@@ -28,8 +28,7 @@ import net.minecraft.util.math.Direction;
 /**
  * Nearly all of AE's Tile Entities implement IOrientable.
  * <p>
- * and it can be used to manipulate the direction of some machines, most of
- * these orientations are purely visual.
+ * and it can be used to manipulate the direction of some machines, most of these orientations are purely visual.
  * <p>
  * AE also responds to Block.rotateBlock
  */

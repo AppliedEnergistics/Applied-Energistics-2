@@ -152,8 +152,8 @@ public class RestrictedInputSlot extends AppEngSlot {
 
             case INSCRIBER_INPUT:
                 return true;/*
-                             * for (ItemStack is : Inscribe.inputs) if ( Platform.isSameItemPrecise( is, i )
-                             * ) return true; return false;
+                             * for (ItemStack is : Inscribe.inputs) if ( Platform.isSameItemPrecise( is, i ) ) return
+                             * true; return false;
                              */
 
             case METAL_INGOTS:

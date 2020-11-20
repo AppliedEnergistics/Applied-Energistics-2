@@ -35,16 +35,15 @@ public interface IWirelessTermHandler extends INetworkEncodable {
 
     /**
      * @param is wireless terminal
-     * @return true, if usePower, hasPower, etc... can be called for the provided
-     *         item
+     * @return true, if usePower, hasPower, etc... can be called for the provided item
      */
     boolean canHandle(ItemStack is);
 
     /**
      * use an amount of power, in AE units
      *
-     * @param amount is in AE units ( 5 per MJ ), if you return false, the item
-     *               should be dead and return false for hasPower
+     * @param amount is in AE units ( 5 per MJ ), if you return false, the item should be dead and return false for
+     *               hasPower
      * @param is     wireless terminal
      * @return true if wireless terminal uses power
      */

@@ -31,9 +31,8 @@ import appeng.util.Platform;
 public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TCluster extends IAECluster> {
 
     /**
-     * To avoid recursive cluster rebuilds, we use a global field to prevent this
-     * from happening. This is set to the cluster that is currently causing a
-     * Multiblock modification.
+     * To avoid recursive cluster rebuilds, we use a global field to prevent this from happening. This is set to the
+     * cluster that is currently causing a Multiblock modification.
      */
     private static WeakReference<IAECluster> modificationInProgress = new WeakReference<>(null);
 

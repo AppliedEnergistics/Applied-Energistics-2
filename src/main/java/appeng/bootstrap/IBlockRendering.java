@@ -28,8 +28,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.Identifier;
 
 /**
- * Allows for client-side rendering to be customized in the context of
- * block/item registration.
+ * Allows for client-side rendering to be customized in the context of block/item registration.
  */
 public interface IBlockRendering {
 

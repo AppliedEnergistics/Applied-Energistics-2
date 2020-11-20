@@ -32,8 +32,8 @@ import net.minecraft.world.World;
 public interface ICommonTile {
 
     /**
-     * implemented on AE's Tile Entities, Gets a list of drops that the entity will
-     * normally drop, this doesn't include the block itself.
+     * implemented on AE's Tile Entities, Gets a list of drops that the entity will normally drop, this doesn't include
+     * the block itself.
      *
      * @param world world of block entity
      * @param pos   location of the block

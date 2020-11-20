@@ -12,9 +12,8 @@ import net.minecraft.item.ItemStack;
 import appeng.hooks.ItemRendererHooks;
 
 /**
- * This mixin specifically targets rendering of items in the user interface to
- * allow us to customize _only_ the UI representation of an item, and none of
- * the others (held items, in-world, etc.)
+ * This mixin specifically targets rendering of items in the user interface to allow us to customize _only_ the UI
+ * representation of an item, and none of the others (held items, in-world, etc.)
  */
 @Mixin(ItemRenderer.class)
 public abstract class RenderEncodedPatternMixin {

@@ -25,8 +25,8 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import appeng.thirdparty.codechicken.lib.math.InterpHelper;
 
 /**
- * This transformer Re-Interpolates the Color, UV's and LightMaps. Use this
- * after all transformations that translate vertices in the pipeline.
+ * This transformer Re-Interpolates the Color, UV's and LightMaps. Use this after all transformations that translate
+ * vertices in the pipeline.
  * <p>
  * This Transformation can only be used in the BakedPipeline.
  *
@@ -83,8 +83,7 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
     }
 
     /**
-     * Interpolates the new color values for this Vertex using the others as a
-     * reference.
+     * Interpolates the new color values for this Vertex using the others as a reference.
      */
     public void interpColorFrom(MutableQuadView quad, int vertexIndex) {
         int p1 = this.originalSpriteColor[0];
@@ -112,8 +111,7 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
     }
 
     /**
-     * Interpolates the new UV values for this Vertex using the others as a
-     * reference.
+     * Interpolates the new UV values for this Vertex using the others as a reference.
      */
     public void interpUVFrom(MutableQuadView quad, int vertexIndex) {
         float p1 = originalSpriteU[0];
@@ -131,8 +129,7 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
     }
 
     /**
-     * Interpolates the new LightMap values for this Vertex using the others as a
-     * reference.
+     * Interpolates the new LightMap values for this Vertex using the others as a reference.
      *
      * @return The same Vertex.
      */

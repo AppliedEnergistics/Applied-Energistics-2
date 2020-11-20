@@ -28,10 +28,9 @@ import appeng.hooks.TickHandler;
 import appeng.util.IWorldCallable;
 
 /**
- * We need to defer actually unloading tile entities until the end of the tick,
- * after the chunk has been saved to disk. The CHUNK_UNLOAD event runs before
- * the chunk has been saved, and if we disconnect nodes at that point, the saved
- * data will be missing information from the node (such as the player id).
+ * We need to defer actually unloading tile entities until the end of the tick, after the chunk has been saved to disk.
+ * The CHUNK_UNLOAD event runs before the chunk has been saved, and if we disconnect nodes at that point, the saved data
+ * will be missing information from the node (such as the player id).
  */
 class DeferredTileEntityUnloader implements IWorldCallable<Void> {
 

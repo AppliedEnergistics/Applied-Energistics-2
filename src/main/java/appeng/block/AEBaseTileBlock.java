@@ -142,8 +142,8 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     }
 
     /**
-     * Calculate redstone output level. 0 if completely empty, 1 if _any_ item is
-     * present, up to 15 if all slots are full.
+     * Calculate redstone output level. 0 if completely empty, 1 if _any_ item is present, up to 15 if all slots are
+     * full.
      */
     private int getRedstoneFromFixedItemInv(FixedItemInv inv) {
         boolean foundAnything = false; // ANY slots non-empty?
@@ -281,12 +281,10 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     }
 
     /**
-     * Returns the BlockState based on the given BlockState while considering the
-     * state of the given TileEntity.
+     * Returns the BlockState based on the given BlockState while considering the state of the given TileEntity.
      * <p>
-     * If the given TileEntity is not of the right type for this block, the state is
-     * returned unchanged, this is also the case if the given block state does not
-     * belong to this block.
+     * If the given TileEntity is not of the right type for this block, the state is returned unchanged, this is also
+     * the case if the given block state does not belong to this block.
      */
     public final BlockState getBlockEntityBlockState(BlockState current, BlockEntity te) {
         if (current.getBlock() != this || !blockEntityClass.isInstance(te)) {
@@ -297,11 +295,10 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     }
 
     /**
-     * Reimplement this in subclasses to allow tile-entities to update the state of
-     * their block when their own state changes.
+     * Reimplement this in subclasses to allow tile-entities to update the state of their block when their own state
+     * changes.
      * <p>
-     * It is guaranteed that te is not-null and the block of the given block state
-     * is this exact block instance.
+     * It is guaranteed that te is not-null and the block of the given block state is this exact block instance.
      */
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, T te) {
         return currentState;

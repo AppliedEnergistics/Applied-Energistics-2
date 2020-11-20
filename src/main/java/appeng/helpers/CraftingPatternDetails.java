@@ -305,8 +305,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     /**
-     * Merges all equal entries into a single one while adding their total stack
-     * sizes.
+     * Merges all equal entries into a single one while adding their total stack sizes.
      *
      * @param collection the collection to condense
      * @return a non empty list of condensed stacks.

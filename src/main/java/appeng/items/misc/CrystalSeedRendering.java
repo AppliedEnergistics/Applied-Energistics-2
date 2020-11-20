@@ -9,8 +9,7 @@ import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.core.AppEng;
 
 /**
- * Exposes a predicate "growth", which is used in the item model to
- * differentiate the growth stages.
+ * Exposes a predicate "growth", which is used in the item model to differentiate the growth stages.
  */
 public class CrystalSeedRendering implements IClientSetupComponent {
     private final Item item;

@@ -9,9 +9,8 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
 /**
- * Registers a block entity renderer for a given block entity type. This must
- * occur late in the client's initialization, since the constructors of our
- * block entity renderers rely on the client being fully initialized.
+ * Registers a block entity renderer for a given block entity type. This must occur late in the client's initialization,
+ * since the constructors of our block entity renderers rely on the client being fully initialized.
  */
 public class BlockEntityRendererComponent<T extends BlockEntity> implements IClientSetupComponent {
 

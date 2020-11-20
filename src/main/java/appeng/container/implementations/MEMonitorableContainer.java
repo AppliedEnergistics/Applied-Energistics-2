@@ -103,8 +103,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     @GuiSync(98)
     public boolean hasPower = false;
     /**
-     * The number of active crafting jobs in the network. -1 means unknown and will
-     * hide the label on the screen.
+     * The number of active crafting jobs in the network. -1 means unknown and will hide the label on the screen.
      */
     @GuiSync(100)
     public int activeCraftingJobs = -1;

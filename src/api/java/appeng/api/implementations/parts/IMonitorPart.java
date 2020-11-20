@@ -32,8 +32,7 @@ import appeng.api.parts.IPart;
 public interface IMonitorPart extends IPart, IGridHost {
 
     /**
-     * @return if the device is online you should check this before providing any
-     *         other information.
+     * @return if the device is online you should check this before providing any other information.
      */
     boolean isPowered();
 }

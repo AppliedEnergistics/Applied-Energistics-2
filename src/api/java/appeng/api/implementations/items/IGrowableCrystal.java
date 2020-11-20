@@ -38,8 +38,7 @@ public interface IGrowableCrystal {
      * Gets the crystal growth multiplier based on the material it is submerged in.
      *
      * @param state The blockstate of the block the crystal is currently in.
-     * @return The multiplier for the growth tick progress. Zero if the crystal
-     *         cannot grow in the current material.
+     * @return The multiplier for the growth tick progress. Zero if the crystal cannot grow in the current material.
      */
     float getMultiplier(BlockState state, @Nullable World world, @Nullable BlockPos pos);
 }

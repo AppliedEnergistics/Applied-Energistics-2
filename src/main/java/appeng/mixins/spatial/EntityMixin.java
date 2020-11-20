@@ -13,8 +13,7 @@ import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageHelper;
 
 /**
- * This mixin sets the teleport destination, because otherwise Vanilla will not
- * move the player.
+ * This mixin sets the teleport destination, because otherwise Vanilla will not move the player.
  */
 @Mixin(Entity.class)
 public class EntityMixin {

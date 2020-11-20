@@ -45,9 +45,8 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
     }
 
     /**
-     * Controls the rendering of the controller block (connected texture style).
-     * inside_a and inside_b are alternating patterns for a controller that is
-     * enclosed by other controllers, and since they are always offline, they do not
+     * Controls the rendering of the controller block (connected texture style). inside_a and inside_b are alternating
+     * patterns for a controller that is enclosed by other controllers, and since they are always offline, they do not
      * have the usual sub-states.
      */
     public enum ControllerRenderType implements StringIdentifiable {
@@ -80,10 +79,9 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
     }
 
     /**
-     * This will compute the AE_BLOCK_FORWARD, AE_BLOCK_UP and CONTROLLER_TYPE block
-     * states based on adjacent controllers and the network state of this controller
-     * (offline, online, conflicted). This is used to get a rudimentary connected
-     * texture feel for the controller based on how it is placed.
+     * This will compute the AE_BLOCK_FORWARD, AE_BLOCK_UP and CONTROLLER_TYPE block states based on adjacent
+     * controllers and the network state of this controller (offline, online, conflicted). This is used to get a
+     * rudimentary connected texture feel for the controller based on how it is placed.
      */
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState,

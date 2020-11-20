@@ -38,8 +38,7 @@ public class TickingRequest {
     public final int minTickRate;
 
     /**
-     * the maximum number of ticks that can pass between ticks, if this value is
-     * exceeded the tile must tick.
+     * the maximum number of ticks that can pass between ticks, if this value is exceeded the tile must tick.
      * <p>
      * Valid Values are 1+
      * <p>
@@ -48,8 +47,7 @@ public class TickingRequest {
     public final int maxTickRate;
 
     /**
-     * Determines the current expected state of your node, if your node expects to
-     * be sleeping, then return true.
+     * Determines the current expected state of your node, if your node expects to be sleeping, then return true.
      */
     public final boolean isSleeping;
 

@@ -28,8 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
 /**
- * Implemented on AE's wrench(s) as a substitute for if BC's API is not
- * available.
+ * Implemented on AE's wrench(s) as a substitute for if BC's API is not available.
  */
 public interface IAEWrench {
 

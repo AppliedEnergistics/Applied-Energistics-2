@@ -8,8 +8,7 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
 /**
- * A quaint model provider that provides a single model with a single given
- * resource identifier.
+ * A quaint model provider that provides a single model with a single given resource identifier.
  */
 public class SimpleModelLoader<T extends UnbakedModel> implements ModelResourceProvider {
 

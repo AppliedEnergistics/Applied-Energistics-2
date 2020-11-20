@@ -12,8 +12,7 @@ import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 
 /**
- * Adapts an itemstack that implements
- * {@link appeng.api.implementations.items.IAEItemPowerStorage} to the interface
+ * Adapts an itemstack that implements {@link appeng.api.implementations.items.IAEItemPowerStorage} to the interface
  * used by TechReborn's energy API.
  */
 public final class ItemPowerStorageAdapter implements EnergyStorage {

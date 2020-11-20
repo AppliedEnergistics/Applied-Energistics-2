@@ -647,8 +647,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     }
 
     /**
-     * This overrides the base-class method through some access transformer
-     * hackery...
+     * This overrides the base-class method through some access transformer hackery...
      */
     @Override
     public void drawSlot(MatrixStack matrices, Slot s) {
@@ -824,8 +823,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     }
 
     /**
-     * Returns true while the current event being handled is a click of the right
-     * mouse button.
+     * Returns true while the current event being handled is a click of the right mouse button.
      */
     public boolean isHandlingRightClick() {
         return handlingRightClick;

@@ -41,8 +41,7 @@ import appeng.core.localization.WailaText;
  */
 public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProvider {
     /**
-     * Displays the stack if present and if the monitor is locked. Can handle fluids
-     * and items.
+     * Displays the stack if present and if the monitor is locked. Can handle fluids and items.
      *
      * @param part     maybe storage monitor
      * @param tooltip  to be written to tooltip

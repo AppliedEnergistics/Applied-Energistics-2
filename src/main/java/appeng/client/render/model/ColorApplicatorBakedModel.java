@@ -17,12 +17,10 @@ import net.minecraft.util.math.Direction;
 import appeng.mixins.BakedQuadAccessor;
 
 /**
- * This baked model will take the generated item model for the colored color
- * applicator, and associate tint indices with the added layers that correspond
- * to the light/medium/dark variants of the {@link appeng.api.util.AEColor}.
+ * This baked model will take the generated item model for the colored color applicator, and associate tint indices with
+ * the added layers that correspond to the light/medium/dark variants of the {@link appeng.api.util.AEColor}.
  * <p>
- * Using the color provider registered in
- * {@link appeng.items.tools.powered.ColorApplicatorItemRendering}, this results
+ * Using the color provider registered in {@link appeng.items.tools.powered.ColorApplicatorItemRendering}, this results
  * in the right color being multiplied with the corresponding layer.
  */
 class ColorApplicatorBakedModel extends ForwardingBakedModel {

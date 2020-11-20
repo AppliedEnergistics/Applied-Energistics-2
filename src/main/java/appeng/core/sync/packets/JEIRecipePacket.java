@@ -76,15 +76,14 @@ public class JEIRecipePacket extends BasePacket {
     private static final int INLINE_RECIPE_NONE = 1;
 
     /**
-     * Transmit the information about the recipe we actually need. This is
-     * explicitly limited since this is untrusted client->server info.
+     * Transmit the information about the recipe we actually need. This is explicitly limited since this is untrusted
+     * client->server info.
      */
     private static final int INLINE_RECIPE_SHAPED = 2;
 
     private Identifier recipeId;
     /**
-     * This is optional, in case the client already knows it could not resolve the
-     * recipe id.
+     * This is optional, in case the client already knows it could not resolve the recipe id.
      */
     @Nullable
     private Recipe<?> recipe;
@@ -108,8 +107,7 @@ public class JEIRecipePacket extends BasePacket {
     }
 
     /**
-     * Sends a recipe identified by the given recipe ID to the server for either
-     * filling a crafting grid or a pattern.
+     * Sends a recipe identified by the given recipe ID to the server for either filling a crafting grid or a pattern.
      */
     public JEIRecipePacket(final Identifier recipeId, final boolean crafting) {
         PacketByteBuf data = createCommonHeader(recipeId, crafting, INLINE_RECIPE_NONE);
@@ -141,9 +139,8 @@ public class JEIRecipePacket extends BasePacket {
     /**
      * Servside handler for this packet.
      * <p>
-     * Makes use of {@link Preconditions#checkArgument(boolean)} as the
-     * {@link BasePacketHandler} is catching them and in general these cases should
-     * never happen except in an error case and should be logged then.
+     * Makes use of {@link Preconditions#checkArgument(boolean)} as the {@link BasePacketHandler} is catching them and
+     * in general these cases should never happen except in an error case and should be logged then.
      */
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
@@ -276,8 +273,8 @@ public class JEIRecipePacket extends BasePacket {
     /**
      * Expand any recipe to a 3x3 matrix.
      * <p>
-     * Will throw an {@link IllegalArgumentException} in case it has more than 9 or
-     * a shaped recipe is either wider or higher than 3. ingredients.
+     * Will throw an {@link IllegalArgumentException} in case it has more than 9 or a shaped recipe is either wider or
+     * higher than 3. ingredients.
      */
     private DefaultedList<Ingredient> ensure3by3CraftingMatrix(Recipe<?> recipe) {
         DefaultedList<Ingredient> ingredients = recipe.getPreviewInputs();
@@ -335,8 +332,7 @@ public class JEIRecipePacket extends BasePacket {
     /**
      * This tries to find the first pattern matching the list of ingredients.
      * <p>
-     * As additional condition, it sorts by the stored amount to return the one with
-     * the highest stored amount.
+     * As additional condition, it sorts by the stored amount to return the one with the highest stored amount.
      */
     private IAEItemStack findBestMatchingPattern(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
             ICraftingGrid crafting, IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
@@ -349,8 +345,8 @@ public class JEIRecipePacket extends BasePacket {
     }
 
     /**
-     * From a stream of AE item stacks, pick the one with the highest available
-     * amount in the network. Returns null if the stream is empty.
+     * From a stream of AE item stacks, pick the one with the highest available amount in the network. Returns null if
+     * the stream is empty.
      */
     private static IAEItemStack getMostStored(Stream<? extends IAEItemStack> stacks, IMEMonitor<IAEItemStack> storage,
             IContainerCraftingPacket cct) {

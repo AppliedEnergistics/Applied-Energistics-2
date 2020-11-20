@@ -30,8 +30,7 @@ import appeng.api.features.AEFeature;
 import appeng.core.features.ItemDefinition;
 
 /**
- * Allows an item to be defined and registered with the game. The item is only
- * registered once build is called.
+ * Allows an item to be defined and registered with the game. The item is only registered once build is called.
  */
 public interface IItemBuilder {
     IItemBuilder bootstrap(Function<Item, IBootstrapComponent> component);

@@ -47,8 +47,7 @@ import appeng.core.AppEng;
 import appeng.mixins.RenderPhaseMixin;
 
 /**
- * Renders the item currently being crafted by the molecular assembler, as well
- * as the light strip when it's powered.
+ * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
 @Environment(EnvType.CLIENT)
 public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAssemblerBlockEntity> {
@@ -139,10 +138,9 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
     }
 
     /**
-     * See above for when this can be removed. It creates a RenderType that is
-     * equivalent to {@link RenderLayer#getTranslucent()}, but enables alpha
-     * testing. This prevents the fully transparents parts of the rendered block
-     * model from occluding our particles.
+     * See above for when this can be removed. It creates a RenderType that is equivalent to
+     * {@link RenderLayer#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of
+     * the rendered block model from occluding our particles.
      */
     private static RenderLayer createRenderType() {
         RenderPhase.Texture mipmapBlockAtlasTexture = new RenderPhase.Texture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,

@@ -27,8 +27,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.AxisDirection;
 
 /**
- * This transformer strips quads that are on faces. Simply set the bounds for
- * the faces, and the strip mask.
+ * This transformer strips quads that are on faces. Simply set the bounds for the faces, and the strip mask.
  *
  * @author covers1624
  */
@@ -47,8 +46,8 @@ public class QuadFaceStripper implements RenderContext.QuadTransform {
     }
 
     /**
-     * The bounds of the faces, used as the .. bounds, if all vertices of a quad lay
-     * on the bounds, it is up for stripping.
+     * The bounds of the faces, used as the .. bounds, if all vertices of a quad lay on the bounds, it is up for
+     * stripping.
      *
      * @param bounds The bounds.
      */
@@ -57,8 +56,7 @@ public class QuadFaceStripper implements RenderContext.QuadTransform {
     }
 
     /**
-     * The mask to strip edges. This is an opt in system, the mask is simple 'mask =
-     * (1 << side)'.
+     * The mask to strip edges. This is an opt in system, the mask is simple 'mask = (1 << side)'.
      *
      * @param mask The mask.
      */

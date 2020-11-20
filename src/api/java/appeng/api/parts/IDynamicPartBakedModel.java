@@ -16,9 +16,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
 /**
- * This interface can be implemented by baked models returned by
- * {@link IPart#getStaticModels()} to indicate that they would like to use the
- * model data returned by {@link IPart#getModelData()}.
+ * This interface can be implemented by baked models returned by {@link IPart#getStaticModels()} to indicate that they
+ * would like to use the model data returned by {@link IPart#getModelData()}.
  */
 public interface IDynamicPartBakedModel extends BakedModel {
 
@@ -27,8 +26,8 @@ public interface IDynamicPartBakedModel extends BakedModel {
      * {@link net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel#emitBlockQuads(BlockRenderView, BlockState, BlockPos, Supplier, RenderContext)}
      * for context.
      * <p>
-     * The given <code>context</code> will already have been transformed so that the
-     * model renders from the rotated location the part is attached to.
+     * The given <code>context</code> will already have been transformed so that the model renders from the rotated
+     * location the part is attached to.
      *
      * @param partSide  The side of the cable bus that the part is attached to.
      * @param modelData The model data returned by {@link IPart#getModelData()}
@@ -37,8 +36,7 @@ public interface IDynamicPartBakedModel extends BakedModel {
             RenderContext context, Direction partSide, @Nullable Object modelData);
 
     /**
-     * Unless you use your dynamic model for other purposes, this method will not be
-     * called.
+     * Unless you use your dynamic model for other purposes, this method will not be called.
      */
     @Override
     default List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {

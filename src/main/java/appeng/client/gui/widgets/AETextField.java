@@ -30,9 +30,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
 /**
- * A modified version of the Minecraft text field. You can initialize it over
- * the full element span. The mouse click area is increased to the full element
- * subtracted with the defined padding.
+ * A modified version of the Minecraft text field. You can initialize it over the full element span. The mouse click
+ * area is increased to the full element subtracted with the defined padding.
  * <p>
  * The rendering does pay attention to the size of the '_' caret.
  */
@@ -43,8 +42,7 @@ public class AETextField extends TextFieldWidget {
     private int selectionColor = 0xFF00FF00;
 
     /**
-     * Uses the values to instantiate a padded version of a text field. Pays
-     * attention to the '_' caret.
+     * Uses the values to instantiate a padded version of a text field. Pays attention to the '_' caret.
      *
      * @param fontRenderer renderer for the strings
      * @param xPos         absolute left position

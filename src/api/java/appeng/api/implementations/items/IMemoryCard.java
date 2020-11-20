@@ -37,28 +37,24 @@ import appeng.api.util.AEColor;
 public interface IMemoryCard {
 
     /**
-     * Configures the data stored on the memory card, the SettingsName, will be
-     * localized when displayed.
+     * Configures the data stored on the memory card, the SettingsName, will be localized when displayed.
      * <p>
-     * The data can contain an optional string with the key "tooltip", which will be
-     * used as unlocalized string to display it after the settings name.
+     * The data can contain an optional string with the key "tooltip", which will be used as unlocalized string to
+     * display it after the settings name.
      * <p>
-     * The data can contain an optional intArray using "colorCode" to be displayed
-     * on the model itself. It needs to have exactly 8 elements representing the
-     * ordinal of the matching {@link AEColor}. The first 4 values represent the top
+     * The data can contain an optional intArray using "colorCode" to be displayed on the model itself. It needs to have
+     * exactly 8 elements representing the ordinal of the matching {@link AEColor}. The first 4 values represent the top
      * row, left to right. The second 4 the bottom row.
      *
      * @param is           item
      * @param settingsName unlocalized string that represents the block entity.
-     * @param data         the NBT tag, refer to the normal comment for special
-     *                     keys.
+     * @param data         the NBT tag, refer to the normal comment for special keys.
      */
     void setMemoryCardContents(ItemStack is, String settingsName, CompoundTag data);
 
     /**
-     * returns the settings name provided by a previous call to
-     * setMemoryCardContents, or "AppEng.GuiITooltip.Blank" if there was no previous
-     * call to setMemoryCardContents.
+     * returns the settings name provided by a previous call to setMemoryCardContents, or "AppEng.GuiITooltip.Blank" if
+     * there was no previous call to setMemoryCardContents.
      *
      * @param is item
      * @return setting name
@@ -67,14 +63,12 @@ public interface IMemoryCard {
 
     /**
      * @param is item
-     * @return the NBT Data previously saved by setMemoryCardContents, or an empty
-     *         NBTCompound
+     * @return the NBT Data previously saved by setMemoryCardContents, or an empty NBTCompound
      */
     CompoundTag getData(ItemStack is);
 
     /**
-     * This represent as 4x2 grid of {@link AEColor} without transparent/fluix
-     * color.
+     * This represent as 4x2 grid of {@link AEColor} without transparent/fluix color.
      * <p>
      * First 4 colors are used for the top row, second for the bottom one.
      *

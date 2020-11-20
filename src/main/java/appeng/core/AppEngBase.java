@@ -132,13 +132,11 @@ public abstract class AppEngBase implements AppEng {
     protected AdvancementTriggers advancementTriggers;
 
     /**
-     * While we process a player-specific part placement/cable interaction packet,
-     * we need to use that player's transparent-facade mode to understand whether
-     * the player can see through facades or not.
+     * While we process a player-specific part placement/cable interaction packet, we need to use that player's
+     * transparent-facade mode to understand whether the player can see through facades or not.
      * <p>
-     * We need to use this method since the collision shape methods do not know
-     * about the player that the shape is being requested for, so they will call
-     * {@link #getCableRenderMode()} below, which then will use this field to figure
+     * We need to use this method since the collision shape methods do not know about the player that the shape is being
+     * requested for, so they will call {@link #getCableRenderMode()} below, which then will use this field to figure
      * out which player it's for.
      */
     private final ThreadLocal<PlayerEntity> partInteractionPlayer = new ThreadLocal<>();

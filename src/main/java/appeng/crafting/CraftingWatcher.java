@@ -28,8 +28,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.me.cache.CraftingGridCache;
 
 /**
- * Maintain my interests, and a global watch list, they should always be fully
- * synchronized.
+ * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
 public class CraftingWatcher implements ICraftingWatcher {
 

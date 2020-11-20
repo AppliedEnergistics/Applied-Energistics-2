@@ -277,8 +277,8 @@ public final class AEConfig {
     }
 
     /**
-     * Returns an array with the quantity-steps for the +/- buttons in number entry
-     * dialogs of the given type. Guaranteed to have 4 entries.
+     * Returns an array with the quantity-steps for the +/- buttons in number entry dialogs of the given type.
+     * Guaranteed to have 4 entries.
      */
     public int[] getNumberEntrySteps(NumberEntryType type) {
         switch (type) {

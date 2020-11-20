@@ -48,16 +48,14 @@ public abstract class AEBaseBlock extends Block {
     }
 
     /**
-     * Utility function to create block properties with some sensible defaults for
-     * AE blocks.
+     * Utility function to create block properties with some sensible defaults for AE blocks.
      */
     public static FabricBlockSettings defaultProps(Material material) {
         return defaultProps(material, material.getColor());
     }
 
     /**
-     * Utility function to create block properties with some sensible defaults for
-     * AE blocks.
+     * Utility function to create block properties with some sensible defaults for AE blocks.
      */
     public static FabricBlockSettings defaultProps(Material material, MaterialColor color) {
         return FabricBlockSettings.of(material, color)

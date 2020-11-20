@@ -94,8 +94,8 @@ public class FacadeBuilder {
     }
 
     /**
-     * Build a map of pre-rotated cable anchor stilts, which are the shortened cable
-     * anchors that will still be visible for facades attached to a cable.
+     * Build a map of pre-rotated cable anchor stilts, which are the shortened cable anchors that will still be visible
+     * for facades attached to a cable.
      */
     private Map<Direction, Mesh> buildCableAnchorStems(ModelLoader modelLoader) {
         Map<Direction, Mesh> stems = new EnumMap<>(Direction.class);
@@ -391,9 +391,8 @@ public class FacadeBuilder {
     }
 
     /**
-     * Given the actual facade bounding box, and the bounding boxes of all parts,
-     * determine the biggest union of AABB that intersect with the facade's bounding
-     * box. This AABB will need to be "cut out" when the facade is rendered.
+     * Given the actual facade bounding box, and the bounding boxes of all parts, determine the biggest union of AABB
+     * that intersect with the facade's bounding box. This AABB will need to be "cut out" when the facade is rendered.
      */
     @Nullable
     private static AEAxisAlignedBB getCutOutBox(Box facadeBox, List<Box> partBoxes) {
@@ -416,8 +415,8 @@ public class FacadeBuilder {
     }
 
     /**
-     * Generates the box segments around the specified hole. If the specified hole
-     * is null, a Singleton of the Facade box is returned.
+     * Generates the box segments around the specified hole. If the specified hole is null, a Singleton of the Facade
+     * box is returned.
      *
      * @param fb   The Facade's box.
      * @param hole The hole to 'cut'.
@@ -462,8 +461,8 @@ public class FacadeBuilder {
     }
 
     /**
-     * Determines if any of the part's bounding boxes intersects with the outside 2
-     * voxel wide layer. If so, we should use thinner facades (1 voxel deep).
+     * Determines if any of the part's bounding boxes intersects with the outside 2 voxel wide layer. If so, we should
+     * use thinner facades (1 voxel deep).
      */
     private static boolean isUseThinFacades(List<Box> partBoxes) {
         final double min = 2.0 / 16.0;

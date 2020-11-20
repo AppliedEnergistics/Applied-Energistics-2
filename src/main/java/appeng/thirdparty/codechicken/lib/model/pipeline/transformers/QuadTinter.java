@@ -23,8 +23,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 
 /**
- * This transformer tints quads.. Feed it the output of
- * BlockColors.colorMultiplier.
+ * This transformer tints quads.. Feed it the output of BlockColors.colorMultiplier.
  *
  * @author covers1624
  */

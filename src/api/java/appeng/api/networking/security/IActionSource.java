@@ -34,8 +34,7 @@ import net.minecraft.entity.player.PlayerEntity;
  * <p>
  * This can either be a {@link PlayerEntity} or an {@link IActionHost}.
  * <p>
- * In most cases this is used for security checks, but can be used to validate
- * the source itself.
+ * In most cases this is used for security checks, but can be used to validate the source itself.
  */
 public interface IActionSource {
 
@@ -52,13 +51,11 @@ public interface IActionSource {
     /**
      * If present, it indicates the {@link IActionHost} of the source.
      * <p>
-     * Should {@link IActionSource#player()} be absent, it will consider a machine
-     * as source.
+     * Should {@link IActionSource#player()} be absent, it will consider a machine as source.
      * <p>
      * It is recommended to include the machine even when a player is present.
      *
-     * @return An optional machine issuing the action or acting as proxy for a
-     *         player.
+     * @return An optional machine issuing the action or acting as proxy for a player.
      */
     @Nonnull
     Optional<IActionHost> machine();
@@ -68,9 +65,8 @@ public interface IActionSource {
      * <p>
      * It is strongly recommended to limit the uses for absolutely necessary cases.
      * <p>
-     * Currently there are no public contexts made available by AE. An example would
-     * be the context interfaces use internally to avoid looping items between each
-     * other.
+     * Currently there are no public contexts made available by AE. An example would be the context interfaces use
+     * internally to avoid looping items between each other.
      */
     @Nonnull
     <T> Optional<T> context(@Nonnull Class<T> key);

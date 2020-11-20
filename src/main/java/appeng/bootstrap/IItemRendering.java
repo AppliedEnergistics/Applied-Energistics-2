@@ -28,8 +28,7 @@ import net.minecraft.client.color.item.ItemColorProvider;
 public interface IItemRendering {
 
     /**
-     * Registers a custom item color definition that inspects an item stack and tint
-     * and returns a color multiplier.
+     * Registers a custom item color definition that inspects an item stack and tint and returns a color multiplier.
      */
     @Environment(EnvType.CLIENT)
     IItemRendering color(ItemColorProvider itemColor);

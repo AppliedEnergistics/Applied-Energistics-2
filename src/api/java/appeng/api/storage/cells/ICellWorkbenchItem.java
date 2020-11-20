@@ -32,8 +32,7 @@ import appeng.api.config.FuzzyMode;
 public interface ICellWorkbenchItem {
 
     /**
-     * if this return false, the item will not be treated as a cell, and cannot be
-     * inserted into the work bench.
+     * if this return false, the item will not be treated as a cell, and cannot be inserted into the work bench.
      *
      * @param is item
      * @return true if the item should be editable in the cell workbench.
@@ -41,9 +40,8 @@ public interface ICellWorkbenchItem {
     boolean isEditable(ItemStack is);
 
     /**
-     * used to edit the upgrade slots on your cell, should have a capacity of 0-24,
-     * you are also responsible for implementing the valid checks, and any
-     * storage/usage of them.
+     * used to edit the upgrade slots on your cell, should have a capacity of 0-24, you are also responsible for
+     * implementing the valid checks, and any storage/usage of them.
      * <p>
      * onInventoryChange will be called when saving is needed.
      */

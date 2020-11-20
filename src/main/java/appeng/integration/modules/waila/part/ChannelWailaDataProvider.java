@@ -51,11 +51,10 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
     private static final String ID_USED_CHANNELS = "usedChannels";
 
     /**
-     * Used cache for channels if the channel was not transmitted through the
-     * server.
+     * Used cache for channels if the channel was not transmitted through the server.
      * <p/>
-     * This is useful, when a player just started to look at a tile and thus just
-     * requested the new information from the server.
+     * This is useful, when a player just started to look at a tile and thus just requested the new information from the
+     * server.
      * <p/>
      * The cache will be updated from the server.
      */
@@ -89,9 +88,8 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
     /**
      * Determines the source of the channel.
      * <p/>
-     * If the client received information of the channels on the server, they are
-     * used, else if the cache contains a previous stored value, this will be used.
-     * Default value is 0.
+     * If the client received information of the channels on the server, they are used, else if the cache contains a
+     * previous stored value, this will be used. Default value is 0.
      *
      * @param part  part to be looked at
      * @param tag   tag maybe containing the channel information
@@ -116,8 +114,8 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
     /**
      * Called on server to transfer information from server to client.
      * <p/>
-     * If the part is a cable, it writes the channel information in the {@code #tag}
-     * using the {@code ID_USED_CHANNELS} key.
+     * If the part is a cable, it writes the channel information in the {@code #tag} using the {@code ID_USED_CHANNELS}
+     * key.
      *
      * @param player player looking at the part
      * @param part   part being looked at

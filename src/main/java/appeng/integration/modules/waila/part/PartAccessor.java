@@ -41,8 +41,8 @@ public final class PartAccessor {
     /**
      * Hits a {@link IPartHost} with {@link BlockPos}.
      * <p/>
-     * You can derive the looked at {@link IPart} by doing that. If a facade is
-     * being looked at, it is defined as being absent.
+     * You can derive the looked at {@link IPart} by doing that. If a facade is being looked at, it is defined as being
+     * absent.
      *
      * @param te  being looked at {@link BlockEntity}
      * @param rtr type of ray-trace

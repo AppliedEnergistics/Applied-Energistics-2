@@ -29,21 +29,19 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 /**
- * Represent the security systems basic permissions, these are not for
- * anti-griefing, they are part of the mod as a gameplay feature.
+ * Represent the security systems basic permissions, these are not for anti-griefing, they are part of the mod as a
+ * gameplay feature.
  */
 public enum SecurityPermissions {
     /**
-     * required to insert items into the network via terminal ( also used for
-     * machines based on the owner of the network, which is determined by its
-     * Security Block. )
+     * required to insert items into the network via terminal ( also used for machines based on the owner of the
+     * network, which is determined by its Security Block. )
      */
     INJECT,
 
     /**
-     * required to extract items from the network via terminal ( also used for
-     * machines based on the owner of the network, which is determined by its
-     * Security Block. )
+     * required to extract items from the network via terminal ( also used for machines based on the owner of the
+     * network, which is determined by its Security Block. )
      */
     EXTRACT,
 
@@ -53,8 +51,7 @@ public enum SecurityPermissions {
     CRAFT,
 
     /**
-     * required to modify automation, and make modifications to the networks
-     * physical layout.
+     * required to modify automation, and make modifications to the networks physical layout.
      */
     BUILD,
 

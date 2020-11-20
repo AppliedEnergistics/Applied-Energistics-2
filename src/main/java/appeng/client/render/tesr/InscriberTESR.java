@@ -31,8 +31,7 @@ import appeng.recipes.handlers.InscriberRecipe;
 import appeng.tile.misc.InscriberBlockEntity;
 
 /**
- * Renders the dynamic parts of an inscriber (the presses, the animation and the
- * item being smashed)
+ * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
  */
 public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntity> {
 

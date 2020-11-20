@@ -33,9 +33,8 @@ import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 
 /**
- * AE can render the core of a cable (the core that connections are made to, in
- * case the cable is not a straight line) in three different ways: - Glass -
- * Covered (also used by the Smart Cable) - Dense
+ * AE can render the core of a cable (the core that connections are made to, in case the cable is not a straight line)
+ * in three different ways: - Glass - Covered (also used by the Smart Cable) - Dense
  */
 public enum CableCoreType {
     GLASS("part/cable/core/glass"), COVERED("part/cable/core/covered"), DENSE("part/cable/core/dense_smart");
@@ -65,9 +64,8 @@ public enum CableCoreType {
     }
 
     /**
-     * @return The type of core that should be rendered when the given cable isn't
-     *         straight and needs to have a core to attach connections to. Is null
-     *         for the NULL cable.
+     * @return The type of core that should be rendered when the given cable isn't straight and needs to have a core to
+     *         attach connections to. Is null for the NULL cable.
      */
     public static CableCoreType fromCableType(AECableType cableType) {
         return cableMapping.get(cableType);

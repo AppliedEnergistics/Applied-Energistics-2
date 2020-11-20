@@ -19,8 +19,8 @@ import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
 /**
- * Model wrapper for the biometric card item model, which combines a base card
- * layer with a "visual hash" of the player name
+ * Model wrapper for the biometric card item model, which combines a base card layer with a "visual hash" of the player
+ * name
  */
 public class BiometricCardModel implements BasicUnbakedModel {
 

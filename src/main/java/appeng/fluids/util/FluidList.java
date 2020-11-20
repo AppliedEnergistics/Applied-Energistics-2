@@ -92,9 +92,8 @@ public final class FluidList implements IItemList<IAEFluidStack> {
     }
 
     /*
-     * public synchronized void clean() { Iterator<StackType> i = iterator(); while
-     * (i.hasNext()) { StackType AEI = i.next(); if ( !AEI.isMeaningful() )
-     * i.remove(); } }
+     * public synchronized void clean() { Iterator<StackType> i = iterator(); while (i.hasNext()) { StackType AEI =
+     * i.next(); if ( !AEI.isMeaningful() ) i.remove(); } }
      */
 
     @Override

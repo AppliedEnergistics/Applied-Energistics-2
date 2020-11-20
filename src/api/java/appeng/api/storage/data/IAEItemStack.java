@@ -27,16 +27,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 /**
- * An alternate version of ItemStack for AE to keep tabs on things easier, and
- * to support larger storage. stackSizes of getItemStack will be capped.
+ * An alternate version of ItemStack for AE to keep tabs on things easier, and to support larger storage. stackSizes of
+ * getItemStack will be capped.
  * <p>
- * You may hold on to these if you want, just make sure you let go of them when
- * your not using them.
+ * You may hold on to these if you want, just make sure you let go of them when your not using them.
  * <p>
  * Don't Implement.
  * <p>
- * Construct with Api.INSTANCE.storage().getStorageChannel(
- * IItemStorageChannel.class).createStack( ItemStack )
+ * Construct with Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class).createStack( ItemStack )
  */
 public interface IAEItemStack extends IAEStack<IAEItemStack> {
 
@@ -106,8 +104,8 @@ public interface IAEItemStack extends IAEStack<IAEItemStack> {
     ItemStack getDefinition();
 
     /**
-     * Compare this AE item stack to another item stack, but ignores the amount. It
-     * checks the item type, NBT and damage values.
+     * Compare this AE item stack to another item stack, but ignores the amount. It checks the item type, NBT and damage
+     * values.
      *
      * @param is An item stack
      */

@@ -35,12 +35,10 @@ public final class UUIDMatcher {
     private static final Pattern PATTERN = Pattern.compile(UUID_REGEX);
 
     /**
-     * Checks if a potential {@link java.util.UUID} is an {@link java.util.UUID} by
-     * applying a regular expression on it.
+     * Checks if a potential {@link java.util.UUID} is an {@link java.util.UUID} by applying a regular expression on it.
      *
      * @param potential to be checked potential {@link java.util.UUID}
-     * @return true, if the potential {@link java.util.UUID} is indeed an
-     *         {@link java.util.UUID}
+     * @return true, if the potential {@link java.util.UUID} is indeed an {@link java.util.UUID}
      */
     public boolean isUUID(final CharSequence potential) {
         return PATTERN.matcher(potential).matches();

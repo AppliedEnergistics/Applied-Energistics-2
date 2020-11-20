@@ -33,8 +33,8 @@ import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
 /**
- * Hooks into the very early bootstrapping phase to register things before the
- * first dynamic registry manager is created.
+ * Hooks into the very early bootstrapping phase to register things before the first dynamic registry manager is
+ * created.
  */
 public final class AppEngBootstrap {
 

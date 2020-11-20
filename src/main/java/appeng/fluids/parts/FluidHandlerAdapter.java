@@ -48,8 +48,7 @@ import appeng.me.helpers.IGridProxyable;
 import appeng.me.storage.ITickingMonitor;
 
 /**
- * Wraps an Fluid Handler in such a way that it can be used as an IMEInventory
- * for fluids.
+ * Wraps an Fluid Handler in such a way that it can be used as an IMEInventory for fluids.
  *
  * @author BrockWS
  * @version rv6 - 22/05/2018

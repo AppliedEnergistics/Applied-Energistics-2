@@ -34,10 +34,9 @@ import appeng.core.sync.network.INetworkInfo;
 public abstract class BasePacket {
 
     /**
-     * Sadly {@link PacketByteBuf#readString()} gets inlined by Proguard which means
-     * it's not available on the Server. This field has the default string length
-     * that is used for writeString, which then also should be used for readString
-     * when it has no special length requirements.
+     * Sadly {@link PacketByteBuf#readString()} gets inlined by Proguard which means it's not available on the Server.
+     * This field has the default string length that is used for writeString, which then also should be used for
+     * readString when it has no special length requirements.
      */
     public static final int MAX_STRING_LENGTH = 32767;
 

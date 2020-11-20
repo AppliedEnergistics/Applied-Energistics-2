@@ -30,8 +30,8 @@ import net.minecraft.world.chunk.light.LightingProvider;
 import net.minecraft.world.level.ColorResolver;
 
 /**
- * This is used to retrieve the ExtendedState of a block for facade rendering.
- * It fakes the block at BlockPos provided as the BlockState provided.
+ * This is used to retrieve the ExtendedState of a block for facade rendering. It fakes the block at BlockPos provided
+ * as the BlockState provided.
  *
  * @author covers1624
  */

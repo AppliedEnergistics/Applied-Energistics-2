@@ -14,8 +14,8 @@ import net.minecraft.util.Identifier;
 import appeng.hooks.UnlitQuadHooks;
 
 /**
- * The only job of this mixin is to only enable the unlit extensions if the
- * model is whitelisted for it, which is decided in {@link UnlitQuadHooks}.
+ * The only job of this mixin is to only enable the unlit extensions if the model is whitelisted for it, which is
+ * decided in {@link UnlitQuadHooks}.
  */
 @Mixin(ModelLoader.class)
 public class ModelLoaderMixin {

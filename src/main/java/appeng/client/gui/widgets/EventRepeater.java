@@ -21,16 +21,14 @@ package appeng.client.gui.widgets;
 import java.time.Duration;
 
 /**
- * This class can be used to implement repeating events such as holding down a
- * button to fire an event repeatedly while the button is still being held, or
- * repeatedly scrolling down a page, while the mouse is held down on the
- * scrollbar.
+ * This class can be used to implement repeating events such as holding down a button to fire an event repeatedly while
+ * the button is still being held, or repeatedly scrolling down a page, while the mouse is held down on the scrollbar.
  */
 public class EventRepeater {
 
     /**
-     * -1 if no repeat event is scheduled. Otherwise contains the
-     * {@link System#nanoTime()} at which the next event should occur.
+     * -1 if no repeat event is scheduled. Otherwise contains the {@link System#nanoTime()} at which the next event
+     * should occur.
      */
     private long nextEventTime = -1;
 
@@ -65,8 +63,8 @@ public class EventRepeater {
     }
 
     /**
-     * Schedule the given callback to be called after a given initial delay, and
-     * then after the given interval repeatedly.
+     * Schedule the given callback to be called after a given initial delay, and then after the given interval
+     * repeatedly.
      *
      * <p>
      * Replaces any previously queued callback.

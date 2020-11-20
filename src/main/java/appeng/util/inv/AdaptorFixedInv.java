@@ -90,8 +90,8 @@ public class AdaptorFixedInv extends InventoryAdaptor {
     }
 
     /**
-     * For fuzzy extract, we will only ever extract one slot, since we're afraid of
-     * merging two item stacks with different damage values.
+     * For fuzzy extract, we will only ever extract one slot, since we're afraid of merging two item stacks with
+     * different damage values.
      */
     @Override
     public ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,

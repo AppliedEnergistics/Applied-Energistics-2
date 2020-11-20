@@ -41,12 +41,10 @@ public interface ICraftingMachine {
     boolean pushPattern(ICraftingPatternDetails patternDetails, CraftingInventory table, Direction ejectionDirection);
 
     /**
-     * check if the crafting machine is accepting pushes via pushPattern, if this is
-     * false, all calls to push will fail, you can try inserting into the inventory
-     * instead.
+     * check if the crafting machine is accepting pushes via pushPattern, if this is false, all calls to push will fail,
+     * you can try inserting into the inventory instead.
      *
-     * @return true, if pushPattern can complete, if its false push will always be
-     *         false.
+     * @return true, if pushPattern can complete, if its false push will always be false.
      */
     boolean acceptsPlans();
 }

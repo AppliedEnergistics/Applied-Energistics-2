@@ -35,9 +35,8 @@ import appeng.services.compass.CompassThreadFactory;
 /**
  * Singleton access to anything related to world-based data.
  * <p>
- * Data will change depending which world is loaded. Will probably not affect
- * SMP at all since only one world is loaded, but SSP more, cause they play on
- * different worlds.
+ * Data will change depending which world is loaded. Will probably not affect SMP at all since only one world is loaded,
+ * but SSP more, cause they play on different worlds.
  *
  * @author thatsIch
  * @version rv3 - 02.11.2015

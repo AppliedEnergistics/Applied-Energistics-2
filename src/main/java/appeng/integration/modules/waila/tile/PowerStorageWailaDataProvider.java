@@ -52,8 +52,8 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
     /**
      * Used cache for power if the power was not transmitted through the server.
      * <p/>
-     * This is useful, when a player just started to look at a tile and thus just
-     * requested the new information from the server.
+     * This is useful, when a player just started to look at a tile and thus just requested the new information from the
+     * server.
      * <p/>
      * The cache will be updated from the server.
      */
@@ -91,9 +91,8 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
     /**
      * Called on server to transfer information from server to client.
      * <p/>
-     * If the {@link net.minecraft.block.entity.BlockEntity} is a
-     * {@link IAEPowerStorage}, it writes the power information to the {@code #tag}
-     * using the {@code #ID_CURRENT_POWER} key.
+     * If the {@link net.minecraft.block.entity.BlockEntity} is a {@link IAEPowerStorage}, it writes the power
+     * information to the {@code #tag} using the {@code #ID_CURRENT_POWER} key.
      *
      * @param serverPlayerEntity player looking at the power storage
      * @param te                 power storage
@@ -116,9 +115,8 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
     /**
      * Determines the current power.
      * <p/>
-     * If the client received power information on the server, they are used, else
-     * if the cache contains a previous stored value, this will be used. Default
-     * value is 0.
+     * If the client received power information on the server, they are used, else if the cache contains a previous
+     * stored value, this will be used. Default value is 0.
      *
      * @param te  te to be looked at
      * @param tag tag maybe containing the channel information

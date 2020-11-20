@@ -30,9 +30,8 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 
 /**
- * Maintains a save specific list of userids and username combinations this
- * greatly simplifies storage internally and gives a common place to look up and
- * get IDs for the security framework.
+ * Maintains a save specific list of userids and username combinations this greatly simplifies storage internally and
+ * gives a common place to look up and get IDs for the security framework.
  */
 public interface IPlayerRegistry {
 

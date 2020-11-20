@@ -35,24 +35,21 @@ import appeng.api.storage.data.IAEStack;
 
 /**
  * Any item which implements this can be treated as an IMEInventory via
- * {@link ICellHandler#getCellInventory(ItemStack, appeng.api.storage.cells.ISaveProvider, IStorageChannel)}
- * or {@link ICellHandler#isCell(ItemStack)}. It automatically handles the
- * internals and NBT data, which is both nice, and bad for you!
+ * {@link ICellHandler#getCellInventory(ItemStack, appeng.api.storage.cells.ISaveProvider, IStorageChannel)} or
+ * {@link ICellHandler#isCell(ItemStack)}. It automatically handles the internals and NBT data, which is both nice, and
+ * bad for you!
  * <p>
- * Good cause it means you don't have to do anything, bad because you have
- * little to no control over it.
+ * Good cause it means you don't have to do anything, bad because you have little to no control over it.
  * <p>
- * Limited to {@link Integer} internally for most calculations. E.g. if the used
- * or remaining bytes would overflow {@link Integer#MAX_VALUE} the behaviour is
- * no longer specified. Even if {@link ICellInventory} is using {@link Long}.
+ * Limited to {@link Integer} internally for most calculations. E.g. if the used or remaining bytes would overflow
+ * {@link Integer#MAX_VALUE} the behaviour is no longer specified. Even if {@link ICellInventory} is using {@link Long}.
  * <p>
  * The standard AE implementation also only provides 1-63 Types.
  */
 public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem {
 
     /**
-     * It wont work if the return is not a multiple of 8. The limit is
-     * ({@link Integer#MAX_VALUE} + 1) / 8.
+     * It wont work if the return is not a multiple of 8. The limit is ({@link Integer#MAX_VALUE} + 1) / 8.
      *
      * @param cellItem item
      * @return number of bytes
@@ -68,8 +65,7 @@ public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem 
     int getBytesPerType(@Nonnull ItemStack cellItem);
 
     /**
-     * Must be between 1 and 63, indicates how many types you want to store on the
-     * item.
+     * Must be between 1 and 63, indicates how many types you want to store on the item.
      *
      * @param cellItem item
      * @return number of types
@@ -77,9 +73,8 @@ public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem 
     int getTotalTypes(@Nonnull ItemStack cellItem);
 
     /**
-     * Allows you to fine tune which items are allowed on a given cell, if you don't
-     * care, just return false; As the handler for this type of cell is still the
-     * default cells, the normal AE black list is also applied.
+     * Allows you to fine tune which items are allowed on a given cell, if you don't care, just return false; As the
+     * handler for this type of cell is still the default cells, the normal AE black list is also applied.
      *
      * @param cellItem          item
      * @param requestedAddition requested addition
@@ -88,13 +83,11 @@ public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem 
     boolean isBlackListed(@Nonnull ItemStack cellItem, @Nonnull T requestedAddition);
 
     /**
-     * Allows you to specify if this storage cell can be stored inside other storage
-     * cells, only set this for special items like the matter cannon that are not
-     * general purpose storage.
+     * Allows you to specify if this storage cell can be stored inside other storage cells, only set this for special
+     * items like the matter cannon that are not general purpose storage.
      *
-     * @return true if the storage cell can be stored inside other storage cells,
-     *         this is generally false, except for certain situations such as the
-     *         matter cannon.
+     * @return true if the storage cell can be stored inside other storage cells, this is generally false, except for
+     *         certain situations such as the matter cannon.
      */
     boolean storableInStorageCell();
 

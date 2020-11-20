@@ -23,8 +23,8 @@ public final class ItemRendererHooks {
     }
 
     /**
-     * This hook will exchange the rendered item model for encoded patterns to the
-     * item being crafted by them if shift is held.
+     * This hook will exchange the rendered item model for encoded patterns to the item being crafted by them if shift
+     * is held.
      */
     public static boolean onRenderGuiItemModel(ItemRenderer renderer, ItemStack stack, int x, int y, BakedModel model) {
         if (OVERRIDING_FOR.get() == stack) {

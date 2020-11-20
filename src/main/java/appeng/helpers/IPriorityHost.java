@@ -36,8 +36,7 @@ public interface IPriorityHost {
     ItemStack getItemStackRepresentation();
 
     /**
-     * Used to show the user interface of this part when returning from the priority
-     * GUI.
+     * Used to show the user interface of this part when returning from the priority GUI.
      */
     ScreenHandlerType<?> getContainerType();
 

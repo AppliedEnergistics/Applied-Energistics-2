@@ -7,9 +7,8 @@ import com.google.common.base.Preconditions;
 import net.minecraft.util.math.Direction;
 
 /**
- * This implementation of IModelData allows us to know precisely which data is
- * part of the model data. This is relevant for {@link AutoRotatingBakedModel}
- * and {@link AutoRotatingCacheKey}.
+ * This implementation of IModelData allows us to know precisely which data is part of the model data. This is relevant
+ * for {@link AutoRotatingBakedModel} and {@link AutoRotatingCacheKey}.
  */
 public class AEModelData {
 

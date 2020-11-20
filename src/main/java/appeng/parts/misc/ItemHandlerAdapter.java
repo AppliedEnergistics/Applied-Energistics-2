@@ -48,8 +48,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 /**
- * Wraps an Item Handler in such a way that it can be used as an IMEInventory
- * for items.
+ * Wraps an Item Handler in such a way that it can be used as an IMEInventory for items.
  */
 class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor {
     private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();

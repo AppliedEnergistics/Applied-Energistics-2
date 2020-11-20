@@ -38,11 +38,9 @@ import appeng.api.config.TunnelType;
 public interface IP2PTunnelRegistry {
 
     /**
-     * Allows third parties to register items from their mod as potential
-     * attunements for AE's P2P Tunnels
+     * Allows third parties to register items from their mod as potential attunements for AE's P2P Tunnels
      *
-     * @param trigger - the item which triggers attunement. Nullable, but then
-     *                ignored
+     * @param trigger - the item which triggers attunement. Nullable, but then ignored
      * @param type    - the type of tunnel. Nullable, but then ignored
      */
     void addNewAttunement(@Nonnull ItemStack trigger, @Nullable TunnelType type);

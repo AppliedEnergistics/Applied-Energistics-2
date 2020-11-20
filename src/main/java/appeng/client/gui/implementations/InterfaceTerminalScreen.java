@@ -232,8 +232,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     /**
      * Rebuilds the list of interfaces.
      * <p>
-     * Respects a search term if present (ignores case) and adding only matching
-     * patterns.
+     * Respects a search term if present (ignores case) and adding only matching patterns.
      */
     private void refreshList() {
         this.byName.clear();
@@ -325,8 +324,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     /**
      * Tries to retrieve a cache for a with search term as keyword.
      * <p>
-     * If this cache should be empty, it will populate it with an earlier cache if
-     * available or at least the cache for the empty string.
+     * If this cache should be empty, it will populate it with an earlier cache if available or at least the cache for
+     * the empty string.
      *
      * @param searchTerm the corresponding search
      * @return a Set matching a superset of the search term
@@ -347,8 +346,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     }
 
     /**
-     * The max amount of unique names and each inv row. Not affected by the
-     * filtering.
+     * The max amount of unique names and each inv row. Not affected by the filtering.
      *
      * @return max amount of unique names and each inv row
      */

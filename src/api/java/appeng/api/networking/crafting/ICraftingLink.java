@@ -43,8 +43,7 @@ public interface ICraftingLink {
     void cancel();
 
     /**
-     * @return true if this link was generated without a requesting machine, such as
-     *         a player generated request.
+     * @return true if this link was generated without a requesting machine, such as a player generated request.
      */
     boolean isStandalone();
 

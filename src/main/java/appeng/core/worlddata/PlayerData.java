@@ -36,9 +36,8 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 
 /**
- * Handles the matching between UUIDs and internal IDs for security systems.
- * This whole system could be replaced by storing directly the UUID, using a lot
- * more traffic though
+ * Handles the matching between UUIDs and internal IDs for security systems. This whole system could be replaced by
+ * storing directly the UUID, using a lot more traffic though
  *
  * @author thatsIch
  * @version rv3 - 30.05.2015

@@ -374,11 +374,10 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     /**
-     * A custom {@link AutomaticItemPlacementContext} which also accepts a player
-     * needed various blocks like seeds.
+     * A custom {@link AutomaticItemPlacementContext} which also accepts a player needed various blocks like seeds.
      * <p>
-     * Also removed {@link AutomaticItemPlacementContext#canReplaceExisting} as this
-     * can cause a {@link StackOverflowError} for certain replaceable blocks.
+     * Also removed {@link AutomaticItemPlacementContext#canReplaceExisting} as this can cause a
+     * {@link StackOverflowError} for certain replaceable blocks.
      */
     private static class PlaneDirectionalPlaceContext extends ItemPlacementContext {
         private final Direction lookDirection;

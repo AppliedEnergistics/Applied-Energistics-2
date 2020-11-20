@@ -41,8 +41,8 @@ public interface IAECluster {
     void destroy();
 
     /**
-     * @return True if the cluster has been destroyed, but not yet removed from a
-     *         tile entity. Usually true during destruction.
+     * @return True if the cluster has been destroyed, but not yet removed from a tile entity. Usually true during
+     *         destruction.
      */
     boolean isDestroyed();
 

@@ -14,8 +14,7 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
 /**
- * An unbaked model that has standard models as a dependency and produces a
- * custom baked model as a result.
+ * An unbaked model that has standard models as a dependency and produces a custom baked model as a result.
  */
 public interface BasicUnbakedModel extends UnbakedModel {
 

@@ -35,8 +35,7 @@ import appeng.api.config.FuzzyMode;
 public interface IItemContainer<T extends IAEStack<T>> {
 
     /**
-     * add a stack to the list, this will merge the stack with an item already in
-     * the list if found.
+     * add a stack to the list, this will merge the stack with an item already in the list if found.
      *
      * @param option added stack
      */
@@ -44,8 +43,8 @@ public interface IItemContainer<T extends IAEStack<T>> {
 
     /**
      * @param i compared item
-     * @return a stack equivalent to the stack passed in, but with the correct stack
-     *         size information, or null if its not present
+     * @return a stack equivalent to the stack passed in, but with the correct stack size information, or null if its
+     *         not present
      */
     T findPrecise(T i);
 
