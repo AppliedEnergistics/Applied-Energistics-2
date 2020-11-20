@@ -14,13 +14,13 @@ jobs:
           TAG: ${{ github.event.release.tag_name }}
         run: |
           echo $TAG | grep -oP '^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
-          echo "::set-env name=RELEASE::${TAG:1}"
+          echo "RELEASE=${TAG:1}" >> $GITHUB_ENV
       - name: Export keystore
         env:
           KEY_STORE: ${{ secrets.KEY_STORE }}
         run: |
           echo $KEY_STORE | base64 -d > $HOME/keystore.jks
-          echo "::set-env name=KEY_STORE_FILE::$HOME/keystore.jks"
+          echo "KEY_STORE_FILE=$HOME/keystore.jks" >> $GITHUB_ENV
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
