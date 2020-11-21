@@ -145,7 +145,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
      */
     private static RenderType createRenderType() {
         RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper
-                .getPrivateValue(RenderState.class, null, "TRANSLUCENT_TRANSPARENCY");
+                .getPrivateValue(RenderState.class, null, "field_228515_g_");
         RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
                 AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
         RenderState.LightmapState disableLightmap = new RenderState.LightmapState(false);
