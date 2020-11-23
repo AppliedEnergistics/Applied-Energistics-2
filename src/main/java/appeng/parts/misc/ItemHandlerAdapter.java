@@ -134,6 +134,14 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 				extracted = this.itemHandler.extractItem( i, remainingCurrentSlot, simulate );
 				if( !extracted.isEmpty() )
 				{
+					// In order to guard against broken IItemHandler implementations, we'll try to guess if the returned
+					// stack (especially in simulate mode) is the same that was returned by getStackInSlot. This is
+					// obviously not a precise science, but it would catch the previous Forge bug:
+					// https://github.com/MinecraftForge/MinecraftForge/pull/6580
+					if (extracted == stackInInventorySlot) {
+						extracted = extracted.copy();
+					}
+
 					if( extracted.getCount() > remainingCurrentSlot )
 					{
 						// Something broke. It should never return more than we requested...
@@ -143,12 +151,17 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 						extracted.setCount( remainingCurrentSlot );
 					}
 
-					// We're just gonna use the first stack we get our hands on as the template for the rest.
-					// In case some stupid itemhandler (aka forge) returns an internal state we have to do a second
-					// expensive copy again.
+					// Heuristic for simulation: looping in case of simulations is pointless, since the state of the
+					// underlying inventory does not change after a simulated extraction. To still support inventories
+					// that report stacks that are larger than maxStackSize, we use this heuristic
+					if (simulate && extracted.getCount() == extracted.getMaxStackSize()
+								&& remainingCurrentSlot > extracted.getMaxStackSize()) {
+						extracted.setCount(remainingCurrentSlot);
+					}
+
 					if( gathered.isEmpty() )
 					{
-						gathered = extracted.copy();
+						gathered = extracted;
 					}
 					else
 					{
@@ -157,7 +170,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					remainingCurrentSlot -= extracted.getCount();
 				}
 			}
-			while( !extracted.isEmpty() && remainingCurrentSlot > 0 );
+			while( !simulate && !extracted.isEmpty() && remainingCurrentSlot > 0 );
 
 			remainingSize -= stackSizeCurrentSlot - remainingCurrentSlot;
 
