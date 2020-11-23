@@ -61,6 +61,7 @@ dependencies {
     // compile against provided APIs
     compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}:api"
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crt_version}")
 
     // Runtime, Mods
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
