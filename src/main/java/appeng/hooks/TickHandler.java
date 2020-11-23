@@ -192,7 +192,7 @@ public class TickHandler
 				final Collection<CraftingJob> jobSet = this.craftingJobs.get( wte.world );
 				if( !jobSet.isEmpty() )
 				{
-					final int simTime = Math.max( 1, AEConfig.instance().getCraftingCalculationTimePerTick() / jobSet.size() );
+					final int simTime = Math.max( 1, AEConfig.instance().getCraftingCalculationTimePerTick() / jobSet.size() * 1000);
 					final Iterator<CraftingJob> i = jobSet.iterator();
 					while( i.hasNext() )
 					{
