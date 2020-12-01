@@ -119,7 +119,6 @@ public class CraftingTreeNode
 
 	IAEItemStack request( final MECraftingInventory inv, long l, final IActionSource src ) throws CraftBranchFailure, InterruptedException
 	{
-		this.job.handlePausing();
 
 		final List<IAEItemStack> thingsUsed = new ArrayList<>();
 

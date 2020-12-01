@@ -59,7 +59,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 	private final IItemList<IAEItemStack> missing = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<>();
 	private final Object monitor = new Object();
-	private final Stopwatch watch = Stopwatch.createUnstarted();
 	private CraftingTreeNode tree;
 	private final IAEItemStack output;
 	private boolean simulate = false;
@@ -67,10 +66,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	private long bytes = 0;
 	private final IActionSource actionSrc;
 	private final ICraftingCallback callback;
-	private boolean running = false;
 	private boolean done = false;
-	private int time = 5;
-	private int incTime = Integer.MAX_VALUE;
 
 	private World wrapWorld( final World w )
 	{
@@ -137,7 +133,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 			try
 			{
 				TickHandler.INSTANCE.registerCraftingSimulation( this.world, this );
-				this.handlePausing();
 
 				final Stopwatch timer = Stopwatch.createStarted();
 
@@ -219,42 +214,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.finish();
 	}
 
-	void handlePausing() throws InterruptedException
-	{
-		if( this.incTime > 100 )
-		{
-			this.incTime = 0;
-
-			synchronized( this.monitor )
-			{
-				if( this.watch.elapsed( TimeUnit.MICROSECONDS ) > this.time )
-				{
-					this.running = false;
-					this.watch.stop();
-					this.monitor.notify();
-				}
-
-				if( !this.running )
-				{
-					AELog.craftingDebug( "crafting job will now sleep" );
-
-					while( !this.running )
-					{
-						this.monitor.wait();
-					}
-
-					AELog.craftingDebug( "crafting job now active" );
-				}
-			}
-
-			if( Thread.interrupted() )
-			{
-				throw new InterruptedException();
-			}
-		}
-		this.incTime++;
-	}
-
 	private void finish()
 	{
 		if( this.callback != null )
@@ -266,7 +225,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 		synchronized( this.monitor )
 		{
-			this.running = false;
 			this.done = true;
 			this.monitor.notify();
 		}
@@ -310,45 +268,15 @@ public class CraftingJob implements Runnable, ICraftingJob
 	}
 
 	/**
-	 * returns true if this needs more simulation.
-	 *
-	 * @param milli milliseconds of simulation
-	 *
 	 * @return true if this needs more simulation
 	 */
-	public boolean simulateFor( final int milli )
+	public boolean simulateFor()
 	{
-		this.time = milli;
-
-		synchronized( this.monitor )
-		{
-			if( this.done )
-			{
+		synchronized( this.monitor ) {
+			if ( this.done ) {
 				return false;
 			}
-
-			this.watch.reset();
-			this.watch.start();
-			this.running = true;
-
-			AELog.craftingDebug( "main thread is now going to sleep" );
-
-			this.monitor.notify();
-
-			while( this.running )
-			{
-				try
-				{
-					this.monitor.wait();
-				}
-				catch( final InterruptedException ignored )
-				{
-				}
-			}
-
-			AELog.craftingDebug( "main thread is now active" );
 		}
-
 		return true;
 	}
 

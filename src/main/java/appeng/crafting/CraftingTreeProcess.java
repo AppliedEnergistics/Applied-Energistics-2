@@ -185,7 +185,6 @@ public class CraftingTreeProcess
 
 	void request( final MECraftingInventory inv, final long i, final IActionSource src ) throws CraftBranchFailure, InterruptedException
 	{
-		this.job.handlePausing();
 
 		if( this.fullSimulation )
 		{
