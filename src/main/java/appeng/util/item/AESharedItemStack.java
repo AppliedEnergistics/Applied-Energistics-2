@@ -199,7 +199,11 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 			{
 				if( newDef.getItem().isDamageable() )
 				{
-					if( fuzzy == FuzzyMode.IGNORE_ALL )
+					if (itemStack.getMaxDamage() == 0)
+					{
+						newDef.setItemDamage(itemStack.getItemDamage() );
+					}
+					else if ( fuzzy == FuzzyMode.IGNORE_ALL )
 					{
 						newDef.setItemDamage( MIN_DAMAGE_VALUE );
 					}
@@ -240,7 +244,11 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 			{
 				if( newDef.getItem().isDamageable() )
 				{
-					if( fuzzy == FuzzyMode.IGNORE_ALL )
+					if (itemStack.getMaxDamage() == 0)
+					{
+						newDef.setItemDamage(itemStack.getItemDamage() );
+					}
+					else if ( fuzzy == FuzzyMode.IGNORE_ALL )
 					{
 						newDef.setItemDamage( itemStack.getMaxDamage() + 1 );
 					}
