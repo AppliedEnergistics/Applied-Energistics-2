@@ -116,6 +116,8 @@ public interface ICraftingPatternDetails {
      */
     boolean canSubstitute();
 
+    List<IAEItemStack> getSubstituteInputs(int slot);
+
     /**
      * Allow using this INSTANCE of the pattern details to preform the crafting action with performance enhancements.
      *

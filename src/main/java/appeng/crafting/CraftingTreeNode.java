@@ -120,7 +120,12 @@ public class CraftingTreeNode {
             final IItemList<IAEItemStack> inventoryList = inv.getItemList();
 
             if (this.parent.details.canSubstitute()) {
-                itemList = inventoryList.findFuzzy(this.what, FuzzyMode.IGNORE_ALL);
+                final List<IAEItemStack> substitutes = this.parent.details.getSubstituteInputs(this.slot);
+                itemList = new ArrayList<>(substitutes.size());
+
+                for (IAEItemStack stack : substitutes) {
+                    itemList.addAll(inventoryList.findFuzzy(stack, FuzzyMode.IGNORE_ALL));
+                }
             } else {
                 itemList = Lists.newArrayList();
 

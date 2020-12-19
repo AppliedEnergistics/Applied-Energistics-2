@@ -19,10 +19,14 @@
 package appeng.helpers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
@@ -47,6 +51,7 @@ import appeng.container.ContainerNull;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 
 public class CraftingPatternDetails implements ICraftingPatternDetails, Comparable<CraftingPatternDetails> {
 
@@ -65,6 +70,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private final List<IAEItemStack> outputs;
     private final IAEItemStack[] sparseInputs;
     private final IAEItemStack[] sparseOutputs;
+    private final Map<Integer, List<IAEItemStack>> substituteInputs;
     private final boolean isCraftable;
     private final boolean canSubstitute;
     private final Set<TestLookup> failCache = new HashSet<>();
@@ -130,6 +136,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         final int outputLength = this.isCraftable ? CRAFTING_OUTPUT_LIMIT : PROCESSING_OUTPUT_LIMIT;
         this.sparseInputs = in.toArray(new IAEItemStack[ALL_INPUT_LIMIT]);
         this.sparseOutputs = out.toArray(new IAEItemStack[outputLength]);
+        this.substituteInputs = new HashMap<>(ALL_INPUT_LIMIT);
 
         this.inputs = this.condenseStacks(in);
         this.outputs = this.condenseStacks(out);
@@ -222,6 +229,20 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     @Override
     public boolean canSubstitute() {
         return this.canSubstitute;
+    }
+
+    public List<IAEItemStack> getSubstituteInputs(int slot) {
+        if (this.inputs.get(slot) == null) {
+            return Collections.emptyList();
+        }
+
+        return this.substituteInputs.computeIfAbsent(slot, value -> {
+            final List<IAEItemStack> itemList = Arrays
+                    .stream(this.standardRecipe.getIngredients().get(slot).getMatchingStacks())
+                    .map(AEItemStack::fromItemStack).collect(Collectors.toList());
+            itemList.add(0, this.sparseInputs[slot]);
+            return itemList;
+        });
     }
 
     @Override
