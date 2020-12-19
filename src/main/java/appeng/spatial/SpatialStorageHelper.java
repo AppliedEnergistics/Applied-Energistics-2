@@ -52,21 +52,11 @@ public class SpatialStorageHelper {
         return instance;
     }
 
-    private final ThreadLocal<PortalInfo> teleportTarget = new ThreadLocal<>();
-
-    /**
-     * If an entity is currently being teleported, this will return the target within the target dimension.
-     */
-    public PortalInfo getTeleportTarget() {
-        return teleportTarget.get();
-    }
-
     /**
      * Mostly from dimensional doors.. which mostly got it form X-Comp.
      *
      * @param entity to be teleported entity
      * @param link   destination
-     *
      * @return teleported entity
      */
     private Entity teleportEntity(Entity entity, final TelDestination link) {
@@ -112,25 +102,27 @@ public class SpatialStorageHelper {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
-        // Store in a threadlocal so that EntityMixin can return it for the Vanilla
-        // logic to use
-        teleportTarget.set(new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.rotationYaw,
-                entity.rotationPitch));
-        try {
-            entity = entity.changeDimension(link.dim, new ITeleporter() {
-                @Override
-                public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw,
-                        Function<Boolean, Entity> repositionEntity) {
-                    return repositionEntity.apply(false);
-                }
-            });
-        } finally {
-            teleportTarget.remove();
-        }
+        PortalInfo portalInfo = new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.rotationYaw,
+                entity.rotationPitch);
+        entity = entity.changeDimension(link.dim, new ITeleporter() {
+            @Override
+            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw,
+                    Function<Boolean, Entity> repositionEntity) {
+                return repositionEntity.apply(false);
+            }
 
-        if (!passengersOnOtherSide.isEmpty()) {
-            for (Entity passanger : passengersOnOtherSide) {
-                passanger.startRiding(entity, true);
+            @Override
+            public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld,
+                    Function<ServerWorld, PortalInfo> defaultPortalInfo) {
+                return portalInfo;
+            }
+        });
+
+        if (entity != null) {
+            if (!passengersOnOtherSide.isEmpty()) {
+                for (Entity passanger : passengersOnOtherSide) {
+                    passanger.startRiding(entity, true);
+                }
             }
         }
 

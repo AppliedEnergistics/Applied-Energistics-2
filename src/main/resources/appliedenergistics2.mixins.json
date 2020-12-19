@@ -7,7 +7,6 @@
   "mixins": [
     "spatial.DimensionTypeMixin",
     "spatial.DimensionOptionMixin",
-    "spatial.EntityMixin",
     "spatial.BiomesMixin",
     "structure.DimensionStructuresSettingsMixin",
     "structure.ConfiguredStructureFeaturesAccessor",
