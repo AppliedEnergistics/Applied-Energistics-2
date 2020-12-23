@@ -606,8 +606,13 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                                         final Collection<IAEItemStack> itemList;
 
                                         if (details.canSubstitute()) {
-                                            itemList = this.inventory.getItemList().findFuzzy(input[x],
-                                                    FuzzyMode.IGNORE_ALL);
+                                            final List<IAEItemStack> substitutes = details.getSubstituteInputs(x);
+                                            itemList = new ArrayList<>(substitutes.size());
+
+                                            for (IAEItemStack stack : substitutes) {
+                                                itemList.addAll(this.inventory.getItemList().findFuzzy(stack,
+                                                        FuzzyMode.IGNORE_ALL));
+                                            }
                                         } else {
                                             itemList = new ArrayList<>(1);
 
