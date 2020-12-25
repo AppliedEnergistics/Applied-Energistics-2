@@ -34,17 +34,12 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -73,8 +68,6 @@ import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
 import appeng.parts.PartPlacement;
 import appeng.server.ServerHelper;
-import appeng.spatial.SpatialStorageChunkGenerator;
-import appeng.spatial.SpatialStorageDimensionIds;
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng {
