@@ -19,7 +19,6 @@
 package appeng.helpers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,9 +38,12 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -50,12 +52,14 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
+import appeng.mixins.IngredientAccessor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 public class CraftingPatternDetails implements ICraftingPatternDetails, Comparable<CraftingPatternDetails> {
 
-    private static final int ALL_INPUT_LIMIT = 9;
+    private static final int CRAFTING_GRID_DIMENSION = 3;
+    private static final int ALL_INPUT_LIMIT = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
     private static final int CRAFTING_OUTPUT_LIMIT = 1;
     private static final int PROCESSING_OUTPUT_LIMIT = 3;
 
@@ -232,17 +236,88 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     public List<IAEItemStack> getSubstituteInputs(int slot) {
-        if (this.inputs.get(slot) == null) {
+        if (this.sparseInputs[slot] == null) {
             return Collections.emptyList();
         }
 
         return this.substituteInputs.computeIfAbsent(slot, value -> {
-            final List<IAEItemStack> itemList = Arrays
-                    .stream(this.standardRecipe.getIngredients().get(slot).getMatchingStacks())
-                    .map(AEItemStack::fromItemStack).collect(Collectors.toList());
+            ItemStack[] matchingStacks = ((IngredientAccessor) (Object) getRecipeIngredient(slot)).getMatchingStacks();
+            List<IAEItemStack> itemList = new ArrayList<>(matchingStacks.length + 1);
+            for (ItemStack matchingStack : matchingStacks) {
+                itemList.add(AEItemStack.fromItemStack(matchingStack));
+            }
+
+            // Ensure that the specific item put in by the user is at the beginning,
+            // so that it takes precedence over substitutions
             itemList.add(0, this.sparseInputs[slot]);
             return itemList;
         });
+    }
+
+    /**
+     * Gets the {@link Ingredient} from the actual used recipe for a given slot-index into {@link #getSparseInputs()}.
+     * <p/>
+     * Conversion is needed for two reasons: our sparse ingredients are always organized in a 3x3 grid, while Vanilla's
+     * ingredient list will be condensed to the actual recipe's grid size. In addition, in our 3x3 grid, the user can
+     * shift the actual recipe input to the right and down.
+     */
+    private Ingredient getRecipeIngredient(int slot) {
+
+        if (standardRecipe instanceof ShapedRecipe) {
+            ShapedRecipe shapedRecipe = (ShapedRecipe) standardRecipe;
+
+            return getShapedRecipeIngredient(slot, shapedRecipe.getWidth());
+        } else {
+            return getShapelessRecipeIngredient(slot);
+        }
+    }
+
+    private Ingredient getShapedRecipeIngredient(int slot, int recipeWidth) {
+        // Compute the offset of the user's input vs. crafting grid origin
+        // Which is >0 if they have empty rows above or to the left of their input
+        int leftOffset = 0, topOffset = 0;
+        for (int i = 0; i < sparseInputs.length; i++) {
+            if (sparseInputs[i] != null) {
+                // Found the first non-null input
+                leftOffset = i % CRAFTING_GRID_DIMENSION;
+                topOffset = i / CRAFTING_GRID_DIMENSION;
+                break;
+            }
+        }
+
+        // Compute the x,y of the slot, as-if the recipe was anchored to 0,0
+        int slotX = (slot % CRAFTING_GRID_DIMENSION) - leftOffset;
+        int slotY = (slot / CRAFTING_GRID_DIMENSION) - topOffset;
+
+        // Compute the index into the recipe's ingredient list now
+        int ingredientIndex = slotY * recipeWidth + slotX;
+
+        DefaultedList<Ingredient> ingredients = standardRecipe.getPreviewInputs();
+
+        if (ingredientIndex < 0 || ingredientIndex > ingredients.size()) {
+            return Ingredient.EMPTY;
+        }
+
+        return ingredients.get(ingredientIndex);
+    }
+
+    private Ingredient getShapelessRecipeIngredient(int slot) {
+        // We map the list of *filled* sparse inputs to the shapeless (ergo unordered)
+        // ingredients. While these do not actually correspond to each other,
+        // since both lists have the same length, the mapping is at least stable.
+        int ingredientIndex = 0;
+        for (int i = 0; i < slot; i++) {
+            if (sparseInputs[i] != null) {
+                ingredientIndex++;
+            }
+        }
+
+        DefaultedList<Ingredient> ingredients = standardRecipe.getPreviewInputs();
+        if (ingredientIndex < ingredients.size()) {
+            return ingredients.get(ingredientIndex);
+        }
+
+        return Ingredient.EMPTY;
     }
 
     @Override

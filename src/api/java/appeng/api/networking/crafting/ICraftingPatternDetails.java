@@ -115,6 +115,11 @@ public interface ICraftingPatternDetails {
      */
     boolean canSubstitute();
 
+    /**
+     * Get potential item substitutions based on the crafting recipe for a given slot.
+     *
+     * @param slot The slot to get the potential ingredients for, uses the indexing scheme of {@link #getSparseInputs()}
+     */
     List<IAEItemStack> getSubstituteInputs(int slot);
 
     /**
