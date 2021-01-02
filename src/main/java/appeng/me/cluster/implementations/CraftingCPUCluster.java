@@ -450,9 +450,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             for (IAEItemStack input : details.getInputs()) {
                 final IAEItemStack ais = this.inventory.extractItems(input.copy(), Actionable.SIMULATE,
                         this.machineSrc);
-                final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
-                if (is.isEmpty() || is.getCount() < input.getStackSize()) {
+                if (ais == null || ais.getStackSize() < input.getStackSize()) {
                     return false;
                 }
             }
