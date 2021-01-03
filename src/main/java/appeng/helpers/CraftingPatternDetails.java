@@ -274,13 +274,18 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private Ingredient getShapedRecipeIngredient(int slot, int recipeWidth) {
         // Compute the offset of the user's input vs. crafting grid origin
         // Which is >0 if they have empty rows above or to the left of their input
-        int leftOffset = 0, topOffset = 0;
-        for (int i = 0; i < sparseInputs.length; i++) {
-            if (sparseInputs[i] != null) {
-                // Found the first non-null input
-                leftOffset = i % CRAFTING_GRID_DIMENSION;
-                topOffset = i / CRAFTING_GRID_DIMENSION;
-                break;
+        int topOffset = 0;
+        if (sparseInputs[0] == null && sparseInputs[1] == null && sparseInputs[2] == null) {
+            topOffset++; // First row is fully empty
+            if (sparseInputs[3] == null && sparseInputs[4] == null && sparseInputs[5] == null) {
+                topOffset++; // Second row is fully empty
+            }
+        }
+        int leftOffset = 0;
+        if (sparseInputs[0] == null && sparseInputs[3] == null && sparseInputs[6] == null) {
+            leftOffset++; // First column is fully empty
+            if (sparseInputs[1] == null && sparseInputs[4] == null && sparseInputs[7] == null) {
+                leftOffset++; // Second column is fully empty
             }
         }
 
