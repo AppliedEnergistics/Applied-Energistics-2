@@ -400,7 +400,6 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource actionSource )
 	{
-		this.updateReportingValue( (IMEMonitor<IAEItemStack>) monitor );
 	}
 
 	@Override

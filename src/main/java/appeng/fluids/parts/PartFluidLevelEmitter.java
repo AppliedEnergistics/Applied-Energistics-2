@@ -171,7 +171,6 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	@Override
 	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change, final IActionSource actionSource )
 	{
-		this.updateReportingValue( (IMEMonitor<IAEFluidStack>) monitor );
 	}
 
 	@Override
