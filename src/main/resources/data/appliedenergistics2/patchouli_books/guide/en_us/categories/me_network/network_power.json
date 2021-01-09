@@ -1,0 +1,7 @@
+{
+  "name": "Network Power",
+  "parent": "appliedenergistics2:me_network",
+  "description": "The ME System requires AE Power to function.",
+  "icon": "appliedenergistics2:energy_acceptor",
+  "sortnum": 0
+}

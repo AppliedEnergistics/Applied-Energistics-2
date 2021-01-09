@@ -1,0 +1,15 @@
+{
+  "name": "ME Quantum Ring",
+  "category": "appliedenergistics2:me_network.qnb",
+  "icon": "appliedenergistics2:quantum_ring",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Eight of these blocks placed around a ME Quantum Link Chamber will create a Quantum Network Bridge. Only the 4 ME Quantum Ring blocks adjcent to the ME Quantum Link Chamber will accept network connections, the 4 corner blocks cannot connect to cables."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/blocks/quantum_ring"
+    }
+  ]
+}

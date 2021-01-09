@@ -1,0 +1,15 @@
+{
+  "name": "ME IO Port",
+  "category": "appliedenergistics2:me_network.misc",
+  "icon": "appliedenergistics2:io_port",
+  "pages": [
+    {
+      "type": "text",
+      "text": "This block lets transfer items between your ME Network and your 1k ME Storage Cell or other storage cells, unlike other forms of automation the ME IO Port can send items without any configuration of which items to send.$(br2)The top of the UI indicates which direction you wish to move the data, into the cell, or into the networks.$(br2)The ME IO Port requires a channel to function. When used with automation, the input is the top or bottom, and the output is any of the sides.$(br2)If your storing data onto cells its usually a good idea to pre-format them, that way you can get just the items you're interested in, and not get tons of extra items."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/io_port"
+    }
+  ]
+}

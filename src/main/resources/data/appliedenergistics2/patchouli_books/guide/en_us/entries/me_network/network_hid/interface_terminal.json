@@ -1,0 +1,15 @@
+{
+  "name": "ME Interface Terminal",
+  "category": "appliedenergistics2:me_network/network_hid",
+  "icon": "appliedenergistics2:interface_terminal",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Gives remote access to all interface pattern slots on your network separated by which type of machine they are on. It will show the type of machine in the terminal, however you can name the ME Interface in the Inscriber or an Anvil to alter the name displayed in the ME Interface Terminal.$(br2)Combined with the fact that you can toggle if the interface shows up at all this gets you control over your itnerface terminal's display."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/terminals_interface"
+    }
+  ]
+}

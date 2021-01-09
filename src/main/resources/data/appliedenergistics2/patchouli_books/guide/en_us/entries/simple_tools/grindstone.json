@@ -1,0 +1,11 @@
+{
+  "name": "(to-do) Quartz Grindstone",
+  "category": "appliedenergistics2:simple_tools",
+  "icon": "appliedenergistics2:grindstone",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(todo)Page not written yet.$()"
+    }
+  ]
+}

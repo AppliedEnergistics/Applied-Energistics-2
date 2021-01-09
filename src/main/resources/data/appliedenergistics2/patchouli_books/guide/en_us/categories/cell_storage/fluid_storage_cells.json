@@ -1,0 +1,7 @@
+{
+  "name": "Fluid Storage Cells",
+  "parent": "appliedenergistics2:cell_storage",
+  "description": "",
+  "icon": "appliedenergistics2:1k_fluid_storage_cell",
+  "sortnum": 3
+}

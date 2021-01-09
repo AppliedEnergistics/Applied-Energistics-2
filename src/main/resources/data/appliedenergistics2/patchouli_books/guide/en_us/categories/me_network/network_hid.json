@@ -1,0 +1,7 @@
+{
+  "name": "Network HID*",
+  "parent": "appliedenergistics2:me_network",
+  "description": "",
+  "icon": "appliedenergistics2:terminal",
+  "sortnum": 5
+}

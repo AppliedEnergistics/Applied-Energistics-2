@@ -1,0 +1,16 @@
+{
+  "name": "Energy Cells",
+  "category": "appliedenergistics2:me_network/network_power",
+  "icon": "appliedenergistics2:energy_cell",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(item)Energy Cells$() store up to 200,000 $(thing)AE$(). They do not accept power directly but are used to add additional power storage to an already existing ME Network.$(br2)$(item)Dense Energy Cells$() Store up to 1.6 million $(thing)AE$()."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/blocks/energy_energy_cell",
+      "recipe2": "appliedenergistics2:network/blocks/energy_dense_energy_cell"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "ME Chest",
+  "category": "appliedenergistics2:me_network/network_storage",
+  "icon": "appliedenergistics2:storage_chest",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The ME Chest is the simplest way to use a Storage cell, it will give you direct access to the contents of the cell placed inside.$(br2)ME Chests show their contents and the storage cell status on the front face.$(li)Red - Indicates the Storage Cell is Full.$(li)Orange - Indicates the Storage Cell cannot hold any more types, but it can store more items.$(li)Green - Indicates the cell can hold more types, or more items.$(li)Black - Indicates there is no channel, or power is offline."
+    },
+    {
+      "type": "text",
+      "text": "ME Chest can be powered stand alone with external power, or as part of a ME Network. When on a network, the storage of the chest will be available to any other devices in the same network using an assigned Channel. When used without a network, the chest will not transfer full stacks at once, capping transfers at 38 items instead.$(br2)The ME Chest consumes 1 AE/t, and consumes a small amount based on which storage cell is installed. If powered on its own it has a very small internal storage which only lasts a few moments, using a Energy Cell or using a battery from another mod is suggested for reliable operation.$(br2)The ME Chest has two UI's, one is used to place the storage cell inside the device from the sides or bottom, the other is accessed by using the top surface to access the contents.$(br2)Items can be injected into the ME Chest like any other inventory, however items cannot be extracted with automation except via networked functions like the ME Export Bus."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/blocks/storage_chest"
+    }
+  ]
+}

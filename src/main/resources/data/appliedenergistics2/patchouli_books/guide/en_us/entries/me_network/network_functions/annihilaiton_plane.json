@@ -1,0 +1,15 @@
+{
+  "name": "ME Annihilation Plane",
+  "category": "appliedenergistics2:me_network/network_functions",
+  "icon": "appliedenergistics2:annihilation_plane",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The ME Annihilation Plane is a part designed to destroy any block put in front of it. It can buffer a single operation. Buffered items will automatically be stored in ME Network's Storage as space is made available.$(br2)Requires a channel to function."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/planes_annihilation_alt"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "ME Crafting Terminal",
+  "category": "appliedenergistics2:me_network/network_hid",
+  "icon": "appliedenergistics2:crafting_terminal",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The ME Crafting Terminal is the upgraded version of the ME Terminal which has an integrated crafting grid with access to a ME Network's Networked Storage.$(br2)Like the ME Terminal it also requires a Channel to function."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/terminals_crafting"
+    }
+  ]
+}

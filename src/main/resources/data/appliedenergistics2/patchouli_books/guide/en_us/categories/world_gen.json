@@ -1,0 +1,6 @@
+{
+  "name": "World Generation",
+  "description": "These are the blocks Applied Energistics 2 adds to world generation by default.",
+  "icon": "appliedenergistics2:quartz_ore",
+  "sortnum": 0
+}

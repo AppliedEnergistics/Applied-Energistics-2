@@ -1,0 +1,25 @@
+{
+  "name": "Molecular Assembler",
+  "category": "appliedenergistics2:me_network/powered_machines",
+  "icon": "appliedenergistics2:molecular_assembler",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The assembler is a powered machine which crafts items, it can be upgraded by inserting Acceleration Cards into it; once upgraded it is very fast.$(br2)Functions in one of two modes, single pattern mode or interface fed mode."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/crafting/molecular_assembler"
+    },
+    {
+      "type": "text",
+      "title": "Single Pattern Mode",
+      "text": "Uses a single Encoded Pattern (must be a crafting recipe) inserted into the assembler to craft an item without a crafting network.$(br2)This makes it useful in stand alone setups or in configurations where it can be fed by other mods and even chained together to to craft a final output. Items will be accepted from any side and exported into any available inventories."
+    },
+    {
+      "type": "text",
+      "title": "Interface Fed Mode",
+      "text": "Uses the Encoded Patterns (must be a crafting recipe)  from attached ME Interface to craft items when they are requested by the Crafting CPU.$(br2)Note, this mode requires that the assembler not contain a Encoded Pattern; the pattern slot must be empty."
+    }
+  ]
+}

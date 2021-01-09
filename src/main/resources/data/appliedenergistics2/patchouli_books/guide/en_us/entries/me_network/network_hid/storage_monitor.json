@@ -1,0 +1,15 @@
+{
+  "name": "ME Storage Monitor",
+  "category": "appliedenergistics2:me_network/network_hid",
+  "icon": "appliedenergistics2:storage_monitor",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The ME Storage Monitor is a simple way to see the current level of a specified item. There are several interactions to modify it.$(br2)$(l)Rightclick with item$()$(br)Will display the current level of that item if not locked.$(br)$(l)Rightclick with hand$()$(br)Will reset the display if not locked.$(br)$(l)Rightclick with wrench$()$(br)Will toggle the lock."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/monitors_storage"
+    }
+  ]
+}

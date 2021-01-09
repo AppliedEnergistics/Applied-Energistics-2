@@ -1,0 +1,11 @@
+{
+  "name": "(to-do) Meteorite Compass",
+  "category": "appliedenergistics2:simple_tools",
+  "icon": "appliedenergistics2:sky_compass",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(todo)Page not written yet.$()"
+    }
+  ]
+}

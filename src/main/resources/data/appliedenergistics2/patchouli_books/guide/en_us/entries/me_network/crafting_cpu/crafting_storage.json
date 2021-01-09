@@ -1,0 +1,21 @@
+{
+  "name": "Crafting Storage",
+  "category": "appliedenergistics2:me_network.crafting_cpu",
+  "icon": "appliedenergistics2:1k_crafting_storage",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Components of the Crafting CPU which provides storage for crafting."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/crafting/1k_cpu_crafting_storage",
+      "recipe2": "appliedenergistics2:network/crafting/4k_cpu_crafting_storage"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/crafting/16k_cpu_crafting_storage",
+      "recipe2": "appliedenergistics2:network/crafting/64k_cpu_crafting_storage"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "ME Smart Cables",
+  "category": "appliedenergistics2:me_network/network_connections",
+  "icon": "appliedenergistics2:fluix_smart_cable",
+  "pages": [
+    {
+      "type": "text",
+      "text": "While bearing some similarity to ME Covered Cable in appearance, they provide diagnostic function by visualizing the channel usage on the cables, the channels appear as lit colored lines that run along the black stripe on the cables giving you an understanding of how your channels are being used on your network. The first four channels show as lines matching the color of the cable, the next four show as white lines.$(br2)These can also be colored in the same manner as ME Glass Cable."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/cables/smart_fluix",
+      "recipe2": "appliedenergistics2:network/cables/smart_white"
+    }
+  ]
+}

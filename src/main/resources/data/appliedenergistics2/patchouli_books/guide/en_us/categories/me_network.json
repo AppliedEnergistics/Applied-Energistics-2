@@ -1,0 +1,6 @@
+{
+  "name": "ME Network",
+  "description": "The main feature of Applied Energistics 2 is the ME Network, which is a set of connected blocks and cables grouped into a system where storage, power, and functions cooperate between multiple components.$(br2)Categories marked with * contain machines that use $(l:appliedenergistics2:misc/channels)channels$(/l).",
+  "icon": "appliedenergistics2:controller",
+  "sortnum": 1
+}

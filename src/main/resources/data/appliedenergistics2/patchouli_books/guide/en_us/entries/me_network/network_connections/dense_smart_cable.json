@@ -1,0 +1,16 @@
+{
+  "name": "ME Smart Dense Cables",
+  "category": "appliedenergistics2:me_network/network_connections",
+  "icon": "appliedenergistics2:fluix_smart_dense_cable",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Higher Capacity cable, can carry 32 channels unlike standard cable which can only carry 8, however it doesn't support buses so you must first step down from dense to a smaller cable (such as ME Glass Cable or ME Smart Cable) before using buses or panels. Shows load similarly to ME Smart Cable, with each line lit representing four channels in use."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/cables/dense_smart_fluix",
+      "recipe2": "appliedenergistics2:network/cables/dense_smart_white"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "(to-do) Sky Stone Chests",
+  "category": "appliedenergistics2:simple_tools",
+  "icon": "appliedenergistics2:sky_stone_chest",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(todo)Page not written yet.$()"
+    }
+  ]
+}

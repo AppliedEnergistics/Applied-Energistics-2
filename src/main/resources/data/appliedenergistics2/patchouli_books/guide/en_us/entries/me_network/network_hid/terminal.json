@@ -1,0 +1,15 @@
+{
+  "name": "ME Terminal",
+  "category": "appliedenergistics2:me_network/network_hid",
+  "icon": "appliedenergistics2:terminal",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The ME Terminal is a HID which gives you access to a ME Network's Networked Storage.$(br2)It has the ability to sort and search, as well as filter by using View Cell. It requires a Channel to function.$(br2)Can be upgraded into a ME Crafting Terminal."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/terminals"
+    }
+  ]
+}

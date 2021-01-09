@@ -1,0 +1,7 @@
+{
+  "name": "Storage Cell Parts",
+  "parent": "appliedenergistics2:cell_storage",
+  "description": "",
+  "icon": "appliedenergistics2:1k_cell_component",
+  "sortnum": 0
+}

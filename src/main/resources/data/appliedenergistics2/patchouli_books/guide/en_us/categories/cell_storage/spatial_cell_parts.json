@@ -1,0 +1,7 @@
+{
+  "name": "Spatial Cell Parts",
+  "parent": "appliedenergistics2:cell_storage",
+  "description": "",
+  "icon": "appliedenergistics2:2_cubed_spatial_cell_component",
+  "sortnum": 4
+}

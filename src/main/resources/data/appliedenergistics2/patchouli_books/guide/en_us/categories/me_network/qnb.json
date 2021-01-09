@@ -1,0 +1,7 @@
+{
+  "name": "Quantum Network Bridge",
+  "parent": "appliedenergistics2:me_network",
+  "description": "",
+  "icon": "appliedenergistics2:quantum_ring",
+  "sortnum": 8
+}

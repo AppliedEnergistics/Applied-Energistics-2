@@ -1,0 +1,15 @@
+{
+  "name": "ME Drive",
+  "category": "appliedenergistics2:me_network/network_storage",
+  "icon": "appliedenergistics2:drive",
+  "pages": [
+    {
+      "type": "text",
+      "text": "A block designed to do one thing, store Storage Cells. This block holds 10 storage cells so you can tightly pack your storage into a very small space.$(br2)ME Drives show their contents and the storage cell status on the front of the drive face.$(li)Red - Indicates the Storage Cell is Full.$(li)Orange - Indicates the Storage Cell cannot hold any more types, but it can store more items.$(li)Green - Indicates the cell can hold more types, or more items.$(li)Black - Indicates there is no channel, or power is offline.$(br2)Its important to note, that without a ME Network this block does nothing. Its only useful when combined with a way to input, and output items, and requires 2 AE/t power to function, and additional power for each Storage Cell stored inside it.$(br2)The ME Drive requires a channel to function."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/blocks/storage_drive"
+    }
+  ]
+}

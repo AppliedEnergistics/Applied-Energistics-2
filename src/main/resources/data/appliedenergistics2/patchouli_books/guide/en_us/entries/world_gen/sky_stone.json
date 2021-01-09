@@ -1,0 +1,27 @@
+{
+  "name": "Sky Stone/Meteorites",
+  "category": "appliedenergistics2:world_gen",
+  "icon": "appliedenergistics2:sky_stone_block",
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Sky Stone",
+      "item": "appliedenergistics2:sky_stone_block",
+      "text": "$(item)Sky Stone$() is a blast resistant dark stone block found in $(l:appliedenergistics2:world_gen/sky_stone#meteorite)meteorites$(/l) that have impacted the surface in the distant or semi recent past. Their origin is unknown, however they appear to contain remnant of technology from another place."
+    },
+    {
+      "type": "text",
+      "text": "$(item)Sky Stone$() is extremely hard and requires at least a diamond pick to mine it, however the $(l:appliedenergistics2:decorative_blocks/sky_stone_blocks)processed variants$(/l) can be removed with any pick.$(br2)Can be ground into $(item)Sky Stone Dust$() (which has no current uses)."
+    },
+    {
+      "type": "text",
+      "title": "Meteorites",
+      "anchor": "meteorite",
+      "text": "$(thing)Meteorites$() spawn during world generation on the surface or underground, and vary in size. They generally contain a $(l:appliedenergistics2:simple_tools/sky_stone_chests)Sky Stone Chest$(/l) which can contain various ingredients required for advanced technology. You can use a $(l:appliedenergistics2:simple_tools/meteorite_compass)Meteorite Compass$(/l) to locate $(thing)meteorites$() near you and as you explore."
+    },
+    {
+     "type": "text",
+     "text": "$(todo)To-do: Image Page of a Meteorite!$()"
+    }
+  ]
+}

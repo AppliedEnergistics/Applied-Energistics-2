@@ -1,0 +1,15 @@
+{
+  "name": "Inscriber",
+  "category": "appliedenergistics2:me_network/powered_machines",
+  "icon": "appliedenergistics2:inscriber",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Inscriber is used to press items using various Inscriber Plates. Each operation requires 1k AE charged up. The Inscriber needs a supply of 10 AE/t and 100 ticks to fully charge up."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/blocks/inscribers"
+    }
+  ]
+}

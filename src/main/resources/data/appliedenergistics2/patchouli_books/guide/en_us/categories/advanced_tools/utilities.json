@@ -1,0 +1,7 @@
+{
+  "name": "Utilities",
+  "parent": "appliedenergistics2:advanced_tools",
+  "description": "",
+  "icon": "appliedenergistics2:cell_workbench",
+  "sortnum": 1
+}

@@ -48,6 +48,7 @@ repositories {
             includeGroup "org.parchmentmc.data"
         }
     }
+    maven { url 'https://maven.blamejared.com' } //Patchouli
 }
 
 dependencies {
@@ -63,6 +64,7 @@ dependencies {
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
+    modImplementation("vazkii.patchouli:Patchouli:${patchouli_version}:api")
 
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}") {
         exclude group: "net.fabricmc.fabric-api"
@@ -70,6 +72,7 @@ dependencies {
     modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
+    modRuntimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}")
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")

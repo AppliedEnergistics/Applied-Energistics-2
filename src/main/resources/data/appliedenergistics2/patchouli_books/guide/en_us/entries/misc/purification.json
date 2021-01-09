@@ -1,0 +1,11 @@
+{
+  "name": "(to-do) Purification",
+  "category": "appliedenergistics2:misc",
+  "icon": "appliedenergistics2:purified_fluix_crystal",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(todo)Page not written yet.$()"
+    }
+  ]
+}

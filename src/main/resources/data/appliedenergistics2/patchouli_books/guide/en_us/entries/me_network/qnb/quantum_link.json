@@ -1,0 +1,15 @@
+{
+  "name": "ME Quantum Link Chamber",
+  "category": "appliedenergistics2:me_network.qnb",
+  "icon": "appliedenergistics2:quantum_link",
+  "pages": [
+    {
+      "type": "text",
+      "text": "One of these blocks surrounded by a ME Quantum Rings will create a Quantum Network Bridge. This block dosn't connect to any cables and only registers as part of the network with the full bridge is made.$(br2)This blocks inventory can only hold a single Quantum Entangled Singularity and is automation accessible."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/blocks/quantum_link"
+    }
+  ]
+}
