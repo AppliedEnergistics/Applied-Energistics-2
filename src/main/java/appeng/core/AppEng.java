@@ -34,6 +34,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.api.distmarker.Dist;
@@ -101,6 +102,7 @@ public final class AppEng {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         registration = new Registration();
         modEventBus.addListener(registration::registerDimension);
+        modEventBus.addGenericListener(Biome.class, registration::registerBiomes);
         modEventBus.addGenericListener(Block.class, registration::registerBlocks);
         modEventBus.addGenericListener(Item.class, registration::registerItems);
         modEventBus.addGenericListener(EntityType.class, registration::registerEntities);
