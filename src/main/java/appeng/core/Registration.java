@@ -562,7 +562,7 @@ final class Registration {
         String interfaceGroup = parts.iface().asItem().getTranslationKey();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
         String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
-        String storageCellGroup = GuiText.IOBusesFluids.getTranslationKey();
+        String storageCellGroup = GuiText.StorageCells.getTranslationKey();
 
         // default settings..
         ((P2PTunnelRegistry) registries.p2pTunnel()).configure();
