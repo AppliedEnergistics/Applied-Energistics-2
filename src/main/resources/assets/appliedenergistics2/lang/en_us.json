@@ -191,6 +191,7 @@
   "gui.appliedenergistics2.FluidInterface": "ME Fluid Interface",
   "gui.appliedenergistics2.FluidLevelEmitter": "ME Fluid Level Emitter",
   "gui.appliedenergistics2.FluidLevelEmitterUnit": "mB",
+  "gui.appliedenergistics2.FluidTerminal": "Fluid Terminal",
   "gui.appliedenergistics2.Fluix": "Fluix",
   "gui.appliedenergistics2.FormationPlane": "Formation Plane",
   "gui.appliedenergistics2.FromStorage": "Available",
