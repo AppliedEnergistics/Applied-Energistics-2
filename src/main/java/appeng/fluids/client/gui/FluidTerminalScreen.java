@@ -129,7 +129,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
     @Override
     public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.font.drawString(matrixStack, "Fluid Terminal", 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.FluidTerminal.getLocal(), 8, 6, 4210752);
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 
