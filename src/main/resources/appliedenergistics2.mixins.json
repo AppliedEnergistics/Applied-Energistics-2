@@ -10,7 +10,8 @@
     "spatial.BiomesMixin",
     "structure.DimensionStructuresSettingsMixin",
     "structure.ConfiguredStructureFeaturesAccessor",
-    "feature.ConfiguredFeaturesAccessor"
+    "feature.ConfiguredFeaturesAccessor",
+    "feature.WorldLightManagerMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",
