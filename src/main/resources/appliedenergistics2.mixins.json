@@ -26,7 +26,8 @@
     "ServerWorldCustomItemEntityMixin",
     "BootstrapMixin",
     "ItemEntityAccessor",
-    "IngredientAccessor"
+    "IngredientAccessor",
+    "feature.LightingProviderMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",
