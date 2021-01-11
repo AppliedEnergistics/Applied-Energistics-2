@@ -66,11 +66,13 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
+import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
+import appeng.parts.automation.LevelEmitterPart;
 import appeng.parts.networking.CablePart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
@@ -328,7 +330,10 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             for (int x = 0; x < tmp.getSlots(); x++) {
                 target.setStackInSlot(x, tmp.getStackInSlot(x));
             }
-        }
+            if (this instanceof LevelEmitterPart) {
+                final LevelEmitterPart partLevelEmitter = (LevelEmitterPart) this;
+                partLevelEmitter.setReportingValue(compound.getLong("reportingValue"));
+            }
         }
 
         if (this instanceof IConfigurableFluidInventory) {
@@ -341,7 +346,10 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
                     target.setFluidInSlot(x, tmp.getFluidInSlot(x));
                 }
             }
-    }
+            if (this instanceof FluidLevelEmitterPart) {
+                final FluidLevelEmitterPart fluidLevelEmitterPart = (FluidLevelEmitterPart) this;
+                fluidLevelEmitterPart.setReportingValue(compound.getLong("reportingValue"));
+            }
         }
     }
 
@@ -368,11 +376,19 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         final IItemHandler inv = this.getInventoryByName("config");
         if (inv instanceof AppEngInternalAEInventory) {
             ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
+            if (this instanceof LevelEmitterPart) {
+                final LevelEmitterPart partLevelEmitter = (LevelEmitterPart) this;
+                output.putLong("reportingValue", partLevelEmitter.getReportingValue());
+            }
         }
 
         if (this instanceof IConfigurableFluidInventory) {
             final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
             ((AEFluidInventory) tank).writeToNBT(output, "config");
+            if (this instanceof FluidLevelEmitterPart) {
+                final FluidLevelEmitterPart fluidLevelEmitterPart = (FluidLevelEmitterPart) this;
+                output.putLong("reportingValue", fluidLevelEmitterPart.getReportingValue());
+            }
         }
         return output.isEmpty() ? null : output;
     }
