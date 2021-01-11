@@ -44,6 +44,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
@@ -51,6 +52,7 @@ import appeng.api.definitions.IDefinitions;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.implementations.tiles.IConfigurableFluidInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.BusSupport;
@@ -64,6 +66,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
+import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
@@ -326,6 +329,20 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
                 target.setStackInSlot(x, tmp.getStackInSlot(x));
             }
         }
+        }
+
+        if (this instanceof IConfigurableFluidInventory) {
+            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+            if (tank instanceof AEFluidInventory) {
+                final AEFluidInventory target = (AEFluidInventory) tank;
+                final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
+                tmp.readFromNBT(compound, "config");
+                for (int x = 0; x < tmp.getSlots(); x++) {
+                    target.setFluidInSlot(x, tmp.getFluidInSlot(x));
+                }
+            }
+    }
+        }
     }
 
     /**
@@ -353,6 +370,10 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
         }
 
+        if (this instanceof IConfigurableFluidInventory) {
+            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+            ((AEFluidInventory) tank).writeToNBT(output, "config");
+        }
         return output.isEmpty() ? null : output;
     }
 

@@ -47,8 +47,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.implementations.tiles.IConfigurableFluidInventory;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
 import appeng.api.util.IConfigManager;
@@ -58,6 +60,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
+import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.hooks.TickHandler;
@@ -346,6 +349,18 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
                 }
             }
         }
+
+        if (this instanceof IConfigurableFluidInventory) {
+            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+            if (tank instanceof AEFluidInventory) {
+                final AEFluidInventory target = (AEFluidInventory) tank;
+                final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
+                tmp.readFromNBT(compound, "config");
+                for (int x = 0; x < tmp.getSlots(); x++) {
+                    target.setFluidInSlot(x, tmp.getFluidInSlot(x));
+                }
+            }
+        }
     }
 
     /**
@@ -397,7 +412,12 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
                 ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
             }
         }
-
+        if (this instanceof IConfigurableFluidInventory) {
+            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+            if (tank instanceof AEFluidInventory) {
+                ((AEFluidInventory) tank).writeToNBT(output, "config");
+            }
+        }
         return output.isEmpty() ? null : output;
     }
 
