@@ -17,7 +17,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -42,6 +41,7 @@ import appeng.container.ContainerOpener;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.fluids.container.FluidLevelEmitterContainer;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;

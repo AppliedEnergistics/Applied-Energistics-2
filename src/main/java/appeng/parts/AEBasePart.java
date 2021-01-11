@@ -52,7 +52,6 @@ import appeng.api.definitions.IDefinitions;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.BusSupport;
@@ -66,6 +65,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
@@ -310,11 +310,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * @param compound compound of source
      */
     private void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
-        if (compound != null) {
-            final IConfigManager cm = this.getConfigManager();
-            if (cm != null) {
-                cm.readFromNBT(compound);
-            }
+        final IConfigManager cm = this.getConfigManager();
+        if (cm != null) {
+            cm.readFromNBT(compound);
         }
 
         if (this instanceof IPriorityHost) {
