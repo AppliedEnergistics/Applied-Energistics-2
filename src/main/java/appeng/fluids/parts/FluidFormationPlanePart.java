@@ -31,6 +31,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.tiles.IConfigurableFluidInventory;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -59,7 +60,8 @@ import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
 import appeng.util.prioritylist.PrecisePriorityList;
 
-public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluidStack> implements IAEFluidInventory {
+public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluidStack>
+        implements IAEFluidInventory, IConfigurableFluidInventory {
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_formation_plane",
             "part/fluid_formation_plane_on");
 
@@ -159,6 +161,14 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         this.config.writeToNBT(data, "config");
+    }
+
+    @Override
+    public IFluidHandler getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
     }
 
     @Override

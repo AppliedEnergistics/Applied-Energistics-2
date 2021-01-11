@@ -43,6 +43,7 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.tiles.IConfigurableFluidInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
@@ -90,7 +91,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @since rv6 22/05/2018
  */
 public class FluidStorageBusPart extends SharedStorageBusPart
-        implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory {
+        implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory, IConfigurableFluidInventory {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "part/fluid_storage_bus_base");
     @PartModels
@@ -418,6 +419,14 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     public IAEFluidTank getConfig() {
         return this.config;
+    }
+
+    @Override
+    public IFluidHandler getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
     }
 
     @Nonnull

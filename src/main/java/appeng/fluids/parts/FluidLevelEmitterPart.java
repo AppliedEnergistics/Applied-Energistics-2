@@ -13,9 +13,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.api.implementations.tiles.IConfigurableFluidInventory;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -51,7 +53,8 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 public class FluidLevelEmitterPart extends UpgradeablePart
-        implements IStackWatcherHost, IConfigManagerHost, IAEFluidInventory, IMEMonitorHandlerReceiver<IAEFluidStack> {
+        implements IStackWatcherHost, IConfigManagerHost, IAEFluidInventory, IMEMonitorHandlerReceiver<IAEFluidStack>,
+        IConfigurableFluidInventory {
     @PartModels
     public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/level_emitter_base_off");
@@ -301,6 +304,14 @@ public class FluidLevelEmitterPart extends UpgradeablePart
 
     public IAEFluidTank getConfig() {
         return this.config;
+    }
+
+    @Override
+    public IFluidHandler getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
     }
 
     @Override

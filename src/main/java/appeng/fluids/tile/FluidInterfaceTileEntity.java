@@ -31,9 +31,11 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.tiles.IConfigurableFluidInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -53,7 +55,7 @@ import appeng.helpers.IPriorityHost;
 import appeng.tile.grid.AENetworkTileEntity;
 
 public class FluidInterfaceTileEntity extends AENetworkTileEntity
-        implements IGridTickable, IFluidInterfaceHost, IPriorityHost {
+        implements IGridTickable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
 
     public FluidInterfaceTileEntity(TileEntityType<?> tileEntityTypeIn) {
@@ -155,6 +157,11 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     @Override
     public IItemHandler getInventoryByName(String name) {
         return this.duality.getInventoryByName(name);
+    }
+
+    @Override
+    public IFluidHandler getFluidInventoryByName(final String name) {
+        return this.duality.getFluidInventoryByName(name);
     }
 
     @Override

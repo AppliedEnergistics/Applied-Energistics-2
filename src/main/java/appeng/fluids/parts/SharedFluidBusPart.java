@@ -29,9 +29,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.tiles.IConfigurableFluidInventory;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
@@ -52,7 +54,7 @@ import appeng.util.Platform;
  * @version rv6 - 30/04/2018
  * @since rv6 30/04/2018
  */
-public abstract class SharedFluidBusPart extends UpgradeablePart implements IGridTickable {
+public abstract class SharedFluidBusPart extends UpgradeablePart implements IGridTickable, IConfigurableFluidInventory {
 
     private final AEFluidInventory config = new AEFluidInventory(null, 9);
     private boolean lastRedstone;
@@ -151,6 +153,14 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     public IAEFluidTank getConfig() {
         return this.config;
+    }
+
+    @Override
+    public IFluidHandler getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
     }
 
     protected IFluidStorageChannel getChannel() {
