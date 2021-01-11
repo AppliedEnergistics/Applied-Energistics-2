@@ -50,7 +50,6 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
 import appeng.api.util.IConfigManager;
@@ -60,6 +59,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
