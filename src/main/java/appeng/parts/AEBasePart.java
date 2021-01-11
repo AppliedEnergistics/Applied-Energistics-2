@@ -309,11 +309,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * @param compound compound of source
      */
     private void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
-        if (compound != null) {
-            final IConfigManager cm = this.getConfigManager();
-            if (cm != null) {
-                cm.readFromNBT(compound);
-            }
+        final IConfigManager cm = this.getConfigManager();
+        if (cm != null) {
+            cm.readFromNBT(compound);
         }
 
         if (this instanceof IPriorityHost) {
