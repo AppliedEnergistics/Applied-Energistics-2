@@ -35,7 +35,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.tiles.IConfigurableFluidInventory;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;

@@ -52,7 +52,7 @@ import appeng.api.definitions.IDefinitions;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.implementations.tiles.IConfigurableFluidInventory;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.BusSupport;

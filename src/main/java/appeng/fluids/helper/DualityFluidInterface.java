@@ -35,7 +35,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.implementations.tiles.IConfigurableFluidInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;

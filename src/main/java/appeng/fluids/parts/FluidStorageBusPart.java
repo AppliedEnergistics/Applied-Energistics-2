@@ -43,7 +43,7 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.tiles.IConfigurableFluidInventory;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;

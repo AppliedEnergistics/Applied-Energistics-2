@@ -31,7 +31,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.tiles.IConfigurableFluidInventory;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;

@@ -33,7 +33,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.tiles.IConfigurableFluidInventory;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
