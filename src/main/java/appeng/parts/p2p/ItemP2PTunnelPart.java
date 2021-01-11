@@ -147,40 +147,40 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         return wasReq ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
     }
 
-	private void notifyHostNeighbors() {
-		this.cachedInv = null;
-		final int olderSize = this.oldSize;
-		this.oldSize = this.getDestination().getSlots();
-		if (olderSize != this.oldSize) {
-			this.getHost().notifyNeighbors();
-		}
-	}
+    private void notifyHostNeighbors() {
+        this.cachedInv = null;
+        final int olderSize = this.oldSize;
+        this.oldSize = this.getDestination().getSlots();
+        if (olderSize != this.oldSize) {
+            this.getHost().notifyNeighbors();
+        }
+    }
 
     @MENetworkEventSubscribe
     public void changeStateA(final MENetworkBootingStatusChange bs) {
         if (!this.isOutput()) {
-			notifyHostNeighbors();
+            notifyHostNeighbors();
         }
     }
 
     @MENetworkEventSubscribe
     public void changeStateB(final MENetworkChannelsChanged bs) {
         if (!this.isOutput()) {
-			notifyHostNeighbors();
+            notifyHostNeighbors();
         }
     }
 
     @MENetworkEventSubscribe
     public void changeStateC(final MENetworkPowerStatusChange bs) {
         if (!this.isOutput()) {
-			notifyHostNeighbors();
+            notifyHostNeighbors();
         }
     }
 
     @Override
     public void onTunnelNetworkChange() {
         if (!this.isOutput()) {
-			notifyHostNeighbors();
+            notifyHostNeighbors();
         } else {
             final ItemP2PTunnelPart input = this.getInput();
             if (input != null) {
