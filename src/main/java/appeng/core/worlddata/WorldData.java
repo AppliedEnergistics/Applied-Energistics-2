@@ -110,12 +110,13 @@ public final class WorldData implements IWorldData {
 
     @Override
     public void onServerStopping() {
-        compassData.service().kill();
+
     }
 
     @Override
     public void onServerStoppped() {
         Preconditions.checkNotNull(server);
+        compassData.service().kill();
         instance = null;
         WorldData.server = null;
     }
