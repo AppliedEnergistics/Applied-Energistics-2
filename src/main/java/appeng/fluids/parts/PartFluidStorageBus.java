@@ -25,6 +25,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -87,7 +88,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory
+public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory, IConfigurableFluidInventory
 {
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/fluid_storage_bus_base" );
 	@PartModels
@@ -467,6 +468,14 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	public IAEFluidTank getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public IFluidHandler getFluidInventoryByName(final String name) {
+		if (name.equals("config")) {
+			return this.config;
+		}
+		return null;
 	}
 
 	@Nonnull

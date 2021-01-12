@@ -21,6 +21,7 @@ package appeng.fluids.parts;
 
 import java.util.EnumSet;
 
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,6 +31,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -61,7 +63,7 @@ import appeng.parts.PartModel;
 import appeng.util.Platform;
 
 
-public class PartFluidInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost
+public class PartFluidInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory
 {
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/fluid_interface_base" );
 
@@ -231,6 +233,11 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	public IItemHandler getInventoryByName( String name )
 	{
 		return this.duality.getInventoryByName( name );
+	}
+
+	@Override
+	public IFluidHandler getFluidInventoryByName( final String name) {
+		return this.duality.getFluidInventoryByName(name);
 	}
 
 	@Override

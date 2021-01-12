@@ -23,11 +23,13 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -50,7 +52,7 @@ import appeng.helpers.IPriorityHost;
 import appeng.tile.grid.AENetworkTile;
 
 
-public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost, IPriorityHost
+public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory
 {
 	private final DualityFluidInterface duality = new DualityFluidInterface( this.getProxy(), this );
 
@@ -174,6 +176,11 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	public IItemHandler getInventoryByName( String name )
 	{
 		return this.duality.getInventoryByName( name );
+	}
+
+	@Override
+	public IFluidHandler getFluidInventoryByName(final String name) {
+		return this.duality.getFluidInventoryByName(name);
 	}
 
 	@Override

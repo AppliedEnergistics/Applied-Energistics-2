@@ -28,6 +28,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.fluids.helper.IConfigurableFluidInventory;
+import appeng.fluids.util.AEFluidInventory;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -41,6 +43,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.tiles.ISegmentedInventory;
@@ -398,6 +401,18 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 				}
 			}
 		}
+
+		if (this instanceof IConfigurableFluidInventory ) {
+			final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+			if (tank instanceof AEFluidInventory) {
+				final AEFluidInventory target = (AEFluidInventory) tank;
+				final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
+				tmp.readFromNBT(compound, "config");
+				for (int x = 0; x < tmp.getSlots(); x++) {
+					target.setFluidInSlot(x, tmp.getFluidInSlot(x));
+				}
+			}
+		}
 	}
 
 	/**
@@ -459,6 +474,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			if( inv instanceof AppEngInternalAEInventory )
 			{
 				( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
+			}
+		}
+
+		if (this instanceof IConfigurableFluidInventory) {
+			final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+			if (tank instanceof AEFluidInventory ) {
+				((AEFluidInventory) tank).writeToNBT(output, "config");
 			}
 		}
 

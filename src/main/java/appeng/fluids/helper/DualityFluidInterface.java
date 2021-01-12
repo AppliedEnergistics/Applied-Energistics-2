@@ -28,6 +28,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -72,7 +73,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost
+public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost, IConfigurableFluidInventory
 {
 	public static final int NUMBER_OF_TANKS = 6;
 	public static final int TANK_CAPACITY = Fluid.BUCKET_VOLUME * 4;
@@ -600,6 +601,14 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	@Override
 	public IItemHandler getInventoryByName( String name )
 	{
+		return null;
+	}
+
+	@Override
+	public IFluidHandler getFluidInventoryByName( final String name) {
+		if (name.equals("config")) {
+			return this.config;
+		}
 		return null;
 	}
 

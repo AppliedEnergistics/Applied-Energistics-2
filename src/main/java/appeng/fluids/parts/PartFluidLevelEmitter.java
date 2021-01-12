@@ -4,6 +4,7 @@ package appeng.fluids.parts;
 
 import java.util.Random;
 
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -48,9 +49,10 @@ import appeng.parts.PartModel;
 import appeng.parts.automation.PartUpgradeable;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 
-public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatcherHost, IConfigManagerHost, IAEFluidInventory, IMEMonitorHandlerReceiver<IAEFluidStack>
+public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatcherHost, IConfigManagerHost, IAEFluidInventory, IMEMonitorHandlerReceiver<IAEFluidStack>, IConfigurableFluidInventory
 {
 	@PartModels
 	public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation( AppEng.MOD_ID, "part/level_emitter_base_off" );
@@ -351,6 +353,14 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	public IAEFluidTank getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public IFluidHandler getFluidInventoryByName( final String name) {
+		if (name.equals("config")) {
+			return this.config;
+		}
+		return null;
 	}
 
 	@Override

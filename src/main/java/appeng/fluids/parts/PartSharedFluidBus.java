@@ -19,6 +19,7 @@
 package appeng.fluids.parts;
 
 
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,6 +45,7 @@ import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.PartUpgradeable;
 import appeng.util.Platform;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 
 /**
@@ -51,7 +53,7 @@ import appeng.util.Platform;
  * @version rv6 - 30/04/2018
  * @since rv6 30/04/2018
  */
-public abstract class PartSharedFluidBus extends PartUpgradeable implements IGridTickable
+public abstract class PartSharedFluidBus extends PartUpgradeable implements IGridTickable, IConfigurableFluidInventory
 {
 
 	private final AEFluidInventory config = new AEFluidInventory( null, 9 );
@@ -174,6 +176,14 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	public IAEFluidTank getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public IFluidHandler getFluidInventoryByName( final String name) {
+		if (name.equals("config")) {
+			return this.config;
+		}
+		return null;
 	}
 
 	protected IFluidStorageChannel getChannel()

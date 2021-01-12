@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
@@ -51,9 +52,10 @@ import appeng.parts.automation.PartAbstractFormationPlane;
 import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
 import appeng.util.prioritylist.PrecisePriorityList;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 
-public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluidStack> implements IAEFluidInventory
+public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluidStack> implements IAEFluidInventory, IConfigurableFluidInventory
 {
 	private static final PlaneModels MODELS = new PlaneModels( "part/fluid_formation_plane_", "part/fluid_formation_plane_on_" );
 
@@ -220,6 +222,14 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	public IAEFluidTank getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public IFluidHandler getFluidInventoryByName( final String name) {
+		if (name.equals("config")) {
+			return this.config;
+		}
+		return null;
 	}
 
 	@Override
