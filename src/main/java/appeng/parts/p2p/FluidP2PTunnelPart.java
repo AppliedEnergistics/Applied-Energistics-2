@@ -182,23 +182,23 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
 
         @Override
         public int getTanks() {
-            return FluidP2PTunnelPart.this.getAttachedFluidHandler().getTanks();
+            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().getTanks();
         }
 
         @Override
         @Nonnull
         public FluidStack getFluidInTank(int tank) {
-            return FluidP2PTunnelPart.this.getAttachedFluidHandler().getFluidInTank(tank);
+            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().getFluidInTank(tank);
         }
 
         @Override
         public int getTankCapacity(int tank) {
-            return FluidP2PTunnelPart.this.getAttachedFluidHandler().getTankCapacity(tank);
+            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().getTankCapacity(tank);
         }
 
         @Override
         public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-            return FluidP2PTunnelPart.this.getAttachedFluidHandler().isFluidValid(tank, stack);
+            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().isFluidValid(tank, stack);
         }
 
         @Override
@@ -209,13 +209,13 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
         @Override
         @Nonnull
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            return FluidP2PTunnelPart.this.getAttachedFluidHandler().drain(resource, action);
+            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().drain(resource, action);
         }
 
         @Override
         @Nonnull
         public FluidStack drain(int maxDrain, FluidAction action) {
-            return FluidP2PTunnelPart.this.getAttachedFluidHandler().drain(maxDrain, action);
+            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().drain(maxDrain, action);
         }
     }
 
