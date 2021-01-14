@@ -1,0 +1,7 @@
+{
+  "name": "Network Power",
+  "parent": "me_network",
+  "description": "",
+  "icon": "appliedenergistics2:energy_acceptor",
+  "sortnum": 0
+}

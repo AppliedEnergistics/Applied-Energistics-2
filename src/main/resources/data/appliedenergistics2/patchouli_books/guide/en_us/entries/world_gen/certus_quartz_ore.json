@@ -1,0 +1,11 @@
+{
+  "name": "Certus Quartz Ore",
+  "category": "world_gen",
+  "icon": "appliedenergistics2:quartz_ore",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Test Page."
+    }
+  ]
+}

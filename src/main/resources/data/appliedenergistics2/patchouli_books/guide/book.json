@@ -1,5 +1,7 @@
 {
-	"name": "BOOK NAME",
-	"landing_text": "LANDING TEXT",
-	"version": 1
+  "name": "ME Catalog",
+  "landing_text": "Catalog of items for Applied Energistics 2.",
+  "show_progress": false,
+  "version": 1,
+  "creative_tab": "appliedenergistics2"
 }
