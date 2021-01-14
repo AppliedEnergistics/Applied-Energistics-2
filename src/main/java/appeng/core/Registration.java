@@ -35,6 +35,7 @@ import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -221,6 +222,7 @@ import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.handlers.GrinderRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
+import appeng.spatial.SpatialStorageBiome;
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.tile.AEBaseTileEntity;
@@ -308,6 +310,12 @@ final class Registration {
         PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();
         partModels.getModels().forEach(ModelLoader::addSpecialModel);
         partModels.setInitialized(true);
+    }
+
+    public void registerBiomes(RegistryEvent.Register<Biome> event) {
+        Biome biome = SpatialStorageBiome.INSTANCE;
+        biome.setRegistryName(SpatialStorageDimensionIds.BIOME_KEY.getLocation());
+        event.getRegistry().register(biome);
     }
 
     public void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -562,7 +570,7 @@ final class Registration {
         String interfaceGroup = parts.iface().asItem().getTranslationKey();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
         String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
-        String storageCellGroup = GuiText.IOBusesFluids.getTranslationKey();
+        String storageCellGroup = GuiText.StorageCells.getTranslationKey();
 
         // default settings..
         ((P2PTunnelRegistry) registries.p2pTunnel()).configure();

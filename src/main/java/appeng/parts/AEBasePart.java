@@ -44,6 +44,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
@@ -64,10 +65,14 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
+import appeng.fluids.helper.IConfigurableFluidInventory;
+import appeng.fluids.parts.FluidLevelEmitterPart;
+import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
+import appeng.parts.automation.LevelEmitterPart;
 import appeng.parts.networking.CablePart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
@@ -305,11 +310,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * @param compound compound of source
      */
     private void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
-        if (compound != null) {
-            final IConfigManager cm = this.getConfigManager();
-            if (cm != null) {
-                cm.readFromNBT(compound);
-            }
+        final IConfigManager cm = this.getConfigManager();
+        if (cm != null) {
+            cm.readFromNBT(compound);
         }
 
         if (this instanceof IPriorityHost) {
@@ -324,6 +327,26 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             tmp.readFromNBT(compound, "config");
             for (int x = 0; x < tmp.getSlots(); x++) {
                 target.setStackInSlot(x, tmp.getStackInSlot(x));
+            }
+            if (this instanceof LevelEmitterPart) {
+                final LevelEmitterPart partLevelEmitter = (LevelEmitterPart) this;
+                partLevelEmitter.setReportingValue(compound.getLong("reportingValue"));
+            }
+        }
+
+        if (this instanceof IConfigurableFluidInventory) {
+            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+            if (tank instanceof AEFluidInventory) {
+                final AEFluidInventory target = (AEFluidInventory) tank;
+                final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
+                tmp.readFromNBT(compound, "config");
+                for (int x = 0; x < tmp.getSlots(); x++) {
+                    target.setFluidInSlot(x, tmp.getFluidInSlot(x));
+                }
+            }
+            if (this instanceof FluidLevelEmitterPart) {
+                final FluidLevelEmitterPart fluidLevelEmitterPart = (FluidLevelEmitterPart) this;
+                fluidLevelEmitterPart.setReportingValue(compound.getLong("reportingValue"));
             }
         }
     }
@@ -351,8 +374,20 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         final IItemHandler inv = this.getInventoryByName("config");
         if (inv instanceof AppEngInternalAEInventory) {
             ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
+            if (this instanceof LevelEmitterPart) {
+                final LevelEmitterPart partLevelEmitter = (LevelEmitterPart) this;
+                output.putLong("reportingValue", partLevelEmitter.getReportingValue());
+            }
         }
 
+        if (this instanceof IConfigurableFluidInventory) {
+            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+            ((AEFluidInventory) tank).writeToNBT(output, "config");
+            if (this instanceof FluidLevelEmitterPart) {
+                final FluidLevelEmitterPart fluidLevelEmitterPart = (FluidLevelEmitterPart) this;
+                output.putLong("reportingValue", fluidLevelEmitterPart.getReportingValue());
+            }
+        }
         return output.isEmpty() ? null : output;
     }
 

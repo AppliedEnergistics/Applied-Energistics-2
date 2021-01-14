@@ -122,9 +122,6 @@ public final class AEConfig {
     private int colorApplicatorBattery;
     private int chargedStaffBattery;
 
-    // Meteors
-    private int meteoriteMaximumSpawnHeight;
-
     // Wireless
     private double wirelessBaseCost;
     private double wirelessCostMultiplier;
@@ -171,8 +168,6 @@ public final class AEConfig {
         CondenserOutput.SINGULARITY.requiredPower = COMMON.condenserSingularityPower.get();
 
         this.oreDoublePercentage = COMMON.oreDoublePercentage.get().floatValue();
-
-        this.meteoriteMaximumSpawnHeight = COMMON.meteoriteMaximumSpawnHeight.get();
 
         this.wirelessBaseCost = COMMON.wirelessBaseCost.get();
         this.wirelessCostMultiplier = COMMON.wirelessCostMultiplier.get();
@@ -391,10 +386,6 @@ public final class AEConfig {
         return COMMON.quartzOresClusterAmount.get();
     }
 
-    public int getMeteoriteMaximumSpawnHeight() {
-        return this.meteoriteMaximumSpawnHeight;
-    }
-
     @Nullable
     public String getImprovedFluidTag() {
         return Strings.emptyToNull(COMMON.improvedFluidTag.get());
@@ -498,7 +489,6 @@ public final class AEConfig {
         public final ConfigValue<List<? extends String>> quartzOresBiomeBlacklist;
 
         // Meteors
-        public final ConfigValue<Integer> meteoriteMaximumSpawnHeight;
         public final ConfigValue<List<? extends String>> meteoriteBiomeBlacklist;
 
         // Wireless
@@ -594,7 +584,6 @@ public final class AEConfig {
             builder.push("worldGen");
 
             this.spawnChargedChance = builder.defineInRange("spawnChargedChance", 0.08, 0.0, 1.0);
-            this.meteoriteMaximumSpawnHeight = builder.define("meteoriteMaximumSpawnHeight", 180);
             this.meteoriteBiomeBlacklist = builder.defineList("meteoriteBiomeBlacklist",
                     Collections.emptyList(),
                     obj -> obj instanceof String && ResourceLocation.isResouceNameValid((String) obj));

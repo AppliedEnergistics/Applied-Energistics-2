@@ -183,31 +183,27 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
         Entity entity = null;
         Vector3d entityIntersection = null;
-        final List list = w.getEntitiesWithinAABBExcludingEntity(p, bb);
+        final List<Entity> list = w.getEntitiesInAABBexcluding(p, bb,
+                e -> !(e instanceof ItemEntity) && e.isAlive());
         double closest = 9999999.0D;
 
-        for (int l = 0; l < list.size(); ++l) {
-            final Entity entity1 = (Entity) list.get(l);
+        for (Entity entity1 : list) {
+            if (p.isPassenger() && entity1.isPassenger(p)) {
+                continue;
+            }
 
-            if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
-                // prevent killing / flying of mounts.
-                if (entity1.isRidingOrBeingRiddenBy(p)) {
-                    continue;
-                }
+            final float f1 = 0.3F;
 
-                final float f1 = 0.3F;
+            final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
+            final Vector3d intersection = boundingBox.rayTrace(Vector3d, Vector3d1).orElse(null);
 
-                final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
-                final Vector3d intersection = boundingBox.rayTrace(Vector3d, Vector3d1).orElse(null);
+            if (intersection != null) {
+                final double nd = Vector3d.squareDistanceTo(intersection);
 
-                if (intersection != null) {
-                    final double nd = Vector3d.squareDistanceTo(intersection);
-
-                    if (nd < closest) {
-                        entity = entity1;
-                        entityIntersection = intersection;
-                        closest = nd;
-                    }
+                if (nd < closest) {
+                    entity = entity1;
+                    entityIntersection = intersection;
+                    closest = nd;
                 }
             }
         }
@@ -292,33 +288,27 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
             Entity entity = null;
             Vector3d entityIntersection = null;
-            final List list = w.getEntitiesWithinAABBExcludingEntity(p, bb);
+            final List<Entity> list = w.getEntitiesInAABBexcluding(p, bb,
+                    e -> !(e instanceof ItemEntity) && e.isAlive());
             double closest = 9999999.0D;
 
-            for (int l = 0; l < list.size(); ++l) {
-                final Entity entity1 = (Entity) list.get(l);
+            for (Entity entity1 : list) {
+                if (p.isPassenger() && entity1.isPassenger(p)) {
+                    continue;
+                }
 
-                if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
-                    if (entity1.isAlive()) {
-                        // prevent killing / flying of mounts.
-                        if (entity1.isRidingOrBeingRiddenBy(p)) {
-                            continue;
-                        }
+                final float f1 = 0.3F;
 
-                        final float f1 = 0.3F;
+                final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
+                final Vector3d intersection = boundingBox.rayTrace(Vector3d, Vector3d1).orElse(null);
 
-                        final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
-                        final Vector3d intersection = boundingBox.rayTrace(Vector3d, Vector3d1).orElse(null);
+                if (intersection != null) {
+                    final double nd = Vector3d.squareDistanceTo(intersection);
 
-                        if (intersection != null) {
-                            final double nd = Vector3d.squareDistanceTo(intersection);
-
-                            if (nd < closest) {
-                                entity = entity1;
-                                entityIntersection = intersection;
-                                closest = nd;
-                            }
-                        }
+                    if (nd < closest) {
+                        entity = entity1;
+                        entityIntersection = intersection;
+                        closest = nd;
                     }
                 }
             }

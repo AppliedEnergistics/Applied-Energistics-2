@@ -69,6 +69,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.fluids.container.FluidStorageBusContainer;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
@@ -90,7 +91,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @since rv6 22/05/2018
  */
 public class FluidStorageBusPart extends SharedStorageBusPart
-        implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory {
+        implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory, IConfigurableFluidInventory {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "part/fluid_storage_bus_base");
     @PartModels
@@ -418,6 +419,14 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     public IAEFluidTank getConfig() {
         return this.config;
+    }
+
+    @Override
+    public IFluidHandler getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
     }
 
     @Nonnull

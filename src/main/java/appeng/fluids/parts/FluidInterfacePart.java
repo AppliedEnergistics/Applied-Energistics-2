@@ -31,6 +31,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
@@ -55,6 +56,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.Reflected;
@@ -64,7 +66,7 @@ import appeng.parts.PartModel;
 import appeng.util.Platform;
 
 public class FluidInterfacePart extends BasicStatePart
-        implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost {
+        implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_base");
 
     @PartModels
@@ -202,6 +204,11 @@ public class FluidInterfacePart extends BasicStatePart
     @Override
     public IItemHandler getInventoryByName(String name) {
         return this.duality.getInventoryByName(name);
+    }
+
+    @Override
+    public IFluidHandler getFluidInventoryByName(final String name) {
+        return this.duality.getFluidInventoryByName(name);
     }
 
     @Override
