@@ -155,6 +155,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             workingDirectory project.file('run')
             property "mixin.debug.export", "true"
+            properties 'mixin.env.disableRefMap': 'true'
             mods {
                 appliedenergistics2 {
                     source sourceSets.main
