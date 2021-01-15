@@ -438,12 +438,20 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		if( inv instanceof AppEngInternalAEInventory )
 		{
 			( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
+			if (this instanceof PartLevelEmitter) {
+				final PartLevelEmitter partLevelEmitter = (PartLevelEmitter) this;
+				output.setLong("reportingValue", partLevelEmitter.getReportingValue());
+			}
 		}
 
 		if (this instanceof IConfigurableFluidInventory) {
 			final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
 			if (tank instanceof AEFluidInventory ) {
 				((AEFluidInventory) tank).writeToNBT(output, "config");
+			}
+			if (this instanceof PartFluidLevelEmitter) {
+				final PartFluidLevelEmitter partFluidLevelEmitter = (PartFluidLevelEmitter) this;
+				output.setLong("reportingValue", partFluidLevelEmitter.getReportingValue());
 			}
 		}
 
