@@ -183,7 +183,7 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
      * @return true if there is a loaded controller
      */
     private boolean checkController(final BlockPos pos) {
-        if (this.world.getChunkManager().isChunkLoaded(pos.getX() >> 4, pos.getZ() >> 4)) {
+        if (this.world.getChunkManager().shouldTickBlock(pos)) {
             return this.world.getBlockEntity(pos) instanceof ControllerBlockEntity;
         }
 
