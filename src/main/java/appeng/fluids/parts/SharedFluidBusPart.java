@@ -24,7 +24,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
@@ -115,7 +114,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {
         final World w = self.getWorld();
 
-        if (w.getChunkProvider().isChunkLoaded(new ChunkPos(pos))) {
+        if (w.getChunkProvider().canTick(pos)) {
             return w.getTileEntity(pos);
         }
 

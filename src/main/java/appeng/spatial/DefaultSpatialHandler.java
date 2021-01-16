@@ -47,7 +47,7 @@ public class DefaultSpatialHandler implements IMovableHandler {
         final Chunk c = w.getChunkAt(newPosition);
         c.addTileEntity(newPosition, te);
 
-        if (w.getChunkProvider().isChunkLoaded(c.getPos())) {
+        if (w.getChunkProvider().canTick(newPosition)) {
             final BlockState state = w.getBlockState(newPosition);
             w.addTileEntity(te);
             w.notifyBlockUpdate(newPosition, state, state, 1);
