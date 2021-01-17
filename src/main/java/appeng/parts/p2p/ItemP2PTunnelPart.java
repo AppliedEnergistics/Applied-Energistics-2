@@ -18,51 +18,34 @@
 
 package appeng.parts.p2p;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkBootingStatusChange;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
-import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
-import appeng.me.cache.helpers.TunnelCollection;
-import appeng.util.Platform;
-import appeng.util.inv.WrapperChainedItemHandler;
 
-public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implements IItemHandler, IGridTickable {
+public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
     private static final float POWER_DRAIN = 2.0f;
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_items");
-    private boolean partVisited = false;
+    private static final IItemHandler NULL_ITEM_HANDLER = new NullItemHandler();
+
+    private final IItemHandler inputHandler = new InputItemHandler();
+    private final IItemHandler outputHandler = new OutputItemHandler();
 
     @PartModels
     public static List<IPartModel> getModels() {
         return MODELS.getModels();
     }
-
-    private int oldSize = 0;
-    private boolean requested;
-    private IItemHandler cachedInv;
 
     public ItemP2PTunnelPart(final ItemStack is) {
         super(is);
@@ -73,175 +56,187 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         return POWER_DRAIN;
     }
 
-    @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        this.cachedInv = null;
-        final ItemP2PTunnelPart input = this.getInput();
-        if (input != null && this.isOutput()) {
-            input.onTunnelNetworkChange();
-        }
-    }
-
-    private IItemHandler getDestination() {
-        this.requested = true;
-
-        if (this.cachedInv != null) {
-            return this.cachedInv;
-        }
-
-        final List<IItemHandler> outs = new ArrayList<IItemHandler>();
-        final TunnelCollection<ItemP2PTunnelPart> itemTunnels;
-
-        try {
-            itemTunnels = this.getOutputs();
-        } catch (final GridAccessException e) {
-            return EmptyHandler.INSTANCE;
-        }
-
-        for (final ItemP2PTunnelPart t : itemTunnels) {
-            final IItemHandler inv = t.getOutputInv();
-            if (inv != null && inv != this) {
-                if (Platform.getRandomInt() % 2 == 0) {
-                    outs.add(inv);
-                } else {
-                    outs.add(0, inv);
-                }
-            }
-        }
-
-        return this.cachedInv = new WrapperChainedItemHandler(outs.toArray(new IItemHandler[outs.size()]));
-    }
-
-    private IItemHandler getOutputInv() {
-        IItemHandler ret = null;
-        if (!this.partVisited) {
-            this.partVisited = true;
-            if (this.getProxy().isActive()) {
-                final Direction facing = this.getSide().getFacing();
-                final TileEntity te = this.getTile().getWorld().getTileEntity(this.getTile().getPos().offset(facing));
-
-                if (te != null) {
-                    ret = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite())
-                            .orElse(ret);
-                }
-            }
-            this.partVisited = false;
-        }
-        return ret;
-    }
-
-    @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
-        return new TickingRequest(TickRates.ItemTunnel.getMin(), TickRates.ItemTunnel.getMax(), false, false);
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        final boolean wasReq = this.requested;
-
-        if (this.requested && this.cachedInv != null) {
-            ((WrapperChainedItemHandler) this.cachedInv).cycleOrder();
-        }
-
-        this.requested = false;
-        return wasReq ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
-    }
-
-    @MENetworkEventSubscribe
-    public void changeStateA(final MENetworkBootingStatusChange bs) {
-        if (!this.isOutput()) {
-            this.cachedInv = null;
-            final int olderSize = this.oldSize;
-            this.oldSize = this.getDestination().getSlots();
-            if (olderSize != this.oldSize) {
-                this.getHost().notifyNeighbors();
-            }
-        }
-    }
-
-    @MENetworkEventSubscribe
-    public void changeStateB(final MENetworkChannelsChanged bs) {
-        if (!this.isOutput()) {
-            this.cachedInv = null;
-            final int olderSize = this.oldSize;
-            this.oldSize = this.getDestination().getSlots();
-            if (olderSize != this.oldSize) {
-                this.getHost().notifyNeighbors();
-            }
-        }
-    }
-
-    @MENetworkEventSubscribe
-    public void changeStateC(final MENetworkPowerStatusChange bs) {
-        if (!this.isOutput()) {
-            this.cachedInv = null;
-            final int olderSize = this.oldSize;
-            this.oldSize = this.getDestination().getSlots();
-            if (olderSize != this.oldSize) {
-                this.getHost().notifyNeighbors();
-            }
-        }
-    }
-
-    @Override
-    public void onTunnelNetworkChange() {
-        if (!this.isOutput()) {
-            this.cachedInv = null;
-            final int olderSize = this.oldSize;
-            this.oldSize = this.getDestination().getSlots();
-            if (olderSize != this.oldSize) {
-                this.getHost().notifyNeighbors();
-            }
-        } else {
-            final ItemP2PTunnelPart input = this.getInput();
-            if (input != null) {
-                input.getHost().notifyNeighbors();
-            }
-        }
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
         if (capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this);
+            if (this.isOutput()) {
+                return (LazyOptional<T>) LazyOptional.of(() -> this.outputHandler);
+            }
+            return (LazyOptional<T>) LazyOptional.of(() -> this.inputHandler);
         }
 
         return super.getCapability(capabilityClass);
     }
 
     @Override
-    public int getSlots() {
-        return this.getDestination().getSlots();
-    }
-
-    @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return this.getDestination().isItemValid(slot, stack);
-    }
-
-    @Override
-    public ItemStack getStackInSlot(final int i) {
-        return this.getDestination().getStackInSlot(i);
-    }
-
-    @Override
-    public ItemStack insertItem(final int slot, final ItemStack stack, boolean simulate) {
-        return this.getDestination().insertItem(slot, stack, simulate);
-    }
-
-    @Override
-    public ItemStack extractItem(final int slot, final int amount, boolean simulate) {
-        return this.getDestination().extractItem(slot, amount, simulate);
-    }
-
-    @Override
-    public int getSlotLimit(int slot) {
-        return this.getDestination().getSlotLimit(slot);
-    }
-
-    @Override
     public IPartModel getStaticModels() {
         return MODELS.getModel(this.isPowered(), this.isActive());
+    }
+
+    private IItemHandler getAttachedItemHandler() {
+        LazyOptional<IItemHandler> itemHandler = LazyOptional.empty();
+        if (this.isActive()) {
+            final TileEntity self = this.getTile();
+            final TileEntity te = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+
+            if (te != null) {
+                itemHandler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                        this.getSide().getOpposite().getFacing());
+            }
+        }
+        return itemHandler.orElse(NULL_ITEM_HANDLER);
+    }
+
+    private class InputItemHandler implements IItemHandler {
+
+        @Override
+        public int getSlots() {
+            return 1;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack getStackInSlot(int slot) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            final ItemStack remainder = stack.copy();
+
+            try {
+                final int outputTunnels = ItemP2PTunnelPart.this.getOutputs().size();
+                final int amount = stack.getCount();
+
+                if (outputTunnels == 0 || amount == 0) {
+                    return stack;
+                }
+
+                final int amountPerOutput = Math.max(1, amount / outputTunnels);
+                int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
+
+                for (ItemP2PTunnelPart target : ItemP2PTunnelPart.this.getOutputs()) {
+                    final IItemHandler output = target.getAttachedItemHandler();
+                    final int toSend = amountPerOutput + overflow;
+                    final ItemStack fillWithItemStack = stack.copy();
+                    fillWithItemStack.setCount(toSend);
+
+                    ItemStack received = ItemStack.EMPTY;
+
+                    for (int i = 0; i < output.getSlots(); i++) {
+                        received = output.insertItem(i, fillWithItemStack, simulate);
+
+                        if (received.isEmpty()) {
+                            break;
+                        }
+                    }
+
+                    overflow = received.getCount();
+                    remainder.setCount(remainder.getCount() - toSend - received.getCount());
+
+                    if (remainder.isEmpty()) {
+                        break;
+                    }
+                }
+
+                if (!simulate) {
+                    ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, stack.getCount() - remainder.getCount());
+                }
+            } catch (GridAccessException ignored) {
+            }
+
+            return remainder;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return true;
+        }
+
+    }
+
+    private class OutputItemHandler implements IItemHandler {
+
+        @Override
+        public int getSlots() {
+            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().getSlots();
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack getStackInSlot(int slot) {
+            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().getStackInSlot(slot);
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            return stack;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().extractItem(slot, amount, simulate);
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().getSlotLimit(slot);
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().isItemValid(slot, stack);
+        }
+    }
+
+    private static class NullItemHandler implements IItemHandler {
+
+        @Override
+        public int getSlots() {
+            return 0;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack getStackInSlot(int slot) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            return stack;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 0;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return false;
+        }
     }
 }
