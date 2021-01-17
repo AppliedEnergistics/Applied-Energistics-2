@@ -1,0 +1,7 @@
+{
+  "name": "Network Tools",
+  "parent": "appliedenergistics2:advanced_tools",
+  "description": "",
+  "icon": "appliedenergistics2:network_tool",
+  "sortnum": 2
+}

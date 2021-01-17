@@ -1,6 +1,6 @@
 {
   "name": "Network Functions*",
-  "parent": "me_network",
+  "parent": "appliedenergistics2:me_network",
   "description": "",
   "icon": "appliedenergistics2:interface",
   "sortnum": 4

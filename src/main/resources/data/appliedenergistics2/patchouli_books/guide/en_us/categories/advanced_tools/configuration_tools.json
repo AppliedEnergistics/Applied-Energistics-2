@@ -1,0 +1,7 @@
+{
+  "name": "Configuration Tools",
+  "parent": "appliedenergistics2:advanced_tools",
+  "description": "",
+  "icon": "appliedenergistics2:memory_card",
+  "sortnum": 3
+}

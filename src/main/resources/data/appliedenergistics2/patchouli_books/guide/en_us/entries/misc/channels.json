@@ -1,0 +1,11 @@
+{
+  "name": "Channels",
+  "category": "appliedenergistics2:misc",
+  "icon": "appliedenergistics2:fluix_smart_cable",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Test Page."
+    }
+  ]
+}

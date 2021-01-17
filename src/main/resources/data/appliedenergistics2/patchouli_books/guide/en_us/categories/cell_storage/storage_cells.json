@@ -1,0 +1,7 @@
+{
+  "name": "Storage Cells",
+  "parent": "appliedenergistics2:cell_storage",
+  "description": "",
+  "icon": "appliedenergistics2:1k_storage_cell",
+  "sortnum": 1
+}
