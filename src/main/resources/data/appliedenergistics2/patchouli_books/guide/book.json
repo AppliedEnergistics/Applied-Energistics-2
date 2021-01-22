@@ -9,5 +9,8 @@
   "flip_sound": null,
   "show_progress": false,
   "version": 1,
-  "creative_tab": "appliedenergistics2"
+  "creative_tab": "appliedenergistics2",
+  "macros": {
+    "$(item)": "$(#582E70)"
+  }
 }

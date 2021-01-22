@@ -1,0 +1,11 @@
+{
+  "name": "Charger (to-do)",
+  "category": "appliedenergistics2:me_network/powered_machines",
+  "icon": "appliedenergistics2:charger",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Test Page."
+    }
+  ]
+}

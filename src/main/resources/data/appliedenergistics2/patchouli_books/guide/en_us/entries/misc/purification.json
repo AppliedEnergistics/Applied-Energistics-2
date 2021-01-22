@@ -1,7 +1,7 @@
 {
-  "name": "Channels (to-do)",
+  "name": "Purification (to-do)",
   "category": "appliedenergistics2:misc",
-  "icon": "appliedenergistics2:fluix_smart_cable",
+  "icon": "appliedenergistics2:purified_fluix_crystal",
   "pages": [
     {
       "type": "text",
