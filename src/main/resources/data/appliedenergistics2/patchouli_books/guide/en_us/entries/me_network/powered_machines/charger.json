@@ -1,11 +1,11 @@
 {
-  "name": "Charger (to-do)",
+  "name": "(to-do) Charger",
   "category": "appliedenergistics2:me_network/powered_machines",
   "icon": "appliedenergistics2:charger",
   "pages": [
     {
       "type": "text",
-      "text": "Test Page."
+      "text": "$(todo)Page not written yet.$()"
     }
   ]
 }

@@ -1,0 +1,11 @@
+{
+  "name": "(to-do) Sky Stone Blocks",
+  "category": "appliedenergistics2:decorative_blocks",
+  "icon": "appliedenergistics2:sky_stone_block",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(todo)Page not written yet.$()"
+    }
+  ]
+}

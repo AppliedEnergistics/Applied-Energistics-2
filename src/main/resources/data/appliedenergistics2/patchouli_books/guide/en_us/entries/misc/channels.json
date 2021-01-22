@@ -1,11 +1,11 @@
 {
-  "name": "Channels (to-do)",
+  "name": "(to-do) Channels",
   "category": "appliedenergistics2:misc",
   "icon": "appliedenergistics2:fluix_smart_cable",
   "pages": [
     {
       "type": "text",
-      "text": "Test Page."
+      "text": "$(todo)Page not written yet.$()"
     }
   ]
 }
