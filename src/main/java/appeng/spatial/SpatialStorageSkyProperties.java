@@ -17,7 +17,7 @@ public class SpatialStorageSkyProperties {
     public static final SkyProperties INSTANCE = new SkyProperties(Float.NaN /* disables clouds */, false,
             SkyProperties.SkyType.NONE /* we use a custom render mixin */, true, false) {
         @Override
-        public Vec3d adjustSkyColor(Vec3d color, float sunHeight) {
+        public Vec3d adjustFogColor(Vec3d color, float sunHeight) {
             return Vec3d.ZERO;
         }
 
@@ -28,7 +28,7 @@ public class SpatialStorageSkyProperties {
 
         @Nullable
         @Override
-        public float[] getSkyColor(float skyAngle, float tickDelta) {
+        public float[] getFogColorOverride(float skyAngle, float tickDelta) {
             return null;
         }
     };
