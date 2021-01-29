@@ -1,0 +1,15 @@
+{
+  "name": "Quartz Fiber",
+  "category": "appliedenergistics2:me_network/network_power",
+  "icon": "appliedenergistics2:energy_acceptor",
+  "pages": [
+    {
+      "type": "text",
+      "text": "A part designed to share energy between two ME Networks without sharing anything else, also used to craft ME Glass Cable."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/quartz_fiber_part"
+    }
+  ]
+}

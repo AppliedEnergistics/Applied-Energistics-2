@@ -1,0 +1,15 @@
+{
+  "name": "ME Wireless Access Point",
+  "category": "appliedenergistics2:me_network.misc",
+  "icon": "appliedenergistics2:wireless_access_point",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Allows wireless access via a Wireless Terminal. Range and power usage is determined based on the number of Wireless Booster installed into the ME Wireless Access Point.$(br2)A network can have any number of ME Wireless Access Point with any number of Wireless Boosters in each one, allowing you to optimize power usage and range by altering your setup.$(br2)Requires a channel to be operational."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/wireless_access_point"
+    }
+  ]
+}

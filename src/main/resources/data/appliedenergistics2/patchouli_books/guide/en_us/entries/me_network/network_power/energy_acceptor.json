@@ -1,0 +1,15 @@
+{
+  "name": "Energy Acceptor",
+  "category": "appliedenergistics2:me_network/network_power",
+  "icon": "appliedenergistics2:energy_acceptor",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Energy Acceptor converts energy from external systems into AE and stores it into the ME Network.$(br2)Converts 2 FE into 1 AE."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/blocks/energy_energy_acceptor"
+    }
+  ]
+}

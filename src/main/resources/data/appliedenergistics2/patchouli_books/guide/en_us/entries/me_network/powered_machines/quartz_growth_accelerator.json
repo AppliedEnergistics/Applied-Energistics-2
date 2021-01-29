@@ -1,0 +1,15 @@
+{
+  "name": "Crystal Growth Accelerator",
+  "category": "appliedenergistics2:me_network/powered_machines",
+  "icon": "appliedenergistics2:quartz_growth_accelerator",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Used to accelerate the process of purifying crystals, which allows you to create Pure Certus Quartz Crystal, Pure Nether Quartz Crystal and Pure Fluix Crystal.$(br2)Must be powered by an ME Network via the top or bottom, and consumes a steady 8 ae/t while plugged in. Crystal Seeds must be in an adjacent water block to be effected, the seeds will shimmer more rapidly when in the presence of a powered Crystal Growth Accelerator.$(br2)Can only connect to cables, or other networked machines on the top and bottom of the machine."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/blocks/crystal_processing_quartz_growth_accelerator"
+    }
+  ]
+}

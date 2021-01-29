@@ -1,0 +1,16 @@
+{
+  "name": "ME Toggle Bus",
+  "category": "appliedenergistics2:me_network/network_connections",
+  "icon": "appliedenergistics2:toggle_bus",
+  "pages": [
+    {
+      "type": "text",
+      "text": "A bus which functions similarly to ME Glass Cable or other cables, but it allows its connection state to be toggled via redstone. This allows you to cut off a section of a ME Network.$(br2)When redstone signal supplied the part enables the connection, ME Inverted Toggle Bus provides the reverse behavior by disabling the connection instead."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/toggle_bus",
+      "recipe2": "appliedenergistics2:network/parts/toggle_bus_inverted_alt"
+    }
+  ]
+}

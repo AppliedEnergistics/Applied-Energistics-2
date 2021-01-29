@@ -1,0 +1,15 @@
+{
+  "name": "Crafting Monitor",
+  "category": "appliedenergistics2:me_network.crafting_cpu",
+  "icon": "appliedenergistics2:1k_crafting_monitor",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Component of the Crafting CPU which displays the top level job and its current progress so you can monitor at a glance how your crafting jobs are progressing."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/crafting/cpu_crafting_monitor"
+    }
+  ]
+}

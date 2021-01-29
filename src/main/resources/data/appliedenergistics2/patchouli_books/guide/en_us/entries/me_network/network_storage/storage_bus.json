@@ -1,0 +1,15 @@
+{
+  "name": "ME Storage Bus",
+  "category": "appliedenergistics2:me_network/network_storage",
+  "icon": "appliedenergistics2:drive",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The ME Storage Bus, when attached to another inventory block in the world lets you access that inventory via networked functions. This allows you to use chests, barrels, or other types of item storage in your networks.$(br2)The storage via the ME Storage Bus is bi-directional, it can both insert, or extract items from the inventory block it is attached to as long as the ME Storage Bus has its required channel.$(br2)The UI allows you to control which items are selected as storable items, this selection has no effect on what items can be extracted once they are in the storage.$(br2)The Storage Bus will function with nearly any inventory block, including ME Interface, Minefactory Reloaded DSUs, Factorization Barrels, JABBA Barrels, and Better Storage Crates. They can also be used to route items passivly into Buildcraft Pipes.$(br2)If you place a storage bus on an ME Interface the storage bus will be able to interact with the full conents of the target network, unless that interface is configured to store items inside itself, in which case it will see those stored items."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/storage_bus"
+    }
+  ]
+}

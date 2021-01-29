@@ -1,11 +1,15 @@
 {
-  "name": "(to-do) Charger",
+  "name": "Charger",
   "category": "appliedenergistics2:me_network/powered_machines",
   "icon": "appliedenergistics2:charger",
   "pages": [
     {
       "type": "text",
-      "text": "$(todo)Page not written yet.$()"
+      "text": "The Charger provides a way to charge supported tools through the ME Network or can be hand cranked using a Wooden Crank which while ineffective can be useful if you have no other means for power generation.$(br2)Power can be provided via the top or bottom, via either ME Glass Cable or other Cables, or other mod power cables. Items can be inserted or removed from any side.$(br2)Can also be used to manufacture Charged Certus Quartz Crystal from Certus Quartz Crystal."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/blocks/crystal_processing_charger"
     }
   ]
 }

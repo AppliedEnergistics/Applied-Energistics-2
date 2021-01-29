@@ -1,0 +1,15 @@
+{
+  "name": "ME Export Bus",
+  "category": "appliedenergistics2:me_network/network_functions",
+  "icon": "appliedenergistics2:export_bus",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The ME Export Bus extracts items from the ME Network's Networked Storage and places them into the inventory it faces. You must configure which items it will insert, leaving the configuration blank will result in nothing. The ME Export Bus will try to export any of the items on its list skipping over those it cannot fit into the destination. The ME Export Bus requires a channel to function.$(br2)This is the functional opposite of the ME Import Bus."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/export_bus"
+    }
+  ]
+}

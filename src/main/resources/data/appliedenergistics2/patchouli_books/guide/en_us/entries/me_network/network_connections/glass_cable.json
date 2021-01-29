@@ -1,0 +1,16 @@
+{
+  "name": "ME Glass Cables",
+  "category": "appliedenergistics2:me_network/network_connections",
+  "icon": "appliedenergistics2:fluix_glass_cable",
+  "pages": [
+    {
+      "type": "text",
+      "text": "ME Glass Cable is the simplest cable to make, transfers power and up to 8 Channels. It comes in 17 diffrent colors, the default being Fluix, and can be dyed any color using any of the 16 dyes.$(br2)To craft colored cables surround a dye of any type with 8 cables of the same type ( color of the cables dosn't matter, but they must be the same type, glass, smart, etc ). You can also paint cables with any forge compatible paint brush in world.$(br2)You can craft any colored cable with a water bucket to remove the dye.$(br2)You can cover the cable with wool to create ME Covered Cable, and craft ME Smart Cable to get a better idea of what is going on with your Channels."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/cables/glass_fluix",
+      "recipe2": "appliedenergistics2:network/cables/glass_white"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Vibration Chamber",
+  "category": "appliedenergistics2:me_network/network_power",
+  "icon": "appliedenergistics2:vibration_chamber",
+  "pages": [
+    {
+      "type": "text",
+      "text": "A modified furnace capable of generating AE Power instead of smelting ores. When placed on an ME Network it will charge Energy Cells or power other Network Devices.$(br2)The Vibration Chamber will burn almost any solid burnable fuel for power. It will slow, or accelerate the burn depending on how much power it is able to store vs what is wasted. Generates between 1 and 10 AE/t depending on its burn speed."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/blocks/energy_vibration_chamber"
+    }
+  ]
+}

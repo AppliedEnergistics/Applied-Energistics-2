@@ -1,0 +1,15 @@
+{
+  "name": "Crafting Unit",
+  "category": "appliedenergistics2:me_network.crafting_cpu",
+  "icon": "appliedenergistics2:crafting_unit",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Is a component of the Crafting CPU. This particular block provides the CPU with no additional features, but can be used as a \"filler\" block and as a crafting ingredient for the following,"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/crafting/cpu_crafting_unit"
+    }
+  ]
+}

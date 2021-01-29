@@ -1,0 +1,15 @@
+{
+  "name": "Crafting Co Processing Unit",
+  "category": "appliedenergistics2:me_network.crafting_cpu",
+  "icon": "appliedenergistics2:crafting_accelerator",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Component of the Crafting CPU which provides additional item delivery from the CPU to the ME Interface for crafting.$(br2)This can be used to make more assemblers active in parallel for the job, and thus increase overall crafting speed. These only help if your setup has steps properly separated so the system can run multiple tasks in parallel, or even split the same pattern across multiple interfaces."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/crafting/cpu_crafting_accelerator"
+    }
+  ]
+}

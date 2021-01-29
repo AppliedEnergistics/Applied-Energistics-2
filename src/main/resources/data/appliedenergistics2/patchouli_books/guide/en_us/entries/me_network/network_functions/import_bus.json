@@ -1,0 +1,15 @@
+{
+  "name": "ME Import Bus",
+  "category": "appliedenergistics2:me_network/network_functions",
+  "icon": "appliedenergistics2:import_bus",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Pulls items from the inventory it is pointed at and places them into the ME Network's Networked Storage. You can specify which items it will pull out via the UI, else it tries to pull out any item in the adjacent inventory. The ME Import Bus will attempt to import any possible options, even if 1 or more of the configured items cannot be stored. The ME Import Bus requires a channel to function.$(br2)This is the functional opposite of the ME Export Bus."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/parts/import_bus"
+    }
+  ]
+}

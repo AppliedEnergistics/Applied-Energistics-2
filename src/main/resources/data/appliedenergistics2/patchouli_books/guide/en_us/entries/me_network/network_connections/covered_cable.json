@@ -1,0 +1,16 @@
+{
+  "name": "ME Covered Cables",
+  "category": "appliedenergistics2:me_network/network_connections",
+  "icon": "appliedenergistics2:fluix_covered_cable",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Covered cable variant, offers no real benefits over its ME Glass Cable counter part, however can be used as an alternate aesthetic choice if you prefer the covered look.$(br2)Can be colored in the same manner as ME Glass Cable. Four ME Covered Cable can be crafted with redstone and glowstone to make ME Dense Cable."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:network/cables/covered_fluix",
+      "recipe2": "appliedenergistics2:network/cables/covered_white"
+    }
+  ]
+}
