@@ -421,14 +421,14 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
                 : super.getFluidState(blockState);
     }
 
-    public BlockState updatePostPlacement(BlockState blockState1, Direction direction, BlockState blockState2,
-            IWorld world, BlockPos blockPos1, BlockPos blockPos2) {
-        if (blockState1.get(WATERLOGGED).booleanValue()) {
-            world.getPendingFluidTicks().scheduleTick(blockPos1, Fluids.WATER,
+    public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
+            BlockPos currentPos, BlockPos facingPos) {
+        if (blockState.get(WATERLOGGED)) {
+            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER,
                     Fluids.WATER.getTickRate(world));
         }
 
-        return super.updatePostPlacement(blockState1, direction, blockState2, world, blockPos1, blockPos2);
+        return super.updatePostPlacement(blockState, facing, facingState, world, currentPos, facingPos);
     }
 
 }
