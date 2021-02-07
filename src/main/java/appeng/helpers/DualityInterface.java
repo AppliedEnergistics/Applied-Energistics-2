@@ -1025,11 +1025,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         }
     }
 
-    public boolean hasCapability(Capability<?> capabilityClass, Direction facing) {
-        return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
-                || capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR;
-    }
-
     @SuppressWarnings("unchecked")
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
         if (capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
