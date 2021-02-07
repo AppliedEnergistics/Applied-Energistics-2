@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
@@ -35,12 +36,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -55,6 +59,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -80,16 +85,17 @@ import appeng.tile.AEBaseTileEntity;
 import appeng.tile.networking.CableBusTileEntity;
 import appeng.util.Platform;
 
-public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade {
+public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade, IWaterLoggable {
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
     private static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
+    private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public CableBusBlock() {
         super(defaultProps(AEMaterials.GLASS).notSolid().noDrops().variableOpacity()
                 .setLightLevel(state -> state.get(LIGHT_LEVEL)));
-        setDefaultState(getDefaultState().with(LIGHT_LEVEL, 0));
+        setDefaultState(getDefaultState().with(LIGHT_LEVEL, 0).with(WATERLOGGED, false));
     }
 
     @Override
@@ -134,7 +140,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
-        builder.add(LIGHT_LEVEL);
+        builder.add(LIGHT_LEVEL, WATERLOGGED);
     }
 
     @Override
@@ -397,6 +403,32 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         }
         int lightLevel = te.getCableBus().getLightValue();
         return super.updateBlockStateFromTileEntity(currentState, te).with(LIGHT_LEVEL, lightLevel);
+    }
+
+    @Nullable
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        BlockPos pos = context.getPos();
+        FluidState fluidState = context.getWorld().getFluidState(pos);
+        BlockState blockState = this.getDefaultState()
+                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+
+        return blockState;
+    }
+
+    public FluidState getFluidState(BlockState blockState) {
+        return blockState.get(WATERLOGGED).booleanValue()
+                ? Fluids.WATER.getStillFluidState(false)
+                : super.getFluidState(blockState);
+    }
+
+    public BlockState updatePostPlacement(BlockState blockState1, Direction direction, BlockState blockState2,
+            IWorld world, BlockPos blockPos1, BlockPos blockPos2) {
+        if (blockState1.get(WATERLOGGED).booleanValue()) {
+            world.getPendingFluidTicks().scheduleTick(blockPos1, Fluids.WATER,
+                    Fluids.WATER.getTickRate(world));
+        }
+
+        return super.updatePostPlacement(blockState1, direction, blockState2, world, blockPos1, blockPos2);
     }
 
 }
