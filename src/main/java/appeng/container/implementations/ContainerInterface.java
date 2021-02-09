@@ -53,7 +53,7 @@ public class ContainerInterface extends ContainerUpgradeable
 		for( int x = 0; x < DualityInterface.NUMBER_OF_PATTERN_SLOTS; x++ )
 		{
 			this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, this.myDuality
-					.getPatterns(), x, 8 + 18 * x, 90 + 7, this.getInventoryPlayer() ) );
+					.getPatterns(), x, 8 + 18 * x, 90 + 7, this.getInventoryPlayer() ).setStackLimit( 1 ) );
 		}
 
 		for( int x = 0; x < DualityInterface.NUMBER_OF_CONFIG_SLOTS; x++ )

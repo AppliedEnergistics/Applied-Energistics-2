@@ -56,7 +56,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 	public ItemEncodedPattern()
 	{
-		this.setMaxStackSize( 1 );
+		this.setMaxStackSize( 64 );
 	}
 
 	@Override

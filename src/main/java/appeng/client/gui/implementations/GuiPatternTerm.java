@@ -92,7 +92,13 @@ public class GuiPatternTerm extends GuiMEMonitorable
 
 			if( this.encodeBtn == btn )
 			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.Encode", "1" ) );
+				if ( isShiftKeyDown() ){
+					NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.Encode", "2" ) );
+				}
+				else
+				{
+					NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.Encode", "1" ) );
+				}
 			}
 
 			if( this.clearBtn == btn )
