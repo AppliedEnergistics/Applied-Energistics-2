@@ -4,22 +4,7 @@ See https://github.com/PrototypeTrousers/Applied-Energistics-2/tree/AE2-Omnifact
 and
 https://github.com/PrototypeTrousers/Applied-Energistics-2/releases for the compiled jars.
 
-# Applied Energistics 2
-
-## Table of Contents
-
-* [About](#about)
-* [Contacts](#contacts)
-* [License](#license)
-* [Downloads](#downloads)
-* [Installation](#installation)
-* [Issues](#issues)
-* [Building](#building)
-* [Contribution](#contribution)
-* [API](#applied-energistics-2-api)
-* [CraftTweaker](#applied-energistics-2-crafttweaker)
-* [Localization](#applied-energistics-2-localization)
-* [Credits](#credits)
+# Applied Energistics 2 (PrototypeTrousers fork for Omnifactory)
 
 ## About
 
