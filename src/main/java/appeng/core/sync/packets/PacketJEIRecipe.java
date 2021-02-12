@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import appeng.container.implementations.ContainerPatternTerm;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -64,6 +65,8 @@ public class PacketJEIRecipe extends AppEngPacket
 {
 
 	private ItemStack[][] recipe;
+	private ItemStack[] output;
+
 
 	// automatic.
 	public PacketJEIRecipe( final ByteBuf stream ) throws IOException
@@ -86,7 +89,19 @@ public class PacketJEIRecipe extends AppEngPacket
 					}
 				}
 			}
+			if ( comp.hasKey("outputs") ) {
+				final NBTTagList outputList = comp.getTagList("outputs", 10);
+				this.output = new ItemStack[3];
+				for( int x = 0; x < this.output.length; x++ )
+				{
+					if( outputList.tagCount() > 0 )
+					{
+						this.output[x] = new ItemStack(outputList.getCompoundTagAt( x ));
+					}
+				}
+			}
 		}
+
 	}
 
 	// api
@@ -220,12 +235,28 @@ public class PacketJEIRecipe extends AppEngPacket
 									currentItem = ad.simulateRemove( 1, this.recipe[x][y], null );
 								}
 							}
+							if( currentItem.isEmpty() && con instanceof ContainerPatternTerm )
+							{
+								currentItem = this.recipe[x][y].copy();
+							}
 						}
 					}
 				}
 				ItemHandlerUtil.setStackInSlot( craftMatrix, x, currentItem );
 			}
-			con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
+			if( this.output == null )
+			{
+				con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
+			}
+
+			if( this.output != null && !( (ContainerPatternTerm) con ).isCraftingMode() )
+			{
+				IItemHandler outputSlots = cct.getInventoryByName( "output" );
+				for( int i = 0; i < this.output.length; ++i )
+				{
+					ItemHandlerUtil.setStackInSlot( outputSlots, i, this.output[i] );
+				}
+			}
 		}
 	}
 

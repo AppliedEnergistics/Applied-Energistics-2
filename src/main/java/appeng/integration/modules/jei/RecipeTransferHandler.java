@@ -26,6 +26,11 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import appeng.container.implementations.ContainerPatternTerm;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
+import mezz.jei.transfer.RecipeTransferErrorInternal;
+import mezz.jei.transfer.RecipeTransferErrorTooltip;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -66,6 +71,29 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 	@Override
 	public IRecipeTransferError transferRecipe( T container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer )
 	{
+		final String recipeType = recipeLayout.getRecipeCategory().getUid();
+
+		if (!recipeType.equals( VanillaRecipeCategoryUid.INFORMATION) && !recipeType.equals(VanillaRecipeCategoryUid.FUEL))
+		{
+			if( container instanceof ContainerPatternTerm )
+			{
+				if( !( (ContainerPatternTerm) container ).isCraftingMode() )
+				{
+					if( recipeType.equals( VanillaRecipeCategoryUid.CRAFTING ) )
+					{
+						return new RecipeTransferErrorTooltip( I18n.format( "gui.appliedenergistics2.CraftingPattern" ) );
+					}
+				}
+				else if( !recipeType.equals( VanillaRecipeCategoryUid.CRAFTING ) )
+				{
+					return new RecipeTransferErrorTooltip( I18n.format( "gui.appliedenergistics2.ProcessingPattern" ) );
+				}
+			}
+			else
+			{
+				return RecipeTransferErrorInternal.INSTANCE;
+			}
+		}
 
 		if( !doTransfer )
 		{
@@ -75,6 +103,8 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 		Map<Integer, ? extends IGuiIngredient<ItemStack>> ingredients = recipeLayout.getItemStacks().getGuiIngredients();
 
 		final NBTTagCompound recipe = new NBTTagCompound();
+		final NBTTagList outputs = new NBTTagList();
+
 
 		int slotIndex = 0;
 		for( Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> ingredientEntry : ingredients.entrySet() )
@@ -82,6 +112,13 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 			IGuiIngredient<ItemStack> ingredient = ingredientEntry.getValue();
 			if( !ingredient.isInput() )
 			{
+				ItemStack output = ingredient.getDisplayedIngredient();
+				if( output != null )
+				{
+					final NBTTagCompound tag = new NBTTagCompound();
+					output.writeToNBT( tag );
+					outputs.appendTag( tag );
+				}
 				continue;
 			}
 
@@ -129,6 +166,8 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 
 			slotIndex++;
 		}
+
+		recipe.setTag( "outputs", outputs );
 
 		try
 		{

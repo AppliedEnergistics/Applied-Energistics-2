@@ -26,6 +26,7 @@ import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import mezz.jei.config.Constants;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -91,7 +92,7 @@ public class JEIPlugin implements IModPlugin
 						VanillaRecipeCategoryUid.CRAFTING );
 		registry.getRecipeTransferRegistry()
 				.addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerPatternTerm.class ),
-						VanillaRecipeCategoryUid.CRAFTING );
+						Constants.UNIVERSAL_RECIPE_TRANSFER_UID );
 	}
 
 	private void registerDescriptions( IDefinitions definitions, IModRegistry registry )
