@@ -35,6 +35,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
+import net.minecraftforge.fml.common.Optional;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -87,9 +88,11 @@ import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.fluids.client.render.FluidStackSizeRenderer;
 import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
+import yalter.mousetweaks.api.IMTModGuiContainer2;
 
 
-public abstract class AEBaseGui extends GuiContainer
+@Optional.Interface( iface = "yalter.mousetweaks.api.IMTModGuiContainer2", modid = "mousetweaks" )
+public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContainer2
 {
 	private final List<InternalSlotME> meSlots = new ArrayList<>();
 	// drag y
@@ -960,5 +963,54 @@ public abstract class AEBaseGui extends GuiContainer
 	protected List<InternalSlotME> getMeSlots()
 	{
 		return this.meSlots;
+	}
+
+	@Override
+	@Optional.Method( modid = "mousetweaks" )
+	public boolean MT_isMouseTweaksDisabled()
+	{
+		return false;
+	}
+
+	@Override
+	@Optional.Method( modid = "mousetweaks" )
+	public boolean MT_isWheelTweakDisabled()
+	{
+		return true;
+	}
+
+	@Override
+	@Optional.Method( modid = "mousetweaks" )
+	public Container MT_getContainer()
+	{
+		return this.inventorySlots;
+	}
+
+	@Override
+	@Optional.Method( modid = "mousetweaks" )
+	public Slot MT_getSlotUnderMouse()
+	{
+		return getSlotUnderMouse();
+	}
+
+	@Override
+	@Optional.Method( modid = "mousetweaks" )
+	public boolean MT_isCraftingOutput( Slot slot )
+	{
+		return slot instanceof SlotOutput || slot instanceof AppEngCraftingSlot;
+	}
+
+	@Override
+	@Optional.Method( modid = "mousetweaks" )
+	public boolean MT_isIgnored( Slot slot )
+	{
+		return false;
+	}
+
+	@Override
+	@Optional.Method( modid = "mousetweaks" )
+	public boolean MT_disableRMBDraggingFunctionality()
+	{
+		return false;
 	}
 }
