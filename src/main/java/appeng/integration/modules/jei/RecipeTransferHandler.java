@@ -89,10 +89,10 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 					return new RecipeTransferErrorTooltip( I18n.format( "gui.appliedenergistics2.ProcessingPattern" ) );
 				}
 			}
-			else
-			{
-				return RecipeTransferErrorInternal.INSTANCE;
-			}
+		}
+		else
+		{
+			return RecipeTransferErrorInternal.INSTANCE;
 		}
 
 		if( !doTransfer )

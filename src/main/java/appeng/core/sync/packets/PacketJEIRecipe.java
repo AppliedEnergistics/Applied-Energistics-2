@@ -244,12 +244,10 @@ public class PacketJEIRecipe extends AppEngPacket
 				}
 				ItemHandlerUtil.setStackInSlot( craftMatrix, x, currentItem );
 			}
-			if( this.output == null )
-			{
-				con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
-			}
 
-			if( this.output != null && !( (ContainerPatternTerm) con ).isCraftingMode() )
+			con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
+
+			if( this.output != null && con instanceof ContainerPatternTerm && !( (ContainerPatternTerm) con ).isCraftingMode() )
 			{
 				IItemHandler outputSlots = cct.getInventoryByName( "output" );
 				for( int i = 0; i < this.output.length; ++i )
