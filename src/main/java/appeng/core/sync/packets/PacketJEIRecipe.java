@@ -23,7 +23,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 
+import appeng.api.config.FuzzyMode;
 import appeng.container.implementations.ContainerPatternTerm;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -200,6 +202,26 @@ public class PacketJEIRecipe extends AppEngPacket
 								if( cct.useRealItems() )
 								{
 									out = Platform.poweredExtraction( energy, storage, request, cct.getActionSource() );
+									if( out == null )
+									{
+										Collection<IAEItemStack> outList = inv.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getStorageList().findFuzzy( request, FuzzyMode.IGNORE_ALL );
+										IAEItemStack mostDamaged = null;
+										for( IAEItemStack is : outList )
+										{
+											if (!is.isCraftable())
+											{
+												if( mostDamaged == null || mostDamaged.getItemDamage() < is.getItemDamage() )
+												{
+													mostDamaged = is;
+												}
+											}
+										}
+										if( mostDamaged != null )
+										{
+											mostDamaged.setStackSize( 1 );
+											out = Platform.poweredExtraction( energy, storage, mostDamaged, cct.getActionSource() );
+										}
+									}
 								}
 								else
 								{
@@ -228,16 +250,16 @@ public class PacketJEIRecipe extends AppEngPacket
 
 								if( cct.useRealItems() )
 								{
-									currentItem = ad.removeItems( 1, this.recipe[x][y], null );
+									currentItem = ad.removeSimilarItems(1, this.recipe[x][y],FuzzyMode.IGNORE_ALL, null );
 								}
 								else
 								{
-									currentItem = ad.simulateRemove( 1, this.recipe[x][y], null );
+									currentItem = ad.simulateSimilarRemove(1, this.recipe[x][y],FuzzyMode.IGNORE_ALL, null );
+									if( currentItem.isEmpty() )
+									{
+										currentItem = this.recipe[x][y];
+									}
 								}
-							}
-							if( currentItem.isEmpty() && con instanceof ContainerPatternTerm )
-							{
-								currentItem = this.recipe[x][y].copy();
 							}
 						}
 					}
