@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -1057,9 +1058,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
      */
     public VoxelShape getCollisionShape(Entity entity) {
         // This is a hack for facades
-        boolean livingEntity = entity instanceof LivingEntity;
+        boolean itemEntity = entity instanceof ItemEntity;
 
-        if (livingEntity) {
+        if (itemEntity) {
             if (cachedCollisionShapeLiving == null) {
                 cachedCollisionShapeLiving = createShape(true, true);
             }
@@ -1072,7 +1073,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         }
     }
 
-    private VoxelShape createShape(boolean forCollision, boolean forLivingEntity) {
+    private VoxelShape createShape(boolean forCollision, boolean forItemEntity) {
         final List<AxisAlignedBB> boxes = new ArrayList<>();
 
         final IFacadeContainer fc = this.getFacadeContainer();
@@ -1088,7 +1089,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 if (s != AEPartLocation.INTERNAL) {
                     final IFacadePart fp = fc.getFacade(s);
                     if (fp != null) {
-                        fp.getBoxes(bch, forLivingEntity);
+                        fp.getBoxes(bch, forItemEntity);
                     }
                 }
             }

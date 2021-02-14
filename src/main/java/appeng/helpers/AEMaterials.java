@@ -27,6 +27,9 @@ public class AEMaterials {
     public static final Material GLASS = make(MaterialColor.AIR, false, false, true, false, false, false,
             PushReaction.NORMAL);
 
+    public static final Material FIXTURE = make(MaterialColor.IRON, false, false, false, false, false, false,
+            PushReaction.DESTROY);
+
     /**
      * Small factory helper with named parameters.
      * 
