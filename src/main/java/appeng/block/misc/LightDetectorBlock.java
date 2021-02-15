@@ -20,9 +20,13 @@ package appeng.block.misc;
 
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -40,6 +44,7 @@ import net.minecraft.world.World;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
+import appeng.helpers.AEMaterials;
 import appeng.helpers.MetaRotation;
 import appeng.tile.misc.LightDetectorTileEntity;
 
@@ -48,10 +53,13 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     // Used to alternate between two variants of the fixture on adjacent blocks
     public static final BooleanProperty ODD = BooleanProperty.create("odd");
 
-    public LightDetectorBlock() {
-        super(defaultProps(Material.MISCELLANEOUS).notSolid());
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-        this.setDefaultState(this.getDefaultState().with(BlockStateProperties.FACING, Direction.UP).with(ODD, false));
+    public LightDetectorBlock() {
+        super(defaultProps(AEMaterials.FIXTURE).doesNotBlockMovement().notSolid());
+
+        this.setDefaultState(this.getDefaultState().with(BlockStateProperties.FACING, Direction.UP).with(ODD, false)
+                .with(WATERLOGGED, false));
     }
 
     @Override
@@ -59,6 +67,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
         super.fillStateContainer(builder);
         builder.add(BlockStateProperties.FACING);
         builder.add(ODD);
+        builder.add(WATERLOGGED);
     }
 
     @Override
@@ -147,4 +156,29 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
         return new MetaRotation(w, pos, BlockStateProperties.FACING);
     }
 
+    @Nullable
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        BlockPos pos = context.getPos();
+        FluidState fluidState = context.getWorld().getFluidState(pos);
+        BlockState blockState = this.getDefaultState()
+                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+
+        return blockState;
+    }
+
+    public FluidState getFluidState(BlockState blockState) {
+        return blockState.get(WATERLOGGED).booleanValue()
+                ? Fluids.WATER.getStillFluidState(false)
+                : super.getFluidState(blockState);
+    }
+
+    public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
+            BlockPos currentPos, BlockPos facingPos) {
+        if (blockState.get(WATERLOGGED).booleanValue()) {
+            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickRate(world));
+        }
+
+        return super.updatePostPlacement(blockState, facing, facingState, world, currentPos, facingPos);
+    }
 }

@@ -153,6 +153,8 @@ minecraft {
     runs {
         client {
             property 'forge.logging.console.level', 'debug'
+            // See https://github.com/Vazkii/Patchouli#mixin-troubleshooting
+            property 'mixin.env.disableRefMap', 'true'
             workingDirectory project.file('run')
             property "mixin.debug.export", "true"
             properties 'mixin.env.disableRefMap': 'true'

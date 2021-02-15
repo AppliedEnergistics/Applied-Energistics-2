@@ -183,7 +183,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
      * @return true if there is a loaded controller
      */
     private boolean checkController(final BlockPos pos) {
-        if (this.world.getChunkProvider().isChunkLoaded(new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4))) {
+        if (this.world.getChunkProvider().canTick(pos)) {
             return this.world.getTileEntity(pos) instanceof ControllerTileEntity;
         }
 

@@ -35,6 +35,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.core.AELog;
 import appeng.me.cache.helpers.TickTracker;
 
 public class TickManagerCache implements ITickManager {
@@ -202,7 +203,6 @@ public class TickManagerCache implements ITickManager {
             final TickTracker gt = this.awake.get(node);
             this.awake.remove(node);
             this.sleeping.put(node, gt);
-
             return true;
         }
 
