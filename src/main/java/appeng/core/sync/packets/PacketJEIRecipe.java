@@ -239,6 +239,7 @@ public class PacketJEIRecipe extends AppEngPacket
 
 								if( out != null )
 								{
+									out.setStackSize( recipe[x][y].getCount() );
 									currentItem = out.createItemStack();
 								}
 							}
@@ -254,10 +255,10 @@ public class PacketJEIRecipe extends AppEngPacket
 								}
 								else
 								{
-									currentItem = ad.simulateSimilarRemove(1, this.recipe[x][y],FuzzyMode.IGNORE_ALL, null );
+									currentItem = ad.simulateSimilarRemove(recipe[x][y].getCount(), this.recipe[x][y],FuzzyMode.IGNORE_ALL, null );
 									if( currentItem.isEmpty() )
 									{
-										currentItem = this.recipe[x][y];
+										currentItem = this.recipe[x][y].copy();
 									}
 								}
 							}
