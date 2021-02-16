@@ -238,7 +238,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 EntityHitResult entityResult = (EntityHitResult) pos;
                 Entity entityHit = entityResult.getEntity();
 
-                final int id = entityHit.getEntityId();
+                final int id = entityHit.getId();
                 final PlayerColor marker = new PlayerColor(id, col, 20 * 30);
                 TickHandler.instance().getPlayerColors().put(id, marker);
 

@@ -27,11 +27,11 @@ import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
 
 @Environment(EnvType.CLIENT)
 public class CraftingFx extends SpriteBillboardParticle {
@@ -46,7 +46,7 @@ public class CraftingFx extends SpriteBillboardParticle {
         super(world, x, y, z);
 
         // Pick a random normal, offset it by 0.35 and use that as the particle origin
-        Vector3f off = new Vector3f(random.nextFloat() - 0.5f, random.nextFloat() - 0.5f, random.nextFloat() - 0.5f);
+        Vec3f off = new Vec3f(random.nextFloat() - 0.5f, random.nextFloat() - 0.5f, random.nextFloat() - 0.5f);
         off.normalize();
         off.scale(0.35f);
         offsetX = off.getX();
@@ -81,11 +81,11 @@ public class CraftingFx extends SpriteBillboardParticle {
         offY -= vec3d.y;
         offZ -= vec3d.z;
 
-        Vector3f[] avector3f = new Vector3f[] { new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F),
-                new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F) };
+        Vec3f[] avector3f = new Vec3f[] { new Vec3f(-1.0F, -1.0F, 0.0F), new Vec3f(-1.0F, 1.0F, 0.0F),
+                new Vec3f(1.0F, 1.0F, 0.0F), new Vec3f(1.0F, -1.0F, 0.0F) };
 
         for (int i = 0; i < 4; ++i) {
-            Vector3f vector3f = avector3f[i];
+            Vec3f vector3f = avector3f[i];
             vector3f.rotate(camera.getRotation());
             vector3f.scale(scale);
             vector3f.add(offX, offY, offZ);

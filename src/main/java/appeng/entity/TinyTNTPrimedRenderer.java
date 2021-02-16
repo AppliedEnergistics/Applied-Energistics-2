@@ -27,8 +27,8 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.TntMinecartEntityRenderer;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 
 @Environment(EnvType.CLIENT)
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
@@ -63,9 +63,9 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         }
 
         mStack.scale(0.5f, 0.5f, 0.5f);
-        mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
+        mStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
-        mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90.0F));
+        mStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F));
         TntMinecartEntityRenderer.renderFlashingBlock(Blocks.TNT.getDefaultState(), mStack, buffers, packedLight,
                 tnt.getFuse() / 5 % 2 == 0);
         mStack.pop();

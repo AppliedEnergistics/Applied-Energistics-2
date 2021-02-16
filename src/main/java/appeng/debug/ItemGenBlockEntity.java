@@ -36,7 +36,7 @@ import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemExtractable;
 import alexiil.mc.lib.attributes.item.filter.ExactItemStackFilter;
-
+import appeng.debug.ItemGenBlockEntity.QueuedItemHandler;
 import appeng.tile.AEBaseBlockEntity;
 
 public class ItemGenBlockEntity extends AEBaseBlockEntity {

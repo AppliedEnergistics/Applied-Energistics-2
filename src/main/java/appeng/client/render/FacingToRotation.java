@@ -21,13 +21,13 @@ package appeng.client.render;
 import java.util.Locale;
 
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.Vector4f;
 
 /**
  * TODO: Removed useless stuff.
@@ -36,41 +36,41 @@ public enum FacingToRotation implements StringIdentifiable {
 
     // DUNSWE
     // @formatter:off
-    DOWN_DOWN(new Vector3f(0, 0, 0)), // NOOP
-    DOWN_UP(new Vector3f(0, 0, 0)), // NOOP
-    DOWN_NORTH(new Vector3f(-90, 0, 0)), DOWN_SOUTH(new Vector3f(-90, 0, 180)), DOWN_WEST(new Vector3f(-90, 0, 90)),
-    DOWN_EAST(new Vector3f(-90, 0, -90)), UP_DOWN(new Vector3f(0, 0, 0)), // NOOP
-    UP_UP(new Vector3f(0, 0, 0)), // NOOP
-    UP_NORTH(new Vector3f(90, 0, 180)), UP_SOUTH(new Vector3f(90, 0, 0)), UP_WEST(new Vector3f(90, 0, 90)),
-    UP_EAST(new Vector3f(90, 0, -90)), NORTH_DOWN(new Vector3f(0, 0, 180)), NORTH_UP(new Vector3f(0, 0, 0)),
-    NORTH_NORTH(new Vector3f(0, 0, 0)), // NOOP
-    NORTH_SOUTH(new Vector3f(0, 0, 0)), // NOOP
-    NORTH_WEST(new Vector3f(0, 0, 90)), NORTH_EAST(new Vector3f(0, 0, -90)), SOUTH_DOWN(new Vector3f(0, 180, 180)),
-    SOUTH_UP(new Vector3f(0, 180, 0)), SOUTH_NORTH(new Vector3f(0, 0, 0)), // NOOP
-    SOUTH_SOUTH(new Vector3f(0, 0, 0)), // NOOP
-    SOUTH_WEST(new Vector3f(0, 180, -90)), SOUTH_EAST(new Vector3f(0, 180, 90)), WEST_DOWN(new Vector3f(0, 90, 180)),
-    WEST_UP(new Vector3f(0, 90, 0)), WEST_NORTH(new Vector3f(0, 90, -90)), WEST_SOUTH(new Vector3f(0, 90, 90)),
-    WEST_WEST(new Vector3f(0, 0, 0)), // NOOP
-    WEST_EAST(new Vector3f(0, 0, 0)), // NOOP
-    EAST_DOWN(new Vector3f(0, -90, 180)), EAST_UP(new Vector3f(0, -90, 0)), EAST_NORTH(new Vector3f(0, -90, 90)),
-    EAST_SOUTH(new Vector3f(0, -90, -90)), EAST_WEST(new Vector3f(0, 0, 0)), // NOOP
-    EAST_EAST(new Vector3f(0, 0, 0)); // NOOP
+    DOWN_DOWN(new Vec3f(0, 0, 0)), // NOOP
+    DOWN_UP(new Vec3f(0, 0, 0)), // NOOP
+    DOWN_NORTH(new Vec3f(-90, 0, 0)), DOWN_SOUTH(new Vec3f(-90, 0, 180)), DOWN_WEST(new Vec3f(-90, 0, 90)),
+    DOWN_EAST(new Vec3f(-90, 0, -90)), UP_DOWN(new Vec3f(0, 0, 0)), // NOOP
+    UP_UP(new Vec3f(0, 0, 0)), // NOOP
+    UP_NORTH(new Vec3f(90, 0, 180)), UP_SOUTH(new Vec3f(90, 0, 0)), UP_WEST(new Vec3f(90, 0, 90)),
+    UP_EAST(new Vec3f(90, 0, -90)), NORTH_DOWN(new Vec3f(0, 0, 180)), NORTH_UP(new Vec3f(0, 0, 0)),
+    NORTH_NORTH(new Vec3f(0, 0, 0)), // NOOP
+    NORTH_SOUTH(new Vec3f(0, 0, 0)), // NOOP
+    NORTH_WEST(new Vec3f(0, 0, 90)), NORTH_EAST(new Vec3f(0, 0, -90)), SOUTH_DOWN(new Vec3f(0, 180, 180)),
+    SOUTH_UP(new Vec3f(0, 180, 0)), SOUTH_NORTH(new Vec3f(0, 0, 0)), // NOOP
+    SOUTH_SOUTH(new Vec3f(0, 0, 0)), // NOOP
+    SOUTH_WEST(new Vec3f(0, 180, -90)), SOUTH_EAST(new Vec3f(0, 180, 90)), WEST_DOWN(new Vec3f(0, 90, 180)),
+    WEST_UP(new Vec3f(0, 90, 0)), WEST_NORTH(new Vec3f(0, 90, -90)), WEST_SOUTH(new Vec3f(0, 90, 90)),
+    WEST_WEST(new Vec3f(0, 0, 0)), // NOOP
+    WEST_EAST(new Vec3f(0, 0, 0)), // NOOP
+    EAST_DOWN(new Vec3f(0, -90, 180)), EAST_UP(new Vec3f(0, -90, 0)), EAST_NORTH(new Vec3f(0, -90, 90)),
+    EAST_SOUTH(new Vec3f(0, -90, -90)), EAST_WEST(new Vec3f(0, 0, 0)), // NOOP
+    EAST_EAST(new Vec3f(0, 0, 0)); // NOOP
     // @formatter:on
 
-    private final Vector3f rot;
+    private final Vec3f rot;
     private final Quaternion xRot;
     private final Quaternion yRot;
     private final Quaternion zRot;
     private final Quaternion combinedRotation;
     private final Matrix4f mat;
 
-    FacingToRotation(Vector3f rot) {
+    FacingToRotation(Vec3f rot) {
         this.rot = rot;
         this.mat = new Matrix4f();
         this.mat.loadIdentity();
-        this.mat.multiply(xRot = Vector3f.POSITIVE_X.getDegreesQuaternion(rot.getX()));
-        this.mat.multiply(yRot = Vector3f.POSITIVE_Y.getDegreesQuaternion(rot.getY()));
-        this.mat.multiply(zRot = Vector3f.POSITIVE_Z.getDegreesQuaternion(rot.getZ()));
+        this.mat.multiply(xRot = Vec3f.POSITIVE_X.getDegreesQuaternion(rot.getX()));
+        this.mat.multiply(yRot = Vec3f.POSITIVE_Y.getDegreesQuaternion(rot.getY()));
+        this.mat.multiply(zRot = Vec3f.POSITIVE_Z.getDegreesQuaternion(rot.getZ()));
         this.combinedRotation = new Quaternion(rot.getX(), rot.getY(), rot.getZ(), true);
     }
 

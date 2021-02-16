@@ -64,7 +64,7 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
     public TinyTNTPrimedEntity(final World world, final double x, final double y, final double z,
             final LivingEntity igniter) {
         super(TYPE, world);
-        this.updatePosition(x, y, z);
+        this.setPosition(x, y, z);
         double d = world.random.nextDouble() * 6.2831854820251465D;
         this.setVelocity(-Math.sin(d) * 0.02D, 0.20000000298023224D, -Math.cos(d) * 0.02D);
         this.setFuse(80);
@@ -146,7 +146,7 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.TINY_TNT_BLOCK_DAMAGE)) {
-            this.updatePosition(this.getX(), this.getY() - 0.25, this.getZ());
+            this.setPosition(this.getX(), this.getY() - 0.25, this.getZ());
 
             // For reference see Explosion.affectWorld
             for (int x = (int) (this.getX() - 2); x <= this.getX() + 2; x++) {

@@ -23,11 +23,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.AffineTransformation;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-
+import net.minecraft.util.math.AffineTransformation;
+import net.minecraft.util.math.Vec3f;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
@@ -69,9 +68,9 @@ public class StackSizeRenderer {
         final float inverseScaleFactor = 1.0f / scaleFactor;
         final int offset = AEConfig.instance().isUseLargeFonts() ? 0 : -1;
 
-        AffineTransformation tm = new AffineTransformation(new Vector3f(0, 0, 300), // Taken from
+        AffineTransformation tm = new AffineTransformation(new Vec3f(0, 0, 300), // Taken from
                 // ItemRenderer.renderItemOverlayIntoGUI
-                null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
+                null, new Vec3f(scaleFactor, scaleFactor, scaleFactor), null);
 
         RenderSystem.disableBlend();
         final int X = (int) ((xPos + offset + 16.0f - fontRenderer.getWidth(text) * scaleFactor) * inverseScaleFactor);

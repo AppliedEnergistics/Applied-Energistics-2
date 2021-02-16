@@ -7,8 +7,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-
+import net.minecraft.util.math.Vec3f;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.tile.storage.DriveBlockEntity;
@@ -38,7 +37,7 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
 
         VertexConsumer buffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
 
-        Vector3f slotTranslation = new Vector3f();
+        Vec3f slotTranslation = new Vec3f();
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 2; col++) {
                 ms.push();

@@ -80,7 +80,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     public static final BooleanProperty ODD = BooleanProperty.of("odd");
 
     public QuartzFixtureBlock() {
-        super(defaultProps(Material.SUPPORTED).noCollision().strength(0).lightLevel(14).sounds(BlockSoundGroup.GLASS));
+        super(defaultProps(Material.DECORATION).noCollision().strength(0).lightLevel(14).sounds(BlockSoundGroup.GLASS));
 
         this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false));
     }

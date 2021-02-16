@@ -24,10 +24,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Quaternion;
-
+import net.minecraft.util.math.Vec3f;
 import appeng.client.render.FacingToRotation;
 
 /**
@@ -74,7 +73,7 @@ public class QuadRotator implements RenderContext.QuadTransform {
 
     @Override
     public boolean transform(MutableQuadView quad) {
-        Vector3f tmp = new Vector3f();
+        Vec3f tmp = new Vec3f();
 
         for (int i = 0; i < 4; i++) {
             // Transform the position (center of rotation is 0.5, 0.5, 0.5)

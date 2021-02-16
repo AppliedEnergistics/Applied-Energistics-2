@@ -45,12 +45,12 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.BlockView;
 
@@ -132,7 +132,7 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
 
         // Render the glass side
         for (Direction side : Direction.values()) {
-            final List<Vector3f> corners = RenderHelper.getFaceCorners(side);
+            final List<Vec3f> corners = RenderHelper.getFaceCorners(side);
             this.emitQuad(emitter, side, corners, glassTexture, u, v);
 
             /*
@@ -214,13 +214,13 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
         return bitmask;
     }
 
-    private void emitQuad(QuadEmitter emitter, Direction side, List<Vector3f> corners, Sprite sprite, float uOffset,
+    private void emitQuad(QuadEmitter emitter, Direction side, List<Vec3f> corners, Sprite sprite, float uOffset,
             float vOffset) {
         this.emitQuad(emitter, side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
-    private void emitQuad(QuadEmitter emitter, Direction side, Vector3f c1, Vector3f c2, Vector3f c3, Vector3f c4,
+    private void emitQuad(QuadEmitter emitter, Direction side, Vec3f c1, Vec3f c2, Vec3f c3, Vec3f c4,
             Sprite sprite, float uOffset, float vOffset) {
 
         // Apply the u,v shift.

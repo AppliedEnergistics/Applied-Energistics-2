@@ -6,8 +6,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-
+import net.minecraft.util.math.Vec3f;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.block.storage.DriveSlotState;
 
@@ -16,18 +15,18 @@ import appeng.block.storage.DriveSlotState;
  */
 class CellLedRenderer {
 
-    private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
+    private static final EnumMap<DriveSlotState, Vec3f> STATE_COLORS;
 
     // Color used for the cell indicator for blinking during recent activity
-    private static final Vector3f BLINK_COLOR = new Vector3f(1, 0.5f, 0.5f);
+    private static final Vec3f BLINK_COLOR = new Vec3f(1, 0.5f, 0.5f);
 
     static {
         STATE_COLORS = new EnumMap<>(DriveSlotState.class);
-        STATE_COLORS.put(DriveSlotState.OFFLINE, new Vector3f(0, 0, 0));
-        STATE_COLORS.put(DriveSlotState.ONLINE, new Vector3f(0, 1, 0));
-        STATE_COLORS.put(DriveSlotState.NOT_EMPTY, new Vector3f(0f, 0.667f, 1));
-        STATE_COLORS.put(DriveSlotState.TYPES_FULL, new Vector3f(1, 0.667f, 0));
-        STATE_COLORS.put(DriveSlotState.FULL, new Vector3f(1, 0, 0));
+        STATE_COLORS.put(DriveSlotState.OFFLINE, new Vec3f(0, 0, 0));
+        STATE_COLORS.put(DriveSlotState.ONLINE, new Vec3f(0, 1, 0));
+        STATE_COLORS.put(DriveSlotState.NOT_EMPTY, new Vec3f(0f, 0.667f, 1));
+        STATE_COLORS.put(DriveSlotState.TYPES_FULL, new Vec3f(1, 0.667f, 0));
+        STATE_COLORS.put(DriveSlotState.FULL, new Vec3f(1, 0, 0));
     }
 
     // The positions are based on the upper left slot in a drive
@@ -58,7 +57,7 @@ class CellLedRenderer {
     public static void renderLed(IChestOrDrive drive, int slot, VertexConsumer buffer, MatrixStack ms,
             float partialTicks) {
 
-        Vector3f color = getColorForSlot(drive, slot, partialTicks);
+        Vec3f color = getColorForSlot(drive, slot, partialTicks);
         if (color == null) {
             return;
         }
@@ -71,7 +70,7 @@ class CellLedRenderer {
         }
     }
 
-    private static Vector3f getColorForSlot(IChestOrDrive drive, int slot, float partialTicks) {
+    private static Vec3f getColorForSlot(IChestOrDrive drive, int slot, float partialTicks) {
         DriveSlotState state = DriveSlotState.fromCellStatus(drive.getCellStatus(slot));
         if (state == DriveSlotState.EMPTY) {
             return null;
@@ -81,7 +80,7 @@ class CellLedRenderer {
             return STATE_COLORS.get(DriveSlotState.OFFLINE);
         }
 
-        Vector3f col = STATE_COLORS.get(state);
+        Vec3f col = STATE_COLORS.get(state);
         if (drive.isCellBlinking(slot)) {
             // 200 ms interval (100ms to get to red, then 100ms back)
             long t = System.currentTimeMillis() % 200;

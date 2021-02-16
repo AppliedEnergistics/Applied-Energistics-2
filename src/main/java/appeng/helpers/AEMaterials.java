@@ -18,13 +18,13 @@
 
 package appeng.helpers;
 
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.block.piston.PistonBehavior;
 
 public class AEMaterials {
 
-    public static final Material GLASS = new Material(MaterialColor.CLEAR, false, false, true, false, false, false,
+    public static final Material GLASS = new Material(MapColor.CLEAR, false, false, true, false, false, false,
             PistonBehavior.NORMAL);
 
 }

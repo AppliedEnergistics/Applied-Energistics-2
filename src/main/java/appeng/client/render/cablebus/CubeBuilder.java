@@ -28,8 +28,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vector4f;
 
 /**
  * Builds the quads for a cube.

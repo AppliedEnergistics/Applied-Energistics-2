@@ -20,8 +20,8 @@ package appeng.block.paint;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemPlacementContext;
@@ -39,7 +39,7 @@ import appeng.util.Platform;
 
 public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEntity> {
     public PaintSplotchesBlock() {
-        super(defaultProps(Material.WATER, MaterialColor.CLEAR).nonOpaque().air());
+        super(defaultProps(Material.WATER, MapColor.CLEAR).nonOpaque().air());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEnti
     }
 
     @Override
-    public void rainTick(World world, BlockPos pos) {
+    public void precipitationTick(World world, BlockPos pos) {
         if (Platform.isServer()) {
             world.removeBlock(pos, false);
         }

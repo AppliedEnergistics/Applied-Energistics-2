@@ -22,8 +22,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
@@ -57,7 +57,7 @@ public abstract class AEBaseBlock extends Block {
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static FabricBlockSettings defaultProps(Material material, MaterialColor color) {
+    public static FabricBlockSettings defaultProps(Material material, MapColor color) {
         return FabricBlockSettings.of(material, color)
                 // These values previousls were encoded in AEBaseBlock
                 .strength(2.2f, 11.f).breakByTool(FabricToolTags.PICKAXES, 0)

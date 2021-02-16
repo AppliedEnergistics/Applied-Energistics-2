@@ -20,8 +20,8 @@ package appeng.block.spatial;
 
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.ItemGroup;
@@ -43,7 +43,7 @@ import appeng.block.AEBaseBlock;
  */
 public class MatrixFrameBlock extends AEBaseBlock {
 
-    private static final Material MATERIAL = new Material(MaterialColor.CLEAR, false, true, true, false, false, false,
+    private static final Material MATERIAL = new Material(MapColor.CLEAR, false, true, true, false, false, false,
             PistonBehavior.PUSH_ONLY);
 
     public MatrixFrameBlock() {

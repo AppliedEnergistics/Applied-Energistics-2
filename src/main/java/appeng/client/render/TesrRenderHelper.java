@@ -24,10 +24,9 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
-
+import net.minecraft.util.math.Vec3f;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
@@ -46,25 +45,25 @@ public class TesrRenderHelper {
     public static void rotateToFace(MatrixStack mStack, Direction face, byte spin) {
         switch (face) {
             case UP:
-                mStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(270));
-                mStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(-spin * 90.0F));
+                mStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(270));
+                mStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-spin * 90.0F));
                 break;
 
             case DOWN:
-                mStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90.0F));
-                mStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(spin * -90.0F));
+                mStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90.0F));
+                mStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(spin * -90.0F));
                 break;
 
             case EAST:
-                mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90.0F));
+                mStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F));
                 break;
 
             case WEST:
-                mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
+                mStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
                 break;
 
             case NORTH:
-                mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
+                mStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
                 break;
 
             case SOUTH:
