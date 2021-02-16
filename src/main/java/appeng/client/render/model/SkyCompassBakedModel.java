@@ -34,7 +34,6 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,6 +41,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.BlockRenderView;
 
 import appeng.hooks.CompassManager;
@@ -95,7 +95,7 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
         // Set up the rotation around the Y-axis for the pointer
         context.pushTransform(quad -> {
             Quaternion quaternion = new Quaternion(0, this.fallbackRotation, 0, false);
-            Vector3f pos = new Vector3f();
+            Vec3f pos = new Vec3f();
             for (int i = 0; i < 4; i++) {
                 quad.copyPos(i, pos);
                 pos.add(-0.5f, -0.5f, -0.5f);

@@ -32,9 +32,8 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
-
+import net.minecraft.util.math.Vec3f;
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
 import appeng.core.AppEng;
@@ -75,7 +74,7 @@ public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
         matrixStackIn.push();
         float f = tileEntityIn.getForward().asRotation();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
-        matrixStackIn.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-f));
+        matrixStackIn.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
         matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 
         float f1 = tileEntityIn.getAnimationProgress(partialTicks);

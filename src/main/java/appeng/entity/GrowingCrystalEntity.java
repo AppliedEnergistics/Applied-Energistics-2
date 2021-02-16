@@ -196,7 +196,7 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     @Override
-    public void applyBuoyancy() {
+    public void applyWaterBuoyancy() {
         ItemStack item = getStack();
 
         // Make ungrown seeds sink, and fully grown seeds bouyant allowing for
@@ -213,7 +213,7 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
 
             return;
         }
-        super.applyBuoyancy();
+        super.applyWaterBuoyancy();
     }
 
 }

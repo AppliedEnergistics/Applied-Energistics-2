@@ -39,8 +39,8 @@ public class ChargedOreFX extends RedDustParticle {
     }
 
     @Override
-    public int getColorMultiplier(final float par1) {
-        int j1 = super.getColorMultiplier(par1);
+    public int getBrightness(final float par1) {
+        int j1 = super.getBrightness(par1);
         j1 = Math.max(j1 >> 20, j1 >> 4);
         j1 += 3;
         if (j1 > 15) {

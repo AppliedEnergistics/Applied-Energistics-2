@@ -133,7 +133,7 @@ final class CompassRegion {
         }
 
         @Override
-        public CompoundTag toTag(CompoundTag compound) {
+        public CompoundTag toNbt(CompoundTag compound) {
             compound.putByteArray("b", bitmap);
             return compound;
         }

@@ -17,7 +17,6 @@ import net.minecraft.data.DataCache;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.server.BlockLootTableGenerator;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.loot.ConstantLootTableRange;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -28,6 +27,7 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LeafEntry;
 import net.minecraft.loot.function.ApplyBonusLootFunction;
 import net.minecraft.loot.function.SetCountLootFunction;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -74,7 +74,7 @@ public class BlockDropProvider extends BlockLootTableGenerator implements IAE2Da
 
     private LootTable.Builder defaultBuilder(Block block) {
         LeafEntry.Builder<?> entry = ItemEntry.builder(block);
-        LootPool.Builder pool = LootPool.builder().rolls(ConstantLootTableRange.create(1)).with(entry)
+        LootPool.Builder pool = LootPool.builder().rolls(ConstantLootNumberProvider.create(1)).with(entry)
                 .conditionally(SurvivesExplosionLootCondition.builder());
 
         return LootTable.builder().pool(pool);

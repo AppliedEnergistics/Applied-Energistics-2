@@ -40,7 +40,7 @@ public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEnti
     protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final World world, final double x,
             final double y, final double z, final ItemStack stack) {
         this(entityType, world);
-        this.updatePosition(x, y, z);
+        this.setPosition(x, y, z);
         this.yaw = this.random.nextFloat() * 360.0F;
         this.setVelocity(this.random.nextDouble() * 0.2D - 0.1D, 0.2D, this.random.nextDouble() * 0.2D - 0.1D);
         this.setStack(stack);

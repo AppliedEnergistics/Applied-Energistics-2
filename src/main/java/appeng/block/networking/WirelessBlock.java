@@ -39,6 +39,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
+import appeng.block.networking.WirelessBlock.State;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.WirelessContainer;

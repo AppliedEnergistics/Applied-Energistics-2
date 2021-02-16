@@ -57,7 +57,7 @@ public class VibrantFX extends SpriteBillboardParticle {
     }
 
     @Override
-    public int getColorMultiplier(final float par1) {
+    public int getBrightness(final float par1) {
         // This just means full brightness
         return 15 << 20 | 15 << 4;
     }

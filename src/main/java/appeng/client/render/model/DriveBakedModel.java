@@ -38,11 +38,11 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.BlockRenderView;
 
 import appeng.block.storage.DriveSlotsState;
@@ -67,7 +67,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
     /**
      * Calculates the origin of a drive slot for positioning a cell model into it.
      */
-    public static void getSlotOrigin(int row, int col, Vector3f translation) {
+    public static void getSlotOrigin(int row, int col, Vec3f translation) {
         // Position this drive model copy at the correct slot. The transform is based on
         // the cell-model being in slot 0,0,0 while the upper left slot's origin is at
         // 9,13,1
@@ -149,7 +149,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 2; col++) {
 
-                Vector3f translation = new Vector3f();
+                Vec3f translation = new Vec3f();
                 getSlotOrigin(row, col, translation);
 
                 result[getSlotIndex(row, col)] = new QuadTranslator(translation.getX(), translation.getY(),
@@ -177,7 +177,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
 
         @Override
         public boolean transform(MutableQuadView quad) {
-            Vector3f target = new Vector3f();
+            Vec3f target = new Vec3f();
             for (int i = 0; i < 4; i++) {
                 quad.copyPos(i, target);
                 target.add(x, y, z);

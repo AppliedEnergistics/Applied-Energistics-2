@@ -20,10 +20,10 @@ package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.Vector4f;
 
 /**
  * Created by covers1624 on 2/6/20.
@@ -36,7 +36,7 @@ public class QuadMatrixTransformer implements RenderContext.QuadTransform {
         identity.loadIdentity();
     }
 
-    private final Vector3f storage3 = new Vector3f();
+    private final Vec3f storage3 = new Vec3f();
     private final Vector4f storage = new Vector4f();
     private Matrix4f matrix;
     private boolean identityMatrix;

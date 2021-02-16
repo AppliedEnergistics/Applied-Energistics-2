@@ -388,7 +388,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
             final double d1 = d.yOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
             final double d2 = d.zOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
 
-            world.addParticle(DustParticleEffect.RED, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
+            world.addParticle(DustParticleEffect.DEFAULT, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
                     0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D);
         }
     }

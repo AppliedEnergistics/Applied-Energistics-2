@@ -503,7 +503,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     protected ItemStack createHarvestTool(BlockState state) {
         // Try to use the right tool...
         for (Item toolItem : SUPPORTED_HARVEST_TOOLS) {
-            if (toolItem.isEffectiveOn(state)) {
+            if (toolItem.isSuitableFor(state)) {
                 return new ItemStack(toolItem);
             }
         }

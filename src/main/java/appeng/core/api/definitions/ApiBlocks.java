@@ -337,7 +337,7 @@ public final class ApiBlocks implements IBlocks {
                         () -> new SkyChestBlock(SkyChestBlock.SkyChestType.BLOCK, skyStoneChestProps))
                 .features(AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS).tileEntity(skyChestTile).build();
 
-        this.skyCompass = registry.block("sky_compass", () -> new SkyCompassBlock(defaultProps(Material.SUPPORTED)))
+        this.skyCompass = registry.block("sky_compass", () -> new SkyCompassBlock(defaultProps(Material.DECORATION)))
                 .features(AEFeature.METEORITE_COMPASS)
                 .tileEntity(registry.tileEntity("sky_compass", SkyCompassBlockEntity.class, SkyCompassBlockEntity::new)
                         .rendering(new SkyCompassRendering()).build())

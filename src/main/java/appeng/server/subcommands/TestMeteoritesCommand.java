@@ -173,7 +173,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             msg.append(getClickablePosition(world, settings, pos)).append(restOfLine);
 
             // Add a tooltip
-            String biomeId = world.method_31081(pos).map(bk -> bk.getValue().toString()).orElse("unknown");
+            String biomeId = world.getBiomeKey(pos).map(bk -> bk.getValue().toString()).orElse("unknown");
             MutableText tooltip = new LiteralText(settings.toString() + "\nBiome: ").append(biomeId);
             msg.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 

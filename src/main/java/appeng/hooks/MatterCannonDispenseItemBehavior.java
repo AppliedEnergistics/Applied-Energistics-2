@@ -55,7 +55,7 @@ public final class MatterCannonDispenseItemBehavior extends ItemDispenserBehavio
                 final PlayerEntity p = FakePlayer.getOrCreate((ServerWorld) w);
                 Platform.configurePlayer(p, dir, dispenser.getBlockEntity());
 
-                p.updatePosition(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
+                p.setPosition(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
 
                 dispensedItem = tm.use(w, p, null).getValue();
             }

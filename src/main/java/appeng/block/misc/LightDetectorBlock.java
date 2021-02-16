@@ -48,7 +48,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
     public static final BooleanProperty ODD = BooleanProperty.of("odd");
 
     public LightDetectorBlock() {
-        super(defaultProps(Material.SUPPORTED));
+        super(defaultProps(Material.DECORATION));
         this.setDefaultState(this.getDefaultState().with(Properties.FACING, Direction.UP).with(ODD, false));
     }
 
