@@ -160,7 +160,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
                 @Environment(EnvType.CLIENT)
                 public void setup() {
                     FabricModelPredicateProviderRegistry.register(item, AppEng.makeId("fill_level"),
-                            (is, world, entity) -> {
+                            (is, world, entity, seed) -> {
                                 double curPower = chargeable.getAECurrentPower(is);
                                 double maxPower = chargeable.getAEMaxPower(is);
 

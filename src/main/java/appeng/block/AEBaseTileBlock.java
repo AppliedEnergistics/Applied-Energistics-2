@@ -20,6 +20,7 @@ package appeng.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -31,6 +32,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -66,14 +69,14 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     @Nonnull
     private Class<T> blockEntityClass;
     @Nonnull
-    private Supplier<T> tileEntityFactory;
+    private BiFunction<BlockPos, BlockState, T> tileEntityFactory;
 
     public AEBaseTileBlock(final Settings props) {
         super(props);
     }
 
     // TODO : Was this change needed?
-    public void setTileEntity(final Class<T> tileEntityClass, Supplier<T> factory) {
+    public void setTileEntity(final Class<T> tileEntityClass, BiFunction<BlockPos, BlockState, T> factory) {
         this.blockEntityClass = tileEntityClass;
         this.tileEntityFactory = factory;
         this.setInventory(AEBaseInvBlockEntity.class.isAssignableFrom(tileEntityClass));
@@ -102,8 +105,8 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return this.tileEntityFactory.get();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return this.tileEntityFactory.apply(pos, state);
     }
 
     @Override
@@ -311,6 +314,15 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
         if (te != null) {
             te.addAllAttributes(world, pos, state, to);
         }
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state,
+            BlockEntityType<T> type) {
+        return (world1, pos, state1, blockEntity) -> {
+            if (blockEntity instanceof BlockEntityTicker)
+                ((BlockEntityTicker) blockEntity).tick(world, pos, state, blockEntity);
+        };
     }
 
 }

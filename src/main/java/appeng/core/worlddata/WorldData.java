@@ -66,9 +66,11 @@ public final class WorldData implements IWorldData {
                     "The server doesn't have an Overworld dimension we could store our data on!");
         }
 
-        final PlayerData playerData = overworld.getPersistentStateManager().getOrCreate(PlayerData::new,
+        final PlayerData playerData = overworld.getPersistentStateManager().getOrCreate(PlayerData::createFromTag,
+                PlayerData::new,
                 PlayerData.NAME);
-        final StorageData storageData = overworld.getPersistentStateManager().getOrCreate(StorageData::new,
+        final StorageData storageData = overworld.getPersistentStateManager().getOrCreate(StorageData::createFromTag,
+                StorageData::new,
                 StorageData.NAME);
 
         final ThreadFactory compassThreadFactory = new CompassThreadFactory();

@@ -255,7 +255,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      */
     private boolean handleOverflow(final ItemEntity entityItem, final IAEItemStack overflow) {
         if (overflow == null || overflow.getStackSize() == 0) {
-            entityItem.remove();
+            entityItem.remove(Entity.RemovalReason.DISCARDED);
             return true;
         }
 

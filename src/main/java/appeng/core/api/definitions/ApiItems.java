@@ -241,7 +241,7 @@ public final class ApiItems implements IItems {
                     public void setup() {
                         ColorApplicatorItem colorApplicatorItem = (ColorApplicatorItem) item;
                         FabricModelPredicateProviderRegistry.register(item, AppEng.makeId("colored"),
-                                (itemStack, world, entity) -> {
+                                (itemStack, world, entity, seed) -> {
                                     // If the stack has no color, don't use the colored model since the impact of
                                     // calling getColor for every quad is extremely high, if the stack tries to
                                     // re-search its

@@ -103,8 +103,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
 
     private final FixedItemInv externalInv;
 
-    public InscriberBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public InscriberBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
 
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
         this.setInternalMaxPower(1600);
@@ -160,8 +160,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.upgrades.readFromNBT(data, "upgrades");
         this.settings.readFromNBT(data);
     }

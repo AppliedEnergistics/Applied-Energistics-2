@@ -31,6 +31,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import appeng.api.implementations.tiles.IColorableTile;
@@ -50,8 +51,8 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     private IAEItemStack dspPlay;
     private AEColor paintedColor = AEColor.TRANSPARENT;
 
-    public CraftingMonitorBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CraftingMonitorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override
@@ -86,8 +87,8 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
         }

@@ -21,8 +21,10 @@ package appeng.tile.misc;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
@@ -40,8 +42,8 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
 
     private boolean hasPower = false;
 
-    public QuartzGrowthAcceleratorBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public QuartzGrowthAcceleratorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
         this.getProxy().setFlags();
         this.getProxy().setIdlePowerUsage(8);

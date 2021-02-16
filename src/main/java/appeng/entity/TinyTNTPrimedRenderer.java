@@ -24,6 +24,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.TntMinecartEntityRenderer;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
@@ -33,8 +34,8 @@ import net.minecraft.util.math.Vec3f;
 @Environment(EnvType.CLIENT)
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
-    public TinyTNTPrimedRenderer(final EntityRenderDispatcher manager) {
-        super(manager);
+    public TinyTNTPrimedRenderer(final EntityRendererFactory.Context ctx) {
+        super(ctx);
         this.shadowRadius = 0.25F;
     }
 

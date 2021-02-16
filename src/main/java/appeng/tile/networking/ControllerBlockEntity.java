@@ -20,6 +20,7 @@ package appeng.tile.networking;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -48,8 +49,8 @@ import appeng.util.inv.InvOperation;
 public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     private boolean isValid = false;
 
-    public ControllerBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public ControllerBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.setInternalMaxPower(8000);
         this.setInternalPublicPowerStorage(true);
         this.getProxy().setIdlePowerUsage(3);

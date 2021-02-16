@@ -110,7 +110,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
             if (!itemstack2.isEmpty()) {
                 if (this.craftMatrix.getInvStack(i).isEmpty()) {
                     ItemHandlerUtil.setStackInSlot(this.craftMatrix, i, itemstack2);
-                } else if (!this.thePlayer.inventory.insertStack(itemstack2)) {
+                } else if (!this.thePlayer.getInventory().insertStack(itemstack2)) {
                     this.thePlayer.dropItem(itemstack2, false);
                 }
             }

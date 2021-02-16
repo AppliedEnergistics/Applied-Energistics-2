@@ -20,8 +20,10 @@ package appeng.tile.crafting;
 
 import java.util.Optional;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 
 import appeng.api.definitions.IBlocks;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
@@ -30,8 +32,8 @@ import appeng.core.Api;
 public class CraftingStorageBlockEntity extends CraftingBlockEntity {
     private static final int KILO_SCALAR = 1024;
 
-    public CraftingStorageBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CraftingStorageBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override

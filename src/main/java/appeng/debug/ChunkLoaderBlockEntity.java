@@ -18,19 +18,22 @@
 
 package appeng.debug;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
 import appeng.core.AELog;
 import appeng.tile.AEBaseBlockEntity;
 
-public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements Tickable {
+public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements BlockEntityTicker {
 
-    public ChunkLoaderBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public ChunkLoaderBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override
@@ -57,9 +60,8 @@ public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements Tickabl
     }
 
     @Override
-    public void tick() {
+    public void tick(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         // Validate the force-status
-        World world = getWorld();
         if (world instanceof ServerWorld) {
             ChunkPos chunkPos = new ChunkPos(getPos());
             ServerWorld serverWorld = (ServerWorld) world;

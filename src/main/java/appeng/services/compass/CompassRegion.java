@@ -92,12 +92,12 @@ final class CompassRegion {
         String name = this.lowX + "_" + this.lowZ;
 
         if (create) {
-            this.data = world.getPersistentStateManager().getOrCreate(() -> new SaveData(name), name);
+            this.data = world.getPersistentStateManager().getOrCreate(SaveData::createFromTag, SaveData::new, name);
             if (this.data.bitmap == null) {
                 this.data.bitmap = new byte[SaveData.BITMAP_LENGTH];
             }
         } else {
-            this.data = world.getPersistentStateManager().get(() -> new SaveData(name), name);
+            this.data = world.getPersistentStateManager().get(SaveData::createFromTag, name);
         }
     }
 
@@ -120,11 +120,16 @@ final class CompassRegion {
 
         private byte[] bitmap;
 
-        public SaveData(String name) {
-            super(name);
+        public SaveData() {
+            super();
         }
 
-        @Override
+        public static SaveData createFromTag(CompoundTag nbt) {
+            SaveData res = new SaveData();
+            res.fromTag(nbt);
+            return res;
+        }
+
         public void fromTag(CompoundTag nbt) {
             this.bitmap = nbt.getByteArray("b");
             if (this.bitmap.length != BITMAP_LENGTH) {

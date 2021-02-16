@@ -61,12 +61,10 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEnti
         }
     }
 
-    @Override
-    public void precipitationTick(World world, BlockPos pos) {
-        if (Platform.isServer()) {
-            world.removeBlock(pos, false);
-        }
-    }
+    /*
+     * @Override public void precipitationTick(World world, BlockPos pos) { if (Platform.isServer()) {
+     * world.removeBlock(pos, false); } }
+     */
 
 // FIXME FABRIC currently no equivalent
 // FIXME FABRIC   @Override

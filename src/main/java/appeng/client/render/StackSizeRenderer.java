@@ -27,6 +27,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.AffineTransformation;
 import net.minecraft.util.math.Vec3f;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;

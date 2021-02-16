@@ -4,16 +4,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.BiFunction;
 
 import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Function3;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 import appeng.api.features.AEFeature;
@@ -44,7 +47,7 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
     private BlockEntityType<T> type;
 
     // The factory for creating block entity objects
-    private final Function<BlockEntityType<T>, T> supplier;
+    private final Function3<BlockEntityType<T>, BlockPos, BlockState, T> supplier;
 
     private TileEntityRendering<T> tileEntityRendering;
 
@@ -53,7 +56,7 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
     public BlockEntityBuilder(FeatureFactory factory, String id, Class<T> tileClass,
-            Function<BlockEntityType<T>, T> supplier) {
+            Function3<BlockEntityType<T>, BlockPos, BlockState, T> supplier) {
         this.factory = factory;
         this.id = AppEng.makeId(id);
         this.tileClass = tileClass;
@@ -88,8 +91,8 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
                 throw new IllegalStateException("No blocks make use of this block entity: " + tileClass);
             }
 
-            Supplier<T> factory = () -> supplier.apply(type);
-            type = BlockEntityType.Builder.create(factory, blocks.toArray(new Block[0])).build(null);
+            BiFunction<BlockPos, BlockState, T> factory = (pos, state) -> supplier.apply(type, pos, state);
+            type = FabricBlockEntityTypeBuilder.create(factory::apply, blocks.toArray(new Block[0])).build(null);
 
             Registry.register(Registry.BLOCK_ENTITY_TYPE, id, type);
 
@@ -115,7 +118,7 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
     private void buildClient() {
         if (tileEntityRendering.tileEntityRenderer != null) {
             factory.addBootstrapComponent(
-                    new BlockEntityRendererComponent<>(type, tileEntityRendering.tileEntityRenderer));
+                    new BlockEntityRendererComponent<T>(type, tileEntityRendering.tileEntityRenderer));
         }
     }
 

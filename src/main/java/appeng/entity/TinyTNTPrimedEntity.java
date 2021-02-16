@@ -98,7 +98,7 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
         }
 
         if (this.getFuse() <= 0) {
-            this.remove();
+            this.remove(RemovalReason.KILLED);
 
             if (!this.world.isClient) {
                 this.explode();
@@ -116,7 +116,7 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
                     item.prevZ = this.prevZ;
 
                     this.world.spawnEntity(item);
-                    this.remove();
+                    this.remove(RemovalReason.DISCARDED);
                 });
             }
 

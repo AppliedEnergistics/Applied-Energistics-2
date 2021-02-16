@@ -21,6 +21,7 @@ package appeng.tile.networking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
 import appeng.api.config.AccessRestriction;
@@ -45,8 +46,8 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
 
     private byte currentMeta = -1;
 
-    public EnergyCellBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public EnergyCellBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.getProxy().setIdlePowerUsage(0);
     }
 
@@ -95,8 +96,8 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.internalCurrentPower = data.getDouble("internalCurrentPower");
     }
 

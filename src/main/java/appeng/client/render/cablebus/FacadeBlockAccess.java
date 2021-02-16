@@ -82,4 +82,14 @@ public class FacadeBlockAccess implements BlockRenderView {
     public int getColor(BlockPos pos, ColorResolver colorResolver) {
         return world.getColor(pos, colorResolver);
     }
+
+    @Override
+    public int getHeight() {
+        return 0; // FIXME 1.17
+    }
+
+    @Override
+    public int getBottomY() {
+        return 0; // FIXME 1.17
+    }
 }

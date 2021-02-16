@@ -56,8 +56,8 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
         implements IGridTickable, IFluidInterfaceHost, IPriorityHost {
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
 
-    public FluidInterfaceBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public FluidInterfaceBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @MENetworkEventSubscribe
@@ -103,8 +103,8 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.duality.readFromNBT(data);
     }
 

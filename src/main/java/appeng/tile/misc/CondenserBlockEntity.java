@@ -83,8 +83,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private double storedPower = 0;
 
-    public CondenserBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CondenserBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
 
         LimitedFixedItemInv limitedOutput = this.outputSlot.createLimitedFixedInv();
@@ -101,8 +101,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.cm.readFromNBT(data);
         this.setStoredPower(data.getDouble("storedPower"));
     }

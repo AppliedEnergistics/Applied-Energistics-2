@@ -55,7 +55,7 @@ final class StorageData extends PersistentState implements IWorldGridStorageData
     private final Map<String, Integer> orderedValues = new HashMap<>();
 
     public StorageData() {
-        super(NAME);
+        super();
     }
 
     /**
@@ -95,7 +95,12 @@ final class StorageData extends PersistentState implements IWorldGridStorageData
         return orderedValues.merge(name, firstValue, (oldValue, value) -> oldValue + 1);
     }
 
-    @Override
+    public static StorageData createFromTag(CompoundTag tag) {
+        StorageData res = new StorageData();
+        res.fromTag(tag);
+        return res;
+    }
+
     public void fromTag(CompoundTag tag) {
 
         nextGridId = tag.getLong(TAG_NEXT_ID);

@@ -154,7 +154,7 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
         return new ModelOverrideList(null, null, null, Collections.emptyList()) {
             @Override
             public BakedModel apply(BakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
-                    @Nullable LivingEntity entity) {
+                    @Nullable LivingEntity entity, int seed) {
                 // FIXME: This check prevents compasses being held by OTHERS from getting the
                 // rotation, BUT do we actually still need this???
                 if (world != null && entity instanceof ClientPlayerEntity) {

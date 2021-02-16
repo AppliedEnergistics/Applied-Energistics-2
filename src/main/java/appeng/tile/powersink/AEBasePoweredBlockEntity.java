@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 
@@ -57,8 +58,8 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
 
     // IC2 private IC2PowerSink ic2Sink;
 
-    public AEBasePoweredBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public AEBasePoweredBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         // IC2 this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
         // IC2 this.ic2Sink.setValidFaces( this.internalPowerSides );
     }
@@ -81,8 +82,8 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
     }
 

@@ -20,7 +20,9 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import appeng.api.networking.IGridNode;
@@ -33,8 +35,8 @@ public class PhantomNodeBlockEntity extends AENetworkBlockEntity {
     private AENetworkProxy proxy = null;
     private boolean crashMode = false;
 
-    public PhantomNodeBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public PhantomNodeBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override

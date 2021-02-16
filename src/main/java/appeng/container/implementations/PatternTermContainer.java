@@ -309,7 +309,7 @@ public class PatternTermContainer extends MEMonitorableContainer
         if (packetPatternSlot.slotItem != null && this.getCellInventory() != null) {
             final IAEItemStack out = packetPatternSlot.slotItem.copy();
             InventoryAdaptor inv = new AdaptorFixedInv(
-                    new WrapperCursorItemHandler(this.getPlayerInv().player.inventory));
+                    new WrapperCursorItemHandler(this.getPlayerInv().player.getInventory()));
             final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(this.getPlayerInv().player);
 
             if (packetPatternSlot.shift) {

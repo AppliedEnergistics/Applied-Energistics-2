@@ -41,10 +41,10 @@ public class DefaultSpatialHandler implements IMovableHandler {
 
     @Override
     public void moveTile(final BlockEntity te, final World w, final BlockPos newPosition) {
-        te.setLocation(w, newPosition);
+        // FIXME 1.17 te.setLocation(w, newPosition);
 
         final Chunk c = w.getChunk(newPosition);
-        c.setBlockEntity(newPosition, te);
+        c.setBlockEntity(te);
 
         if (w.getChunkManager().shouldTickBlock(newPosition)) {
             final BlockState state = w.getBlockState(newPosition);

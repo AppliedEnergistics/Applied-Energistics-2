@@ -157,7 +157,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             if (allItems) {
                 if (this.getDisplayed() != null) {
                     final IAEItemStack input = this.getDisplayed().copy();
-                    FixedItemInv inv = new FixedInventoryVanillaWrapper(player.inventory);
+                    FixedItemInv inv = new FixedInventoryVanillaWrapper(player.getInventory());
 
                     for (int x = 0; x < inv.getSlotCount(); x++) {
                         final ItemStack targetStack = inv.getInvStack(x);

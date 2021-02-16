@@ -21,9 +21,11 @@ package appeng.tile.networking;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -55,8 +57,8 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
 
     private int clientFlags = 0;
 
-    public WirelessBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public WirelessBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.inv.setFilter(new AEItemDefinitionFilter(Api.instance().definitions().materials().wirelessBooster()));
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));

@@ -25,14 +25,9 @@ import org.lwjgl.opengl.GL11;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -50,7 +45,7 @@ import appeng.mixins.RenderPhaseMixin;
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
 @Environment(EnvType.CLIENT)
-public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAssemblerBlockEntity> {
+public class MolecularAssemblerRenderer implements BlockEntityRenderer<MolecularAssemblerBlockEntity> {
 
     public static final ModelIdentifier LIGHTS_MODEL = new ModelIdentifier(
             AppEng.makeId("block/molecular_assembler_lights"), "");
@@ -59,8 +54,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
 
     private final Random particleRandom = new Random();
 
-    public MolecularAssemblerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public MolecularAssemblerRenderer(BlockEntityRendererFactory.Context rendererDispatcherIn) {
     }
 
     @Override
@@ -133,7 +127,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
         }
 
         itemRenderer.renderItem(is, ModelTransformation.Mode.GROUND, combinedLightIn, OverlayTexture.DEFAULT_UV, ms,
-                bufferIn);
+                bufferIn, 0);
         ms.pop();
     }
 
@@ -150,7 +144,8 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
                 .texture(mipmapBlockAtlasTexture).transparency(RenderPhaseMixin.getTranslucentTransparency())
                 .alpha(new RenderPhase.Alpha(0.05F)).lightmap(disableLightmap).build(true);
 
-        return RenderLayer.of("ae2_translucent_alphatest", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT, GL11.GL_QUADS,
+        return RenderLayer.of("ae2_translucent_alphatest", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT,
+                VertexFormat.DrawMode.QUADS,
                 256, glState);
     }
 

@@ -45,6 +45,7 @@ repositories {
             includeGroup "mcp.mobius.waila"
         }
     }
+    maven { url "https://maven.shedaniel.me" }
 }
 
 dependencies {

@@ -62,7 +62,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     public void tick() {
         super.tick();
 
-        if (this.removed || !AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_FLUIX)) {
+        if (this.isRemoved() || !AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_FLUIX)) {
             return;
         }
 
@@ -106,7 +106,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
             ItemEntity netherQuartz = null;
 
             for (final Entity e : l) {
-                if (e instanceof ItemEntity && !e.removed) {
+                if (e instanceof ItemEntity && !e.isRemoved()) {
                     final ItemStack other = ((ItemEntity) e).getStack();
                     if (!other.isEmpty()) {
                         if (ItemStack.areItemsEqual(other, new ItemStack(Items.REDSTONE))) {
@@ -126,15 +126,15 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                 netherQuartz.getStack().increment(-1);
 
                 if (this.getStack().getCount() <= 0) {
-                    this.remove();
+                    this.remove(RemovalReason.DISCARDED);
                 }
 
                 if (redstone.getStack().getCount() <= 0) {
-                    redstone.remove();
+                    redstone.remove(RemovalReason.DISCARDED);
                 }
 
                 if (netherQuartz.getStack().getCount() <= 0) {
-                    netherQuartz.remove();
+                    netherQuartz.remove(RemovalReason.DISCARDED);
                 }
 
                 materials.fluixCrystal().maybeStack(2).ifPresent(is -> {

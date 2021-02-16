@@ -309,7 +309,7 @@ public class FacadeBuilder {
         MeshBuilder meshBuilder = renderer.meshBuilder();
         QuadEmitter emitter = meshBuilder.getEmitter();
 
-        BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(textureItem, null, null);
+        BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(textureItem, null, null, 0);
         List<BakedQuad> modelQuads = model.getQuads(null, null, new Random());
 
         // FIXME BakedPipeline pipeline = this.pipelines.get();

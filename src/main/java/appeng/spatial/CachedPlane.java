@@ -26,12 +26,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerTickScheduler;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ScheduledTick;
 import net.minecraft.world.TickScheduler;
@@ -172,10 +172,10 @@ public class CachedPlane {
 
         for (final BlockEntity te : this.tiles) {
             try {
-                this.getWorld().blockEntities.remove(te);
-                if (te instanceof Tickable) {
-                    this.getWorld().tickingBlockEntities.remove(te);
-                }
+                /*
+                 * FIXME 1.17 this.getWorld().blockEntities.remove(te); if (te instanceof BlockEntityTicker) {
+                 * this.getWorld().tickingBlockEntities.remove(te); }
+                 */
             } catch (final Exception e) {
                 AELog.debug(e);
             }
@@ -287,7 +287,7 @@ public class CachedPlane {
                     final BlockPos pos = new BlockPos(x, y, z);
 
                     // attempt recovery...
-                    c.c.setBlockEntity(pos, te);
+                    // FIXME 1.17 c.c.setBlockEntity(pos, te);
 
                     this.world.updateListeners(pos, this.world.getBlockState(pos), this.world.getBlockState(pos), z);
                 }
@@ -326,7 +326,7 @@ public class CachedPlane {
                 WorldData.instance().compassData().service().updateArea((ServerWorld) this.getWorld(), c);
 
                 // FIXME this was sending chunks to players...
-                ChunkDataS2CPacket cdp = new ChunkDataS2CPacket(c, verticalBits);
+                ChunkDataS2CPacket cdp = new ChunkDataS2CPacket(c);
                 world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(c.getPos(), false)
                         .forEach(spe -> spe.networkHandler.sendPacket(cdp));
 

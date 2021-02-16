@@ -27,8 +27,8 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
@@ -40,12 +40,11 @@ import appeng.client.render.model.SkyCompassBakedModel;
 import appeng.tile.misc.SkyCompassBlockEntity;
 
 @Environment(EnvType.CLIENT)
-public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
+public class SkyCompassTESR implements BlockEntityRenderer<SkyCompassBlockEntity> {
 
     private static BlockRenderManager blockRenderer;
 
-    public SkyCompassTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public SkyCompassTESR(BlockEntityRendererFactory.Context rendererDispatcherIn) {
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.ChunkRandom;
@@ -36,7 +37,8 @@ public class MeteoriteStructure extends StructureFeature<DefaultFeatureConfig> {
 
     @Override
     public boolean shouldStartAt(ChunkGenerator generator, BiomeSource biomeSource, long seed, ChunkRandom randIn,
-            int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos2, DefaultFeatureConfig featureConfig) {
+            int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos2, DefaultFeatureConfig featureConfig,
+            HeightLimitView heightLimitView) {
         return randIn.nextBoolean();
     }
 

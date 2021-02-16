@@ -314,7 +314,7 @@ public class FluidTerminalContainer extends AEBaseContainer
             return;
         }
 
-        final ItemStack held = player.inventory.getCursorStack();
+        final ItemStack held = player.getInventory().getCursorStack();
         if (held.getCount() != 1) {
             // only support stacksize 1 for now
             return;
@@ -371,7 +371,7 @@ public class FluidTerminalContainer extends AEBaseContainer
                         held, volumeOverflow);
             }
 
-            player.inventory.setCursorStack(container.get());
+            player.getInventory().setCursorStack(container.get());
             this.updateHeld(player);
         } else if (action == InventoryAction.EMPTY_ITEM) {
             Ref<ItemStack> container = new Ref<>(held);
@@ -418,7 +418,7 @@ public class FluidTerminalContainer extends AEBaseContainer
                         held.getName());
             }
 
-            player.inventory.setCursorStack(container.get());
+            player.getInventory().setCursorStack(container.get());
             this.updateHeld(player);
         }
     }

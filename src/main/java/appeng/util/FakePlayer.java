@@ -19,7 +19,7 @@ public class FakePlayer extends ServerPlayerEntity {
             "[AppEng2]");
 
     private FakePlayer(ServerWorld world) {
-        super(world.getServer(), world, PROFILE, new ServerPlayerInteractionManager(world));
+        super(world.getServer(), world, PROFILE);
     }
 
     /**

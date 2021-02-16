@@ -20,6 +20,7 @@ package appeng.client.render.effects;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.util.sat4j.core.Vec;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.RedDustParticle;
@@ -27,11 +28,12 @@ import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.util.math.Vec3f;
 
 @Environment(EnvType.CLIENT)
 public class ChargedOreFX extends RedDustParticle {
 
-    private static final DustParticleEffect PARTICLE_DATA = new DustParticleEffect(0.21f, 0.61f, 1.0f, 1.0f);
+    private static final DustParticleEffect PARTICLE_DATA = new DustParticleEffect(new Vec3f(0.21f, 0.61f, 1.0f), 1.0f);
 
     private ChargedOreFX(ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
             SpriteProvider spriteSet) {

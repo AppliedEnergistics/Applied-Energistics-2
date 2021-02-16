@@ -20,6 +20,7 @@ package appeng.spatial;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -171,8 +172,8 @@ public class SpatialStorageHelper {
         // do nearly all the work... swaps blocks, tiles, and block ticks
         cSrc.swap(cDst);
 
-        final List<Entity> srcE = srcWorld.getEntitiesIncludingUngeneratedChunks(Entity.class, srcBox);
-        final List<Entity> dstE = dstWorld.getEntitiesIncludingUngeneratedChunks(Entity.class, dstBox);
+        final List<Entity> srcE = srcWorld.getEntitiesByClass(Entity.class, srcBox, entity -> true);
+        final List<Entity> dstE = dstWorld.getEntitiesByClass(Entity.class, dstBox, entity -> true);
 
         for (final Entity e : dstE) {
             this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getX(), e.getY(), e.getZ(), -dstX + srcX,

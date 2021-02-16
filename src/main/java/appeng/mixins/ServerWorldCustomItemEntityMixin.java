@@ -34,7 +34,7 @@ public class ServerWorldCustomItemEntityMixin {
                 entity = ((AECustomEntityItem) item).replaceItemEntity(self, itemEntity, stack);
                 if (entity != itemEntity) {
                     // Item may actually want to keep the original
-                    itemEntity.remove();
+                    itemEntity.remove(Entity.RemovalReason.DISCARDED);
                 }
             }
         }

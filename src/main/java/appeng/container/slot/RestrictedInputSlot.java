@@ -236,8 +236,8 @@ public class RestrictedInputSlot extends AppEngSlot {
         Item item = i.getItem();
         for (Identifier tagName : METAL_INGOT_TAGS) {
             Tag<Item> ingotTag = ItemTags.getTagGroup().getTag(tagName);
-            if (ingotTag != null && item.isIn(ingotTag)) {
-                return true;
+            if (ingotTag != null) {
+                return ingotTag.contains(item);
             }
         }
 

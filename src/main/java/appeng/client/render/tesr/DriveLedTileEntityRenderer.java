@@ -4,10 +4,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
+
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.tile.storage.DriveBlockEntity;
@@ -16,10 +17,9 @@ import appeng.tile.storage.DriveBlockEntity;
  * Renders the drive cell status indicators.
  */
 @Environment(EnvType.CLIENT)
-public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEntity> {
+public class DriveLedTileEntityRenderer implements BlockEntityRenderer<DriveBlockEntity> {
 
-    public DriveLedTileEntityRenderer(BlockEntityRenderDispatcher renderDispatcher) {
-        super(renderDispatcher);
+    public DriveLedTileEntityRenderer(BlockEntityRendererFactory.Context renderDispatcher) {
     }
 
     @Override

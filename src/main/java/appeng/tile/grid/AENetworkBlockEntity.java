@@ -21,6 +21,7 @@ package appeng.tile.grid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
@@ -35,13 +36,13 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IActionHo
 
     private final AENetworkProxy gridProxy = this.createProxy();
 
-    public AENetworkBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public AENetworkBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.getProxy().readFromNBT(data);
     }
 

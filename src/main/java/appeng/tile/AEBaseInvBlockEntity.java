@@ -40,13 +40,13 @@ import appeng.util.inv.InvOperation;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements IAEAppEngInventory {
 
-    public AEBaseInvBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public AEBaseInvBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         final FixedItemInv inv = this.getInternalInventory();
         if (inv != EmptyFixedItemInv.INSTANCE) {
             final CompoundTag opt = data.getCompound("inv");

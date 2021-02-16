@@ -54,7 +54,8 @@ public final class SpatialStoragePlotManager {
     }
 
     private SpatialStorageWorldData getWorldData() {
-        return getWorld().getChunkManager().getPersistentStateManager().getOrCreate(SpatialStorageWorldData::new,
+        return getWorld().getChunkManager().getPersistentStateManager().getOrCreate(
+                SpatialStorageWorldData::createFromTag, SpatialStorageWorldData::new,
                 SpatialStorageWorldData.ID);
     }
 
