@@ -21,6 +21,7 @@ package appeng.tile.spatial;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
@@ -57,8 +58,8 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     private SpatialPylonCluster cluster;
     private boolean didHaveLight = false;
 
-    public SpatialPylonBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public SpatialPylonBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK);
         this.getProxy().setIdlePowerUsage(0.5);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));

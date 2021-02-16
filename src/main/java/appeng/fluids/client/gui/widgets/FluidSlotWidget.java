@@ -47,7 +47,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
 
     @Override
     public boolean canClick(final PlayerEntity player) {
-        final ItemStack mouseStack = player.inventory.getCursorStack();
+        final ItemStack mouseStack = player.getInventory().getCursorStack();
         return mouseStack.isEmpty() || FluidAttributes.EXTRACTABLE.getFirstOrNull(mouseStack) != null;
     }
 

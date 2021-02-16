@@ -60,8 +60,8 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     private boolean isCoreBlock = false;
     private CraftingCPUCluster cluster;
 
-    public CraftingBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CraftingBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.getProxy().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
     }
@@ -183,8 +183,8 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.setCoreBlock(data.getBoolean("core"));
         if (this.isCoreBlock()) {
             if (this.cluster != null) {
@@ -241,7 +241,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         // Since breaking the cluster will most likely also update the TE's state,
         // it's essential that we're not working with outdated block-state information,
         // since this particular TE's block might already have been removed (state=air)
-        resetBlock();
+        setCachedState(null);
 
         if (this.cluster != null) {
             this.cluster.cancel();

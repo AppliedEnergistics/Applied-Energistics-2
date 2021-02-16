@@ -130,7 +130,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         // is a debug tool, we'll not care about being terribly efficient here
         ChunkPos.stream(new ChunkPos(spawned.getPos()), 2).forEach(cp -> {
             WorldChunk c = world.getChunk(cp.x, cp.z);
-            player.networkHandler.sendPacket(new ChunkDataS2CPacket(c, 65535)); // 65535 == full chunk
+            player.networkHandler.sendPacket(new ChunkDataS2CPacket(c));
         });
 
         return ActionResult.SUCCESS;

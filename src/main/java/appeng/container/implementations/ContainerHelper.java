@@ -202,7 +202,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     private I getHostFromPlayerInventory(PlayerEntity player, ContainerLocator locator) {
 
-        ItemStack it = player.inventory.getStack(locator.getItemIndex());
+        ItemStack it = player.getInventory().getStack(locator.getItemIndex());
 
         if (it.isEmpty()) {
             AELog.debug("Cannot open container for player %s since they no longer hold the item in slot %d", player,

@@ -74,8 +74,8 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     // Indicates that this interface has no specific direction set
     private boolean omniDirectional = true;
 
-    public InterfaceBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public InterfaceBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @MENetworkEventSubscribe
@@ -157,8 +157,8 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.omniDirectional = data.getBoolean("omniDirectional");
 
         this.duality.readFromNBT(data);

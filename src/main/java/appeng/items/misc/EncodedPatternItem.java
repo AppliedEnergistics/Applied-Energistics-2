@@ -88,12 +88,12 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
                 return false;
             }
 
-            final PlayerInventory inv = player.inventory;
+            final PlayerInventory inv = player.getInventory();
 
             ItemStack is = Api.instance().definitions().materials().blankPattern().maybeStack(stack.getCount())
                     .orElse(ItemStack.EMPTY);
             if (!is.isEmpty()) {
-                for (int s = 0; s < player.inventory.size(); s++) {
+                for (int s = 0; s < player.getInventory().size(); s++) {
                     if (inv.getStack(s) == stack) {
                         inv.setStack(s, is);
                         return true;

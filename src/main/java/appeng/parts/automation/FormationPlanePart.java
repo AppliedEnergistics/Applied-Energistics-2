@@ -295,7 +295,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             // Destroy the old one, in case it's spawned somehow and replace with the new
             // one.
             if (result != entity) {
-                entity.remove();
+                entity.remove(Entity.RemovalReason.DISCARDED);
                 entity = result;
             }
         }
@@ -335,7 +335,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         // Try to spawn it and destroy it in case it's not possible
         if (!w.spawnEntity(entity)) {
-            entity.remove();
+            entity.remove(Entity.RemovalReason.DISCARDED);
             return false;
         }
         return true;

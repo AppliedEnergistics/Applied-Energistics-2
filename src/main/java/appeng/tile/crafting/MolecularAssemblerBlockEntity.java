@@ -107,8 +107,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @Environment(EnvType.CLIENT)
     private AssemblerAnimationStatus animationStatus;
 
-    public MolecularAssemblerBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public MolecularAssemblerBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         final ITileDefinition assembler = Api.instance().definitions().blocks().molecularAssembler();
 
         this.settings = new ConfigManager(this);
@@ -235,8 +235,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         if (data.contains("myPlan")) {
             final ItemStack myPat = ItemStack.fromTag(data.getCompound("myPlan"));
 

@@ -26,6 +26,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Quaternion;
@@ -79,7 +80,7 @@ public class SpatialSkyRender {
             matrixStack.multiply(rotation);
 
             RenderSystem.disableTexture();
-            VertexBuffer.begin(GL11.GL_QUADS, VertexFormats.POSITION);
+            VertexBuffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
             VertexBuffer.vertex(-100.0D, -100.0D, -100.0D).next();
             VertexBuffer.vertex(-100.0D, -100.0D, 100.0D).next();
             VertexBuffer.vertex(100.0D, -100.0D, 100.0D).next();
@@ -115,7 +116,7 @@ public class SpatialSkyRender {
     private void renderTwinkles() {
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder vb = tessellator.getBuffer();
-        vb.begin(GL11.GL_QUADS, VertexFormats.POSITION);
+        vb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
 
         for (int i = 0; i < 50; ++i) {
             double iX = this.random.nextFloat() * 2.0F - 1.0F;

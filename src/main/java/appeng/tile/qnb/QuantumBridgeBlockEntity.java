@@ -23,14 +23,16 @@ import java.util.EnumSet;
 import java.util.Optional;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
@@ -42,6 +44,7 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.block.AEBaseBlock;
 import appeng.block.qnb.QnbFormedState;
 import appeng.core.Api;
 import appeng.me.GridAccessException;
@@ -53,7 +56,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
 public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
-        implements IAEMultiBlock<QuantumCluster>, Tickable {
+        implements IAEMultiBlock<QuantumCluster>, BlockEntityTicker {
 
     private final byte corner = 16;
     private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 1, 1);
@@ -65,15 +68,15 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     private QuantumCluster cluster;
     private boolean updateStatus = false;
 
-    public QuantumBridgeBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public QuantumBridgeBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
         this.getProxy().setFlags(GridFlags.DENSE_CAPACITY);
         this.getProxy().setIdlePowerUsage(22);
     }
 
     @Override
-    public void tick() {
+    public void tick(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (this.updateStatus) {
             this.updateStatus = false;
             if (this.cluster != null) {
@@ -283,7 +286,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         // Since breaking the cluster will most likely also update the TE's state,
         // it's essential that we're not working with outdated block-state information,
         // since this particular TE's block might already have been removed (state=air)
-        resetBlock();
+        setCachedState(null);
 
         if (this.cluster != null) {
             this.cluster.destroy();
@@ -298,5 +301,4 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     public QnbFormedState getRenderAttachmentData() {
         return new QnbFormedState(getAdjacentQuantumBridges(), isCorner(), isPowered());
     }
-
 }

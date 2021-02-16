@@ -97,7 +97,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                         // check... other name.
                         if (!matches) {
                             Tag<Item> tag = ItemTags.getTagGroup().getTag(TAG_ENDER_PEARL);
-                            if (tag != null && other.getItem().isIn(tag)) {
+                            if (tag != null && other.isIn(tag)) {
                                 matches = true;
                             }
                         }
@@ -107,7 +107,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                                 other.increment(-1);
                                 ;
                                 if (other.getCount() == 0) {
-                                    e.remove();
+                                    e.remove(RemovalReason.DISCARDED);
                                 }
 
                                 materials.qESingularity().maybeStack(2).ifPresent(singularityStack -> {
@@ -123,7 +123,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                             }
 
                             if (item.getCount() <= 0) {
-                                this.remove();
+                                this.remove(RemovalReason.DISCARDED);
                             }
                         }
                     }

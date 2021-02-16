@@ -18,12 +18,7 @@
 
 package appeng.items.tools.powered;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -72,6 +67,8 @@ import appeng.util.Platform;
 public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockTool {
     private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> heatUp;
     private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> coolDown;
+
+    private static Random RANDOM = new Random();
 
     public EntropyManipulatorItem(Item.Settings props) {
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);

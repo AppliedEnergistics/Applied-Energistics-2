@@ -21,8 +21,10 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.impl.client.renderer.registry.EntityRendererRegistryImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.UnbakedModel;
@@ -312,13 +314,11 @@ public final class AppEngClient extends AppEngBase {
     protected void registerEntityRenderers() {
         EntityRendererRegistry registry = EntityRendererRegistry.INSTANCE;
 
-        registry.register(TinyTNTPrimedEntity.TYPE, (dispatcher, context) -> new TinyTNTPrimedRenderer(dispatcher));
+        registry.register(TinyTNTPrimedEntity.TYPE, TinyTNTPrimedRenderer::new);
 
-        EntityRendererRegistry.Factory itemEntityFactory = (dispatcher, context) -> new ItemEntityRenderer(dispatcher,
-                context.getItemRenderer());
-        registry.register(SingularityEntity.TYPE, itemEntityFactory);
-        registry.register(GrowingCrystalEntity.TYPE, itemEntityFactory);
-        registry.register(ChargedQuartzEntity.TYPE, itemEntityFactory);
+        registry.register(SingularityEntity.TYPE, ItemEntityRenderer::new);
+        registry.register(GrowingCrystalEntity.TYPE, ItemEntityRenderer::new);
+        registry.register(ChargedQuartzEntity.TYPE, ItemEntityRenderer::new);
     }
 
     protected void registerItemColors() {

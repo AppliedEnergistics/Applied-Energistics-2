@@ -9,8 +9,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -35,7 +35,7 @@ import appeng.tile.misc.InscriberBlockEntity;
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
  */
-public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntity> {
+public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEntity> {
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
@@ -44,8 +44,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
 
     public static final ImmutableList<SpriteIdentifier> SPRITES = ImmutableList.of(TEXTURE_INSIDE);
 
-    public InscriberTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public InscriberTESR(BlockEntityRendererFactory.Context rendererDispatcherIn) {
     }
 
     @Override
@@ -211,7 +210,8 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
-            itemRenderer.renderItem(stack, ModelTransformation.Mode.FIXED, combinedLight, combinedOverlay, ms, buffers);
+            itemRenderer.renderItem(stack, ModelTransformation.Mode.FIXED, combinedLight, combinedOverlay, ms, buffers,
+                    0);
             ms.pop();
         }
     }

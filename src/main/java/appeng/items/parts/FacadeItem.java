@@ -21,10 +21,7 @@ package appeng.items.parts;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvironmentInterface;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.item.BlockItem;
@@ -114,7 +111,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 
         final BlockState defaultState = block.getDefaultState();
-        final boolean isTileEntity = block.hasBlockEntity();
+        final boolean isTileEntity = block instanceof BlockEntityProvider;
         final boolean isFullCube = defaultState.isOpaqueFullCube(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
 
         final boolean isTileEntityAllowed = !isTileEntity || (areTileEntitiesEnabled && isWhiteListed);

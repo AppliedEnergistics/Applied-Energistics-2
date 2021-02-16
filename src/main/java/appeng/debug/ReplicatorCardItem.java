@@ -186,11 +186,11 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                                                             BlockEntityProvider blkEntityProvider = (BlockEntityProvider) blk;
                                                             final BlockEntity ote = src_w.getBlockEntity(p);
                                                             final BlockEntity nte = blkEntityProvider
-                                                                    .createBlockEntity(world);
+                                                                    .createBlockEntity(d, state);
                                                             final CompoundTag data = new CompoundTag();
                                                             ote.toTag(data);
-                                                            nte.fromTag(state, data.copy());
-                                                            world.setBlockEntity(d, nte);
+                                                            nte.fromTag(data.copy());
+                                                            world.addBlockEntity(nte);
                                                         }
                                                         world.updateListeners(d, prev, state, 3);
                                                     }

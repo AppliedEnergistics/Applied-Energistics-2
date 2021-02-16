@@ -32,8 +32,8 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockModelRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.BakedQuad;
@@ -54,14 +54,13 @@ import appeng.tile.storage.ChestBlockEntity;
  * The tile entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
  * LED.
  */
-public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntity> {
+public class ChestTileEntityRenderer implements BlockEntityRenderer<ChestBlockEntity> {
 
     private final BakedModelManager modelManager;
 
     private final BlockModelRenderer blockRenderer;
 
-    public ChestTileEntityRenderer(BlockEntityRenderDispatcher renderDispatcher) {
-        super(renderDispatcher);
+    public ChestTileEntityRenderer(BlockEntityRendererFactory.Context renderDispatcher) {
         MinecraftClient client = MinecraftClient.getInstance();
         modelManager = client.getBakedModelManager();
         blockRenderer = client.getBlockRenderManager().getModelRenderer();

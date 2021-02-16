@@ -27,6 +27,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3f;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
@@ -92,7 +93,7 @@ public class TesrRenderHelper {
             matrixStack.scale(scale, scale, 0.0002f);
 
             MinecraftClient.getInstance().getItemRenderer().renderItem(itemStack, ModelTransformation.Mode.GUI,
-                    combinedLightIn, OverlayTexture.DEFAULT_UV, matrixStack, buffers);
+                    combinedLightIn, OverlayTexture.DEFAULT_UV, matrixStack, buffers, 0);
 
             matrixStack.pop();
 

@@ -23,6 +23,6 @@ public class CrystalSeedRendering implements IClientSetupComponent {
     public void setup() {
         // Expose the growth of the seed to the model system
         FabricModelPredicateProviderRegistry.register(item, AppEng.makeId("growth"),
-                (is, w, p) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
+                (is, w, p, seed) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }
 }

@@ -25,6 +25,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
@@ -59,8 +60,8 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
     private final LimitedFixedItemInv invExt;
     private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
-    public SpatialIOPortBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public SpatialIOPortBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
 
         invExt = inv.createLimitedFixedInv();
@@ -76,8 +77,8 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
         }

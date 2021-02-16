@@ -22,15 +22,17 @@ import java.io.IOException;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.tile.AEBaseBlockEntity;
 
-public class CrankBlockEntity extends AEBaseBlockEntity implements Tickable {
+public class CrankBlockEntity extends AEBaseBlockEntity implements BlockEntityTicker {
 
     private final int ticksPerRotation = 18;
 
@@ -41,12 +43,12 @@ public class CrankBlockEntity extends AEBaseBlockEntity implements Tickable {
     private int hits = 0;
     private int rotation = 0;
 
-    public CrankBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CrankBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override
-    public void tick() {
+    public void tick(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (this.rotation > 0) {
             this.setVisibleRotation(this.getVisibleRotation() - 360.0f / (this.ticksPerRotation));
             this.charge++;

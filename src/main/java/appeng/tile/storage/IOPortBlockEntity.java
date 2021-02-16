@@ -96,8 +96,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private ItemStack currentCell;
     private Map<IStorageChannel<?>, IMEInventory<?>> cachedInventories;
 
-    public IOPortBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public IOPortBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.manager = new ConfigManager(this);
         this.manager.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
@@ -126,8 +126,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.manager.readFromNBT(data);
         this.upgrades.readFromNBT(data, "upgrades");
         if (data.contains("lastRedstoneState")) {

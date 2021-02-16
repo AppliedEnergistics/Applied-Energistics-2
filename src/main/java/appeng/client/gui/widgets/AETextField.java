@@ -25,6 +25,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -140,7 +141,7 @@ public class AETextField extends TextFieldWidget {
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(7, VertexFormats.POSITION);
+        bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         bufferbuilder.vertex(startX, endY, 0.0D).next();
         bufferbuilder.vertex(endX, endY, 0.0D).next();
         bufferbuilder.vertex(endX, startY, 0.0D).next();

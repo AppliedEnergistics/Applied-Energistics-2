@@ -104,7 +104,8 @@ public class PartPlacement {
                                 if (!player.isCreative()) {
                                     held.increment(-1);
                                     if (held.getCount() == 0) {
-                                        player.inventory.main.set(player.inventory.selectedSlot, ItemStack.EMPTY);
+                                        player.getInventory().main.set(player.getInventory().selectedSlot,
+                                                ItemStack.EMPTY);
                                     }
                                 }
                                 return ActionResult.CONSUME;

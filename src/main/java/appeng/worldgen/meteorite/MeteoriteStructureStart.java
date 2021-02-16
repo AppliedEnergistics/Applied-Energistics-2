@@ -15,6 +15,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
@@ -39,7 +40,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
     @Override
     public void init(DynamicRegistryManager dynamicRegistryManager, ChunkGenerator generator,
             StructureManager structureManager, int chunkX, int chunkZ, Biome biome,
-            DefaultFeatureConfig featureConfig) {
+            DefaultFeatureConfig featureConfig, HeightLimitView heightLimitView) {
         final int centerX = chunkX * 16 + this.random.nextInt(16);
         final int centerZ = chunkZ * 16 + this.random.nextInt(16);
         final float meteoriteRadius = (this.random.nextFloat() * 6.0f) + 2;
@@ -56,7 +57,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
         int scanRadius = (int) Math.max(1, meteoriteRadius * 2);
         for (int x = -scanRadius; x <= scanRadius; x++) {
             for (int z = -scanRadius; z <= scanRadius; z++) {
-                int h = generator.getHeight(centerX + x, centerZ + z, heightmapType);
+                int h = generator.getHeight(centerX + x, centerZ + z, heightmapType, heightLimitView);
                 stats.add(h);
             }
         }
@@ -74,7 +75,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
 
         BlockPos actualPos = new BlockPos(centerX, centerY, centerZ);
 
-        boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius);
+        boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius, heightLimitView);
         CraterType craterType = this.determineCraterType(spawnBiome);
         boolean pureCrater = this.random.nextFloat() > .9f;
         FalloutMode fallout = getFalloutFromBaseBlock(
@@ -91,7 +92,8 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
      *
      * @return true, if it found a single block of water
      */
-    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius) {
+    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius,
+            HeightLimitView heightLimitView) {
         final int seaLevel = generator.getSeaLevel();
         final int maxY = seaLevel - 1;
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
@@ -109,7 +111,8 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
                 final double distanceFrom = dx * dx + dz * dz;
 
                 if (maxY > h + distanceFrom * 0.0175 && maxY < h + distanceFrom * 0.02) {
-                    int heigth = generator.getHeight(blockPos.getX(), blockPos.getZ(), Heightmap.Type.OCEAN_FLOOR);
+                    int heigth = generator.getHeight(blockPos.getX(), blockPos.getZ(), Heightmap.Type.OCEAN_FLOOR,
+                            heightLimitView);
                     if (heigth < seaLevel) {
                         return true;
                     }
@@ -218,9 +221,9 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
     private FalloutMode getFalloutFromBaseBlock(BlockState blockState) {
         final Block block = blockState.getBlock();
 
-        if (block.isIn(sandTag)) {
+        if (sandTag.contains(block)) {
             return FalloutMode.SAND;
-        } else if (block.isIn(terracottaTag)) {
+        } else if (terracottaTag.contains(block)) {
             return FalloutMode.TERRACOTTA;
         } else if (block == Blocks.SNOW || block == Blocks.SNOW || block == Blocks.SNOW_BLOCK || block == Blocks.ICE
                 || block == Blocks.PACKED_ICE) {

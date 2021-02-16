@@ -18,6 +18,10 @@
 
 package appeng.client.render.tesr;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Collections;
+
 import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.api.EnvType;
@@ -28,12 +32,13 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
+
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
 import appeng.core.AppEng;
@@ -41,7 +46,7 @@ import appeng.tile.storage.SkyChestBlockEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @Environment(EnvType.CLIENT)
-public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
+public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
 
     public static final SpriteIdentifier TEXTURE_STONE = new SpriteIdentifier(TexturedRenderLayers.CHEST_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "models/skychest"));
@@ -54,18 +59,24 @@ public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
     private final ModelPart singleBottom;
     private final ModelPart singleLatch;
 
-    public SkyChestTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public SkyChestTESR(BlockEntityRendererFactory.Context rendererDispatcherIn) {
+        ModelPart.Cuboid[] singleBottomCuboids = {
+                new ModelPart.Cuboid(0, 19, 1F, 0F, 1F, 14F, 10F, 14F, 0F, 0F, 0F, false, 64F, 64F)
+        };
+        this.singleBottom = new ModelPart(Arrays.asList(singleBottomCuboids), Collections.emptyMap());
 
-        this.singleBottom = new ModelPart(64, 64, 0, 19);
-        this.singleBottom.addCuboid(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
-        this.singleLid = new ModelPart(64, 64, 0, 0);
-        this.singleLid.addCuboid(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
-        this.singleLid.pivotY = 10.0F;
-        this.singleLid.pivotZ = 1.0F;
-        this.singleLatch = new ModelPart(64, 64, 0, 0);
-        this.singleLatch.addCuboid(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
-        this.singleLatch.pivotY = 9.0F;
+        ModelPart.Cuboid[] singleLidCuboids = {
+                new ModelPart.Cuboid(0, 0, 1F, 0F, 0F, 14F, 5F, 14F, 0F, 0F, 0F, false, 64F, 64F)
+        };
+        this.singleLid = new ModelPart(Arrays.asList(singleLidCuboids), Collections.emptyMap());
+        this.singleLid.pivotY = 10F;
+        this.singleLid.pivotZ = 1F;
+
+        ModelPart.Cuboid[] singleLatchCuboids = {
+                new ModelPart.Cuboid(0, 0, 7F, -1F, 15F, 2F, 4F, 1F, 0F, 0F, 0F, false, 64F, 64F)
+        };
+        this.singleLatch = new ModelPart(Arrays.asList(singleLatchCuboids), Collections.emptyMap());
+        this.singleLatch.pivotY = 9F;
     }
 
     @Override

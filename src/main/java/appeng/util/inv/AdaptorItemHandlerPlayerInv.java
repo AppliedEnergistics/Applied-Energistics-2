@@ -29,7 +29,7 @@ import appeng.util.Platform;
 public class AdaptorItemHandlerPlayerInv extends AdaptorFixedInv {
 
     public AdaptorItemHandlerPlayerInv(final PlayerEntity playerInv) {
-        super(new FixedInventoryVanillaWrapper(playerInv.inventory));
+        super(new FixedInventoryVanillaWrapper(playerInv.getInventory()));
     }
 
     /**

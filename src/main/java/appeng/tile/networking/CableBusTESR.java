@@ -19,17 +19,16 @@
 package appeng.tile.networking;
 
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
 
 import appeng.api.parts.IPart;
 
-public class CableBusTESR extends BlockEntityRenderer<CableBusBlockEntity> {
+public class CableBusTESR implements BlockEntityRenderer<CableBusBlockEntity> {
 
-    public CableBusTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public CableBusTESR(BlockEntityRendererFactory.Context rendererDispatcherIn) {
     }
 
     @Override

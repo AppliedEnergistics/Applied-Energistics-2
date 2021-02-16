@@ -18,6 +18,9 @@
 
 package appeng.debug;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AutomaticItemPlacementContext;
@@ -25,27 +28,27 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 import appeng.core.AppEng;
 import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;
 
-public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Tickable {
+public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements BlockEntityTicker {
 
     private int size = 3;
     private ItemStack is = ItemStack.EMPTY;
     private int countdown = 20 * 10;
 
-    public CubeGeneratorBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CubeGeneratorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override
-    public void tick() {
+    public void tick(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (!this.is.isEmpty() && Platform.isServer()) {
             this.countdown--;
 
@@ -83,7 +86,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
 
     void click(final PlayerEntity player) {
         if (Platform.isServer()) {
-            final ItemStack hand = player.inventory.getMainHandStack();
+            final ItemStack hand = player.getInventory().getMainHandStack();
 
             if (hand.isEmpty()) {
                 this.is = ItemStack.EMPTY;

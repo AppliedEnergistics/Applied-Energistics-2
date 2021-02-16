@@ -18,9 +18,12 @@
 
 package appeng.spatial;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import com.mojang.serialization.Codec;
 
@@ -28,10 +31,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryLookupCodec;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.*;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.FixedBiomeSource;
@@ -74,7 +74,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
         // we're all filled with matrix blocks
         BlockState[] columnSample = new BlockState[256];
         Arrays.fill(columnSample, this.defaultBlockState);
-        this.columnSample = new VerticalBlockSample(columnSample);
+        this.columnSample = new VerticalBlockSample(0, columnSample);
     }
 
     @Override
@@ -122,22 +122,25 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
+    public int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world) {
+        return 0;
+    }
+
+    @Override
     public ChunkGenerator withSeed(long seed) {
         return this;
     }
 
     @Override
-    public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk) {
+    public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
+        CompletableFuture<Chunk> chunkCompletableFuture = new CompletableFuture();
+        chunkCompletableFuture.complete(chunk);
+        return chunkCompletableFuture;
     }
 
     @Override
-    public BlockView getColumnSample(int x, int z) {
+    public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
         return columnSample;
-    }
-
-    @Override
-    public int getHeight(int x, int z, Heightmap.Type heightmapType) {
-        return 0;
     }
 
     @Override

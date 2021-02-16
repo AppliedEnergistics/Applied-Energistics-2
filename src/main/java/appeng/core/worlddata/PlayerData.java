@@ -55,7 +55,7 @@ final class PlayerData extends PersistentState implements IWorldPlayerData {
     private int nextPlayerId = 0;
 
     public PlayerData() {
-        super(NAME);
+        super();
     }
 
     @Nullable
@@ -83,7 +83,12 @@ final class PlayerData extends PersistentState implements IWorldPlayerData {
         return playerId;
     }
 
-    @Override
+    public static PlayerData createFromTag(CompoundTag tag) {
+        PlayerData res = new PlayerData();
+        res.fromTag(tag);
+        return res;
+    }
+
     public void fromTag(CompoundTag nbt) {
         int[] playerIds = nbt.getIntArray(TAG_PLAYER_IDS);
         long[] profileIds = nbt.getLongArray(TAG_PROFILE_IDS);

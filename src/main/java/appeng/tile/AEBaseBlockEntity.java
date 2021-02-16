@@ -83,8 +83,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     private Direction up = Direction.UP;
     private boolean markDirtyQueued = false;
 
-    public AEBaseBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public AEBaseBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     public static void registerTileItem(final Class<? extends BlockEntity> c, final IStackSrc wat) {
@@ -115,8 +115,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
 
         if (data.contains("customName")) {
             this.customName = data.getString("customName");
@@ -402,7 +402,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
 
     public void saveChanges() {
         if (this.world != null) {
-            this.world.markDirty(this.pos, this);
+            this.world.markDirty(this.pos);
             if (!this.markDirtyQueued) {
                 TickHandler.instance().addCallable(null, this::markDirtyAtEndOfTick);
                 this.markDirtyQueued = true;

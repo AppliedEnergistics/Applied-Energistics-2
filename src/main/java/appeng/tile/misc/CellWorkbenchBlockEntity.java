@@ -55,8 +55,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     private FixedItemInv cacheConfig = null;
     private boolean locked = false;
 
-    public CellWorkbenchBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CellWorkbenchBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.manager.registerSetting(Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE);
         this.cell.setEnableClientEvents(true);
     }
@@ -105,8 +105,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.cell.readFromNBT(data, "cell");
         this.config.readFromNBT(data, "config");
         this.manager.readFromNBT(data);

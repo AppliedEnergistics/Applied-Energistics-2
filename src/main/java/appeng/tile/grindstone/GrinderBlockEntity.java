@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import alexiil.mc.lib.attributes.Simulation;
@@ -48,8 +49,8 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     private final LimitedFixedItemInv invExt;
     private int points;
 
-    public GrinderBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public GrinderBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
 
         invExt = inv.createLimitedFixedInv();
         invExt.getAllRule().disallowExtraction().disallowInsertion();

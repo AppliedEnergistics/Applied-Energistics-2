@@ -25,10 +25,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import alexiil.mc.lib.attributes.Simulation;
@@ -68,8 +70,8 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
     private final FixedItemInv externalInv = inv.createFiltered(new ChargerInvFilter());
 
-    public ChargerBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public ChargerBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
         this.getProxy().setFlags();
         this.setInternalMaxPower(POWER_MAXIMUM_AMOUNT);
@@ -167,11 +169,11 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
         final ItemStack myItem = this.inv.getInvStack(0);
         if (myItem.isEmpty()) {
-            ItemStack held = player.inventory.getMainHandStack();
+            ItemStack held = player.getInventory().getMainHandStack();
 
             if (Api.instance().definitions().materials().certusQuartzCrystal().isSameAs(held)
                     || Platform.isChargeable(held)) {
-                held = player.inventory.removeStack(player.inventory.selectedSlot, 1);
+                held = player.getInventory().removeStack(player.getInventory().selectedSlot, 1);
                 this.inv.setInvStack(0, held, Simulation.ACTION);
             }
         } else {

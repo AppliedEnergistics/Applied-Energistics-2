@@ -268,7 +268,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
             }
         };
 
-        // bind player inventory
+        // bind player.getInventory()
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
                 int invSlot = j + i * 9 + 9;
@@ -564,7 +564,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
             }
 
             if (s instanceof FakeSlot) {
-                final ItemStack hand = player.inventory.getCursorStack();
+                final ItemStack hand = player.getInventory().getCursorStack();
 
                 switch (action) {
                     case PICKUP_OR_SET_DOWN:
@@ -668,7 +668,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
                 }
 
                 final int releaseQty = 1;
-                final ItemStack isg = player.inventory.getCursorStack();
+                final ItemStack isg = player.getInventory().getCursorStack();
 
                 if (!isg.isEmpty() && releaseQty > 0) {
                     IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
@@ -679,7 +679,8 @@ public abstract class AEBaseContainer extends ScreenHandler {
                     ais = Platform.poweredInsert(this.getPowerSource(), this.getCellInventory(), ais,
                             this.getActionSource());
                     if (ais == null) {
-                        final InventoryAdaptor ia = new AdaptorFixedInv(new WrapperCursorItemHandler(player.inventory));
+                        final InventoryAdaptor ia = new AdaptorFixedInv(
+                                new WrapperCursorItemHandler(player.getInventory()));
 
                         final ItemStack fail = ia.removeItems(1, extracted.getDefinition(), null);
                         if (fail.isEmpty()) {
@@ -700,7 +701,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
 
                 if (slotItem != null) {
                     int liftQty = 1;
-                    final ItemStack item = player.inventory.getCursorStack();
+                    final ItemStack item = player.getInventory().getCursorStack();
 
                     if (!item.isEmpty()) {
                         if (item.getCount() >= item.getMaxCount()) {
@@ -718,7 +719,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
                                 this.getActionSource());
                         if (ais != null) {
                             final InventoryAdaptor ia = new AdaptorFixedInv(
-                                    new WrapperCursorItemHandler(player.inventory));
+                                    new WrapperCursorItemHandler(player.getInventory()));
 
                             final ItemStack fail = ia.addItems(ais.createItemStack());
                             if (!fail.isEmpty()) {
@@ -735,28 +736,28 @@ public abstract class AEBaseContainer extends ScreenHandler {
                     return;
                 }
 
-                if (player.inventory.getCursorStack().isEmpty()) {
+                if (player.getInventory().getCursorStack().isEmpty()) {
                     if (slotItem != null) {
                         IAEItemStack ais = slotItem.copy();
                         ais.setStackSize(ais.getDefinition().getMaxCount());
                         ais = Platform.poweredExtraction(this.getPowerSource(), this.getCellInventory(), ais,
                                 this.getActionSource());
                         if (ais != null) {
-                            player.inventory.setCursorStack(ais.createItemStack());
+                            player.getInventory().setCursorStack(ais.createItemStack());
                         } else {
-                            player.inventory.setCursorStack(ItemStack.EMPTY);
+                            player.getInventory().setCursorStack(ItemStack.EMPTY);
                         }
                         this.updateHeld(player);
                     }
                 } else {
                     IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
-                            .createStack(player.inventory.getCursorStack());
+                            .createStack(player.getInventory().getCursorStack());
                     ais = Platform.poweredInsert(this.getPowerSource(), this.getCellInventory(), ais,
                             this.getActionSource());
                     if (ais != null) {
-                        player.inventory.setCursorStack(ais.createItemStack());
+                        player.getInventory().setCursorStack(ais.createItemStack());
                     } else {
-                        player.inventory.setCursorStack(ItemStack.EMPTY);
+                        player.getInventory().setCursorStack(ItemStack.EMPTY);
                     }
                     this.updateHeld(player);
                 }
@@ -767,7 +768,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
                     return;
                 }
 
-                if (player.inventory.getCursorStack().isEmpty()) {
+                if (player.getInventory().getCursorStack().isEmpty()) {
                     if (slotItem != null) {
                         IAEItemStack ais = slotItem.copy();
                         final long maxSize = ais.getDefinition().getMaxCount();
@@ -782,23 +783,23 @@ public abstract class AEBaseContainer extends ScreenHandler {
                         }
 
                         if (ais != null) {
-                            player.inventory.setCursorStack(ais.createItemStack());
+                            player.getInventory().setCursorStack(ais.createItemStack());
                         } else {
-                            player.inventory.setCursorStack(ItemStack.EMPTY);
+                            player.getInventory().setCursorStack(ItemStack.EMPTY);
                         }
                         this.updateHeld(player);
                     }
                 } else {
                     IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
-                            .createStack(player.inventory.getCursorStack());
+                            .createStack(player.getInventory().getCursorStack());
                     ais.setStackSize(1);
                     ais = Platform.poweredInsert(this.getPowerSource(), this.getCellInventory(), ais,
                             this.getActionSource());
                     if (ais == null) {
-                        final ItemStack is = player.inventory.getCursorStack();
+                        final ItemStack is = player.getInventory().getCursorStack();
                         is.setCount(is.getCount() - 1);
                         if (is.getCount() <= 0) {
-                            player.inventory.setCursorStack(ItemStack.EMPTY);
+                            player.getInventory().setCursorStack(ItemStack.EMPTY);
                         }
                         this.updateHeld(player);
                     }
@@ -809,7 +810,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
                 if (player.isCreative() && slotItem != null) {
                     final ItemStack is = slotItem.createItemStack();
                     is.setCount(is.getMaxCount());
-                    player.inventory.setCursorStack(is);
+                    player.getInventory().setCursorStack(is);
                     this.updateHeld(player);
                 }
                 break;
@@ -854,7 +855,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
     protected void updateHeld(final ServerPlayerEntity p) {
         if (Platform.isServer()) {
             NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0,
-                    AEItemStack.fromItemStack(p.inventory.getCursorStack())), p);
+                    AEItemStack.fromItemStack(p.getInventory().getCursorStack())), p);
         }
     }
 

@@ -191,9 +191,10 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         final InvTracker inv = this.byId.get(id);
         if (inv != null) {
             final ItemStack is = inv.server.getInvStack(slot);
-            final boolean hasItemInHand = !player.inventory.getCursorStack().isEmpty();
+            final boolean hasItemInHand = !player.getInventory().getCursorStack().isEmpty();
 
-            final InventoryAdaptor playerHand = new AdaptorFixedInv(new WrapperCursorItemHandler(player.inventory));
+            final InventoryAdaptor playerHand = new AdaptorFixedInv(
+                    new WrapperCursorItemHandler(player.getInventory()));
 
             // Create a wrapper around the targetted slot that will only allow insertions of
             // patterns
@@ -207,20 +208,21 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                     if (hasItemInHand) {
                         ItemStack inSlot = theSlot.get();
                         if (inSlot.isEmpty()) {
-                            player.inventory.setCursorStack(theSlot.insert(player.inventory.getCursorStack()));
+                            player.getInventory()
+                                    .setCursorStack(theSlot.insert(player.getInventory().getCursorStack()));
                         } else {
                             inSlot = inSlot.copy();
-                            final ItemStack inHand = player.inventory.getCursorStack().copy();
+                            final ItemStack inHand = player.getInventory().getCursorStack().copy();
 
                             theSlot.set(ItemStack.EMPTY);
-                            player.inventory.setCursorStack(ItemStack.EMPTY);
+                            player.getInventory().setCursorStack(ItemStack.EMPTY);
 
-                            player.inventory.setCursorStack(theSlot.insert(inHand.copy()));
+                            player.getInventory().setCursorStack(theSlot.insert(inHand.copy()));
 
-                            if (player.inventory.getCursorStack().isEmpty()) {
-                                player.inventory.setCursorStack(inSlot);
+                            if (player.getInventory().getCursorStack().isEmpty()) {
+                                player.getInventory().setCursorStack(inSlot);
                             } else {
-                                player.inventory.setCursorStack(inHand);
+                                player.getInventory().setCursorStack(inHand);
                                 theSlot.set(inSlot);
                             }
                         }
@@ -267,7 +269,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                 case CREATIVE_DUPLICATE:
 
                     if (player.isCreative() && !hasItemInHand) {
-                        player.inventory.setCursorStack(is.isEmpty() ? ItemStack.EMPTY : is.copy());
+                        player.getInventory().setCursorStack(is.isEmpty() ? ItemStack.EMPTY : is.copy());
                     }
 
                     break;

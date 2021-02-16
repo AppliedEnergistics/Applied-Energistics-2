@@ -47,7 +47,7 @@ public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
                 pair.getRight().apply(false, matrixStack); // FIXME: check left handed
             }
             MinecraftClient.getInstance().getItemRenderer().renderItem(pair.getLeft(), ModelTransformation.Mode.GROUND,
-                    combinedLight, combinedOverlay, matrixStack, buffers);
+                    combinedLight, combinedOverlay, matrixStack, buffers, 0);
             matrixStack.pop();
         }
     }

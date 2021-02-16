@@ -25,8 +25,8 @@ import com.google.common.collect.ImmutableList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 
 import appeng.client.render.FacingToRotation;
@@ -34,13 +34,12 @@ import appeng.client.render.renderable.Renderable;
 import appeng.tile.AEBaseBlockEntity;
 
 @Environment(EnvType.CLIENT)
-public class ModularTESR<T extends AEBaseBlockEntity> extends BlockEntityRenderer<T> {
+public class ModularTESR<T extends AEBaseBlockEntity> implements BlockEntityRenderer<T> {
 
     private final List<Renderable<? super T>> renderables;
 
     @SafeVarargs
-    public ModularTESR(BlockEntityRenderDispatcher rendererDispatcherIn, Renderable<? super T>... renderables) {
-        super(rendererDispatcherIn);
+    public ModularTESR(BlockEntityRendererFactory.Context rendererDispatcherIn, Renderable<? super T>... renderables) {
         this.renderables = ImmutableList.copyOf(renderables);
     }
 

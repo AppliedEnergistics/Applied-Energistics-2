@@ -36,6 +36,7 @@ import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemExtractable;
 import alexiil.mc.lib.attributes.item.filter.ExactItemStackFilter;
+
 import appeng.debug.ItemGenBlockEntity.QueuedItemHandler;
 import appeng.tile.AEBaseBlockEntity;
 
@@ -45,8 +46,8 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
 
     private final QueuedItemHandler handler = new QueuedItemHandler();
 
-    public ItemGenBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public ItemGenBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         if (POSSIBLE_ITEMS.isEmpty()) {
             for (final Item mi : Registry.ITEM) {
                 if (mi != null && mi != Items.AIR) {

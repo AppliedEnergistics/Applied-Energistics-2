@@ -41,6 +41,7 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -303,7 +304,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
         for (CustomSlotWidget slot : this.guiSlots) {
             if (this.isPointWithinBounds(slot.getTooltipAreaX(), slot.getTooltipAreaY(), slot.getTooltipAreaWidth(),
                     slot.getTooltipAreaHeight(), xCoord, yCoord) && slot.canClick(getPlayer())) {
-                slot.slotClicked(getPlayer().inventory.getCursorStack(), btn);
+                slot.slotClicked(getPlayer().getInventory().getCursorStack(), btn);
             }
         }
 
@@ -332,7 +333,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
         final Slot slot = this.getSlot((int) mouseX, (int) mouseY);
-        final ItemStack itemstack = getPlayer().inventory.getCursorStack();
+        final ItemStack itemstack = getPlayer().getInventory().getCursorStack();
 
         if (this.getScrollBar() != null) {
             // FIXME: Coordinate system of mouseX/mouseY is unclear
@@ -465,7 +466,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
                     stack = ((SlotME) slot).getAEStack();
 
                     if (stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0
-                            && player.inventory.getCursorStack().isEmpty()) {
+                            && player.getInventory().getCursorStack().isEmpty()) {
                         action = InventoryAction.AUTO_CRAFT;
                     }
 
@@ -547,7 +548,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     protected boolean checkHotbarKeys(int keyCode, int scanCode) {
         final Slot theSlot = this.focusedSlot;
 
-        if (getPlayer().inventory.getCursorStack().isEmpty() && theSlot != null) {
+        if (getPlayer().getInventory().getCursorStack().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
                 if (getClient().options.keysHotbar[j].matchesKey(keyCode, scanCode)) {
                     final List<Slot> slots = this.getInventorySlots();
@@ -715,7 +716,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
                             final Tessellator tessellator = Tessellator.getInstance();
                             final BufferBuilder vb = tessellator.getBuffer();
 
-                            vb.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
+                            vb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
 
                             final float f1 = 0.00390625F;
                             final float f = 0.00390625F;

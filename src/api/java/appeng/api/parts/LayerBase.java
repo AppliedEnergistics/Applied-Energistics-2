@@ -25,8 +25,10 @@ package appeng.api.parts;
 
 import java.util.Set;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import appeng.api.util.AEPartLocation;
@@ -40,8 +42,8 @@ import appeng.api.util.AEPartLocation;
 public abstract class LayerBase extends BlockEntity // implements IPartHost
 {
 
-    public LayerBase(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public LayerBase(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         // TODO Auto-generated constructor stub
     }
 

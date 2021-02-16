@@ -172,7 +172,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
         final BlockEntity te = this.getTile();
 
-        if (Platform.isWrench(player, player.inventory.getMainHandStack(), te.getPos())) {
+        if (Platform.isWrench(player, player.getInventory().getMainHandStack(), te.getPos())) {
             if (Platform.isServer()) {
                 if (this.getSpin() > 3) {
                     this.spin = 0;

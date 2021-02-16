@@ -27,6 +27,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -35,7 +37,6 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -115,7 +116,7 @@ import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.item.AEItemStack;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
-        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, Tickable {
+        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, BlockEntityTicker {
 
     private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
     private static final int BIT_STATE_MASK = 0b111;
@@ -145,8 +146,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     // cell's inventory when a chest comes into view.
     private Item cellItem = Items.AIR;
 
-    public ChestBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public ChestBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
@@ -355,7 +356,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void tick() {
+    public void tick(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (this.world.isClient) {
             return;
         }
@@ -425,8 +426,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void fromTag(final CompoundTag data) {
+        super.fromTag(data);
         this.config.readFromNBT(data);
         this.priority = data.getInt("priority");
         if (data.contains("paintedColor")) {
@@ -616,7 +617,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (cellInventory != null) {
             cellInventory.persist();
         }
-        this.world.markDirty(this.pos, this);
+        this.world.markDirty(this.pos);
     }
 
     private class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T> {

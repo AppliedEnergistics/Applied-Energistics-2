@@ -23,6 +23,9 @@ import java.io.IOException;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.EnvironmentInterface;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.block.ChestAnimationProgress;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,8 +33,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -41,7 +45,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
 @EnvironmentInterface(value = EnvType.CLIENT, itf = ChestAnimationProgress.class)
-public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickable, ChestAnimationProgress {
+public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements BlockEntityTicker, ChestAnimationProgress {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
 
@@ -52,8 +56,8 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickabl
     private float lidAngle;
     private float prevLidAngle;
 
-    public SkyChestBlockEntity(BlockEntityType<? extends SkyChestBlockEntity> type) {
-        super(type);
+    public SkyChestBlockEntity(BlockEntityType<? extends SkyChestBlockEntity> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override
@@ -124,7 +128,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickabl
     }
 
     @Override
-    public void tick() {
+    public void tick(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         this.prevLidAngle = this.lidAngle;
         if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F) {
             if (this.numPlayersUsing > 0) {
@@ -163,5 +167,4 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickabl
     public float getAnimationProgress(float partialTicks) {
         return MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
     }
-
 }

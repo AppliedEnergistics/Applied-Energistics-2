@@ -11,6 +11,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.math.BlockPos;
@@ -46,6 +47,7 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
+import appeng.mixins.BucketItemAccessor;
 import appeng.mixins.tags.FluidTagsAccessor;
 import appeng.parts.BasicStatePart;
 import appeng.parts.automation.PlaneConnectionHelper;
@@ -146,7 +148,17 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
-                    fluid = ((FluidDrainable) blockstate.getBlock()).tryDrainFluid(w, pos, blockstate);
+                    ItemStack fluidContainer = ((FluidDrainable) blockstate.getBlock()).tryDrainFluid(w, pos,
+                            blockstate);
+
+                    // We assume it will return a bucket filled with fluid, since this is what all Vanilla
+                    // FluidDrainables do
+                    if (fluidContainer.getItem() instanceof BucketItem) {
+                        fluid = ((BucketItemAccessor) fluidContainer.getItem()).getFluid();
+                    } else {
+                        fluid = Fluids.EMPTY;
+                    }
+
                     this.storeFluid(AEFluidStack.fromFluidVolume(FluidKeys.get(fluid).withAmount(FluidAmount.ONE),
                             RoundingMode.DOWN), true);
 

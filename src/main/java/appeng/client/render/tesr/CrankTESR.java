@@ -26,8 +26,8 @@ import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Quaternion;
@@ -40,10 +40,9 @@ import appeng.tile.grindstone.CrankBlockEntity;
  * normal model.
  */
 @Environment(EnvType.CLIENT)
-public class CrankTESR extends BlockEntityRenderer<CrankBlockEntity> {
+public class CrankTESR implements BlockEntityRenderer<CrankBlockEntity> {
 
-    public CrankTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public CrankTESR(BlockEntityRendererFactory.Context rendererDispatcherIn) {
     }
 
     @Override

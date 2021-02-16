@@ -35,7 +35,7 @@ public class SpatialStorageWorldData extends PersistentState {
     private final Int2ObjectOpenHashMap<SpatialStoragePlot> plots = new Int2ObjectOpenHashMap<>();
 
     public SpatialStorageWorldData() {
-        super(ID);
+        super();
     }
 
     public SpatialStoragePlot getPlotById(int id) {
@@ -74,7 +74,12 @@ public class SpatialStorageWorldData extends PersistentState {
         markDirty();
     }
 
-    @Override
+    public static SpatialStorageWorldData createFromTag(CompoundTag tag) {
+        SpatialStorageWorldData res = new SpatialStorageWorldData();
+        res.fromTag(tag);
+        return res;
+    }
+
     public void fromTag(CompoundTag tag) {
         int version = tag.getInt(TAG_FORMAT);
         if (version != CURRENT_FORMAT) {

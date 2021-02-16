@@ -4,9 +4,11 @@ import java.util.EnumMap;
 
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
+
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.block.storage.DriveSlotState;
 
@@ -51,7 +53,8 @@ class CellLedRenderer {
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
-    public static final RenderLayer RENDER_LAYER = RenderLayer.of("ae_drive_leds", VertexFormats.POSITION_COLOR, 7,
+    public static final RenderLayer RENDER_LAYER = RenderLayer.of("ae_drive_leds", VertexFormats.POSITION_COLOR,
+            VertexFormat.DrawMode.QUADS,
             32565, false, true, RenderLayer.MultiPhaseParameters.builder().build(false));
 
     public static void renderLed(IChestOrDrive drive, int slot, VertexConsumer buffer, MatrixStack ms,

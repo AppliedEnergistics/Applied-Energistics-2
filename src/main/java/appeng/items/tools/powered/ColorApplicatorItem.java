@@ -214,7 +214,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         } else {
             for (Map.Entry<Identifier, AEColor> entry : TAG_TO_COLOR.entrySet()) {
                 Tag<Item> tag = ItemTags.getTagGroup().getTag(entry.getKey());
-                if (tag != null && paintBall.getItem().isIn(tag)) {
+                if (tag != null && paintBall.isIn(tag)) {
                     return entry.getValue();
                 }
             }

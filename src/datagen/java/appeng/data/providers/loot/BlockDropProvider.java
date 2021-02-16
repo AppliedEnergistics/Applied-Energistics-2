@@ -20,7 +20,6 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.condition.SurvivesExplosionLootCondition;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
@@ -28,6 +27,7 @@ import net.minecraft.loot.entry.LeafEntry;
 import net.minecraft.loot.function.ApplyBonusLootFunction;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -46,12 +46,12 @@ public class BlockDropProvider extends BlockLootTableGenerator implements IAE2Da
             .put(BLOCKS.quartzOre().block(),
                     b -> dropsWithSilkTouch(BLOCKS.quartzOre().block(), applyExplosionDecay(BLOCKS.quartzOre().block(),
                             ItemEntry.builder(MATERIALS.certusQuartzCrystal().item())
-                                    .apply(SetCountLootFunction.builder(UniformLootTableRange.between(1.0F, 2.0F)))
+                                    .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1.0F, 2.0F)))
                                     .apply(ApplyBonusLootFunction.uniformBonusCount(Enchantments.FORTUNE)))))
             .put(BLOCKS.quartzOreCharged().block(), b -> dropsWithSilkTouch(BLOCKS.quartzOreCharged().block(),
                     applyExplosionDecay(BLOCKS.quartzOreCharged().block(),
                             ItemEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
-                                    .apply(SetCountLootFunction.builder(UniformLootTableRange.between(1.0F, 2.0F)))
+                                    .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1.0F, 2.0F)))
                                     .apply(ApplyBonusLootFunction.uniformBonusCount(Enchantments.FORTUNE)))))
             .build();
 

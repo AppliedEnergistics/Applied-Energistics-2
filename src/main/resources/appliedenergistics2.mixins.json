@@ -26,6 +26,7 @@
     "BootstrapMixin",
     "ItemEntityAccessor",
     "IngredientAccessor",
+    "BucketItemAccessor",
     "feature.LightingProviderMixin"
   ],
   "client": [

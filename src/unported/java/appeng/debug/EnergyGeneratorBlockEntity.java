@@ -40,8 +40,8 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Tic
      */
     private static final int BASE_ENERGY = 8;
 
-    public EnergyGeneratorBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public EnergyGeneratorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override
