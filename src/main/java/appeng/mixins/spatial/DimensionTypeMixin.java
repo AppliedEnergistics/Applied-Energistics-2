@@ -33,7 +33,9 @@ public class DimensionTypeMixin {
     @Invoker("<init>")
     static DimensionType create(OptionalLong fixedTime, boolean hasSkylight, boolean hasCeiling, boolean ultrawarm,
             boolean natural, double coordinateScale, boolean piglinSafe, boolean bedWorks, boolean respawnAnchorWorks,
-            boolean hasRaids, int logicalHeight, Identifier infiniburn, Identifier skyProperties, float ambientLight) {
+            boolean hasRaids, int minimumY, int height, int logicalHeight, Identifier infiniburn,
+            Identifier skyProperties,
+            float ambientLight) {
         throw new AssertionError();
     }
 
@@ -41,7 +43,8 @@ public class DimensionTypeMixin {
     private static void addRegistryDefaults(DynamicRegistryManager.Impl registryTracker,
             CallbackInfoReturnable<?> cir) {
         DimensionType dimensionType = create(OptionalLong.of(12000), false, false, false, false, 1.0, false, false,
-                false, false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), SpatialStorageDimensionIds.SKY_PROPERTIES_ID,
+                false, false, 0, 256, 256, BlockTags.INFINIBURN_OVERWORLD.getId(),
+                SpatialStorageDimensionIds.SKY_PROPERTIES_ID,
                 1.0f);
 
         Registry.register(registryTracker.get(Registry.DIMENSION_TYPE_KEY),
