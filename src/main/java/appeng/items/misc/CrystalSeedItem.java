@@ -61,6 +61,8 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
      */
     private static final String TAG_GROWTH_TICKS = "p";
 
+    public static final String TAG_PREVENT_MAGNET = "PreventRemoteMovement";
+
     /**
      * The number of growth ticks required to finish growing.
      */
@@ -154,6 +156,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         // Cannot read the pickup delay of the original item, so we
         // use the pickup delay used for items dropped by a player instead
         egc.setPickupDelay(40);
+        egc.getPersistentData().putBoolean(TAG_PREVENT_MAGNET, true);
 
         return egc;
     }
