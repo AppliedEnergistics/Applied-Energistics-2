@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,6 +34,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -95,6 +98,8 @@ import appeng.util.prioritylist.PrecisePriorityList;
 
 public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost
 {
+	@CapabilityInject(IItemRepository.class)
+	public static Capability<IItemRepository> ITEM_REPOSITORY_CAPABILITY = null;
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_base" );
 
@@ -395,6 +400,12 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			return null;
 		}
 
+		// Check via cap for IItemRepository
+		IItemRepository handlerRepo = target.getCapability( ITEM_REPOSITORY_CAPABILITY, targetSide );
+		if( handlerRepo != null )
+		{
+			return new ItemRepositoryAdapter( handlerRepo, this );
+		}
 		// Check via cap for IItemHandler
 		IItemHandler handlerExt = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
 		if( handlerExt != null )
@@ -418,6 +429,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) )
 		{
 			return Objects.hash( target, target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) );
+		}
+
+		final IItemRepository handlerRepo = target.getCapability( ITEM_REPOSITORY_CAPABILITY, targetSide );
+
+		if( handlerRepo != null )
+		{
+			return Objects.hash( target, handlerRepo, handlerRepo.getAllItems().size() );
 		}
 
 		final IItemHandler itemHandler = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
