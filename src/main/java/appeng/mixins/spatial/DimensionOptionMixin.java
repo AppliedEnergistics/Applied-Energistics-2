@@ -26,7 +26,7 @@ public class DimensionOptionMixin {
      * This means Vanilla will perform it's check whether it should display an experimental warning without considering
      * our dimension.
      */
-    @ModifyVariable(method = "method_29567", at = @At(value = "INVOKE_ASSIGN", ordinal = 0, target = "Lcom/google/common/collect/Lists;newArrayList(Ljava/lang/Iterable;)Ljava/util/ArrayList;", remap = false), allow = 1)
+    @ModifyVariable(method = "hasDefaultSettings", at = @At(value = "INVOKE_ASSIGN", ordinal = 0, target = "Lcom/google/common/collect/Lists;newArrayList(Ljava/lang/Iterable;)Ljava/util/ArrayList;", remap = false), allow = 1)
     private static List<Map.Entry<RegistryKey<DimensionOptions>, DimensionOptions>> overrideExperimentalCheck(
             List<Map.Entry<RegistryKey<DimensionOptions>, DimensionOptions>> dimensions) {
         // this only removes our dimension from the check
