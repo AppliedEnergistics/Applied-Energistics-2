@@ -78,6 +78,7 @@ import appeng.block.qnb.QuantumBridgeRendering;
 import appeng.block.qnb.QuantumLinkChamberBlock;
 import appeng.block.qnb.QuantumRingBlock;
 import appeng.block.spatial.MatrixFrameBlock;
+import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.spatial.SpatialPylonBlock;
 import appeng.block.storage.ChestBlock;
@@ -151,6 +152,7 @@ import appeng.tile.networking.EnergyAcceptorTileEntity;
 import appeng.tile.networking.EnergyCellTileEntity;
 import appeng.tile.networking.WirelessTileEntity;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.tile.spatial.SpatialAnchorTileEntity;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
 import appeng.tile.spatial.SpatialPylonTileEntity;
 import appeng.tile.storage.ChestTileEntity;
@@ -190,6 +192,7 @@ public final class ApiBlocks implements IBlocks {
     private final ITileDefinition quantumLink;
     private final ITileDefinition spatialPylon;
     private final ITileDefinition spatialIOPort;
+    private final ITileDefinition spatialAnchor;
     private final ITileDefinition multiPart;
     private final ITileDefinition controller;
     private final ITileDefinition drive;
@@ -641,6 +644,14 @@ public final class ApiBlocks implements IBlocks {
         this.quartzPillarSlab = deco.block("quartz_pillar_slab", () -> new SlabBlock(QUARTZ_PROPERTIES))
                 .addFeatures(AEFeature.CERTUS).build();
 
+        this.spatialAnchor = registry.block("spatial_anchor", SpatialAnchorBlock::new)
+                .features(AEFeature.SPATIAL_IO)
+                .tileEntity(registry
+                        .tileEntity("spatial_anchor", SpatialAnchorTileEntity.class, SpatialAnchorTileEntity::new)
+                        .build())
+                .build();
+
+        // Debug blocks
         this.itemGen = registry.block("debug_item_gen", ItemGenBlock::new)
                 .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
                 .tileEntity(
@@ -890,6 +901,11 @@ public final class ApiBlocks implements IBlocks {
     @Override
     public ITileDefinition spatialIOPort() {
         return this.spatialIOPort;
+    }
+
+    @Override
+    public ITileDefinition spatialAnchor() {
+        return this.spatialAnchor;
     }
 
     @Override

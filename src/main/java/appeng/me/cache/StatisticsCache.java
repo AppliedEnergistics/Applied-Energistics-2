@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,13 +34,14 @@ import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
+import appeng.api.networking.events.statistics.MENetworkChunkEvent;
 import appeng.api.util.DimensionalCoord;
 
-public class InformationCache implements IGridCache {
+public class StatisticsCache implements IGridCache {
     private IGrid grid;
     private Map<IWorld, Multiset<ChunkPos>> chunks;
 
-    public InformationCache(final IGrid g) {
+    public StatisticsCache(final IGrid g) {
         this.grid = g;
         this.chunks = new HashMap<>();
     }
@@ -124,7 +125,13 @@ public class InformationCache implements IGridCache {
      * @return
      */
     private boolean addChunk(IWorld world, BlockPos pos) {
-        return this.getChunks(world).add(new ChunkPos(pos));
+        final ChunkPos position = new ChunkPos(pos);
+
+        if (!this.getChunks(world).contains(position)) {
+            this.grid.postEvent(new MENetworkChunkEvent.MENetworkChunkAdded(world, position));
+        }
+
+        return this.getChunks(world).add(position);
     }
 
     /**
@@ -138,7 +145,12 @@ public class InformationCache implements IGridCache {
      * @return
      */
     private boolean removeChunk(IWorld world, BlockPos pos) {
-        boolean ret = this.getChunks(world).remove(new ChunkPos(pos));
+        final ChunkPos position = new ChunkPos(pos);
+        boolean ret = this.getChunks(world).remove(position);
+
+        if (ret && !this.getChunks(world).contains(position)) {
+            this.grid.postEvent(new MENetworkChunkEvent.MENetworkChunkRemoved(world, position));
+        }
 
         this.clearWorld(world);
 
