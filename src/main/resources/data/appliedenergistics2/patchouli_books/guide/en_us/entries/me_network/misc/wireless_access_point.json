@@ -1,6 +1,6 @@
 {
   "name": "ME Wireless Access Point",
-  "category": "appliedenergistics2:me_network.misc",
+  "category": "appliedenergistics2:me_network/misc",
   "icon": "appliedenergistics2:wireless_access_point",
   "pages": [
     {

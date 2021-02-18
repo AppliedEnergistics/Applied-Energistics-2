@@ -1,6 +1,6 @@
 {
   "name": "Spatial IO Port",
-  "category": "appliedenergistics2:me_network.spatial_io",
+  "category": "appliedenergistics2:me_network/spatial_io",
   "icon": "appliedenergistics2:spatial_io_port",
   "pages": [
     {

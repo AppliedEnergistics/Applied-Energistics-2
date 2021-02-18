@@ -1,6 +1,6 @@
 {
   "name": "ME IO Port",
-  "category": "appliedenergistics2:me_network.misc",
+  "category": "appliedenergistics2:me_network/misc",
   "icon": "appliedenergistics2:io_port",
   "pages": [
     {

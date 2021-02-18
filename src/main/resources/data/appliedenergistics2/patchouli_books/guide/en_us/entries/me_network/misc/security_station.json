@@ -1,6 +1,6 @@
 {
   "name": "ME Security Terminal",
-  "category": "appliedenergistics2:me_network.misc",
+  "category": "appliedenergistics2:me_network/misc",
   "icon": "appliedenergistics2:security_station",
   "pages": [
     {

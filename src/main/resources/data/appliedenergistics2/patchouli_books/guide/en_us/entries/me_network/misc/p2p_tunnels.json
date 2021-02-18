@@ -1,6 +1,6 @@
 {
   "name": "P2P Tunnels",
-  "category": "appliedenergistics2:me_network.misc",
+  "category": "appliedenergistics2:me_network/misc",
   "icon": "appliedenergistics2:me_p2p_tunnel",
   "pages": [
     {

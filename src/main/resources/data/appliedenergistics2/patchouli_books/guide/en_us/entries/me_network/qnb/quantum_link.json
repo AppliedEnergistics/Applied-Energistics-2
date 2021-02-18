@@ -1,6 +1,6 @@
 {
   "name": "ME Quantum Link Chamber",
-  "category": "appliedenergistics2:me_network.qnb",
+  "category": "appliedenergistics2:me_network/qnb",
   "icon": "appliedenergistics2:quantum_link",
   "pages": [
     {

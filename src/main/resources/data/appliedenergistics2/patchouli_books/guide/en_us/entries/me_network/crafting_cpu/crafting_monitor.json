@@ -1,6 +1,6 @@
 {
   "name": "Crafting Monitor",
-  "category": "appliedenergistics2:me_network.crafting_cpu",
+  "category": "appliedenergistics2:me_network/crafting_cpu",
   "icon": "appliedenergistics2:1k_crafting_monitor",
   "pages": [
     {
