@@ -1,7 +1,10 @@
 {
   "name": "ME Catalog",
   "landing_text": "Catalog of items for Applied Energistics 2.$(br2)This is more or less an in-game version of the $(l:https://ae-mod.info/)official wiki$(/l)",
-  "book_texture": "appliedenergistics2:textures/guis/patchouli_gui.png",
+  "book_texture": "appliedenergistics2:textures/patchouli/patchouli_gui.png",
+  "filler_texture": "appliedenergistics2:textures/patchouli/patchouli_filler.png",
+  "index_icon": "appliedenergistics2:textures/patchouli/patchouli_book.png",
+  "model": "appliedenergistics2:patchouli",
   "nameplate_color": "8A5BA4",
   "link_color": "8A5BA4",
   "link_hover_color": "D7BBEC",
