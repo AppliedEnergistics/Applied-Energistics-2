@@ -20,6 +20,11 @@ repositories {
     mavenLocal()
 
     maven {
+        name = "storagedrawers"
+        url = "https://dl.bintray.com/jaquadro/dev/"
+    }
+
+    maven {
         name "Mobius"
         url "http://mobiusstrip.eu/maven"
     }
@@ -80,6 +85,8 @@ configurations {
 }
 
 dependencies {
+    deobfCompile "com.jaquadro.minecraft.storagedrawers:StorageDrawers:1.12.2-5.4.2:api"
+
     // installable runtime dependencies
     mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
     mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
@@ -98,6 +105,8 @@ dependencies {
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
+    runtime "com.jaquadro.minecraft.storagedrawers:StorageDrawers:1.12.2-5.4.2"
+    runtime "com.jaquadro.minecraft.chameleon:Chameleon:1.12-4.1.3"
 
     // unit test dependencies
     testCompile "junit:junit:4.12"

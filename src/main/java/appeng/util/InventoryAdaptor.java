@@ -19,19 +19,18 @@
 package appeng.util;
 
 
+import appeng.util.inv.*;
+import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
-import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.AdaptorItemHandlerPlayerInv;
-import appeng.util.inv.IInventoryDestination;
-import appeng.util.inv.ItemSlot;
-
 
 /**
  * Universal Facade for other inventories. Used to conveniently interact with various types of inventories. This is not
@@ -41,15 +40,29 @@ import appeng.util.inv.ItemSlot;
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
+	@CapabilityInject( IItemRepository.class)
+	public static Capability<IItemRepository> ITEM_REPOSITORY_CAPABILITY = null;
+
 	public static InventoryAdaptor getAdaptor( final TileEntity te, final EnumFacing d )
 	{
-		if( te != null && te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d ) )
+		if( te != null )
 		{
-			// Attempt getting an IItemHandler for the given side via caps
-			IItemHandler itemHandler = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d );
-			if( itemHandler != null )
+			if( te.hasCapability( ITEM_REPOSITORY_CAPABILITY, d ) )
 			{
-				return new AdaptorItemHandler( itemHandler );
+				IItemRepository itemRepository = te.getCapability( ITEM_REPOSITORY_CAPABILITY, d );
+				if (itemRepository != null){
+					return new AdaptorItemRepository( itemRepository );
+				}
+			}
+			else if( te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d ) )
+			{
+
+				// Attempt getting an IItemHandler for the given side via caps
+				IItemHandler itemHandler = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d );
+				if( itemHandler != null )
+				{
+					return new AdaptorItemHandler( itemHandler );
+				}
 			}
 		}
 		return null;
