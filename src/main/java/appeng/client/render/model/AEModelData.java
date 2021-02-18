@@ -16,6 +16,11 @@ import net.minecraftforge.client.model.data.ModelProperty;
  */
 public class AEModelData implements IModelData {
 
+    public static final ModelProperty<AEModelData> AEMODEL = new ModelProperty<>();
+    public static final ModelProperty<Direction> UP = new ModelProperty<>();
+    public static final ModelProperty<Direction> FORWARD = new ModelProperty<>();
+    public static final ModelProperty<Boolean> CACHEABLE = new ModelProperty<>();
+
     private final Direction up;
     private final Direction forward;
 
@@ -24,15 +29,7 @@ public class AEModelData implements IModelData {
         this.forward = Preconditions.checkNotNull(forward);
     }
 
-    public Direction getUp() {
-        return up;
-    }
-
-    public Direction getForward() {
-        return forward;
-    }
-
-    public boolean isCacheable() {
+    protected boolean isCacheable() {
         return true;
     }
 
@@ -55,18 +52,31 @@ public class AEModelData implements IModelData {
 
     @Override
     public boolean hasProperty(ModelProperty<?> prop) {
-        return false;
+        return prop == AEMODEL || prop == UP || prop == FORWARD || prop == CACHEABLE;
     }
 
     @Nullable
     @Override
     public <T> T getData(ModelProperty<T> prop) {
-        throw new IllegalStateException();
+        if (prop == AEMODEL) {
+            return (T) this;
+        }
+        if (prop == UP) {
+            return (T) this.up;
+        }
+        if (prop == FORWARD) {
+            return (T) this.forward;
+        }
+        if (prop == CACHEABLE) {
+            return (T) Boolean.valueOf(this.isCacheable());
+        }
+
+        return null;
     }
 
     @Nullable
     @Override
     public <T> T setData(ModelProperty<T> prop, T data) {
-        throw new IllegalStateException();
+        return null;
     }
 }

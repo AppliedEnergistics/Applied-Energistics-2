@@ -70,8 +70,9 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
                 });
     }
 
-    private List<BakedQuad> getRotatedModel(BlockState state, Direction side, Random rand, AEModelData modelData) {
-        FacingToRotation f2r = FacingToRotation.get(modelData.getForward(), modelData.getUp());
+    private List<BakedQuad> getRotatedModel(BlockState state, Direction side, Random rand, IModelData modelData) {
+        FacingToRotation f2r = FacingToRotation.get(modelData.getData(AEModelData.FORWARD),
+                modelData.getData(AEModelData.UP));
 
         if (f2r.isRedundant()) {
             return AutoRotatingBakedModel.this.parent.getQuads(state, side, rand, modelData);
@@ -93,19 +94,13 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
             }
             BakedQuad unpackedQuad = builder.build();
 
-            // Make a copy of it to resolve the vertex data and throw away the unpacked
-            // stuff
-            // This also fixes a bug in Forge's UnpackedBakedQuad, which unpacks a
-            // byte-based normal like 0,0,-1
-            // to 0,0,-0.99607843. We replace these normals with the proper 0,0,-1 when
-            // rotation, which
-            // causes a bug in the AO lighter, if an unpacked quad pipes this value back to
-            // it.
-            // Packing it back to the vanilla vertex format will fix this inconsistency
-            // because it converts
-            // the normal back to a byte-based format, which then re-applies Forge's own bug
-            // when piping it
-            // to the AO lighter, thus fixing our problem.
+            // Make a copy of it to resolve the vertex data and throw away the unpacked stuff
+            // This also fixes a bug in Forge's UnpackedBakedQuad, which unpacks a byte-based normal like 0,0,-1 to
+            // 0,0,-0.99607843. We replace these normals with the proper 0,0,-1 when rotation, which causes a bug in the
+            // AO lighter, if an unpacked quad pipes this value back to it.
+            // Packing it back to the vanilla vertex format will fix this inconsistency because it converts the normal
+            // back to a byte-based format, which then re-applies Forge's own bug when piping it to the AO lighter, thus
+            // fixing our problem.
             BakedQuad packedQuad = new BakedQuad(unpackedQuad.getVertexData(), quad.getTintIndex(),
                     unpackedQuad.getFace(), quad.getSprite(), quad.applyDiffuseLighting());
             rotated.add(packedQuad);
@@ -123,16 +118,15 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
             @Nonnull IModelData extraData) {
 
-        if (!(extraData instanceof AEModelData)) {
+        if (!extraData.hasProperty(AEModelData.AEMODEL)) {
             return this.parent.getQuads(state, side, rand, extraData);
         }
 
-        AEModelData aeModelData = (AEModelData) extraData;
-
-        if (aeModelData.isCacheable()) {
-            return quadCache.getUnchecked(new AutoRotatingCacheKey(state, aeModelData, side));
+        if (extraData.getData(AEModelData.CACHEABLE).booleanValue()) {
+            return quadCache
+                    .getUnchecked(new AutoRotatingCacheKey(state, extraData.getData(AEModelData.AEMODEL), side));
         } else {
-            return this.getRotatedModel(state, side, rand, aeModelData);
+            return this.getRotatedModel(state, side, rand, extraData);
         }
     }
 

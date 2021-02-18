@@ -243,11 +243,10 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
     // Retrieve the cube connection state from the block state
     // If none is present, just assume there are no adjacent crafting cube blocks
     private static EnumSet<Direction> getConnections(IModelData modelData) {
-        if (!(modelData instanceof CraftingCubeModelData)) {
-            return EnumSet.noneOf(Direction.class);
+        if (modelData.hasProperty(CraftingCubeModelData.CONNECTIONS)) {
+            return modelData.getData(CraftingCubeModelData.CONNECTIONS);
         }
-
-        return ((CraftingCubeModelData) modelData).getConnections();
+        return EnumSet.noneOf(Direction.class);
     }
 
     protected abstract void addInnerCube(Direction facing, BlockState state, IModelData modelData, CubeBuilder builder,
