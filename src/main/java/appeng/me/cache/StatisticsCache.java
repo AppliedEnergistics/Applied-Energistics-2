@@ -28,6 +28,7 @@ import com.google.common.collect.Multiset;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
@@ -128,7 +129,7 @@ public class StatisticsCache implements IGridCache {
         final ChunkPos position = new ChunkPos(pos);
 
         if (!this.getChunks(world).contains(position)) {
-            this.grid.postEvent(new MENetworkChunkEvent.MENetworkChunkAdded(world, position));
+            this.grid.postEvent(new MENetworkChunkEvent.MENetworkChunkAdded((ServerWorld) world, position));
         }
 
         return this.getChunks(world).add(position);
@@ -149,7 +150,7 @@ public class StatisticsCache implements IGridCache {
         boolean ret = this.getChunks(world).remove(position);
 
         if (ret && !this.getChunks(world).contains(position)) {
-            this.grid.postEvent(new MENetworkChunkEvent.MENetworkChunkRemoved(world, position));
+            this.grid.postEvent(new MENetworkChunkEvent.MENetworkChunkRemoved((ServerWorld) world, position));
         }
 
         this.clearWorld(world);

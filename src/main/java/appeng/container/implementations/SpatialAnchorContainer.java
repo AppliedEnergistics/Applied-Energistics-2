@@ -18,17 +18,29 @@
 
 package appeng.container.implementations;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
+import com.google.common.collect.Multiset;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IMachineSet;
 import appeng.api.util.AEPartLocation;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.me.GridAccessException;
+import appeng.me.cache.StatisticsCache;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
 
 public class SpatialAnchorContainer extends AEBaseContainer {
@@ -42,14 +54,19 @@ public class SpatialAnchorContainer extends AEBaseContainer {
     private int delay = 40;
 
     @GuiSync(0)
-    public long PowerConsumption;
+    public long powerConsumption;
+    @GuiSync(1)
+    public int loadedChunks;
 
-    @GuiSync(31)
-    public int xSize;
-    @GuiSync(32)
-    public int ySize;
-    @GuiSync(33)
-    public int zSize;
+    @GuiSync(10)
+    public int allLoadedWorlds;
+    @GuiSync(11)
+    public int allLoadedChunks;
+
+    @GuiSync(20)
+    public int allWorlds;
+    @GuiSync(21)
+    public int allChunks;
 
     public SpatialAnchorContainer(int id, final PlayerInventory ip, final SpatialAnchorTileEntity spatialAnchor) {
         super(TYPE, id, ip, spatialAnchor, null);
@@ -57,8 +74,6 @@ public class SpatialAnchorContainer extends AEBaseContainer {
         if (isServer()) {
             this.network = spatialAnchor.getGridNode(AEPartLocation.INTERNAL).getGrid();
         }
-
-        this.bindPlayerInventory(ip, 0, 197 - /* height of player inventory */82);
     }
 
     public static SpatialAnchorContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
@@ -76,6 +91,34 @@ public class SpatialAnchorContainer extends AEBaseContainer {
         if (isServer()) {
             this.delay++;
             if (this.delay > 15 && this.network != null) {
+                StatisticsCache statistics = this.network.getCache(StatisticsCache.class);
+                SpatialAnchorTileEntity anchor = (SpatialAnchorTileEntity) this.getTileEntity();
+
+                this.powerConsumption = (long) anchor.getProxy().getIdlePowerUsage();
+                this.loadedChunks = ((SpatialAnchorTileEntity) this.getTileEntity()).getLoadedChunks();
+
+                try {
+                    HashMap<World, Integer> stats = new HashMap<>();
+                    IMachineSet anchors = anchor.getProxy().getGrid().getMachines(SpatialAnchorTileEntity.class);
+
+                    for (IGridNode machine : anchors) {
+                        SpatialAnchorTileEntity a = (SpatialAnchorTileEntity) machine.getMachine();
+                        World world = machine.getGridBlock().getLocation().getWorld();
+                        stats.merge(world, a.getLoadedChunks(), (left, right) -> Math.max(left, right));
+                    }
+
+                    this.allLoadedChunks = stats.values().stream().reduce((left, right) -> left + right).orElse(0);
+                    this.allLoadedWorlds = stats.keySet().size();
+
+                } catch (GridAccessException e) {
+                }
+
+                this.allWorlds = statistics.getChunks().size();
+                this.allChunks = 0;
+                for (Entry<IWorld, Multiset<ChunkPos>> entry : statistics.getChunks().entrySet()) {
+                    this.allChunks += entry.getValue().elementSet().size();
+                }
+
                 this.delay = 0;
             }
         }

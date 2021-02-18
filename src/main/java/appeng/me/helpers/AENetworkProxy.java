@@ -49,6 +49,7 @@ import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
+import appeng.me.cache.StatisticsCache;
 import appeng.parts.networking.CablePart;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
@@ -244,6 +245,21 @@ public class AENetworkProxy implements IGridBlock {
         }
 
         final ICraftingGrid sg = grid.getCache(ICraftingGrid.class);
+
+        if (sg == null) {
+            throw new GridAccessException();
+        }
+
+        return sg;
+    }
+
+    public StatisticsCache getStatistics() throws GridAccessException {
+        final IGrid grid = this.getGrid();
+        if (grid == null) {
+            throw new GridAccessException();
+        }
+
+        final StatisticsCache sg = grid.getCache(StatisticsCache.class);
 
         if (sg == null) {
             throw new GridAccessException();

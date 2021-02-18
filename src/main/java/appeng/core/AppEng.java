@@ -69,6 +69,7 @@ import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
 import appeng.parts.PartPlacement;
 import appeng.server.ServerHelper;
+import appeng.services.ChunkLoadingService;
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng {
@@ -145,6 +146,8 @@ public final class AppEng {
 
         registerNetworkHandler();
 
+        event.enqueueWork(ChunkLoadingService::register);
+
         AddonLoader.loadAddons(Api.INSTANCE);
     }
 
@@ -201,10 +204,12 @@ public final class AppEng {
 
     private void onServerAboutToStart(final FMLServerAboutToStartEvent evt) {
         WorldData.onServerStarting(evt.getServer());
+        ChunkLoadingService.getInstance().onServerAboutToStart(evt);
     }
 
     private void serverStopping(final FMLServerStoppingEvent event) {
         WorldData.instance().onServerStopping();
+        ChunkLoadingService.getInstance().onServerStopping(event);
     }
 
     private void serverStopped(final FMLServerStoppedEvent event) {

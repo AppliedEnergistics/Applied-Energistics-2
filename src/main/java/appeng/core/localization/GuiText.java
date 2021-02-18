@@ -47,6 +47,11 @@ public enum GuiText {
     // spatial
     SpatialCapacity, StoredSize, Unformatted, SerialNumber,
 
+    // spatial anchor
+
+    SpatialAnchorUsedPower, SpatialAnchorLoadedChunks,
+    SpatialAnchorStatistics, SpatialAnchorAll, SpatialAnchorAllLoaded,
+
     CopyMode, CopyModeDesc, PatternTerminal, FluidTerminal,
 
     // Pattern tooltips

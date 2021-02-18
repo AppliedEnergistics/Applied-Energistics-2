@@ -20,6 +20,7 @@ package appeng.block.spatial;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -43,13 +44,13 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+    public ActionResultType onActivated(final World worldIn, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (p.isCrouching()) {
             return ActionResultType.PASS;
         }
 
-        final SpatialAnchorTileEntity tg = this.getTileEntity(w, pos);
+        final SpatialAnchorTileEntity tg = this.getTileEntity(worldIn, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(SpatialAnchorContainer.TYPE, p,
@@ -59,4 +60,18 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
         }
         return ActionResultType.PASS;
     }
+
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+        super.onBlockHarvested(worldIn, pos, state, player);
+
+        if (!worldIn.isRemote) {
+            final SpatialAnchorTileEntity tg = this.getTileEntity(worldIn, pos);
+            if (tg != null) {
+                tg.destroy();
+            }
+        }
+
+    }
+
 }

@@ -28,13 +28,15 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.container.implementations.SpatialAnchorContainer;
 import appeng.core.localization.GuiText;
+import appeng.util.Platform;
 
 public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
 
     public SpatialAnchorScreen(SpatialAnchorContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 199;
+        this.ySize = 162;
+        this.xSize = 195;
     }
 
     @Override
@@ -49,14 +51,30 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
 
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchor.text()).getString(), 8, 6,
                 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96, 4210752);
 
+        String usedPower = GuiText.SpatialAnchorUsedPower
+                .text(Platform.formatPowerLong(this.container.powerConsumption * 100, true)).getString();
+        this.font.drawString(matrixStack, usedPower, 13, 16, 4210752);
+        this.font.drawString(matrixStack,
+                GuiText.SpatialAnchorLoadedChunks.text(this.container.loadedChunks).getString(), 13, 26, 4210752);
+
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchorStatistics.text()).getString(), 8,
+                151 - 30, 4210752);
+
+        this.font.drawString(matrixStack,
+                GuiText.SpatialAnchorAllLoaded.text(this.container.allLoadedChunks, this.container.allLoadedWorlds)
+                        .getString(),
+                13, 151 - 20, 4210752);
+
+        this.font.drawString(matrixStack,
+                GuiText.SpatialAnchorAll.text(this.container.allChunks, this.container.allWorlds).getString(), 13,
+                151 - 10, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
-        this.bindTexture("guis/spatialio.png");
+        this.bindTexture("guis/spatialanchor.png");
         GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
     }
 }

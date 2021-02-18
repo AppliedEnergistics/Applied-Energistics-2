@@ -24,19 +24,19 @@
 package appeng.api.networking.events.statistics;
 
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.server.ServerWorld;
 
 public class MENetworkChunkEvent extends MENetworkStatisticsEvent {
 
-    private final IWorld world;
+    private final ServerWorld world;
     private final ChunkPos chunkPos;
 
-    public MENetworkChunkEvent(IWorld world, ChunkPos chunkPos) {
+    public MENetworkChunkEvent(ServerWorld world, ChunkPos chunkPos) {
         this.world = world;
         this.chunkPos = chunkPos;
     }
 
-    public IWorld getWorld() {
+    public ServerWorld getWorld() {
         return world;
     }
 
@@ -46,7 +46,7 @@ public class MENetworkChunkEvent extends MENetworkStatisticsEvent {
 
     public static class MENetworkChunkAdded extends MENetworkChunkEvent {
 
-        public MENetworkChunkAdded(IWorld world, ChunkPos chunkPos) {
+        public MENetworkChunkAdded(ServerWorld world, ChunkPos chunkPos) {
             super(world, chunkPos);
         }
 
@@ -54,7 +54,7 @@ public class MENetworkChunkEvent extends MENetworkStatisticsEvent {
 
     public static class MENetworkChunkRemoved extends MENetworkChunkEvent {
 
-        public MENetworkChunkRemoved(IWorld world, ChunkPos chunkPos) {
+        public MENetworkChunkRemoved(ServerWorld world, ChunkPos chunkPos) {
             super(world, chunkPos);
         }
 
