@@ -30,6 +30,7 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.statistics.MENetworkChunkEvent.MENetworkChunkAdded;
@@ -48,6 +49,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
 
     private final Set<ChunkPos> chunks = new HashSet<>();
     private int powerlessTicks = 0;
+    private boolean initialized = false;
 
     public SpatialAnchorTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -66,7 +68,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
 
     @MENetworkEventSubscribe
     public void chunkAdded(final MENetworkChunkAdded changed) {
-        if (changed.getWorld() == this.getServerWorld()) {
+        if (!this.isRemoved() && changed.getWorld() == this.getServerWorld()) {
             this.force(changed.getChunkPos());
         }
     }
@@ -80,16 +82,20 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
 
     @MENetworkEventSubscribe
     public void powerChange(final MENetworkPowerStatusChange powerChange) {
+        this.wakeUp();
+    }
+
+    @MENetworkEventSubscribe
+    public void powerChange(final MENetworkChannelsChanged powerChange) {
+        this.wakeUp();
+    }
+
+    private void wakeUp() {
         // Wake the anchor to allow for unloading chunks some time after power loss
         try {
             this.getProxy().getTick().alertDevice(this.getProxy().getNode());
         } catch (GridAccessException e) {
             // Can be ignored
-        }
-
-        // Immediately restore chunk loading on power up.
-        if (this.getProxy().isPowered() && this.chunks.isEmpty()) {
-            this.forceAll();
         }
     }
 
@@ -102,9 +108,15 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
     @Override
     @Nonnull
     public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
+        // Initialize once the network is ready and there are no entries marked as loaded.
+        if (!this.initialized && this.getProxy().isActive() && this.getProxy().isPowered()) {
+            this.forceAll();
+            this.initialized = true;
+        }
+
         // Be a bit lenient to not unload all chunks immediately upon power loss
-        if (this.powerlessTicks > 100) {
-            if (!this.getProxy().isPowered()) {
+        if (this.powerlessTicks > 200) {
+            if (!this.getProxy().isPowered() || !this.getProxy().isActive()) {
                 this.releaseAll();
             }
             this.powerlessTicks = 0;
@@ -114,11 +126,13 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
         }
 
         // Count ticks without power
-        if (!this.getProxy().isPowered()) {
+        if (!this.getProxy().isPowered() || !this.getProxy().isActive()) {
             this.powerlessTicks += ticksSinceLastCall;
+            return TickRateModulation.SAME;
         }
 
-        return TickRateModulation.SAME;
+        // Default to sleep
+        return TickRateModulation.SLEEP;
     }
 
     public int getLoadedChunks() {
@@ -168,6 +182,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
         }
 
         this.updatePowerConsumption();
+
         return forced;
     }
 
@@ -190,7 +205,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
 
     private void forceAll() {
         try {
-            for (ChunkPos chunkPos : this.getProxy().getStatistics().getChunks().get(this.getServerWorld())) {
+            for (ChunkPos chunkPos : this.getProxy().getStatistics().getChunks().get(this.getServerWorld())
+                    .elementSet()) {
                 this.force(chunkPos);
             }
         } catch (GridAccessException e) {

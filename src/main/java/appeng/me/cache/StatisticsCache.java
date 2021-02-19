@@ -49,13 +49,6 @@ public class StatisticsCache implements IGridCache {
 
     @Override
     public void onUpdateTick() {
-//        System.out.println(this.myGrid);
-//
-//        this.worlds().forEach(w -> {
-//            System.out.println(w + " @ " + this.chunks(w));
-//        });
-//
-//        System.out.println("========");
     }
 
     @Override
