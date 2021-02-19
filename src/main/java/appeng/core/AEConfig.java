@@ -143,9 +143,6 @@ public final class AEConfig {
     private int colorApplicatorBattery;
     private int chargedStaffBattery;
 
-    // Meteors
-    private int meteoriteMaximumSpawnHeight;
-
     // Wireless
     private double wirelessBaseCost;
     private double wirelessCostMultiplier;
@@ -180,8 +177,6 @@ public final class AEConfig {
         CondenserOutput.SINGULARITY.requiredPower = commonConfig.condenserSingularityPower.get();
 
         this.oreDoublePercentage = (float) commonConfig.oreDoublePercentage.get();
-
-        this.meteoriteMaximumSpawnHeight = commonConfig.meteoriteMaximumSpawnHeight.get();
 
         this.wirelessBaseCost = commonConfig.wirelessBaseCost.get();
         this.wirelessCostMultiplier = commonConfig.wirelessCostMultiplier.get();
@@ -391,10 +386,6 @@ public final class AEConfig {
         return commonConfig.quartzOresClusterAmount.get();
     }
 
-    public int getMeteoriteMaximumSpawnHeight() {
-        return this.meteoriteMaximumSpawnHeight;
-    }
-
     public List<String> getMeteoriteBiomeBlacklist() {
         return commonConfig.meteoriteBiomeBlacklist.get();
     }
@@ -500,7 +491,6 @@ public final class AEConfig {
         public final StringListOption quartzOreBiomeBlacklist;
 
         // Meteors
-        public final IntegerOption meteoriteMaximumSpawnHeight;
         public final StringListOption meteoriteBiomeBlacklist;
 
         // Wireless
@@ -586,7 +576,6 @@ public final class AEConfig {
             ConfigSection worldGen = root.subsection("worldGen");
 
             this.spawnChargedChance = worldGen.addDouble("spawnChargedChance", 0.08, 0.0, 1.0);
-            this.meteoriteMaximumSpawnHeight = worldGen.addInt("meteoriteMaximumSpawnHeight", 180);
             this.meteoriteBiomeBlacklist = worldGen.addStringList("meteoriteBiomeBlacklist", new ArrayList<>(),
                     "Biome IDs in which meteorites should NOT be generated (i.e. minecraft:plains).");
 

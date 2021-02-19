@@ -21,7 +21,6 @@ package appeng.spatial;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -47,8 +46,7 @@ public class DefaultSpatialHandler implements IMovableHandler {
         final Chunk c = w.getChunk(newPosition);
         c.setBlockEntity(newPosition, te);
 
-        ChunkPos chunkPos = c.getPos();
-        if (w.getChunkManager().isChunkLoaded(chunkPos.x, chunkPos.z)) {
+        if (w.getChunkManager().shouldTickBlock(newPosition)) {
             final BlockState state = w.getBlockState(newPosition);
             w.addBlockEntity(te);
             w.updateListeners(newPosition, state, state, 1);

@@ -12,7 +12,6 @@
     "structure.ConfiguredStructureFeaturesAccessor",
     "structure.StructureFeatureAccessor",
     "structure.GenerationSettingsAccessor",
-    "structure.BiomeAccessor",
     "feature.ConfiguredFeaturesAccessor",
     "tags.BlockTagsAccessor",
     "tags.FluidTagsAccessor",
@@ -26,7 +25,8 @@
     "ServerWorldCustomItemEntityMixin",
     "BootstrapMixin",
     "ItemEntityAccessor",
-    "IngredientAccessor"
+    "IngredientAccessor",
+    "feature.LightingProviderMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",

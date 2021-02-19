@@ -57,7 +57,6 @@ import appeng.api.parts.IPartModel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
@@ -147,47 +146,42 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 return;
             }
 
-            boolean capture = false;
             final BlockPos pos = this.getTile().getPos();
+            final int planePosX = pos.getX();
+            final int planePosY = pos.getY();
+            final int planePosZ = pos.getZ();
 
-            // This is the middle point of the entities BB, which is better suited for
-            // comparisons that don't rely on it
-            // "touching" the plane
-            double posYMiddle = (entity.getBoundingBox().minY + entity.getBoundingBox().maxY) / 2.0D;
+            // This is the middle point of the entities BB, which is better suited for comparisons
+            // that don't rely on it "touching" the plane
+            final double posYMiddle = (entity.getBoundingBox().minY + entity.getBoundingBox().maxY) / 2.0D;
+            final double entityPosX = entity.getX();
+            final double entityPosY = entity.getY();
+            final double entityPosZ = entity.getZ();
+
+            final boolean captureX = entityPosX > planePosX && entityPosX < planePosX + 1;
+            final boolean captureY = posYMiddle > planePosY && posYMiddle < planePosY + 1;
+            final boolean captureZ = entityPosZ > planePosZ && entityPosZ < planePosZ + 1;
+
+            boolean capture = false;
 
             switch (this.getSide()) {
                 case DOWN:
+                    capture = captureX && captureZ && entityPosY < planePosY + 0.1;
+                    break;
                 case UP:
-                    if (entity.getX() > pos.getX() && entity.getX() < pos.getX() + 1) {
-                        if (entity.getZ() > pos.getZ() && entity.getZ() < pos.getZ() + 1) {
-                            if ((entity.getY() > pos.getY() + 0.9 && this.getSide() == AEPartLocation.UP)
-                                    || (entity.getY() < pos.getY() + 0.1 && this.getSide() == AEPartLocation.DOWN)) {
-                                capture = true;
-                            }
-                        }
-                    }
+                    capture = captureX && captureZ && entityPosY > planePosY + 0.9;
                     break;
                 case SOUTH:
+                    capture = captureX && captureY && entityPosZ > planePosZ + 0.9;
+                    break;
                 case NORTH:
-                    if (entity.getX() > pos.getX() && entity.getX() < pos.getX() + 1) {
-                        if (posYMiddle > pos.getY() && posYMiddle < pos.getY() + 1) {
-                            if ((entity.getZ() > pos.getZ() + 0.9 && this.getSide() == AEPartLocation.SOUTH)
-                                    || (entity.getZ() < pos.getZ() + 0.1 && this.getSide() == AEPartLocation.NORTH)) {
-                                capture = true;
-                            }
-                        }
-                    }
+                    capture = captureX && captureY && entityPosZ < planePosZ + 0.1;
                     break;
                 case EAST:
+                    capture = captureZ && captureY && entityPosX > planePosX + 0.9;
+                    break;
                 case WEST:
-                    if (entity.getZ() > pos.getZ() && entity.getZ() < pos.getZ() + 1) {
-                        if (posYMiddle > pos.getY() && posYMiddle < pos.getY() + 1) {
-                            if ((entity.getX() > pos.getX() + 0.9 && this.getSide() == AEPartLocation.EAST)
-                                    || (entity.getX() < pos.getX() + 0.1 && this.getSide() == AEPartLocation.WEST)) {
-                                capture = true;
-                            }
-                        }
-                    }
+                    capture = captureZ && captureY && entityPosX < planePosX + 0.1;
                     break;
                 default:
                     // umm?

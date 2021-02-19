@@ -33,7 +33,9 @@ import appeng.tile.networking.EnergyCellBlockEntity;
 
 public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellBlockEntity> {
 
-    public static final IntProperty ENERGY_STORAGE = IntProperty.of("fullness", 0, 7);
+    public static final int MAX_FULLNESS = 4;
+
+    public static final IntProperty ENERGY_STORAGE = IntProperty.of("fullness", 0, MAX_FULLNESS);
 
     public EnergyCellBlock() {
         super(defaultProps(AEMaterials.GLASS));

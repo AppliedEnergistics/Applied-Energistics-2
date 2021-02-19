@@ -21,7 +21,6 @@ package appeng.parts.automation;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -91,8 +90,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     private BlockEntity getBlockEntity(final BlockEntity self, final BlockPos pos) {
         final World w = self.getWorld();
 
-        ChunkPos cp = new ChunkPos(pos);
-        if (w.getChunkManager().isChunkLoaded(cp.x, cp.z)) {
+        if (w.getChunkManager().shouldTickBlock(pos)) {
             return w.getBlockEntity(pos);
         }
 
@@ -131,8 +129,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
         final BlockPos selfPos = self.getPos().offset(this.getSide().getFacing());
         final World world = self.getWorld();
 
-        ChunkPos cp = new ChunkPos(selfPos);
-        return world != null && world.getChunkManager().isChunkLoaded(cp.x, cp.z);
+        return world != null && world.getChunkManager().shouldTickBlock(selfPos);
     }
 
     private void updateState() {

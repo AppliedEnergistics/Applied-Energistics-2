@@ -39,8 +39,10 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.chunk.ChunkManager;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEColor;
@@ -178,12 +180,38 @@ public class TickHandler {
     private void onAfterServerTick(MinecraftServer server) {
         this.tickColors(this.srvPlayerColors);
         // ready tiles.
+        List<AEBaseBlockEntity> delayQueue = null;
         final HandlerRep repo = this.getRepo();
         while (!repo.tiles.isEmpty()) {
             final AEBaseBlockEntity bt = repo.tiles.poll();
             if (!bt.isRemoved()) {
-                bt.onReady();
+                // If the tile entity is in a chunk that is in the progress of being loaded,
+                // re-queue the tile-entity until the chunk is ready for ticking tile-entities
+                // Vanilla also checks "shouldTickBlock" before ticking tile-entities in chunks
+                ChunkManager chunkProvider = bt.getWorld().getChunkManager();
+                if (chunkProvider.shouldTickBlock(bt.getPos())) {
+                    bt.onReady();
+                } else {
+                    // Be defensive about the chunk being unloaded already and don't re-queue
+                    // the tile entity if the chunk no longer exists to avoid endlessly re-queueing TEs
+                    ChunkPos chunkPos = new ChunkPos(bt.getPos());
+                    if (chunkProvider.isChunkLoaded(chunkPos.x, chunkPos.z)) {
+                        if (delayQueue == null) {
+                            delayQueue = new ArrayList<>();
+                        }
+                        delayQueue.add(bt);
+                    } else {
+                        AELog.warn("Skipping onReady for Tile-Entity in unloaded chunk %s", chunkPos);
+                    }
+                }
             }
+        }
+
+        // Re-insert tiles that have to wait
+        if (delayQueue != null) {
+            AELog.debug("Delaying onReady for %s tile-entities because their chunks are not fully loaded",
+                    delayQueue.size());
+            repo.tiles.addAll(delayQueue);
         }
 
         // tick networks.

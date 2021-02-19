@@ -65,10 +65,13 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
+import appeng.fluids.parts.FluidLevelEmitterPart;
+import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
+import appeng.parts.automation.LevelEmitterPart;
 import appeng.parts.networking.CablePart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
@@ -306,11 +309,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * @param compound compound of source
      */
     private void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
-        if (compound != null) {
-            final IConfigManager cm = this.getConfigManager();
-            if (cm != null) {
-                cm.readFromNBT(compound);
-            }
+        final IConfigManager cm = this.getConfigManager();
+        if (cm != null) {
+            cm.readFromNBT(compound);
         }
 
         if (this instanceof IPriorityHost) {
@@ -325,6 +326,10 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             tmp.readFromNBT(compound, "config");
             for (int x = 0; x < tmp.getSlotCount(); x++) {
                 target.forceSetInvStack(x, tmp.getInvStack(x));
+            }
+            if (this instanceof LevelEmitterPart) {
+                final LevelEmitterPart partLevelEmitter = (LevelEmitterPart) this;
+                partLevelEmitter.setReportingValue(compound.getLong("reportingValue"));
             }
         }
     }
@@ -351,6 +356,10 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         final FixedItemInv inv = this.getInventoryByName("config");
         if (inv instanceof AppEngInternalAEInventory) {
             ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
+            if (this instanceof LevelEmitterPart) {
+                final LevelEmitterPart partLevelEmitter = (LevelEmitterPart) this;
+                output.putLong("reportingValue", partLevelEmitter.getReportingValue());
+            }
         }
 
         return output.isEmpty() ? null : output;
