@@ -68,7 +68,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
 
     @MENetworkEventSubscribe
     public void chunkAdded(final MENetworkChunkAdded changed) {
-        if (!this.isRemoved() && changed.getWorld() == this.getServerWorld()) {
+        if (changed.getWorld() == this.getServerWorld()) {
             this.force(changed.getChunkPos());
         }
     }
@@ -174,6 +174,11 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
      * @return
      */
     private boolean force(ChunkPos chunkPos) {
+        // Avoid loading chunks after the anchor is destroyed
+        if (this.isRemoved()) {
+            return false;
+        }
+
         ServerWorld world = this.getServerWorld();
         boolean forced = ChunkLoadingService.getInstance().forceChunk(world, this.getPos(), chunkPos, true);
 
