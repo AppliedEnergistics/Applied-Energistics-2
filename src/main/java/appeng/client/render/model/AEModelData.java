@@ -55,6 +55,7 @@ public class AEModelData implements IModelData {
         return prop == AEMODEL || prop == UP || prop == FORWARD || prop == CACHEABLE;
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public <T> T getData(ModelProperty<T> prop) {

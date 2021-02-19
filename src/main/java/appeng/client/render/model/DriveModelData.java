@@ -50,6 +50,7 @@ public class DriveModelData extends AEModelData {
         return prop == STATE || super.hasProperty(prop);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     @Nullable
     public <T> T getData(ModelProperty<T> prop) {

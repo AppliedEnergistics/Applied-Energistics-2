@@ -55,6 +55,7 @@ public class CraftingCubeModelData extends AEModelData {
         return prop == CONNECTIONS || super.hasProperty(prop);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     @Nullable
     public <T> T getData(ModelProperty<T> prop) {

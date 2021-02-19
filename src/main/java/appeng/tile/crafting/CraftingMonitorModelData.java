@@ -48,6 +48,7 @@ public class CraftingMonitorModelData extends CraftingCubeModelData {
         return prop == COLOR || super.hasProperty(prop);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     @Nullable
     public <T> T getData(ModelProperty<T> prop) {
