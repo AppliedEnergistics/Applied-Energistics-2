@@ -35,6 +35,8 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
@@ -42,6 +44,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
@@ -67,6 +70,8 @@ public class SpatialAnchorContainer extends AEBaseContainer {
     public long powerConsumption;
     @GuiSync(1)
     public int loadedChunks;
+    @GuiSync(2)
+    public YesNo overlayMode = YesNo.NO;
 
     @GuiSync(10)
     public int allLoadedWorlds;
@@ -99,10 +104,12 @@ public class SpatialAnchorContainer extends AEBaseContainer {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
+            SpatialAnchorTileEntity anchor = (SpatialAnchorTileEntity) this.getTileEntity();
+            this.setOverlayMode((YesNo) anchor.getConfigManager().getSetting(Settings.OVERLAY_MODE));
+
             this.delay++;
             if (this.delay > 15 && this.network != null) {
                 StatisticsCache statistics = this.network.getCache(StatisticsCache.class);
-                SpatialAnchorTileEntity anchor = (SpatialAnchorTileEntity) this.getTileEntity();
 
                 this.powerConsumption = (long) anchor.getProxy().getIdlePowerUsage();
                 this.loadedChunks = ((SpatialAnchorTileEntity) this.getTileEntity()).countLoadedChunks();
@@ -163,5 +170,17 @@ public class SpatialAnchorContainer extends AEBaseContainer {
         }
 
         super.detectAndSendChanges();
+    }
+
+    protected void loadSettingsFromHost(final IConfigManager cm) {
+        this.setOverlayMode((YesNo) cm.getSetting(Settings.OVERLAY_MODE));
+    }
+
+    public YesNo getOverlayMode() {
+        return this.overlayMode;
+    }
+
+    public void setOverlayMode(final YesNo mode) {
+        this.overlayMode = mode;
     }
 }

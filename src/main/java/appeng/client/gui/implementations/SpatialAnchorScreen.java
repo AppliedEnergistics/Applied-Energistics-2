@@ -29,14 +29,18 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
+import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
+import appeng.api.config.YesNo;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.ServerSettingToggleButton;
+import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.me.ItemRepo;
 import appeng.container.implementations.SpatialAnchorContainer;
 import appeng.core.localization.GuiText;
@@ -59,7 +63,9 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> im
 
     private final ItemRepo repo;
     private final int rows = 4;
+
     private int tooltip = -1;
+    private SettingToggleButton<YesNo> overlayToggle;
 
     public SpatialAnchorScreen(SpatialAnchorContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
@@ -78,6 +84,8 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> im
     public void init() {
         super.init();
         this.addButton(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
+        this.addButton(this.overlayToggle = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+                Settings.OVERLAY_MODE, YesNo.NO));
     }
 
     @Override
@@ -116,6 +124,10 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> im
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
+
+        if (this.overlayToggle != null) {
+            this.overlayToggle.set(this.container.getOverlayMode());
+        }
 
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchor.text()).getString(), 8, 6,
                 4210752);

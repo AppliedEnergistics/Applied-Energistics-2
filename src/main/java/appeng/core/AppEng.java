@@ -57,6 +57,7 @@ import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.components.IPostInitComponent;
 import appeng.capabilities.Capabilities;
 import appeng.client.ClientHelper;
+import appeng.client.render.overlay.OverlayManager;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
@@ -164,6 +165,7 @@ public final class AppEng {
         RenderingRegistry.registerEntityRenderingHandler(ChargedQuartzEntity.TYPE,
                 m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
 
+        MinecraftForge.EVENT_BUS.register(OverlayManager.getInstance());
     }
 
     @Nonnull

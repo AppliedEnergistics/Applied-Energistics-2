@@ -18,16 +18,24 @@
 
 package appeng.tile.spatial;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.world.ForgeChunkManager;
 
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -39,21 +47,72 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
+import appeng.client.render.overlay.OverlayManager;
 import appeng.me.GridAccessException;
 import appeng.services.ChunkLoadingService;
 import appeng.tile.grid.AENetworkTileEntity;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
 
-public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGridTickable {
+public class SpatialAnchorTileEntity extends AENetworkTileEntity
+        implements IGridTickable, IConfigManagerHost, IConfigurableObject {
 
+    private final ConfigManager manager = new ConfigManager(this);
     private final Set<ChunkPos> chunks = new HashSet<>();
     private int powerlessTicks = 0;
     private boolean initialized = false;
+    private boolean displayOverlay = true;
 
     public SpatialAnchorTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.manager.registerSetting(Settings.OVERLAY_MODE, YesNo.NO);
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT data) {
+        super.write(data);
+        this.manager.writeToNBT(data);
+        return data;
+    }
+
+    @Override
+    public void read(BlockState blockState, CompoundNBT data) {
+        super.read(blockState, data);
+        this.manager.readFromNBT(data);
+    }
+
+    @Override
+    protected void writeToStream(PacketBuffer data) throws IOException {
+        super.writeToStream(data);
+        data.writeBoolean(displayOverlay);
+        if (this.displayOverlay) {
+            data.writeLongArray(chunks.stream().mapToLong(ChunkPos::asLong).toArray());
+        }
+    }
+
+    @Override
+    protected boolean readFromStream(PacketBuffer data) throws IOException {
+        boolean ret = super.readFromStream(data);
+        boolean newDisplayOverlay = data.readBoolean();
+        ret = newDisplayOverlay != this.displayOverlay || ret;
+        this.displayOverlay = newDisplayOverlay;
+
+        this.chunks.clear();
+        if (this.displayOverlay) {
+            this.chunks.addAll(Arrays.stream(data.readLongArray(null)).boxed().map(c -> new ChunkPos(c))
+                    .collect(Collectors.toSet()));
+            OverlayManager.getInstance().showArea(chunks, 0x80000000 | AEColor.TRANSPARENT.mediumVariant, this);
+        } else {
+            OverlayManager.getInstance().removeHandlers(this);
+        }
+
+        return ret;
     }
 
     @Override
@@ -88,6 +147,19 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
     @MENetworkEventSubscribe
     public void powerChange(final MENetworkChannelsChanged powerChange) {
         this.wakeUp();
+    }
+
+    @Override
+    public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue) {
+        if (settingName == Settings.OVERLAY_MODE) {
+            this.displayOverlay = newValue == YesNo.YES ? true : false;
+            this.markForUpdate();
+        }
+    }
+
+    @Override
+    public IConfigManager getConfigManager() {
+        return this.manager;
     }
 
     private void wakeUp() {
@@ -191,6 +263,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
         }
 
         this.updatePowerConsumption();
+        this.markForUpdate();
 
         return forced;
     }
@@ -208,6 +281,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
         }
 
         this.updatePowerConsumption();
+        this.markForUpdate();
 
         return removed;
     }
