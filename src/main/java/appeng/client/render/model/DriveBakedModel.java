@@ -70,12 +70,11 @@ public class DriveBakedModel extends DelegateBakedModel {
 
         List<BakedQuad> result = new ArrayList<>(super.getQuads(state, side, rand, extraData));
 
-        if (!(extraData instanceof DriveModelData)) {
+        if (!extraData.hasProperty(DriveModelData.STATE)) {
             return result;
         }
-        DriveModelData driveModelData = (DriveModelData) extraData;
 
-        DriveSlotsState slotsState = driveModelData.getSlotsState();
+        DriveSlotsState slotsState = extraData.getData(DriveModelData.STATE);
 
         Vector3f slotTranslation = new Vector3f();
         if (slotsState != null) {
