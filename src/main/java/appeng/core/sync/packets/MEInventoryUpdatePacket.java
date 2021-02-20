@@ -41,6 +41,7 @@ import appeng.client.gui.implementations.CraftConfirmScreen;
 import appeng.client.gui.implementations.CraftingCPUScreen;
 import appeng.client.gui.implementations.MEMonitorableScreen;
 import appeng.client.gui.implementations.NetworkStatusScreen;
+import appeng.client.gui.implementations.SpatialAnchorScreen;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
@@ -105,6 +106,10 @@ public class MEInventoryUpdatePacket extends BasePacket {
 
         if (gs instanceof NetworkStatusScreen) {
             ((NetworkStatusScreen) gs).postUpdate(this.list);
+        }
+
+        if (gs instanceof SpatialAnchorScreen) {
+            ((SpatialAnchorScreen) gs).postUpdate(this.list);
         }
     }
 

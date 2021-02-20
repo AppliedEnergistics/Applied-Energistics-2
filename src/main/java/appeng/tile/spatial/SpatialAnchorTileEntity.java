@@ -135,7 +135,11 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity implements IGri
         return TickRateModulation.SLEEP;
     }
 
-    public int getLoadedChunks() {
+    public Set<ChunkPos> getLoadedChunks() {
+        return this.chunks;
+    }
+
+    public int countLoadedChunks() {
         return this.chunks.size();
     }
 
