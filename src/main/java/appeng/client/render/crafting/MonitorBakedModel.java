@@ -95,15 +95,15 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
     }
 
     private static AEColor getColor(IModelData modelData) {
-        if (modelData instanceof CraftingMonitorModelData) {
-            return ((CraftingMonitorModelData) modelData).getColor();
+        if (modelData.hasProperty(CraftingMonitorModelData.COLOR)) {
+            return modelData.getData(CraftingMonitorModelData.COLOR);
         }
         return AEColor.TRANSPARENT;
     }
 
     private static Direction getForward(IModelData modelData) {
-        if (modelData instanceof AEModelData) {
-            return ((AEModelData) modelData).getForward();
+        if (modelData.hasProperty(AEModelData.FORWARD)) {
+            return modelData.getData(AEModelData.FORWARD);
         }
         return Direction.NORTH;
     }

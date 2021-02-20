@@ -3,13 +3,18 @@ package appeng.tile.crafting;
 import java.util.EnumSet;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.util.Direction;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.client.render.model.AEModelData;
 
 public class CraftingCubeModelData extends AEModelData {
+
+    public static final ModelProperty<EnumSet<Direction>> CONNECTIONS = new ModelProperty<>();
 
     // Contains information on which sides of the block are connected to other parts
     // of a formed crafting cube
@@ -21,12 +26,8 @@ public class CraftingCubeModelData extends AEModelData {
     }
 
     @Override
-    public boolean isCacheable() {
+    protected boolean isCacheable() {
         return false; // Too many variants
-    }
-
-    public EnumSet<Direction> getConnections() {
-        return connections;
     }
 
     @Override
@@ -47,6 +48,21 @@ public class CraftingCubeModelData extends AEModelData {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), connections);
+    }
+
+    @Override
+    public boolean hasProperty(ModelProperty<?> prop) {
+        return prop == CONNECTIONS || super.hasProperty(prop);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @Nullable
+    public <T> T getData(ModelProperty<T> prop) {
+        if (prop == CONNECTIONS) {
+            return (T) this.connections;
+        }
+        return super.getData(prop);
     }
 
 }
