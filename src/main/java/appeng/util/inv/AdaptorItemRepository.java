@@ -23,8 +23,23 @@ public class AdaptorItemRepository extends InventoryAdaptor
     public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
     {
         ItemStack rv = ItemStack.EMPTY;
+        ItemStack extracted = ItemStack.EMPTY;
 
-        ItemStack extracted = this.itemRepository.extractItem( filter, amount, true );
+        if( !filter.isEmpty() )
+        {
+            extracted = this.itemRepository.extractItem( filter, amount, true );
+        }
+        else
+        {
+            for( IItemRepository.ItemRecord record : this.itemRepository.getAllItems() )
+            {
+                extracted = this.itemRepository.extractItem( record.itemPrototype, amount, true );
+                if( !extracted.isEmpty() )
+                {
+                    break;
+                }
+            }
+        }
 
         if( destination != null )
         {
@@ -37,6 +52,7 @@ public class AdaptorItemRepository extends InventoryAdaptor
         }
 
         extracted = this.itemRepository.extractItem( filter, amount, false );
+
         return extracted;
     }
 
@@ -44,15 +60,32 @@ public class AdaptorItemRepository extends InventoryAdaptor
     public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
     {
         ItemStack rv = ItemStack.EMPTY;
+        ItemStack extracted = ItemStack.EMPTY;
 
-        ItemStack extracted = this.itemRepository.extractItem( filter, amount, true );
+        if( !filter.isEmpty() )
+        {
+            extracted = this.itemRepository.extractItem( filter, amount, true );
+        }
+        else
+        {
+            for( IItemRepository.ItemRecord record : this.itemRepository.getAllItems() )
+            {
+                extracted = this.itemRepository.extractItem( record.itemPrototype, amount, true );
+                if( !extracted.isEmpty() )
+                {
+                    break;
+                }
+            }
+        }
 
         if( destination != null )
         {
+
             if( extracted.isEmpty() || !destination.canInsert( extracted ) )
             {
                 return rv;
             }
+
         }
 
         return extracted;
@@ -61,46 +94,67 @@ public class AdaptorItemRepository extends InventoryAdaptor
     @Override
     public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
     {
+        ItemStack rv = ItemStack.EMPTY;
         ItemStack extracted = ItemStack.EMPTY;
 
-        ItemStack simulated = this.itemRepository.extractItem( filter, amount, true );
+        for( IItemRepository.ItemRecord record : this.itemRepository.getAllItems() )
+        {
+            if( Platform.itemComparisons().isFuzzyEqualItem( record.itemPrototype, filter, fuzzyMode ) )
+            {
+                extracted = this.itemRepository.extractItem( record.itemPrototype, amount, true );
+            }
 
-        if (simulated.isEmpty() && !filter.isEmpty()) {
-            simulated = this.itemRepository.extractItem( filter, amount, true, s -> Platform.itemComparisons().isFuzzyEqualItem( s, filter, fuzzyMode ) );
+            if( !extracted.isEmpty() )
+            {
+                break;
+            }
         }
 
         if( destination != null )
         {
-            if( simulated.isEmpty() || !destination.canInsert( simulated ) )
+
+            if( extracted.isEmpty() || !destination.canInsert( extracted ) )
             {
-                return extracted;
+                return rv;
             }
+
         }
 
-        extracted = this.itemRepository.extractItem( simulated, amount, false );
+        extracted = this.itemRepository.extractItem( extracted, amount, false );
+
         return extracted;
     }
 
     @Override
     public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
     {
+        ItemStack rv = ItemStack.EMPTY;
         ItemStack extracted = ItemStack.EMPTY;
 
-        ItemStack simulated = this.itemRepository.extractItem( filter, amount, true );
+        for( IItemRepository.ItemRecord record : this.itemRepository.getAllItems() )
+        {
+            if( Platform.itemComparisons().isFuzzyEqualItem( record.itemPrototype, filter, fuzzyMode ) )
+            {
+                extracted = this.itemRepository.extractItem( record.itemPrototype, amount, true );
+            }
 
-        if (simulated.isEmpty() && !filter.isEmpty()) {
-            simulated = this.itemRepository.extractItem( filter, amount, true, s -> Platform.itemComparisons().isFuzzyEqualItem( s, filter, fuzzyMode ) );
+            if( !extracted.isEmpty() )
+            {
+                break;
+            }
         }
 
         if( destination != null )
         {
-            if( simulated.isEmpty() || !destination.canInsert( simulated ) )
+
+            if( extracted.isEmpty() || !destination.canInsert( extracted ) )
             {
-                return extracted;
+                return rv;
             }
+
         }
 
-        return simulated;
+        return extracted;
     }
 
     @Override

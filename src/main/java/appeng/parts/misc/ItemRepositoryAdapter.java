@@ -38,7 +38,7 @@ import javax.annotation.Nonnull;
  * Used by the Storage Bus
  */
 
-class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor, IItemRepository
+class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor
 {
     private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
     private IActionSource mySource;
@@ -190,30 +190,6 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
     public void setActionSource( final IActionSource mySource )
     {
         this.mySource = mySource;
-    }
-
-    @Nonnull
-    @Override
-    public NonNullList<ItemRecord> getAllItems()
-    {
-        //not a provider
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack insertItem( @Nonnull ItemStack stack, boolean simulate, Predicate<ItemStack> predicate )
-    {
-        //not a provider
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack extractItem( @Nonnull ItemStack stack, int amount, boolean simulate, Predicate<ItemStack> predicate )
-    {
-        //not a provider
-        return null;
     }
 
     private static class InventoryCache
