@@ -699,8 +699,23 @@ public abstract class AEBaseContainer extends Container
 							is.setCount( 1 );
 							s.putStack( is );
 						}
-
+						else
+						{
+							final ItemStack is = s.getStack().copy();
+							if (is.getCount() < is.getMaxStackSize())
+								is.grow( 1 );
+							s.putStack( is );
+						}
 						break;
+					case PICKUP_SINGLE:
+						if( hand.isEmpty() )
+						{
+							final ItemStack is = s.getStack().copy();
+							if (is.getCount() > 1)
+								is.shrink( 1 );
+							s.putStack( is );
+						}
+					break;
 					case SPLIT_OR_PLACE_SINGLE:
 
 						ItemStack is = s.getStack();

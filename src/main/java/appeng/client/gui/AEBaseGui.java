@@ -705,6 +705,16 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 				}
 			}
 		}
+		if( slot instanceof SlotFake )
+		{
+			final ItemStack stack = ( (SlotFake) slot ).getStack();
+			if( stack != ItemStack.EMPTY )
+			{
+				InventoryAction direction = wheel > 0 ? InventoryAction.PLACE_SINGLE : InventoryAction.PICKUP_SINGLE;
+				final PacketInventoryAction p = new PacketInventoryAction( direction , slot.slotNumber , 0);
+				NetworkHandler.instance().sendToServer( p );
+			}
+		}
 	}
 
 	protected boolean enableSpaceClicking()
