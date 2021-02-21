@@ -44,11 +44,12 @@ public class OverlayRenderType extends RenderType {
         return makeType("block_hilight",
                 DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256,
                 RenderType.State.getBuilder()
-                        .transparency(TRANSLUCENT_TRANSPARENCY)
+                        .transparency(TransparencyState.CRUMBLING_TRANSPARENCY)
                         .texture(NO_TEXTURE)
                         .lightmap(LIGHTMAP_DISABLED)
                         .depthTest(DEPTH_ALWAYS)
                         .writeMask(COLOR_WRITE)
+                        .cull(CULL_DISABLED)
                         .build(false));
     }
 
@@ -58,7 +59,7 @@ public class OverlayRenderType extends RenderType {
         return makeType("block_hilight_line",
                 DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
                 RenderType.State.getBuilder().line(LINE_3)
-                        .transparency(TRANSLUCENT_TRANSPARENCY)
+                        .transparency(TransparencyState.GLINT_TRANSPARENCY)
                         .texture(NO_TEXTURE)
                         .depthTest(DEPTH_ALWAYS)
                         .cull(CULL_DISABLED)

@@ -40,27 +40,27 @@ public class OverlayRenderer {
     }
 
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer) {
-//        RenderType type = OverlayRenderType.getBlockHilightFace();
-//        render(matrixStack, buffer.getBuffer(type));
-//        OverlayRenderType.finishBuffer(buffer, type);
+        RenderType typeFaces = OverlayRenderType.getBlockHilightFace();
+        render(matrixStack, buffer.getBuffer(typeFaces), false);
+        OverlayRenderType.finishBuffer(buffer, typeFaces);
 
-        RenderType type = OverlayRenderType.getBlockHilightLine();
-        render(matrixStack, buffer.getBuffer(type));
-        OverlayRenderType.finishBuffer(buffer, type);
+        RenderType typeLines = OverlayRenderType.getBlockHilightLine();
+        render(matrixStack, buffer.getBuffer(typeLines), true);
+        OverlayRenderType.finishBuffer(buffer, typeLines);
     }
 
-    private void render(MatrixStack matrixStack, IVertexBuilder builder) {
+    private void render(MatrixStack matrixStack, IVertexBuilder builder, boolean renderLines) {
         int[] cols = OverlayRenderType.decomposeColor(this.source.getOverlayColor());
         for (ChunkPos pos : this.source.getOverlayChunks()) {
             matrixStack.push();
             matrixStack.translate(pos.getXStart(), 0, pos.getZStart());
             Matrix4f posMat = matrixStack.getLast().getMatrix();
-            addVertices(builder, posMat, pos, cols);
+            addVertices(builder, posMat, pos, cols, renderLines);
             matrixStack.pop();
         }
     }
 
-    private void addVertices(IVertexBuilder wr, Matrix4f posMat, ChunkPos pos, int[] cols) {
+    private void addVertices(IVertexBuilder wr, Matrix4f posMat, ChunkPos pos, int[] cols, boolean renderLines) {
         Set<ChunkPos> chunks = this.source.getOverlayChunks();
 
         // Render around a whole chunk
@@ -76,18 +76,6 @@ public class OverlayRenderer {
         boolean noWest = !chunks.contains(new ChunkPos(pos.x - 1, pos.z));
         boolean noEast = !chunks.contains(new ChunkPos(pos.x + 1, pos.z));
 
-        if (noNorth || noWest) {
-            // Face North, Edge West
-            wr.pos(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x1, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-        }
-
-        if (noNorth || noEast) {
-            // Face North, Edge East
-            wr.pos(posMat, x2, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-        }
-
         if (noNorth) {
             // Face North, Edge Bottom
             wr.pos(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
@@ -95,17 +83,6 @@ public class OverlayRenderer {
             // Face North, Edge Top
             wr.pos(posMat, x2, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
             wr.pos(posMat, x1, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-        }
-
-        if (noSouth || noEast) {
-            // Face South, Edge East
-            wr.pos(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x2, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-        }
-        if (noSouth || noWest) {
-            // Face South, Edge West
-            wr.pos(posMat, x1, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
         }
 
         if (noSouth) {
@@ -133,6 +110,37 @@ public class OverlayRenderer {
             // Face East, Edge Bottom
             wr.pos(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
             wr.pos(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+        }
+
+        if (renderLines) {
+            if (noNorth || noWest) {
+                // Face North, Edge West
+                wr.pos(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.pos(posMat, x1, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            }
+
+            if (noNorth || noEast) {
+                // Face North, Edge East
+                wr.pos(posMat, x2, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.pos(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            }
+
+            if (noSouth || noEast) {
+                // Face South, Edge East
+                wr.pos(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.pos(posMat, x2, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            }
+            if (noSouth || noWest) {
+                // Face South, Edge West
+                wr.pos(posMat, x1, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.pos(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            }
+        } else {
+            // Bottom Face
+            wr.pos(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.pos(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.pos(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.pos(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
         }
 
     }
