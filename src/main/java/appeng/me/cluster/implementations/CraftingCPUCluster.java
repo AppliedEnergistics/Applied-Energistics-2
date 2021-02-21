@@ -1113,7 +1113,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				{
 					for( final IAEItemStack ais : t.getKey().getCondensedOutputs() )
 					{
-						if( ais.equals( is ) )
+						if( ais.isSameType( is ) )
 						{
 							is.setStackSize( is.getStackSize() + ais.getStackSize() * t.getValue().value );
 						}

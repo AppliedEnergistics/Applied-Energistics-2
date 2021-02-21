@@ -260,7 +260,7 @@ public class CraftingTreeProcess
 	{
 		for( final IAEItemStack is : this.details.getCondensedOutputs() )
 		{
-			if( is.equals( what2 ) )
+			if( is.isSameType( what2 ) )
 			{
 				what2 = what2.copy();
 				what2.setStackSize( is.getStackSize() );
