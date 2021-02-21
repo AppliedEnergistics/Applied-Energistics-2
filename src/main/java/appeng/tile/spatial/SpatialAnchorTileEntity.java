@@ -189,10 +189,11 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     @Override
     public void remove() {
         super.remove();
-        if (!isRemote()) {
+        if (isRemote()) {
             OverlayManager.getInstance().removeHandlers(this);
+        } else {
+            this.releaseAll();
         }
-        this.releaseAll();
     }
 
     @Override
@@ -267,13 +268,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     private void updatePowerConsumption() {
-        try {
-            final int worlds = this.getProxy().getStatistics().worlds().size();
-            final int powerRequired = (int) Math.pow(this.chunks.size(), 2 + worlds * .1);
-
-            this.getProxy().setIdlePowerUsage(powerRequired);
-        } catch (GridAccessException e) {
-        }
+        int energy = 80 + (this.chunks.size() * (this.chunks.size() + 1)) / 2;
+        this.getProxy().setIdlePowerUsage(energy);
     }
 
     /**
