@@ -32,33 +32,26 @@ import net.minecraft.util.math.vector.Matrix4f;
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
  */
 public class OverlayRenderer {
-    private final Set<ChunkPos> showingPositions;
-    private final int color;
-    private final boolean disableDepthTest;
 
-    OverlayRenderer(Set<ChunkPos> area, int color, float size, boolean disableDepthTest, boolean drawShapes) {
-        this.showingPositions = area;
-        this.color = color;
-        this.disableDepthTest = disableDepthTest;
-    }
+    private IOverlayDataSource source;
 
-    OverlayRenderer(Set<ChunkPos> area, int color, boolean disableDepthTest) {
-        this(area, color, 0.5f, disableDepthTest, true);
+    OverlayRenderer(IOverlayDataSource source) {
+        this.source = source;
     }
 
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer) {
-//        RenderType type = OverlayRenderType.getBlockHilightFace(disableDepthTest);
+//        RenderType type = OverlayRenderType.getBlockHilightFace();
 //        render(matrixStack, buffer.getBuffer(type));
 //        OverlayRenderType.finishBuffer(buffer, type);
 
-        RenderType type = OverlayRenderType.getBlockHilightLine(disableDepthTest);
+        RenderType type = OverlayRenderType.getBlockHilightLine();
         render(matrixStack, buffer.getBuffer(type));
         OverlayRenderType.finishBuffer(buffer, type);
     }
 
     private void render(MatrixStack matrixStack, IVertexBuilder builder) {
-        int[] cols = OverlayRenderType.decomposeColor(color);
-        for (ChunkPos pos : showingPositions) {
+        int[] cols = OverlayRenderType.decomposeColor(this.source.getOverlayColor());
+        for (ChunkPos pos : this.source.getOverlayChunks()) {
             matrixStack.push();
             matrixStack.translate(pos.getXStart(), 0, pos.getZStart());
             Matrix4f posMat = matrixStack.getLast().getMatrix();
@@ -68,6 +61,8 @@ public class OverlayRenderer {
     }
 
     private void addVertices(IVertexBuilder wr, Matrix4f posMat, ChunkPos pos, int[] cols) {
+        Set<ChunkPos> chunks = this.source.getOverlayChunks();
+
         // Render around a whole chunk
         float x1 = 0f;
         float x2 = 16f;
@@ -76,10 +71,10 @@ public class OverlayRenderer {
         float z1 = 0f;
         float z2 = 16f;
 
-        boolean noNorth = !this.showingPositions.contains(new ChunkPos(pos.x, pos.z - 1));
-        boolean noSouth = !this.showingPositions.contains(new ChunkPos(pos.x, pos.z + 1));
-        boolean noWest = !this.showingPositions.contains(new ChunkPos(pos.x - 1, pos.z));
-        boolean noEast = !this.showingPositions.contains(new ChunkPos(pos.x + 1, pos.z));
+        boolean noNorth = !chunks.contains(new ChunkPos(pos.x, pos.z - 1));
+        boolean noSouth = !chunks.contains(new ChunkPos(pos.x, pos.z + 1));
+        boolean noWest = !chunks.contains(new ChunkPos(pos.x - 1, pos.z));
+        boolean noEast = !chunks.contains(new ChunkPos(pos.x + 1, pos.z));
 
         if (noNorth || noWest) {
             // Face North, Edge West

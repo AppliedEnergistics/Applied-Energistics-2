@@ -21,14 +21,18 @@ package appeng.tile.spatial;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.collect.Multiset;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.server.ServerWorld;
@@ -52,6 +56,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.client.render.overlay.IOverlayDataSource;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.me.GridAccessException;
 import appeng.services.ChunkLoadingService;
@@ -60,13 +65,13 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 
 public class SpatialAnchorTileEntity extends AENetworkTileEntity
-        implements IGridTickable, IConfigManagerHost, IConfigurableObject {
+        implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource {
 
     private final ConfigManager manager = new ConfigManager(this);
     private final Set<ChunkPos> chunks = new HashSet<>();
     private int powerlessTicks = 0;
     private boolean initialized = false;
-    private boolean displayOverlay = true;
+    private boolean displayOverlay = false;
 
     public SpatialAnchorTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -103,13 +108,15 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         ret = newDisplayOverlay != this.displayOverlay || ret;
         this.displayOverlay = newDisplayOverlay;
 
+        // Cleanup old data and remove it from the overlay manager as safeguard
         this.chunks.clear();
+        OverlayManager.getInstance().removeHandlers(this);
+
         if (this.displayOverlay) {
             this.chunks.addAll(Arrays.stream(data.readLongArray(null)).boxed().map(c -> new ChunkPos(c))
                     .collect(Collectors.toSet()));
-            OverlayManager.getInstance().showArea(chunks, 0x80000000 | AEColor.TRANSPARENT.mediumVariant, this);
-        } else {
-            OverlayManager.getInstance().removeHandlers(this);
+            // Register it again to render the overlay
+            OverlayManager.getInstance().showArea(this);
         }
 
         return ret;
@@ -125,6 +132,26 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         return new DimensionalCoord(this);
     }
 
+    @Override
+    public Set<ChunkPos> getOverlayChunks() {
+        return this.chunks;
+    }
+
+    @Override
+    public TileEntity getOverlayTileEntity() {
+        return this;
+    }
+
+    @Override
+    public DimensionalCoord getOverlaySourceLocation() {
+        return this.getLocation();
+    }
+
+    @Override
+    public int getOverlayColor() {
+        return 0x80000000 | AEColor.TRANSPARENT.mediumVariant;
+    }
+
     @MENetworkEventSubscribe
     public void chunkAdded(final MENetworkChunkAdded changed) {
         if (changed.getWorld() == this.getServerWorld()) {
@@ -136,6 +163,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     public void chunkRemoved(final MENetworkChunkRemoved changed) {
         if (changed.getWorld() == this.getServerWorld()) {
             this.release(changed.getChunkPos(), true);
+            // Need to wake up the anchor to potentially perform another cleanup
+            this.wakeUp();
         }
     }
 
@@ -184,6 +213,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         if (!this.initialized && this.getProxy().isActive() && this.getProxy().isPowered()) {
             this.forceAll();
             this.initialized = true;
+        } else {
+            this.cleanUp();
         }
 
         // Be a bit lenient to not unload all chunks immediately upon power loss
@@ -230,6 +261,9 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
      * Releases all chunks when destroyed.
      */
     public void destroy() {
+        if (!isRemote()) {
+            OverlayManager.getInstance().removeHandlers(this);
+        }
         this.releaseAll();
     }
 
@@ -241,6 +275,35 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
             this.getProxy().setIdlePowerUsage(powerRequired);
         } catch (GridAccessException e) {
         }
+    }
+
+    /**
+     * Performs a cleanup of the loaded chunks and adds missing ones as well as removes any chunk no longer part of the
+     * network.
+     */
+    private void cleanUp() {
+        try {
+            Multiset<ChunkPos> requiredChunks = this.getProxy().getStatistics().getChunks().get(this.getServerWorld());
+
+            // Release all chunks, which are no longer part of the network.s
+            for (Iterator<ChunkPos> iterator = chunks.iterator(); iterator.hasNext();) {
+                ChunkPos chunkPos = iterator.next();
+
+                if (!requiredChunks.contains(chunkPos)) {
+                    this.release(chunkPos, false);
+                    iterator.remove();
+                }
+            }
+
+            // Force missing chunks
+            for (ChunkPos chunkPos : requiredChunks) {
+                if (!this.chunks.contains(chunkPos)) {
+                    this.force(chunkPos);
+                }
+            }
+        } catch (GridAccessException e) {
+        }
+
     }
 
     /**

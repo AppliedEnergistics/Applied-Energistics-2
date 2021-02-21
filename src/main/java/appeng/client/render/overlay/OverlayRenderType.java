@@ -25,7 +25,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -41,30 +40,30 @@ public class OverlayRenderType extends RenderType {
                 p_i225992_8_);
     }
 
-    public static RenderType getBlockHilightFace(boolean disableDepthTest) {
+    public static RenderType getBlockHilightFace() {
         return makeType("block_hilight",
                 DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256,
                 RenderType.State.getBuilder()
                         .transparency(TRANSLUCENT_TRANSPARENCY)
                         .texture(NO_TEXTURE)
                         .lightmap(LIGHTMAP_DISABLED)
-                        .depthTest(disableDepthTest ? DEPTH_ALWAYS : DEPTH_LEQUAL)
-                        .writeMask(disableDepthTest ? COLOR_WRITE : COLOR_DEPTH_WRITE)
+                        .depthTest(DEPTH_ALWAYS)
+                        .writeMask(COLOR_WRITE)
                         .build(false));
     }
 
     private static final LineState LINE_3 = new LineState(OptionalDouble.of(3.0));
 
-    public static RenderType getBlockHilightLine(boolean disableDepthTest) {
+    public static RenderType getBlockHilightLine() {
         return makeType("block_hilight_line",
                 DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
                 RenderType.State.getBuilder().line(LINE_3)
                         .transparency(TRANSLUCENT_TRANSPARENCY)
                         .texture(NO_TEXTURE)
-                        .depthTest(disableDepthTest ? DEPTH_ALWAYS : RenderState.DEPTH_LEQUAL)
+                        .depthTest(DEPTH_ALWAYS)
                         .cull(CULL_DISABLED)
                         .lightmap(LIGHTMAP_DISABLED)
-                        .writeMask(disableDepthTest ? COLOR_DEPTH_WRITE : RenderState.COLOR_DEPTH_WRITE)
+                        .writeMask(COLOR_DEPTH_WRITE)
                         .build(false));
     }
 

@@ -20,19 +20,18 @@ package appeng.client.render.overlay;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import appeng.api.util.DimensionalCoord;
 
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
@@ -41,7 +40,7 @@ public class OverlayManager {
 
     private final static OverlayManager INSTANCE = new OverlayManager();
 
-    private final Map<BlockPos, OverlayRenderer> overlayHandlers = new HashMap<>();
+    private final Map<DimensionalCoord, OverlayRenderer> overlayHandlers = new HashMap<>();
 
     public static OverlayManager getInstance() {
         return INSTANCE;
@@ -49,46 +48,37 @@ public class OverlayManager {
 
     @SubscribeEvent
     public void renderWorldLastEvent(RenderWorldLastEvent event) {
-        IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        Minecraft minecraft = Minecraft.getInstance();
+        IRenderTypeBuffer.Impl buffer = minecraft.getRenderTypeBuffers().getBufferSource();
         MatrixStack matrixStack = event.getMatrixStack();
 
         matrixStack.push();
 
-        Vector3d projectedView = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
+        Vector3d projectedView = minecraft.gameRenderer.getActiveRenderInfo().getProjectedView();
         matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
-        for (OverlayRenderer handler : overlayHandlers.values()) {
+        for (OverlayRenderer handler : overlayHandlers.entrySet().stream()
+                .filter(e -> e.getKey().getWorld() == minecraft.world).map(e -> e.getValue())
+                .collect(Collectors.toList())) {
             handler.render(matrixStack, buffer);
         }
 
         matrixStack.pop();
     }
 
-    @SubscribeEvent
-    public void tickEnd(TickEvent.ClientTickEvent event) {
-    }
+    public OverlayRenderer showArea(IOverlayDataSource source) {
+        Preconditions.checkNotNull(source);
 
-    public OverlayRenderer showArea(Set<ChunkPos> area, int color, TileEntity areaShower, boolean depth) {
-        if (areaShower == null) {
-            return null;
-        }
-        removeHandlers(areaShower);
-        OverlayRenderer handler = new OverlayRenderer(area, color, depth);
-        overlayHandlers.put(
-                new BlockPos(areaShower.getPos().getX(), areaShower.getPos().getY(), areaShower.getPos().getZ()),
-                handler);
+        OverlayRenderer handler = new OverlayRenderer(source);
+        overlayHandlers.put(source.getOverlaySourceLocation(), handler);
         return handler;
     }
 
-    public OverlayRenderer showArea(Set<ChunkPos> area, int color, TileEntity areaShower) {
-        return showArea(area, color, areaShower, true);
+    public boolean isShowing(IOverlayDataSource source) {
+        return overlayHandlers.containsKey(source.getOverlaySourceLocation());
     }
 
-    public boolean isShowing(TileEntity te) {
-        return overlayHandlers.containsKey(new BlockPos(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ()));
-    }
-
-    public void removeHandlers(TileEntity te) {
-        overlayHandlers.remove(new BlockPos(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ()));
+    public void removeHandlers(IOverlayDataSource source) {
+        overlayHandlers.remove(source.getOverlaySourceLocation());
     }
 }
