@@ -38,8 +38,19 @@ import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.statistics.MENetworkChunkEvent;
 import appeng.api.util.DimensionalCoord;
 
+/**
+ * A grid providing precomupted statistics about a network.
+ * 
+ * Currently this tracks the chunks a network is occupying.
+ */
 public class StatisticsCache implements IGridCache {
+
     private IGrid grid;
+
+    /**
+     * This uses a {@link Multiset} so we can simply add or remove {@link IGridNode} without having to take into account
+     * that others still might exist without explicitly counting these.
+     */
     private Map<IWorld, Multiset<ChunkPos>> chunks;
 
     public StatisticsCache(final IGrid g) {

@@ -26,7 +26,12 @@ package appeng.api.networking.events.statistics;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.server.ServerWorld;
 
-public class MENetworkChunkEvent extends MENetworkStatisticsEvent {
+/**
+ * An event send from the statistics grid once something about a chunk changes.
+ * 
+ * Listeners will not receive updates about pre-existing chunks when joining a network.
+ */
+public abstract class MENetworkChunkEvent extends MENetworkStatisticsEvent {
 
     private final ServerWorld world;
     private final ChunkPos chunkPos;
@@ -44,6 +49,9 @@ public class MENetworkChunkEvent extends MENetworkStatisticsEvent {
         return chunkPos;
     }
 
+    /**
+     * A chunk was added to the area this network spans.
+     */
     public static class MENetworkChunkAdded extends MENetworkChunkEvent {
 
         public MENetworkChunkAdded(ServerWorld world, ChunkPos chunkPos) {
@@ -52,6 +60,9 @@ public class MENetworkChunkEvent extends MENetworkStatisticsEvent {
 
     }
 
+    /**
+     * A chunk was removed to the area this network spans.
+     */
     public static class MENetworkChunkRemoved extends MENetworkChunkEvent {
 
         public MENetworkChunkRemoved(ServerWorld world, ChunkPos chunkPos) {

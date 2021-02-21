@@ -20,7 +20,6 @@ package appeng.block.spatial;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -37,6 +36,9 @@ import appeng.container.implementations.SpatialAnchorContainer;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
 import appeng.util.Platform;
 
+/**
+ * The block for our chunk loader
+ */
 public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity> {
 
     public SpatialAnchorBlock() {
@@ -59,19 +61,6 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
-    }
-
-    @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-        super.onBlockHarvested(worldIn, pos, state, player);
-
-        if (!worldIn.isRemote) {
-            final SpatialAnchorTileEntity tg = this.getTileEntity(worldIn, pos);
-            if (tg != null) {
-                tg.destroy();
-            }
-        }
-
     }
 
 }

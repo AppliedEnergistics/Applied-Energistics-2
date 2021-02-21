@@ -26,6 +26,11 @@ package appeng.api.networking.events.statistics;
 import appeng.api.networking.events.MENetworkEvent;
 
 /**
+ * An event send from the statistics grid.
+ * 
+ * Refer to the specific subtypes for more details.
+ * 
+ * This is still subject to change as long as the statistics grid is not part of the public API.
  */
 public class MENetworkStatisticsEvent extends MENetworkEvent {
 

@@ -187,6 +187,15 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     @Override
+    public void remove() {
+        super.remove();
+        if (!isRemote()) {
+            OverlayManager.getInstance().removeHandlers(this);
+        }
+        this.releaseAll();
+    }
+
+    @Override
     public IConfigManager getConfigManager() {
         return this.manager;
     }
@@ -255,16 +264,6 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     public void registerChunk(ChunkPos chunkPos) {
         this.chunks.add(chunkPos);
         this.updatePowerConsumption();
-    }
-
-    /**
-     * Releases all chunks when destroyed.
-     */
-    public void destroy() {
-        if (!isRemote()) {
-            OverlayManager.getInstance().removeHandlers(this);
-        }
-        this.releaseAll();
     }
 
     private void updatePowerConsumption() {

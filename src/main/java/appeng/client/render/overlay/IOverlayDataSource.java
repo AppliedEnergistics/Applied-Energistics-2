@@ -20,19 +20,47 @@ package appeng.client.render.overlay;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.ChunkPos;
 
 import appeng.api.util.DimensionalCoord;
 
+/**
+ * A source providing data for a chunk overlay.
+ */
 public interface IOverlayDataSource {
 
+    /**
+     * @return A set of chunks to display
+     */
+    @Nonnull
     Set<ChunkPos> getOverlayChunks();
 
+    /**
+     * {@link TileEntity} in case needed for additional data.
+     * 
+     * @return the tile entity providing the data
+     */
+    @Nonnull
     TileEntity getOverlayTileEntity();
 
+    /**
+     * The location of the source with world and blockpos
+     * <p>
+     * Used as cache key for later lookups.
+     * <p>
+     * World is needed to hide the particular render when the player is in another world
+     * 
+     * @return the location of this source.
+     */
+    @Nonnull
     DimensionalCoord getOverlaySourceLocation();
 
+    /**
+     * The color used for the overlay as ARGB
+     */
     int getOverlayColor();
 
 }

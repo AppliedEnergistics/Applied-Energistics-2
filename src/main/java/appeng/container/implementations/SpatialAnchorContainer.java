@@ -18,7 +18,6 @@
 
 package appeng.container.implementations;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -26,9 +25,7 @@ import com.google.common.collect.Multiset;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
@@ -40,21 +37,14 @@ import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.core.Api;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.me.GridAccessException;
 import appeng.me.cache.StatisticsCache;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
-import appeng.util.item.AEItemStack;
 
 public class SpatialAnchorContainer extends AEBaseContainer {
 
@@ -63,8 +53,12 @@ public class SpatialAnchorContainer extends AEBaseContainer {
     private static final ContainerHelper<SpatialAnchorContainer, SpatialAnchorTileEntity> helper = new ContainerHelper<>(
             SpatialAnchorContainer::new, SpatialAnchorTileEntity.class, SecurityPermissions.BUILD);
 
+    private static final int UPDATE_DELAY = 20;
+
     private IGrid network;
-    private int delay = 40;
+
+    // Updated with the delay for an immediate sync after construction
+    private int delay = UPDATE_DELAY;
 
     @GuiSync(0)
     public long powerConsumption;
@@ -108,7 +102,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
             this.setOverlayMode((YesNo) anchor.getConfigManager().getSetting(Settings.OVERLAY_MODE));
 
             this.delay++;
-            if (this.delay > 15 && this.network != null) {
+            if (this.delay > UPDATE_DELAY && this.network != null) {
                 StatisticsCache statistics = this.network.getCache(StatisticsCache.class);
 
                 this.powerConsumption = (long) anchor.getProxy().getIdlePowerUsage();
@@ -134,35 +128,6 @@ public class SpatialAnchorContainer extends AEBaseContainer {
                 this.allChunks = 0;
                 for (Entry<IWorld, Multiset<ChunkPos>> entry : statistics.getChunks().entrySet()) {
                     this.allChunks += entry.getValue().elementSet().size();
-                }
-
-                try {
-                    final MEInventoryUpdatePacket piu = new MEInventoryUpdatePacket();
-
-                    final IItemList<IAEItemStack> list = Api.instance().storage()
-                            .getStorageChannel(IItemStorageChannel.class).createList();
-
-                    for (final ChunkPos chunk : anchor.getLoadedChunks()) {
-                        final ItemStack is = anchor.getProxy().getMachineRepresentation();
-                        if (!is.isEmpty()) {
-                            is.getOrCreateTag().putLong("chunk", chunk.asLong());
-                            final IAEItemStack ais = AEItemStack.fromItemStack(is);
-                            ais.setStackSize(chunk.asLong());
-                            list.add(ais);
-                        }
-
-                        for (final IAEItemStack ais : list) {
-                            piu.appendItem(ais);
-                        }
-                    }
-
-                    for (final Object c : this.listeners) {
-                        if (c instanceof PlayerEntity) {
-                            NetworkHandler.instance().sendTo(piu, (ServerPlayerEntity) c);
-                        }
-                    }
-                } catch (final IOException e) {
-                    // :P
                 }
 
                 this.delay = 0;
