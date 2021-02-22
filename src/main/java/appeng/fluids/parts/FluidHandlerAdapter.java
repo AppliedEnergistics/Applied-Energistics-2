@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -196,13 +195,10 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 	{
 		private IAEFluidStack[] cachedAeStacks = new IAEFluidStack[0];
 		private final IFluidHandler fluidHandler;
-		private ArrayList<Integer> skipSlots;
-
 
 		public InventoryCache( IFluidHandler fluidHandler )
 		{
 			this.fluidHandler = fluidHandler;
-			this.skipSlots = new ArrayList<>(this.fluidHandler.getTankProperties().length);
 		}
 
 		public List<IAEFluidStack> update()
@@ -215,22 +211,13 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 			if( slots > this.cachedAeStacks.length )
 			{
 				this.cachedAeStacks = Arrays.copyOf( this.cachedAeStacks, slots );
-				this.skipSlots = new ArrayList<>(this.fluidHandler.getTankProperties().length);
 			}
 
 			for( int slot = 0; slot < slots; slot++ )
 			{
-				if (skipSlots.contains( slot ))
-					continue;
 				// Save the old stuff
 				final IAEFluidStack oldAEFS = this.cachedAeStacks[slot];
-				FluidStack newFS = tankProperties[slot].getContents();
-				if (newFS != null) {
-					if (this.fluidHandler.drain( 1, false ) == null){
-						newFS = null;
-						skipSlots.add( slot );
-					}
-				}
+				final FluidStack newFS = tankProperties[slot].getContents();
 
 				this.handlePossibleSlotChanges( slot, oldAEFS, newFS, changes );
 			}
