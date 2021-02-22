@@ -24,8 +24,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.storage.data.IItemList;
 import appeng.container.implementations.ContainerPatternTerm;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -208,7 +210,7 @@ public class PacketJEIRecipe extends AppEngPacket
 										IAEItemStack mostDamaged = null;
 										for( IAEItemStack is : outList )
 										{
-											if (!is.isCraftable())
+											if( !is.isCraftable() )
 											{
 												if( mostDamaged == null || mostDamaged.getItemDamage() < is.getItemDamage() )
 												{
@@ -234,6 +236,22 @@ public class PacketJEIRecipe extends AppEngPacket
 									{
 										// Fall back using an existing item
 										out = storage.extractItems( request, Actionable.SIMULATE, cct.getActionSource() );
+									}
+
+									if( out == null )
+									{
+										IItemList<IAEItemStack> items = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+										Iterator<IAEItemStack> iterator = inv.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getAvailableItems( items ).iterator();
+										while ( iterator.hasNext() )
+										{
+											final IAEItemStack o = iterator.next();
+											if( o.getDefinition().isItemEqual( request.getDefinition() ) && o.isCraftable() )
+											{
+												out = o;
+												break;
+											}
+											iterator.remove();
+										}
 									}
 								}
 
