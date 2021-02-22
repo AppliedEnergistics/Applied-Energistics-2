@@ -20,9 +20,13 @@ package appeng.block.spatial;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -41,8 +45,22 @@ import appeng.util.Platform;
  */
 public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity> {
 
+    private static final BooleanProperty POWERED = BooleanProperty.create("powered");
+
     public SpatialAnchorBlock() {
         super(defaultProps(Material.IRON));
+        this.setDefaultState(this.getDefaultState().with(POWERED, false));
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(POWERED);
+    }
+
+    @Override
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SpatialAnchorTileEntity te) {
+        return currentState.with(POWERED, te.isActive());
     }
 
     @Override

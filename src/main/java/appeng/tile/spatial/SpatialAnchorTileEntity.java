@@ -72,6 +72,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     private int powerlessTicks = 0;
     private boolean initialized = false;
     private boolean displayOverlay = false;
+    private boolean isActive = false;
 
     public SpatialAnchorTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -95,6 +96,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     @Override
     protected void writeToStream(PacketBuffer data) throws IOException {
         super.writeToStream(data);
+        data.writeBoolean(this.isActive());
         data.writeBoolean(displayOverlay);
         if (this.displayOverlay) {
             data.writeLongArray(chunks.stream().mapToLong(ChunkPos::asLong).toArray());
@@ -104,6 +106,11 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     @Override
     protected boolean readFromStream(PacketBuffer data) throws IOException {
         boolean ret = super.readFromStream(data);
+
+        final boolean isActive = data.readBoolean();
+        ret = isActive != this.isActive || ret;
+        this.isActive = isActive;
+
         boolean newDisplayOverlay = data.readBoolean();
         ret = newDisplayOverlay != this.displayOverlay || ret;
         this.displayOverlay = newDisplayOverlay;
@@ -170,11 +177,13 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     @MENetworkEventSubscribe
     public void powerChange(final MENetworkPowerStatusChange powerChange) {
+        this.markForUpdate();
         this.wakeUp();
     }
 
     @MENetworkEventSubscribe
     public void powerChange(final MENetworkChannelsChanged powerChange) {
+        this.markForUpdate();
         this.wakeUp();
     }
 
@@ -254,6 +263,18 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     public int countLoadedChunks() {
         return this.chunks.size();
+    }
+
+    public boolean isPowered() {
+        return this.getProxy().isActive() && this.getProxy().isPowered();
+    }
+
+    public boolean isActive() {
+        if (world != null && !world.isRemote) {
+            return isPowered();
+        } else {
+            return this.isActive;
+        }
     }
 
     /**
