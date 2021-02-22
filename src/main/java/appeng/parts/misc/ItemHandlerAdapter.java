@@ -26,7 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -268,10 +270,12 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	{
 		private IAEItemStack[] cachedAeStacks = new IAEItemStack[0];
 		private final IItemHandler itemHandler;
+		private ArrayList<Integer> skipSlots;
 
 		public InventoryCache( IItemHandler itemHandler )
 		{
 			this.itemHandler = itemHandler;
+			this.skipSlots = new ArrayList<>(this.itemHandler.getSlots());
 		}
 
 		public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
@@ -289,14 +293,22 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			if( slots > this.cachedAeStacks.length )
 			{
 				this.cachedAeStacks = Arrays.copyOf( this.cachedAeStacks, slots );
+				this.skipSlots = new ArrayList<>(this.itemHandler.getSlots());
 			}
 
 			for( int slot = 0; slot < slots; slot++ )
 			{
+				if (skipSlots.contains( slot ))
+					continue;
 				// Save the old stuff
 				final IAEItemStack oldAeIS = this.cachedAeStacks[slot];
-				final ItemStack newIS = this.itemHandler.getStackInSlot( slot );
-
+				ItemStack newIS = this.itemHandler.getStackInSlot( slot );
+				if (!newIS.isEmpty()) {
+					if (this.itemHandler.extractItem( slot,1,true ).isEmpty()){
+						newIS = ItemStack.EMPTY;
+						skipSlots.add( slot );
+					}
+				}
 				this.handlePossibleSlotChanges( slot, oldAeIS, newIS, changes );
 			}
 
