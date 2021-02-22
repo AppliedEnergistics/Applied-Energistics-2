@@ -35,7 +35,6 @@ import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -119,6 +118,7 @@ import appeng.client.gui.implementations.QNBScreen;
 import appeng.client.gui.implementations.QuartzKnifeScreen;
 import appeng.client.gui.implementations.SecurityStationScreen;
 import appeng.client.gui.implementations.SkyChestScreen;
+import appeng.client.gui.implementations.SpatialAnchorScreen;
 import appeng.client.gui.implementations.SpatialIOPortScreen;
 import appeng.client.gui.implementations.StorageBusScreen;
 import appeng.client.gui.implementations.UpgradeableScreen;
@@ -178,6 +178,7 @@ import appeng.container.implementations.QNBContainer;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.container.implementations.SkyChestContainer;
+import appeng.container.implementations.SpatialAnchorContainer;
 import appeng.container.implementations.SpatialIOPortContainer;
 import appeng.container.implementations.StorageBusContainer;
 import appeng.container.implementations.UpgradeableContainer;
@@ -213,6 +214,7 @@ import appeng.me.cache.P2PCache;
 import appeng.me.cache.PathGridCache;
 import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
+import appeng.me.cache.StatisticsCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.mixins.feature.ConfiguredFeaturesAccessor;
 import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
@@ -253,6 +255,7 @@ final class Registration {
         gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache::new);
         gcr.registerGridCache(ISecurityGrid.class, SecurityCache::new);
         gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache::new);
+        gcr.registerGridCache(StatisticsCache.class, StatisticsCache::new);
 
         registries.cell().addCellHandler(new BasicCellHandler());
         registries.cell().addCellHandler(new CreativeCellHandler());
@@ -400,6 +403,8 @@ final class Registration {
                 SkyChestContainer::open);
         SpatialIOPortContainer.TYPE = registerContainer(registry, "spatialioport", SpatialIOPortContainer::fromNetwork,
                 SpatialIOPortContainer::open);
+        SpatialAnchorContainer.TYPE = registerContainer(registry, "spatialanchor", SpatialAnchorContainer::fromNetwork,
+                SpatialAnchorContainer::open);
         StorageBusContainer.TYPE = registerContainer(registry, "storagebus", StorageBusContainer::fromNetwork,
                 StorageBusContainer::open);
         UpgradeableContainer.TYPE = registerContainer(registry, "upgradeable", UpgradeableContainer::fromNetwork,
@@ -467,6 +472,7 @@ final class Registration {
             ScreenManager.registerFactory(CraftConfirmContainer.TYPE, CraftConfirmScreen::new);
             ScreenManager.registerFactory(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new);
             ScreenManager.registerFactory(CraftingStatusContainer.TYPE, CraftingStatusScreen::new);
+            ScreenManager.registerFactory(SpatialAnchorContainer.TYPE, SpatialAnchorScreen::new);
         });
     }
 

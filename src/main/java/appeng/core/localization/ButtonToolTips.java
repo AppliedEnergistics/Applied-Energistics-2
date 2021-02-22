@@ -69,7 +69,9 @@ public enum ButtonToolTips {
 
     SchedulingMode, SchedulingModeDefault, SchedulingModeRoundRobin, SchedulingModeRandom,
 
-    FilterMode, FilterModeKeep, FilterModeClear;
+    FilterMode, FilterModeKeep, FilterModeClear,
+
+    OverlayMode, OverlayModeYes, OverlayModeNo;
 
     private final TranslationTextComponent text;
 
