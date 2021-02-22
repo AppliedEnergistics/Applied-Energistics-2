@@ -329,7 +329,6 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 				// Reduce the cache size
 				this.cachedAeStacks = Arrays.copyOf( this.cachedAeStacks, slots );
-				this.skipSlots = new ArrayList<>(this.itemHandler.getSlots());
 			}
 
 			return changes;
