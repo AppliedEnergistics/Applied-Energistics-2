@@ -19,6 +19,7 @@
 package appeng.client.gui.implementations;
 
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +68,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<>();
 
 	private boolean refreshList = false;
-	private MEGuiTextField searchField;
+	private MEGuiTextField searchFieldOutputs;
+	private MEGuiTextField searchFieldInputs;
+
 
 	public GuiInterfaceTerminal( final InventoryPlayer inventoryPlayer, final PartInterfaceTerminal te )
 	{
@@ -88,12 +91,19 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.getScrollBar().setHeight( 106 );
 		this.getScrollBar().setTop( 18 );
 
-		this.searchField = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 4, 65, 12 );
-		this.searchField.setEnableBackgroundDrawing( false );
-		this.searchField.setMaxStringLength( 25 );
-		this.searchField.setTextColor( 0xFFFFFF );
-		this.searchField.setVisible( true );
-		this.searchField.setFocused( true );
+		this.searchFieldInputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 4, 65, 12 );
+		this.searchFieldInputs.setEnableBackgroundDrawing( false );
+		this.searchFieldInputs.setMaxStringLength( 25 );
+		this.searchFieldInputs.setTextColor( 0xFFFFFF );
+		this.searchFieldInputs.setVisible( true );
+		this.searchFieldInputs.setFocused( false );
+
+		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 18, 65, 12 );
+		this.searchFieldOutputs.setEnableBackgroundDrawing( false );
+		this.searchFieldOutputs.setMaxStringLength( 25 );
+		this.searchFieldOutputs.setTextColor( 0xFFFFFF );
+		this.searchFieldOutputs.setVisible( true );
+		this.searchFieldOutputs.setFocused( true );
 	}
 
 	@Override
@@ -148,11 +158,19 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	@Override
 	protected void mouseClicked( final int xCoord, final int yCoord, final int btn ) throws IOException
 	{
-		this.searchField.mouseClicked( xCoord, yCoord, btn );
+		this.searchFieldInputs.mouseClicked( xCoord, yCoord, btn );
 
-		if( btn == 1 && this.searchField.isMouseIn( xCoord, yCoord ) )
+		if( btn == 1 && this.searchFieldInputs.isMouseIn( xCoord, yCoord ) )
 		{
-			this.searchField.setText( "" );
+			this.searchFieldInputs.setText( "" );
+			this.refreshList();
+		}
+
+		this.searchFieldOutputs.mouseClicked( xCoord, yCoord, btn );
+
+		if( btn == 1 && this.searchFieldOutputs.isMouseIn( xCoord, yCoord ) )
+		{
+			this.searchFieldOutputs.setText( "" );
 			this.refreshList();
 		}
 
@@ -182,9 +200,14 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			offset += 18;
 		}
 
-		if( this.searchField != null )
+		if( this.searchFieldInputs != null )
 		{
-			this.searchField.drawTextBox();
+			this.searchFieldInputs.drawTextBox();
+		}
+
+		if( this.searchFieldOutputs != null )
+		{
+			this.searchFieldOutputs.drawTextBox();
 		}
 	}
 
@@ -193,12 +216,21 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
-			if( character == ' ' && this.searchField.getText().isEmpty() )
+			if( character == ' ' && this.searchFieldInputs.getText().isEmpty() )
 			{
 				return;
 			}
 
-			if( this.searchField.textboxKeyTyped( character, key ) )
+			if( character == ' ' && this.searchFieldOutputs.getText().isEmpty() )
+			{
+				return;
+			}
+
+			if( this.searchFieldInputs.textboxKeyTyped( character, key ) )
+			{
+				this.refreshList();
+			}
+			else if( this.searchFieldOutputs.textboxKeyTyped( character, key ) )
 			{
 				this.refreshList();
 			}
@@ -261,9 +293,10 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	{
 		this.byName.clear();
 
-		final String searchFilterLowerCase = this.searchField.getText().toLowerCase();
+		final String searchFieldInputs = this.searchFieldInputs.getText().toLowerCase();
+		final String searchFieldOutputs = this.searchFieldOutputs.getText().toLowerCase();
 
-		final Set<Object> cachedSearch = this.getCacheForSearchTerm( searchFilterLowerCase );
+		final Set<Object> cachedSearch = this.getCacheForSearchTerm( searchFieldInputs + searchFieldOutputs );
 		final boolean rebuild = cachedSearch.isEmpty();
 
 		for( final ClientDCInternalInv entry : this.byId.values() )
@@ -275,14 +308,19 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			}
 
 			// Shortcut to skip any filter if search term is ""/empty
-			boolean found = searchFilterLowerCase.isEmpty();
+			boolean found = (searchFieldInputs.isEmpty() && searchFieldOutputs.isEmpty());
 
 			// Search if the current inventory holds a pattern containing the search term.
-			if( !found && !searchFilterLowerCase.isEmpty() )
+			if( !found )
 			{
 				for( final ItemStack itemStack : entry.getInventory() )
 				{
-					found = this.itemStackMatchesSearchTerm( itemStack, searchFilterLowerCase );
+					if( !searchFieldInputs.isEmpty() && !searchFieldOutputs.isEmpty() )
+						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) || this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) );
+					else if( !searchFieldInputs.isEmpty() )
+						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) );
+					else if( !searchFieldOutputs.isEmpty() )
+						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) );
 					if( found )
 					{
 						break;
@@ -291,7 +329,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			}
 
 			// if found, filter skipped or machine name matching the search term, add it
-			if( found || entry.getName().toLowerCase().contains( searchFilterLowerCase ) )
+			if( found || (entry.getName().toLowerCase().contains( searchFieldInputs ) && entry.getName().toLowerCase().contains( searchFieldOutputs )))
 			{
 				this.byName.put( entry.getName(), entry );
 				cachedSearch.add( entry );
@@ -324,7 +362,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.getScrollBar().setRange( 0, this.lines.size() - LINES_ON_PAGE, 2 );
 	}
 
-	private boolean itemStackMatchesSearchTerm( final ItemStack itemStack, final String searchTerm )
+	private boolean itemStackMatchesSearchTerm( final ItemStack itemStack, final String searchTerm,int pass )
 	{
 		if( itemStack.isEmpty() )
 		{
@@ -338,14 +376,21 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			return false;
 		}
 
-		// Potential later use to filter by input
-		// NBTTagList inTag = encodedValue.getTagList( "in", 10 );
-		final NBTTagList outTag = encodedValue.getTagList( "out", 10 );
+		NBTTagList tag = new NBTTagList();
 
-		for( int i = 0; i < outTag.tagCount(); i++ )
+		if (pass == 0)
+		{
+			tag = encodedValue.getTagList( "in", 10 );
+		}
+		else
+		{
+			tag = encodedValue.getTagList( "out", 10 );
+		}
+
+		for( int i = 0; i < tag.tagCount(); i++ )
 		{
 
-			final ItemStack parsedItemStack = new ItemStack( outTag.getCompoundTagAt( i ) );
+			final ItemStack parsedItemStack = new ItemStack( tag.getCompoundTagAt( i ) );
 			if( !parsedItemStack.isEmpty() )
 			{
 				final String displayName = Platform
