@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import appeng.client.gui.AEGuiHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -93,6 +94,9 @@ public class JEIPlugin implements IModPlugin
 		registry.getRecipeTransferRegistry()
 				.addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerPatternTerm.class ),
 						Constants.UNIVERSAL_RECIPE_TRANSFER_UID );
+
+		AEGuiHandler aeGuiHandler = new AEGuiHandler();
+		registry.addAdvancedGuiHandlers(aeGuiHandler);
 	}
 
 	private void registerDescriptions( IDefinitions definitions, IModRegistry registry )

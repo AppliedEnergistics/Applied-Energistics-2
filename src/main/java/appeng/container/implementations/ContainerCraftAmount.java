@@ -52,6 +52,12 @@ public class ContainerCraftAmount extends AEBaseContainer
 	}
 
 	@Override
+	public Slot getSlot( int slotId )
+	{
+		return super.getSlot( 0 );
+	}
+
+	@Override
 	public void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();

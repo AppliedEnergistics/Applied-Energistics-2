@@ -582,4 +582,14 @@ public class GuiCraftConfirm extends AEBaseGui
 			}
 		}
 	}
+
+	public List<IAEItemStack> getVisual()
+	{
+		return visual;
+	}
+
+	public int getDisplayedRows()
+	{
+		return this.rows;
+	}
 }

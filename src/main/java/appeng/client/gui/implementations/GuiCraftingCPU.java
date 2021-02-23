@@ -493,4 +493,14 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	{
 		return ViewItems.ALL;
 	}
+
+	public List<IAEItemStack> getVisual()
+	{
+		return visual;
+	}
+
+	public int getDisplayedRows()
+	{
+		return DISPLAYED_ROWS;
+	}
 }
