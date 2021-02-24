@@ -251,6 +251,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 				}
 
 				this.cachedAeStacks = Arrays.copyOf( this.cachedAeStacks, slots );
+				this.skipSlots = new ArrayList<>( this.fluidHandler.getTankProperties().length );
 			}
 			return changes;
 		}
