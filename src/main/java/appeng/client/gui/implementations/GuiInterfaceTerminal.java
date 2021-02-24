@@ -79,7 +79,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
 		this.xSize = 195;
-		this.ySize = 222;
+		this.ySize = 236;
 	}
 
 	@Override
@@ -89,16 +89,17 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		this.getScrollBar().setLeft( 175 );
 		this.getScrollBar().setHeight( 106 );
-		this.getScrollBar().setTop( 18 );
+		this.getScrollBar().setTop( 32 );
 
-		this.searchFieldInputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 4, 65, 12 );
+		this.searchFieldInputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 16, this.offsetX ), this.guiTop + 18, 65, 12 );
 		this.searchFieldInputs.setEnableBackgroundDrawing( false );
 		this.searchFieldInputs.setMaxStringLength( 25 );
 		this.searchFieldInputs.setTextColor( 0xFFFFFF );
 		this.searchFieldInputs.setVisible( true );
 		this.searchFieldInputs.setFocused( false );
 
-		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 18, 65, 12 );
+//		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 4, 65, 12 );
+		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 94, this.offsetX ), this.guiTop + 18, 65, 12 );
 		this.searchFieldOutputs.setEnableBackgroundDrawing( false );
 		this.searchFieldOutputs.setMaxStringLength( 25 );
 		this.searchFieldOutputs.setTextColor( 0xFFFFFF );
@@ -123,7 +124,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			}
 		}
 
-		int offset = 17;
+		int offset = 32;
 		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
 		{
 			final Object lineObj = this.lines.get( ex + x );
@@ -183,7 +184,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.bindTexture( "guis/interfaceterminal.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 
-		int offset = 17;
+		int offset = 32;
 		final int ex = this.getScrollBar().getCurrentScroll();
 
 		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
@@ -195,7 +196,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 				GlStateManager.color( 1, 1, 1, 1 );
 				final int width = inv.getInventory().getSlots() * 18;
-				this.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18 );
+				this.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 153, width, 18 );
 			}
 			offset += 18;
 		}
@@ -216,24 +217,21 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
-			if( character == ' ' && this.searchFieldInputs.getText().isEmpty() )
+			if( character == ' ' && this.searchFieldInputs.getText().isEmpty() && this.searchFieldInputs.isFocused() )
 			{
 				return;
 			}
 
-			if( character == ' ' && this.searchFieldOutputs.getText().isEmpty() )
+			if( character == ' ' && this.searchFieldOutputs.getText().isEmpty() && this.searchFieldOutputs.isFocused())
 			{
 				return;
 			}
 
-			if( this.searchFieldInputs.textboxKeyTyped( character, key ) )
+			if( this.searchFieldInputs.textboxKeyTyped( character, key ) || this.searchFieldOutputs.textboxKeyTyped( character, key ))
 			{
 				this.refreshList();
 			}
-			else if( this.searchFieldOutputs.textboxKeyTyped( character, key ) )
-			{
-				this.refreshList();
-			}
+
 			else
 			{
 				super.keyTyped( character, key );
