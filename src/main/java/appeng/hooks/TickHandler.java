@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -104,7 +105,20 @@ public class TickHandler {
         return this.cliPlayerColors;
     }
 
+    /**
+     * Add a server or world callback which gets called the next time the queue is ticked.
+     * 
+     * Callbacks on the client are not support.
+     * <p>
+     * Using null as world will queue it into the global {@link ServerTickEvent}, otherwise it will be ticked with the
+     * corresponding {@link WorldTickEvent}.
+     * 
+     * @param w null or the specific {@link World}
+     * @param c the callback
+     */
     public void addCallable(final IWorld w, final IWorldCallable<?> c) {
+        Preconditions.checkArgument(w == null || !w.isRemote(), "Can only register serverside callbacks");
+
         if (w == null) {
             this.serverQueue.add(c);
         } else {
