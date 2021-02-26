@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -53,7 +54,6 @@ import appeng.crafting.CraftingJob;
 import appeng.me.Grid;
 import appeng.tile.AEBaseBlockEntity;
 import appeng.util.IWorldCallable;
-import appeng.util.Platform;
 
 public class TickHandler {
 
@@ -61,8 +61,7 @@ public class TickHandler {
     private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
     private final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
     private final Map<WorldAccess, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
-    private final HandlerRep server = new HandlerRep();
-    private final HandlerRep client = new HandlerRep();
+    private final HandlerRep serverRepo = new HandlerRep();
     private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
 
     public TickHandler() {
@@ -102,46 +101,39 @@ public class TickHandler {
     }
 
     public void addInit(final AEBaseBlockEntity tile) {
-        // for no there is no reason to care about this on the client...
+        // this is called client-side too during block entity initialization
         if (!tile.isClient()) {
-            this.server.tiles.add(tile);
+            this.serverRepo.tiles.add(tile);
         }
-    }
-
-    private HandlerRep getRepo() {
-        if (Platform.isServer()) {
-            return this.server;
-        }
-        return this.client;
     }
 
     public void addNetwork(final Grid grid) {
-        // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
-            this.getRepo().addNetwork(grid);
-        }
+        validateLogicalServerSide(grid);
+        serverRepo.addNetwork(grid);
     }
 
     public void removeNetwork(final Grid grid) {
-        // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
-            this.getRepo().removeNetwork(grid);
+        validateLogicalServerSide(grid);
+        serverRepo.removeNetwork(grid);
+    }
+
+    private void validateLogicalServerSide(final Grid grid) {
+        IGridNode pivot = grid.getPivot();
+        // yes it's @Nonnull but it may be null during removeNetwork
+        if (pivot != null) {
+            Preconditions.checkArgument(!pivot.getWorld().isClient());
         }
     }
 
     public Iterable<Grid> getGridList() {
-        return this.getRepo().networks;
-    }
-
-    public void shutdown() {
-        this.getRepo().clear();
+        return serverRepo.networks;
     }
 
     public void onUnloadWorld(MinecraftServer server, ServerWorld world) {
         final List<IGridNode> toDestroy = new ArrayList<>();
 
-        this.getRepo().updateNetworks();
-        for (final Grid g : this.getRepo().networks) {
+        this.serverRepo.updateNetworks();
+        for (final Grid g : this.serverRepo.networks) {
             for (final IGridNode n : g.getNodes()) {
                 if (n.getWorld() == world) {
                     toDestroy.add(n);
@@ -181,9 +173,8 @@ public class TickHandler {
         this.tickColors(this.srvPlayerColors);
         // ready tiles.
         List<AEBaseBlockEntity> delayQueue = null;
-        final HandlerRep repo = this.getRepo();
-        while (!repo.tiles.isEmpty()) {
-            final AEBaseBlockEntity bt = repo.tiles.poll();
+        while (!serverRepo.tiles.isEmpty()) {
+            final AEBaseBlockEntity bt = serverRepo.tiles.poll();
             if (!bt.isRemoved()) {
                 // If the tile entity is in a chunk that is in the progress of being loaded,
                 // re-queue the tile-entity until the chunk is ready for ticking tile-entities
@@ -211,12 +202,12 @@ public class TickHandler {
         if (delayQueue != null) {
             AELog.debug("Delaying onReady for %s tile-entities because their chunks are not fully loaded",
                     delayQueue.size());
-            repo.tiles.addAll(delayQueue);
+            serverRepo.tiles.addAll(delayQueue);
         }
 
         // tick networks.
-        this.getRepo().updateNetworks();
-        for (final Grid g : this.getRepo().networks) {
+        this.serverRepo.updateNetworks();
+        for (final Grid g : this.serverRepo.networks) {
             g.update();
         }
 
@@ -265,17 +256,10 @@ public class TickHandler {
 
     private static class HandlerRep {
 
-        private Queue<AEBaseBlockEntity> tiles = new ArrayDeque<>();
-        private Set<Grid> networks = new HashSet<>();
-        private Set<Grid> toAdd = new HashSet<>();
-        private Set<Grid> toRemove = new HashSet<>();
-
-        private void clear() {
-            this.tiles = new ArrayDeque<>();
-            this.networks = new HashSet<>();
-            this.toAdd = new HashSet<>();
-            this.toRemove = new HashSet<>();
-        }
+        private final Queue<AEBaseBlockEntity> tiles = new ArrayDeque<>();
+        private final Set<Grid> networks = new HashSet<>();
+        private final Set<Grid> toAdd = new HashSet<>();
+        private final Set<Grid> toRemove = new HashSet<>();
 
         private synchronized void addNetwork(Grid g) {
             this.toAdd.add(g);
