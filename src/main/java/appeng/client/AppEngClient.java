@@ -166,6 +166,8 @@ public final class AppEngClient extends AppEngBase {
 
     private final MinecraftClient client;
 
+    private IntegratedServer server = null;
+
     private final ClientNetworkHandler networkHandler;
 
     private final ClientTickHandler tickHandler;
@@ -200,6 +202,8 @@ public final class AppEngClient extends AppEngBase {
         // each time the integrated server starts&stops
         ServerLifecycleEvents.SERVER_STARTING.register(WorldData::onServerStarting);
         ServerLifecycleEvents.SERVER_STOPPED.register(WorldData::onServerStoppped);
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> this.server = (IntegratedServer) server);
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> this.server = null);
 
         this.bindings = new EnumMap<>(ActionKey.class);
         for (ActionKey key : ActionKey.values()) {
@@ -211,7 +215,6 @@ public final class AppEngClient extends AppEngBase {
 
     @Override
     public MinecraftServer getServer() {
-        IntegratedServer server = client.getServer();
         if (server != null) {
             return server;
         }
@@ -221,7 +224,6 @@ public final class AppEngClient extends AppEngBase {
 
     @Override
     public boolean isOnServerThread() {
-        IntegratedServer server = client.getServer();
         return server != null && server.isOnThread();
     }
 
