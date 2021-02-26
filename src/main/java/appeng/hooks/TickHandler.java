@@ -36,6 +36,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.server.MinecraftServer;
@@ -75,6 +76,7 @@ public class TickHandler {
         ServerTickEvents.START_WORLD_TICK.register(this::onBeforeWorldTick);
         ServerTickEvents.END_WORLD_TICK.register(this::onAfterWorldTick);
         ServerWorldEvents.UNLOAD.register(this::onUnloadWorld);
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> serverRepo.clear());
     }
 
     public static TickHandler instance() {
@@ -277,6 +279,25 @@ public class TickHandler {
 
             this.networks.addAll(this.toAdd);
             this.toAdd.clear();
+        }
+
+        private synchronized void clear() {
+            if (!tiles.isEmpty()) {
+                tiles.clear();
+                AELog.warn("tiles should be empty at server shutdown.");
+            }
+            if (!networks.isEmpty()) {
+                networks.clear();
+                AELog.warn("networks should be empty at server shutdown.");
+            }
+            if (!toAdd.isEmpty()) {
+                toAdd.clear();
+                AELog.warn("toAdd should be empty at server shutdown.");
+            }
+            if (!toRemove.isEmpty()) {
+                toRemove.clear();
+                AELog.warn("toRemove should be empty at server shutdown.");
+            }
         }
     }
 
