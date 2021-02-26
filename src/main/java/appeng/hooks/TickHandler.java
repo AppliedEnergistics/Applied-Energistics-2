@@ -103,8 +103,8 @@ public class TickHandler {
 
     public void addInit(final AEBaseBlockEntity tile) {
         // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
-            this.getRepo().tiles.add(tile);
+        if (!tile.isClient()) {
+            this.server.tiles.add(tile);
         }
     }
 
