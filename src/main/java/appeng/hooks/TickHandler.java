@@ -285,8 +285,10 @@ public class TickHandler {
         final Map<ChunkPos, Queue<AEBaseTileEntity>> worldQueue = repo.tiles.getOrDefault(world,
                 Collections.emptyMap());
 
-        for (Entry<ChunkPos, Queue<AEBaseTileEntity>> chunks : worldQueue.entrySet()) {
-            ChunkPos pos = chunks.getKey();
+        for (Iterator<Entry<ChunkPos, Queue<AEBaseTileEntity>>> it = worldQueue.entrySet().iterator(); it
+                .hasNext();) {
+            Entry<ChunkPos, Queue<AEBaseTileEntity>> entry = it.next();
+            ChunkPos pos = entry.getKey();
             AbstractChunkProvider chunkProvider = world.getChunkProvider();
 
             // Using the blockpos of the chunk start to test if it can tick.
@@ -297,7 +299,7 @@ public class TickHandler {
             // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
             // will be readied.
             if (world.chunkExists(pos.x, pos.z) && chunkProvider.canTick(testBlockPos)) {
-                Queue<AEBaseTileEntity> queue = chunks.getValue();
+                Queue<AEBaseTileEntity> queue = entry.getValue();
 
                 while (!queue.isEmpty()) {
                     final AEBaseTileEntity bt = queue.poll();
@@ -307,6 +309,9 @@ public class TickHandler {
                         bt.onReady();
                     }
                 }
+
+                // cleanup empty chunk queue
+                it.remove();
             }
         }
     }
