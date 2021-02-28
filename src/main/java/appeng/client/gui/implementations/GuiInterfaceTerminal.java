@@ -19,16 +19,8 @@
 package appeng.client.gui.implementations;
 
 
-import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 
 import com.google.common.collect.HashMultimap;
 
@@ -50,6 +42,8 @@ import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
 import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.util.Platform;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.math.BlockPos;
 
 
 public class GuiInterfaceTerminal extends AEBaseGui
@@ -62,6 +56,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 	private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<>();
 	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
+	private final HashMap<ClientDCInternalInv,BlockPos> blockPosHashMap = new HashMap<>();
 	private final ArrayList<String> names = new ArrayList<>();
 	private final ArrayList<Object> lines = new ArrayList<>();
 
@@ -257,6 +252,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					final long id = Long.parseLong( key.substring( 1 ), Character.MAX_RADIX );
 					final NBTTagCompound invData = in.getCompoundTag( key );
 					final ClientDCInternalInv current = this.getById( id, invData.getLong( "sortBy" ), invData.getString( "un" ) );
+					blockPosHashMap.put( current, NBTUtil.getPosFromTag( invData.getCompoundTag( "pos" )) );
 
 					for( int x = 0; x < current.getInventory().getSlots(); x++ )
 					{
@@ -294,7 +290,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		final String searchFieldInputs = this.searchFieldInputs.getText().toLowerCase();
 		final String searchFieldOutputs = this.searchFieldOutputs.getText().toLowerCase();
 
-		final Set<Object> cachedSearch = this.getCacheForSearchTerm( searchFieldInputs + searchFieldOutputs );
+		final Set<Object> cachedSearch = this.getCacheForSearchTerm( "IN:" + searchFieldInputs + " OUT:" + searchFieldOutputs );
 		final boolean rebuild = cachedSearch.isEmpty();
 
 		for( final ClientDCInternalInv entry : this.byId.values() )

@@ -28,6 +28,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Settings;
@@ -378,6 +380,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		{
 			tag.setLong( "sortBy", inv.sortBy );
 			tag.setString( "un", inv.unlocalizedName );
+			tag.setTag("pos", NBTUtil.createPosTag( inv.pos ) );
 		}
 
 		for( int x = 0; x < length; x++ )
@@ -408,6 +411,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		private final String unlocalizedName;
 		private final IItemHandler client;
 		private final IItemHandler server;
+		private final BlockPos pos;
 
 		public InvTracker( final DualityInterface dual, final IItemHandler patterns, final String unlocalizedName )
 		{
@@ -415,6 +419,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			this.client = new AppEngInternalInventory( null, this.server.getSlots() );
 			this.unlocalizedName = unlocalizedName;
 			this.sortBy = dual.getSortValue();
+			this.pos = dual.getTile().getPos();
 		}
 	}
 
