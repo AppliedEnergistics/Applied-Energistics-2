@@ -22,8 +22,10 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.*;
 
+import appeng.util.BlockPosUtils;
 import com.google.common.collect.HashMultimap;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -44,6 +46,10 @@ import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.util.Platform;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+
+
+import static appeng.client.render.BlockPosHighlighter.hilightBlock;
 
 
 public class GuiInterfaceTerminal extends AEBaseGui
@@ -57,6 +63,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<>();
 	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
 	private final HashMap<ClientDCInternalInv,BlockPos> blockPosHashMap = new HashMap<>();
+	private final HashMap<GuiButton,ClientDCInternalInv> guiButtonHashMap = new HashMap<>();
 	private final ArrayList<String> names = new ArrayList<>();
 	private final ArrayList<Object> lines = new ArrayList<>();
 
@@ -65,12 +72,14 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private boolean refreshList = false;
 	private MEGuiTextField searchFieldOutputs;
 	private MEGuiTextField searchFieldInputs;
-
+	private PartInterfaceTerminal partInterfaceTerminal;
+	GuiButton guiButtonHide;
 
 	public GuiInterfaceTerminal( final InventoryPlayer inventoryPlayer, final PartInterfaceTerminal te )
 	{
 		super( new ContainerInterfaceTerminal( inventoryPlayer, te ) );
 
+		this.partInterfaceTerminal = te;
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
 		this.xSize = 195;
@@ -100,15 +109,30 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.searchFieldOutputs.setTextColor( 0xFFFFFF );
 		this.searchFieldOutputs.setVisible( true );
 		this.searchFieldOutputs.setFocused( true );
+
+		this.searchFieldInputs.setText( partInterfaceTerminal.in );
+		this.searchFieldOutputs.setText( partInterfaceTerminal.out );
+	}
+
+	@Override
+	public void onGuiClosed()
+	{
+		partInterfaceTerminal.saveSearchStrings( this.searchFieldInputs.getText().toLowerCase(), this.searchFieldOutputs.getText().toLowerCase() );
+		super.onGuiClosed();
 	}
 
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
+		this.buttonList.clear();
+
 		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
 		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		final int ex = this.getScrollBar().getCurrentScroll();
+
+		this.guiButtonHide = new GuiButton( -1, guiLeft + 112, guiTop + 4, 70, 12, "Toggle full" );
+		this.buttonList.add( guiButtonHide );
 
 		final Iterator<Slot> o = this.inventorySlots.inventorySlots.iterator();
 		while( o.hasNext() )
@@ -130,6 +154,10 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				{
 					this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 8, 1 + offset ) );
 				}
+				GuiButton guiButton = new GuiButton( x, guiLeft + 1, guiTop + offset + 3, 8, 10, "?" );
+				guiButtonHashMap.put( guiButton , inv);
+				this.buttonList.add( guiButton );
+
 			}
 			else if( lineObj instanceof String )
 			{
@@ -174,9 +202,29 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
+	protected void actionPerformed( final GuiButton btn ) throws IOException
+	{
+		if( guiButtonHashMap.containsKey( btn ) )
+		{
+			BlockPos blockPos = blockPosHashMap.get( guiButtonHashMap.get( this.selectedButton ) );
+			BlockPos blockPos2 = mc.player.getPosition();
+			hilightBlock( blockPos, System.currentTimeMillis() + 500 * BlockPosUtils.getDistance(blockPos, blockPos2) );
+			mc.player.sendStatusMessage( new TextComponentString( "The interface is now highlighted at " + "X: " + blockPos.getX() + "Y: " + blockPos.getY() + "Z: " + blockPos.getZ() ), false );
+			mc.player.closeScreen();
+		}
+
+		if (btn == guiButtonHide)
+		{
+			partInterfaceTerminal.onlyInterfacesWithFreeSlots = !partInterfaceTerminal.onlyInterfacesWithFreeSlots;
+			this.refreshList();
+		}
+
+	}
+
+	@Override
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.bindTexture( "guis/interfaceterminal.png" );
+		this.bindTexture( "guis/newinterfaceterminal.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 
 		int offset = 32;
@@ -286,6 +334,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private void refreshList()
 	{
 		this.byName.clear();
+		this.buttonList.clear();
 
 		final String searchFieldInputs = this.searchFieldInputs.getText().toLowerCase();
 		final String searchFieldOutputs = this.searchFieldOutputs.getText().toLowerCase();
@@ -303,6 +352,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 			// Shortcut to skip any filter if search term is ""/empty
 			boolean found = (searchFieldInputs.isEmpty() && searchFieldOutputs.isEmpty());
+			boolean interfaceHasFreeSlots = false;
 
 			// Search if the current inventory holds a pattern containing the search term.
 			if( !found )
@@ -315,6 +365,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) );
 					else if( !searchFieldOutputs.isEmpty() )
 						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) );
+					if (partInterfaceTerminal.onlyInterfacesWithFreeSlots && itemStack.isEmpty()) {
+						interfaceHasFreeSlots = true;
+					}
 					if( found )
 					{
 						break;
@@ -325,8 +378,15 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			// if found, filter skipped or machine name matching the search term, add it
 			if( found || (entry.getName().toLowerCase().contains( searchFieldInputs ) && entry.getName().toLowerCase().contains( searchFieldOutputs )))
 			{
-				this.byName.put( entry.getName(), entry );
-				cachedSearch.add( entry );
+				if (!partInterfaceTerminal.onlyInterfacesWithFreeSlots)
+				{
+					this.byName.put( entry.getName(), entry );
+					cachedSearch.add( entry );
+				}
+				else if ( interfaceHasFreeSlots ){
+					this.byName.put( entry.getName(), entry );
+					cachedSearch.add( entry );
+				}
 			}
 			else
 			{

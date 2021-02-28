@@ -419,7 +419,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			this.client = new AppEngInternalInventory( null, this.server.getSlots() );
 			this.unlocalizedName = unlocalizedName;
 			this.sortBy = dual.getSortValue();
-			this.pos = dual.getTile().getPos();
+			this.pos = dual.getLocation().getPos();
 		}
 	}
 

@@ -476,7 +476,10 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 			switch( clickType )
 			{
 				case PICKUP: // pickup / set-down.
-					action = ( mouseButton == 1 ) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+					if (slot.getStack().isEmpty() && !player.inventory.getItemStack().isEmpty())
+						action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
+					if (!slot.getStack().isEmpty() && player.inventory.getItemStack().isEmpty())
+						action = InventoryAction.PICKUP_OR_SET_DOWN;
 					break;
 				case QUICK_MOVE:
 					action = ( mouseButton == 1 ) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;

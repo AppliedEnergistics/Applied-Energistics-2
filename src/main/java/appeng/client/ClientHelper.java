@@ -25,6 +25,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
+import appeng.helpers.HighlighterHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -37,6 +38,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.ForgeModContainer;
@@ -104,6 +106,11 @@ public class ClientHelper extends ServerHelper
 			ClientRegistry.registerKeyBinding( binding );
 			this.bindings.put( key, binding );
 		}
+	}
+
+	@SubscribeEvent
+	public void renderWorldLastEvent( RenderWorldLastEvent event) {
+		HighlighterHandler.tick(event);
 	}
 
 	@Override
