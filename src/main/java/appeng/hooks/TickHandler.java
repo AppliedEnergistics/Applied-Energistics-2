@@ -73,7 +73,7 @@ public class TickHandler {
     private static final TickHandler INSTANCE = new TickHandler();
     private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
     private final Multimap<IWorld, CraftingJob> craftingJobs = LinkedListMultimap.create();
-    private final Map<IWorld, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
+    private final Map<IWorld, Queue<IWorldCallable<?>>> callQueue = new HashMap<>();
     private final HandlerRep server = new HandlerRep();
     private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
     private final Map<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
@@ -139,7 +139,7 @@ public class TickHandler {
 
     public void addInit(final AEBaseTileEntity tile) {
         // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
+        if (!tile.getWorld().isRemote()) {
             this.getRepo().addTile(tile);
         }
     }
@@ -176,14 +176,14 @@ public class TickHandler {
 
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
         // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
+        if (!ev.getWorld().isRemote()) {
             this.getRepo().tiles.get(ev.getWorld()).remove(ev.getChunk().getPos());
         }
     }
 
     public void onUnloadWorld(final WorldEvent.Unload ev) {
         // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
+        if (!ev.getWorld().isRemote()) {
             final List<IGridNode> toDestroy = new ArrayList<>();
 
             this.getRepo().updateNetworks();
@@ -200,6 +200,7 @@ public class TickHandler {
             }
 
             this.getRepo().tiles.remove(ev.getWorld());
+            this.callQueue.remove(ev.getWorld());
         }
     }
 
@@ -351,7 +352,7 @@ public class TickHandler {
 
     private static class HandlerRep {
 
-        private Map<IWorld, Map<ChunkPos, Queue<AEBaseTileEntity>>> tiles = new WeakHashMap<>();
+        private Map<IWorld, Map<ChunkPos, Queue<AEBaseTileEntity>>> tiles = new HashMap<>();
         private Set<Grid> networks = new HashSet<>();
         private Set<Grid> toAdd = new HashSet<>();
         private Set<Grid> toRemove = new HashSet<>();
