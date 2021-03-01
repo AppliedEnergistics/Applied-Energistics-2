@@ -638,6 +638,11 @@ final class Registration {
         Upgrades.INVERTER.registerItem(items.portableCell16k(), 1, storageCellGroup);
         Upgrades.INVERTER.registerItem(items.portableCell64k(), 1, storageCellGroup);
 
+        Upgrades.INVERTER.registerItem(items.fluidCell1k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.fluidCell4k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.fluidCell16k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.fluidCell64k(), 1, storageCellGroup);
+
         Upgrades.FUZZY.registerItem(items.viewCell(), 1);
         Upgrades.INVERTER.registerItem(items.viewCell(), 1);
 
