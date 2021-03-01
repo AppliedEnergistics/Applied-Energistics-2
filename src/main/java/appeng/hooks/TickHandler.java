@@ -21,11 +21,13 @@ package appeng.hooks;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -36,6 +38,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -45,6 +48,7 @@ import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -68,10 +72,9 @@ public class TickHandler {
 
     private static final TickHandler INSTANCE = new TickHandler();
     private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
-    private final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
-    private final Map<IWorld, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
+    private final Multimap<IWorld, CraftingJob> craftingJobs = LinkedListMultimap.create();
+    private final Map<IWorld, Queue<IWorldCallable<?>>> callQueue = new HashMap<>();
     private final HandlerRep server = new HandlerRep();
-    private final HandlerRep client = new HandlerRep();
     private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
     private final Map<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
     private CableRenderMode crm = CableRenderMode.STANDARD;
@@ -83,6 +86,7 @@ public class TickHandler {
     public static void setup(IEventBus eventBus) {
         eventBus.addListener(INSTANCE::onServerTick);
         eventBus.addListener(INSTANCE::onWorldTick);
+        eventBus.addListener(INSTANCE::onUnloadChunk);
         eventBus.addListener(INSTANCE::onUnloadWorld);
 
         // DistExecutor does not like functional interfaces
@@ -135,16 +139,17 @@ public class TickHandler {
 
     public void addInit(final AEBaseTileEntity tile) {
         // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
-            this.getRepo().tiles.add(tile);
+        if (!tile.getWorld().isRemote()) {
+            this.getRepo().addTile(tile);
         }
     }
 
     private HandlerRep getRepo() {
-        if (Platform.isServer()) {
-            return this.server;
+        if (Platform.isClient()) {
+            throw new IllegalAccessError("Only supported on the server");
         }
-        return this.client;
+
+        return this.server;
     }
 
     public void addNetwork(final Grid grid) {
@@ -169,9 +174,16 @@ public class TickHandler {
         this.getRepo().clear();
     }
 
+    public void onUnloadChunk(final ChunkEvent.Unload ev) {
+        // for no there is no reason to care about this on the client...
+        if (!ev.getWorld().isRemote()) {
+            this.getRepo().tiles.get(ev.getWorld()).remove(ev.getChunk().getPos());
+        }
+    }
+
     public void onUnloadWorld(final WorldEvent.Unload ev) {
         // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
+        if (!ev.getWorld().isRemote()) {
             final List<IGridNode> toDestroy = new ArrayList<>();
 
             this.getRepo().updateNetworks();
@@ -186,6 +198,9 @@ public class TickHandler {
             for (final IGridNode n : toDestroy) {
                 n.destroy();
             }
+
+            this.getRepo().tiles.remove(ev.getWorld());
+            this.callQueue.remove(ev.getWorld());
         }
     }
 
@@ -209,65 +224,14 @@ public class TickHandler {
         }
 
         if (ev.phase == Phase.END) {
-            synchronized (this.craftingJobs) {
-                final Collection<CraftingJob> jobSet = this.craftingJobs.get(ev.world);
-
-                if (!jobSet.isEmpty()) {
-                    final int jobSize = jobSet.size();
-                    final int microSecondsPerTick = AEConfig.instance().getCraftingCalculationTimePerTick() * 1000;
-                    final int simTime = Math.max(1, microSecondsPerTick / jobSize);
-
-                    final Iterator<CraftingJob> i = jobSet.iterator();
-
-                    while (i.hasNext()) {
-                        final CraftingJob cj = i.next();
-                        if (!cj.simulateFor(simTime)) {
-                            i.remove();
-                        }
-                    }
-                }
-            }
+            this.simulateCraftingJobs(ev.world);
+            this.readyTiles(ev.world);
         }
     }
 
     public void onServerTick(final ServerTickEvent ev) {
         if (ev.phase == Phase.END) {
             this.tickColors(this.srvPlayerColors);
-
-            // ready tiles.
-            List<AEBaseTileEntity> delayQueue = null;
-            final HandlerRep repo = this.getRepo();
-            while (!repo.tiles.isEmpty()) {
-                final AEBaseTileEntity bt = repo.tiles.poll();
-                if (!bt.isRemoved()) {
-                    // If the tile entity is in a chunk that is in the progress of being loaded,
-                    // re-queue the tile-entity until the chunk is ready for ticking tile-entities
-                    // Vanilla also checks "canTick" before ticking tile-entities in chunks
-                    AbstractChunkProvider chunkProvider = bt.getWorld().getChunkProvider();
-                    if (chunkProvider.canTick(bt.getPos())) {
-                        bt.onReady();
-                    } else {
-                        // Be defensive about the chunk being unloaded already and don't re-queue
-                        // the tile entity if the chunk no longer exists to avoid endlessly re-queueing TEs
-                        ChunkPos chunkPos = new ChunkPos(bt.getPos());
-                        if (chunkProvider.chunkExists(chunkPos.x, chunkPos.z)) {
-                            if (delayQueue == null) {
-                                delayQueue = new ArrayList<>();
-                            }
-                            delayQueue.add(bt);
-                        } else {
-                            AELog.warn("Skipping onReady for Tile-Entity in unloaded chunk %s", chunkPos);
-                        }
-                    }
-                }
-            }
-
-            // Re-insert tiles that have to wait
-            if (delayQueue != null) {
-                AELog.debug("Delaying onReady for %s tile-entities because their chunks are not fully loaded",
-                        delayQueue.size());
-                repo.tiles.addAll(delayQueue);
-            }
 
             // tick networks.
             this.getRepo().updateNetworks();
@@ -283,6 +247,74 @@ public class TickHandler {
     public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
         synchronized (this.craftingJobs) {
             this.craftingJobs.put(world, craftingJob);
+        }
+    }
+
+    /**
+     * Simulates the current crafting requests before they user can submit them to be processed.
+     * 
+     * @param world
+     */
+    private void simulateCraftingJobs(IWorld world) {
+        synchronized (this.craftingJobs) {
+            final Collection<CraftingJob> jobSet = this.craftingJobs.get(world);
+
+            if (!jobSet.isEmpty()) {
+                final int jobSize = jobSet.size();
+                final int microSecondsPerTick = AEConfig.instance().getCraftingCalculationTimePerTick() * 1000;
+                final int simTime = Math.max(1, microSecondsPerTick / jobSize);
+
+                final Iterator<CraftingJob> i = jobSet.iterator();
+
+                while (i.hasNext()) {
+                    final CraftingJob cj = i.next();
+                    if (!cj.simulateFor(simTime)) {
+                        i.remove();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Ready the tiles in this world
+     * 
+     * @param world
+     */
+    private void readyTiles(IWorld world) {
+        final HandlerRep repo = this.getRepo();
+        final Map<ChunkPos, Queue<AEBaseTileEntity>> worldQueue = repo.tiles.getOrDefault(world,
+                Collections.emptyMap());
+
+        Iterator<Entry<ChunkPos, Queue<AEBaseTileEntity>>> it = worldQueue.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<ChunkPos, Queue<AEBaseTileEntity>> entry = it.next();
+
+            ChunkPos pos = entry.getKey();
+            AbstractChunkProvider chunkProvider = world.getChunkProvider();
+
+            // Using the blockpos of the chunk start to test if it can tick.
+            // Relies on the world to test the chunkpos and not the explicit blockpos.
+            BlockPos testBlockPos = new BlockPos(pos.getXStart(), 0, pos.getZStart());
+
+            // Readies this chunk, if it can tick and does exist.
+            // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
+            // will be readied.
+            if (world.chunkExists(pos.x, pos.z) && chunkProvider.canTick(testBlockPos)) {
+                Queue<AEBaseTileEntity> queue = entry.getValue();
+
+                while (!queue.isEmpty()) {
+                    final AEBaseTileEntity bt = queue.poll();
+
+                    // Only ready tile entites which weren't destroyed in the meantime.
+                    if (!bt.isRemoved()) {
+                        bt.onReady();
+                    }
+                }
+
+                // cleanup empty chunk queue
+                it.remove();
+            }
         }
     }
 
@@ -321,16 +353,35 @@ public class TickHandler {
 
     private static class HandlerRep {
 
-        private Queue<AEBaseTileEntity> tiles = new ArrayDeque<>();
+        private Map<IWorld, Map<ChunkPos, Queue<AEBaseTileEntity>>> tiles = new HashMap<>();
         private Set<Grid> networks = new HashSet<>();
         private Set<Grid> toAdd = new HashSet<>();
         private Set<Grid> toRemove = new HashSet<>();
 
+        public HandlerRep() {
+        }
+
         private void clear() {
-            this.tiles = new ArrayDeque<>();
+            this.tiles = new WeakHashMap<>();
             this.networks = new HashSet<>();
             this.toAdd = new HashSet<>();
             this.toRemove = new HashSet<>();
+        }
+
+        private synchronized void addTile(AEBaseTileEntity tile) {
+            IWorld world = tile.getWorld();
+            ChunkPos chunkPos = new ChunkPos(tile.getPos());
+
+            Map<ChunkPos, Queue<AEBaseTileEntity>> worldQueue = this.tiles.computeIfAbsent(world, (key) -> {
+                return new HashMap<>();
+            });
+
+            Queue<AEBaseTileEntity> queue = worldQueue.computeIfAbsent(chunkPos, (key) -> {
+                return new ArrayDeque<>();
+            });
+
+            queue.add(tile);
+
         }
 
         private synchronized void addNetwork(Grid g) {
