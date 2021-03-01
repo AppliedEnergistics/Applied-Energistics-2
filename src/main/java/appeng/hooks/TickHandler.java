@@ -286,9 +286,10 @@ public class TickHandler {
         final Map<ChunkPos, Queue<AEBaseTileEntity>> worldQueue = repo.tiles.getOrDefault(world,
                 Collections.emptyMap());
 
-        for (Iterator<Entry<ChunkPos, Queue<AEBaseTileEntity>>> it = worldQueue.entrySet().iterator(); it
-                .hasNext();) {
+        Iterator<Entry<ChunkPos, Queue<AEBaseTileEntity>>> it = worldQueue.entrySet().iterator();
+        while (it.hasNext()) {
             Entry<ChunkPos, Queue<AEBaseTileEntity>> entry = it.next();
+
             ChunkPos pos = entry.getKey();
             AbstractChunkProvider chunkProvider = world.getChunkProvider();
 
@@ -305,7 +306,7 @@ public class TickHandler {
                 while (!queue.isEmpty()) {
                     final AEBaseTileEntity bt = queue.poll();
 
-                    // Only ready tile entites which were destroyed in the meantime.
+                    // Only ready tile entites which weren't destroyed in the meantime.
                     if (!bt.isRemoved()) {
                         bt.onReady();
                     }
