@@ -224,6 +224,11 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.SchedulingModeRoundRobin);
             registerApp(16 * 15 + 2, Settings.SCHEDULING_MODE, SchedulingMode.RANDOM, ButtonToolTips.SchedulingMode,
                     ButtonToolTips.SchedulingModeRandom);
+
+            registerApp(16 * 15 + 3, Settings.OVERLAY_MODE, YesNo.NO, ButtonToolTips.OverlayMode,
+                    ButtonToolTips.OverlayModeNo);
+            registerApp(16 * 15 + 4, Settings.OVERLAY_MODE, YesNo.YES, ButtonToolTips.OverlayMode,
+                    ButtonToolTips.OverlayModeYes);
         }
     }
 
