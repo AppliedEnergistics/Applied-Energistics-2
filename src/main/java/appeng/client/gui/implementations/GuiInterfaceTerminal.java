@@ -73,7 +73,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private MEGuiTextField searchFieldOutputs;
 	private MEGuiTextField searchFieldInputs;
 	private PartInterfaceTerminal partInterfaceTerminal;
-	GuiButton guiButtonHide;
+	private GuiButton guiButtonHide;
+	private GuiButton guiButtonNextAssembler;
 
 	public GuiInterfaceTerminal( final InventoryPlayer inventoryPlayer, final PartInterfaceTerminal te )
 	{
@@ -102,7 +103,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.searchFieldInputs.setVisible( true );
 		this.searchFieldInputs.setFocused( false );
 
-//		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 4, 65, 12 );
+//		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 105, this.offsetX ), this.guiTop + 4, 65, 12 );
 		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 94, this.offsetX ), this.guiTop + 18, 65, 12 );
 		this.searchFieldOutputs.setEnableBackgroundDrawing( false );
 		this.searchFieldOutputs.setMaxStringLength( 25 );
@@ -131,7 +132,10 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		final int ex = this.getScrollBar().getCurrentScroll();
 
-		this.guiButtonHide = new GuiButton( -1, guiLeft + 112, guiTop + 4, 70, 12, "Toggle full" );
+		this.guiButtonNextAssembler = new GuiButton( -1, guiLeft + 110, guiTop + 4, 12, 12, "M" );
+		this.buttonList.add( guiButtonNextAssembler );
+
+		this.guiButtonHide = new GuiButton( -1, guiLeft + 128, guiTop + 4, 60, 12, "Hide Full" );
 		this.buttonList.add( guiButtonHide );
 
 		final Iterator<Slot> o = this.inventorySlots.inventorySlots.iterator();
@@ -219,6 +223,20 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			this.refreshList();
 		}
 
+		if (btn == guiButtonNextAssembler)
+		{
+			// Set Search to "Molecular Assembler" and set "Only Free Interface"
+			boolean currentOnlyInterfacesWithFreeSlots = this.partInterfaceTerminal.onlyInterfacesWithFreeSlots;
+			String currentSearchText = this.searchFieldOutputs.getText();
+
+			this.partInterfaceTerminal.onlyInterfacesWithFreeSlots = true;
+			this.searchFieldOutputs.setText("Molecular Assembler");
+
+			this.refreshList();
+
+			this.partInterfaceTerminal.onlyInterfacesWithFreeSlots = currentOnlyInterfacesWithFreeSlots;
+			this.searchFieldOutputs.setText(currentSearchText);
+		}
 	}
 
 	@Override
@@ -344,7 +362,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		for( final ClientDCInternalInv entry : this.byId.values() )
 		{
-			// ignore inventory if not doing a full rebuild or cache already marks it as miss.
+			// ignore inventory if not doing a full rebuild and cache already marks it as miss.
 			if( !rebuild && !cachedSearch.contains( entry ) )
 			{
 				continue;
@@ -352,7 +370,6 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 			// Shortcut to skip any filter if search term is ""/empty
 			boolean found = (searchFieldInputs.isEmpty() && searchFieldOutputs.isEmpty());
-			boolean interfaceHasFreeSlots = false;
 
 			// Search if the current inventory holds a pattern containing the search term.
 			if( !found )
@@ -365,11 +382,20 @@ public class GuiInterfaceTerminal extends AEBaseGui
 						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) );
 					else if( !searchFieldOutputs.isEmpty() )
 						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) );
-					if (partInterfaceTerminal.onlyInterfacesWithFreeSlots && itemStack.isEmpty()) {
-						interfaceHasFreeSlots = true;
-					}
 					if( found )
 					{
+						break;
+					}
+				}
+			} 
+
+			// If only Interfaces with empty slots should be shown, check that here
+			boolean interfaceHasFreeSlots = false;
+			if (partInterfaceTerminal.onlyInterfacesWithFreeSlots) {
+				for( final ItemStack itemStack : entry.getInventory() )
+				{
+					if(itemStack.isEmpty()){
+						interfaceHasFreeSlots = true;
 						break;
 					}
 				}
