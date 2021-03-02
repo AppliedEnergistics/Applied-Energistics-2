@@ -130,9 +130,6 @@ sourceSets {
     test {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
-        java {
-            exclude '**/*'
-        }
     }
 }
 
