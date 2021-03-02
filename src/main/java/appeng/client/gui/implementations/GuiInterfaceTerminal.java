@@ -339,7 +339,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		final String searchFieldInputs = this.searchFieldInputs.getText().toLowerCase();
 		final String searchFieldOutputs = this.searchFieldOutputs.getText().toLowerCase();
 
-		final Set<Object> cachedSearch = this.getCacheForSearchTerm( "IN:" + searchFieldInputs + " OUT:" + searchFieldOutputs );
+		final Set<Object> cachedSearch = this.getCacheForSearchTerm( "IN:" + searchFieldInputs + " OUT:" + searchFieldOutputs + partInterfaceTerminal.onlyInterfacesWithFreeSlots);
 		final boolean rebuild = cachedSearch.isEmpty();
 
 		for( final ClientDCInternalInv entry : this.byId.values() )
@@ -351,7 +351,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			}
 
 			// Shortcut to skip any filter if search term is ""/empty
-			boolean found = (searchFieldInputs.isEmpty() && searchFieldOutputs.isEmpty());
+			boolean found = (searchFieldInputs.isEmpty() && searchFieldOutputs.isEmpty() && !partInterfaceTerminal.onlyInterfacesWithFreeSlots);
 			boolean interfaceHasFreeSlots = false;
 
 			// Search if the current inventory holds a pattern containing the search term.
