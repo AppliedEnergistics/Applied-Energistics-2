@@ -28,7 +28,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public enum PowerUnits {
     AE("gui.appliedenergistics2.units.appliedenergstics"), // Native Units - AE Energy
-    EU("gui.appliedenergistics2.units.ic2"), // IndustrialCraft 2 - Energy Units
+    // EU("gui.appliedenergistics2.units.ic2"), // IndustrialCraft 2 - Energy Units
     RF("gui.appliedenergistics2.units.rf"); // RF - Redstone Flux
 
     /**
