@@ -117,6 +117,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         this.upgrades = new DefinitionUpgradeInventory(assembler, this, this.getUpgradeSlots());
         this.craftingInv = new CraftingInventory(new ContainerNull(), 3, 3);
 
+        gridInv.setMaxStackSize(9, 64);
         gridInvExt = gridInv.createLimitedFixedInv();
         // Limit the input slots to 1 of the respective crafting ingredient
         for (int i = 0; i < 9; i++) {
