@@ -1,5 +1,6 @@
 package appeng.client.render.tesr;
 
+import java.util.List;
 import java.util.Random;
 
 import com.google.common.collect.ImmutableList;
@@ -12,6 +13,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -203,7 +205,9 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
             // for direction=null, while a block-model will have their faces for
             // cull-faces, but not direction=null
             BakedModel model = itemRenderer.getModels().getModel(stack);
-            if (!model.getQuads(null, null, new Random()).isEmpty()) {
+            List<BakedQuad> quads = model.getQuads(null, null, new Random());
+            // Note: quads may be null for mods implementing FabricBakedModel without caring about getQuads.
+            if (quads != null && quads.isEmpty()) {
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
