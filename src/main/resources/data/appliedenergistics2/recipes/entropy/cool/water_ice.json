@@ -1,0 +1,10 @@
+{
+  "type": "appliedenergistics2:entropy",
+  "mode": "cool",
+  "input": {
+    "fluid": "minecraft:water"
+  },
+  "output": {
+    "block": "minecraft:ice"
+  }
+}

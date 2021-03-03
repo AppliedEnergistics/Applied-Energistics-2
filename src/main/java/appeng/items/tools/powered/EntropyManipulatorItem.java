@@ -19,31 +19,27 @@
 package appeng.items.tools.powered;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
+import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.TNTBlock;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -64,95 +60,46 @@ import appeng.container.ContainerNull;
 import appeng.core.AEConfig;
 import appeng.hooks.IBlockTool;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.util.InWorldToolOperationResult;
+import appeng.recipes.handlers.EntropyRecipe;
+import appeng.recipes.handlers.EntropyRecipe.EntropyMode;
 import appeng.util.Platform;
 
 public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockTool {
-    private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> heatUp;
-    private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> coolDown;
 
     public EntropyManipulatorItem(Item.Properties props) {
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);
-
-        this.heatUp = new HashMap<>();
-        this.coolDown = new HashMap<>();
-
-        this.coolDown.put(new InWorldToolOperationIngredient(Blocks.STONE),
-                new InWorldToolOperationResult(Blocks.COBBLESTONE.getDefaultState()));
-        this.coolDown.put(new InWorldToolOperationIngredient(Blocks.STONE_BRICKS),
-                new InWorldToolOperationResult(Blocks.CRACKED_STONE_BRICKS.getDefaultState()));
-        this.coolDown.put(new InWorldToolOperationIngredient(Blocks.LAVA, Fluids.LAVA),
-                new InWorldToolOperationResult(Blocks.OBSIDIAN.getDefaultState()));
-        this.coolDown.put(new InWorldToolOperationIngredient(Blocks.LAVA, Fluids.FLOWING_LAVA),
-                new InWorldToolOperationResult(Blocks.OBSIDIAN.getDefaultState()));
-        this.coolDown.put(new InWorldToolOperationIngredient(Blocks.GRASS_BLOCK),
-                new InWorldToolOperationResult(Blocks.DIRT.getDefaultState()));
-
-        final List<ItemStack> snowBalls = new ArrayList<>();
-        snowBalls.add(new ItemStack(Items.SNOWBALL));
-        this.coolDown.put(new InWorldToolOperationIngredient(Blocks.WATER, Fluids.FLOWING_WATER),
-                new InWorldToolOperationResult(null, snowBalls));
-        this.coolDown.put(new InWorldToolOperationIngredient(Blocks.WATER, Fluids.WATER),
-                new InWorldToolOperationResult(Blocks.ICE.getDefaultState()));
-
-        this.heatUp.put(new InWorldToolOperationIngredient(Blocks.ICE),
-                new InWorldToolOperationResult(Blocks.WATER.getDefaultState()));
-        this.heatUp.put(new InWorldToolOperationIngredient(Blocks.WATER, Fluids.WATER),
-                new InWorldToolOperationResult());
-        this.heatUp.put(new InWorldToolOperationIngredient(Blocks.WATER, Fluids.FLOWING_WATER),
-                new InWorldToolOperationResult());
-        this.heatUp.put(new InWorldToolOperationIngredient(Blocks.SNOW), new InWorldToolOperationResult(
-                Blocks.WATER.getDefaultState().with(BlockStateProperties.LEVEL_0_15, 7), Fluids.FLOWING_WATER));
     }
 
-    private static class InWorldToolOperationIngredient {
-        private final Block block;
-        private final Fluid fluid;
+    public static EntropyRecipe findForInput(World world, EntropyMode mode, Block block, Fluid fluid) {
+        for (IRecipe<IInventory> recipe : world.getRecipeManager().getRecipes(EntropyRecipe.TYPE).values()) {
+            EntropyRecipe entropyRecipe = (EntropyRecipe) recipe;
+            boolean isSameMode = entropyRecipe.getMode() == mode;
+            boolean isSameInput = block == entropyRecipe.getInputBlock() || entropyRecipe.getInputBlock() == null;
+            boolean isSameFluid = fluid == entropyRecipe.getInputFluid() || entropyRecipe.getInputFluid() == null;
 
-        public InWorldToolOperationIngredient(Block block) {
-            this(block, Fluids.EMPTY);
+            if (isSameMode && isSameInput && isSameFluid) {
+                return entropyRecipe;
+            }
         }
-
-        public InWorldToolOperationIngredient(Block block, Fluid fluid) {
-            this.block = block;
-            this.fluid = fluid;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (o == null || getClass() != o.getClass())
-                return false;
-            InWorldToolOperationIngredient that = (InWorldToolOperationIngredient) o;
-            return block.equals(that.block) && fluid.equals(that.fluid);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(block, fluid);
-        }
+        return null;
     }
 
     private void heat(final Block block, Fluid fluid, final World w, final BlockPos pos) {
-        InWorldToolOperationResult r = this.heatUp.get(new InWorldToolOperationIngredient(block, fluid));
+        EntropyRecipe recipe = findForInput(w, EntropyMode.HEAT, block, fluid);
 
-        if (r == null) {
-            // Try with "don't care" fluid
-            r = this.heatUp.get(new InWorldToolOperationIngredient(block, Fluids.EMPTY));
-        }
-
-        if (r.getBlockState() != null) {
-            w.setBlockState(pos, r.getBlockState(), 3);
+        if (recipe.getOutputBlockState() != null) {
+            w.setBlockState(pos, recipe.getOutputBlockState(), 3);
+        } else if (recipe.getOutputFluidState() != null) {
+            w.setBlockState(pos, recipe.getOutputFluidState().getBlockState(), 3);
         } else {
-            w.setBlockState(pos, Fluids.EMPTY.getDefaultState().getBlockState(), 3);
+            w.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
 
-        if (r.getDrops() != null) {
-            Platform.spawnDrops(w, pos, r.getDrops());
+        if (!recipe.getDrops().isEmpty()) {
+            Platform.spawnDrops(w, pos, recipe.getDrops());
         }
 
-        if (!w.isRemote) {
+        if (!w.isRemote()) {
             // Same effect as emptying a water bucket in the nether (see BucketItem)
             w.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
                     2.6F + (w.rand.nextFloat() - w.rand.nextFloat()) * 0.8F);
@@ -164,43 +111,28 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
     }
 
-    private boolean canHeat(final Block block, Fluid fluid) {
-        InWorldToolOperationResult r = this.heatUp.get(new InWorldToolOperationIngredient(block, fluid));
-
-        if (r == null) {
-            // Also try with "don't care" fluid
-            r = this.heatUp.get(new InWorldToolOperationIngredient(block, Fluids.EMPTY));
-        }
-
-        return r != null;
+    private boolean canHeat(World world, Block block, Fluid fluid) {
+        return findForInput(world, EntropyMode.HEAT, block, fluid) != null;
     }
 
     private void cool(final Block block, Fluid fluid, final World w, final BlockPos pos) {
-        InWorldToolOperationResult r = this.coolDown.get(new InWorldToolOperationIngredient(block, fluid));
+        EntropyRecipe recipe = findForInput(w, EntropyMode.COOL, block, fluid);
 
-        if (r == null) {
-            r = this.coolDown.get(new InWorldToolOperationIngredient(block, Fluids.EMPTY));
-        }
-
-        if (r.getBlockState() != null) {
-            w.setBlockState(pos, r.getBlockState(), 3);
+        if (recipe.getOutputBlockState() != null) {
+            w.setBlockState(pos, recipe.getOutputBlockState(), 3);
+        } else if (recipe.getOutputFluidState() != null) {
+            w.setBlockState(pos, recipe.getOutputFluidState().getBlockState(), 3);
         } else {
-            w.removeBlock(pos, false);
+            w.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
 
-        if (r.getDrops() != null) {
-            Platform.spawnDrops(w, pos, r.getDrops());
+        if (!recipe.getDrops().isEmpty()) {
+            Platform.spawnDrops(w, pos, recipe.getDrops());
         }
     }
 
-    private boolean canCool(Block block, Fluid fluid) {
-        InWorldToolOperationResult r = this.coolDown.get(new InWorldToolOperationIngredient(block, fluid));
-
-        if (r == null) {
-            r = this.coolDown.get(new InWorldToolOperationIngredient(block, Fluids.EMPTY));
-        }
-
-        return r != null;
+    private boolean canCool(World world, Block block, Fluid fluid) {
+        return findForInput(world, EntropyMode.COOL, block, fluid) != null;
     }
 
     @Override
@@ -213,8 +145,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         return false;
     }
 
-    // Overridden to allow use of the item on WATER and LAVA which are otherwise not
-    // considered for onItemUse
+    // Overridden to allow use of the item on WATER and LAVA which are otherwise not considered for onItemUse
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
         final RayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
@@ -224,7 +155,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         } else {
             BlockPos pos = ((BlockRayTraceResult) target).getPos();
             final BlockState state = w.getBlockState(pos);
-            if (state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER) {
+            if (!state.getFluidState().isEmpty()) {
                 if (Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
                     ItemUseContext context = new ItemUseContext(p, hand, (BlockRayTraceResult) target);
                     this.onItemUse(context);
@@ -242,14 +173,20 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         BlockPos pos = context.getPos();
         Direction side = context.getFace();
         PlayerEntity p = context.getPlayer();
+
+        // Correct pos for fluids as these are normally not taken into account.
+        final RayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
+        if (target.getType() == RayTraceResult.Type.BLOCK) {
+            pos = ((BlockRayTraceResult) target).getPos();
+        }
+
         boolean tryBoth = false;
         if (p == null) {
             if (w.isRemote) {
                 return ActionResultType.FAIL;
             }
             p = Platform.getPlayer((ServerWorld) w);
-            // Fake players cannot crouch and we cannot communicate whether they want to
-            // heat or cool
+            // Fake players cannot crouch and we cannot communicate whether they want to heat or cool
             tryBoth = true;
         }
 
@@ -262,7 +199,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             final Fluid fluid = w.getFluidState(pos).getFluid();
 
             if (tryBoth || p.isCrouching()) {
-                if (this.canCool(block, fluid)) {
+                if (this.canCool(w, block, fluid)) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
                     this.cool(block, fluid, w, pos);
                     return ActionResultType.SUCCESS;
@@ -281,7 +218,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                     return ActionResultType.SUCCESS;
                 }
 
-                if (this.canHeat(block, fluid)) {
+                if (this.canHeat(w, block, fluid)) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
                     this.heat(block, fluid, w, pos);
                     return ActionResultType.SUCCESS;
@@ -317,6 +254,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
                     final InWorldToolOperationResult or = InWorldToolOperationResult
                             .getBlockOperationResult(out.toArray(new ItemStack[0]));
+
                     w.playSound(p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
                             SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
                             random.nextFloat() * 0.4F + 0.8F);
@@ -353,5 +291,47 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         }
 
         return ActionResultType.PASS;
+    }
+
+    /**
+     * A helper class to handle in world operations when meltable blocks are involved.
+     */
+    private static class InWorldToolOperationResult {
+
+        private final BlockState blockState;
+        private final List<ItemStack> drops;
+
+        public InWorldToolOperationResult(final BlockState block, final List<ItemStack> drops) {
+            this.blockState = block;
+            this.drops = drops;
+        }
+
+        public static InWorldToolOperationResult getBlockOperationResult(final ItemStack[] items) {
+            final List<ItemStack> temp = new ArrayList<>();
+            BlockState b = null;
+
+            for (final ItemStack l : items) {
+                if (b == null) {
+                    final Block bl = Block.getBlockFromItem(l.getItem());
+
+                    if (bl != null && !(bl instanceof AirBlock)) {
+                        b = bl.getDefaultState();
+                        continue;
+                    }
+                }
+
+                temp.add(l);
+            }
+
+            return new InWorldToolOperationResult(b, temp);
+        }
+
+        public BlockState getBlockState() {
+            return this.blockState;
+        }
+
+        public List<ItemStack> getDrops() {
+            return this.drops;
+        }
     }
 }

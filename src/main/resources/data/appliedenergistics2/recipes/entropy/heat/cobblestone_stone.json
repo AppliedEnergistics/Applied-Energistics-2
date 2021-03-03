@@ -1,0 +1,10 @@
+{
+  "type": "appliedenergistics2:entropy",
+  "mode": "heat",
+  "input": {
+    "block": "minecraft:cobblestone"
+  },
+  "output": {
+    "block": "minecraft:stone"
+  }
+}

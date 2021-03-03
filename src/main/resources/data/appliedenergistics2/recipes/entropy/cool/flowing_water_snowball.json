@@ -1,0 +1,15 @@
+{
+  "type": "appliedenergistics2:entropy",
+  "mode": "cool",
+  "input": {
+    "fluid": "minecraft:flowing_water"
+  },
+  "output": {
+    "drops": [
+      {
+        "item": "minecraft:snowball",
+        "count": 1
+      }
+    ]
+  }
+}
