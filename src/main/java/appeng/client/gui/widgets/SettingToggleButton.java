@@ -105,8 +105,8 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
             registerApp(16 * 10, Settings.POWER_UNITS, PowerUnits.AE, ButtonToolTips.PowerUnits,
                     PowerUnits.AE.textComponent());
-            registerApp(16 * 10 + 1, Settings.POWER_UNITS, PowerUnits.EU, ButtonToolTips.PowerUnits,
-                    PowerUnits.EU.textComponent());
+            // registerApp(16 * 10 + 1, Settings.POWER_UNITS, PowerUnits.EU, ButtonToolTips.PowerUnits,
+            // PowerUnits.EU.textComponent());
             registerApp(16 * 10 + 4, Settings.POWER_UNITS, PowerUnits.RF, ButtonToolTips.PowerUnits,
                     PowerUnits.RF.textComponent());
 

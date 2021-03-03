@@ -160,7 +160,7 @@ public final class AEConfig {
     }
 
     private void syncCommonConfig() {
-        PowerUnits.EU.conversionRatio = COMMON.powerRatioIc2.get();
+        // PowerUnits.EU.conversionRatio = COMMON.powerRatioIc2.get();
         PowerUnits.RF.conversionRatio = COMMON.powerRatioForgeEnergy.get();
         PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
 
@@ -501,7 +501,7 @@ public final class AEConfig {
         public final ConfigValue<Double> wirelessHighWirelessCount;
 
         // Power Ratios
-        public final ConfigValue<Double> powerRatioIc2;
+        // public final ConfigValue<Double> powerRatioIc2;
         public final ConfigValue<Double> powerRatioForgeEnergy;
         public final DoubleValue powerUsageMultiplier;
 
@@ -607,7 +607,7 @@ public final class AEConfig {
             builder.pop();
 
             builder.push("PowerRatios");
-            powerRatioIc2 = builder.define("IC2", DEFAULT_IC2_EXCHANGE);
+            // powerRatioIc2 = builder.define("IC2", DEFAULT_IC2_EXCHANGE);
             powerRatioForgeEnergy = builder.define("ForgeEnergy", DEFAULT_RF_EXCHANGE);
             powerUsageMultiplier = builder.defineInRange("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
             builder.pop();
