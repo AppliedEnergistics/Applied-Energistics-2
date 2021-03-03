@@ -207,7 +207,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
             BakedModel model = itemRenderer.getModels().getModel(stack);
             List<BakedQuad> quads = model.getQuads(null, null, new Random());
             // Note: quads may be null for mods implementing FabricBakedModel without caring about getQuads.
-            if (quads != null && quads.isEmpty()) {
+            if (quads != null && !quads.isEmpty()) {
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
