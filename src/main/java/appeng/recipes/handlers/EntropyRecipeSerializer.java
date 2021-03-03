@@ -41,12 +41,16 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         EntropyMode mode = EntropyMode.valueOf(modeName.toUpperCase(Locale.ROOT));
 
         JsonObject inputJson = JSONUtils.getJsonObject(json, "input");
-        String inputBlockId = JSONUtils.getString(inputJson, "block", null);
-        String inputFluidId = JSONUtils.getString(inputJson, "fluid", null);
+        JsonObject inputBlockObject = JSONUtils.getJsonObject(inputJson, "block", new JsonObject());
+        String inputBlockId = JSONUtils.getString(inputBlockObject, "id", null);
+        JsonObject inputFluidObject = JSONUtils.getJsonObject(inputJson, "fluid", new JsonObject());
+        String inputFluidId = JSONUtils.getString(inputFluidObject, "id", null);
 
         JsonObject outputJson = JSONUtils.getJsonObject(json, "output");
-        String outputBlockId = JSONUtils.getString(outputJson, "block", null);
-        String outputFluidId = JSONUtils.getString(outputJson, "fluid", null);
+        JsonObject outputBlockObject = JSONUtils.getJsonObject(outputJson, "block", new JsonObject());
+        String outputBlockId = JSONUtils.getString(outputBlockObject, "id", null);
+        JsonObject outputFluidObject = JSONUtils.getJsonObject(outputJson, "fluid", new JsonObject());
+        String outputFluidId = JSONUtils.getString(outputFluidObject, "id", null);
 
         // We use an empty list later when null, so avoid instantiating an empty ArrayList.
         List<ItemStack> drops = null;

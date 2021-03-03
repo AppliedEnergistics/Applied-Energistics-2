@@ -2,9 +2,13 @@
   "type": "appliedenergistics2:entropy",
   "mode": "heat",
   "input": {
-    "block": "minecraft:cobblestone"
+    "block": {
+      "id": "minecraft:cobblestone"
+    }
   },
   "output": {
-    "block": "minecraft:stone"
+    "block": {
+      "id": "minecraft:stone"
+    }
   }
 }

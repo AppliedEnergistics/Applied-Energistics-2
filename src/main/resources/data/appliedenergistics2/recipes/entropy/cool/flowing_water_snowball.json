@@ -2,7 +2,9 @@
   "type": "appliedenergistics2:entropy",
   "mode": "cool",
   "input": {
-    "fluid": "minecraft:flowing_water"
+    "fluid": {
+      "id": "minecraft:flowing_water"
+    }
   },
   "output": {
     "drops": [

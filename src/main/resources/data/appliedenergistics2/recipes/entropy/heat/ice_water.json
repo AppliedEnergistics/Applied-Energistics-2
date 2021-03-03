@@ -2,9 +2,13 @@
   "type": "appliedenergistics2:entropy",
   "mode": "heat",
   "input": {
-    "block": "minecraft:ice"
+    "block": {
+      "id": "minecraft:ice"
+    }
   },
   "output": {
-    "fluid": "minecraft:water"
+    "fluid": {
+      "id": "minecraft:water"
+    }
   }
 }
