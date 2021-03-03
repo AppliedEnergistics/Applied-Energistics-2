@@ -176,7 +176,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
             bus.getCableBus().appendPartStacks(drops);
             return drops;
         } else {
-            AELog.warn("The block entity was either null or of the wrong type! Skipped cable bus drops!");
+            AELog.debug("The block entity was either null or of the wrong type! Skipped cable bus drops!");
             return Collections.emptyList();
         }
     }
