@@ -3,6 +3,11 @@ package appeng.recipes.handlers;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.base.Preconditions;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
@@ -16,7 +21,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.core.AppEng;
 import appeng.items.tools.powered.EntropyManipulatorItem;
@@ -30,45 +34,39 @@ public class EntropyRecipe implements IRecipe<IInventory> {
 
     public static final IRecipeType<EntropyRecipe> TYPE = IRecipeType.register(TYPE_ID.toString());
 
+    @Nonnull
     private final ResourceLocation id;
+    @Nonnull
     private final EntropyMode mode;
 
-    private final String inputBlockId;
-    private final String inputFluidId;
+    @Nullable
     private final Block inputBlock;
+    @Nullable
     private final Fluid inputFluid;
 
-    private final String outputBlockId;
-    private final String outputFluidId;
+    @Nullable
     private final Block outputBlock;
+    @Nullable
     private final Fluid outputFluid;
 
+    @Nonnull
     private final List<ItemStack> drops;
 
-    public EntropyRecipe(ResourceLocation id, EntropyMode mode, String inputBlockId, String inputFluidId,
-            String outputBlockId, String outputFluidId, List<ItemStack> drops) {
+    public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock, Fluid inputFluid,
+            Block outputBlock, Fluid outputFluid, List<ItemStack> drops) {
+        Preconditions.checkArgument(id != null);
+        Preconditions.checkArgument(mode != null);
+        Preconditions.checkArgument(drops == null || !drops.isEmpty(),
+                "drops needs to be either null or a non empty list");
+
         this.id = id;
         this.mode = mode;
 
-        this.inputBlockId = inputBlockId;
-        this.inputFluidId = inputFluidId;
+        this.inputBlock = inputBlock;
+        this.inputFluid = inputFluid;
 
-        this.inputBlock = inputBlockId != null
-                ? ForgeRegistries.BLOCKS.getValue(new ResourceLocation(inputBlockId))
-                : null;
-        this.inputFluid = inputFluidId != null
-                ? ForgeRegistries.FLUIDS.getValue(new ResourceLocation(inputFluidId))
-                : null;
-
-        this.outputBlockId = outputBlockId;
-        this.outputFluidId = outputFluidId;
-
-        this.outputBlock = outputBlockId != null
-                ? ForgeRegistries.BLOCKS.getValue(new ResourceLocation(outputBlockId))
-                : null;
-        this.outputFluid = outputFluidId != null
-                ? ForgeRegistries.FLUIDS.getValue(new ResourceLocation(outputFluidId))
-                : null;
+        this.outputBlock = outputBlock;
+        this.outputFluid = outputFluid;
 
         this.drops = drops != null ? drops : Collections.emptyList();
     }
@@ -113,34 +111,27 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         return NonNullList.create();
     }
 
+    @Nonnull
     public EntropyMode getMode() {
         return this.mode;
     }
 
-    public String getInputBlockId() {
-        return this.inputBlockId;
-    }
-
+    @Nullable
     public Block getInputBlock() {
         return this.inputBlock;
     }
 
-    public String getInputFluidId() {
-        return this.inputFluidId;
-    }
-
+    @Nullable
     public Fluid getInputFluid() {
         return this.inputFluid;
     }
 
-    public String getOutputBlockId() {
-        return this.outputBlockId;
-    }
-
+    @Nullable
     public Block getOutputBlock() {
         return this.outputBlock;
     }
 
+    @Nullable
     public BlockState getOutputBlockState() {
         if (this.getOutputBlock() == null) {
             return null;
@@ -149,14 +140,12 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         return getOutputBlock().getDefaultState();
     }
 
-    public String getOutputFluidId() {
-        return outputFluidId;
-    }
-
+    @Nullable
     public Fluid getOutputFluid() {
         return this.outputFluid;
     }
 
+    @Nullable
     public FluidState getOutputFluidState() {
         if (this.getOutputFluid() == null) {
             return null;
@@ -165,6 +154,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         return getOutputFluid().getDefaultState();
     }
 
+    @Nonnull
     public List<ItemStack> getDrops() {
         return this.drops;
     }

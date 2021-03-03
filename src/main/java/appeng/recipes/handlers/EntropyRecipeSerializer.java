@@ -10,6 +10,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -19,7 +21,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-import appeng.core.sync.BasePacket;
 import appeng.recipes.handlers.EntropyRecipe.EntropyMode;
 
 public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
@@ -63,17 +64,46 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
             }
         }
 
-        return new EntropyRecipe(recipeId, mode, inputBlockId, inputFluidId, outputBlockId, outputFluidId, drops);
+        final Block inputBlock = inputBlockId != null
+                ? ForgeRegistries.BLOCKS.getValue(new ResourceLocation(inputBlockId))
+                : null;
+        final Fluid inputFluid = inputFluidId != null
+                ? ForgeRegistries.FLUIDS.getValue(new ResourceLocation(inputFluidId))
+                : null;
+        final Block outputBlock = outputBlockId != null
+                ? ForgeRegistries.BLOCKS.getValue(new ResourceLocation(outputBlockId))
+                : null;
+        final Fluid outputFluid = outputFluidId != null
+                ? ForgeRegistries.FLUIDS.getValue(new ResourceLocation(outputFluidId))
+                : null;
+
+        return new EntropyRecipe(recipeId, mode, inputBlock, inputFluid, outputBlock, outputFluid, drops);
     }
 
     @Nullable
     @Override
     public EntropyRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
         EntropyMode mode = buffer.readEnumValue(EntropyMode.class);
-        String inputBlockId = buffer.readString(BasePacket.MAX_STRING_LENGTH);
-        String inputFluidId = buffer.readString(BasePacket.MAX_STRING_LENGTH);
-        String outputBlockId = buffer.readString(BasePacket.MAX_STRING_LENGTH);
-        String outputFluidId = buffer.readString(BasePacket.MAX_STRING_LENGTH);
+
+        Block inputBlock = null;
+        if (buffer.readBoolean()) {
+            inputBlock = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
+        }
+
+        Fluid inputFluid = null;
+        if (buffer.readBoolean()) {
+            inputFluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
+        }
+
+        Block outputBlock = null;
+        if (buffer.readBoolean()) {
+            outputBlock = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
+        }
+
+        Fluid outputFluid = null;
+        if (buffer.readBoolean()) {
+            outputFluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
+        }
 
         // We use an empty list later when null, so avoid instantiating an empty ArrayList.
         List<ItemStack> drops = null;
@@ -85,16 +115,32 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
             }
         }
 
-        return new EntropyRecipe(recipeId, mode, inputBlockId, inputFluidId, outputBlockId, outputFluidId, drops);
+        return new EntropyRecipe(recipeId, mode, inputBlock, inputFluid, outputBlock, outputFluid, drops);
     }
 
     @Override
     public void write(PacketBuffer buffer, EntropyRecipe recipe) {
         buffer.writeEnumValue(recipe.getMode());
-        buffer.writeString(recipe.getInputBlockId());
-        buffer.writeString(recipe.getInputFluidId());
-        buffer.writeString(recipe.getOutputBlockId());
-        buffer.writeString(recipe.getOutputBlockId());
+
+        buffer.writeBoolean(recipe.getInputBlock() != null);
+        if (recipe.getInputBlock() != null) {
+            buffer.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, recipe.getInputBlock());
+        }
+
+        buffer.writeBoolean(recipe.getInputFluid() != null);
+        if (recipe.getInputFluid() != null) {
+            buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, recipe.getInputFluid());
+        }
+
+        buffer.writeBoolean(recipe.getOutputBlock() != null);
+        if (recipe.getOutputBlock() != null) {
+            buffer.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, recipe.getOutputBlock());
+        }
+
+        buffer.writeBoolean(recipe.getOutputFluid() != null);
+        if (recipe.getOutputFluid() != null) {
+            buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, recipe.getOutputFluid());
+        }
 
         buffer.writeInt(recipe.getDrops().size());
         for (ItemStack itemStack : recipe.getDrops()) {
