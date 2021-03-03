@@ -18,17 +18,7 @@
 
 package appeng.hooks;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Preconditions;
@@ -36,15 +26,18 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.ChunkManager;
+import net.minecraft.world.chunk.WorldChunk;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEColor;
@@ -75,6 +68,7 @@ public class TickHandler {
         ServerTickEvents.END_SERVER_TICK.register(this::onAfterServerTick);
         ServerTickEvents.START_WORLD_TICK.register(this::onBeforeWorldTick);
         ServerTickEvents.END_WORLD_TICK.register(this::onAfterWorldTick);
+        ServerChunkEvents.CHUNK_UNLOAD.register(this::onUnloadChunk);
         ServerWorldEvents.UNLOAD.register(this::onUnloadWorld);
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> serverRepo.clear());
     }
@@ -105,7 +99,7 @@ public class TickHandler {
     public void addInit(final AEBaseBlockEntity tile) {
         // this is called client-side too during block entity initialization
         if (!tile.isClient()) {
-            this.serverRepo.tiles.add(tile);
+            this.serverRepo.addTileToReady(tile);
         }
     }
 
@@ -131,6 +125,16 @@ public class TickHandler {
         return serverRepo.networks;
     }
 
+    public void onUnloadChunk(ServerWorld world, WorldChunk chunk) {
+        final Map<ChunkPos, Queue<AEBaseBlockEntity>> worldQueue = serverRepo.tilesToReady.get(world);
+        if (worldQueue != null) {
+            worldQueue.remove(chunk.getPos());
+            if (worldQueue.size() == 0) {
+                serverRepo.tilesToReady.remove(world);
+            }
+        }
+    }
+
     public void onUnloadWorld(MinecraftServer server, ServerWorld world) {
         final List<IGridNode> toDestroy = new ArrayList<>();
 
@@ -154,6 +158,33 @@ public class TickHandler {
     }
 
     private void onAfterWorldTick(ServerWorld world) {
+        simulateCraftingJobs(world);
+        readyTiles(world);
+    }
+
+    private void onAfterServerTick(MinecraftServer server) {
+        this.tickColors(this.srvPlayerColors);
+
+        // tick networks.
+        this.serverRepo.updateNetworks();
+        for (final Grid g : this.serverRepo.networks) {
+            g.update();
+        }
+
+        // cross world queue.
+        this.processQueue(this.serverQueue, null);
+    }
+
+    public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
+        synchronized (this.craftingJobs) {
+            this.craftingJobs.put(world, craftingJob);
+        }
+    }
+
+    /**
+     * Simulates the current crafting requests before they user can submit them to be processed.
+     */
+    private void simulateCraftingJobs(World world) {
         synchronized (this.craftingJobs) {
             final Collection<CraftingJob> jobSet = this.craftingJobs.get(world);
             if (!jobSet.isEmpty()) {
@@ -171,55 +202,42 @@ public class TickHandler {
         }
     }
 
-    private void onAfterServerTick(MinecraftServer server) {
-        this.tickColors(this.srvPlayerColors);
-        // ready tiles.
-        List<AEBaseBlockEntity> delayQueue = null;
-        while (!serverRepo.tiles.isEmpty()) {
-            final AEBaseBlockEntity bt = serverRepo.tiles.poll();
-            if (!bt.isRemoved()) {
-                // If the tile entity is in a chunk that is in the progress of being loaded,
-                // re-queue the tile-entity until the chunk is ready for ticking tile-entities
-                // Vanilla also checks "shouldTickBlock" before ticking tile-entities in chunks
-                ChunkManager chunkProvider = bt.getWorld().getChunkManager();
-                if (chunkProvider.shouldTickBlock(bt.getPos())) {
-                    bt.onReady();
-                } else {
-                    // Be defensive about the chunk being unloaded already and don't re-queue
-                    // the tile entity if the chunk no longer exists to avoid endlessly re-queueing TEs
-                    ChunkPos chunkPos = new ChunkPos(bt.getPos());
-                    if (chunkProvider.isChunkLoaded(chunkPos.x, chunkPos.z)) {
-                        if (delayQueue == null) {
-                            delayQueue = new ArrayList<>();
-                        }
-                        delayQueue.add(bt);
-                    } else {
-                        AELog.warn("Skipping onReady for Tile-Entity in unloaded chunk %s", chunkPos);
+    /**
+     * Ready the tiles in this world.
+     */
+    private void readyTiles(World world) {
+        final Map<ChunkPos, Queue<AEBaseBlockEntity>> worldQueue = serverRepo.tilesToReady.getOrDefault(world,
+                Collections.emptyMap());
+
+        Iterator<Map.Entry<ChunkPos, Queue<AEBaseBlockEntity>>> it = worldQueue.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<ChunkPos, Queue<AEBaseBlockEntity>> entry = it.next();
+
+            ChunkPos pos = entry.getKey();
+            ChunkManager chunkManager = world.getChunkManager();
+
+            // Using the blockpos of the chunk start to test if it can tick.
+            // Relies on the world to test the chunkpos and not the explicit blockpos.
+            BlockPos testBlockPos = new BlockPos(pos.getStartX(), 0, pos.getStartZ());
+
+            // Readies this chunk, if it can tick and does exist.
+            // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
+            // will be readied.
+            if (world.isChunkLoaded(pos.x, pos.z) && chunkManager.shouldTickBlock(testBlockPos)) {
+                Queue<AEBaseBlockEntity> queue = entry.getValue();
+
+                while (!queue.isEmpty()) {
+                    final AEBaseBlockEntity bt = queue.poll();
+
+                    // Only ready tile entities which weren't destroyed in the meantime.
+                    if (!bt.isRemoved()) {
+                        bt.onReady();
                     }
                 }
+
+                // cleanup empty chunk queue
+                it.remove();
             }
-        }
-
-        // Re-insert tiles that have to wait
-        if (delayQueue != null) {
-            AELog.debug("Delaying onReady for %s tile-entities because their chunks are not fully loaded",
-                    delayQueue.size());
-            serverRepo.tiles.addAll(delayQueue);
-        }
-
-        // tick networks.
-        this.serverRepo.updateNetworks();
-        for (final Grid g : this.serverRepo.networks) {
-            g.update();
-        }
-
-        // cross world queue.
-        this.processQueue(this.serverQueue, null);
-    }
-
-    public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
-        synchronized (this.craftingJobs) {
-            this.craftingJobs.put(world, craftingJob);
         }
     }
 
@@ -258,10 +276,22 @@ public class TickHandler {
 
     private static class HandlerRep {
 
-        private final Queue<AEBaseBlockEntity> tiles = new ArrayDeque<>();
+        private final Map<World, Map<ChunkPos, Queue<AEBaseBlockEntity>>> tilesToReady = new HashMap<>();
         private final Set<Grid> networks = new HashSet<>();
         private final Set<Grid> toAdd = new HashSet<>();
         private final Set<Grid> toRemove = new HashSet<>();
+
+        private synchronized void addTileToReady(AEBaseBlockEntity tile) {
+            World world = tile.getWorld();
+            ChunkPos chunkPos = new ChunkPos(tile.getPos());
+
+            Map<ChunkPos, Queue<AEBaseBlockEntity>> worldQueue = tilesToReady.computeIfAbsent(world,
+                    w -> new HashMap<>());
+
+            Queue<AEBaseBlockEntity> chunkQueue = worldQueue.computeIfAbsent(chunkPos, cp -> new ArrayDeque<>());
+
+            chunkQueue.add(tile);
+        }
 
         private synchronized void addNetwork(Grid g) {
             this.toAdd.add(g);
@@ -282,9 +312,9 @@ public class TickHandler {
         }
 
         private synchronized void clear() {
-            if (!tiles.isEmpty()) {
-                tiles.clear();
-                AELog.warn("tiles should be empty at server shutdown.");
+            if (!tilesToReady.isEmpty()) {
+                tilesToReady.clear();
+                AELog.warn("tilesToReady should be empty at server shutdown.");
             }
             if (!networks.isEmpty()) {
                 networks.clear();
