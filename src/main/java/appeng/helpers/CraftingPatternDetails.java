@@ -235,13 +235,16 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         return this.canSubstitute;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public List<IAEItemStack> getSubstituteInputs(int slot) {
         if (this.sparseInputs[slot] == null) {
             return Collections.emptyList();
         }
 
         return this.substituteInputs.computeIfAbsent(slot, value -> {
-            ItemStack[] matchingStacks = ((IngredientAccessor) (Object) getRecipeIngredient(slot)).getMatchingStacks();
+            IngredientAccessor accessor = (IngredientAccessor) (Object) getRecipeIngredient(slot);
+            accessor.appeng_cacheMatchingStacks();
+            ItemStack[] matchingStacks = accessor.getMatchingStacks();
             List<IAEItemStack> itemList = new ArrayList<>(matchingStacks.length + 1);
             for (ItemStack matchingStack : matchingStacks) {
                 itemList.add(AEItemStack.fromItemStack(matchingStack));
