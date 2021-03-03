@@ -478,7 +478,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 				case PICKUP: // pickup / set-down.
 					if (slot.getStack().isEmpty() && !player.inventory.getItemStack().isEmpty())
 						action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
-					if (!slot.getStack().isEmpty() && player.inventory.getItemStack().isEmpty())
+					if (!slot.getStack().isEmpty() && player.inventory.getItemStack().getCount() <= 1)
 						action = InventoryAction.PICKUP_OR_SET_DOWN;
 					break;
 				case QUICK_MOVE:
