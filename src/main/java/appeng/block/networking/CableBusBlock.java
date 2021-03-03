@@ -18,6 +18,8 @@
 
 package appeng.block.networking;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -41,6 +43,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
@@ -68,6 +73,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
@@ -158,19 +164,22 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         return super.canReplace(state, context) && this.cb(context.getWorld(), context.getBlockPos()).isEmpty();
     }
 
-// FIXME FABRIC Hook does not exist
-// FIXME FABRIC    @Override
-// FIXME FABRIC    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player,
-// FIXME FABRIC            boolean willHarvest, FluidState fluid) {
-// FIXME FABRIC        if (player.isCreative()) {
-// FIXME FABRIC            final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
-// FIXME FABRIC            if (tile != null) {
-// FIXME FABRIC                tile.disableDrops();
-// FIXME FABRIC            }
-// FIXME FABRIC            // maybe ray trace?
-// FIXME FABRIC        }
-// FIXME FABRIC        return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
-// FIXME FABRIC    }
+    // We drop the parts and the facades here, and the contents of the parts are handled by the block entity.
+    @Override
+    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
+        LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state)
+                .build(LootContextTypes.BLOCK);
+        BlockEntity be = lootContext.get(LootContextParameters.BLOCK_ENTITY);
+        if (be instanceof CableBusBlockEntity) {
+            CableBusBlockEntity bus = (CableBusBlockEntity) be;
+            List<ItemStack> drops = new ArrayList<>();
+            bus.getCableBus().appendPartStacks(drops);
+            return drops;
+        } else {
+            AELog.warn("The block entity was either null or of the wrong type! Skipped cable bus drops!");
+            return Collections.emptyList();
+        }
+    }
 
 // FIXME FABRIC    @Override
 // FIXME FABRIC    public boolean canConnectRedstone(final BlockState state, final BlockView w, final BlockPos pos,
