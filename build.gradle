@@ -28,7 +28,6 @@ plugins {
 
 repositories {
     mavenLocal()
-    jcenter()
     mavenCentral()
     maven { url = "https://maven.fabricmc.net/" }
     maven {

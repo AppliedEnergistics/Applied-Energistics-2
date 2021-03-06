@@ -37,7 +37,7 @@ public class MeteoriteStructure extends StructureFeature<DefaultFeatureConfig> {
 
     @Override
     public boolean shouldStartAt(ChunkGenerator generator, BiomeSource biomeSource, long seed, ChunkRandom randIn,
-            int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos2, DefaultFeatureConfig featureConfig,
+            ChunkPos chunkPos, Biome biome, ChunkPos chunkPos2, DefaultFeatureConfig featureConfig,
             HeightLimitView heightLimitView) {
         return randIn.nextBoolean();
     }

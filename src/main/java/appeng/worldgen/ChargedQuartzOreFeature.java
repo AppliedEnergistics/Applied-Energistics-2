@@ -27,12 +27,12 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
 
     @Override
     public boolean generate(FeatureContext<ChargedQuartzOreConfig> context) {
-        ChunkPos chunkPos = new ChunkPos(context.getPos());
+        ChunkPos chunkPos = new ChunkPos(context.getOrigin());
 
         BlockPos.Mutable bpos = new BlockPos.Mutable();
-        int height = context.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE_WG, context.getPos().getX(),
-                context.getPos().getZ());
-        Chunk chunk = context.getWorld().getChunk(context.getPos());
+        int height = context.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE_WG, context.getOrigin().getX(),
+                context.getOrigin().getZ());
+        Chunk chunk = context.getWorld().getChunk(context.getOrigin());
         for (int y = 0; y < height; y++) {
             bpos.setY(y);
             for (int x = chunkPos.getStartX(); x <= chunkPos.getEndX(); x++) {

@@ -28,9 +28,9 @@ import java.util.concurrent.Executor;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.*;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeAccess;

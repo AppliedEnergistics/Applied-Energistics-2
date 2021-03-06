@@ -49,11 +49,11 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
         this.name = new TextFieldWidget(this.textRenderer, this.x + 24, this.y + 32, 79, this.textRenderer.fontHeight,
                 LiteralText.EMPTY);
-        this.name.setHasBorder(false);
+        this.name.setDrawsBackground(false);
         this.name.setMaxLength(32);
         this.name.setEditableColor(0xFFFFFF);
         this.name.setVisible(true);
-        this.name.setSelected(true);
+        this.name.setTextFieldFocused(true);
     }
 
     @Override
@@ -87,13 +87,13 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(keyCode, scanCode)) {
             if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, keyCode, scanCode)) {
-                this.name.setSelected(!this.name.isFocused());
+                this.name.setTextFieldFocused(!this.name.isFocused());
                 return true;
             }
 
             if (this.name.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.name.setSelected(false);
+                    this.name.setTextFieldFocused(false);
                     return true;
                 }
 

@@ -93,16 +93,16 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         this.cm.writeToNBT(data);
         data.putDouble("storedPower", this.getStoredPower());
         return data;
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         this.cm.readFromNBT(data);
         this.setStoredPower(data.getDouble("storedPower"));
     }

@@ -45,14 +45,14 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         final FixedItemInv inv = this.getInternalInventory();
         if (inv != EmptyFixedItemInv.INSTANCE) {
             final CompoundTag opt = data.getCompound("inv");
             for (int x = 0; x < inv.getSlotCount(); x++) {
                 final CompoundTag item = opt.getCompound("item" + x);
-                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.fromTag(item));
+                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.fromNbt(item));
             }
         }
     }
@@ -67,8 +67,8 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         final FixedItemInv inv = this.getInternalInventory();
         if (inv != EmptyFixedItemInv.INSTANCE) {
             final CompoundTag opt = new CompoundTag();
@@ -76,7 +76,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
                 final CompoundTag item = new CompoundTag();
                 final ItemStack is = inv.getInvStack(x);
                 if (!is.isEmpty()) {
-                    is.toTag(item);
+                    is.writeNbt(item);
                 }
                 opt.put("item" + x, item);
             }

@@ -350,7 +350,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             ItemHandlerUtil.setStackInSlot(inv.client, x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
 
             if (!is.isEmpty()) {
-                is.toTag(itemNBT);
+                is.writeNbt(itemNBT);
             }
 
             tag.put(Integer.toString(x + offset), itemNBT);

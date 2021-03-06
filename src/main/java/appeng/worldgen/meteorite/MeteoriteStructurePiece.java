@@ -81,7 +81,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    protected void toNbt(CompoundTag tag) {
+    protected void writeNbt(CompoundTag tag) {
         tag.putFloat(Constants.TAG_RADIUS, settings.getMeteoriteRadius());
         tag.putLong(Constants.TAG_POS, settings.getPos().asLong());
         tag.putByte(Constants.TAG_CRATER, (byte) settings.getCraterType().ordinal());

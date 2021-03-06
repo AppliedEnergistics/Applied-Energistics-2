@@ -150,8 +150,8 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         this.cm.writeToNBT(data);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
 
@@ -163,7 +163,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         int offset = 0;
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {
             final CompoundTag it = new CompoundTag();
-            ais.createItemStack().toTag(it);
+            ais.createItemStack().writeNbt(it);
             storedItems.put(String.valueOf(offset), it);
             offset++;
         }
@@ -173,8 +173,8 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         this.cm.readFromNBT(data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
@@ -187,7 +187,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         for (final Object key : storedItems.getKeys()) {
             final Tag obj = storedItems.get((String) key);
             if (obj instanceof CompoundTag) {
-                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.fromTag((CompoundTag) obj)));
+                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.fromNbt((CompoundTag) obj)));
             }
         }
     }

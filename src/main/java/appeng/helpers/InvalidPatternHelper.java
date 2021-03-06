@@ -91,7 +91,7 @@ public class InvalidPatternHelper {
         private ItemStack stack;
 
         public PatternIngredient(CompoundTag tag) {
-            this.stack = ItemStack.fromTag(tag);
+            this.stack = ItemStack.fromNbt(tag);
 
             if (this.stack.isEmpty()) {
                 this.id = tag.getString("id");

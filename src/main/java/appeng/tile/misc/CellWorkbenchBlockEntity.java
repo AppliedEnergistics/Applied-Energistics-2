@@ -96,8 +96,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         this.cell.writeToNBT(data, "cell");
         this.config.writeToNBT(data, "config");
         this.manager.writeToNBT(data);
@@ -105,8 +105,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         this.cell.readFromNBT(data, "cell");
         this.config.readFromNBT(data, "config");
         this.manager.readFromNBT(data);

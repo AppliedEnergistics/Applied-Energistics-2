@@ -255,15 +255,15 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         this.isCached = false;
         this.priority = data.getInt("priority");
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         data.putInt("priority", this.priority);
         return data;
     }

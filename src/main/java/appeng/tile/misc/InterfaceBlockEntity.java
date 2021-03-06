@@ -149,16 +149,16 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         data.putBoolean("omniDirectional", this.omniDirectional);
         this.duality.writeToNBT(data);
         return data;
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         this.omniDirectional = data.getBoolean("omniDirectional");
 
         this.duality.readFromNBT(data);

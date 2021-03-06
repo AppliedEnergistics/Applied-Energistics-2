@@ -217,13 +217,13 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         if (this.forcePlan && this.myPlan != null) {
             final ItemStack pattern = this.myPlan.getPattern();
             if (!pattern.isEmpty()) {
                 final CompoundTag compound = new CompoundTag();
-                pattern.toTag(compound);
+                pattern.writeNbt(compound);
                 data.put("myPlan", compound);
                 data.putInt("pushDirection", this.pushDirection.ordinal());
             }
@@ -235,10 +235,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         if (data.contains("myPlan")) {
-            final ItemStack myPat = ItemStack.fromTag(data.getCompound("myPlan"));
+            final ItemStack myPat = ItemStack.fromNbt(data.getCompound("myPlan"));
 
             if (!myPat.isEmpty() && myPat.getItem() instanceof EncodedPatternItem) {
                 final World w = this.getWorld();

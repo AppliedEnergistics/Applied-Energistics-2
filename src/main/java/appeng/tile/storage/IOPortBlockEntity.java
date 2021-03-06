@@ -117,8 +117,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         this.manager.writeToNBT(data);
         this.upgrades.writeToNBT(data, "upgrades");
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
@@ -126,8 +126,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         this.manager.readFromNBT(data);
         this.upgrades.readFromNBT(data, "upgrades");
         if (data.contains("lastRedstoneState")) {

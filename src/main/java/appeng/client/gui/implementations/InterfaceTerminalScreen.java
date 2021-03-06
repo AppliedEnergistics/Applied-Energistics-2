@@ -80,7 +80,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         super.init();
 
         this.searchField = new AETextField(this.textRenderer, this.x + 104, this.y + 4, 65, 12);
-        this.searchField.setHasBorder(false);
+        this.searchField.setDrawsBackground(false);
         this.searchField.setMaxLength(25);
         this.searchField.setEditableColor(0xFFFFFF);
         this.searchField.setVisible(true);
@@ -212,7 +212,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     for (int x = 0; x < current.getInventory().getSlotCount(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setInvStack(x, ItemStack.fromTag(invData.getCompound(which)),
+                            current.getInventory().setInvStack(x, ItemStack.fromNbt(invData.getCompound(which)),
                                     Simulation.ACTION);
                         }
                     }
@@ -308,7 +308,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         for (int i = 0; i < outTag.size(); i++) {
 
-            final ItemStack parsedItemStack = ItemStack.fromTag(outTag.getCompound(i));
+            final ItemStack parsedItemStack = ItemStack.fromNbt(outTag.getCompound(i));
             if (!parsedItemStack.isEmpty()) {
                 final String displayName = Platform.getItemDisplayName(Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createStack(parsedItemStack)).getString()

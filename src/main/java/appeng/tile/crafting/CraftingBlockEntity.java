@@ -173,8 +173,8 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         data.putBoolean("core", this.isCoreBlock());
         if (this.isCoreBlock() && this.cluster != null) {
             this.cluster.writeToNBT(data);
@@ -183,8 +183,8 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         this.setCoreBlock(data.getBoolean("core"));
         if (this.isCoreBlock()) {
             if (this.cluster != null) {

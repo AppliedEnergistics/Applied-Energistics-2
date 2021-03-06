@@ -63,11 +63,11 @@ public class NumberEntryWidget extends DrawableHelper {
         int inputX = parent.getX() + x;
         int inputY = parent.getY() + y;
         this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.fontHeight, LiteralText.EMPTY);
-        this.textField.setHasBorder(false);
+        this.textField.setDrawsBackground(false);
         this.textField.setMaxLength(16);
         this.textField.setEditableColor(TEXT_COLOR_NORMAL);
         this.textField.setVisible(true);
-        this.textField.setSelected(true);
+        this.textField.setTextFieldFocused(true);
         parent.setInitialFocus(this.textField);
         this.textField.setChangedListener(text -> {
             validate();

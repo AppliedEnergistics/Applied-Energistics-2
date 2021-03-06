@@ -115,8 +115,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
 
         if (data.contains("customName")) {
             this.customName = data.getString("customName");
@@ -134,8 +134,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
 
         if (this.canBeRotated()) {
             data.putString("forward", this.getForward().name());

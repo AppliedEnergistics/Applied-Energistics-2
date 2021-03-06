@@ -97,7 +97,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (int x = 0; x < this.facades; x++) {
             if (this.storage.getFacade(x) != null) {
                 final CompoundTag data = new CompoundTag();
-                this.storage.getFacade(x).getItemStack().toTag(data);
+                this.storage.getFacade(x).getItemStack().writeNbt(data);
                 c.put("facade:" + x, data);
             }
         }
@@ -141,7 +141,7 @@ public class FacadeContainer implements IFacadeContainer {
 
             final CompoundTag t = c.getCompound("facade:" + x);
             if (t != null) {
-                final ItemStack is = ItemStack.fromTag(t);
+                final ItemStack is = ItemStack.fromNbt(t);
                 if (!is.isEmpty()) {
                     final net.minecraft.item.Item i = is.getItem();
                     if (i instanceof IFacadeItem) {

@@ -209,7 +209,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         if (this.waitingToSend != null) {
             for (final ItemStack is : this.waitingToSend) {
                 final CompoundTag item = new CompoundTag();
-                is.toTag(item);
+                is.writeNbt(item);
                 waitingToSend.add(item);
             }
         }
@@ -223,7 +223,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             for (int x = 0; x < waitingList.size(); x++) {
                 final CompoundTag c = waitingList.getCompound(x);
                 if (c != null) {
-                    final ItemStack is = ItemStack.fromTag(c);
+                    final ItemStack is = ItemStack.fromNbt(c);
                     this.addToSendList(is);
                 }
             }

@@ -100,7 +100,7 @@ public class SpatialStorageWorldData extends PersistentState {
     }
 
     @Override
-    public CompoundTag toNbt(CompoundTag tag) {
+    public CompoundTag writeNbt(CompoundTag tag) {
         tag.putInt(TAG_FORMAT, CURRENT_FORMAT);
 
         ListTag plotTags = new ListTag();

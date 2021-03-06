@@ -13,6 +13,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
 import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
@@ -152,7 +153,9 @@ public final class AppEngBootstrap {
                 Feature.ORE
                         .configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, quartzOreState,
                                 AEConfig.instance().getQuartzOresPerCluster()))
-                        .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(12, 12, 72))).spreadHorizontally()
+                        .decorate(Decorator.RANGE
+                                .configure(new RangeDecoratorConfig(YOffset.fixed(12), YOffset.fixed(72))))
+                        .spreadHorizontally()
                         .repeat(AEConfig.instance().getQuartzOresClusterAmount()));
     }
 

@@ -128,7 +128,7 @@ final class StorageData extends PersistentState implements IWorldGridStorageData
     }
 
     @Override
-    public CompoundTag toNbt(CompoundTag tag) {
+    public CompoundTag writeNbt(CompoundTag tag) {
 
         tag.putLong(TAG_NEXT_ID, nextGridId);
 

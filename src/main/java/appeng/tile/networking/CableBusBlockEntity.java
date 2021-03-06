@@ -63,14 +63,14 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         this.getCableBus().readFromNBT(data);
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         this.getCableBus().writeToNBT(data);
         return data;
     }
@@ -104,10 +104,9 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
         // FIXME: potentially invalidate voxel shape cache?
     }
 
-    @Override
-    public double getSquaredRenderDistance() {
-        return 900.0;
-    }
+    /*
+     * @Override public double getSquaredRenderDistance() { return 900.0; }
+     */
 
     @Override
     public void markRemoved() {

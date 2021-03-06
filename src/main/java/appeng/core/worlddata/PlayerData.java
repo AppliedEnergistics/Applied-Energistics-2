@@ -111,7 +111,7 @@ final class PlayerData extends PersistentState implements IWorldPlayerData {
     }
 
     @Override
-    public CompoundTag toNbt(CompoundTag compound) {
+    public CompoundTag writeNbt(CompoundTag compound) {
         int index = 0;
         int[] playerIds = new int[mapping.size()];
         long[] profileIds = new long[mapping.size() * 2];

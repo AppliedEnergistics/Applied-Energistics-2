@@ -227,7 +227,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         final CompoundTag c = is.getTag();
         if (c != null && c.contains(TAG_COLOR)) {
             final CompoundTag color = c.getCompound(TAG_COLOR);
-            final ItemStack oldColor = ItemStack.fromTag(color);
+            final ItemStack oldColor = ItemStack.fromNbt(color);
             if (!oldColor.isEmpty()) {
                 return oldColor;
             }
@@ -301,7 +301,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             data.remove(TAG_COLOR);
         } else {
             final CompoundTag color = new CompoundTag();
-            newColor.toTag(color);
+            newColor.writeNbt(color);
             data.put(TAG_COLOR, color);
         }
     }

@@ -805,7 +805,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             final IPart part = this.getPart(s);
             if (part != null) {
                 final CompoundTag def = new CompoundTag();
-                part.getItemStack(PartItemStack.WORLD).toTag(def);
+                part.getItemStack(PartItemStack.WORLD).writeNbt(def);
 
                 final CompoundTag extra = new CompoundTag();
                 part.writeToNBT(extra);
@@ -846,7 +846,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 final CompoundTag def = data.getCompound(defKey);
                 final CompoundTag extra = data.getCompound(extraKey);
                 IPart p = this.getPart(side);
-                final ItemStack iss = ItemStack.fromTag(def);
+                final ItemStack iss = ItemStack.fromNbt(def);
                 if (iss.isEmpty()) {
                     continue;
                 }

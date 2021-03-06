@@ -60,8 +60,8 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         final PacketByteBuf myDat = new PacketByteBuf(Unpooled.buffer());
         this.writeBuffer(myDat);
         if (myDat.hasArray()) {
@@ -84,8 +84,8 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         if (data.contains("dots")) {
             this.readBuffer(new PacketByteBuf(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }

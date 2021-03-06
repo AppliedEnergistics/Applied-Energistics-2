@@ -14,6 +14,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
@@ -32,17 +33,17 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
     private final Tag<Block> terracottaTag = BlockTags.getTagGroup()
             .getTagOrEmpty(new Identifier("c:terracotta_blocks"));
 
-    public MeteoriteStructureStart(StructureFeature<DefaultFeatureConfig> feature, int chunkX, int chunkZ, BlockBox box,
+    public MeteoriteStructureStart(StructureFeature<DefaultFeatureConfig> feature, ChunkPos chunkPos, BlockBox box,
             int references, long seed) {
-        super(feature, chunkX, chunkZ, box, references, seed);
+        super(feature, chunkPos, box, references, seed);
     }
 
     @Override
     public void init(DynamicRegistryManager dynamicRegistryManager, ChunkGenerator generator,
-            StructureManager structureManager, int chunkX, int chunkZ, Biome biome,
+            StructureManager structureManager, ChunkPos chunkPos, Biome biome,
             DefaultFeatureConfig featureConfig, HeightLimitView heightLimitView) {
-        final int centerX = chunkX * 16 + this.random.nextInt(16);
-        final int centerZ = chunkZ * 16 + this.random.nextInt(16);
+        final int centerX = chunkPos.x * 16 + this.random.nextInt(16);
+        final int centerZ = chunkPos.z * 16 + this.random.nextInt(16);
         final float meteoriteRadius = (this.random.nextFloat() * 6.0f) + 2;
         final int yOffset = (int) Math.ceil(meteoriteRadius) + 1;
 

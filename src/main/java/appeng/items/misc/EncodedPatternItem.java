@@ -233,7 +233,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final List<IAEItemStack> in = new ArrayList<>(inTag.size());
         for (int x = 0; x < inTag.size(); x++) {
             CompoundTag ingredient = inTag.getCompound(x);
-            final ItemStack gs = ItemStack.fromTag(ingredient);
+            final ItemStack gs = ItemStack.fromNbt(ingredient);
 
             Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
 
@@ -255,7 +255,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final List<IAEItemStack> out = new ArrayList<>(outTag.size());
         for (int x = 0; x < outTag.size(); x++) {
             CompoundTag ingredient = outTag.getCompound(x);
-            final ItemStack gs = ItemStack.fromTag(ingredient);
+            final ItemStack gs = ItemStack.fromNbt(ingredient);
 
             Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
 
@@ -328,7 +328,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final CompoundTag c = new CompoundTag();
 
         if (!i.isEmpty()) {
-            i.toTag(c);
+            i.writeNbt(c);
         }
 
         return c;

@@ -39,14 +39,14 @@ public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity imple
     }
 
     @Override
-    public void fromTag(final CompoundTag data) {
-        super.fromTag(data);
+    public void readNbt(final CompoundTag data) {
+        super.readNbt(data);
         this.getProxy().readFromNBT(data);
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundTag writeNbt(final CompoundTag data) {
+        super.writeNbt(data);
         this.getProxy().writeToNBT(data);
         return data;
     }
