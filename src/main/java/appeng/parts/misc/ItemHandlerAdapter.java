@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -57,12 +59,18 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	private final IItemHandler itemHandler;
 	private final IGridProxyable proxyable;
 	private final InventoryCache cache;
+	private StorageFilter mode;
 
 	ItemHandlerAdapter( IItemHandler itemHandler, IGridProxyable proxy )
 	{
 		this.itemHandler = itemHandler;
 		this.proxyable = proxy;
-		this.cache = new InventoryCache( this.itemHandler );
+		if( this.proxyable instanceof PartStorageBus )
+		{
+			PartStorageBus partStorageBus = (PartStorageBus) this.proxyable;
+			this.mode = ( (StorageFilter) partStorageBus.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
+		}
+		this.cache = new InventoryCache( this.itemHandler, this.mode );
 	}
 
 	@Override
@@ -268,9 +276,11 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	{
 		private IAEItemStack[] cachedAeStacks = new IAEItemStack[0];
 		private final IItemHandler itemHandler;
+		private final StorageFilter mode;
 
-		public InventoryCache( IItemHandler itemHandler )
+		public InventoryCache( IItemHandler itemHandler, StorageFilter mode )
 		{
+			this.mode = mode;
 			this.itemHandler = itemHandler;
 		}
 
@@ -295,8 +305,14 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			{
 				// Save the old stuff
 				final IAEItemStack oldAeIS = this.cachedAeStacks[slot];
-				final ItemStack newIS = this.itemHandler.getStackInSlot( slot );
-
+				ItemStack newIS = this.itemHandler.getStackInSlot( slot );
+				if( this.mode == StorageFilter.EXTRACTABLE_ONLY && !newIS.isEmpty() )
+				{
+					if( this.itemHandler.extractItem( slot, 1, true ).isEmpty() )
+					{
+						newIS = ItemStack.EMPTY;
+					}
+				}
 				this.handlePossibleSlotChanges( slot, oldAeIS, newIS, changes );
 			}
 

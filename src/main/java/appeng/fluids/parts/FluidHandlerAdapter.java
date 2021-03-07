@@ -26,6 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
+import appeng.parts.misc.PartStorageBus;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -61,12 +64,18 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 	private final IFluidHandler fluidHandler;
 	private final IGridProxyable proxyable;
 	private final FluidHandlerAdapter.InventoryCache cache;
+	private StorageFilter mode;
 
 	FluidHandlerAdapter( IFluidHandler fluidHandler, IGridProxyable proxy )
 	{
 		this.fluidHandler = fluidHandler;
 		this.proxyable = proxy;
-		this.cache = new FluidHandlerAdapter.InventoryCache( this.fluidHandler );
+		if( this.proxyable instanceof PartStorageBus )
+		{
+			PartStorageBus partStorageBus = (PartStorageBus) this.proxyable;
+			this.mode = ( (StorageFilter) partStorageBus.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
+		}
+		this.cache = new FluidHandlerAdapter.InventoryCache( this.fluidHandler, this.mode);
 	}
 
 	@Override
@@ -195,9 +204,11 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 	{
 		private IAEFluidStack[] cachedAeStacks = new IAEFluidStack[0];
 		private final IFluidHandler fluidHandler;
+		private final StorageFilter mode;
 
-		public InventoryCache( IFluidHandler fluidHandler )
+		public InventoryCache( IFluidHandler fluidHandler, StorageFilter mode )
 		{
+			this.mode = mode;
 			this.fluidHandler = fluidHandler;
 		}
 
@@ -217,8 +228,14 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 			{
 				// Save the old stuff
 				final IAEFluidStack oldAEFS = this.cachedAeStacks[slot];
-				final FluidStack newFS = tankProperties[slot].getContents();
-
+				FluidStack newFS = tankProperties[slot].getContents();
+				if( this.mode == StorageFilter.EXTRACTABLE_ONLY && newFS != null )
+				{
+					if( this.fluidHandler.drain( 1, false ) == null )
+					{
+						newFS = null;
+					}
+				}
 				this.handlePossibleSlotChanges( slot, oldAEFS, newFS, changes );
 			}
 
