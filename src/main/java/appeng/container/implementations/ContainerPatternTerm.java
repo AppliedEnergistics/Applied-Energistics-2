@@ -291,7 +291,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
 			input[x] = this.craftingSlots[x].getStack();
-			if( !input[x].isEmpty() && input[x].getCount() * multiple > 64 )
+			if( !input[x].isEmpty() && input[x].getCount() * multiple > input[x].getMaxStackSize() )
 			{
 				canMultiplyInputs = false;
 			}
@@ -299,7 +299,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		for( final OptionalSlotFake outputSlot : this.outputSlots )
 		{
 			final ItemStack out = outputSlot.getStack();
-			if( !out.isEmpty() && out.getCount() * multiple > 64 )
+			if( !out.isEmpty() && out.getCount() * multiple > out.getMaxStackSize() )
 			{
 				canMultiplyOutputs = false;
 			}
@@ -369,7 +369,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
 			input[x] = this.craftingSlots[x].getStack();
-			if( !input[x].isEmpty() && input[x].getCount() + increase > 64 )
+			if( !input[x].isEmpty() && input[x].getCount() + increase > input[x].getMaxStackSize() )
 			{
 				canIncreaseInputs = false;
 			}
@@ -377,7 +377,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		for( final OptionalSlotFake outputSlot : this.outputSlots )
 		{
 			final ItemStack out = outputSlot.getStack();
-			if( !out.isEmpty() && out.getCount() + increase > 64 )
+			if( !out.isEmpty() && out.getCount() + increase > out.getMaxStackSize() )
 			{
 				canIncreaseOutputs = false;
 			}
@@ -450,11 +450,11 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
 			input[x] = this.craftingSlots[x].getStack();
-			if( !input[x].isEmpty() && 64 - input[x].getCount() > maxInputStackGrowth )
+			if( !input[x].isEmpty() && input[x].getMaxStackSize() - input[x].getCount() > maxInputStackGrowth )
 			{
-				maxInputStackGrowth = 64 - input[x].getCount();
+				maxInputStackGrowth = input[x].getMaxStackSize() - input[x].getCount();
 			}
-			if( !input[x].isEmpty() && input[x].getCount() + maxInputStackGrowth > 64 )
+			if( !input[x].isEmpty() && input[x].getCount() + maxInputStackGrowth > input[x].getMaxStackSize() )
 			{
 				canGrowInputs = false;
 			}
@@ -463,9 +463,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		{
 			final ItemStack out = outputSlot.getStack();
 			{
-				maxOutputStackGrowth = 64 - out.getCount();
+				maxOutputStackGrowth = out.getMaxStackSize() - out.getCount();
 			}
-			if( !out.isEmpty() && out.getCount() + maxOutputStackGrowth > 64 )
+			if( !out.isEmpty() && out.getCount() + maxOutputStackGrowth > out.getMaxStackSize() )
 			{
 				canGrowOutputs = false;
 			}
