@@ -86,6 +86,7 @@ configurations {
 
 dependencies {
     deobfCompile "com.jaquadro.minecraft.storagedrawers:StorageDrawers:1.12.2-5.4.2:api"
+    deobfCompile "gregtechce:gregtech:1.12.2:1.12.0.662"
 
     // installable runtime dependencies
     mods "mcp.mobius.waila:Hwyla:${hwyla_version}"

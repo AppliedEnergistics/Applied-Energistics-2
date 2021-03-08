@@ -33,6 +33,8 @@ import appeng.integration.modules.gregtech.GTCEInventoryAdaptor;
 import appeng.util.*;
 import com.google.common.collect.ImmutableSet;
 
+import gregtech.api.block.machines.BlockMachine;
+import gregtech.api.metatileentity.MetaTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
@@ -48,6 +50,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -108,6 +111,8 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
+
+import static gregtech.api.block.machines.BlockMachine.getMetaTileEntity;
 
 
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
@@ -1235,6 +1240,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final IBlockState directedBlockState = hostWorld.getBlockState( targ );
 				final Block directedBlock = directedBlockState.getBlock();
 				ItemStack what = new ItemStack( directedBlock, 1, directedBlock.getMetaFromState( directedBlockState ) );
+
+				if ( Loader.isModLoaded("gregtech") && directedBlock instanceof BlockMachine )
+				{
+					MetaTileEntity metaTileEntity = getMetaTileEntity(hostWorld, targ);
+					return metaTileEntity.getMetaFullName();
+				}
+
 				try
 				{
 					Vec3d from = new Vec3d( hostTile.getPos().getX() + 0.5, hostTile.getPos().getY() + 0.5, hostTile.getPos().getZ() + 0.5 );
