@@ -30,6 +30,7 @@ import net.minecraft.block.TNTBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BlockItem;
@@ -70,21 +71,18 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);
     }
 
-    public static EntropyRecipe findForInput(World world, EntropyMode mode, Block block, Fluid fluid) {
+    public static EntropyRecipe findForInput(World world, EntropyMode mode, BlockState block, FluidState fluid) {
         for (IRecipe<IInventory> recipe : world.getRecipeManager().getRecipes(EntropyRecipe.TYPE).values()) {
             EntropyRecipe entropyRecipe = (EntropyRecipe) recipe;
-            boolean isSameMode = entropyRecipe.getMode() == mode;
-            boolean isSameInput = block == entropyRecipe.getInputBlock() || entropyRecipe.getInputBlock() == null;
-            boolean isSameFluid = fluid == entropyRecipe.getInputFluid() || entropyRecipe.getInputFluid() == null;
 
-            if (isSameMode && isSameInput && isSameFluid) {
+            if (entropyRecipe.matches(mode, block, fluid)) {
                 return entropyRecipe;
             }
         }
         return null;
     }
 
-    private void heat(final Block block, Fluid fluid, final World w, final BlockPos pos) {
+    private void heat(final BlockState block, FluidState fluid, final World w, final BlockPos pos) {
         EntropyRecipe recipe = findForInput(w, EntropyMode.HEAT, block, fluid);
 
         if (recipe.getOutputBlockState() != null) {
@@ -111,11 +109,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
     }
 
-    private boolean canHeat(World world, Block block, Fluid fluid) {
+    private boolean canHeat(World world, BlockState block, FluidState fluid) {
         return findForInput(world, EntropyMode.HEAT, block, fluid) != null;
     }
 
-    private void cool(final Block block, Fluid fluid, final World w, final BlockPos pos) {
+    private void cool(final BlockState block, FluidState fluid, final World w, final BlockPos pos) {
         EntropyRecipe recipe = findForInput(w, EntropyMode.COOL, block, fluid);
 
         if (recipe.getOutputBlockState() != null) {
@@ -131,7 +129,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         }
     }
 
-    private boolean canCool(World world, Block block, Fluid fluid) {
+    private boolean canCool(World world, BlockState block, FluidState fluid) {
         return findForInput(world, EntropyMode.COOL, block, fluid) != null;
     }
 
@@ -195,13 +193,15 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 return ActionResultType.FAIL;
             }
 
-            final Block block = w.getBlockState(pos).getBlock();
-            final Fluid fluid = w.getFluidState(pos).getFluid();
+            final BlockState blockState = w.getBlockState(pos);
+            final Block block = blockState.getBlock();
+            final FluidState fluidState = w.getFluidState(pos);
+            final Fluid fluid = fluidState.getFluid();
 
             if (tryBoth || p.isCrouching()) {
-                if (this.canCool(w, block, fluid)) {
+                if (this.canCool(w, blockState, fluidState)) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
-                    this.cool(block, fluid, w, pos);
+                    this.cool(blockState, fluidState, w, pos);
                     return ActionResultType.SUCCESS;
                 }
             }
@@ -218,9 +218,9 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                     return ActionResultType.SUCCESS;
                 }
 
-                if (this.canHeat(w, block, fluid)) {
+                if (this.canHeat(w, blockState, fluidState)) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
-                    this.heat(block, fluid, w, pos);
+                    this.heat(blockState, fluidState, w, pos);
                     return ActionResultType.SUCCESS;
                 }
 
