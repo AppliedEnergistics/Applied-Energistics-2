@@ -197,7 +197,7 @@ public class AdaptorItemRepository extends InventoryAdaptor
     @Override
     public boolean hasSlots()
     {
-        return false;
+        return true;
     }
 
     @Override
