@@ -46,13 +46,13 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     private final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
 
     public ChestBlock() {
-        super(defaultProps(Material.IRON));
-        this.setDefaultState(this.getDefaultState().with(LIGHTS_ON, false));
+        super(defaultProps(Material.METAL));
+        this.registerDefaultState(this.defaultBlockState().setValue(LIGHTS_ON, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(LIGHTS_ON);
     }
 
@@ -68,7 +68,8 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
             slotState = DriveSlotState.OFFLINE;
         }
 
-        return currentState.with(LIGHTS_ON, slotState != DriveSlotState.EMPTY && slotState != DriveSlotState.OFFLINE);
+        return currentState.setValue(LIGHTS_ON,
+                slotState != DriveSlotState.EMPTY && slotState != DriveSlotState.OFFLINE);
     }
 
     @Override
@@ -76,17 +77,17 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final ChestTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !p.isCrouching()) {
-            if (w.isRemote()) {
+            if (w.isClientSide()) {
                 return ActionResultType.SUCCESS;
             }
 
-            if (hit.getFace() == tg.getUp()) {
+            if (hit.getDirection() == tg.getUp()) {
                 if (!tg.openGui(p)) {
-                    p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.DUMMY_UUID);
+                    p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.NIL_UUID);
                 }
             } else {
                 ContainerOpener.openContainer(ChestContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
 
             return ActionResultType.SUCCESS;

@@ -74,11 +74,12 @@ public class CraftingStorageTileEntity extends CraftingTileEntity {
 
     @Override
     public int getStorageBytes() {
-        if (this.world == null || this.notLoaded() || this.isRemoved()) {
+        if (this.level == null || this.notLoaded() || this.isRemoved()) {
             return 0;
         }
 
-        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.world.getBlockState(this.pos)
+        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.level
+                .getBlockState(this.worldPosition)
                 .getBlock();
         switch (unit.type) {
             default:

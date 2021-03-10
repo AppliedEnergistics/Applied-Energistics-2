@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -54,7 +55,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
         final CompoundNBT tag = stack.getTag();
         double internalCurrentPower = 0;
@@ -66,22 +67,22 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
         final double percent = internalCurrentPower / internalMaxPower;
 
-        lines.add(GuiText.StoredEnergy.text().deepCopy()
-                .appendString(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+        lines.add(GuiText.StoredEnergy.text().copy()
+                .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
                 .append(PowerUnits.AE.textComponent())
-                .appendString(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
+                .append(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
     }
 
     @Override
-    public boolean isDamageable() {
+    public boolean canBeDepleted() {
         return true;
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
 
-        if (this.isInGroup(group)) {
+        if (this.allowdedIn(group)) {
             final ItemStack charged = new ItemStack(this, 1);
             final CompoundNBT tag = charged.getOrCreateTag();
             tag.putDouble(CURRENT_POWER_NBT_KEY, this.getAEMaxPower(charged));

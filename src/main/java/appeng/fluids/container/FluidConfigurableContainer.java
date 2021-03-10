@@ -71,7 +71,7 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
     @Override
     protected void standardDetectAndSendChanges() {
         if (isServer()) {
-            this.getSyncHelper().sendDiff(this.listeners);
+            this.getSyncHelper().sendDiff(this.containerListeners);
 
             // clear out config items that are no longer valid (eg capacity upgrade removed)
             final IAEFluidTank t = this.getFluidConfigInventory();
@@ -85,8 +85,8 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
     }
 
     @Override
-    public void addListener(IContainerListener listener) {
-        super.addListener(listener);
+    public void addSlotListener(IContainerListener listener) {
+        super.addSlotListener(listener);
         this.getSyncHelper().sendFull(Collections.singleton(listener));
     }
 

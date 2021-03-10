@@ -39,7 +39,7 @@ import appeng.util.Platform;
 public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
 
     public CondenserBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
             final CondenserTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null && !player.isCrouching()) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tc, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tc, hit.getDirection()));
                 return ActionResultType.SUCCESS;
             }
         }

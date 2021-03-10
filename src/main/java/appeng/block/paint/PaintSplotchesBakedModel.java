@@ -34,11 +34,11 @@ import appeng.tile.misc.PaintSplotchesTileEntity;
  */
 class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
-    private static final RenderMaterial TEXTURE_PAINT1 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_PAINT1 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/paint1"));
-    private static final RenderMaterial TEXTURE_PAINT2 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_PAINT2 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/paint2"));
-    private static final RenderMaterial TEXTURE_PAINT3 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_PAINT3 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/paint3"));
 
     private final TextureAtlasSprite[] textures;
@@ -141,7 +141,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
@@ -151,12 +151,12 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isCustomRenderer() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public TextureAtlasSprite getParticleIcon() {
         return this.textures[0];
     }
 
@@ -166,7 +166,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 

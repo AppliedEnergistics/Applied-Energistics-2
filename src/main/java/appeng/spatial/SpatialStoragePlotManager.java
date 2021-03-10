@@ -46,7 +46,7 @@ public final class SpatialStoragePlotManager {
      */
     public ServerWorld getWorld() {
         MinecraftServer server = getServer();
-        ServerWorld world = server.getWorld(SpatialStorageDimensionIds.WORLD_ID);
+        ServerWorld world = server.getLevel(SpatialStorageDimensionIds.WORLD_ID);
         if (world == null) {
             throw new IllegalStateException("The storage cell world is missing.");
         }
@@ -54,7 +54,7 @@ public final class SpatialStoragePlotManager {
     }
 
     private SpatialStorageWorldData getWorldData() {
-        return getWorld().getChunkProvider().getSavedData().getOrCreate(SpatialStorageWorldData::new,
+        return getWorld().getChunkSource().getDataStorage().computeIfAbsent(SpatialStorageWorldData::new,
                 SpatialStorageWorldData.ID);
     }
 
@@ -95,15 +95,15 @@ public final class SpatialStoragePlotManager {
 
         if (resetBlocks) {
             BlockPos from = plot.getOrigin();
-            BlockPos to = from.add(plot.getSize()).add(-1, -1, -1);
+            BlockPos to = from.offset(plot.getSize()).offset(-1, -1, -1);
 
             AELog.info("Clearing spatial storage plot %s (%s -> %s)", plotId, from, to);
 
             // This is slow, but it should usually be just an admin-command
             ServerWorld world = getWorld();
-            BlockState matrixFrame = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
-            for (BlockPos blockPos : BlockPos.getAllInBoxMutable(from, to)) {
-                world.setBlockState(blockPos, matrixFrame);
+            BlockState matrixFrame = Api.instance().definitions().blocks().matrixFrame().block().defaultBlockState();
+            for (BlockPos blockPos : BlockPos.betweenClosed(from, to)) {
+                world.setBlockAndUpdate(blockPos, matrixFrame);
             }
         }
 

@@ -111,9 +111,9 @@ public class TickManagerCache implements ITickManager {
                 }
             }
         } catch (final Throwable t) {
-            final CrashReport crashreport = CrashReport.makeCrashReport(t, "Ticking GridNode");
+            final CrashReport crashreport = CrashReport.forThrowable(t, "Ticking GridNode");
             final CrashReportCategory crashreportcategory = crashreport
-                    .makeCategory(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");
+                    .addCategory(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");
             tt.addEntityCrashInfo(crashreportcategory);
             throw new ReportedException(crashreport);
         }

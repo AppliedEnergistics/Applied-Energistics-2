@@ -42,14 +42,14 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
 
     @Override
     @Nonnull
-    public ItemStack getStack() {
+    public ItemStack getItem() {
         if (!this.isSlotEnabled()) {
             if (!this.getDisplayStack().isEmpty()) {
                 this.clearStack();
             }
         }
 
-        return super.getStack();
+        return super.getItem();
     }
 
     @Override

@@ -39,21 +39,21 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     public MolecularAssemblerScreen(MolecularAssemblerContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 197;
+        this.imageHeight = 197;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, "guis/molecular_assembler.png", 139, 36, 148, 201, 6, 18,
+        this.pb = new ProgressBar(this.menu, "guis/molecular_assembler.png", 139, 36, 148, 201, 6, 18,
                 Direction.VERTICAL);
         this.addButton(this.pb);
     }
 
     @Override
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8,
+        this.redstoneMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 8,
                 Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addButton(this.redstoneMode);
     }
@@ -61,15 +61,15 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.pb.setFullMsg(new StringTextComponent(this.container.getCurrentProgress() + "%"));
+        this.pb.setFullMsg(new StringTextComponent(this.menu.getCurrentProgress() + "%"));
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
     }
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
-        this.pb.x = 148 + this.guiLeft;
-        this.pb.y = 48 + this.guiTop;
+        this.pb.x = 148 + this.leftPos;
+        this.pb.y = 48 + this.topPos;
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
     }
 

@@ -38,19 +38,19 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
     public TinyTNTPrimedRenderer(final EntityRendererManager manager) {
         super(manager);
-        this.shadowSize = 0.25F;
+        this.shadowRadius = 0.25F;
     }
 
     @Override
     public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, MatrixStack mStack,
             IRenderTypeBuffer buffers, int packedLight) {
-        final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-        mStack.push();
+        final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
+        mStack.pushPose();
         mStack.translate(0, 0.25F, 0);
         float f2;
 
-        if (tnt.getFuse() - partialTicks + 1.0F < 10.0F) {
-            f2 = 1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 10.0F;
+        if (tnt.getLife() - partialTicks + 1.0F < 10.0F) {
+            f2 = 1.0F - (tnt.getLife() - partialTicks + 1.0F) / 10.0F;
 
             if (f2 < 0.0F) {
                 f2 = 0.0F;
@@ -67,18 +67,18 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         }
 
         mStack.scale(0.5f, 0.5f, 0.5f);
-        f2 = (1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
-        mStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+        f2 = (1.0F - (tnt.getLife() - partialTicks + 1.0F) / 100.0F) * 0.8F;
+        mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
-        mStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
-        TNTMinecartRenderer.renderTntFlash(Blocks.TNT.getDefaultState(), mStack, buffers, packedLight,
-                tnt.getFuse() / 5 % 2 == 0);
-        mStack.pop();
+        mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+        TNTMinecartRenderer.renderWhiteSolidBlock(Blocks.TNT.defaultBlockState(), mStack, buffers, packedLight,
+                tnt.getLife() / 5 % 2 == 0);
+        mStack.popPose();
         super.render(tnt, entityYaw, partialTicks, mStack, buffers, packedLight);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(final TinyTNTPrimedEntity entity) {
-        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
+    public ResourceLocation getTextureLocation(final TinyTNTPrimedEntity entity) {
+        return AtlasTexture.LOCATION_BLOCKS;
     }
 }

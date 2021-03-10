@@ -98,7 +98,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
             return null;
         }
 
-        final TileEntity te = w.getTileEntity(pos);
+        final TileEntity te = w.getBlockEntity(pos);
         // FIXME: This gets called as part of building the block state cache
         if (this.tileEntityClass != null && this.tileEntityClass.isInstance(te)) {
             return this.tileEntityClass.cast(te);
@@ -113,7 +113,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
@@ -132,11 +132,11 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         }
 
         // super will remove the TE, as it is not an instance of BlockContainer
-        super.onReplaced(state, w, pos, newState, isMoving);
+        super.onRemove(state, w, pos, newState, isMoving);
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState state, final World w, final BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, final World w, final BlockPos pos) {
         final TileEntity te = this.getTileEntity(w, pos);
         if (te instanceof AEBaseInvTileEntity) {
             AEBaseInvTileEntity invTile = (AEBaseInvTileEntity) te;
@@ -148,15 +148,15 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public boolean eventReceived(final BlockState state, final World worldIn, final BlockPos pos, final int eventID,
+    public boolean triggerEvent(final BlockState state, final World worldIn, final BlockPos pos, final int eventID,
             final int eventParam) {
-        super.eventReceived(state, worldIn, pos, eventID, eventParam);
-        final TileEntity tileentity = worldIn.getTileEntity(pos);
-        return tileentity != null ? tileentity.receiveClientEvent(eventID, eventParam) : false;
+        super.triggerEvent(state, worldIn, pos, eventID, eventParam);
+        final TileEntity tileentity = worldIn.getBlockEntity(pos);
+        return tileentity != null ? tileentity.triggerEvent(eventID, eventParam) : false;
     }
 
     @Override
-    public void onBlockPlacedBy(final World w, final BlockPos pos, final BlockState state, final LivingEntity placer,
+    public void setPlacedBy(final World w, final BlockPos pos, final BlockState state, final LivingEntity placer,
             final ItemStack is) {
         // Inherit the item stack's display name, but only if it's a user defined string
         // rather
@@ -164,8 +164,8 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         // untranslated
         // I18N strings and we would translate it using the server's locale :-(
         AEBaseTileEntity te = this.getTileEntity(w, pos);
-        if (te != null && is.hasDisplayName()) {
-            ITextComponent displayName = is.getDisplayName();
+        if (te != null && is.hasCustomHoverName()) {
+            ITextComponent displayName = is.getHoverName();
             if (displayName instanceof StringTextComponent) {
                 te.setName(((StringTextComponent) displayName).getText());
             }
@@ -173,11 +173,11 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player,
             Hand hand, BlockRayTraceResult hit) {
         ItemStack heldItem;
-        if (player != null && !player.getHeldItem(hand).isEmpty()) {
-            heldItem = player.getHeldItem(hand);
+        if (player != null && !player.getItemInHand(hand).isEmpty()) {
+            heldItem = player.getItemInHand(hand);
 
             if (Platform.isWrench(player, heldItem, pos) && player.isCrouching()) {
                 final BlockState blockState = world.getBlockState(pos);
@@ -222,7 +222,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                     return ActionResultType.FAIL;
                 }
 
-                final String name = this.getTranslationKey();
+                final String name = this.getDescriptionId();
 
                 if (player.isCrouching()) {
                     final CompoundNBT data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
@@ -234,7 +234,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                     final String savedName = memoryCard.getSettingsName(heldItem);
                     final CompoundNBT data = memoryCard.getData(heldItem);
 
-                    if (this.getTranslationKey().equals(savedName)) {
+                    if (this.getDescriptionId().equals(savedName)) {
                         tileEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                     } else {
@@ -246,7 +246,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
             }
         }
 
-        return this.onActivated(world, pos, player, hand, player.getHeldItem(hand), hit);
+        return this.onActivated(world, pos, player, hand, player.getItemInHand(hand), hit);
     }
 
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,

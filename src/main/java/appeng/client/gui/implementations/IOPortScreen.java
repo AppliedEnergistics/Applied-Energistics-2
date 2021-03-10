@@ -41,19 +41,19 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
 
     public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 166;
+        this.imageHeight = 166;
     }
 
     @Override
     protected void addButtons() {
-        this.fullMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.FULLNESS_MODE,
+        this.fullMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 8, Settings.FULLNESS_MODE,
                 FullnessMode.EMPTY);
-        this.operationMode = new ServerSettingToggleButton<>(this.guiLeft + 80, this.guiTop + 17,
+        this.operationMode = new ServerSettingToggleButton<>(this.leftPos + 80, this.topPos + 17,
                 Settings.OPERATION_MODE, OperationMode.EMPTY);
 
         this.addButton(this.operationMode);
         this.addButton(this.fullMode);
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+        this.redstoneMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 28,
                 Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addButton(this.redstoneMode);
     }
@@ -61,8 +61,8 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.IOPort.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.IOPort.text()).getString(), 8, 6, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.getLocal(), 8, this.imageHeight - 96 + 3, 4210752);
 
         if (this.redstoneMode != null) {
             this.redstoneMode.set(this.cvb.getRedStoneMode());

@@ -78,7 +78,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         }
 
         if (is.getItem() instanceof EncodedPatternItem) {
-            final World w = this.getTileEntity().getWorld();
+            final World w = this.getTileEntity().getLevel();
             final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
             if (ph.isCraftable()) {
                 return ph.isValidItemForSlot(slotIndex, i, w);
@@ -143,7 +143,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -171,7 +171,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
 
         // If the pattern changes, the crafting grid slots lose validity
         if (s == encodedPatternSlot) {
-            for (Slot otherSlot : inventorySlots) {
+            for (Slot otherSlot : slots) {
                 if (otherSlot != s && otherSlot instanceof AppEngSlot) {
                     ((AppEngSlot) otherSlot).setIsValid(AppEngSlot.CalculatedValidity.NotAvailable);
                 }

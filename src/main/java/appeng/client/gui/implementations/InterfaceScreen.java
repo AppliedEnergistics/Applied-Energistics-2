@@ -43,18 +43,18 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
     public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 211;
+        this.imageHeight = 211;
     }
 
     @Override
     protected void addButtons() {
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
+        this.addButton(new TabButton(this.leftPos + 154, this.topPos, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
-        this.blockMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO);
+        this.blockMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 8, Settings.BLOCK, YesNo.NO);
         this.addButton(this.blockMode);
 
-        this.interfaceMode = new ToggleButton(this.guiLeft - 18, this.guiTop + 26, 84, 85,
+        this.interfaceMode = new ToggleButton(this.leftPos - 18, this.topPos + 26, 84, 85,
                 GuiText.InterfaceTerminal.getLocal(), GuiText.InterfaceTerminalHint.getLocal(),
                 btn -> selectNextInterfaceMode());
         this.addButton(this.interfaceMode);
@@ -71,13 +71,13 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
             this.interfaceMode.setState(((InterfaceContainer) this.cvb).getInterfaceTerminalMode() == YesNo.YES);
         }
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Interface.text()).getString(), 8, 6, 4210752);
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.Interface.text()).getString(), 8, 6, 4210752);
 
-        this.font.drawString(matrixStack, GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752);
-        this.font.drawString(matrixStack, GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752);
-        this.font.drawString(matrixStack, GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752);
+        this.font.draw(matrixStack, GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752);
+        this.font.draw(matrixStack, GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752);
+        this.font.draw(matrixStack, GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752);
 
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.getLocal(), 8, this.imageHeight - 96 + 3, 4210752);
     }
 
     @Override

@@ -27,6 +27,6 @@ import appeng.bootstrap.IItemRendering;
 public class DriveRendering extends BlockRenderingCustomizer {
     @Override
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderType.cutout());
     }
 }

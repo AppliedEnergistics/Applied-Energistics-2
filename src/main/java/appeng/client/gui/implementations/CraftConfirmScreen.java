@@ -71,8 +71,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     public CraftConfirmScreen(CraftConfirmContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.subGui = new AESubScreen(this, container.getTarget());
-        this.xSize = 238;
-        this.ySize = 206;
+        this.imageWidth = 238;
+        this.imageHeight = 206;
 
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
@@ -82,17 +82,17 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     public void init() {
         super.init();
 
-        this.start = new Button(this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.text(),
+        this.start = new Button(this.leftPos + 162, this.topPos + this.imageHeight - 25, 50, 20, GuiText.Start.text(),
                 btn -> start());
         this.start.active = false;
         this.addButton(this.start);
 
-        this.selectCPU = new Button(this.guiLeft + (219 - 180) / 2, this.guiTop + this.ySize - 68, 180, 20,
+        this.selectCPU = new Button(this.leftPos + (219 - 180) / 2, this.topPos + this.imageHeight - 68, 180, 20,
                 getNextCpuButtonLabel(), btn -> selectNextCpu());
         this.selectCPU.active = false;
         this.addButton(this.selectCPU);
 
-        addButton(new Button(this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.text(),
+        addButton(new Button(this.leftPos + 6, this.topPos + this.imageHeight - 25, 50, 20, GuiText.Cancel.text(),
                 btn -> subGui.goBack()));
 
         this.setScrollBar();
@@ -102,11 +102,11 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
         this.updateCPUButtonText();
 
-        this.start.active = !(this.container.hasNoCPU() || this.isSimulation());
+        this.start.active = !(this.menu.hasNoCPU() || this.isSimulation());
         this.selectCPU.active = !this.isSimulation();
 
-        final int gx = (this.width - this.xSize) / 2;
-        final int gy = (this.height - this.ySize) / 2;
+        final int gx = (this.width - this.imageWidth) / 2;
+        final int gy = (this.height - this.imageHeight) / 2;
 
         this.tooltip = -1;
 
@@ -140,46 +140,46 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     private ITextComponent getNextCpuButtonLabel() {
-        if (this.container.hasNoCPU()) {
+        if (this.menu.hasNoCPU()) {
             return GuiText.NoCraftingCPUs.text();
         }
 
         ITextComponent cpuName;
-        if (this.container.cpuName == null) {
+        if (this.menu.cpuName == null) {
             cpuName = GuiText.Automatic.text();
         } else {
-            cpuName = this.container.cpuName;
+            cpuName = this.menu.cpuName;
         }
 
         return GuiText.CraftingCPU.withSuffix(": ").append(cpuName);
     }
 
     private boolean isSimulation() {
-        return this.container.isSimulation();
+        return this.menu.isSimulation();
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        final long BytesUsed = this.container.getUsedBytes();
+        final long BytesUsed = this.menu.getUsedBytes();
         final String byteUsed = NumberFormat.getInstance().format(BytesUsed);
         final String Add = BytesUsed > 0 ? (byteUsed + ' ' + GuiText.BytesUsed.getLocal())
                 : GuiText.CalculatingWait.getLocal();
-        this.font.drawString(matrixStack, GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752);
+        this.font.draw(matrixStack, GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752);
 
         String dsp = null;
 
         if (this.isSimulation()) {
             dsp = GuiText.Simulation.getLocal();
         } else {
-            dsp = this.container.getCpuAvailableBytes() > 0
-                    ? (GuiText.Bytes.getLocal() + ": " + this.container.getCpuAvailableBytes() + " : "
-                            + GuiText.CoProcessors.getLocal() + ": " + this.container.getCpuCoProcessors())
+            dsp = this.menu.getCpuAvailableBytes() > 0
+                    ? (GuiText.Bytes.getLocal() + ": " + this.menu.getCpuAvailableBytes() + " : "
+                            + GuiText.CoProcessors.getLocal() + ": " + this.menu.getCpuCoProcessors())
                     : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
         }
 
-        final int offset = (219 - this.font.getStringWidth(dsp)) / 2;
-        this.font.drawString(matrixStack, dsp, offset, 165, 4210752);
+        final int offset = (219 - this.font.width(dsp)) / 2;
+        this.font.draw(matrixStack, dsp, offset, 165, 4210752);
 
         final int sectionLength = 67;
 
@@ -232,8 +232,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                     }
 
                     str = GuiText.FromStorage.getLocal() + ": " + str;
-                    final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(matrixStack, str,
+                    final int w = 4 + this.font.width(str);
+                    this.font.draw(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
@@ -255,8 +255,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                     }
 
                     str = GuiText.Missing.text().getString() + ": " + str;
-                    final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(matrixStack, str,
+                    final int w = 4 + this.font.width(str);
+                    this.font.draw(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
@@ -278,8 +278,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                     }
 
                     str = GuiText.ToCraft.getLocal() + ": " + str;
-                    final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(matrixStack, str,
+                    final int w = 4 + this.font.width(str);
+                    this.font.draw(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
@@ -332,7 +332,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
             final int mouseY, float partialTicks) {
         this.setScrollBar();
         this.bindTexture("guis/craftingreport.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.imageWidth, this.imageHeight, getBlitOffset());
     }
 
     private void setScrollBar() {
@@ -443,7 +443,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
+        if (!this.checkHotbarKeys(InputMappings.getKey(keyCode, scanCode))) {
             if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
                 this.start();
                 return true;

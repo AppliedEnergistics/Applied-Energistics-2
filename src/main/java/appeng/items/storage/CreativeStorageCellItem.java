@@ -21,6 +21,7 @@ package appeng.items.storage;
 import java.util.List;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -70,7 +71,7 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
         final IMEInventoryHandler<?> inventory = Api.instance().registries().cell().getCellInventory(stack, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
@@ -80,7 +81,7 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
             for (final ItemStack is : cc) {
                 if (!is.isEmpty()) {
-                    lines.add(is.getDisplayName());
+                    lines.add(is.getHoverName());
                 }
             }
         }

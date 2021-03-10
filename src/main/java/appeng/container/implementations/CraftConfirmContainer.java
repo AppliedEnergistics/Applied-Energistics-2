@@ -115,14 +115,14 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isClient()) {
             return;
         }
 
         this.cpuCycler.detectAndSendChanges(this.getGrid());
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
 
         if (this.getJob() != null && this.getJob().isDone()) {
             try {
@@ -190,7 +190,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
                         }
                     }
 
-                    for (final Object g : this.listeners) {
+                    for (final Object g : this.containerListeners) {
                         if (g instanceof PlayerEntity) {
                             NetworkHandler.instance().sendTo(a, (ServerPlayerEntity) g);
                             NetworkHandler.instance().sendTo(b, (ServerPlayerEntity) g);
@@ -204,7 +204,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
                 }
             } catch (final Throwable e) {
                 this.getPlayerInv().player.sendMessage(new StringTextComponent("Error: " + e.toString()),
-                        Util.DUMMY_UUID);
+                        Util.NIL_UUID);
                 AELog.debug(e);
                 this.setValidContainer(false);
                 this.result = null;
@@ -259,8 +259,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void removeListener(final IContainerListener c) {
-        super.removeListener(c);
+    public void removeSlotListener(final IContainerListener c) {
+        super.removeSlotListener(c);
         if (this.getJob() != null) {
             this.getJob().cancel(true);
             this.setJob(null);
@@ -268,8 +268,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
-        super.onContainerClosed(par1PlayerEntity);
+    public void removed(final PlayerEntity par1PlayerEntity) {
+        super.removed(par1PlayerEntity);
         if (this.getJob() != null) {
             this.getJob().cancel(true);
             this.setJob(null);
@@ -293,7 +293,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     public World getWorld() {
-        return this.getPlayerInv().player.world;
+        return this.getPlayerInv().player.level;
     }
 
     public boolean isAutoStart() {

@@ -53,26 +53,26 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_ITEM_COUNT);
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.addButtons(children::add, this::addButton);
-        this.level.setValue(container.getReportingValue());
+        this.level.setValue(menu.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
-        this.level.setOnConfirm(this::closeScreen);
+        this.level.setOnConfirm(this::onClose);
 
         this.changeFocus(true);
     }
 
     private void saveReportingValue() {
-        this.level.getLongValue().ifPresent(container::setReportingValue);
+        this.level.getLongValue().ifPresent(menu::setReportingValue);
     }
 
     @Override
     protected void addButtons() {
-        this.levelMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.LEVEL_TYPE,
+        this.levelMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 8, Settings.LEVEL_TYPE,
                 LevelType.ITEM_LEVEL);
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+        this.redstoneMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 28,
                 Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 48, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
-        this.craftingMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48,
+        this.craftingMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 48,
                 Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
         this.addButton(this.levelMode);
         this.addButton(this.redstoneMode);
@@ -101,7 +101,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
 
             if (notCraftingMode) {
                 if (currentLevelMode == LevelType.ENERGY_LEVEL) {
-                    this.font.drawString(matrixStack, PowerUnits.AE.textComponent().getString(), 110, 44,
+                    this.font.draw(matrixStack, PowerUnits.AE.textComponent().getString(), 110, 44,
                             COLOR_DARK_GRAY);
                 }
             }

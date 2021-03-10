@@ -94,7 +94,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -134,7 +134,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
             }
         }
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     protected void loadSettingsFromHost(final IConfigManager cm) {

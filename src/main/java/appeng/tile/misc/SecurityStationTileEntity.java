@@ -150,8 +150,8 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         this.cm.writeToNBT(data);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
 
@@ -163,7 +163,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         int offset = 0;
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {
             final CompoundNBT it = new CompoundNBT();
-            ais.createItemStack().write(it);
+            ais.createItemStack().save(it);
             storedItems.put(String.valueOf(offset), it);
             offset++;
         }
@@ -173,8 +173,8 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.cm.readFromNBT(data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
@@ -184,10 +184,10 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         this.getConfigSlot().readFromNBT(data, "config");
 
         final CompoundNBT storedItems = data.getCompound("storedItems");
-        for (final Object key : storedItems.keySet()) {
+        for (final Object key : storedItems.getAllKeys()) {
             final INBT obj = storedItems.get((String) key);
             if (obj instanceof CompoundNBT) {
-                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.read((CompoundNBT) obj)));
+                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.of((CompoundNBT) obj)));
             }
         }
     }
@@ -233,8 +233,8 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
         this.isActive = false;
     }
@@ -245,7 +245,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     public boolean isActive() {
-        if (world != null && !world.isRemote) {
+        if (level != null && !level.isClientSide) {
             return isPowered();
         } else {
             return this.isActive;

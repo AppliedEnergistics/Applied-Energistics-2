@@ -81,7 +81,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
             return null;
         }
 
-        final ItemStack itemstack = ItemStack.read(i.getCompound(NBT_ITEMSTACK));
+        final ItemStack itemstack = ItemStack.of(i.getCompound(NBT_ITEMSTACK));
         if (itemstack.isEmpty()) {
             return null;
         }
@@ -96,7 +96,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     @Override
     public void writeToNBT(final CompoundNBT i) {
         final CompoundNBT itemStack = new CompoundNBT();
-        this.getDefinition().write(itemStack);
+        this.getDefinition().save(itemStack);
 
         i.put(NBT_ITEMSTACK, itemStack);
         i.putLong(NBT_STACKSIZE, this.getStackSize());
@@ -108,7 +108,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         final boolean isCraftable = buffer.readBoolean();
         final long stackSize = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
-        final ItemStack itemstack = buffer.readItemStack();
+        final ItemStack itemstack = buffer.readItem();
 
         if (itemstack.isEmpty()) {
             return null;
@@ -190,7 +190,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         int oldSize = otherStack.getCount();
 
         otherStack.setCount(1);
-        boolean ret = ItemStack.areItemStacksEqual(this.getDefinition(), otherStack);
+        boolean ret = ItemStack.matches(this.getDefinition(), otherStack);
         otherStack.setCount(oldSize);
 
         return ret;
@@ -263,14 +263,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     private boolean fuzzyItemStackComparison(ItemStack a, ItemStack b, FuzzyMode mode) {
         if (a.getItem() == b.getItem()) {
-            if (a.getItem().isDamageable()) {
+            if (a.getItem().canBeDepleted()) {
                 if (mode == FuzzyMode.IGNORE_ALL) {
                     return true;
                 } else if (mode == FuzzyMode.PERCENT_99) {
-                    return (a.getDamage() > 1) == (b.getDamage() > 1);
+                    return (a.getDamageValue() > 1) == (b.getDamageValue() > 1);
                 } else {
-                    final float percentDamageOfA = (float) a.getDamage() / a.getMaxDamage();
-                    final float percentDamageOfB = (float) b.getDamage() / b.getMaxDamage();
+                    final float percentDamageOfA = (float) a.getDamageValue() / a.getMaxDamage();
+                    final float percentDamageOfB = (float) b.getDamageValue() / b.getMaxDamage();
 
                     return (percentDamageOfA > mode.breakPoint) == (percentDamageOfB > mode.breakPoint);
                 }

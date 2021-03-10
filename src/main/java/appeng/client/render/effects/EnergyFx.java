@@ -41,17 +41,17 @@ public class EnergyFx extends SpriteTexturedParticle {
     public EnergyFx(final ClientWorld par1World, final double par2, final double par4, final double par6,
             final IAnimatedSprite sprite) {
         super(par1World, par2, par4, par6);
-        this.particleGravity = 0;
-        this.particleBlue = 1;
-        this.particleGreen = 1;
-        this.particleRed = 1;
-        this.particleAlpha = 1.4f;
-        this.particleScale = 3.5f;
-        this.selectSpriteRandomly(sprite);
+        this.gravity = 0;
+        this.bCol = 1;
+        this.gCol = 1;
+        this.rCol = 1;
+        this.alpha = 1.4f;
+        this.quadSize = 3.5f;
+        this.pickSprite(sprite);
 
-        this.startBlkX = MathHelper.floor(this.posX);
-        this.startBlkY = MathHelper.floor(this.posY);
-        this.startBlkZ = MathHelper.floor(this.posZ);
+        this.startBlkX = MathHelper.floor(this.x);
+        this.startBlkY = MathHelper.floor(this.y);
+        this.startBlkZ = MathHelper.floor(this.z);
     }
 
     @Override
@@ -60,22 +60,22 @@ public class EnergyFx extends SpriteTexturedParticle {
     }
 
     @Override
-    public float getScale(float scaleFactor) {
-        return 0.1f * this.particleScale;
+    public float getQuadSize(float scaleFactor) {
+        return 0.1f * this.quadSize;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        float x = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTicks);
-        float y = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTicks);
-        float z = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks);
+    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+        float x = (float) (this.xo + (this.x - this.xo) * partialTicks);
+        float y = (float) (this.yo + (this.y - this.yo) * partialTicks);
+        float z = (float) (this.zo + (this.z - this.zo) * partialTicks);
 
         final int blkX = MathHelper.floor(x);
         final int blkY = MathHelper.floor(y);
         final int blkZ = MathHelper.floor(z);
 
         if (blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ) {
-            super.renderParticle(buffer, renderInfo, partialTicks);
+            super.render(buffer, renderInfo, partialTicks);
         }
     }
 
@@ -84,20 +84,20 @@ public class EnergyFx extends SpriteTexturedParticle {
         super.tick();
         this.onGround = false;
 
-        this.particleScale *= 0.89f;
-        this.particleAlpha *= 0.89f;
+        this.quadSize *= 0.89f;
+        this.alpha *= 0.89f;
     }
 
     public void setMotionX(float motionX) {
-        this.motionX = motionX;
+        this.xd = motionX;
     }
 
     public void setMotionY(float motionY) {
-        this.motionY = motionY;
+        this.yd = motionY;
     }
 
     public void setMotionZ(float motionZ) {
-        this.motionZ = motionZ;
+        this.zd = motionZ;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -109,17 +109,17 @@ public class EnergyFx extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(EnergyParticleData data, ClientWorld worldIn, double x, double y, double z,
+        public Particle createParticle(EnergyParticleData data, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);
             result.setMotionX((float) xSpeed);
             result.setMotionY((float) ySpeed);
             result.setMotionZ((float) zSpeed);
             if (data.forItem) {
-                result.posX += -0.2 * data.direction.xOffset;
-                result.posY += -0.2 * data.direction.yOffset;
-                result.posZ += -0.2 * data.direction.zOffset;
-                result.particleScale *= 0.8f;
+                result.x += -0.2 * data.direction.xOffset;
+                result.y += -0.2 * data.direction.yOffset;
+                result.z += -0.2 * data.direction.zOffset;
+                result.quadSize *= 0.8f;
             }
             return result;
         }

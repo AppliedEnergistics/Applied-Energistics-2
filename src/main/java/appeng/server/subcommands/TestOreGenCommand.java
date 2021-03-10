@@ -52,8 +52,8 @@ public class TestOreGenCommand implements ISubCommand {
     private final BlockState chargedQuartzOre;
 
     public TestOreGenCommand() {
-        quartzOre = Api.INSTANCE.definitions().blocks().quartzOre().block().getDefaultState();
-        chargedQuartzOre = Api.INSTANCE.definitions().blocks().quartzOreCharged().block().getDefaultState();
+        quartzOre = Api.INSTANCE.definitions().blocks().quartzOre().block().defaultBlockState();
+        chargedQuartzOre = Api.INSTANCE.definitions().blocks().quartzOreCharged().block().defaultBlockState();
     }
 
     @Override
@@ -64,16 +64,16 @@ public class TestOreGenCommand implements ISubCommand {
         ServerWorld world;
         BlockPos center;
         try {
-            ServerPlayerEntity player = sender.asPlayer();
-            world = player.getServerWorld();
-            center = new BlockPos(player.getPosX(), 0, player.getPosZ());
+            ServerPlayerEntity player = sender.getPlayerOrException();
+            world = player.getLevel();
+            center = new BlockPos(player.getX(), 0, player.getZ());
         } catch (CommandSyntaxException e) {
-            world = srv.getWorld(World.OVERWORLD);
-            center = world.getSpawnPoint();
+            world = srv.getLevel(World.OVERWORLD);
+            center = world.getSharedSpawnPos();
         }
 
-        ChunkPos tl = new ChunkPos(center.add(-radius, 0, -radius));
-        ChunkPos br = new ChunkPos(center.add(radius, 0, radius));
+        ChunkPos tl = new ChunkPos(center.offset(-radius, 0, -radius));
+        ChunkPos br = new ChunkPos(center.offset(radius, 0, radius));
 
         Stats stats = new Stats();
         for (int cx = tl.x; cx <= br.x; cx++) {
@@ -108,11 +108,11 @@ public class TestOreGenCommand implements ISubCommand {
 
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
         sendLine(sender, "Checking chunk %s", cp);
-        for (int x = cp.getXStart(); x <= cp.getXEnd(); x++) {
+        for (int x = cp.getMinBlockX(); x <= cp.getMaxBlockX(); x++) {
             blockPos.setX(x);
-            for (int z = cp.getZStart(); z <= cp.getZEnd(); z++) {
+            for (int z = cp.getMinBlockZ(); z <= cp.getMaxBlockZ(); z++) {
                 blockPos.setZ(z);
-                for (int y = 0; y < world.func_234938_ad_(); y++) {
+                for (int y = 0; y < world.getHeight(); y++) {
                     blockPos.setY(y);
                     BlockState state = chunk.getBlockState(blockPos);
                     if (state == quartzOre || state == chargedQuartzOre) {
@@ -130,7 +130,7 @@ public class TestOreGenCommand implements ISubCommand {
     }
 
     private static void sendLine(CommandSource sender, String text, Object... args) {
-        sender.sendFeedback(new StringTextComponent(String.format(Locale.ROOT, text, args)), true);
+        sender.sendSuccess(new StringTextComponent(String.format(Locale.ROOT, text, args)), true);
     }
 
     private static class Stats {

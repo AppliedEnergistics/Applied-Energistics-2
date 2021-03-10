@@ -37,8 +37,8 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
 
     public AESharedItemStack(final ItemStack itemStack) {
         this.itemStack = itemStack;
-        this.itemId = Item.getIdFromItem(itemStack.getItem());
-        this.itemDamage = itemStack.getDamage();
+        this.itemId = Item.getId(itemStack.getItem());
+        this.itemDamage = itemStack.getDamageValue();
         this.hashCode = this.makeHashCode();
     }
 
@@ -74,7 +74,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             if (this.itemStack == other.itemStack) {
                 return true;
             }
-            return ItemStack.areItemStacksEqual(this.itemStack, other.itemStack);
+            return ItemStack.matches(this.itemStack, other.itemStack);
         }
         return false;
     }
@@ -141,19 +141,19 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
                 final FuzzyMode fuzzy) {
             final ItemStack newDef = itemStack.copy();
 
-            if (newDef.getItem().isDamageable()) {
+            if (newDef.getItem().canBeDepleted()) {
                 if (fuzzy == FuzzyMode.IGNORE_ALL) {
-                    newDef.setDamage(MIN_DAMAGE_VALUE);
+                    newDef.setDamageValue(MIN_DAMAGE_VALUE);
                 } else if (fuzzy == FuzzyMode.PERCENT_99) {
-                    if (itemStack.getDamage() == MIN_DAMAGE_VALUE) {
-                        newDef.setDamage(MIN_DAMAGE_VALUE);
+                    if (itemStack.getDamageValue() == MIN_DAMAGE_VALUE) {
+                        newDef.setDamageValue(MIN_DAMAGE_VALUE);
                     } else {
-                        newDef.setDamage(MIN_DAMAGE_VALUE + 1);
+                        newDef.setDamageValue(MIN_DAMAGE_VALUE + 1);
                     }
                 } else {
                     final int breakpoint = fuzzy.calculateBreakPoint(itemStack.getMaxDamage());
-                    final int damage = breakpoint <= itemStack.getDamage() ? breakpoint : 0;
-                    newDef.setDamage(damage);
+                    final int damage = breakpoint <= itemStack.getDamageValue() ? breakpoint : 0;
+                    newDef.setDamageValue(damage);
                 }
             }
 
@@ -164,20 +164,20 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
                 final FuzzyMode fuzzy) {
             final ItemStack newDef = itemStack.copy();
 
-            if (newDef.getItem().isDamageable()) {
+            if (newDef.getItem().canBeDepleted()) {
                 if (fuzzy == FuzzyMode.IGNORE_ALL) {
-                    newDef.setDamage(itemStack.getMaxDamage() + 1);
+                    newDef.setDamageValue(itemStack.getMaxDamage() + 1);
                 } else if (fuzzy == FuzzyMode.PERCENT_99) {
-                    if (itemStack.getDamage() == MIN_DAMAGE_VALUE) {
-                        newDef.setDamage(MIN_DAMAGE_VALUE);
+                    if (itemStack.getDamageValue() == MIN_DAMAGE_VALUE) {
+                        newDef.setDamageValue(MIN_DAMAGE_VALUE);
                     } else {
-                        newDef.setDamage(itemStack.getMaxDamage() + 1);
+                        newDef.setDamageValue(itemStack.getMaxDamage() + 1);
                     }
                 } else {
                     final int breakpoint = fuzzy.calculateBreakPoint(itemStack.getMaxDamage());
-                    final int damage = itemStack.getDamage() < breakpoint ? breakpoint - 1
+                    final int damage = itemStack.getDamageValue() < breakpoint ? breakpoint - 1
                             : itemStack.getMaxDamage() + 1;
-                    newDef.setDamage(damage);
+                    newDef.setDamageValue(damage);
                 }
             }
 

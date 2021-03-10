@@ -31,6 +31,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
@@ -95,7 +96,8 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
         LazyOptional<IFluidHandler> fluidHandler = LazyOptional.empty();
         if (this.isActive()) {
             final TileEntity self = this.getTile();
-            final TileEntity te = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+            final TileEntity te = self.getLevel()
+                    .getBlockEntity(self.getBlockPos().relative(this.getSide().getFacing()));
 
             if (te != null) {
                 fluidHandler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,

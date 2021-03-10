@@ -35,7 +35,7 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructurePiece extends StructurePiece {
 
-    public static final IStructurePieceType TYPE = IStructurePieceType.register(MeteoriteStructurePiece::new,
+    public static final IStructurePieceType TYPE = IStructurePieceType.setPieceId(MeteoriteStructurePiece::new,
             "ae2mtrt");
 
     public static void register() {
@@ -56,14 +56,15 @@ public class MeteoriteStructurePiece extends StructurePiece {
         int range = 4 * 16;
 
         ChunkPos chunkPos = new ChunkPos(center);
-        this.boundingBox = new MutableBoundingBox(chunkPos.getXStart() - range, center.getY(),
-                chunkPos.getZStart() - range, chunkPos.getXEnd() + range, center.getY(), chunkPos.getZEnd() + range);
+        this.boundingBox = new MutableBoundingBox(chunkPos.getMinBlockX() - range, center.getY(),
+                chunkPos.getMinBlockZ() - range, chunkPos.getMaxBlockX() + range, center.getY(),
+                chunkPos.getMaxBlockZ() + range);
     }
 
     public MeteoriteStructurePiece(TemplateManager templateManager, CompoundNBT tag) {
         super(TYPE, tag);
 
-        BlockPos center = BlockPos.fromLong(tag.getLong(Constants.TAG_POS));
+        BlockPos center = BlockPos.of(tag.getLong(Constants.TAG_POS));
         float coreRadius = tag.getFloat(Constants.TAG_RADIUS);
         CraterType craterType = CraterType.values()[tag.getByte(Constants.TAG_CRATER)];
         FalloutMode fallout = FalloutMode.values()[tag.getByte(Constants.TAG_FALLOUT)];
@@ -82,9 +83,9 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    protected void readAdditional(CompoundNBT tag) {
+    protected void addAdditionalSaveData(CompoundNBT tag) {
         tag.putFloat(Constants.TAG_RADIUS, settings.getMeteoriteRadius());
-        tag.putLong(Constants.TAG_POS, settings.getPos().toLong());
+        tag.putLong(Constants.TAG_POS, settings.getPos().asLong());
         tag.putByte(Constants.TAG_CRATER, (byte) settings.getCraterType().ordinal());
         tag.putByte(Constants.TAG_FALLOUT, (byte) settings.getFallout().ordinal());
         tag.putBoolean(Constants.TAG_PURE, settings.isPureCrater());
@@ -92,7 +93,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean func_230383_a_(ISeedReader world, StructureManager p_230383_2_, ChunkGenerator chunkGeneratorIn,
+    public boolean postProcess(ISeedReader world, StructureManager p_230383_2_, ChunkGenerator chunkGeneratorIn,
             Random rand, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();

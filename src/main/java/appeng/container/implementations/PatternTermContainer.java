@@ -140,36 +140,36 @@ public class PatternTermContainer extends MEMonitorableContainer
 
     private void updateOrderOfOutputSlots() {
         if (!this.isCraftingMode()) {
-            this.craftSlot.xPos = -9000;
+            this.craftSlot.x = -9000;
 
             for (int y = 0; y < 3; y++) {
-                this.outputSlots[y].xPos = this.outputSlots[y].getX();
+                this.outputSlots[y].x = this.outputSlots[y].getX();
             }
         } else {
-            this.craftSlot.xPos = this.craftSlot.getX();
+            this.craftSlot.x = this.craftSlot.getX();
 
             for (int y = 0; y < 3; y++) {
-                this.outputSlots[y].xPos = -9000;
+                this.outputSlots[y].x = -9000;
             }
         }
     }
 
     @Override
-    public void putStackInSlot(int slotID, ItemStack stack) {
-        super.putStackInSlot(slotID, stack);
+    public void setItem(int slotID, ItemStack stack) {
+        super.setItem(slotID, stack);
         this.getAndUpdateOutput();
     }
 
     private ItemStack getAndUpdateOutput() {
-        final World world = this.getPlayerInv().player.world;
+        final World world = this.getPlayerInv().player.level;
         final CraftingInventory ic = new CraftingInventory(this, 3, 3);
 
-        for (int x = 0; x < ic.getSizeInventory(); x++) {
-            ic.setInventorySlotContents(x, this.crafting.getStackInSlot(x));
+        for (int x = 0; x < ic.getContainerSize(); x++) {
+            ic.setItem(x, this.crafting.getStackInSlot(x));
         }
 
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, world)) {
-            this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
+            this.currentRecipe = world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, ic, world).orElse(null);
         }
 
         final ItemStack is;
@@ -177,7 +177,7 @@ public class PatternTermContainer extends MEMonitorableContainer
         if (this.currentRecipe == null) {
             is = ItemStack.EMPTY;
         } else {
-            is = this.currentRecipe.getCraftingResult(ic);
+            is = this.currentRecipe.assemble(ic);
         }
 
         this.cOut.setStackInSlot(0, is);
@@ -196,7 +196,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     }
 
     public void encode() {
-        ItemStack output = this.patternSlotOUT.getStack();
+        ItemStack output = this.patternSlotOUT.getItem();
 
         final ItemStack[] in = this.getInputs();
         final ItemStack[] out = this.getOutputs();
@@ -211,7 +211,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             return;
         } // if nothing is there we should snag a new pattern.
         else if (output.isEmpty()) {
-            output = this.patternSlotIN.getStack();
+            output = this.patternSlotIN.getItem();
             if (output.isEmpty() || !isPattern(output)) {
                 return; // no blanks.
             }
@@ -219,7 +219,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             // remove one, and clear the input slot.
             output.setCount(output.getCount() - 1);
             if (output.getCount() == 0) {
-                this.patternSlotIN.putStack(ItemStack.EMPTY);
+                this.patternSlotIN.set(ItemStack.EMPTY);
             }
 
             // let the crafting helper create a new encoded pattern
@@ -231,7 +231,7 @@ public class PatternTermContainer extends MEMonitorableContainer
         } else {
             output = craftingHelper.encodeProcessingPattern(output, in, out);
         }
-        this.patternSlotOUT.putStack(output);
+        this.patternSlotOUT.set(output);
 
     }
 
@@ -240,7 +240,7 @@ public class PatternTermContainer extends MEMonitorableContainer
         boolean hasValue = false;
 
         for (int x = 0; x < this.craftingSlots.length; x++) {
-            input[x] = this.craftingSlots[x].getStack();
+            input[x] = this.craftingSlots[x].getItem();
             if (!input[x].isEmpty()) {
                 hasValue = true;
             }
@@ -265,7 +265,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             final ItemStack[] list = new ItemStack[3];
 
             for (int i = 0; i < this.outputSlots.length; i++) {
-                final ItemStack out = this.outputSlots[i].getStack();
+                final ItemStack out = this.outputSlots[i].getItem();
                 list[i] = out;
                 if (!out.isEmpty()) {
                     hasValue = true;
@@ -323,7 +323,7 @@ public class PatternTermContainer extends MEMonitorableContainer
                 if (p instanceof ServerPlayerEntity) {
                     this.updateHeld((ServerPlayerEntity) p);
                 }
-                this.detectAndSendChanges();
+                this.broadcastChanges();
                 return;
             }
 
@@ -331,11 +331,12 @@ public class PatternTermContainer extends MEMonitorableContainer
             final CraftingInventory real = new CraftingInventory(new ContainerNull(), 3, 3);
 
             for (int x = 0; x < 9; x++) {
-                ic.setInventorySlotContents(x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY
+                ic.setItem(x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY
                         : packetPatternSlot.pattern[x].createItemStack());
             }
 
-            final IRecipe<CraftingInventory> r = p.world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, p.world)
+            final IRecipe<CraftingInventory> r = p.level.getRecipeManager()
+                    .getRecipeFor(IRecipeType.CRAFTING, ic, p.level)
                     .orElse(null);
 
             if (r == null) {
@@ -346,32 +347,32 @@ public class PatternTermContainer extends MEMonitorableContainer
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             final IItemList<IAEItemStack> all = storage.getStorageList();
 
-            final ItemStack is = r.getCraftingResult(ic);
+            final ItemStack is = r.assemble(ic);
 
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                if (!ic.getStackInSlot(x).isEmpty()) {
+            for (int x = 0; x < ic.getContainerSize(); x++) {
+                if (!ic.getItem(x).isEmpty()) {
                     final ItemStack pulled = Platform.extractItemsByRecipe(this.getPowerSource(),
-                            this.getActionSource(), storage, p.world, r, is, ic, ic.getStackInSlot(x), x, all,
+                            this.getActionSource(), storage, p.level, r, is, ic, ic.getItem(x), x, all,
                             Actionable.MODULATE, ViewCellItem.createFilter(this.getViewCells()));
-                    real.setInventorySlotContents(x, pulled);
+                    real.setItem(x, pulled);
                 }
             }
 
-            final IRecipe<CraftingInventory> rr = p.world.getRecipeManager()
-                    .getRecipe(IRecipeType.CRAFTING, real, p.world).orElse(null);
+            final IRecipe<CraftingInventory> rr = p.level.getRecipeManager()
+                    .getRecipeFor(IRecipeType.CRAFTING, real, p.level).orElse(null);
 
-            if (rr == r && Platform.itemComparisons().isSameItem(rr.getCraftingResult(real), is)) {
+            if (rr == r && Platform.itemComparisons().isSameItem(rr.assemble(real), is)) {
                 final CraftResultInventory craftingResult = new CraftResultInventory();
                 craftingResult.setRecipeUsed(rr);
 
                 final CraftingResultSlot sc = new CraftingResultSlot(p, real, craftingResult, 0, 0, 0);
                 sc.onTake(p, is);
 
-                for (int x = 0; x < real.getSizeInventory(); x++) {
-                    final ItemStack failed = playerInv.addItems(real.getStackInSlot(x));
+                for (int x = 0; x < real.getContainerSize(); x++) {
+                    final ItemStack failed = playerInv.addItems(real.getItem(x));
 
                     if (!failed.isEmpty()) {
-                        p.dropItem(failed, false);
+                        p.drop(failed, false);
                     }
                 }
 
@@ -379,10 +380,10 @@ public class PatternTermContainer extends MEMonitorableContainer
                 if (p instanceof ServerPlayerEntity) {
                     this.updateHeld((ServerPlayerEntity) p);
                 }
-                this.detectAndSendChanges();
+                this.broadcastChanges();
             } else {
-                for (int x = 0; x < real.getSizeInventory(); x++) {
-                    final ItemStack failed = real.getStackInSlot(x);
+                for (int x = 0; x < real.getContainerSize(); x++) {
+                    final ItemStack failed = real.getItem(x);
                     if (!failed.isEmpty()) {
                         this.getCellInventory().injectItems(AEItemStack.fromItemStack(failed), Actionable.MODULATE,
                                 new MachineSource(this.getPatternTerminal()));
@@ -393,8 +394,8 @@ public class PatternTermContainer extends MEMonitorableContainer
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    public void broadcastChanges() {
+        super.broadcastChanges();
         if (isServer()) {
             if (this.isCraftingMode() != this.getPatternTerminal().isCraftingRecipe()) {
                 this.setCraftingMode(this.getPatternTerminal().isCraftingRecipe());
@@ -418,17 +419,17 @@ public class PatternTermContainer extends MEMonitorableContainer
     @Override
     public void onSlotChange(final Slot s) {
         if (s == this.patternSlotOUT && isServer()) {
-            for (final IContainerListener listener : this.listeners) {
-                for (final Slot slot : this.inventorySlots) {
+            for (final IContainerListener listener : this.containerListeners) {
+                for (final Slot slot : this.slots) {
                     if (slot instanceof OptionalFakeSlot || slot instanceof FakeCraftingMatrixSlot) {
-                        listener.sendSlotContents(this, slot.slotNumber, slot.getStack());
+                        listener.slotChanged(this, slot.index, slot.getItem());
                     }
                 }
                 if (listener instanceof ServerPlayerEntity) {
-                    ((ServerPlayerEntity) listener).isChangingQuantityOnly = false;
+                    ((ServerPlayerEntity) listener).ignoreSlotUpdateHack = false;
                 }
             }
-            this.detectAndSendChanges();
+            this.broadcastChanges();
         }
 
         if (s == this.craftSlot && isClient()) {
@@ -438,14 +439,14 @@ public class PatternTermContainer extends MEMonitorableContainer
 
     public void clear() {
         for (final Slot s : this.craftingSlots) {
-            s.putStack(ItemStack.EMPTY);
+            s.set(ItemStack.EMPTY);
         }
 
         for (final Slot s : this.outputSlots) {
-            s.putStack(ItemStack.EMPTY);
+            s.set(ItemStack.EMPTY);
         }
 
-        this.detectAndSendChanges();
+        this.broadcastChanges();
         this.getAndUpdateOutput();
     }
 
@@ -465,7 +466,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     public void toggleSubstitute() {
         this.substitute = !this.substitute;
 
-        this.detectAndSendChanges();
+        this.broadcastChanges();
         this.getAndUpdateOutput();
     }
 

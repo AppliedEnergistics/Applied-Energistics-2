@@ -19,6 +19,7 @@
 package appeng.fluids.items;
 
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -42,7 +43,7 @@ public class FluidDummyItem extends AEBaseItem {
     }
 
     @Override
-    public String getTranslationKey(ItemStack stack) {
+    public String getDescriptionId(ItemStack stack) {
         FluidStack fluidStack = this.getFluidStack(stack);
         if (fluidStack.isEmpty()) {
             fluidStack = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
@@ -69,7 +70,7 @@ public class FluidDummyItem extends AEBaseItem {
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
         // Don't show this item in CreativeTabs
     }
 }

@@ -44,7 +44,7 @@ public enum WailaText {
     }
 
     public String getLocal() {
-        return I18n.format(this.getTranslationKey());
+        return I18n.get(this.getTranslationKey());
     }
 
     public String getTranslationKey() {

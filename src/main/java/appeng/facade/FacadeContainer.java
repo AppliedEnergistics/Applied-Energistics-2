@@ -96,7 +96,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (int x = 0; x < this.facades; x++) {
             if (this.storage.getFacade(x) != null) {
                 final CompoundNBT data = new CompoundNBT();
-                this.storage.getFacade(x).getItemStack().write(data);
+                this.storage.getFacade(x).getItemStack().save(data);
                 c.put("facade:" + x, data);
             }
         }
@@ -140,7 +140,7 @@ public class FacadeContainer implements IFacadeContainer {
 
             final CompoundNBT t = c.getCompound("facade:" + x);
             if (t != null) {
-                final ItemStack is = ItemStack.read(t);
+                final ItemStack is = ItemStack.of(t);
                 if (!is.isEmpty()) {
                     final net.minecraft.item.Item i = is.getItem();
                     if (i instanceof IFacadeItem) {
@@ -165,7 +165,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (int x = 0; x < this.facades; x++) {
             final IFacadePart part = this.getFacade(AEPartLocation.fromOrdinal(x));
             if (part != null) {
-                final int itemID = net.minecraft.item.Item.getIdFromItem(part.getItem());
+                final int itemID = net.minecraft.item.Item.getId(part.getItem());
                 out.writeInt(itemID * (part.notAEFacade() ? -1 : 1));
             }
         }

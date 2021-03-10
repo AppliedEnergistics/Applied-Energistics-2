@@ -211,10 +211,10 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         boolean worked = false;
 
         final TileEntity te = this.getHost().getTile();
-        final World w = te.getWorld();
+        final World w = te.getLevel();
         final AEPartLocation side = this.getSide();
 
-        final BlockPos placePos = te.getPos().offset(side.getFacing());
+        final BlockPos placePos = te.getBlockPos().relative(side.getFacing());
 
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES) {
@@ -233,7 +233,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                     PlaneDirectionalPlaceContext context = new PlaneDirectionalPlaceContext(w, player, placePos,
                             lookDirection, is, lookDirection.getOpposite());
 
-                    i.onItemUse(context);
+                    i.useOn(context);
                     maxStorage -= is.getCount();
 
                 } else {
@@ -277,9 +277,9 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     private static boolean spawnItemEntity(World w, TileEntity te, AEPartLocation side, ItemStack is) {
         // The center of the block the plane is located in
-        final double centerX = te.getPos().getX() + .5;
-        final double centerY = te.getPos().getY();
-        final double centerZ = te.getPos().getZ() + .5;
+        final double centerX = te.getBlockPos().getX() + .5;
+        final double centerY = te.getBlockPos().getY();
+        final double centerZ = te.getBlockPos().getZ() + .5;
 
         // Create an ItemEntity already at the position of the plane.
         // We don't know the final position, but need it for its size.
@@ -299,12 +299,12 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         // When spawning downwards, we have to take into account that it spawns it at
         // their "feet" and not center like x or z. So we move it up to be flush with
         // the plane
-        final double additionalYOffset = side.yOffset == -1 ? 1 - entity.getHeight() : 0;
+        final double additionalYOffset = side.yOffset == -1 ? 1 - entity.getBbHeight() : 0;
 
         // Calculate the maximum spawn area so an entity hitbox will always be inside
         // the block.
-        final double spawnAreaHeight = Math.max(0, 1 - entity.getHeight());
-        final double spawnAreaWidth = Math.max(0, 1 - entity.getWidth());
+        final double spawnAreaHeight = Math.max(0, 1 - entity.getBbHeight());
+        final double spawnAreaWidth = Math.max(0, 1 - entity.getBbWidth());
 
         // Calculate the offsets to spawn it into the adjacent block, taking the sign
         // into account.
@@ -313,24 +313,24 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         // block center.
         final double offsetX = (side.xOffset == 0) //
                 ? ((RANDOM_OFFSET.nextFloat() * spawnAreaWidth) - spawnAreaWidth / 2)
-                : (side.xOffset * (.525 + entity.getWidth() / 2));
+                : (side.xOffset * (.525 + entity.getBbWidth() / 2));
         final double offsetY = (side.yOffset == 0) //
                 ? (RANDOM_OFFSET.nextFloat() * spawnAreaHeight)
                 : ((side.yOffset) + additionalYOffset);
         final double offsetZ = (side.zOffset == 0) //
                 ? ((RANDOM_OFFSET.nextFloat() * spawnAreaWidth) - spawnAreaWidth / 2)
-                : (side.zOffset * (.525 + entity.getWidth() / 2));
+                : (side.zOffset * (.525 + entity.getBbWidth() / 2));
 
         final double absoluteX = centerX + offsetX;
         final double absoluteY = centerY + offsetY;
         final double absoluteZ = centerZ + offsetZ;
 
         // Set to correct position and slow the motion down a bit
-        entity.setPosition(absoluteX, absoluteY, absoluteZ);
-        entity.setMotion(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
+        entity.setPos(absoluteX, absoluteY, absoluteZ);
+        entity.setDeltaMovement(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
 
         // Try to spawn it and destroy it in case it's not possible
-        if (!w.addEntity(entity)) {
+        if (!w.addFreshEntity(entity)) {
             entity.remove();
             return false;
         }
@@ -364,8 +364,8 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     private int countEntitesAround(World world, BlockPos pos) {
-        final AxisAlignedBB t = new AxisAlignedBB(pos).grow(8);
-        final List<Entity> list = world.getEntitiesWithinAABB(Entity.class, t);
+        final AxisAlignedBB t = new AxisAlignedBB(pos).inflate(8);
+        final List<Entity> list = world.getEntitiesOfClass(Entity.class, t);
 
         return list.size();
     }
@@ -382,18 +382,18 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         public PlaneDirectionalPlaceContext(World world, PlayerEntity player, BlockPos pos, Direction lookDirection,
                 ItemStack itemStack, Direction facing) {
             super(world, player, Hand.MAIN_HAND, itemStack,
-                    new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), facing, pos, false));
+                    new BlockRayTraceResult(Vector3d.atBottomCenterOf(pos), facing, pos, false));
             this.lookDirection = lookDirection;
         }
 
         @Override
-        public BlockPos getPos() {
-            return this.func_242401_i().getPos();
+        public BlockPos getClickedPos() {
+            return this.getHitResult().getBlockPos();
         }
 
         @Override
         public boolean canPlace() {
-            return getWorld().getBlockState(this.getPos()).isReplaceable(this);
+            return getLevel().getBlockState(this.getClickedPos()).canBeReplaced(this);
         }
 
         @Override
@@ -427,18 +427,18 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         }
 
         @Override
-        public Direction getPlacementHorizontalFacing() {
+        public Direction getHorizontalDirection() {
             return this.lookDirection.getAxis() == Axis.Y ? Direction.NORTH : this.lookDirection;
         }
 
         @Override
-        public boolean hasSecondaryUseForPlayer() {
+        public boolean isSecondaryUseActive() {
             return false;
         }
 
         @Override
-        public float getPlacementYaw() {
-            return (float) (this.lookDirection.getHorizontalIndex() * 90);
+        public float getRotation() {
+            return (float) (this.lookDirection.get2DDataValue() * 90);
         }
     }
 }

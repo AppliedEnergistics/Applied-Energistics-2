@@ -52,18 +52,18 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public VibrationChamberBlock() {
-        super(defaultProps(Material.IRON).hardnessAndResistance(4.2F));
-        this.setDefaultState(this.getDefaultState().with(ACTIVE, false));
+        super(defaultProps(Material.METAL).strength(4.2F));
+        this.registerDefaultState(this.defaultBlockState().setValue(ACTIVE, false));
     }
 
     @Override
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, VibrationChamberTileEntity te) {
-        return currentState.with(ACTIVE, te.isOn);
+        return currentState.setValue(ACTIVE, te.isOn);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(ACTIVE);
     }
 
@@ -78,7 +78,7 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null && !player.isCrouching()) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tc, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tc, hit.getDirection()));
                 return ActionResultType.SUCCESS;
             }
         }
@@ -103,20 +103,20 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
                 final Direction forward = tc.getForward();
                 final Direction up = tc.getUp();
 
-                final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
-                final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
-                final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
+                final int west_x = forward.getStepY() * up.getStepZ() - forward.getStepZ() * up.getStepY();
+                final int west_y = forward.getStepZ() * up.getStepX() - forward.getStepX() * up.getStepZ();
+                final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
 
-                f1 += forward.getXOffset() * 0.6;
-                f2 += forward.getYOffset() * 0.6;
-                f3 += forward.getZOffset() * 0.6;
+                f1 += forward.getStepX() * 0.6;
+                f2 += forward.getStepY() * 0.6;
+                f3 += forward.getStepZ() * 0.6;
 
                 final double ox = r.nextDouble();
                 final double oy = r.nextDouble() * 0.2f;
 
-                f1 += up.getXOffset() * (-0.3 + oy);
-                f2 += up.getYOffset() * (-0.3 + oy);
-                f3 += up.getZOffset() * (-0.3 + oy);
+                f1 += up.getStepX() * (-0.3 + oy);
+                f2 += up.getStepY() * (-0.3 + oy);
+                f3 += up.getStepZ() * (-0.3 + oy);
 
                 f1 += west_x * (0.3 * ox - 0.15);
                 f2 += west_y * (0.3 * ox - 0.15);

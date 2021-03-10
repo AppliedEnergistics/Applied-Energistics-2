@@ -60,8 +60,8 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
 
         byte num = 0;
 
-        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getTileEntity(p);
+        for (BlockPos p : BlockPos.betweenClosed(min, max)) {
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(p);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -87,8 +87,8 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
         byte num = 0;
         byte ringNum = 0;
 
-        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
-            final QuantumBridgeTileEntity te = (QuantumBridgeTileEntity) w.getTileEntity(p);
+        for (BlockPos p : BlockPos.betweenClosed(min, max)) {
+            final QuantumBridgeTileEntity te = (QuantumBridgeTileEntity) w.getBlockEntity(p);
 
             num++;
             final byte flags;

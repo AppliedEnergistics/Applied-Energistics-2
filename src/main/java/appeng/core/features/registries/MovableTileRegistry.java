@@ -55,8 +55,8 @@ public class MovableTileRegistry implements IMovableRegistry {
     private final ITag.INamedTag<Block> blockTagBlackList;
 
     public MovableTileRegistry() {
-        this.blockTagWhiteList = BlockTags.makeWrapperTag(TAG_WHITELIST.toString());
-        this.blockTagBlackList = BlockTags.makeWrapperTag(TAG_BLACKLIST.toString());
+        this.blockTagWhiteList = BlockTags.bind(TAG_WHITELIST.toString());
+        this.blockTagBlackList = BlockTags.bind(TAG_BLACKLIST.toString());
     }
 
     @Override
@@ -88,7 +88,7 @@ public class MovableTileRegistry implements IMovableRegistry {
                 ((IMovableTile) te).prepareToMove();
             }
 
-            te.remove();
+            te.setRemoved();
             return true;
         }
 

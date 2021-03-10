@@ -76,8 +76,8 @@ public class PriorityContainer extends AEBaseContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    public void broadcastChanges() {
+        super.broadcastChanges();
         this.verifyPermissions(SecurityPermissions.BUILD, false);
     }
 

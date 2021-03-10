@@ -74,7 +74,7 @@ final class PlayerData extends WorldSavedData implements IWorldPlayerData {
         if (playerId == null) {
             playerId = this.nextPlayerId++;
             this.mapping.put(profile.getId(), playerId);
-            markDirty();
+            setDirty();
 
             AELog.info("Assigning ME player id %s to Minecraft profile %s (%s)", playerId, profile.getId(),
                     profile.getName());
@@ -84,7 +84,7 @@ final class PlayerData extends WorldSavedData implements IWorldPlayerData {
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         int[] playerIds = nbt.getIntArray(TAG_PLAYER_IDS);
         long[] profileIds = nbt.getLongArray(TAG_PROFILE_IDS);
 
@@ -106,7 +106,7 @@ final class PlayerData extends WorldSavedData implements IWorldPlayerData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         int index = 0;
         int[] playerIds = new int[mapping.size()];
         long[] profileIds = new long[mapping.size() * 2];

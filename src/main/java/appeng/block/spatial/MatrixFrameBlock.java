@@ -18,6 +18,7 @@
 
 package appeng.block.spatial;
 
+import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -46,28 +47,28 @@ import appeng.block.AEBaseBlock;
  */
 public class MatrixFrameBlock extends AEBaseBlock {
 
-    private static final Material MATERIAL = new Material(MaterialColor.AIR, false, true, true, false, false, false,
+    private static final Material MATERIAL = new Material(MaterialColor.NONE, false, true, true, false, false, false,
             PushReaction.PUSH_ONLY);
 
     public MatrixFrameBlock() {
-        super(Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).notSolid().noDrops());
+        super(Properties.of(MATERIAL).strength(-1.0F, 6000000.0F).noOcclusion().noDrops());
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
             ISelectionContext context) {
-        return VoxelShapes.fullCube();
+        return VoxelShapes.block();
     }
 
     @Override
@@ -77,12 +78,12 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
+    public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
         return false;
     }
 
     @Override
-    public void onExplosionDestroy(final World world, final BlockPos pos, final Explosion explosion) {
+    public void wasExploded(final World world, final BlockPos pos, final Explosion explosion) {
         // Don't explode.
     }
 
@@ -92,7 +93,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public float getShadeBrightness(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 1.0f;
     }
 

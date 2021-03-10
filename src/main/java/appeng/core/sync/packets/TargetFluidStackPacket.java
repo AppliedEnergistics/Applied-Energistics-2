@@ -69,8 +69,8 @@ public class TargetFluidStackPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        if (player.openContainer instanceof FluidTerminalContainer) {
-            ((FluidTerminalContainer) player.openContainer).setTargetStack(this.stack);
+        if (player.containerMenu instanceof FluidTerminalContainer) {
+            ((FluidTerminalContainer) player.containerMenu).setTargetStack(this.stack);
         }
     }
 }

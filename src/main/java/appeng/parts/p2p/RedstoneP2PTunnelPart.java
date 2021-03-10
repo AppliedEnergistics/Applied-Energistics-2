@@ -91,13 +91,13 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     private void notifyNeighbors() {
-        final World world = this.getTile().getWorld();
+        final World world = this.getTile().getLevel();
 
-        Platform.notifyBlocksOfNeighbors(world, this.getTile().getPos());
+        Platform.notifyBlocksOfNeighbors(world, this.getTile().getBlockPos());
 
         // and this cause sometimes it can go thought walls.
         for (final Direction face : Direction.values()) {
-            Platform.notifyBlocksOfNeighbors(world, this.getTile().getPos().offset(face));
+            Platform.notifyBlocksOfNeighbors(world, this.getTile().getBlockPos().relative(face));
         }
     }
 
@@ -131,9 +131,9 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (!this.isOutput()) {
-            final BlockPos target = this.getTile().getPos().offset(this.getSide().getFacing());
+            final BlockPos target = this.getTile().getBlockPos().relative(this.getSide().getFacing());
 
-            final BlockState state = this.getTile().getWorld().getBlockState(target);
+            final BlockState state = this.getTile().getLevel().getBlockState(target);
             final Block b = state.getBlock();
             if (b != null && !this.isOutput()) {
                 Direction srcSide = this.getSide().getFacing();
@@ -141,8 +141,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
                     srcSide = Direction.UP;
                 }
 
-                this.power = b.getWeakPower(state, this.getTile().getWorld(), target, srcSide);
-                this.power = Math.max(this.power, b.getWeakPower(state, this.getTile().getWorld(), target, srcSide));
+                this.power = b.getSignal(state, this.getTile().getLevel(), target, srcSide);
+                this.power = Math.max(this.power, b.getSignal(state, this.getTile().getLevel(), target, srcSide));
                 this.sendToOutput(this.power);
             } else {
                 this.sendToOutput(0);

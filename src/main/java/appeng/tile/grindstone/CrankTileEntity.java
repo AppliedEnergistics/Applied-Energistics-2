@@ -68,7 +68,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
         }
 
         final Direction grinder = this.getUp().getOpposite();
-        final TileEntity te = this.world.getTileEntity(this.pos.offset(grinder));
+        final TileEntity te = this.level.getBlockEntity(this.worldPosition.relative(grinder));
         if (te instanceof ICrankable) {
             return (ICrankable) te;
         }
@@ -91,8 +91,9 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        final BlockState state = this.world.getBlockState(this.pos);
-        state.getBlock().neighborChanged(state, this.world, this.pos, state.getBlock(), this.pos, false);
+        final BlockState state = this.level.getBlockState(this.worldPosition);
+        state.getBlock().neighborChanged(state, this.level, this.worldPosition, state.getBlock(), this.worldPosition,
+                false);
     }
 
     /**
@@ -114,7 +115,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
                 } else {
                     this.hits++;
                     if (this.hits > 10) {
-                        this.world.destroyBlock(this.pos, false);
+                        this.level.destroyBlock(this.worldPosition, false);
                     }
                 }
             }

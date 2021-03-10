@@ -45,12 +45,12 @@ public class SlotME extends Slot {
     }
 
     @Override
-    public boolean isItemValid(final ItemStack par1ItemStack) {
+    public boolean mayPlace(final ItemStack par1ItemStack) {
         return false;
     }
 
     @Override
-    public ItemStack getStack() {
+    public ItemStack getItem() {
         if (this.slot.hasPower()) {
             return this.slot.getStack();
         }
@@ -58,30 +58,30 @@ public class SlotME extends Slot {
     }
 
     @Override
-    public boolean getHasStack() {
+    public boolean hasItem() {
         if (this.slot.hasPower()) {
-            return !this.getStack().isEmpty();
+            return !this.getItem().isEmpty();
         }
         return false;
     }
 
     @Override
-    public void putStack(final ItemStack par1ItemStack) {
+    public void set(final ItemStack par1ItemStack) {
 
     }
 
     @Override
-    public int getSlotStackLimit() {
+    public int getMaxStackSize() {
         return 0;
     }
 
     @Override
-    public ItemStack decrStackSize(final int par1) {
+    public ItemStack remove(final int par1) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity par1PlayerEntity) {
+    public boolean mayPickup(final PlayerEntity par1PlayerEntity) {
         return false;
     }
 }

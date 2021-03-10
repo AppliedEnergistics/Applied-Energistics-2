@@ -33,7 +33,7 @@ public class SlabStairRecipes extends RecipeProvider implements IAE2DataProvider
     }
 
     @Override
-    public void registerRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
+    public void buildShapelessRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
         for (IBlockDefinition[] block : blocks) {
             slabRecipe(consumer, block[0], block[1]);
             stairRecipe(consumer, block[0], block[2]);
@@ -44,26 +44,26 @@ public class SlabStairRecipes extends RecipeProvider implements IAE2DataProvider
         Block inputBlock = block.block();
         Block outputBlock = slabs.block();
 
-        ShapedRecipeBuilder.shapedRecipe(slabs.block(), 6).patternLine("###").key('#', inputBlock)
-                .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/slabs/" + block.identifier()));
+        ShapedRecipeBuilder.shaped(slabs.block(), 6).pattern("###").define('#', inputBlock)
+                .unlockedBy(criterionName(block), has(inputBlock))
+                .save(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/slabs/" + block.identifier()));
 
-        SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock, 2)
-                .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/slabs/" + slabs.identifier()));
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock, 2)
+                .unlocks(criterionName(block), has(inputBlock))
+                .save(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/slabs/" + slabs.identifier()));
     }
 
     private void stairRecipe(Consumer<IFinishedRecipe> consumer, IBlockDefinition block, IBlockDefinition stairs) {
         Block inputBlock = block.block();
         Block outputBlock = stairs.block();
 
-        ShapedRecipeBuilder.shapedRecipe(outputBlock, 4).patternLine("#  ").patternLine("## ").patternLine("###")
-                .key('#', inputBlock).addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/stairs/" + block.identifier()));
+        ShapedRecipeBuilder.shaped(outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
+                .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
+                .save(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/stairs/" + block.identifier()));
 
-        SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock)
-                .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/stairs/" + stairs.identifier()));
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock)
+                .unlocks(criterionName(block), has(inputBlock))
+                .save(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/stairs/" + stairs.identifier()));
 
     }
 

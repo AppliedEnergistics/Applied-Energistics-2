@@ -103,11 +103,12 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     public boolean isAccelerator() {
-        if (this.world == null) {
+        if (this.level == null) {
             return false;
         }
 
-        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.world.getBlockState(this.pos)
+        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.level
+                .getBlockState(this.worldPosition)
                 .getBlock();
         return unit.type == CraftingUnitType.ACCELERATOR;
     }
@@ -116,11 +117,11 @@ public class CraftingTileEntity extends AENetworkTileEntity
     public void onReady() {
         super.onReady();
         this.getProxy().setVisualRepresentation(this.getItemFromTile(this));
-        this.calc.calculateMultiblock(world, pos);
+        this.calc.calculateMultiblock(level, worldPosition);
     }
 
     public void updateMultiBlock(BlockPos changedPos) {
-        this.calc.updateMultiblockAfterNeighborUpdate(this.world, pos, changedPos);
+        this.calc.updateMultiblockAfterNeighborUpdate(this.level, worldPosition, changedPos);
     }
 
     public void updateStatus(final CraftingCPUCluster c) {
@@ -133,7 +134,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     public void updateMeta(final boolean updateFormed) {
-        if (this.world == null || this.notLoaded() || this.isRemoved()) {
+        if (this.level == null || this.notLoaded() || this.isRemoved()) {
             return;
         }
 
@@ -144,18 +145,18 @@ public class CraftingTileEntity extends AENetworkTileEntity
             power = this.getProxy().isActive();
         }
 
-        final BlockState current = this.world.getBlockState(this.pos);
+        final BlockState current = this.level.getBlockState(this.worldPosition);
 
         // The tile might try to update while being destroyed
         if (current.getBlock() instanceof AbstractCraftingUnitBlock) {
-            final BlockState newState = current.with(AbstractCraftingUnitBlock.POWERED, power)
-                    .with(AbstractCraftingUnitBlock.FORMED, formed);
+            final BlockState newState = current.setValue(AbstractCraftingUnitBlock.POWERED, power)
+                    .setValue(AbstractCraftingUnitBlock.FORMED, formed);
 
             if (current != newState) {
                 // Not using flag 2 here (only send to clients, prevent block update) will cause
                 // infinite loops
                 // In case there is an inconsistency in the crafting clusters.
-                this.world.setBlockState(this.pos, newState, 2);
+                this.level.setBlock(this.worldPosition, newState, 2);
             }
         }
 
@@ -170,14 +171,14 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
     public boolean isFormed() {
         if (isRemote()) {
-            return this.world.getBlockState(this.pos).get(AbstractCraftingUnitBlock.FORMED);
+            return this.level.getBlockState(this.worldPosition).getValue(AbstractCraftingUnitBlock.FORMED);
         }
         return this.cluster != null;
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         data.putBoolean("core", this.isCoreBlock());
         if (this.isCoreBlock() && this.cluster != null) {
             this.cluster.writeToNBT(data);
@@ -186,8 +187,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.setCoreBlock(data.getBoolean("core"));
         if (this.isCoreBlock()) {
             if (this.cluster != null) {
@@ -244,7 +245,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
         // Since breaking the cluster will most likely also update the TE's state,
         // it's essential that we're not working with outdated block-state information,
         // since this particular TE's block might already have been removed (state=air)
-        updateContainingBlockInfo();
+        clearCache();
 
         if (this.cluster != null) {
             this.cluster.cancel();
@@ -256,11 +257,11 @@ public class CraftingTileEntity extends AENetworkTileEntity
             while (i.hasNext()) {
                 final CraftingTileEntity h = i.next();
                 if (h == this) {
-                    places.add(pos);
+                    places.add(worldPosition);
                 } else {
                     for (Direction d : Direction.values()) {
-                        BlockPos p = h.pos.offset(d);
-                        if (this.world.isAirBlock(p)) {
+                        BlockPos p = h.worldPosition.relative(d);
+                        if (this.level.isEmptyBlock(p)) {
                             places.add(p);
                         }
                     }
@@ -288,7 +289,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
                     final BlockPos pos = places.poll();
                     places.add(pos);
 
-                    Platform.spawnDrops(this.world, pos, Collections.singletonList(g.createItemStack()));
+                    Platform.spawnDrops(this.level, pos, Collections.singletonList(g.createItemStack()));
                 }
             }
 
@@ -299,7 +300,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     @Override
     public boolean isPowered() {
         if (isRemote()) {
-            return this.world.getBlockState(this.pos).get(AbstractCraftingUnitBlock.POWERED);
+            return this.level.getBlockState(this.worldPosition).getValue(AbstractCraftingUnitBlock.POWERED);
         }
         return this.getProxy().isActive();
     }
@@ -335,14 +336,14 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     protected EnumSet<Direction> getConnections() {
-        if (world == null) {
+        if (level == null) {
             return EnumSet.noneOf(Direction.class);
         }
 
         EnumSet<Direction> connections = EnumSet.noneOf(Direction.class);
 
         for (Direction facing : Direction.values()) {
-            if (this.isConnected(world, pos, facing)) {
+            if (this.isConnected(level, worldPosition, facing)) {
                 connections.add(facing);
             }
         }
@@ -351,7 +352,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     private boolean isConnected(IBlockReader world, BlockPos pos, Direction side) {
-        BlockPos adjacentPos = pos.offset(side);
+        BlockPos adjacentPos = pos.relative(side);
         return world.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
     }
 
@@ -360,8 +361,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
      * contains connections to neighboring tiles.
      */
     @Override
-    public void updateContainingBlockInfo() {
-        super.updateContainingBlockInfo();
+    public void clearCache() {
+        super.clearCache();
         requestModelDataUpdate();
     }
 

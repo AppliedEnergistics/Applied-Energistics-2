@@ -39,9 +39,9 @@ public class FluidSlotPacket extends BasePacket {
 
     public FluidSlotPacket(final PacketBuffer stream) {
         this.list = new HashMap<>();
-        CompoundNBT tag = stream.readCompoundTag();
+        CompoundNBT tag = stream.readNbt();
 
-        for (final String key : tag.keySet()) {
+        for (final String key : tag.getAllKeys()) {
             this.list.put(Integer.parseInt(key), AEFluidStack.fromNBT(tag.getCompound(key)));
         }
     }
@@ -60,13 +60,13 @@ public class FluidSlotPacket extends BasePacket {
 
         final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
         data.writeInt(this.getPacketID());
-        data.writeCompoundTag(sendTag);
+        data.writeNbt(sendTag);
         this.configureWrite(data);
     }
 
     @Override
     public void clientPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final Container c = player.openContainer;
+        final Container c = player.containerMenu;
         if (c instanceof IFluidSyncContainer) {
             ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
         }
@@ -74,7 +74,7 @@ public class FluidSlotPacket extends BasePacket {
 
     @Override
     public void serverPacketData(INetworkInfo manager, PlayerEntity player) {
-        final Container c = player.openContainer;
+        final Container c = player.containerMenu;
         if (c instanceof IFluidSyncContainer) {
             ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
         }

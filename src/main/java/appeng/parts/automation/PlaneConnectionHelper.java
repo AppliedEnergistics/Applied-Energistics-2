@@ -66,22 +66,22 @@ public final class PlaneConnectionHelper {
         boolean left = false, right = false, down = false, up = false;
 
         if (hostTileEntity != null) {
-            World world = hostTileEntity.getWorld();
-            BlockPos pos = hostTileEntity.getPos();
+            World world = hostTileEntity.getLevel();
+            BlockPos pos = hostTileEntity.getBlockPos();
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingRight.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(facingRight.getOpposite())))) {
                 left = true;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingRight)))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(facingRight)))) {
                 right = true;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingUp.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(facingUp.getOpposite())))) {
                 down = true;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(facingUp)))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(facingUp)))) {
                 up = true;
             }
         }
@@ -100,26 +100,26 @@ public final class PlaneConnectionHelper {
 
         TileEntity hostTile = getHostTileEntity();
         if (hostTile != null) {
-            World world = hostTile.getWorld();
+            World world = hostTile.getLevel();
 
-            final BlockPos pos = hostTile.getPos();
+            final BlockPos pos = hostTile.getBlockPos();
 
             final Direction e = bch.getWorldX();
             final Direction u = bch.getWorldY();
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(e.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(e.getOpposite())))) {
                 minX = 0;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(e)))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(e)))) {
                 maxX = 16;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(u.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(u.getOpposite())))) {
                 minY = 0;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getTileEntity(pos.offset(u)))) {
+            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(u)))) {
                 maxY = 16;
             }
         }

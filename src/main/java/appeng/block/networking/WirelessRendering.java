@@ -15,7 +15,7 @@ public class WirelessRendering extends BlockRenderingCustomizer {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderType.cutout());
         rendering.blockColor(new StaticBlockColor(AEColor.TRANSPARENT));
     }
 }

@@ -120,13 +120,13 @@ public final class ApiMaterials implements IMaterials {
 
         SingularityEntity.TYPE = registry
                 .<SingularityEntity>entity("singularity", SingularityEntity::new, EntityClassification.MISC)
-                .customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
+                .customize(builder -> builder.sized(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                         .setShouldReceiveVelocityUpdates(true))
                 .build();
 
         ChargedQuartzEntity.TYPE = registry
                 .<ChargedQuartzEntity>entity("charged_quartz", ChargedQuartzEntity::new, EntityClassification.MISC)
-                .customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
+                .customize(builder -> builder.sized(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                         .setShouldReceiveVelocityUpdates(true))
                 .build();
 

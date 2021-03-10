@@ -41,15 +41,15 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
     public SpatialAnchorScreen(SpatialAnchorContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 100;
-        this.xSize = 195;
+        this.imageHeight = 100;
+        this.imageWidth = 195;
     }
 
     @Override
     public void init() {
         super.init();
-        this.addButton(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
-        this.addButton(this.overlayToggle = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+        this.addButton(CommonButtons.togglePowerUnit(this.leftPos - 18, this.topPos + 8));
+        this.addButton(this.overlayToggle = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 28,
                 Settings.OVERLAY_MODE, YesNo.NO));
     }
 
@@ -58,28 +58,28 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
             final int mouseY) {
 
         if (this.overlayToggle != null) {
-            this.overlayToggle.set(this.container.getOverlayMode());
+            this.overlayToggle.set(this.menu.getOverlayMode());
         }
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchor.text()).getString(), 8, 6,
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchor.text()).getString(), 8, 6,
                 4210752);
 
         String usedPower = GuiText.SpatialAnchorUsedPower
-                .text(Platform.formatPowerLong(this.container.powerConsumption * 100, true)).getString();
-        this.font.drawString(matrixStack, usedPower, 13, 21, 4210752);
-        this.font.drawString(matrixStack,
-                GuiText.SpatialAnchorLoadedChunks.text(this.container.loadedChunks).getString(), 13, 31, 4210752);
+                .text(Platform.formatPowerLong(this.menu.powerConsumption * 100, true)).getString();
+        this.font.draw(matrixStack, usedPower, 13, 21, 4210752);
+        this.font.draw(matrixStack,
+                GuiText.SpatialAnchorLoadedChunks.text(this.menu.loadedChunks).getString(), 13, 31, 4210752);
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchorStatistics.text()).getString(), 8,
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchorStatistics.text()).getString(), 8,
                 56, 4210752);
 
-        this.font.drawString(matrixStack,
-                GuiText.SpatialAnchorAllLoaded.text(this.container.allLoadedChunks, this.container.allLoadedWorlds)
+        this.font.draw(matrixStack,
+                GuiText.SpatialAnchorAllLoaded.text(this.menu.allLoadedChunks, this.menu.allLoadedWorlds)
                         .getString(),
                 13, 71, 4210752);
 
-        this.font.drawString(matrixStack,
-                GuiText.SpatialAnchorAll.text(this.container.allChunks, this.container.allWorlds).getString(), 13,
+        this.font.draw(matrixStack,
+                GuiText.SpatialAnchorAll.text(this.menu.allChunks, this.menu.allWorlds).getString(), 13,
                 81, 4210752);
     }
 
@@ -87,6 +87,6 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/spatialanchor.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.imageWidth, this.imageHeight, getBlitOffset());
     }
 }

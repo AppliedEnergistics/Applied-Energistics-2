@@ -64,7 +64,7 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
                     final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                             .format(myStack.getStackSize());
                     currentToolTip
-                            .add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
+                            .add(ButtonToolTips.ItemsStored.text(formattedAmount).withStyle(TextFormatting.GRAY));
                 }
 
                 if (myStack.getCountRequestable() > 0) {
@@ -73,15 +73,17 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
                     currentToolTip.add(ButtonToolTips.ItemsRequestable.text(formattedAmount));
                 }
 
-                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,
+                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::getVisualOrderText), x,
+                        y,
                         this.font);
 
                 return;
             } else if (stack.getCount() > bigNumber) {
                 final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(stack.getCount());
-                currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
+                currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).withStyle(TextFormatting.GRAY));
 
-                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,
+                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::getVisualOrderText), x,
+                        y,
                         this.font);
 
                 return;

@@ -61,8 +61,8 @@ class ColorApplicatorBakedModel implements IBakedModel {
                 continue;
             }
 
-            BakedQuad newQuad = new BakedQuad(quad.getVertexData(), tint, quad.getFace(), quad.getSprite(),
-                    quad.applyDiffuseLighting());
+            BakedQuad newQuad = new BakedQuad(quad.getVertices(), tint, quad.getDirection(), quad.getSprite(),
+                    quad.isShade());
             result.add(newQuad);
         }
 
@@ -78,8 +78,8 @@ class ColorApplicatorBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.baseModel.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.baseModel.useAmbientOcclusion();
     }
 
     @Override
@@ -88,23 +88,23 @@ class ColorApplicatorBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;// TODO
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
-        return this.baseModel.isBuiltInRenderer();
+    public boolean isCustomRenderer() {
+        return this.baseModel.isCustomRenderer();
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.baseModel.getParticleTexture();
+    public TextureAtlasSprite getParticleIcon() {
+        return this.baseModel.getParticleIcon();
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return this.baseModel.getItemCameraTransforms();
+    public ItemCameraTransforms getTransforms() {
+        return this.baseModel.getTransforms();
     }
 
     @Override

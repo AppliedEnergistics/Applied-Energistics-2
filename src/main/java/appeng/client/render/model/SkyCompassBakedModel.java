@@ -89,7 +89,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
             // Set up the rotation around the Y-axis for the pointer
             Matrix4f matrix = new Matrix4f();
             matrix.setIdentity();
-            matrix.mul(new Quaternion(0, rotation, 0, false));
+            matrix.multiply(new Quaternion(0, rotation, 0, false));
 
             MatrixVertexTransformer transformer = new MatrixVertexTransformer(matrix);
             for (BakedQuad bakedQuad : this.pointer.getQuads(state, side, rand, extraData)) {
@@ -111,8 +111,8 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.base.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.base.useAmbientOcclusion();
     }
 
     @Override
@@ -121,23 +121,23 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isCustomRenderer() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.base.getParticleTexture();
+    public TextureAtlasSprite getParticleIcon() {
+        return this.base.getParticleIcon();
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return this.base.getItemCameraTransforms();
+    public ItemCameraTransforms getTransforms() {
+        return this.base.getTransforms();
     }
 
     @Override
@@ -148,17 +148,17 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
          */
         return new ItemOverrideList() {
             @Override
-            public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
+            public IBakedModel resolve(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
                     @Nullable LivingEntity entity) {
                 // FIXME: This check prevents compasses being held by OTHERS from getting the
                 // rotation, BUT do we actually still need this???
                 if (world != null && entity instanceof ClientPlayerEntity) {
                     PlayerEntity player = (PlayerEntity) entity;
 
-                    float offRads = (float) (player.rotationYaw / 180.0f * (float) Math.PI + Math.PI);
+                    float offRads = (float) (player.yRot / 180.0f * (float) Math.PI + Math.PI);
 
                     SkyCompassBakedModel.this.fallbackRotation = offRads
-                            + getAnimatedRotation(player.getPosition(), true);
+                            + getAnimatedRotation(player.blockPosition(), true);
                 } else {
                     SkyCompassBakedModel.this.fallbackRotation = getAnimatedRotation(null, false);
                 }

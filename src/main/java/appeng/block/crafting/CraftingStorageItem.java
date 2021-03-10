@@ -19,6 +19,7 @@
 package appeng.block.crafting;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.features.AEFeature;

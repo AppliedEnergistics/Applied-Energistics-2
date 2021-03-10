@@ -33,7 +33,7 @@ public class WrapperInvItemHandler implements IInventory {
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return this.inv.getSlots();
     }
 
@@ -43,27 +43,27 @@ public class WrapperInvItemHandler implements IInventory {
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getItem(int index) {
         return this.inv.getStackInSlot(index);
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
+    public ItemStack removeItem(int index, int count) {
         return this.inv.extractItem(index, count, false);
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
+    public ItemStack removeItemNoUpdate(int index) {
         return this.inv.extractItem(index, this.inv.getSlotLimit(index), false);
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setItem(int index, ItemStack stack) {
         ItemHandlerUtil.setStackInSlot(this.inv, index, stack);
     }
 
     @Override
-    public int getInventoryStackLimit() {
+    public int getMaxStackSize() {
         int max = 0;
         for (int i = 0; i < this.inv.getSlots(); ++i) {
             max = Math.max(max, this.inv.getSlotLimit(i));
@@ -72,32 +72,32 @@ public class WrapperInvItemHandler implements IInventory {
     }
 
     @Override
-    public void markDirty() {
+    public void setChanged() {
         // NOP
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         return false;
     }
 
     @Override
-    public void openInventory(PlayerEntity player) {
+    public void startOpen(PlayerEntity player) {
         // NOP
     }
 
     @Override
-    public void closeInventory(PlayerEntity player) {
+    public void stopOpen(PlayerEntity player) {
         // NOP
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    public boolean canPlaceItem(int index, ItemStack stack) {
         return this.inv.isItemValid(index, stack);
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         ItemHandlerUtil.clear(this.inv);
     }
 

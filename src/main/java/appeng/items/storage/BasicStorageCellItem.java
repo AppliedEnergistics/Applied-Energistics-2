@@ -19,6 +19,7 @@
 package appeng.items.storage;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
@@ -79,7 +80,7 @@ public final class BasicStorageCellItem extends AbstractStorageCell<IAEItemStack
         Api.instance().definitions().materials().emptyStorageCell().maybeStack(1).ifPresent(is -> {
             final ItemStack extraA = ia.addItems(is);
             if (!extraA.isEmpty()) {
-                player.dropItem(extraA, false);
+                player.drop(extraA, false);
             }
         });
     }

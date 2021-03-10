@@ -230,7 +230,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     public static IAEFluidStack fromPacket(final PacketBuffer buffer) {
         final boolean isCraftable = buffer.readBoolean();
         Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
-        CompoundNBT tag = buffer.readCompoundTag();
+        CompoundNBT tag = buffer.readNbt();
 
         final long stackSize = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
@@ -247,7 +247,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         // Cannot use writeFluidStack here because for FluidStacks with amount==0, it
         // will not write the fluid
         buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, fluid);
-        buffer.writeCompoundTag(getFluidStack().getTag());
+        buffer.writeNbt(getFluidStack().getTag());
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
     }

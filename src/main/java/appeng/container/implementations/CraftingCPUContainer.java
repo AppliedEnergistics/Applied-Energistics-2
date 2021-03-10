@@ -112,7 +112,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
             this.getMonitor().removeListener(this);
         }
 
-        for (final Object g : this.listeners) {
+        for (final Object g : this.containerListeners) {
             if (g instanceof PlayerEntity) {
                 NetworkHandler.instance().sendTo(new ConfigValuePacket("CraftingStatus", "Clear"),
                         (ServerPlayerEntity) g);
@@ -139,24 +139,24 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     }
 
     @Override
-    public void removeListener(final IContainerListener c) {
-        super.removeListener(c);
+    public void removeSlotListener(final IContainerListener c) {
+        super.removeSlotListener(c);
 
-        if (this.listeners.isEmpty() && this.getMonitor() != null) {
+        if (this.containerListeners.isEmpty() && this.getMonitor() != null) {
             this.getMonitor().removeListener(this);
         }
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(final PlayerEntity player) {
+        super.removed(player);
         if (this.getMonitor() != null) {
             this.getMonitor().removeListener(this);
         }
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isServer() && this.getMonitor() != null && !this.list.isEmpty()) {
             try {
                 if (this.getEstimatedTime() >= 0) {
@@ -180,7 +180,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
 
                 this.list.resetStatus();
 
-                for (final Object g : this.listeners) {
+                for (final Object g : this.containerListeners) {
                     if (g instanceof PlayerEntity) {
                         if (!a.isEmpty()) {
                             NetworkHandler.instance().sendTo(a, (ServerPlayerEntity) g);
@@ -199,7 +199,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
                 // :P
             }
         }
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override

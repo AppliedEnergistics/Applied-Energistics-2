@@ -61,8 +61,8 @@ public class SkyChestContainer extends AEBaseContainer {
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
-        super.onContainerClosed(par1PlayerEntity);
+    public void removed(final PlayerEntity par1PlayerEntity) {
+        super.removed(par1PlayerEntity);
         this.chest.closeInventory(par1PlayerEntity);
     }
 }

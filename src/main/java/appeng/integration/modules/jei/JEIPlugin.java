@@ -98,9 +98,9 @@ public class JEIPlugin implements IModPlugin {
 
         IDefinitions definitions = Api.instance().definitions();
 
-        RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
-        registration.addRecipes(recipeManager.getRecipes(GrinderRecipe.TYPE).values(), GrinderRecipeCategory.UID);
-        registration.addRecipes(recipeManager.getRecipes(InscriberRecipe.TYPE).values(), InscriberRecipeCategory.UID);
+        RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
+        registration.addRecipes(recipeManager.byType(GrinderRecipe.TYPE).values(), GrinderRecipeCategory.UID);
+        registration.addRecipes(recipeManager.byType(InscriberRecipe.TYPE).values(), InscriberRecipeCategory.UID);
         registration.addRecipes(ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY),
                 CondenserCategory.UID);
 

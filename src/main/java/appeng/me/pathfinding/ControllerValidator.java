@@ -51,7 +51,7 @@ public class ControllerValidator implements IGridVisitor {
         if (this.isValid() && host instanceof ControllerTileEntity) {
             final ControllerTileEntity c = (ControllerTileEntity) host;
 
-            final BlockPos pos = c.getPos();
+            final BlockPos pos = c.getBlockPos();
 
             this.minX = Math.min(pos.getX(), this.minX);
             this.maxX = Math.max(pos.getX(), this.maxX);

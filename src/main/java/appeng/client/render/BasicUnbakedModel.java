@@ -34,7 +34,7 @@ public interface BasicUnbakedModel<T extends IModelGeometry<T>> extends IModelGe
             Set<Pair<String, String>> unresolvedTextureReferences) {
         return Stream.concat(
                 getModelDependencies().stream().map(unbakedModelGetter)
-                        .flatMap(ubm -> ubm.getTextures(unbakedModelGetter, unresolvedTextureReferences).stream()),
+                        .flatMap(ubm -> ubm.getMaterials(unbakedModelGetter, unresolvedTextureReferences).stream()),
                 getAdditionalTextures()).collect(Collectors.toList());
     }
 

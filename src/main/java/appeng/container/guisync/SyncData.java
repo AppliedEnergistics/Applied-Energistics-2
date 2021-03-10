@@ -103,16 +103,16 @@ public class SyncData {
                         (ServerPlayerEntity) o);
             }
         } else if (this.fieldType.isEnum()) {
-            o.sendWindowProperty(this.source, this.channel, ((Enum<?>) val).ordinal());
+            o.setContainerData(this.source, this.channel, ((Enum<?>) val).ordinal());
         } else if (val instanceof Long) {
             if (o instanceof ServerPlayerEntity) {
                 NetworkHandler.instance().sendTo(new ProgressBarPacket(this.channel, (Long) val),
                         (ServerPlayerEntity) o);
             }
         } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
-            o.sendWindowProperty(this.source, this.channel, ((Boolean) val) ? 1 : 0);
+            o.setContainerData(this.source, this.channel, ((Boolean) val) ? 1 : 0);
         } else if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
-            o.sendWindowProperty(this.source, this.channel, (Integer) val);
+            o.setContainerData(this.source, this.channel, (Integer) val);
         } else {
             throw new IllegalStateException("Unknown field type: " + fieldType);
         }
@@ -128,7 +128,7 @@ public class SyncData {
                     String json = (String) val;
                     ITextComponent text = null;
                     if (!json.isEmpty()) {
-                        text = ITextComponent.Serializer.getComponentFromJson((String) val);
+                        text = ITextComponent.Serializer.fromJson((String) val);
                     }
                     this.updateTextComponent(text);
                 } else {

@@ -34,7 +34,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final RenderMaterial TEXTURE_INSIDE = new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_INSIDE = new RenderMaterial(PlayerContainer.BLOCK_ATLAS,
             new ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
 
     public InscriberTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
@@ -47,7 +47,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
 
         // render inscriber
 
-        ms.push();
+        ms.pushPose();
         ms.translate(0.5F, 0.5F, 0.5F);
         FacingToRotation.get(tile.getForward(), tile.getUp()).push(ms);
         ms.translate(-0.5F, -0.5F, -0.5F);
@@ -81,9 +81,9 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
         final float TwoPx = 2.0f / 16.0f;
         final float base = 0.4f;
 
-        final TextureAtlasSprite tas = TEXTURE_INSIDE.getSprite();
+        final TextureAtlasSprite tas = TEXTURE_INSIDE.sprite();
 
-        IVertexBuilder buffer = buffers.getBuffer(RenderType.getSolid());
+        IVertexBuilder buffer = buffers.getBuffer(RenderType.solid());
 
         // Bottom of Top Stamp
         addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 13, combinedOverlay, combinedLight, Direction.DOWN);
@@ -167,17 +167,17 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
             this.renderItem(ms, tileInv.getStackInSlot(1), -press, buffers, combinedLight, combinedOverlay);
         }
 
-        ms.pop();
+        ms.popPose();
     }
 
     private static void addVertex(IVertexBuilder vb, MatrixStack ms, TextureAtlasSprite sprite, float x, float y,
             float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
-        vb.pos(ms.getLast().getMatrix(), x, y, z);
+        vb.vertex(ms.last().pose(), x, y, z);
         vb.color(1.0f, 1.0f, 1.0f, 1.0f);
-        vb.tex(sprite.getInterpolatedU(texU), sprite.getInterpolatedV(texV));
-        vb.overlay(overlayUV);
-        vb.lightmap(lightmapUV);
-        vb.normal(ms.getLast().getNormal(), front.getXOffset(), front.getYOffset(), front.getZOffset());
+        vb.uv(sprite.getU(texU), sprite.getV(texV));
+        vb.overlayCoords(overlayUV);
+        vb.uv2(lightmapUV);
+        vb.normal(ms.last().normal(), front.getStepX(), front.getStepY(), front.getStepZ());
         vb.endVertex();
     }
 
@@ -186,10 +186,10 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
     private void renderItem(MatrixStack ms, final ItemStack stack, final float o, IRenderTypeBuffer buffers,
             int combinedLight, int combinedOverlay) {
         if (!stack.isEmpty()) {
-            ms.push();
+            ms.pushPose();
             // move to center
             ms.translate(0.5f, 0.5f + o, 0.5f);
-            ms.rotate(new Quaternion(90, 0, 0, true));
+            ms.mulPose(new Quaternion(90, 0, 0, true));
             // set scale
             ms.scale(ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE);
 
@@ -200,15 +200,16 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
-            itemRenderer.renderItem(stack, ItemCameraTransforms.TransformType.FIXED, combinedLight, combinedOverlay, ms,
+            itemRenderer.renderStatic(stack, ItemCameraTransforms.TransformType.FIXED, combinedLight, combinedOverlay,
+                    ms,
                     buffers);
-            ms.pop();
+            ms.popPose();
         }
     }
 
     public static void registerTexture(TextureStitchEvent.Pre evt) {
-        if (evt.getMap().getTextureLocation().equals(TEXTURE_INSIDE.getAtlasLocation())) {
-            evt.addSprite(TEXTURE_INSIDE.getTextureLocation());
+        if (evt.getMap().location().equals(TEXTURE_INSIDE.atlasLocation())) {
+            evt.addSprite(TEXTURE_INSIDE.texture());
         }
     }
 

@@ -48,19 +48,19 @@ public class PatternTermSlot extends CraftingTermSlot {
 
     public BasePacket getRequest(final boolean shift) {
         return new PatternSlotPacket(this.getPattern(),
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(this.getStack()),
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(this.getItem()),
                 shift);
     }
 
     @Override
-    public ItemStack getStack() {
+    public ItemStack getItem() {
         if (!this.isSlotEnabled()) {
             if (!this.getDisplayStack().isEmpty()) {
                 this.clearStack();
             }
         }
 
-        return super.getStack();
+        return super.getItem();
     }
 
     @Override

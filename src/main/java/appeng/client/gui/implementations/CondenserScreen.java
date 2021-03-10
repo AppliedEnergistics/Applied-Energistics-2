@@ -40,17 +40,17 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
 
     public CondenserScreen(CondenserContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 197;
+        this.imageHeight = 197;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.mode = new ServerSettingToggleButton<>(128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT,
-                this.container.getOutput());
+        this.mode = new ServerSettingToggleButton<>(128 + this.leftPos, 52 + this.topPos, Settings.CONDENSER_OUTPUT,
+                this.menu.getOutput());
 
-        this.addButton(new ProgressBar(this.container, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178,
+        this.addButton(new ProgressBar(this.menu, "guis/condenser.png", 120 + this.leftPos, 25 + this.topPos, 178,
                 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.text()));
         this.addButton(this.mode);
     }
@@ -58,11 +58,11 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Condenser.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.Condenser.text()).getString(), 8, 6, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.text().getString(), 8, this.imageHeight - 96 + 3, 4210752);
 
-        this.mode.set(this.container.getOutput());
-        this.mode.setFillVar(String.valueOf(this.container.getOutput().requiredPower));
+        this.mode.set(this.menu.getOutput());
+        this.mode.setFillVar(String.valueOf(this.menu.getOutput().requiredPower));
     }
 
     @Override
@@ -70,6 +70,6 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/condenser.png");
 
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.imageWidth, this.imageHeight, getBlitOffset());
     }
 }

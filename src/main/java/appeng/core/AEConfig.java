@@ -586,13 +586,13 @@ public final class AEConfig {
             this.spawnChargedChance = builder.defineInRange("spawnChargedChance", 0.08, 0.0, 1.0);
             this.meteoriteBiomeBlacklist = builder.defineList("meteoriteBiomeBlacklist",
                     Collections.emptyList(),
-                    obj -> obj instanceof String && ResourceLocation.isResouceNameValid((String) obj));
+                    obj -> obj instanceof String && ResourceLocation.isValidResourceLocation((String) obj));
 
             this.quartzOresPerCluster = builder.define("quartzOresPerCluster", 4);
             this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 20);
             this.quartzOresBiomeBlacklist = builder.defineList("quartzOresBiomeBlacklist",
                     Collections.emptyList(),
-                    obj -> obj instanceof String && ResourceLocation.isResouceNameValid((String) obj));
+                    obj -> obj instanceof String && ResourceLocation.isValidResourceLocation((String) obj));
 
             builder.pop();
 

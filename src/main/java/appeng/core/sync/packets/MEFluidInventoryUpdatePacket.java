@@ -91,7 +91,7 @@ public class MEFluidInventoryUpdatePacket extends BasePacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Screen gs = Minecraft.getInstance().currentScreen;
+        final Screen gs = Minecraft.getInstance().screen;
 
         if (gs instanceof FluidTerminalScreen) {
             ((FluidTerminalScreen) gs).postUpdate(this.list);

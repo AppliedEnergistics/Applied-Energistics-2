@@ -128,16 +128,16 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         this.upgrades.writeToNBT(data, "upgrades");
         this.settings.writeToNBT(data);
         return data;
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.upgrades.readFromNBT(data, "upgrades");
         this.settings.readFromNBT(data);
     }
@@ -248,7 +248,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
 
     @Nullable
     public InscriberRecipe getTask() {
-        if (this.cachedTask == null && world != null) {
+        if (this.cachedTask == null && level != null) {
             ItemStack input = this.sideItemHandler.getStackInSlot(0);
             ItemStack plateA = this.topItemHandler.getStackInSlot(0);
             ItemStack plateB = this.bottomItemHandler.getStackInSlot(0);
@@ -261,7 +261,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
                 return null;
             }
 
-            this.cachedTask = InscriberRecipes.findRecipe(world, input, plateA, plateB, true);
+            this.cachedTask = InscriberRecipes.findRecipe(level, input, plateA, plateB, true);
         }
         return this.cachedTask;
     }
@@ -433,7 +433,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
                 if (Api.instance().definitions().materials().namePress().isSameAs(stack)) {
                     return true;
                 }
-                return InscriberRecipes.isValidOptionalIngredient(getWorld(), stack);
+                return InscriberRecipes.isValidOptionalIngredient(getLevel(), stack);
             }
             return true;
         }

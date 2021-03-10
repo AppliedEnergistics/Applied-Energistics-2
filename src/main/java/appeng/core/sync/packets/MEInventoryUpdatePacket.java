@@ -89,7 +89,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Screen gs = Minecraft.getInstance().currentScreen;
+        final Screen gs = Minecraft.getInstance().screen;
 
         if (gs instanceof CraftConfirmScreen) {
             ((CraftConfirmScreen) gs).postUpdate(this.list, this.ref);

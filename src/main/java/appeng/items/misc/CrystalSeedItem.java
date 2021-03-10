@@ -28,6 +28,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -106,29 +107,29 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         // Check for the improved fluid tag and return the improved multiplier
         String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
         if (improvedFluidTagName != null) {
-            ITag<Fluid> tag = FluidTags.getCollection().get(new ResourceLocation(improvedFluidTagName));
-            if (tag != null && state.getFluidState().isTagged(tag)) {
+            ITag<Fluid> tag = FluidTags.getAllTags().getTag(new ResourceLocation(improvedFluidTagName));
+            if (tag != null && state.getFluidState().is(tag)) {
                 return AEConfig.instance().getImprovedFluidMultiplier();
             }
         }
 
         // Check for the normal supported fluid
-        if (world != null && world.getDimensionKey() == World.THE_NETHER) {
+        if (world != null && world.dimension() == World.NETHER) {
             // In the nether, use Lava as the "normal" fluid
-            return state.getFluidState().isTagged(FluidTags.LAVA) ? 1 : 0;
+            return state.getFluidState().is(FluidTags.LAVA) ? 1 : 0;
         } else {
-            return state.getFluidState().isTagged(FluidTags.WATER) ? 1 : 0;
+            return state.getFluidState().is(FluidTags.WATER) ? 1 : 0;
         }
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
         lines.add(ButtonToolTips.DoesntDespawn.text());
         lines.add(getGrowthTooltipItem(stack));
 
-        super.addInformation(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, world, lines, advancedTooltips);
     }
 
     public ITextComponent getGrowthTooltipItem(ItemStack stack) {
@@ -148,22 +149,22 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
 
     @Override
     public Entity createEntity(final World world, final Entity location, final ItemStack itemstack) {
-        final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, location.getPosX(), location.getPosY(),
-                location.getPosZ(), itemstack);
+        final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, location.getX(), location.getY(),
+                location.getZ(), itemstack);
 
-        egc.setMotion(location.getMotion());
+        egc.setDeltaMovement(location.getDeltaMovement());
 
         // Cannot read the pickup delay of the original item, so we
         // use the pickup delay used for items dropped by a player instead
-        egc.setPickupDelay(40);
+        egc.setPickUpDelay(40);
         egc.getPersistentData().putBoolean(TAG_PREVENT_MAGNET, true);
 
         return egc;
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.allowdedIn(group)) {
             // lvl 0
             items.add(new ItemStack(this, 1));
             // one tick before maturity

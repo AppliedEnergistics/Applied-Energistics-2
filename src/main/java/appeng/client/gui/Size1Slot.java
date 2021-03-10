@@ -18,14 +18,14 @@ class Size1Slot extends Slot {
     private final Slot delegate;
 
     public Size1Slot(Slot delegate) {
-        super(delegate.inventory, delegate.getSlotIndex(), delegate.xPos, delegate.yPos);
+        super(delegate.container, delegate.getSlotIndex(), delegate.x, delegate.y);
         this.delegate = delegate;
     }
 
     @Override
     @Nonnull
-    public ItemStack getStack() {
-        ItemStack orgStack = this.delegate.getStack();
+    public ItemStack getItem() {
+        ItemStack orgStack = this.delegate.getItem();
         if (!orgStack.isEmpty()) {
             ItemStack modifiedStack = orgStack.copy();
             modifiedStack.setCount(1);
@@ -36,29 +36,29 @@ class Size1Slot extends Slot {
     }
 
     @Override
-    public boolean getHasStack() {
-        return this.delegate.getHasStack();
+    public boolean hasItem() {
+        return this.delegate.hasItem();
     }
 
     @Override
-    public int getSlotStackLimit() {
-        return this.delegate.getSlotStackLimit();
+    public int getMaxStackSize() {
+        return this.delegate.getMaxStackSize();
     }
 
     @Override
-    public int getItemStackLimit(ItemStack stack) {
-        return this.delegate.getItemStackLimit(stack);
+    public int getMaxStackSize(ItemStack stack) {
+        return this.delegate.getMaxStackSize(stack);
     }
 
     @Override
-    public boolean canTakeStack(PlayerEntity playerIn) {
-        return this.delegate.canTakeStack(playerIn);
+    public boolean mayPickup(PlayerEntity playerIn) {
+        return this.delegate.mayPickup(playerIn);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean isEnabled() {
-        return this.delegate.isEnabled();
+    public boolean isActive() {
+        return this.delegate.isActive();
     }
 
     @Override

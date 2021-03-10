@@ -35,24 +35,24 @@ public class SlotDisconnected extends AppEngSlot {
     }
 
     @Override
-    public boolean isItemValid(final ItemStack stack) {
+    public boolean mayPlace(final ItemStack stack) {
         return false;
     }
 
     @Override
-    public void putStack(final ItemStack par1ItemStack) {
+    public void set(final ItemStack par1ItemStack) {
 
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity player) {
+    public boolean mayPickup(final PlayerEntity player) {
         return false;
     }
 
     @Override
     public ItemStack getDisplayStack() {
         if (Platform.isClient()) {
-            final ItemStack is = super.getStack();
+            final ItemStack is = super.getItem();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
                 final ItemStack out = iep.getOutput(is);
@@ -61,21 +61,21 @@ public class SlotDisconnected extends AppEngSlot {
                 }
             }
         }
-        return super.getStack();
+        return super.getItem();
     }
 
     @Override
-    public boolean getHasStack() {
-        return !this.getStack().isEmpty();
+    public boolean hasItem() {
+        return !this.getItem().isEmpty();
     }
 
     @Override
-    public int getSlotStackLimit() {
+    public int getMaxStackSize() {
         return 0;
     }
 
     @Override
-    public ItemStack decrStackSize(final int par1) {
+    public ItemStack remove(final int par1) {
         return ItemStack.EMPTY;
     }
 

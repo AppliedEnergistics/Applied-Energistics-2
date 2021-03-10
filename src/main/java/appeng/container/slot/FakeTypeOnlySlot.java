@@ -28,7 +28,7 @@ public class FakeTypeOnlySlot extends FakeSlot {
     }
 
     @Override
-    public void putStack(ItemStack is) {
+    public void set(ItemStack is) {
         if (!is.isEmpty()) {
             is = is.copy();
             if (is.getCount() > 1) {
@@ -38,6 +38,6 @@ public class FakeTypeOnlySlot extends FakeSlot {
             }
         }
 
-        super.putStack(is);
+        super.set(is);
     }
 }

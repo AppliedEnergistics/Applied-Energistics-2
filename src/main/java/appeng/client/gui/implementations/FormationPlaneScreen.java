@@ -42,17 +42,17 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
     public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 251;
+        this.imageHeight = 251;
     }
 
     @Override
     protected void addButtons() {
-        this.placeMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.PLACE_BLOCK,
+        this.placeMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 28, Settings.PLACE_BLOCK,
                 YesNo.YES);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 48, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
+        this.addButton(new TabButton(this.leftPos + 154, this.topPos, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
         this.addButton(this.placeMode);
@@ -62,9 +62,9 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.FormationPlane.text()).getString(), 8, 6,
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.FormationPlane.text()).getString(), 8, 6,
                 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.getLocal(), 8, this.imageHeight - 96 + 3, 4210752);
 
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.cvb.getFuzzyMode());

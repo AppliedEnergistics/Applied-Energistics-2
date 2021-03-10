@@ -37,19 +37,19 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
 
     public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 176;
-        this.xSize = this.hasToolbox() ? 246 : 211;
+        this.imageHeight = 176;
+        this.imageWidth = this.hasToolbox() ? 246 : 211;
     }
 
     private boolean hasToolbox() {
-        return this.container.hasToolbox();
+        return this.menu.hasToolbox();
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL);
+        this.pb = new ProgressBar(this.menu, "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL);
         this.addButton(this.pb);
     }
 
@@ -57,27 +57,28 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
         this.pb.setFullMsg(new StringTextComponent(
-                this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%"));
+                this.menu.getCurrentProgress() * 100 / this.menu.getMaxProgress() + "%"));
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Inscriber.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.Inscriber.text()).getString(), 8, 6, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.text().getString(), 8, this.imageHeight - 96 + 3, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/inscriber.png");
-        this.pb.x = 135 + this.guiLeft;
-        this.pb.y = 39 + this.guiTop;
+        this.pb.x = 135 + this.leftPos;
+        this.pb.y = 39 + this.topPos;
 
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, 211 - 34, this.ySize, getBlitOffset());
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, 211 - 34, this.imageHeight, getBlitOffset());
 
         if (this.drawUpgrades()) {
             GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY, 177, 0, 35,
-                    14 + this.container.availableUpgrades() * 18, getBlitOffset());
+                    14 + this.menu.availableUpgrades() * 18, getBlitOffset());
         }
         if (this.hasToolbox()) {
-            GuiUtils.drawTexturedModalRect(offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68,
+            GuiUtils.drawTexturedModalRect(offsetX + 178, offsetY + this.imageHeight - 90, 178, this.imageHeight - 90,
+                    68, 68,
                     getBlitOffset());
         }
     }

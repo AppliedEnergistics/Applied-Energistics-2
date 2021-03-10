@@ -35,18 +35,18 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public GrinderRecipe read(ResourceLocation recipeId, JsonObject json) {
-        String group = JSONUtils.getString(json, "group", "");
-        JsonObject inputObj = JSONUtils.getJsonObject(json, "input");
-        Ingredient ingredient = Ingredient.deserialize(inputObj);
+    public GrinderRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        String group = JSONUtils.getAsString(json, "group", "");
+        JsonObject inputObj = JSONUtils.getAsJsonObject(json, "input");
+        Ingredient ingredient = Ingredient.fromJson(inputObj);
         int ingredientCount = 1;
         if (inputObj.has("count")) {
             ingredientCount = inputObj.get("count").getAsInt();
         }
 
-        JsonObject result = JSONUtils.getJsonObject(json, "result");
-        ItemStack primaryResult = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(result, "primary"));
-        JsonArray optionalResultsJson = JSONUtils.getJsonArray(result, "optional", null);
+        JsonObject result = JSONUtils.getAsJsonObject(json, "result");
+        ItemStack primaryResult = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(result, "primary"));
+        JsonArray optionalResultsJson = JSONUtils.getAsJsonArray(result, "optional", null);
         List<GrinderOptionalResult> optionalResults = Collections.emptyList();
         if (optionalResultsJson != null) {
             optionalResults = new ArrayList<>(optionalResultsJson.size());
@@ -54,32 +54,32 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
                 if (!optionalResultJson.isJsonObject()) {
                     throw new IllegalStateException("Entry in optional result list should be an object.");
                 }
-                ItemStack optionalResultItem = ShapedRecipe.deserializeItem(optionalResultJson.getAsJsonObject());
-                float optionalChance = JSONUtils.getFloat(optionalResultJson.getAsJsonObject(), "percentageChance",
+                ItemStack optionalResultItem = ShapedRecipe.itemFromJson(optionalResultJson.getAsJsonObject());
+                float optionalChance = JSONUtils.getAsFloat(optionalResultJson.getAsJsonObject(), "percentageChance",
                         AEConfig.instance().getOreDoublePercentage()) / 100.0f;
                 optionalResults.add(new GrinderOptionalResult(optionalChance, optionalResultItem));
             }
         }
 
-        int turns = JSONUtils.getInt(json, "turns", 8);
+        int turns = JSONUtils.getAsInt(json, "turns", 8);
 
         return new GrinderRecipe(recipeId, group, ingredient, ingredientCount, primaryResult, turns, optionalResults);
     }
 
     @Nullable
     @Override
-    public GrinderRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+    public GrinderRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
 
-        String group = buffer.readString(BasePacket.MAX_STRING_LENGTH);
-        Ingredient ingredient = Ingredient.read(buffer);
+        String group = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);
+        Ingredient ingredient = Ingredient.fromNetwork(buffer);
         int ingredientCount = buffer.readVarInt();
-        ItemStack result = buffer.readItemStack();
+        ItemStack result = buffer.readItem();
         int turns = buffer.readVarInt();
         int optionalResultsCount = buffer.readVarInt();
         List<GrinderOptionalResult> optionalResults = new ArrayList<>(optionalResultsCount);
         for (int i = 0; i < optionalResultsCount; i++) {
             float chance = buffer.readFloat();
-            ItemStack optionalResult = buffer.readItemStack();
+            ItemStack optionalResult = buffer.readItem();
             optionalResults.add(new GrinderOptionalResult(chance, optionalResult));
         }
 
@@ -87,17 +87,17 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public void write(PacketBuffer buffer, GrinderRecipe recipe) {
-        buffer.writeString(recipe.getGroup());
-        recipe.getIngredient().write(buffer);
+    public void toNetwork(PacketBuffer buffer, GrinderRecipe recipe) {
+        buffer.writeUtf(recipe.getGroup());
+        recipe.getIngredient().toNetwork(buffer);
         buffer.writeVarInt(recipe.getIngredientCount());
-        buffer.writeItemStack(recipe.getRecipeOutput());
+        buffer.writeItem(recipe.getResultItem());
         buffer.writeVarInt(recipe.getTurns());
         List<GrinderOptionalResult> optionalResults = recipe.getOptionalResults();
         buffer.writeVarInt(optionalResults.size());
         for (GrinderOptionalResult optionalResult : optionalResults) {
             buffer.writeFloat(optionalResult.getChance());
-            buffer.writeItemStack(optionalResult.getResult());
+            buffer.writeItem(optionalResult.getResult());
         }
     }
 

@@ -91,7 +91,7 @@ public class InvalidPatternHelper {
         private ItemStack stack;
 
         public PatternIngredient(CompoundNBT tag) {
-            this.stack = ItemStack.read(tag);
+            this.stack = ItemStack.of(tag);
 
             if (this.stack.isEmpty()) {
                 this.id = tag.getString("id");
@@ -110,7 +110,7 @@ public class InvalidPatternHelper {
         }
 
         public int getDamage() {
-            return this.isValid() ? this.stack.getDamage() : this.damage;
+            return this.isValid() ? this.stack.getDamageValue() : this.damage;
         }
 
         public int getCount() {
@@ -129,7 +129,7 @@ public class InvalidPatternHelper {
             IFormattableTextComponent result = new StringTextComponent(this.getCount() + " ").append(this.getName());
 
             if (!this.isValid()) {
-                result.mergeStyle(TextFormatting.RED);
+                result.withStyle(TextFormatting.RED);
             }
 
             return result;

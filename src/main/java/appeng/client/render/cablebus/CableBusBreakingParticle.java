@@ -19,10 +19,10 @@ public class CableBusBreakingParticle extends SpriteTexturedParticle {
             double speedZ, TextureAtlasSprite sprite) {
         super(world, x, y, z, speedX, speedY, speedZ);
         this.setSprite(sprite);
-        this.particleGravity = 1.0F;
-        this.particleScale /= 2.0F;
-        this.uCoord = this.rand.nextFloat() * 3.0F;
-        this.vCoord = this.rand.nextFloat() * 3.0F;
+        this.gravity = 1.0F;
+        this.quadSize /= 2.0F;
+        this.uCoord = this.random.nextFloat() * 3.0F;
+        this.vCoord = this.random.nextFloat() * 3.0F;
     }
 
     public CableBusBreakingParticle(ClientWorld world, double x, double y, double z, TextureAtlasSprite sprite) {
@@ -35,23 +35,23 @@ public class CableBusBreakingParticle extends SpriteTexturedParticle {
     }
 
     @Override
-    protected float getMinU() {
-        return this.sprite.getInterpolatedU((this.uCoord + 1.0F) / 4.0F * 16.0F);
+    protected float getU0() {
+        return this.sprite.getU((this.uCoord + 1.0F) / 4.0F * 16.0F);
     }
 
     @Override
-    protected float getMaxU() {
-        return this.sprite.getInterpolatedU(this.uCoord / 4.0F * 16.0F);
+    protected float getU1() {
+        return this.sprite.getU(this.uCoord / 4.0F * 16.0F);
     }
 
     @Override
-    protected float getMinV() {
-        return this.sprite.getInterpolatedV(this.vCoord / 4.0F * 16.0F);
+    protected float getV0() {
+        return this.sprite.getV(this.vCoord / 4.0F * 16.0F);
     }
 
     @Override
-    protected float getMaxV() {
-        return this.sprite.getInterpolatedV((this.vCoord + 1.0F) / 4.0F * 16.0F);
+    protected float getV1() {
+        return this.sprite.getV((this.vCoord + 1.0F) / 4.0F * 16.0F);
     }
 
 }

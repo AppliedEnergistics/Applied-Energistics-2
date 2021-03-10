@@ -54,7 +54,7 @@ public class ProgressBarPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final Container c = player.openContainer;
+        final Container c = player.containerMenu;
         if (c instanceof AEBaseContainer) {
             ((AEBaseContainer) c).updateFullProgressBar(this.id, this.value);
         }
@@ -62,7 +62,7 @@ public class ProgressBarPacket extends BasePacket {
 
     @Override
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Container c = player.openContainer;
+        final Container c = player.containerMenu;
         if (c instanceof AEBaseContainer) {
             ((AEBaseContainer) c).updateFullProgressBar(this.id, this.value);
         }

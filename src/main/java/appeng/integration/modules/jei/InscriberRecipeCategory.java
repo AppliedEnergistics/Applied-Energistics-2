@@ -57,7 +57,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     public InscriberRecipeCategory(IGuiHelper guiHelper) {
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/inscriber.png");
         this.background = guiHelper.createDrawable(location, 44, 15, 97, 64);
-        this.localizedName = I18n.format("block.appliedenergistics2.inscriber");
+        this.localizedName = I18n.get("block.appliedenergistics2.inscriber");
 
         IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location, 135, 177, 6, 18).addPadding(24, 0, 91, 0)
                 .build();

@@ -23,6 +23,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -60,10 +61,10 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
             final double percent = internalCurrentPower / internalMaxPower;
 
-            lines.add(GuiText.StoredEnergy.text().deepCopy()
-                    .appendString(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+            lines.add(GuiText.StoredEnergy.text().copy()
+                    .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
                     .append(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
-                    .appendString(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
+                    .append(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
         }
     }
 
@@ -114,7 +115,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     private double getMaxEnergyCapacity() {
-        final Block blockID = Block.getBlockFromItem(this);
+        final Block blockID = Block.byItem(this);
         final IBlockDefinition energyCell = Api.instance().definitions().blocks().energyCell();
 
         return energyCell.maybeBlock().map(block -> {

@@ -43,43 +43,43 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
     public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 184;
+        this.imageHeight = 184;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.name = new TextFieldWidget(this.font, this.guiLeft + 24, this.guiTop + 32, 79, this.font.FONT_HEIGHT,
+        this.name = new TextFieldWidget(this.font, this.leftPos + 24, this.topPos + 32, 79, this.font.lineHeight,
                 StringTextComponent.EMPTY);
-        this.name.setEnableBackgroundDrawing(false);
-        this.name.setMaxStringLength(32);
+        this.name.setBordered(false);
+        this.name.setMaxLength(32);
         this.name.setTextColor(0xFFFFFF);
         this.name.setVisible(true);
-        this.name.setFocused2(true);
+        this.name.setFocus(true);
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()).getString(), 8, 6,
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()).getString(), 8, 6,
                 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.getLocal(), 8, this.imageHeight - 96 + 3, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/quartzknife.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.imageWidth, this.imageHeight, getBlitOffset());
         this.name.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
     public boolean charTyped(char character, int key) {
         if (this.name.isFocused() && this.name.charTyped(character, key)) {
-            final String Out = this.name.getText();
-            container.setName(Out);
+            final String Out = this.name.getValue();
+            menu.setName(Out);
             NetworkHandler.instance().sendToServer(new ConfigValuePacket("QuartzKnife.Name", Out));
             return true;
         }
@@ -90,23 +90,23 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
             if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
-                this.name.setFocused2(!this.name.isFocused());
+                this.name.setFocus(!this.name.isFocused());
                 return true;
             }
 
             if (this.name.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.name.setFocused2(false);
+                    this.name.setFocus(false);
                     return true;
                 }
 
                 if (this.name.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
-                    final String Out = this.name.getText();
-                    container.setName(Out);
+                    final String Out = this.name.getValue();
+                    menu.setName(Out);
                     NetworkHandler.instance().sendToServer(new ConfigValuePacket("QuartzKnife.Name", Out));
                     return true;
                 }

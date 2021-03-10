@@ -31,8 +31,8 @@ public class BlockUpdate implements IWorldCallable<Boolean> {
 
     @Override
     public Boolean call(final World world) throws Exception {
-        if (world.isBlockLoaded(this.pos)) {
-            world.notifyNeighborsOfStateChange(this.pos, Blocks.AIR);
+        if (world.hasChunkAt(this.pos)) {
+            world.updateNeighborsAt(this.pos, Blocks.AIR);
         }
 
         return true;

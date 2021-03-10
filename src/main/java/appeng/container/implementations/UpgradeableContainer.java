@@ -96,23 +96,23 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
         if (te instanceof TileEntity) {
             final TileEntity myTile = (TileEntity) te;
-            w = myTile.getWorld();
-            xCoord = myTile.getPos().getX();
-            yCoord = myTile.getPos().getY();
-            zCoord = myTile.getPos().getZ();
+            w = myTile.getLevel();
+            xCoord = myTile.getBlockPos().getX();
+            yCoord = myTile.getBlockPos().getY();
+            zCoord = myTile.getBlockPos().getZ();
         }
 
         if (te instanceof IPart) {
             final TileEntity mk = te.getTile();
-            w = mk.getWorld();
-            xCoord = mk.getPos().getX();
-            yCoord = mk.getPos().getY();
-            zCoord = mk.getPos().getZ();
+            w = mk.getLevel();
+            xCoord = mk.getBlockPos().getX();
+            yCoord = mk.getBlockPos().getY();
+            zCoord = mk.getBlockPos().getZ();
         }
 
         final IInventory pi = this.getPlayerInv();
-        for (int x = 0; x < pi.getSizeInventory(); x++) {
-            final ItemStack pii = pi.getStackInSlot(x);
+        for (int x = 0; x < pi.getContainerSize(); x++) {
+            final ItemStack pii = pi.getItem(x);
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem) {
                 this.lockPlayerInventorySlot(x);
                 this.tbSlot = x;
@@ -195,7 +195,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -205,7 +205,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
         this.checkToolbox();
 
-        for (final Object o : this.inventorySlots) {
+        for (final Object o : this.slots) {
             if (o instanceof OptionalFakeSlot) {
                 final OptionalFakeSlot fs = (OptionalFakeSlot) o;
                 if (!fs.isSlotEnabled() && !fs.getDisplayStack().isEmpty()) {
@@ -228,12 +228,12 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
     protected void checkToolbox() {
         if (this.hasToolbox()) {
-            final ItemStack currentItem = this.getPlayerInv().getStackInSlot(this.tbSlot);
+            final ItemStack currentItem = this.getPlayerInv().getItem(this.tbSlot);
 
             if (currentItem != this.tbInventory.getItemStack()) {
                 if (!currentItem.isEmpty()) {
-                    if (ItemStack.areItemsEqual(this.tbInventory.getItemStack(), currentItem)) {
-                        this.getPlayerInv().setInventorySlotContents(this.tbSlot, this.tbInventory.getItemStack());
+                    if (ItemStack.isSame(this.tbInventory.getItemStack(), currentItem)) {
+                        this.getPlayerInv().setItem(this.tbSlot, this.tbInventory.getItemStack());
                     } else {
                         this.setValidContainer(false);
                     }
@@ -245,7 +245,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     }
 
     protected void standardDetectAndSendChanges() {
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override

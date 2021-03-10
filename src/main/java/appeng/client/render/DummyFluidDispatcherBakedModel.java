@@ -72,12 +72,12 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
-        return getBaseModel().isSideLit();
+    public boolean usesBlockLight() {
+        return getBaseModel().usesBlockLight();
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isCustomRenderer() {
         return false;
     }
 
@@ -85,7 +85,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
     public ItemOverrideList getOverrides() {
         return new ItemOverrideList() {
             @Override
-            public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, ClientWorld world,
+            public IBakedModel resolve(IBakedModel originalModel, ItemStack stack, ClientWorld world,
                     LivingEntity entity) {
                 if (!(stack.getItem() instanceof FluidDummyItem)) {
                     return originalModel;
@@ -100,7 +100,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
 
                 FluidAttributes attributes = fluidStack.getFluid().getAttributes();
                 ResourceLocation stillTexture = attributes.getStillTexture(fluidStack);
-                RenderMaterial stillMaterial = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, stillTexture);
+                RenderMaterial stillMaterial = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, stillTexture);
                 TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
                 if (sprite == null) {
                     return new DummyFluidBakedModel(ImmutableList.of());

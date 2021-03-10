@@ -151,7 +151,7 @@ public class FacadeBuilder {
             int sideIndex = side.ordinal();
             FacadeRenderState facadeRenderState = entry.getValue();
             boolean renderStilt = !sidesWithParts.contains(side);
-            if (layer == RenderType.getCutout() && renderStilt) {
+            if (layer == RenderType.cutout() && renderStilt) {
                 for (ResourceLocation part : CableAnchorPart.FACADE_MODELS.getModels()) {
                     IBakedModel partModel = modelLookup.apply(part);
                     QuadRotator rotator = new QuadRotator();
@@ -164,7 +164,7 @@ public class FacadeBuilder {
             // where the facade is,
             // But otherwise skip the rest.
             if (transparent) {
-                if (layer != RenderType.getCutout()) {
+                if (layer != RenderType.cutout()) {
                     quads.addAll(transparentFacadeQuads.get(side));
                 }
                 continue;
@@ -226,15 +226,15 @@ public class FacadeBuilder {
             List<AxisAlignedBB> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
             IBlockDisplayReader facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
 
-            BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-            IBakedModel model = dispatcher.getModelForState(blockState);
+            BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+            IBakedModel model = dispatcher.getBlockModel(blockState);
             IModelData modelData = model.getModelData(facadeAccess, pos, blockState, EmptyModelData.INSTANCE);
 
             List<BakedQuad> modelQuads = new ArrayList<>();
             // If we are forcing transparent facades, fake the render layer, and grab all
             // quads.
             if (layer == null) {
-                for (RenderType forcedLayer : RenderType.getBlockRenderTypes()) {
+                for (RenderType forcedLayer : RenderType.chunkBufferLayers()) {
                     // Check if the block renders on the layer we want to force.
                     if (RenderTypeLookup.canRenderInLayer(blockState, forcedLayer)) {
                         // Force the layer and gather quads.
@@ -287,7 +287,7 @@ public class FacadeBuilder {
                 // lookup the format in CachedFormat.
                 CachedFormat format = CachedFormat.lookup(DefaultVertexFormats.BLOCK);
                 // If this quad has a tint index, setup the tinter.
-                if (quad.hasTintIndex()) {
+                if (quad.isTinted()) {
                     tinter.setTint(blockColors.getColor(blockState, facadeAccess, pos, quad.getTintIndex()));
                 }
                 for (AxisAlignedBB box : holeStrips) {
@@ -298,7 +298,7 @@ public class FacadeBuilder {
                     // Reset out collector.
                     collectorQuad.reset(format);
                     // Enable / disable the optional elements
-                    pipeline.setElementState("tinter", quad.hasTintIndex());
+                    pipeline.setElementState("tinter", quad.isTinted());
                     pipeline.setElementState("transparent", transparent);
                     // Prepare the pipeline for a quad.
                     pipeline.prepare(collectorQuad);
@@ -322,7 +322,7 @@ public class FacadeBuilder {
      */
     public List<BakedQuad> buildFacadeItemQuads(ItemStack textureItem, Direction side) {
         List<BakedQuad> facadeQuads = new ArrayList<>();
-        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(textureItem, null,
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getModel(textureItem, null,
                 null);
         List<BakedQuad> modelQuads = gatherQuads(model, null, new Random(), EmptyModelData.INSTANCE);
 
@@ -341,7 +341,7 @@ public class FacadeBuilder {
             // Reset the collector.
             collectorQuad.reset(format);
             // If we have a tint index, setup the tinter and enable it.
-            if (quad.hasTintIndex()) {
+            if (quad.isTinted()) {
                 tinter.setTint(Minecraft.getInstance().getItemColors().getColor(textureItem, quad.getTintIndex()));
                 pipeline.enableElement("tinter");
             }

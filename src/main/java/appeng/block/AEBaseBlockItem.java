@@ -53,7 +53,7 @@ public class AEBaseBlockItem extends BlockItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public final void addInformation(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
+    public final void appendHoverText(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
             final ITooltipFlag advancedTooltips) {
         this.addCheckedInformation(itemStack, world, toolTip, advancedTooltips);
     }
@@ -61,7 +61,7 @@ public class AEBaseBlockItem extends BlockItem {
     @OnlyIn(Dist.CLIENT)
     public void addCheckedInformation(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
             final ITooltipFlag advancedTooltips) {
-        this.blockType.addInformation(itemStack, world, toolTip, advancedTooltips);
+        this.blockType.appendHoverText(itemStack, world, toolTip, advancedTooltips);
     }
 
     @Override
@@ -70,17 +70,17 @@ public class AEBaseBlockItem extends BlockItem {
     }
 
     @Override
-    public String getTranslationKey(final ItemStack is) {
-        return this.blockType.getTranslationKey();
+    public String getDescriptionId(final ItemStack is) {
+        return this.blockType.getDescriptionId();
     }
 
     @Override
-    public ActionResultType tryPlace(BlockItemUseContext context) {
+    public ActionResultType place(BlockItemUseContext context) {
 
         Direction up = null;
         Direction forward = null;
 
-        Direction side = context.getFace();
+        Direction side = context.getClickedFace();
         PlayerEntity player = context.getPlayer();
 
         if (this.blockType instanceof AEBaseTileBlock) {
@@ -100,13 +100,13 @@ public class AEBaseBlockItem extends BlockItem {
                 }
             } else {
                 up = Direction.UP;
-                forward = context.getPlacementHorizontalFacing().getOpposite();
+                forward = context.getHorizontalDirection().getOpposite();
 
                 if (player != null) {
-                    if (player.rotationPitch > 65) {
+                    if (player.xRot > 65) {
                         up = forward.getOpposite();
                         forward = Direction.UP;
-                    } else if (player.rotationPitch < -65) {
+                    } else if (player.xRot < -65) {
                         up = forward.getOpposite();
                         forward = Direction.DOWN;
                     }
@@ -116,26 +116,26 @@ public class AEBaseBlockItem extends BlockItem {
 
         IOrientable ori = null;
         if (this.blockType instanceof IOrientableBlock) {
-            ori = ((IOrientableBlock) this.blockType).getOrientable(context.getWorld(), context.getPos());
+            ori = ((IOrientableBlock) this.blockType).getOrientable(context.getLevel(), context.getClickedPos());
             up = side;
             forward = Direction.SOUTH;
-            if (up.getYOffset() == 0) {
+            if (up.getStepY() == 0) {
                 forward = Direction.UP;
             }
         }
 
-        if (!this.blockType.isValidOrientation(context.getWorld(), context.getPos(), forward, up)) {
+        if (!this.blockType.isValidOrientation(context.getLevel(), context.getClickedPos(), forward, up)) {
             return ActionResultType.FAIL;
         }
 
-        ActionResultType result = super.tryPlace(context);
-        if (!result.isSuccessOrConsume()) {
+        ActionResultType result = super.place(context);
+        if (!result.consumesAction()) {
             return result;
         }
 
         if (this.blockType instanceof AEBaseTileBlock && !(this.blockType instanceof LightDetectorBlock)) {
-            final AEBaseTileEntity tile = ((AEBaseTileBlock<?>) this.blockType).getTileEntity(context.getWorld(),
-                    context.getPos());
+            final AEBaseTileEntity tile = ((AEBaseTileBlock<?>) this.blockType).getTileEntity(context.getLevel(),
+                    context.getClickedPos());
             ori = tile;
 
             if (tile == null) {

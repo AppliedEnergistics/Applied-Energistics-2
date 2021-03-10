@@ -67,24 +67,24 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
         final ResourceLocation recipeId = irecipe.getId();
 
         if (recipeId == null) {
-            return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.missing_id"));
+            return this.helper.createUserErrorWithTooltip(I18n.get("jei.appliedenergistics2.missing_id"));
         }
 
         // Check that the recipe can actually be looked up via the manager, i.e. our
         // facade recipes
         // have an ID, but are never registered with the recipe manager.
         boolean canSendReference = true;
-        if (!player.getEntityWorld().getRecipeManager().getRecipe(recipeId).isPresent()) {
+        if (!player.getCommandSenderWorld().getRecipeManager().byKey(recipeId).isPresent()) {
             // Validate that the recipe is a shapeless or shapedrecipe, since we can
             // serialize those
             if (!(recipe instanceof ShapedRecipe) && !(recipe instanceof ShapelessRecipe)) {
-                return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.missing_id"));
+                return this.helper.createUserErrorWithTooltip(I18n.get("jei.appliedenergistics2.missing_id"));
             }
             canSendReference = false;
         }
 
-        if (!irecipe.canFit(3, 3)) {
-            return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.recipe_too_large"));
+        if (!irecipe.canCraftInDimensions(3, 3)) {
+            return this.helper.createUserErrorWithTooltip(I18n.get("jei.appliedenergistics2.recipe_too_large"));
         }
 
         final IRecipeTransferError error = doTransferRecipe(container, irecipe, recipeLayout, player, maxTransfer);
@@ -123,7 +123,7 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
                     if (item.isInput() && inputIndex < flatIngredients.size()) {
                         ItemStack displayedIngredient = item.getDisplayedIngredient();
                         if (displayedIngredient != null) {
-                            flatIngredients.set(inputIndex, Ingredient.fromStacks(displayedIngredient));
+                            flatIngredients.set(inputIndex, Ingredient.of(displayedIngredient));
                         }
                     } else if (!item.isInput() && output.isEmpty()) {
                         output = item.getDisplayedIngredient();

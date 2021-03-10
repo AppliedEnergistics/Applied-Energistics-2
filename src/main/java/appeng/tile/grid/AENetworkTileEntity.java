@@ -40,14 +40,14 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IActionHost
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.getProxy().readFromNBT(data);
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         this.getProxy().writeToNBT(data);
         return data;
     }
@@ -79,14 +79,14 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IActionHost
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         this.getProxy().remove();
     }
 
     @Override
-    public void validate() {
-        super.validate();
+    public void clearRemoved() {
+        super.clearRemoved();
         this.getProxy().validate();
     }
 

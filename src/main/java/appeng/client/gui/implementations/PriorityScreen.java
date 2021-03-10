@@ -41,8 +41,8 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
         this.subGui = new AESubScreen(this, container.getPriorityHost());
 
         // This is the effective size of the background image
-        xSize = 175;
-        ySize = 128;
+        imageWidth = 175;
+        imageHeight = 128;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
         this.priority = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.PRIORITY);
         this.priority.setTextFieldBounds(62, 57, 50);
         this.priority.setMinValue(Integer.MIN_VALUE);
-        this.priority.setValue(this.container.getPriorityValue());
+        this.priority.setValue(this.menu.getPriorityValue());
         this.priority.addButtons(children::add, this::addButton);
 
         this.subGui.addBackButton(this::addButton, 154, 0);
@@ -69,21 +69,21 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     private void savePriority() {
         OptionalInt priority = this.priority.getIntValue();
         if (priority.isPresent()) {
-            container.setPriority(priority.getAsInt());
+            menu.setPriority(priority.getAsInt());
         }
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, GuiText.Priority.getLocal(), 8, 6, 4210752);
+        this.font.draw(matrixStack, GuiText.Priority.getLocal(), 8, 6, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/priority.png");
-        blit(matrixStack, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
+        blit(matrixStack, offsetX, offsetY, 0, 0, this.imageWidth, this.imageHeight);
 
         this.priority.render(matrixStack, mouseX, mouseY, partialTicks);
     }

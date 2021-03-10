@@ -38,14 +38,14 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity impleme
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.getProxy().readFromNBT(data);
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         this.getProxy().writeToNBT(data);
         return data;
     }
@@ -78,18 +78,18 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity impleme
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         // if the cached block state is not current, the following method may call
         // markForUpdate
         // and cause the block state to be changed back to non-air
-        updateContainingBlockInfo();
+        clearCache();
         this.getProxy().remove();
     }
 
     @Override
-    public void validate() {
-        super.validate();
+    public void clearRemoved() {
+        super.clearRemoved();
         this.getProxy().validate();
     }
 

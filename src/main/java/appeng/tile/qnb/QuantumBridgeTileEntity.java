@@ -168,9 +168,9 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void remove() {
+    public void setRemoved() {
         this.disconnect(false);
-        super.remove();
+        super.setRemoved();
     }
 
     @Override
@@ -226,7 +226,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
         final EnumSet<Direction> set = EnumSet.noneOf(Direction.class);
 
         for (final Direction d : Direction.values()) {
-            final TileEntity te = this.world.getTileEntity(this.pos.offset(d));
+            final TileEntity te = this.level.getBlockEntity(this.worldPosition.relative(d));
             if (te instanceof QuantumBridgeTileEntity) {
                 set.add(d);
             }
@@ -270,7 +270,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     }
 
     public void neighborUpdate(BlockPos fromPos) {
-        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.pos, fromPos);
+        this.calc.updateMultiblockAfterNeighborUpdate(this.level, this.worldPosition, fromPos);
     }
 
     @Override
@@ -289,7 +289,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
         // Since breaking the cluster will most likely also update the TE's state,
         // it's essential that we're not working with outdated block-state information,
         // since this particular TE's block might already have been removed (state=air)
-        updateContainingBlockInfo();
+        clearCache();
 
         if (this.cluster != null) {
             this.cluster.destroy();

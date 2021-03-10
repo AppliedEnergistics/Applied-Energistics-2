@@ -26,6 +26,7 @@ import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tags.BlockTags;
@@ -48,20 +49,20 @@ public class EraserItem extends AEBaseItem {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getWorld().isRemote()) {
+        if (context.getLevel().isClientSide()) {
             return ActionResultType.PASS;
         }
 
         final PlayerEntity player = context.getPlayer();
-        final World world = context.getWorld();
-        final BlockPos pos = context.getPos();
+        final World world = context.getLevel();
+        final BlockPos pos = context.getClickedPos();
 
         if (player == null) {
             return ActionResultType.PASS;
         }
 
         final Block state = world.getBlockState(pos).getBlock();
-        final boolean bulk = player.isSneaking();
+        final boolean bulk = player.isShiftKeyDown();
         final Queue<BlockPos> next = new ArrayDeque<>();
         final Set<BlockPos> closed = new HashSet<>();
         final Set<Block> commonBlocks = this.getCommonBlocks();
@@ -78,7 +79,7 @@ public class EraserItem extends AEBaseItem {
 
             if (contains) {
                 blocks++;
-                world.setBlockState(wc, Blocks.AIR.getDefaultState(), 2);
+                world.setBlock(wc, Blocks.AIR.defaultBlockState(), 2);
                 world.destroyBlock(wc, false);
 
                 if (isInsideBox(wc, pos)) {
@@ -88,7 +89,7 @@ public class EraserItem extends AEBaseItem {
                                 if (0 == x && 0 == y && 0 == z) {
                                     continue;
                                 }
-                                final BlockPos nextPos = wc.add(x, y, z);
+                                final BlockPos nextPos = wc.offset(x, y, z);
                                 if (!closed.contains(nextPos)) {
                                     next.add(nextPos);
                                 }
@@ -140,9 +141,9 @@ public class EraserItem extends AEBaseItem {
             COMMON_BLOCKS.add(Blocks.WATER);
             COMMON_BLOCKS.add(Blocks.LAVA);
 
-            COMMON_BLOCKS.addAll(BlockTags.LEAVES.getAllElements());
-            COMMON_BLOCKS.addAll(BlockTags.SAND.getAllElements());
-            COMMON_BLOCKS.addAll(BlockTags.LOGS.getAllElements());
+            COMMON_BLOCKS.addAll(BlockTags.LEAVES.getValues());
+            COMMON_BLOCKS.addAll(BlockTags.SAND.getValues());
+            COMMON_BLOCKS.addAll(BlockTags.LOGS.getValues());
         }
 
         return COMMON_BLOCKS;

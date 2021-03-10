@@ -104,7 +104,7 @@ public class ApiCrafting implements ICraftingHelper {
         // based on the stored inputs/outputs if that happens.
         ResourceLocation recipeId = patternItem.getCraftingRecipeId(is);
         if (recipeId != null) {
-            IRecipe<?> recipe = world.getRecipeManager().getRecipes(IRecipeType.CRAFTING).get(recipeId);
+            IRecipe<?> recipe = world.getRecipeManager().byType(IRecipeType.CRAFTING).get(recipeId);
             if (!(recipe instanceof ICraftingRecipe)) {
                 if (!autoRecovery || !attemptRecovery(patternItem, is, world)) {
                     return null;
@@ -140,15 +140,15 @@ public class ApiCrafting implements ICraftingHelper {
         for (int x = 0; x < 9; x++) {
             final IAEItemStack ais = ingredients.get(x);
             final ItemStack gs = ais != null ? ais.createItemStack() : ItemStack.EMPTY;
-            testInventory.setInventorySlotContents(x, gs);
+            testInventory.setItem(x, gs);
         }
 
-        ICraftingRecipe potentialRecipe = recipeManager.getRecipe(IRecipeType.CRAFTING, testInventory, world)
+        ICraftingRecipe potentialRecipe = recipeManager.getRecipeFor(IRecipeType.CRAFTING, testInventory, world)
                 .orElse(null);
 
         if (potentialRecipe != null) {
             // Check that it matches the expected output
-            if (products.get(0).isSameType(potentialRecipe.getCraftingResult(testInventory))) {
+            if (products.get(0).isSameType(potentialRecipe.assemble(testInventory))) {
                 // Yay we found a match, reencode the pattern
                 AELog.debug("Re-Encoding pattern from %s -> %s", currentRecipeId, potentialRecipe.getId());
                 ItemStack[] in = ingredients.stream().map(ais -> ais != null ? ais.createItemStack() : ItemStack.EMPTY)

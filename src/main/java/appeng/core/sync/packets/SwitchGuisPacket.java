@@ -54,7 +54,7 @@ public class SwitchGuisPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final Container c = player.openContainer;
+        final Container c = player.containerMenu;
         if (c instanceof AEBaseContainer) {
             final AEBaseContainer bc = (AEBaseContainer) c;
             final ContainerLocator locator = bc.getLocator();

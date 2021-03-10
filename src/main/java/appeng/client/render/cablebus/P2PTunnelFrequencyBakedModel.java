@@ -58,7 +58,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
                 if (active) {
                     cb.setColorRGB(c.dye.getColorValue());
                 } else {
-                    final float[] cv = c.dye.getColorComponentValues();
+                    final float[] cv = c.dye.getTextureDiffuseColors();
                     cb.setColorRGB(cv[0] * 0.5f, cv[1] * 0.5f, cv[2] * 0.5f);
                 }
 
@@ -90,7 +90,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
@@ -100,17 +100,17 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;// TODO
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isCustomRenderer() {
         return true;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public TextureAtlasSprite getParticleIcon() {
         return this.texture;
     }
 

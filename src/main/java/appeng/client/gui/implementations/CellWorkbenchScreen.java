@@ -47,17 +47,17 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 251;
+        this.imageHeight = 251;
     }
 
     @Override
     protected void addButtons() {
-        this.fuzzyMode = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
+        this.fuzzyMode = this.addButton(new SettingToggleButton<>(this.leftPos - 18, this.topPos + 68,
                 Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
         this.addButton(
-                new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, act1 -> action("Partition")));
-        this.addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, act -> action("Clear")));
-        this.copyMode = this.addButton(new ToggleButton(this.guiLeft - 18, this.guiTop + 48, 11 * 16 + 5, 12 * 16 + 5,
+                new ActionButton(this.leftPos - 18, this.topPos + 28, ActionItems.WRENCH, act1 -> action("Partition")));
+        this.addButton(new ActionButton(this.leftPos - 18, this.topPos + 8, ActionItems.CLOSE, act -> action("Clear")));
+        this.copyMode = this.addButton(new ToggleButton(this.leftPos - 18, this.topPos + 48, 11 * 16 + 5, 12 * 16 + 5,
                 GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal(), act -> action("CopyMode")));
     }
 
@@ -67,19 +67,19 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
         this.handleButtonVisibility();
 
         this.bindTexture(this.getBackground());
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, 211 - 34, this.ySize, getBlitOffset());
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, 211 - 34, this.imageHeight, getBlitOffset());
         if (this.drawUpgrades()) {
-            if (this.container.availableUpgrades() <= 8) {
+            if (this.menu.availableUpgrades() <= 8) {
                 GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY, 177, 0, 35,
-                        7 + this.container.availableUpgrades() * 18, getBlitOffset());
-                GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY + (7 + (this.container.availableUpgrades()) * 18),
+                        7 + this.menu.availableUpgrades() * 18, getBlitOffset());
+                GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY + (7 + (this.menu.availableUpgrades()) * 18),
                         177, 151, 35, 7, getBlitOffset());
-            } else if (this.container.availableUpgrades() <= 16) {
+            } else if (this.menu.availableUpgrades() <= 16) {
                 GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18, getBlitOffset());
                 GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY + (7 + (8) * 18), 177, 151, 35, 7,
                         getBlitOffset());
 
-                final int dx = this.container.availableUpgrades() - 8;
+                final int dx = this.menu.availableUpgrades() - 8;
                 GuiUtils.drawTexturedModalRect(offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18,
                         getBlitOffset());
                 if (dx == 8) {
@@ -99,7 +99,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
                 GuiUtils.drawTexturedModalRect(offsetX + 177 + 27, offsetY + (7 + (8) * 18), 186, 151, 35 - 8, 7,
                         getBlitOffset());
 
-                final int dx = this.container.availableUpgrades() - 16;
+                final int dx = this.menu.availableUpgrades() - 16;
                 GuiUtils.drawTexturedModalRect(offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18,
                         getBlitOffset());
                 if (dx == 8) {
@@ -112,16 +112,17 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
             }
         }
         if (this.hasToolbox()) {
-            GuiUtils.drawTexturedModalRect(offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68, getBlitOffset());
+            GuiUtils.drawTexturedModalRect(offsetX + 178, offsetY + this.imageHeight - 90, 178, 161, 68, 68,
+                    getBlitOffset());
         }
     }
 
     @Override
     protected void handleButtonVisibility() {
-        this.copyMode.setState(this.container.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
+        this.copyMode.setState(this.menu.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
 
         boolean hasFuzzy = false;
-        final IItemHandler inv = this.container.getCellUpgradeInventory();
+        final IItemHandler inv = this.menu.getCellUpgradeInventory();
         for (int x = 0; x < inv.getSlots(); x++) {
             final ItemStack is = inv.getStackInSlot(x);
             if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule) {
@@ -140,7 +141,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
 
     @Override
     protected boolean drawUpgrades() {
-        return this.container.availableUpgrades() > 0;
+        return this.menu.availableUpgrades() > 0;
     }
 
     @Override

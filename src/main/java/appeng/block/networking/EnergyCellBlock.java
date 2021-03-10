@@ -45,8 +45,8 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
-        super.fillItemGroup(group, itemStacks);
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+        super.fillItemCategory(group, itemStacks);
 
         final ItemStack charged = new ItemStack(this, 1);
         final CompoundNBT tag = charged.getOrCreateTag();
@@ -61,8 +61,8 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(ENERGY_STORAGE);
     }
 

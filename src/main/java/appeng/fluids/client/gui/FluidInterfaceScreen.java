@@ -40,15 +40,15 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
     public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 231;
+        this.imageHeight = 231;
     }
 
     @Override
     public void init() {
         super.init();
 
-        final IAEFluidTank configFluids = this.container.getFluidConfigInventory();
-        final IAEFluidTank fluidTank = this.container.getTanks();
+        final IAEFluidTank configFluids = this.menu.getFluidConfigInventory();
+        final IAEFluidTank fluidTank = this.menu.getTanks();
 
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
             final FluidTankWidget guiTank = new FluidTankWidget(fluidTank, i, this.getGuiLeft() + 35 + 18 * i,
@@ -67,17 +67,18 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
 
     @Override
     public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.FluidInterface.text()).getString(), 8, 6,
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.FluidInterface.text()).getString(), 8, 6,
                 4210752);
-        this.font.drawString(matrixStack, GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
-        this.font.drawString(matrixStack, GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
+        this.font.draw(matrixStack, GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.getLocal(), 8, this.imageHeight - 96 + 3, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         this.bindTexture("guis/interfacefluid.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME ZINDEX */ );
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.imageWidth, this.imageHeight,
+                0 /* FIXME ZINDEX */ );
     }
 
     private void openPriorityGui() {

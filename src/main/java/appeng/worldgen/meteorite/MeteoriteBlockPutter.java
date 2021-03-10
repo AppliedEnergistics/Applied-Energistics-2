@@ -31,7 +31,7 @@ public class MeteoriteBlockPutter {
             return false;
         }
 
-        w.setBlockState(pos, blk, 0);
+        w.setBlock(pos, blk, 0);
         return true;
     }
 

@@ -53,8 +53,9 @@ class CellLedRenderer {
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
-    public static final RenderType RENDER_LAYER = RenderType.makeType("ae_drive_leds",
-            DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true, RenderType.State.getBuilder().build(false));
+    public static final RenderType RENDER_LAYER = RenderType.create("ae_drive_leds",
+            DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true,
+            RenderType.State.builder().createCompositeState(false));
 
     public static void renderLed(IChestOrDrive drive, int slot, IVertexBuilder buffer, MatrixStack ms,
             float partialTicks) {
@@ -68,7 +69,7 @@ class CellLedRenderer {
             float x = LED_QUADS[i];
             float y = LED_QUADS[i + 1];
             float z = LED_QUADS[i + 2];
-            buffer.pos(ms.getLast().getMatrix(), x, y, z).color(color.getX(), color.getY(), color.getZ(), 1.f)
+            buffer.vertex(ms.last().pose(), x, y, z).color(color.x(), color.y(), color.z(), 1.f)
                     .endVertex();
         }
     }

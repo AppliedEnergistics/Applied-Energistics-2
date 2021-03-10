@@ -24,6 +24,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -66,9 +67,9 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
-        super.addInformation(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, world, lines, advancedTooltips);
 
         if (materialType == MaterialType.NAME_PRESS) {
             final CompoundNBT c = stack.getOrCreateTag();
@@ -108,11 +109,11 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
         PlayerEntity player = context.getPlayer();
         Hand hand = context.getHand();
         if (player.isCrouching()) {
-            final TileEntity te = context.getWorld().getTileEntity(context.getPos());
+            final TileEntity te = context.getLevel().getBlockEntity(context.getClickedPos());
             IItemHandler upgrades = null;
 
             if (te instanceof IPartHost) {
-                final SelectedPart sp = ((IPartHost) te).selectPart(context.getHitVec());
+                final SelectedPart sp = ((IPartHost) te).selectPart(context.getClickLocation());
                 if (sp.part instanceof IUpgradeableHost) {
                     upgrades = ((ISegmentedInventory) sp.part).getInventoryByName("upgrades");
                 }
@@ -120,18 +121,18 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
                 upgrades = ((ISegmentedInventory) te).getInventoryByName("upgrades");
             }
 
-            if (upgrades != null && !player.getHeldItem(hand).isEmpty()
-                    && player.getHeldItem(hand).getItem() instanceof IUpgradeModule) {
-                final IUpgradeModule um = (IUpgradeModule) player.getHeldItem(hand).getItem();
-                final Upgrades u = um.getType(player.getHeldItem(hand));
+            if (upgrades != null && !player.getItemInHand(hand).isEmpty()
+                    && player.getItemInHand(hand).getItem() instanceof IUpgradeModule) {
+                final IUpgradeModule um = (IUpgradeModule) player.getItemInHand(hand).getItem();
+                final Upgrades u = um.getType(player.getItemInHand(hand));
 
                 if (u != null) {
-                    if (player.world.isRemote) {
+                    if (player.level.isClientSide) {
                         return ActionResultType.PASS;
                     }
 
                     final InventoryAdaptor ad = new AdaptorItemHandler(upgrades);
-                    player.setHeldItem(hand, ad.addItems(player.getHeldItem(hand)));
+                    player.setItemInHand(hand, ad.addItems(player.getItemInHand(hand)));
                     return ActionResultType.SUCCESS;
                 }
             }
@@ -152,15 +153,15 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
 
         try {
             eqi = droppedEntity.getConstructor(World.class, double.class, double.class, double.class, ItemStack.class)
-                    .newInstance(w, location.getPosX(), location.getPosY(), location.getPosZ(), itemstack);
+                    .newInstance(w, location.getX(), location.getY(), location.getZ(), itemstack);
         } catch (final Throwable t) {
             throw new IllegalStateException(t);
         }
 
-        eqi.setMotion(location.getMotion());
+        eqi.setDeltaMovement(location.getDeltaMovement());
 
         if (location instanceof ItemEntity && eqi instanceof ItemEntity) {
-            ((ItemEntity) eqi).setDefaultPickupDelay();
+            ((ItemEntity) eqi).setDefaultPickUpDelay();
         }
 
         return eqi;

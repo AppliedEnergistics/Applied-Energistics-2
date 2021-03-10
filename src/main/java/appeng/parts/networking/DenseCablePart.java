@@ -114,7 +114,8 @@ public abstract class DenseCablePart extends CablePart {
     }
 
     private boolean isDense(final AEPartLocation of) {
-        final TileEntity te = this.getTile().getWorld().getTileEntity(this.getTile().getPos().offset(of.getFacing()));
+        final TileEntity te = this.getTile().getLevel()
+                .getBlockEntity(this.getTile().getBlockPos().relative(of.getFacing()));
 
         if (te instanceof IGridHost) {
             final AECableType t = ((IGridHost) te).getCableConnectionType(of.getOpposite());

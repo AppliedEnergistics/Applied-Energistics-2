@@ -189,7 +189,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isServer()) {
             if (this.monitor != this.host
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))) {
@@ -204,7 +204,7 @@ public class MEMonitorableContainer extends AEBaseContainer
 
                 if (sideLocal != sideRemote) {
                     this.clientCM.putSetting(set, sideLocal);
-                    for (final IContainerListener crafter : this.listeners) {
+                    for (final IContainerListener crafter : this.containerListeners) {
                         if (crafter instanceof ServerPlayerEntity) {
                             NetworkHandler.instance().sendTo(new ConfigValuePacket(set.name(), sideLocal.name()),
                                     (ServerPlayerEntity) crafter);
@@ -232,7 +232,7 @@ public class MEMonitorableContainer extends AEBaseContainer
                     if (!piu.isEmpty()) {
                         this.items.resetStatus();
 
-                        for (final Object c : this.listeners) {
+                        for (final Object c : this.containerListeners) {
                             if (c instanceof PlayerEntity) {
                                 NetworkHandler.instance().sendTo(piu, (ServerPlayerEntity) c);
                             }
@@ -255,7 +255,7 @@ public class MEMonitorableContainer extends AEBaseContainer
                 }
             }
 
-            super.detectAndSendChanges();
+            super.broadcastChanges();
         }
 
     }
@@ -289,8 +289,8 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     @Override
-    public void addListener(final IContainerListener c) {
-        super.addListener(c);
+    public void addSlotListener(final IContainerListener c) {
+        super.addSlotListener(c);
 
         this.queueInventory(c);
     }
@@ -350,17 +350,17 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     @Override
-    public void removeListener(final IContainerListener c) {
-        super.removeListener(c);
+    public void removeSlotListener(final IContainerListener c) {
+        super.removeSlotListener(c);
 
-        if (this.listeners.isEmpty() && this.monitor != null) {
+        if (this.containerListeners.isEmpty() && this.monitor != null) {
             this.monitor.removeListener(this);
         }
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(final PlayerEntity player) {
+        super.removed(player);
         if (this.monitor != null) {
             this.monitor.removeListener(this);
         }
@@ -381,7 +381,7 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     @Override
     public void onListUpdate() {
-        for (final IContainerListener c : this.listeners) {
+        for (final IContainerListener c : this.containerListeners) {
             this.queueInventory(c);
         }
     }
@@ -405,7 +405,7 @@ public class MEMonitorableContainer extends AEBaseContainer
         final ItemStack[] list = new ItemStack[this.cellView.length];
 
         for (int x = 0; x < this.cellView.length; x++) {
-            list[x] = this.cellView[x].getStack();
+            list[x] = this.cellView[x].getItem();
         }
 
         return list;

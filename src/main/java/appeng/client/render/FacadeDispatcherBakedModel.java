@@ -49,7 +49,7 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     public ItemOverrideList getOverrides() {
         return new ItemOverrideList() {
             @Override
-            public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, ClientWorld world,
+            public IBakedModel resolve(IBakedModel originalModel, ItemStack stack, ClientWorld world,
                     LivingEntity entity) {
                 if (!(stack.getItem() instanceof FacadeItem)) {
                     return originalModel;

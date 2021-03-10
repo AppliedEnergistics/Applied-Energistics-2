@@ -39,7 +39,7 @@ import appeng.util.Platform;
 
 public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntity> {
     public FluidInterfaceBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntit
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
             return ActionResultType.SUCCESS;
         }

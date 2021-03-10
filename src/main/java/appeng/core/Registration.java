@@ -317,7 +317,7 @@ final class Registration {
 
     public void registerBiomes(RegistryEvent.Register<Biome> event) {
         Biome biome = SpatialStorageBiome.INSTANCE;
-        biome.setRegistryName(SpatialStorageDimensionIds.BIOME_KEY.getLocation());
+        biome.setRegistryName(SpatialStorageDimensionIds.BIOME_KEY.location());
         event.getRegistry().register(biome);
     }
 
@@ -430,49 +430,49 @@ final class Registration {
                 FluidTerminalContainer::open);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            ScreenManager.registerFactory(GrinderContainer.TYPE, GrinderScreen::new);
-            ScreenManager.registerFactory(QNBContainer.TYPE, QNBScreen::new);
-            ScreenManager.registerFactory(SkyChestContainer.TYPE, SkyChestScreen::new);
-            ScreenManager.registerFactory(ChestContainer.TYPE, ChestScreen::new);
-            ScreenManager.registerFactory(WirelessContainer.TYPE, WirelessScreen::new);
-            ScreenManager.<MEMonitorableContainer, MEMonitorableScreen<MEMonitorableContainer>>registerFactory(
+            ScreenManager.register(GrinderContainer.TYPE, GrinderScreen::new);
+            ScreenManager.register(QNBContainer.TYPE, QNBScreen::new);
+            ScreenManager.register(SkyChestContainer.TYPE, SkyChestScreen::new);
+            ScreenManager.register(ChestContainer.TYPE, ChestScreen::new);
+            ScreenManager.register(WirelessContainer.TYPE, WirelessScreen::new);
+            ScreenManager.<MEMonitorableContainer, MEMonitorableScreen<MEMonitorableContainer>>register(
                     MEMonitorableContainer.TYPE, MEMonitorableScreen::new);
-            ScreenManager.registerFactory(MEPortableCellContainer.TYPE, MEPortableCellScreen::new);
-            ScreenManager.registerFactory(WirelessTermContainer.TYPE, WirelessTermScreen::new);
-            ScreenManager.registerFactory(NetworkStatusContainer.TYPE, NetworkStatusScreen::new);
-            ScreenManager.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>registerFactory(
+            ScreenManager.register(MEPortableCellContainer.TYPE, MEPortableCellScreen::new);
+            ScreenManager.register(WirelessTermContainer.TYPE, WirelessTermScreen::new);
+            ScreenManager.register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new);
+            ScreenManager.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
                     CraftingCPUContainer.TYPE, CraftingCPUScreen::new);
-            ScreenManager.registerFactory(NetworkToolContainer.TYPE, NetworkToolScreen::new);
-            ScreenManager.registerFactory(QuartzKnifeContainer.TYPE, QuartzKnifeScreen::new);
-            ScreenManager.registerFactory(DriveContainer.TYPE, DriveScreen::new);
-            ScreenManager.registerFactory(VibrationChamberContainer.TYPE, VibrationChamberScreen::new);
-            ScreenManager.registerFactory(CondenserContainer.TYPE, CondenserScreen::new);
-            ScreenManager.registerFactory(InterfaceContainer.TYPE, InterfaceScreen::new);
-            ScreenManager.registerFactory(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new);
-            ScreenManager.<UpgradeableContainer, UpgradeableScreen<UpgradeableContainer>>registerFactory(
+            ScreenManager.register(NetworkToolContainer.TYPE, NetworkToolScreen::new);
+            ScreenManager.register(QuartzKnifeContainer.TYPE, QuartzKnifeScreen::new);
+            ScreenManager.register(DriveContainer.TYPE, DriveScreen::new);
+            ScreenManager.register(VibrationChamberContainer.TYPE, VibrationChamberScreen::new);
+            ScreenManager.register(CondenserContainer.TYPE, CondenserScreen::new);
+            ScreenManager.register(InterfaceContainer.TYPE, InterfaceScreen::new);
+            ScreenManager.register(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new);
+            ScreenManager.<UpgradeableContainer, UpgradeableScreen<UpgradeableContainer>>register(
                     UpgradeableContainer.TYPE, UpgradeableScreen::new);
-            ScreenManager.registerFactory(FluidIOContainer.TYPE, FluidIOScreen::new);
-            ScreenManager.registerFactory(IOPortContainer.TYPE, IOPortScreen::new);
-            ScreenManager.registerFactory(StorageBusContainer.TYPE, StorageBusScreen::new);
-            ScreenManager.registerFactory(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new);
-            ScreenManager.registerFactory(FormationPlaneContainer.TYPE, FormationPlaneScreen::new);
-            ScreenManager.registerFactory(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new);
-            ScreenManager.registerFactory(PriorityContainer.TYPE, PriorityScreen::new);
-            ScreenManager.registerFactory(SecurityStationContainer.TYPE, SecurityStationScreen::new);
-            ScreenManager.registerFactory(CraftingTermContainer.TYPE, CraftingTermScreen::new);
-            ScreenManager.registerFactory(PatternTermContainer.TYPE, PatternTermScreen::new);
-            ScreenManager.registerFactory(FluidTerminalContainer.TYPE, FluidTerminalScreen::new);
-            ScreenManager.registerFactory(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
-            ScreenManager.registerFactory(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
-            ScreenManager.registerFactory(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new);
-            ScreenManager.registerFactory(InscriberContainer.TYPE, InscriberScreen::new);
-            ScreenManager.registerFactory(CellWorkbenchContainer.TYPE, CellWorkbenchScreen::new);
-            ScreenManager.registerFactory(MolecularAssemblerContainer.TYPE, MolecularAssemblerScreen::new);
-            ScreenManager.registerFactory(CraftAmountContainer.TYPE, CraftAmountScreen::new);
-            ScreenManager.registerFactory(CraftConfirmContainer.TYPE, CraftConfirmScreen::new);
-            ScreenManager.registerFactory(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new);
-            ScreenManager.registerFactory(CraftingStatusContainer.TYPE, CraftingStatusScreen::new);
-            ScreenManager.registerFactory(SpatialAnchorContainer.TYPE, SpatialAnchorScreen::new);
+            ScreenManager.register(FluidIOContainer.TYPE, FluidIOScreen::new);
+            ScreenManager.register(IOPortContainer.TYPE, IOPortScreen::new);
+            ScreenManager.register(StorageBusContainer.TYPE, StorageBusScreen::new);
+            ScreenManager.register(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new);
+            ScreenManager.register(FormationPlaneContainer.TYPE, FormationPlaneScreen::new);
+            ScreenManager.register(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new);
+            ScreenManager.register(PriorityContainer.TYPE, PriorityScreen::new);
+            ScreenManager.register(SecurityStationContainer.TYPE, SecurityStationScreen::new);
+            ScreenManager.register(CraftingTermContainer.TYPE, CraftingTermScreen::new);
+            ScreenManager.register(PatternTermContainer.TYPE, PatternTermScreen::new);
+            ScreenManager.register(FluidTerminalContainer.TYPE, FluidTerminalScreen::new);
+            ScreenManager.register(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
+            ScreenManager.register(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
+            ScreenManager.register(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new);
+            ScreenManager.register(InscriberContainer.TYPE, InscriberScreen::new);
+            ScreenManager.register(CellWorkbenchContainer.TYPE, CellWorkbenchScreen::new);
+            ScreenManager.register(MolecularAssemblerContainer.TYPE, MolecularAssemblerScreen::new);
+            ScreenManager.register(CraftAmountContainer.TYPE, CraftAmountScreen::new);
+            ScreenManager.register(CraftConfirmContainer.TYPE, CraftConfirmScreen::new);
+            ScreenManager.register(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new);
+            ScreenManager.register(CraftingStatusContainer.TYPE, CraftingStatusScreen::new);
+            ScreenManager.register(SpatialAnchorContainer.TYPE, SpatialAnchorScreen::new);
         });
     }
 
@@ -529,8 +529,8 @@ final class Registration {
     // Forge registry instead
     private static <F extends Structure<?>> void registerStructure(IForgeRegistry<Structure<?>> registry, String name,
             F structure, GenerationStage.Decoration stage) {
-        Structure.NAME_STRUCTURE_BIMAP.put(name.toLowerCase(Locale.ROOT), structure);
-        Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, stage);
+        Structure.STRUCTURES_REGISTRY.put(name.toLowerCase(Locale.ROOT), structure);
+        Structure.STEP.put(structure, stage);
         structure.setRegistryName(name.toLowerCase(Locale.ROOT));
         registry.register(structure);
     }
@@ -549,14 +549,14 @@ final class Registration {
 
     @OnlyIn(Dist.CLIENT)
     public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        ParticleManager particles = Minecraft.getInstance().particles;
-        particles.registerFactory(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
-        particles.registerFactory(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
-        particles.registerFactory(ParticleTypes.ENERGY, EnergyFx.Factory::new);
-        particles.registerFactory(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);
-        particles.registerFactory(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
-        particles.registerFactory(ParticleTypes.MATTER_CANNON, MatterCannonFX.Factory::new);
-        particles.registerFactory(ParticleTypes.VIBRANT, VibrantFX.Factory::new);
+        ParticleManager particles = Minecraft.getInstance().particleEngine;
+        particles.register(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
+        particles.register(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
+        particles.register(ParticleTypes.ENERGY, EnergyFx.Factory::new);
+        particles.register(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);
+        particles.register(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
+        particles.register(ParticleTypes.MATTER_CANNON, MatterCannonFX.Factory::new);
+        particles.register(ParticleTypes.VIBRANT, VibrantFX.Factory::new);
     }
 
     // FIXME LATER
@@ -573,7 +573,7 @@ final class Registration {
 
         // Block and part interface have different translation keys, but support the
         // same upgrades
-        String interfaceGroup = parts.iface().asItem().getTranslationKey();
+        String interfaceGroup = parts.iface().asItem().getDescriptionId();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
         String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
@@ -746,7 +746,7 @@ final class Registration {
     }
 
     public void registerCommands(final FMLServerStartingEvent evt) {
-        new AECommand().register(evt.getServer().getCommandManager().getDispatcher());
+        new AECommand().register(evt.getServer().getCommands().getDispatcher());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -784,17 +784,17 @@ final class Registration {
     private void addMeteoriteWorldGen(BiomeLoadingEvent e) {
         if (shouldGenerateIn(e.getName(), AEFeature.METEORITE_WORLD_GEN, IWorldGen.WorldGenType.METEORITES,
                 e.getCategory())) {
-            e.getGeneration().withStructure(MeteoriteStructure.CONFIGURED_INSTANCE);
+            e.getGeneration().addStructureStart(MeteoriteStructure.CONFIGURED_INSTANCE);
         }
     }
 
     private void addQuartzWorldGen(BiomeLoadingEvent e) {
         if (shouldGenerateIn(e.getName(), AEFeature.CERTUS_QUARTZ_WORLD_GEN, IWorldGen.WorldGenType.CERTUS_QUARTZ,
                 e.getCategory())) {
-            e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, quartzOreFeature);
+            e.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, quartzOreFeature);
 
             if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
-                e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
+                e.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
                         chargedQuartzOreFeature);
             }
         }
@@ -830,29 +830,29 @@ final class Registration {
 
     private static ConfiguredFeature<?, ?> registerQuartzOreFeature() {
         // Tell Minecraft about our configured quartz ore feature
-        BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
+        BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().defaultBlockState();
         return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(), Feature.ORE
-                .withConfiguration(
-                        new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
+                .configured(
+                        new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE, quartzOreState,
                                 AEConfig.instance().getQuartzOresPerCluster()))
-                .withPlacement(Placement.RANGE/* RANGE */.configure(new TopSolidRangeConfig(12, 12, 72)))
-                .square/* spreadHorizontally */()
-                .func_242731_b/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
+                .decorated(Placement.RANGE/* RANGE */.configured(new TopSolidRangeConfig(12, 12, 72)))
+                .squared/* spreadHorizontally */()
+                .count/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
     }
 
     private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {
-        BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
+        BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().defaultBlockState();
         BlockState chargedQuartzOreState = Api.instance().definitions().blocks().quartzOreCharged().block()
-                .getDefaultState();
+                .defaultBlockState();
         return ConfiguredFeaturesAccessor.register(AppEng.makeId("charged_quartz_ore").toString(),
                 ChargedQuartzOreFeature.INSTANCE
-                        .withConfiguration(new ChargedQuartzOreConfig(quartzOreState, chargedQuartzOreState,
+                        .configured(new ChargedQuartzOreConfig(quartzOreState, chargedQuartzOreState,
                                 AEConfig.instance().getSpawnChargedChance()))
-                        .withPlacement(Placement.NOPE.configure(NoPlacementConfig.INSTANCE)));
+                        .decorated(Placement.NOPE.configured(NoPlacementConfig.INSTANCE)));
     }
 
     public void registerDimension(RegistryEvent.NewRegistry e) {
-        Registry.register(Registry.CHUNK_GENERATOR_CODEC, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+        Registry.register(Registry.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
                 SpatialStorageChunkGenerator.CODEC);
     }
 

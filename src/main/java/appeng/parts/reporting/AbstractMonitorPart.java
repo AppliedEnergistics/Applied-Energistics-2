@@ -149,7 +149,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         }
 
         if (!this.isLocked) {
-            final ItemStack eq = player.getHeldItem(hand);
+            final ItemStack eq = player.getItemInHand(hand);
             this.configuredItem = AEItemStack.fromItemStack(eq);
             this.configureWatchers();
             this.getHost().markForSave();
@@ -175,10 +175,10 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             return false;
         }
 
-        if (player.getHeldItem(hand).isEmpty()) {
+        if (player.getItemInHand(hand).isEmpty()) {
             this.isLocked = !this.isLocked;
             player.sendMessage((this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get(),
-                    Util.DUMMY_UUID);
+                    Util.NIL_UUID);
             this.getHost().markForSave();
             this.getHost().markForUpdate();
         }
@@ -233,7 +233,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             return;
         }
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5); // Move into the center of the block
 
         Direction facing = this.getSide().getFacing();
@@ -244,7 +244,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         TesrRenderHelper.renderItem2dWithAmount(matrixStack, buffers, ais, 0.4f, -0.23f, 15728880, combinedOverlayIn);
 
-        matrixStack.pop();
+        matrixStack.popPose();
 
     }
 

@@ -21,6 +21,7 @@ package appeng.items.tools;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
@@ -67,12 +68,12 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         if (pos == null) {
             return new NetworkToolViewer(is, null);
         }
-        final TileEntity te = world.getTileEntity(pos);
+        final TileEntity te = world.getBlockEntity(pos);
         return new NetworkToolViewer(is, (IGridHost) (te instanceof IGridHost ? te : null));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+    public ActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
         if (Platform.isClient()) {
             final RayTraceResult mop = AppEng.proxy.getRTR();
 
@@ -81,17 +82,17 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             }
         }
 
-        return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.SUCCESS, p.getItemInHand(hand));
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        final BlockRayTraceResult mop = new BlockRayTraceResult(context.getHitVec(), context.getFace(),
-                context.getPos(), context.isInside());
-        final TileEntity te = context.getWorld().getTileEntity(context.getPos());
+        final BlockRayTraceResult mop = new BlockRayTraceResult(context.getClickLocation(), context.getClickedFace(),
+                context.getClickedPos(), context.isInside());
+        final TileEntity te = context.getLevel().getBlockEntity(context.getClickedPos());
 
         if (te instanceof IPartHost) {
-            final SelectedPart part = ((IPartHost) te).selectPart(mop.getHitVec());
+            final SelectedPart part = ((IPartHost) te).selectPart(mop.getLocation());
 
             if (part.part != null || part.facade != null) {
                 if (part.part instanceof INetworkToolAgent && !((INetworkToolAgent) part.part).showNetworkInfo(mop)) {
@@ -117,11 +118,11 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     }
 
     public boolean serverSideToolLogic(ItemUseContext useContext) {
-        BlockPos pos = useContext.getPos();
+        BlockPos pos = useContext.getClickedPos();
         PlayerEntity p = useContext.getPlayer();
-        World w = p.world;
+        World w = p.level;
         Hand hand = useContext.getHand();
-        Direction side = useContext.getFace();
+        Direction side = useContext.getClickedFace();
 
         if (!Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
             return false;
@@ -129,22 +130,22 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
 
         final BlockState bs = w.getBlockState(pos);
         if (!p.isCrouching()) {
-            final TileEntity te = w.getTileEntity(pos);
+            final TileEntity te = w.getBlockEntity(pos);
             if (!(te instanceof IGridHost)) {
                 if (bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
                     bs.neighborChanged(w, pos, Blocks.AIR, pos, false);
-                    p.swingArm(hand);
-                    return !w.isRemote;
+                    p.swing(hand);
+                    return !w.isClientSide;
                 }
             }
         }
 
         if (!p.isCrouching()) {
-            if (p.openContainer instanceof AEBaseContainer) {
+            if (p.containerMenu instanceof AEBaseContainer) {
                 return true;
             }
 
-            final TileEntity te = w.getTileEntity(pos);
+            final TileEntity te = w.getBlockEntity(pos);
 
             if (te instanceof IGridHost) {
                 ContainerOpener.openContainer(NetworkStatusContainer.TYPE, p,
@@ -155,8 +156,8 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
 
             return true;
         } else {
-            BlockRayTraceResult rtr = new BlockRayTraceResult(useContext.getHitVec(), side, pos, false);
-            bs.onBlockActivated(w, p, hand, rtr);
+            BlockRayTraceResult rtr = new BlockRayTraceResult(useContext.getClickLocation(), side, pos, false);
+            bs.use(w, p, hand, rtr);
         }
 
         return false;

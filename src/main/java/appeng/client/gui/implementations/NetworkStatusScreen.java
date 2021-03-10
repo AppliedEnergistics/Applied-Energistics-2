@@ -57,8 +57,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
 
         this.setScrollBar(scrollbar);
         this.repo = new ItemRepo(scrollbar, this);
-        this.ySize = 153;
-        this.xSize = 195;
+        this.imageHeight = 153;
+        this.imageWidth = 195;
         this.repo.setRowSize(5);
     }
 
@@ -66,14 +66,14 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     public void init() {
         super.init();
 
-        this.addButton(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
+        this.addButton(CommonButtons.togglePowerUnit(this.leftPos - 18, this.topPos + 8));
     }
 
     @Override
     public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
 
-        final int gx = (this.width - this.xSize) / 2;
-        final int gy = (this.height - this.ySize) / 2;
+        final int gx = (this.width - this.imageWidth) / 2;
+        final int gy = (this.height - this.imageHeight) / 2;
 
         this.tooltip = -1;
 
@@ -104,19 +104,19 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, GuiText.NetworkDetails.getLocal(), 8, 6, 4210752);
+        this.font.draw(matrixStack, GuiText.NetworkDetails.getLocal(), 8, 6, 4210752);
 
-        this.font.drawString(matrixStack,
-                GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong(container.getCurrentPower(), false),
+        this.font.draw(matrixStack,
+                GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong(menu.getCurrentPower(), false),
                 13, 16, 4210752);
-        this.font.drawString(matrixStack,
-                GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong(container.getMaxPower(), false), 13, 26,
+        this.font.draw(matrixStack,
+                GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong(menu.getMaxPower(), false), 13, 26,
                 4210752);
 
-        this.font.drawString(matrixStack, GuiText.PowerInputRate.getLocal() + ": "
-                + Platform.formatPowerLong(container.getAverageAddition(), true), 13, 143 - 10, 4210752);
-        this.font.drawString(matrixStack,
-                GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong(container.getPowerUsage(), true),
+        this.font.draw(matrixStack, GuiText.PowerInputRate.getLocal() + ": "
+                + Platform.formatPowerLong(menu.getAverageAddition(), true), 13, 143 - 10, 4210752);
+        this.font.draw(matrixStack,
+                GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong(menu.getPowerUsage(), true),
                 13, 143 - 20, 4210752);
 
         final int sectionLength = 30;
@@ -143,8 +143,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                     str = Long.toString(refStack.getStackSize() / 1000) + 'k';
                 }
 
-                final int w = this.font.getStringWidth(str);
-                this.font.drawString(matrixStack, str,
+                final int w = this.font.width(str);
+                this.font.draw(matrixStack, str,
                         (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * 18 + yo + 6) * 2,
                         4210752);
 
@@ -185,7 +185,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/networkstatus.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.imageWidth, this.imageHeight, getBlitOffset());
     }
 
     public void postUpdate(final List<IAEItemStack> list) {

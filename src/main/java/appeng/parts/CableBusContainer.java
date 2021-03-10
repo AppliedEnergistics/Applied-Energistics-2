@@ -362,7 +362,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, true);
                 p.getBoxes(bch);
                 for (AxisAlignedBB bb : boxes) {
-                    bb = bb.grow(0.002, 0.002, 0.002);
+                    bb = bb.inflate(0.002, 0.002, 0.002);
                     if (bb.contains(pos)) {
                         return new SelectedPart(p, side);
                     }
@@ -380,7 +380,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                     final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, true);
                     p.getBoxes(bch, true);
                     for (AxisAlignedBB bb : boxes) {
-                        bb = bb.grow(0.01, 0.01, 0.01);
+                        bb = bb.inflate(0.01, 0.01, 0.01);
                         if (bb.contains(pos)) {
                             return new SelectedPart(p, side);
                         }
@@ -413,7 +413,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
             if (!facades.isEmpty()) {
                 final TileEntity te = this.tcb.getTile();
-                Platform.spawnDrops(te.getWorld(), te.getPos(), facades);
+                Platform.spawnDrops(te.getLevel(), te.getBlockPos(), facades);
             }
         }
 
@@ -470,7 +470,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
     private void updateRedstone() {
         final TileEntity te = this.getTile();
-        this.hasRedstone = te.getWorld().getRedstonePowerFromNeighbors(te.getPos()) != 0 ? YesNo.YES : YesNo.NO;
+        this.hasRedstone = te.getLevel().getBestNeighborSignal(te.getBlockPos()) != 0 ? YesNo.YES : YesNo.NO;
     }
 
     private void updateDynamicRender() {
@@ -745,7 +745,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             if (p != null) {
                 final ItemStack is = p.getItemStack(PartItemStack.NETWORK);
 
-                data.writeVarInt(Item.getIdFromItem(is.getItem()));
+                data.writeVarInt(Item.getId(is.getItem()));
 
                 p.writeToStream(data);
             }
@@ -766,7 +766,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
                 final int itemID = data.readVarInt();
 
-                final Item myItem = Item.getItemById(itemID);
+                final Item myItem = Item.byId(itemID);
 
                 final ItemStack current = p != null ? p.getItemStack(PartItemStack.NETWORK) : null;
                 if (current != null && current.getItem() == myItem) {
@@ -806,7 +806,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             final IPart part = this.getPart(s);
             if (part != null) {
                 final CompoundNBT def = new CompoundNBT();
-                part.getItemStack(PartItemStack.WORLD).write(def);
+                part.getItemStack(PartItemStack.WORLD).save(def);
 
                 final CompoundNBT extra = new CompoundNBT();
                 part.writeToNBT(extra);
@@ -848,7 +848,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 final CompoundNBT def = data.getCompound(defKey);
                 final CompoundNBT extra = data.getCompound(extraKey);
                 IPart p = this.getPart(side);
-                final ItemStack iss = ItemStack.read(def);
+                final ItemStack iss = ItemStack.of(def);
                 if (iss.isEmpty()) {
                     continue;
                 }
@@ -951,8 +951,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 // Dense cables however also respect the adjacent cable-type since their
                 // outgoing connection
                 // point would look too big for other cable types
-                final BlockPos adjacentPos = this.getTile().getPos().offset(facing);
-                final TileEntity adjacentTe = this.getTile().getWorld().getTileEntity(adjacentPos);
+                final BlockPos adjacentPos = this.getTile().getBlockPos().relative(facing);
+                final TileEntity adjacentTe = this.getTile().getLevel().getBlockEntity(adjacentPos);
 
                 if (adjacentTe instanceof IGridHost) {
                     final IGridHost gridHost = (IGridHost) adjacentTe;
@@ -1032,10 +1032,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             final ItemStack textureItem = facade.getTextureItem();
             final BlockState blockState = facade.getBlockState();
 
-            World world = getTile().getWorld();
+            World world = getTile().getLevel();
             if (blockState != null && textureItem != null && world != null) {
                 return new FacadeRenderState(blockState,
-                        !facade.getBlockState().isOpaqueCube(world, getTile().getPos()));
+                        !facade.getBlockState().isSolidRender(world, getTile().getBlockPos()));
             }
         }
 

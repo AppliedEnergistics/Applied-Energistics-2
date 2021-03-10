@@ -45,7 +45,8 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     public void init() {
         super.init();
 
-        this.selectCPU = new Button(this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, getNextCpuButtonLabel(),
+        this.selectCPU = new Button(this.leftPos + 8, this.topPos + this.imageHeight - 25, 150, 20,
+                getNextCpuButtonLabel(),
                 btn -> selectNextCpu());
         this.addButton(this.selectCPU);
 
@@ -66,10 +67,10 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     }
 
     private ITextComponent getNextCpuButtonLabel() {
-        if (this.container.noCPU) {
+        if (this.menu.noCPU) {
             return GuiText.NoCraftingJobs.text();
         }
-        return GuiText.CraftingCPU.withSuffix(": ").append(container.cpuName);
+        return GuiText.CraftingCPU.withSuffix(": ").append(menu.cpuName);
     }
 
     @Override

@@ -41,7 +41,7 @@ import appeng.util.Platform;
 public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity> {
 
     public SpatialIOPortBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(SpatialIOPortContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
             return ActionResultType.SUCCESS;
         }

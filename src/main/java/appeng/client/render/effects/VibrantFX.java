@@ -34,20 +34,20 @@ public class VibrantFX extends SpriteTexturedParticle {
     public VibrantFX(final ClientWorld par1World, final double x, final double y, final double z, final double par8,
             final double par10, final double par12, IAnimatedSprite sprite) {
         super(par1World, x, y, z, par8, par10, par12);
-        final float f = this.rand.nextFloat() * 0.1F + 0.8F;
-        this.particleRed = f * 0.7f;
-        this.particleGreen = f * 0.89f;
-        this.particleBlue = f * 0.9f;
-        this.selectSpriteRandomly(sprite);
+        final float f = this.random.nextFloat() * 0.1F + 0.8F;
+        this.rCol = f * 0.7f;
+        this.gCol = f * 0.89f;
+        this.bCol = f * 0.9f;
+        this.pickSprite(sprite);
         this.setSize(0.04F, 0.04F);
-        this.particleScale *= this.rand.nextFloat() * 0.6F + 1.9F;
-        this.motionX = 0.0D;
-        this.motionY = 0.0D;
-        this.motionZ = 0.0D;
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
-        this.maxAge = (int) (20.0D / (Math.random() * 0.8D + 0.1D));
+        this.quadSize *= this.random.nextFloat() * 0.6F + 1.9F;
+        this.xd = 0.0D;
+        this.yd = 0.0D;
+        this.zd = 0.0D;
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
+        this.lifetime = (int) (20.0D / (Math.random() * 0.8D + 0.1D));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class VibrantFX extends SpriteTexturedParticle {
     }
 
     @Override
-    public int getBrightnessForRender(final float par1) {
+    public int getLightColor(final float par1) {
         // This just means full brightness
         return 15 << 20 | 15 << 4;
     }
@@ -67,16 +67,16 @@ public class VibrantFX extends SpriteTexturedParticle {
      */
     @Override
     public void tick() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
         // this.moveEntity(this.motionX, this.motionY, this.motionZ);
-        this.particleScale *= 0.95;
+        this.quadSize *= 0.95;
 
-        if (this.maxAge <= 0 || this.particleScale < 0.1) {
-            this.setExpired();
+        if (this.lifetime <= 0 || this.quadSize < 0.1) {
+            this.remove();
         }
-        this.maxAge--;
+        this.lifetime--;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -88,7 +88,7 @@ public class VibrantFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
+        public Particle createParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             return new VibrantFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }

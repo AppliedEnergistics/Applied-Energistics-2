@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -61,11 +62,11 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
-            lines.add(GuiText.Unformatted.text().deepCopy().mergeStyle(TextFormatting.ITALIC));
+            lines.add(GuiText.Unformatted.text().copy().withStyle(TextFormatting.ITALIC));
             lines.add(GuiText.SpatialCapacity.text(maxRegion, maxRegion, maxRegion));
             return;
         }
@@ -77,7 +78,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
         CompoundNBT tag = stack.getTag();
         if (tag != null && tag.contains(TAG_PLOT_SIZE, Constants.NBT.TAG_LONG)) {
-            BlockPos size = BlockPos.fromLong(tag.getLong(TAG_PLOT_SIZE));
+            BlockPos size = BlockPos.of(tag.getLong(TAG_PLOT_SIZE));
             lines.add(GuiText.StoredSize.text(size.getX(), size.getY(), size.getZ()));
         }
     }
@@ -142,7 +143,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
 
         // Store some information about this transition in the plot
-        TransitionInfo info = new TransitionInfo(w.getDimensionKey().getLocation(), min.getBlockPos(),
+        TransitionInfo info = new TransitionInfo(w.dimension().location(), min.getBlockPos(),
                 max.getBlockPos(), Instant.now());
         manager.setLastTransition(plot.getId(), info);
 
@@ -167,6 +168,6 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     public void setStoredDimension(final ItemStack is, int plotId, BlockPos size) {
         final CompoundNBT c = is.getOrCreateTag();
         c.putInt(TAG_PLOT_ID, plotId);
-        c.putLong(TAG_PLOT_SIZE, size.toLong());
+        c.putLong(TAG_PLOT_SIZE, size.asLong());
     }
 }

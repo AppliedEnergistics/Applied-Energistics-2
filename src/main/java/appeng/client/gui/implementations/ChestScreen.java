@@ -36,14 +36,14 @@ public class ChestScreen extends AEBaseScreen<ChestContainer> {
 
     public ChestScreen(ChestContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 166;
+        this.imageHeight = 166;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
+        this.addButton(new TabButton(this.leftPos + 154, this.topPos, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriority()));
     }
 
@@ -54,14 +54,14 @@ public class ChestScreen extends AEBaseScreen<ChestContainer> {
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Chest.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.Chest.text()).getString(), 8, 6, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.text().getString(), 8, this.imageHeight - 96 + 3, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/chest.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.imageWidth, this.imageHeight, getBlitOffset());
     }
 }

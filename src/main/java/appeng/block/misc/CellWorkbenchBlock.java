@@ -38,7 +38,7 @@ import appeng.util.Platform;
 public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity> {
 
     public CellWorkbenchBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override

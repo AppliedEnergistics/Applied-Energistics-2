@@ -23,6 +23,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.button.Button.IPressable;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -67,7 +68,7 @@ public class TabButton extends Button implements ITooltip {
 
         if (this.visible) {
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            minecraft.textureManager.bindTexture(TEXTURE_STATES);
+            minecraft.textureManager.bind(TEXTURE_STATES);
 
             RenderSystem.enableAlphaTest();
 
@@ -90,13 +91,13 @@ public class TabButton extends Button implements ITooltip {
             RenderSystem.disableAlphaTest();
 
             if (this.myItem != null) {
-                this.itemRenderer.zLevel = 100.0F;
+                this.itemRenderer.blitOffset = 100.0F;
 
-                RenderHelper.enableStandardItemLighting();
-                this.itemRenderer.renderItemAndEffectIntoGUI(this.myItem, offsetX + this.x + 3, this.y + 3);
-                RenderHelper.disableStandardItemLighting();
+                RenderHelper.turnBackOn();
+                this.itemRenderer.renderAndDecorateItem(this.myItem, offsetX + this.x + 3, this.y + 3);
+                RenderHelper.turnOff();
 
-                this.itemRenderer.zLevel = 0.0F;
+                this.itemRenderer.blitOffset = 0.0F;
             }
         }
     }

@@ -2,6 +2,7 @@ package appeng.datagen.providers.tags;
 
 import java.nio.file.Path;
 
+import net.minecraft.data.TagsProvider.Builder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tags.ITag;
@@ -22,7 +23,7 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
     }
 
     @Override
-    protected void registerTags() {
+    protected void addTags() {
         registerForgeTags();
 
         addAe2("blacklisted/annihilation_plane");
@@ -113,7 +114,7 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
 
     @SuppressWarnings("unchecked")
     private void add(ResourceLocation tagName, Object... itemSources) {
-        Builder<Item> builder = getOrCreateBuilder(net.minecraft.tags.ItemTags.createOptional(tagName));
+        Builder<Item> builder = tag(net.minecraft.tags.ItemTags.createOptional(tagName));
 
         for (Object itemSource : itemSources) {
             if (itemSource instanceof IItemProvider) {
@@ -148,7 +149,7 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
     }
 
     @Override
-    protected Path makePath(ResourceLocation id) {
+    protected Path getPath(ResourceLocation id) {
         return this.generator.getOutputFolder()
                 .resolve("data/" + id.getNamespace() + "/tags/items/" + id.getPath() + ".json");
     }

@@ -69,14 +69,14 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.getCableBus().readFromNBT(data);
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         this.getCableBus().writeToNBT(data);
         return data;
     }
@@ -89,7 +89,7 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
         final int newLV = this.getCableBus().getLightValue();
         if (newLV != this.oldLV) {
             this.oldLV = newLV;
-            this.world.getLightManager().checkBlock(this.pos);
+            this.level.getLightEngine().checkBlock(this.worldPosition);
             ret = true;
         }
 
@@ -111,19 +111,19 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public double getMaxRenderDistanceSquared() {
+    public double getViewDistance() {
         return 900.0;
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         this.getCableBus().removeFromWorld();
     }
 
     @Override
-    public void validate() {
-        super.validate();
+    public void clearRemoved() {
+        super.clearRemoved();
         TickHandler.instance().addInit(this);
     }
 
@@ -150,14 +150,14 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
 
     @Override
     public void markForUpdate() {
-        if (this.world == null) {
+        if (this.level == null) {
             return;
         }
 
         final int newLV = this.getCableBus().getLightValue();
         if (newLV != this.oldLV) {
             this.oldLV = newLV;
-            this.world.getLightManager().checkBlock(this.pos);
+            this.level.getLightEngine().checkBlock(this.worldPosition);
         }
 
         super.markForUpdate();
@@ -182,8 +182,8 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     public void onReady() {
         super.onReady();
         if (this.getCableBus().isEmpty()) {
-            if (this.world.getTileEntity(this.pos) == this) {
-                this.world.destroyBlock(this.pos, true);
+            if (this.level.getBlockEntity(this.worldPosition) == this) {
+                this.level.destroyBlock(this.worldPosition, true);
             }
         } else {
             this.getCableBus().addToWorld();
@@ -274,13 +274,13 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
 
     @Override
     public void cleanup() {
-        this.getWorld().removeBlock(this.pos, false);
+        this.getLevel().removeBlock(this.worldPosition, false);
     }
 
     @Override
     public void notifyNeighbors() {
-        if (this.world != null && this.world.isBlockLoaded(this.pos) && !CableBusContainer.isLoading()) {
-            Platform.notifyBlocksOfNeighbors(this.world, this.pos);
+        if (this.level != null && this.level.hasChunkAt(this.worldPosition) && !CableBusContainer.isLoading()) {
+            Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
         }
     }
 
@@ -320,14 +320,14 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     @Nonnull
     @Override
     public IModelData getModelData() {
-        World world = getWorld();
+        World world = getLevel();
         if (world == null) {
             return EmptyModelData.INSTANCE;
         }
 
         CableBusRenderState renderState = this.cb.getRenderState();
         renderState.setWorld(world);
-        renderState.setPos(pos);
+        renderState.setPos(worldPosition);
         return new ModelDataMap.Builder().withInitial(CableBusRenderState.PROPERTY, renderState).build();
 
     }

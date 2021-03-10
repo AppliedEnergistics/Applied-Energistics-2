@@ -41,20 +41,22 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         if (!context.getPlayer().isCrouching() && Platform
-                .hasPermissions(new DimensionalCoord(context.getWorld(), context.getPos()), context.getPlayer())) {
+                .hasPermissions(new DimensionalCoord(context.getLevel(), context.getClickedPos()),
+                        context.getPlayer())) {
 
-            Block block = context.getWorld().getBlockState(context.getPos()).getBlock();
+            Block block = context.getLevel().getBlockState(context.getClickedPos()).getBlock();
             if (block instanceof AEBaseBlock) {
                 if (Platform.isClient()) {
                     // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
                     // Fix that in all Block#onItemUseFirst overrides.
-                    return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.PASS;
+                    return !context.getLevel().isClientSide ? ActionResultType.SUCCESS : ActionResultType.PASS;
                 }
 
                 AEBaseBlock aeBlock = (AEBaseBlock) block;
-                if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getPos(), context.getFace())) {
-                    context.getPlayer().swingArm(context.getHand());
-                    return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+                if (aeBlock.rotateAroundFaceAxis(context.getLevel(), context.getClickedPos(),
+                        context.getClickedFace())) {
+                    context.getPlayer().swing(context.getHand());
+                    return !context.getLevel().isClientSide ? ActionResultType.SUCCESS : ActionResultType.FAIL;
                 }
             }
         }

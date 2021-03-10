@@ -29,6 +29,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.features.IWorldGen;
+import appeng.api.features.IWorldGen.WorldGenType;
 
 public final class WorldGenRegistry implements IWorldGen {
 

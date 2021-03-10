@@ -55,7 +55,7 @@ public class NetworkToolContainer extends AEBaseContainer {
         super(TYPE, id, ip, null, null);
         this.toolInv = te;
 
-        this.lockPlayerInventorySlot(ip.currentItem);
+        this.lockPlayerInventorySlot(ip.selected);
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
@@ -70,17 +70,17 @@ public class NetworkToolContainer extends AEBaseContainer {
     public void toggleFacadeMode() {
         final CompoundNBT data = this.toolInv.getItemStack().getOrCreateTag();
         data.putBoolean("hideFacades", !data.getBoolean("hideFacades"));
-        this.detectAndSendChanges();
+        this.broadcastChanges();
     }
 
     @Override
-    public void detectAndSendChanges() {
-        final ItemStack currentItem = this.getPlayerInv().getCurrentItem();
+    public void broadcastChanges() {
+        final ItemStack currentItem = this.getPlayerInv().getSelected();
 
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
-                if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem,
+                if (ItemStack.isSame(this.toolInv.getItemStack(), currentItem)) {
+                    this.getPlayerInv().setItem(this.getPlayerInv().selected,
                             this.toolInv.getItemStack());
                 } else {
                     this.setValidContainer(false);
@@ -95,7 +95,7 @@ public class NetworkToolContainer extends AEBaseContainer {
             this.setFacadeMode(data.getBoolean("hideFacades"));
         }
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     public boolean isFacadeMode() {

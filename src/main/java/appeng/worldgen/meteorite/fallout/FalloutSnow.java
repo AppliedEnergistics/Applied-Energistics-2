@@ -43,9 +43,9 @@ public class FalloutSnow extends FalloutCopy {
     @Override
     public void getOther(final IWorld w, BlockPos pos, final double a) {
         if (a > SNOW_THRESHOLD) {
-            this.putter.put(w, pos, Blocks.SNOW.getDefaultState());
+            this.putter.put(w, pos, Blocks.SNOW.defaultBlockState());
         } else if (a > ICE_THRESHOLD) {
-            this.putter.put(w, pos, Blocks.ICE.getDefaultState());
+            this.putter.put(w, pos, Blocks.ICE.defaultBlockState());
         }
     }
 }

@@ -42,15 +42,15 @@ public class DefaultSpatialHandler implements IMovableHandler {
 
     @Override
     public void moveTile(final TileEntity te, final World w, final BlockPos newPosition) {
-        te.setWorldAndPos(w, newPosition);
+        te.setLevelAndPosition(w, newPosition);
 
         final Chunk c = w.getChunkAt(newPosition);
-        c.addTileEntity(newPosition, te);
+        c.setBlockEntity(newPosition, te);
 
-        if (w.getChunkProvider().canTick(newPosition)) {
+        if (w.getChunkSource().isTickingChunk(newPosition)) {
             final BlockState state = w.getBlockState(newPosition);
-            w.addTileEntity(te);
-            w.notifyBlockUpdate(newPosition, state, state, 1);
+            w.addBlockEntity(te);
+            w.sendBlockUpdated(newPosition, state, state, 1);
         }
     }
 }

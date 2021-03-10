@@ -97,7 +97,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.delay++;
         if (isServer() && this.delay > 15 && this.network != null) {
             this.delay = 0;
@@ -132,7 +132,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
                     }
                 }
 
-                for (final Object c : this.listeners) {
+                for (final Object c : this.containerListeners) {
                     if (c instanceof PlayerEntity) {
                         NetworkHandler.instance().sendTo(piu, (ServerPlayerEntity) c);
                     }
@@ -141,7 +141,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
                 // :P
             }
         }
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     public long getCurrentPower() {

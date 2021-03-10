@@ -47,7 +47,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
 
     public QuantumBaseBlock(AbstractBlock.Properties props) {
         super(props);
-        this.setDefaultState(this.getDefaultState().with(FORMED, false));
+        this.registerDefaultState(this.defaultBlockState().setValue(FORMED, false));
     }
 
     @Override
@@ -56,14 +56,14 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(FORMED);
     }
 
     @Override
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeTileEntity te) {
-        return currentState.with(FORMED, te.isFormed());
+        return currentState.setValue(FORMED, te.isFormed());
     }
 
     @Override
@@ -76,7 +76,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
     }
 
     @Override
-    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
@@ -86,7 +86,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
             bridge.breakCluster();
         }
 
-        super.onReplaced(state, w, pos, newState, isMoving);
+        super.onRemove(state, w, pos, newState, isMoving);
     }
 
 }

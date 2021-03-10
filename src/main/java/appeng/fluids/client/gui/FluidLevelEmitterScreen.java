@@ -32,24 +32,24 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
         this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_FLUID_VOLUME);
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.addButtons(children::add, this::addButton);
-        this.level.setValue(container.getReportingValue());
+        this.level.setValue(menu.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
-        this.level.setOnConfirm(this::closeScreen);
+        this.level.setOnConfirm(this::onClose);
 
         this.changeFocus(true);
 
         final int y = 40;
         final int x = 80 + 57;
-        this.guiSlots.add(new FluidSlotWidget(this.container.getFluidConfigInventory(), 0, 0, x, y));
+        this.guiSlots.add(new FluidSlotWidget(this.menu.getFluidConfigInventory(), 0, 0, x, y));
     }
 
     private void saveReportingValue() {
-        this.level.getLongValue().ifPresent(container::setReportingValue);
+        this.level.getLongValue().ifPresent(menu::setReportingValue);
     }
 
     @Override
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+        this.redstoneMode = new ServerSettingToggleButton<>(this.leftPos - 18, this.topPos + 28,
                 Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
         this.addButton(this.redstoneMode);
     }
@@ -65,7 +65,7 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
 
-        this.font.drawString(matrixStack, GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
+        this.font.draw(matrixStack, GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
     }
 
     @Override

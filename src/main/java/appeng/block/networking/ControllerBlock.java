@@ -38,7 +38,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
         offline, online, conflicted;
 
         @Override
-        public String getString() {
+        public String getSerializedName() {
             return this.name();
         }
 
@@ -53,7 +53,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
         block, column_x, column_y, column_z, inside_a, inside_b;
 
         @Override
-        public String getString() {
+        public String getSerializedName() {
             return this.name();
         }
 
@@ -66,14 +66,14 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
             ControllerRenderType.class);
 
     public ControllerBlock() {
-        super(defaultProps(Material.IRON).hardnessAndResistance(6));
-        this.setDefaultState(this.getDefaultState().with(CONTROLLER_STATE, ControllerBlockState.offline)
-                .with(CONTROLLER_TYPE, ControllerRenderType.block));
+        super(defaultProps(Material.METAL).strength(6));
+        this.registerDefaultState(this.defaultBlockState().setValue(CONTROLLER_STATE, ControllerBlockState.offline)
+                .setValue(CONTROLLER_TYPE, ControllerRenderType.block));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(CONTROLLER_STATE);
         builder.add(CONTROLLER_TYPE);
     }
@@ -84,7 +84,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
      * rudimentary connected texture feel for the controller based on how it is placed.
      */
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world,
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld world,
             BlockPos pos, BlockPos facingPos) {
 
         // FIXME: this might work, or might _NOT_ work, but needs to be investigated
@@ -124,7 +124,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
             }
         }
 
-        return state.with(CONTROLLER_TYPE, type);
+        return state.setValue(CONTROLLER_TYPE, type);
     }
 
     @Override

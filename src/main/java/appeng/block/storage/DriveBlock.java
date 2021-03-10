@@ -39,7 +39,7 @@ import appeng.util.Platform;
 public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
 
     public DriveBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override

@@ -64,7 +64,7 @@ public class SpatialStorageHelper {
         final ServerWorld newWorld;
 
         try {
-            oldWorld = (ServerWorld) entity.world;
+            oldWorld = (ServerWorld) entity.level;
             newWorld = link.dim;
         } catch (final Throwable e) {
             return entity;
@@ -82,7 +82,7 @@ public class SpatialStorageHelper {
 
         // Are we riding something? Teleport it instead.
         if (entity.isPassenger()) {
-            return this.teleportEntity(entity.getRidingEntity(), link);
+            return this.teleportEntity(entity.getVehicle(), link);
         }
 
         // Is something riding us? Handle it first.
@@ -95,15 +95,15 @@ public class SpatialStorageHelper {
         // We keep track of all so we can remount them on the other side.
 
         // load the chunk!
-        newWorld.getChunkProvider().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
+        newWorld.getChunkSource().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
-        if (entity instanceof ServerPlayerEntity && link.dim.getDimensionKey() == SpatialStorageDimensionIds.WORLD_ID) {
+        if (entity instanceof ServerPlayerEntity && link.dim.dimension() == SpatialStorageDimensionIds.WORLD_ID) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
-        PortalInfo portalInfo = new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.rotationYaw,
-                entity.rotationPitch);
+        PortalInfo portalInfo = new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.yRot,
+                entity.xRot);
         entity = entity.changeDimension(link.dim, new ITeleporter() {
             @Override
             public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw,
@@ -159,7 +159,7 @@ public class SpatialStorageHelper {
         Api.instance().definitions().blocks().matrixFrame().maybeBlock()
                 .ifPresent(matrixFrameBlock -> this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
                         dstY + scaleY + 1, dstZ + scaleZ + 1,
-                        new WrapInMatrixFrame(matrixFrameBlock.getDefaultState(), dstWorld)));
+                        new WrapInMatrixFrame(matrixFrameBlock.defaultBlockState(), dstWorld)));
 
         final AxisAlignedBB srcBox = new AxisAlignedBB(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1,
                 srcZ + scaleZ + 1);
@@ -175,25 +175,25 @@ public class SpatialStorageHelper {
         // do nearly all the work... swaps blocks, tiles, and block ticks
         cSrc.swap(cDst);
 
-        final List<Entity> srcE = srcWorld.getEntitiesWithinAABB(Entity.class, srcBox);
-        final List<Entity> dstE = dstWorld.getEntitiesWithinAABB(Entity.class, dstBox);
+        final List<Entity> srcE = srcWorld.getEntitiesOfClass(Entity.class, srcBox);
+        final List<Entity> dstE = dstWorld.getEntitiesOfClass(Entity.class, dstBox);
 
         for (final Entity e : dstE) {
-            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getPosX(), e.getPosY(), e.getPosZ(),
+            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getX(), e.getY(), e.getZ(),
                     -dstX + srcX, -dstY + srcY, -dstZ + srcZ));
         }
 
         for (final Entity e : srcE) {
-            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getPosX(), e.getPosY(), e.getPosZ(),
+            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getX(), e.getY(), e.getZ(),
                     -srcX + dstX, -srcY + dstY, -srcZ + dstZ));
         }
 
         for (final WorldCoord wc : cDst.getUpdates()) {
-            cSrc.getWorld().notifyNeighborsOfStateChange(wc.getPos(), Blocks.AIR);
+            cSrc.getWorld().updateNeighborsAt(wc.getPos(), Blocks.AIR);
         }
 
         for (final WorldCoord wc : cSrc.getUpdates()) {
-            cSrc.getWorld().notifyNeighborsOfStateChange(wc.getPos(), Blocks.AIR);
+            cSrc.getWorld().updateNeighborsAt(wc.getPos(), Blocks.AIR);
         }
 
         this.transverseEdges(srcX - 1, srcY - 1, srcZ - 1, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1,
@@ -235,7 +235,7 @@ public class SpatialStorageHelper {
 
         @Override
         public void visit(final BlockPos pos) {
-            this.dst.setBlockState(pos, this.state);
+            this.dst.setBlockAndUpdate(pos, this.state);
         }
     }
 

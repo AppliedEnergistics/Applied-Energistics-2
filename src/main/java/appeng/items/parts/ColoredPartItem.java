@@ -2,6 +2,7 @@ package appeng.items.parts;
 
 import java.util.function.Function;
 
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.parts.IPart;

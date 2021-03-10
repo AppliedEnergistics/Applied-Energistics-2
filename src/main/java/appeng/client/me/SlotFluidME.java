@@ -49,18 +49,18 @@ public class SlotFluidME extends Slot implements IMEFluidSlot {
     }
 
     @Override
-    public boolean isItemValid(final ItemStack stack) {
+    public boolean mayPlace(final ItemStack stack) {
         return false;
     }
 
     @Nonnull
     @Override
-    public ItemStack getStack() {
+    public ItemStack getItem() {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean getHasStack() {
+    public boolean hasItem() {
         if (this.slot.hasPower()) {
             return this.getAEFluidStack() != null;
         }
@@ -68,23 +68,23 @@ public class SlotFluidME extends Slot implements IMEFluidSlot {
     }
 
     @Override
-    public void putStack(final ItemStack stack) {
+    public void set(final ItemStack stack) {
 
     }
 
     @Override
-    public int getSlotStackLimit() {
+    public int getMaxStackSize() {
         return 0;
     }
 
     @Nonnull
     @Override
-    public ItemStack decrStackSize(final int par1) {
+    public ItemStack remove(final int par1) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity player) {
+    public boolean mayPickup(final PlayerEntity player) {
         return false;
     }
 }

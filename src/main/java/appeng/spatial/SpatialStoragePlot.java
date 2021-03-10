@@ -155,7 +155,7 @@ public class SpatialStoragePlot {
         BlockPos origin = this.getOrigin();
         ChunkPos originChunk = new ChunkPos(origin);
 
-        return String.format(Locale.ROOT, "r.%d.%d.mca", originChunk.getRegionCoordX(), originChunk.getRegionCoordZ());
+        return String.format(Locale.ROOT, "r.%d.%d.mca", originChunk.getRegionX(), originChunk.getRegionZ());
     }
 
     public CompoundNBT toTag() {

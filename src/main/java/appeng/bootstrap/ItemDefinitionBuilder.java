@@ -125,7 +125,7 @@ class ItemDefinitionBuilder implements IItemBuilder {
 
     @Override
     public ItemDefinition build() {
-        props.group(itemGroup);
+        props.tab(itemGroup);
 
         Item item = this.itemFactory.apply(props);
         item.setRegistryName(AppEng.MOD_ID, this.registryName);
@@ -139,7 +139,7 @@ class ItemDefinitionBuilder implements IItemBuilder {
         if (this.dispenserBehaviorSupplier != null) {
             this.factory.addBootstrapComponent((IInitComponent) () -> {
                 IDispenseItemBehavior behavior = this.dispenserBehaviorSupplier.get();
-                DispenserBlock.registerDispenseBehavior(item, behavior);
+                DispenserBlock.registerBehavior(item, behavior);
             });
         }
 

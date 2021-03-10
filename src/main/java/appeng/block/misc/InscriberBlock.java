@@ -20,6 +20,7 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -43,7 +44,7 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
     }
 
     @Override
-    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public int getLightBlock(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 2; // FIXME validate this. a) possibly not required because of getShape b) value
                   // range. was 2 in 1.10
     }
@@ -56,7 +57,7 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
             if (tg != null) {
                 if (!tg.isRemote()) {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,
-                            ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                            ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
                 }
                 return ActionResultType.SUCCESS;
             }

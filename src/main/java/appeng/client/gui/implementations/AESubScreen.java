@@ -84,7 +84,7 @@ final class AESubScreen {
             @Nullable ITextComponent label) {
         if (this.previousContainerType != null && !previousContainerIcon.isEmpty()) {
             if (label == null) {
-                label = previousContainerIcon.getDisplayName();
+                label = previousContainerIcon.getHoverName();
             }
             ItemRenderer itemRenderer = gui.getMinecraft().getItemRenderer();
             TabButton button = new TabButton(gui.getGuiLeft() + x, gui.getGuiTop() + y, previousContainerIcon, label,

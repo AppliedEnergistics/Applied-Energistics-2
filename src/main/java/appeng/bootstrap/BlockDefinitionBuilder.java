@@ -160,7 +160,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
                 @Override
                 @OnlyIn(Dist.CLIENT)
                 public void setup() {
-                    ItemModelsProperties.registerProperty(item, new ResourceLocation("appliedenergistics2:fill_level"),
+                    ItemModelsProperties.register(item, new ResourceLocation("appliedenergistics2:fill_level"),
                             (is, world, entity) -> {
                                 double curPower = chargeable.getAECurrentPower(is);
                                 double maxPower = chargeable.getAEMaxPower(is);
@@ -217,7 +217,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
         Item.Properties itemProperties = new Item.Properties();
 
         if (itemGroup != null) {
-            itemProperties.group(itemGroup);
+            itemProperties.tab(itemGroup);
         }
         // FIXME: Allow more/all item properties
 

@@ -25,7 +25,7 @@ import appeng.block.AEBaseTileBlock;
 public class ItemGenBlock extends AEBaseTileBlock<ItemGenTileEntity> {
 
     public ItemGenBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
 }

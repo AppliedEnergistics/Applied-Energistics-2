@@ -22,7 +22,7 @@ public class CrystalSeedRendering implements IClientSetupComponent {
     @OnlyIn(Dist.CLIENT)
     public void setup() {
         // Expose the growth of the seed to the model system
-        ItemModelsProperties.registerProperty(item, new ResourceLocation("appliedenergistics2:growth"),
+        ItemModelsProperties.register(item, new ResourceLocation("appliedenergistics2:growth"),
                 (is, w, p) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }
 }

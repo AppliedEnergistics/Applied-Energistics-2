@@ -60,7 +60,7 @@ public class ProgressBar extends Widget implements ITooltip {
     @Override
     public void renderButton(MatrixStack matrixStack, final int par2, final int par3, final float partial) {
         if (this.visible) {
-            Minecraft.getInstance().getTextureManager().bindTexture(this.texture);
+            Minecraft.getInstance().getTextureManager().bind(this.texture);
             final int max = this.source.getMaxProgress();
             final int current = this.source.getCurrentProgress();
 
@@ -87,8 +87,8 @@ public class ProgressBar extends Widget implements ITooltip {
         }
         ITextComponent result = this.titleName != null ? this.titleName : StringTextComponent.EMPTY;
 
-        return result.deepCopy().appendString("\n").appendString(this.source.getCurrentProgress() + " ")
-                .append(GuiText.Of.text().deepCopy().appendString(" " + this.source.getMaxProgress()));
+        return result.copy().append("\n").append(this.source.getCurrentProgress() + " ")
+                .append(GuiText.Of.text().copy().append(" " + this.source.getMaxProgress()));
     }
 
     @Override

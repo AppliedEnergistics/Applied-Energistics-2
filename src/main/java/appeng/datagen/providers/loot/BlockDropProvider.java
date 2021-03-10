@@ -38,19 +38,19 @@ import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockDropProvider extends BlockLootTables implements IAE2DataProvider {
     private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
-            .put(BLOCKS.matrixFrame().block(), $ -> LootTable.builder())
+            .put(BLOCKS.matrixFrame().block(), $ -> LootTable.lootTable())
             .put(BLOCKS.quartzOre().block(),
-                    b -> droppingWithSilkTouch(BLOCKS.quartzOre().block(),
-                            withExplosionDecay(BLOCKS.quartzOre().block(),
-                                    ItemLootEntry.builder(MATERIALS.certusQuartzCrystal().item())
-                                            .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
-                                            .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
+                    b -> createSilkTouchDispatchTable(BLOCKS.quartzOre().block(),
+                            applyExplosionDecay(BLOCKS.quartzOre().block(),
+                                    ItemLootEntry.lootTableItem(MATERIALS.certusQuartzCrystal().item())
+                                            .apply(SetCount.setCount(RandomValueRange.between(1.0F, 2.0F)))
+                                            .apply(ApplyBonus.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
             .put(BLOCKS.quartzOreCharged().block(),
-                    b -> droppingWithSilkTouch(BLOCKS.quartzOreCharged().block(),
-                            withExplosionDecay(BLOCKS.quartzOreCharged().block(),
-                                    ItemLootEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
-                                            .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
-                                            .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
+                    b -> createSilkTouchDispatchTable(BLOCKS.quartzOreCharged().block(),
+                            applyExplosionDecay(BLOCKS.quartzOreCharged().block(),
+                                    ItemLootEntry.lootTableItem(MATERIALS.certusQuartzCrystalCharged().item())
+                                            .apply(SetCount.setCount(RandomValueRange.between(1.0F, 2.0F)))
+                                            .apply(ApplyBonus.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
             .build();
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -62,23 +62,23 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
     }
 
     @Override
-    public void act(@Nonnull DirectoryCache cache) throws IOException {
+    public void run(@Nonnull DirectoryCache cache) throws IOException {
         for (Map.Entry<RegistryKey<Block>, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
             LootTable.Builder builder;
-            if (entry.getKey().getLocation().getNamespace().equals(AppEng.MOD_ID)) {
+            if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                IDataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, entry.getKey().getLocation()));
+                IDataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, entry.getKey().location()));
             }
         }
     }
 
     private LootTable.Builder defaultBuilder(Block block) {
-        LootEntry.Builder<?> entry = ItemLootEntry.builder(block);
-        LootPool.Builder pool = LootPool.builder().name("main").rolls(ConstantRange.of(1)).addEntry(entry)
-                .acceptCondition(SurvivesExplosion.builder());
+        LootEntry.Builder<?> entry = ItemLootEntry.lootTableItem(block);
+        LootPool.Builder pool = LootPool.lootPool().name("main").setRolls(ConstantRange.exactly(1)).add(entry)
+                .when(SurvivesExplosion.survivesExplosion());
 
-        return LootTable.builder().addLootPool(pool);
+        return LootTable.lootTable().withPool(pool);
     }
 
     private Path getPath(Path root, ResourceLocation id) {
@@ -86,12 +86,12 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
     }
 
     public JsonElement toJson(LootTable.Builder builder) {
-        return LootTableManager.toJson(finishBuilding(builder));
+        return LootTableManager.serialize(finishBuilding(builder));
     }
 
     @Nonnull
     public LootTable finishBuilding(LootTable.Builder builder) {
-        return builder.setParameterSet(LootParameterSets.BLOCK).build();
+        return builder.setParamSet(LootParameterSets.BLOCK).build();
     }
 
     @Nonnull

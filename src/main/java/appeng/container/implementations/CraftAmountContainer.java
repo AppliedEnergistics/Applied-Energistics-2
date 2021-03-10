@@ -65,8 +65,8 @@ public class CraftAmountContainer extends AEBaseContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    public void broadcastChanges() {
+        super.broadcastChanges();
         this.verifyPermissions(SecurityPermissions.CRAFT, false);
     }
 
@@ -76,7 +76,7 @@ public class CraftAmountContainer extends AEBaseContainer {
     }
 
     public World getWorld() {
-        return this.getPlayerInv().player.world;
+        return this.getPlayerInv().player.level;
     }
 
     public IActionSource getActionSrc() {

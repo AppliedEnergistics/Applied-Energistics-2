@@ -18,6 +18,7 @@
 
 package appeng.decorative.solid;
 
+import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
@@ -29,14 +30,14 @@ public class QuartzGlassBlock extends AbstractGlassBlock {
     }
 
     @Override
-    public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
+    public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
         if (adjacentBlockState.getBlock() instanceof QuartzGlassBlock) {
-            if (adjacentBlockState.getRenderType() == state.getRenderType()) {
+            if (adjacentBlockState.getRenderShape() == state.getRenderShape()) {
                 return true;
             }
         }
 
-        return super.isSideInvisible(state, adjacentBlockState, side);
+        return super.skipRendering(state, adjacentBlockState, side);
     }
 
 }

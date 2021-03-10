@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.data.TagsProvider.Builder;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
@@ -19,7 +20,7 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
     }
 
     @Override
-    protected void registerTags() {
+    protected void addTags() {
         addForge("ores/certus_quartz", BLOCKS.quartzOre(), BLOCKS.quartzOreCharged());
         addForge("ores", "#forge:ores/certus_quartz");
 
@@ -70,7 +71,7 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
 
     @SuppressWarnings("unchecked")
     private void add(ResourceLocation tagName, Object... blockSources) {
-        Builder<Block> builder = getOrCreateBuilder(net.minecraft.tags.BlockTags.createOptional(tagName));
+        Builder<Block> builder = tag(net.minecraft.tags.BlockTags.createOptional(tagName));
 
         for (Object blockSource : blockSources) {
             if (blockSource instanceof Block) {
@@ -94,7 +95,7 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
     }
 
     @Override
-    protected Path makePath(ResourceLocation id) {
+    protected Path getPath(ResourceLocation id) {
         return this.generator.getOutputFolder()
                 .resolve("data/" + id.getNamespace() + "/tags/blocks/" + id.getPath() + ".json");
     }

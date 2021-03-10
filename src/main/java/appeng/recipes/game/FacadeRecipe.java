@@ -56,11 +56,11 @@ public final class FacadeRecipe extends SpecialRecipe {
 
     @Nonnull
     private ItemStack getOutput(final IInventory inv, final boolean createFacade) {
-        if (inv.getStackInSlot(0).isEmpty() && inv.getStackInSlot(2).isEmpty() && inv.getStackInSlot(6).isEmpty()
-                && inv.getStackInSlot(8).isEmpty()) {
-            if (this.anchor.isSameAs(inv.getStackInSlot(1)) && this.anchor.isSameAs(inv.getStackInSlot(3))
-                    && this.anchor.isSameAs(inv.getStackInSlot(5)) && this.anchor.isSameAs(inv.getStackInSlot(7))) {
-                final ItemStack facades = this.facade.createFacadeForItem(inv.getStackInSlot(4), !createFacade);
+        if (inv.getItem(0).isEmpty() && inv.getItem(2).isEmpty() && inv.getItem(6).isEmpty()
+                && inv.getItem(8).isEmpty()) {
+            if (this.anchor.isSameAs(inv.getItem(1)) && this.anchor.isSameAs(inv.getItem(3))
+                    && this.anchor.isSameAs(inv.getItem(5)) && this.anchor.isSameAs(inv.getItem(7))) {
+                final ItemStack facades = this.facade.createFacadeForItem(inv.getItem(4), !createFacade);
                 if (!facades.isEmpty() && createFacade) {
                     facades.setCount(4);
                 }
@@ -72,12 +72,12 @@ public final class FacadeRecipe extends SpecialRecipe {
     }
 
     @Override
-    public ItemStack getCraftingResult(@Nonnull final CraftingInventory inv) {
+    public ItemStack assemble(@Nonnull final CraftingInventory inv) {
         return this.getOutput(inv, true);
     }
 
     @Override
-    public boolean canFit(int i, int i1) {
+    public boolean canCraftInDimensions(int i, int i1) {
         return false;
     }
 

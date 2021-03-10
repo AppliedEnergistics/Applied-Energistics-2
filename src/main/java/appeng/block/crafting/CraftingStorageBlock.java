@@ -18,6 +18,8 @@
 
 package appeng.block.crafting;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 import appeng.tile.crafting.CraftingStorageTileEntity;
 
 public class CraftingStorageBlock extends AbstractCraftingUnitBlock<CraftingStorageTileEntity> {

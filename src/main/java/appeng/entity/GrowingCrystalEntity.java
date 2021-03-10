@@ -64,7 +64,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
     public GrowingCrystalEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
         super(TYPE, w, x, y, z, is);
-        this.setNoDespawn();
+        this.setExtendedLifetime();
     }
 
     @Override
@@ -86,14 +86,14 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
             return;
         }
 
-        final int x = MathHelper.floor(this.getPosX());
+        final int x = MathHelper.floor(this.getX());
         final int y = MathHelper.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
-        final int z = MathHelper.floor(this.getPosZ());
+        final int z = MathHelper.floor(this.getZ());
 
         BlockPos pos = new BlockPos(x, y, z);
-        final BlockState state = this.world.getBlockState(pos);
+        final BlockState state = this.level.getBlockState(pos);
 
-        final float multiplier = cry.getMultiplier(state, world, pos);
+        final float multiplier = cry.getMultiplier(state, level, pos);
 
         if (multiplier <= 0) {
             // Crystal is in unsuitable material, reset progress and quit
@@ -103,14 +103,14 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
         final int progressPerTick = (int) Math.max(1, this.getSpeed(pos) * multiplier);
 
-        if (world.isRemote()) {
+        if (level.isClientSide()) {
             // On the client, we reuse the growth-tick-progress
             // as a tick-counter for particle effects
             int len = getTicksBetweenParticleEffects(progressPerTick);
             if (++this.progress_1000 >= len) {
                 this.progress_1000 = 0;
-                AppEng.proxy.spawnEffect(EffectType.Vibrant, this.world, this.getPosX(), this.getPosY() + 0.2,
-                        this.getPosZ(), null);
+                AppEng.proxy.spawnEffect(EffectType.Vibrant, this.level, this.getX(), this.getY() + 0.2,
+                        this.getZ(), null);
             }
         } else {
             this.progress_1000 += progressPerTick;
@@ -179,7 +179,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
         BlockPos.Mutable testPos = new BlockPos.Mutable();
         for (Direction direction : Direction.values()) {
-            if (this.isPoweredAccelerator(testPos.setAndMove(pos, direction))) {
+            if (this.isPoweredAccelerator(testPos.setWithOffset(pos, direction))) {
                 count++;
             }
         }
@@ -188,30 +188,30 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     private boolean isPoweredAccelerator(BlockPos pos) {
-        final TileEntity te = this.world.getTileEntity(pos);
+        final TileEntity te = this.level.getBlockEntity(pos);
 
         return te instanceof ICrystalGrowthAccelerator && ((ICrystalGrowthAccelerator) te).isPowered();
     }
 
     @Override
-    protected void applyFloatMotion() {
+    protected void setUnderwaterMovement() {
         ItemStack item = getItem();
 
         // Make ungrown seeds sink, and fully grown seeds bouyant allowing for
         // automation based around dropping seeds between 5 CGAs, then catchiung
         // them on their way up.
         if (item.getItem() instanceof CrystalSeedItem) {
-            Vector3d v = this.getMotion();
+            Vector3d v = this.getDeltaMovement();
 
             // Apply a much smaller acceleration to make them slowly sink
-            double yAccel = this.hasNoGravity() ? 0 : -0.002;
+            double yAccel = this.isNoGravity() ? 0 : -0.002;
 
             // Apply the x/z slow-down, and the y acceleration
-            this.setMotion(v.x * 0.99, v.y + yAccel, v.z * 0.99);
+            this.setDeltaMovement(v.x * 0.99, v.y + yAccel, v.z * 0.99);
 
             return;
         }
-        super.applyFloatMotion();
+        super.setUnderwaterMovement();
     }
 
 }

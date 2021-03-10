@@ -34,7 +34,7 @@ import appeng.block.AEBaseTileBlock;
 public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity> {
 
     public CubeGeneratorBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override

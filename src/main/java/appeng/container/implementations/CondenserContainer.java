@@ -73,7 +73,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isServer()) {
             final double maxStorage = this.condenser.getStorage();
             final double requiredEnergy = this.condenser.getRequiredPower();
@@ -83,7 +83,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
             this.output = (CondenserOutput) this.condenser.getConfigManager().getSetting(Settings.CONDENSER_OUTPUT);
         }
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override

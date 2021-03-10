@@ -107,7 +107,7 @@ public class CableBusBakedModel implements IBakedModel {
         // The core parts of the cable will only be rendered in the CUTOUT layer.
         // Facades will add them selves to what ever the block would be rendered with,
         // except when transparent facades are enabled, they are forced to TRANSPARENT.
-        if (layer == RenderType.getCutout()) {
+        if (layer == RenderType.cutout()) {
 
             // First, handle the cable at the center of the cable bus
             final List<BakedQuad> cableModel = cableModelCache.getUnchecked(renderState);
@@ -302,7 +302,7 @@ public class CableBusBakedModel implements IBakedModel {
                     throw new IllegalStateException("Trying to use an unregistered part model: " + model);
                 }
 
-                TextureAtlasSprite particleTexture = bakedModel.getParticleTexture();
+                TextureAtlasSprite particleTexture = bakedModel.getParticleIcon();
 
                 // If a part sub-model has no particle texture (indicated by it being the
                 // missing texture),
@@ -321,7 +321,7 @@ public class CableBusBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return true;
     }
 
@@ -331,23 +331,23 @@ public class CableBusBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false; // This model is never used in an UI
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isCustomRenderer() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public TextureAtlasSprite getParticleIcon() {
         return this.particleTexture;
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return ItemCameraTransforms.DEFAULT;
+    public ItemCameraTransforms getTransforms() {
+        return ItemCameraTransforms.NO_TRANSFORMS;
     }
 
     @Override

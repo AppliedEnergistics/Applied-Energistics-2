@@ -20,6 +20,7 @@ package appeng.block.grindstone;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -48,7 +49,7 @@ public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
         if (tg != null && !p.isCrouching()) {
             if (p instanceof ServerPlayerEntity) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
             return ActionResultType.SUCCESS;
         }

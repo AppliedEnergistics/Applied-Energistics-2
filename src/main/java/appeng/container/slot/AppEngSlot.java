@@ -75,7 +75,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public boolean isItemValid(@Nonnull final ItemStack stack) {
+    public boolean mayPlace(@Nonnull final ItemStack stack) {
         if (this.isSlotEnabled()) {
             return this.itemHandler.isItemValid(this.invSlot, stack);
         }
@@ -84,7 +84,7 @@ public class AppEngSlot extends Slot {
 
     @Override
     @Nonnull
-    public ItemStack getStack() {
+    public ItemStack getItem() {
         if (!this.isSlotEnabled()) {
             return ItemStack.EMPTY;
         }
@@ -102,10 +102,10 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public void putStack(final ItemStack stack) {
+    public void set(final ItemStack stack) {
         if (this.isSlotEnabled()) {
             ItemHandlerUtil.setStackInSlot(this.itemHandler, this.invSlot, stack);
-            this.onSlotChanged();
+            this.setChanged();
         }
     }
 
@@ -120,24 +120,24 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public void onSlotChanged() {
-        super.onSlotChanged();
+    public void setChanged() {
+        super.setChanged();
         this.setIsValid(CalculatedValidity.NotAvailable);
         notifyContainerSlotChanged();
     }
 
     @Override
-    public int getSlotStackLimit() {
+    public int getMaxStackSize() {
         return this.itemHandler.getSlotLimit(this.invSlot);
     }
 
     @Override
-    public int getItemStackLimit(@Nonnull ItemStack stack) {
-        return Math.min(this.getSlotStackLimit(), stack.getMaxStackSize());
+    public int getMaxStackSize(@Nonnull ItemStack stack) {
+        return Math.min(this.getMaxStackSize(), stack.getMaxStackSize());
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity player) {
+    public boolean mayPickup(final PlayerEntity player) {
         if (this.isSlotEnabled()) {
             return !this.itemHandler.extractItem(this.invSlot, 1, true).isEmpty();
         }
@@ -146,7 +146,7 @@ public class AppEngSlot extends Slot {
 
     @Override
     @Nonnull
-    public ItemStack decrStackSize(int amount) {
+    public ItemStack remove(int amount) {
         return this.itemHandler.extractItem(this.invSlot, amount, false);
     }
 
@@ -157,7 +157,7 @@ public class AppEngSlot extends Slot {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean isEnabled() {
+    public boolean isActive() {
         return this.isSlotEnabled();
     }
 

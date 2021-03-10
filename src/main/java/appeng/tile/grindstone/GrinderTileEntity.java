@@ -55,8 +55,9 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        final BlockState state = this.world.getBlockState(this.pos);
-        state.getBlock().neighborChanged(state, this.world, this.pos, state.getBlock(), this.pos, false);
+        final BlockState state = this.level.getBlockState(this.worldPosition);
+        state.getBlock().neighborChanged(state, this.level, this.worldPosition, state.getBlock(), this.worldPosition,
+                false);
     }
 
     @Override
@@ -89,7 +90,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
                     continue;
                 }
 
-                GrinderRecipe r = GrinderRecipes.findForInput(world, item);
+                GrinderRecipe r = GrinderRecipes.findForInput(level, item);
                 if (r != null) {
                     final ItemStack ais = item.copy();
                     ais.setCount(r.getIngredientCount());
@@ -118,7 +119,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
         this.points++;
 
         final ItemStack processing = this.inv.getStackInSlot(SLOT_PROCESSING);
-        GrinderRecipe r = GrinderRecipes.findForInput(world, processing);
+        GrinderRecipe r = GrinderRecipes.findForInput(level, processing);
         if (r != null) {
             if (r.getTurns() > this.points) {
                 return;
@@ -127,7 +128,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
             this.points = 0;
             final InventoryAdaptor sia = new AdaptorItemHandler(new RangedWrapper(this.inv, 3, 6));
 
-            this.addItem(sia, r.getRecipeOutput());
+            this.addItem(sia, r.getResultItem());
 
             for (GrinderOptionalResult optionalResult : r.getOptionalResults()) {
                 final float chance = (Platform.getRandomInt() % 2000) / 2000.0f;
@@ -151,7 +152,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
             final List<ItemStack> out = new ArrayList<>();
             out.add(notAdded);
 
-            Platform.spawnDrops(this.world, this.pos.offset(this.getForward()), out);
+            Platform.spawnDrops(this.level, this.worldPosition.relative(this.getForward()), out);
         }
     }
 
@@ -168,7 +169,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
 
         @Override
         public boolean allowInsert(IItemHandler inv, int slotIndex, ItemStack stack) {
-            if (!GrinderRecipes.isValidIngredient(world, stack)) {
+            if (!GrinderRecipes.isValidIngredient(level, stack)) {
                 return false;
             }
 

@@ -76,7 +76,7 @@ public class NetworkHandler {
         if (this.serverHandler != null) {
             try {
                 NetworkEvent.Context ctx = ev.getSource().get();
-                ServerPlayNetHandler netHandler = (ServerPlayNetHandler) ctx.getNetworkManager().getNetHandler();
+                ServerPlayNetHandler netHandler = (ServerPlayNetHandler) ctx.getNetworkManager().getPacketListener();
                 ctx.setPacketHandled(true);
                 ctx.enqueueWork(
                         () -> this.serverHandler.onPacketData(null, netHandler, ev.getPayload(), netHandler.player));
@@ -95,7 +95,7 @@ public class NetworkHandler {
         if (this.clientHandler != null) {
             try {
                 NetworkEvent.Context ctx = ev.getSource().get();
-                INetHandler netHandler = ctx.getNetworkManager().getNetHandler();
+                INetHandler netHandler = ctx.getNetworkManager().getPacketListener();
                 ctx.setPacketHandled(true);
                 ctx.enqueueWork(() -> this.clientHandler.onPacketData(null, netHandler, ev.getPayload(), null));
             } catch (final ThreadQuickExitException ignored) {
@@ -109,21 +109,21 @@ public class NetworkHandler {
     }
 
     public void sendToAll(final BasePacket message) {
-        getServer().getPlayerList().sendPacketToAllPlayers(message.toPacket(NetworkDirection.PLAY_TO_CLIENT));
+        getServer().getPlayerList().broadcastAll(message.toPacket(NetworkDirection.PLAY_TO_CLIENT));
     }
 
     public void sendTo(final BasePacket message, final ServerPlayerEntity player) {
-        player.connection.sendPacket(message.toPacket(NetworkDirection.PLAY_TO_CLIENT));
+        player.connection.send(message.toPacket(NetworkDirection.PLAY_TO_CLIENT));
     }
 
     public void sendToAllAround(final BasePacket message, final TargetPoint point) {
         IPacket<?> pkt = message.toPacket(NetworkDirection.PLAY_TO_CLIENT);
-        getServer().getPlayerList().sendToAllNearExcept(point.excluded, point.x, point.y, point.z, point.r2,
-                point.world.getDimensionKey(), pkt);
+        getServer().getPlayerList().broadcast(point.excluded, point.x, point.y, point.z, point.r2,
+                point.world.dimension(), pkt);
     }
 
     public void sendToServer(final BasePacket message) {
-        Minecraft.getInstance().getConnection().sendPacket(message.toPacket(NetworkDirection.PLAY_TO_SERVER));
+        Minecraft.getInstance().getConnection().send(message.toPacket(NetworkDirection.PLAY_TO_SERVER));
     }
 
     private MinecraftServer getServer() {

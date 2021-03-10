@@ -25,6 +25,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.button.Button.IPressable;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -62,7 +63,7 @@ public class ToggleButton extends Button implements ITooltip {
             final int iconIndex = this.getIconIndex();
 
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            Minecraft.getInstance().textureManager.bindTexture(TEXTURE_STATES);
+            Minecraft.getInstance().textureManager.bind(TEXTURE_STATES);
 
             final int uv_y = iconIndex / 16;
             final int uv_x = iconIndex - uv_y * 16;
@@ -79,8 +80,8 @@ public class ToggleButton extends Button implements ITooltip {
     @Override
     public ITextComponent getTooltipMessage() {
         if (this.displayName != null) {
-            String name = I18n.format(this.displayName);
-            String value = I18n.format(this.displayHint);
+            String name = I18n.get(this.displayName);
+            String value = I18n.get(this.displayHint);
 
             if (name == null || name.isEmpty()) {
                 name = this.displayName;

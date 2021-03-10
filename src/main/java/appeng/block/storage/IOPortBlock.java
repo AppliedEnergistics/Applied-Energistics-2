@@ -41,7 +41,7 @@ import appeng.util.Platform;
 public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
 
     public IOPortBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(IOPortContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
             return ActionResultType.SUCCESS;
         }

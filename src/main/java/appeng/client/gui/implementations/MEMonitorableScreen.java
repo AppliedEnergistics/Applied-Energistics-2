@@ -107,18 +107,18 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         this.repo = new ItemRepo(scrollbar, this);
         setScrollBar();
 
-        this.xSize = 185;
-        this.ySize = 204;
+        this.imageWidth = 185;
+        this.imageHeight = 204;
 
         Object te = container.getTarget();
         if (te instanceof IViewCellStorage) {
-            this.xSize += 33;
+            this.imageWidth += 33;
         }
 
-        this.standardSize = this.xSize;
+        this.standardSize = this.imageWidth;
 
-        this.configSrc = ((IConfigurableObject) this.container).getConfigManager();
-        this.container.setGui(this);
+        this.configSrc = ((IConfigurableObject) this.menu).getConfigManager();
+        this.menu.setGui(this);
 
         this.viewCell = te instanceof IViewCellStorage;
 
@@ -158,7 +158,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
     @Override
     public void init() {
-        getMinecraft().keyboardListener.enableRepeatEvents(true);
+        getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
 
         this.maxRows = this.getMaxRows();
         TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
@@ -168,7 +168,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         } else {
             this.perRow = 9 + ((this.width - this.standardSize) / 18);
         }
-        this.xSize = this.standardSize + ((this.perRow - 9) * 18);
+        this.imageWidth = this.standardSize + ((this.perRow - 9) * 18);
 
         final int magicNumber = 114 + 1;
         final int extraSpace = this.height - magicNumber - this.reservedSpace;
@@ -183,7 +183,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         }
 
         // Size the container according to the number of rows we decided to have
-        this.ySize = magicNumber + this.rows * 18 + this.reservedSpace;
+        this.imageHeight = magicNumber + this.rows * 18 + this.reservedSpace;
 
         this.getMeSlots().clear();
         for (int y = 0; y < this.rows; y++) {
@@ -198,45 +198,45 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         // extra slots : 72
         // slot 18
 
-        int offset = this.guiTop + 8;
+        int offset = this.topPos + 8;
 
         if (this.customSortOrder) {
-            this.sortByToggle = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_BY,
+            this.sortByToggle = this.addButton(new SettingToggleButton<>(this.leftPos - 18, offset, Settings.SORT_BY,
                     getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
             offset += 20;
         }
 
         if (this.viewCell || this instanceof WirelessTermScreen) {
-            this.viewModeToggle = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset,
+            this.viewModeToggle = this.addButton(new SettingToggleButton<>(this.leftPos - 18, offset,
                     Settings.VIEW_MODE, getSortDisplay(), this::toggleServerSetting));
             offset += 20;
         }
 
-        this.addButton(this.sortDirToggle = new SettingToggleButton<>(this.guiLeft - 18, offset,
+        this.addButton(this.sortDirToggle = new SettingToggleButton<>(this.leftPos - 18, offset,
                 Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
         offset += 20;
 
         SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
-        this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SEARCH_MODE, searchMode,
+        this.addButton(new SettingToggleButton<>(this.leftPos - 18, offset, Settings.SEARCH_MODE, searchMode,
                 Platform::isSearchModeAvailable, this::toggleTerminalSearchMode));
 
         offset += 20;
 
         if (!(this instanceof MEPortableCellScreen) || this instanceof WirelessTermScreen) {
-            this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, terminalStyle,
+            this.addButton(new SettingToggleButton<>(this.leftPos - 18, offset, Settings.TERMINAL_STYLE, terminalStyle,
                     this::toggleTerminalStyle));
         }
 
-        this.searchField = new AETextField(this.font, this.guiLeft + Math.max(80, this.offsetX), this.guiTop + 4, 90,
+        this.searchField = new AETextField(this.font, this.leftPos + Math.max(80, this.offsetX), this.topPos + 4, 90,
                 12);
-        this.searchField.setEnableBackgroundDrawing(false);
-        this.searchField.setMaxStringLength(25);
+        this.searchField.setBordered(false);
+        this.searchField.setMaxLength(25);
         this.searchField.setTextColor(0xFFFFFF);
         this.searchField.setSelectionColor(0xFF008000);
         this.searchField.setVisible(true);
 
         if (this.viewCell || this instanceof WirelessTermScreen) {
-            this.craftingStatusBtn = this.addButton(new TabButton(this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16,
+            this.craftingStatusBtn = this.addButton(new TabButton(this.leftPos + 170, this.topPos - 4, 2 + 11 * 16,
                     GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus()));
             this.craftingStatusBtn.setHideEdge(true);
         }
@@ -249,14 +249,14 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchMode
                 || SearchBoxMode.JEI_MANUAL_SEARCH == searchMode;
 
-        this.searchField.setFocused2(this.isAutoFocus);
+        this.searchField.setFocus(this.isAutoFocus);
 
         if (isJEIEnabled) {
             memoryText = JEIFacade.instance().getSearchText();
         }
 
         if (isKeepFilter && memoryText != null && !memoryText.isEmpty()) {
-            this.searchField.setText(memoryText);
+            this.searchField.setValue(memoryText);
             this.searchField.selectAll();
             this.repo.setSearchString(memoryText);
             this.repo.updateView();
@@ -266,17 +266,17 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         craftingGridOffsetX = Integer.MAX_VALUE;
         craftingGridOffsetY = Integer.MAX_VALUE;
 
-        for (final Slot s : this.container.inventorySlots) {
+        for (final Slot s : this.menu.slots) {
             if (s instanceof AppEngSlot) {
-                if (s.xPos < 197) {
+                if (s.x < 197) {
                     this.repositionSlot((AppEngSlot) s);
                 }
             }
 
             if (s instanceof CraftingMatrixSlot || s instanceof FakeCraftingMatrixSlot) {
-                if (s.xPos > 0 && s.yPos > 0) {
-                    craftingGridOffsetX = Math.min(craftingGridOffsetX, s.xPos);
-                    craftingGridOffsetY = Math.min(craftingGridOffsetY, s.yPos);
+                if (s.x > 0 && s.y > 0) {
+                    craftingGridOffsetX = Math.min(craftingGridOffsetX, s.x);
+                    craftingGridOffsetY = Math.min(craftingGridOffsetY, s.y);
                 }
             }
         }
@@ -291,20 +291,20 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(this.myName.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, this.getGuiDisplayName(this.myName.text()).getString(), 8, 6, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.text().getString(), 8, this.imageHeight - 96 + 3, 4210752);
 
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 
         // Show the number of active crafting jobs
-        if (this.craftingStatusBtn != null && container.activeCraftingJobs != -1) {
+        if (this.craftingStatusBtn != null && menu.activeCraftingJobs != -1) {
             // The stack size renderer expects a 16x16 slot, while the button is normally
             // bigger
             int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
-            int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeightRealms() - 16) / 2;
-            StackSizeRenderer.renderSizeLabel(font, x - this.guiLeft, y - this.guiTop,
-                    String.valueOf(container.activeCraftingJobs));
+            int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeight() - 16) / 2;
+            StackSizeRenderer.renderSizeLabel(font, x - this.leftPos, y - this.topPos,
+                    String.valueOf(menu.activeCraftingJobs));
         }
     }
 
@@ -316,7 +316,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
         // Right-clicking on the search field should clear it
         if (this.searchField.isMouseOver(xCoord, yCoord) && btn == 1) {
-            this.searchField.setText("");
+            this.searchField.setValue("");
             this.repo.setSearchString("");
             this.repo.updateView();
             this.setScrollBar();
@@ -327,10 +327,10 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
-        getMinecraft().keyboardListener.enableRepeatEvents(false);
-        memoryText = this.searchField.getText();
+    public void removed() {
+        super.removed();
+        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
+        memoryText = this.searchField.getValue();
     }
 
     @Override
@@ -356,9 +356,9 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
             boolean update = false;
 
             for (int i = 0; i < 5; i++) {
-                if (this.myCurrentViewCells[i] != this.container.getCellViewSlot(i).getStack()) {
+                if (this.myCurrentViewCells[i] != this.menu.getCellViewSlot(i).getItem()) {
                     update = true;
-                    this.myCurrentViewCells[i] = this.container.getCellViewSlot(i).getStack();
+                    this.myCurrentViewCells[i] = this.menu.getCellViewSlot(i).getItem();
                 }
             }
 
@@ -387,21 +387,21 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     protected void repositionSlot(final AppEngSlot s) {
-        s.yPos = s.getY() + this.ySize - 78 - 5;
+        s.y = s.getY() + this.imageHeight - 78 - 5;
     }
 
     @Override
     public boolean charTyped(char character, int p_charTyped_2_) {
-        if (character == ' ' && this.searchField.getText().isEmpty()) {
+        if (character == ' ' && this.searchField.getValue().isEmpty()) {
             return true;
         }
 
         if (this.isAutoFocus && !this.searchField.isFocused() && isHovered()) {
-            this.searchField.setFocused2(true);
+            this.searchField.setFocus(true);
         }
 
         if (this.searchField.isFocused() && this.searchField.charTyped(character, p_charTyped_2_)) {
-            this.repo.setSearchString(this.searchField.getText());
+            this.repo.setSearchString(this.searchField.getValue());
             this.repo.updateView();
             this.setScrollBar();
             return true;
@@ -413,25 +413,25 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
             if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
-                this.searchField.setFocused2(!this.searchField.isFocused());
+                this.searchField.setFocus(!this.searchField.isFocused());
                 return true;
             }
             if (!this.searchField.isFocused() && this.isAutoFocus && isHovered()) {
-                this.searchField.setFocused2(true);
+                this.searchField.setFocus(true);
             }
 
             if (this.searchField.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.searchField.setFocused2(false);
+                    this.searchField.setFocus(false);
                     return true;
                 }
 
                 if (this.searchField.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
-                    this.repo.setSearchString(this.searchField.getText());
+                    this.repo.setSearchString(this.searchField.getValue());
                     this.repo.updateView();
                     this.setScrollBar();
                 }
@@ -447,12 +447,12 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     private boolean isHovered() {
-        return isPointInRegion(0, 0, this.xSize, this.ySize, currentMouseX, currentMouseY);
+        return isHovering(0, 0, this.imageWidth, this.imageHeight, currentMouseX, currentMouseY);
     }
 
     @Override
     public void tick() {
-        this.repo.setPower(this.container.isPowered());
+        this.repo.setPower(this.menu.isPowered());
         super.tick();
     }
 

@@ -108,11 +108,11 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World w = context.getWorld();
-        BlockPos pos = context.getPos();
-        ItemStack is = context.getItem();
-        Direction side = context.getFace();
+    public ActionResultType useOn(ItemUseContext context) {
+        World w = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        ItemStack is = context.getItemInHand();
+        Direction side = context.getClickedFace();
         PlayerEntity p = context.getPlayer(); // This can be null
         if (p == null && w instanceof ServerWorld) {
             p = Platform.getPlayer((ServerWorld) w);
@@ -141,7 +141,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
             final double powerPerUse = 100;
             if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
-                final TileEntity te = w.getTileEntity(pos);
+                final TileEntity te = w.getBlockEntity(pos);
                 // clean cables.
                 if (te instanceof IColorableTile && p != null) {
                     if (this.getAECurrentPower(is) > powerPerUse
@@ -156,8 +156,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 }
 
                 // clean paint balls..
-                final Block testBlk = w.getBlockState(pos.offset(side)).getBlock();
-                final TileEntity painted = w.getTileEntity(pos.offset(side));
+                final Block testBlk = w.getBlockState(pos.relative(side)).getBlock();
+                final TileEntity painted = w.getBlockEntity(pos.relative(side));
                 if (this.getAECurrentPower(is) > powerPerUse && testBlk instanceof PaintSplotchesBlock
                         && painted instanceof PaintSplotchesTileEntity) {
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
@@ -187,7 +187,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public ITextComponent getDisplayName(final ItemStack is) {
+    public ITextComponent getName(final ItemStack is) {
         ITextComponent extra = GuiText.Empty.text();
 
         final AEColor selected = this.getActiveColor(is);
@@ -196,7 +196,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             extra = new TranslationTextComponent(selected.translationKey);
         }
 
-        return super.getDisplayName(is).deepCopy().appendString(" - ").append(extra);
+        return super.getName(is).copy().append(" - ").append(extra);
     }
 
     public AEColor getActiveColor(final ItemStack tol) {
@@ -217,8 +217,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return ipb.getColor();
         } else {
             for (Map.Entry<ResourceLocation, AEColor> entry : TAG_TO_COLOR.entrySet()) {
-                ITag<Item> tag = ItemTags.getCollection().get(entry.getKey());
-                if (tag != null && paintBall.getItem().isIn(tag)) {
+                ITag<Item> tag = ItemTags.getAllTags().getTag(entry.getKey());
+                if (tag != null && paintBall.getItem().is(tag)) {
                     return entry.getValue();
                 }
             }
@@ -231,7 +231,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         final CompoundNBT c = is.getTag();
         if (c != null && c.contains(TAG_COLOR)) {
             final CompoundNBT color = c.getCompound(TAG_COLOR);
-            final ItemStack oldColor = ItemStack.read(color);
+            final ItemStack oldColor = ItemStack.of(color);
             if (!oldColor.isEmpty()) {
                 return oldColor;
             }
@@ -305,7 +305,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             data.remove(TAG_COLOR);
         } else {
             final CompoundNBT color = new CompoundNBT();
-            newColor.write(color);
+            newColor.save(color);
             data.put(TAG_COLOR, color);
         }
     }
@@ -316,19 +316,19 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         Block recolored = BlockRecolorer.recolor(blk, newColor);
         if (recolored != blk) {
-            BlockState newState = recolored.getDefaultState();
+            BlockState newState = recolored.defaultBlockState();
             for (Property<?> prop : newState.getProperties()) {
                 newState = copyProp(state, newState, prop);
             }
 
-            return w.setBlockState(pos, newState);
+            return w.setBlockAndUpdate(pos, newState);
         }
 
         if (blk instanceof CableBusBlock && p != null) {
             return ((CableBusBlock) blk).recolorBlock(w, pos, side, newColor.dye, p);
         }
 
-        TileEntity be = w.getTileEntity(pos);
+        TileEntity be = w.getBlockEntity(pos);
         if (be instanceof IColorableTile) {
             IColorableTile ct = (IColorableTile) be;
             AEColor c = ct.getColor();
@@ -345,7 +345,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     private static <T extends Comparable<T>> BlockState copyProp(BlockState oldState, BlockState newState,
             Property<T> prop) {
         if (newState.hasProperty(prop)) {
-            return newState.with(prop, oldState.get(prop));
+            return newState.setValue(prop, oldState.getValue(prop));
         }
         return newState;
     }
@@ -360,9 +360,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
-        super.addInformation(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));

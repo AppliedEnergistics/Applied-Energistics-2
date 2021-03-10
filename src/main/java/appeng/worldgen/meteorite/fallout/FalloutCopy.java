@@ -36,7 +36,7 @@ public class FalloutCopy extends Fallout {
     public FalloutCopy(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
         super(putter, skyStone);
         this.putter = putter;
-        this.block = w.getBiome(pos).getGenerationSettings().getSurfaceBuilderConfig().getTop();
+        this.block = w.getBiome(pos).getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class FalloutCopy extends Fallout {
         if (a > SPECIFIED_BLOCK_THRESHOLD) {
             this.putter.put(w, pos, this.block);
         } else if (a > AIR_BLOCK_THRESHOLD) {
-            this.putter.put(w, pos, Blocks.AIR.getDefaultState());
+            this.putter.put(w, pos, Blocks.AIR.defaultBlockState());
         } else {
             this.getOther(w, pos, a - BLOCK_THRESHOLD_STEP);
         }

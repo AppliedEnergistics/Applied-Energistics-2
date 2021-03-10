@@ -67,8 +67,8 @@ public class FluidTankWidget extends Widget implements ITooltip {
                 RenderSystem.color3f(red, green, blue);
 
                 Minecraft mc = Minecraft.getInstance();
-                mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
+                mc.getTextureManager().bind(AtlasTexture.LOCATION_BLOCKS);
+                final TextureAtlasSprite sprite = mc.getTextureAtlas(AtlasTexture.LOCATION_BLOCKS)
                         .apply(attributes.getStillTexture(fluidStack.getFluidStack()));
 
                 final int scaledHeight = (int) (this.height
@@ -92,8 +92,8 @@ public class FluidTankWidget extends Widget implements ITooltip {
     public ITextComponent getTooltipMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
-            return fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()).deepCopy()
-                    .appendString("\n" + (fluid.getStackSize() + "mB"));
+            return fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()).copy()
+                    .append("\n" + (fluid.getStackSize() + "mB"));
         }
         return StringTextComponent.EMPTY;
     }

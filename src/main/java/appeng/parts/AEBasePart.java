@@ -114,7 +114,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             final List<ItemStack> items = new ArrayList<>();
             items.add(this.is.copy());
             this.host.removePart(this.side, false);
-            Platform.spawnDrops(this.tile.getWorld(), this.tile.getPos(), items);
+            Platform.spawnDrops(this.tile.getLevel(), this.tile.getBlockPos(), items);
             this.is.setCount(0);
         }
     }
@@ -167,17 +167,17 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
     @Override
     public ITextComponent getCustomInventoryName() {
-        return this.getItemStack().getDisplayName();
+        return this.getItemStack().getHoverName();
     }
 
     @Override
     public boolean hasCustomInventoryName() {
-        return this.getItemStack().hasDisplayName();
+        return this.getItemStack().hasCustomHoverName();
     }
 
     @Override
     public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
-        crashreportcategory.addDetail("Part Side", this.getSide());
+        crashreportcategory.setDetail("Part Side", this.getSide());
     }
 
     @Override
@@ -396,7 +396,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     private boolean useMemoryCard(final PlayerEntity player) {
-        final ItemStack memCardIS = player.inventory.getCurrentItem();
+        final ItemStack memCardIS = player.inventory.getSelected();
 
         if (!memCardIS.isEmpty() && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard) {
             final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
@@ -412,7 +412,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
                 }
             }
 
-            final String name = is.getTranslationKey();
+            final String name = is.getDescriptionId();
 
             if (player.isCrouching()) {
                 final CompoundNBT data = this.downloadSettings(SettingsFrom.MEMORY_CARD);

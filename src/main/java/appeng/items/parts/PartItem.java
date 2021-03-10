@@ -21,6 +21,7 @@ package appeng.items.parts;
 import java.util.function.Function;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
@@ -40,15 +41,15 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        ItemStack held = player.getHeldItem(context.getHand());
+        ItemStack held = player.getItemInHand(context.getHand());
         if (held.getItem() != this) {
             return ActionResultType.PASS;
         }
 
-        return Api.instance().partHelper().placeBus(held, context.getPos(), context.getFace(), player,
-                context.getHand(), context.getWorld());
+        return Api.instance().partHelper().placeBus(held, context.getClickedPos(), context.getClickedFace(), player,
+                context.getHand(), context.getLevel());
     }
 
     @Override

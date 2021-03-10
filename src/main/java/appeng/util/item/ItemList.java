@@ -136,7 +136,7 @@ public final class ItemList implements IItemList<IAEItemStack> {
     }
 
     private IItemList<IAEItemStack> makeRecordMap(Item item) {
-        if (item.isDamageable()) {
+        if (item.canBeDepleted()) {
             return new FuzzyItemList();
         } else {
             return new StrictItemList();

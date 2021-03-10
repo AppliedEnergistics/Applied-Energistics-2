@@ -115,7 +115,7 @@ class CraftingCubeModel implements BasicUnbakedModel<CraftingCubeModel> {
     }
 
     private static RenderMaterial texture(String name) {
-        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
                 new ResourceLocation(AppEng.MOD_ID, "block/crafting/" + name));
     }
 }

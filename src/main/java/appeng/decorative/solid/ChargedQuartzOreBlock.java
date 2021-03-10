@@ -20,6 +20,7 @@ package appeng.decorative.solid;
 
 import java.util.Random;
 
+import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
@@ -72,7 +73,7 @@ public class ChargedQuartzOreBlock extends QuartzOreBlock {
         }
 
         if (AppEng.proxy.shouldAddParticles(r)) {
-            Minecraft.getInstance().particles.addParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
+            Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
                     pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
         }
     }

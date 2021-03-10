@@ -45,8 +45,8 @@ public class FluidSlotWidget extends CustomSlotWidget {
             RenderSystem.disableBlend();
             final Fluid fluid = fs.getFluid();
             final FluidAttributes attributes = fluid.getAttributes();
-            mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
+            mc.getTextureManager().bind(AtlasTexture.LOCATION_BLOCKS);
+            final TextureAtlasSprite sprite = mc.getTextureAtlas(AtlasTexture.LOCATION_BLOCKS)
                     .apply(attributes.getStillTexture(fs.getFluidStack()));
 
             // Set color for dynamic fluids
@@ -63,7 +63,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
 
     @Override
     public boolean canClick(final PlayerEntity player) {
-        final ItemStack mouseStack = player.inventory.getItemStack();
+        final ItemStack mouseStack = player.inventory.getCarried();
         return mouseStack.isEmpty()
                 || mouseStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
     }

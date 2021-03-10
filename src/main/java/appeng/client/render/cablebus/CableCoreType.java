@@ -72,7 +72,7 @@ public enum CableCoreType {
     }
 
     public RenderMaterial getTexture(AEColor color) {
-        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
                 new ResourceLocation(AppEng.MOD_ID, this.textureFolder + "/" + color.name().toLowerCase(Locale.ROOT)));
     }
 

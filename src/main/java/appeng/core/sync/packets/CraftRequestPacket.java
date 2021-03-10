@@ -63,8 +63,8 @@ public class CraftRequestPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        if (player.openContainer instanceof CraftAmountContainer) {
-            final CraftAmountContainer cca = (CraftAmountContainer) player.openContainer;
+        if (player.containerMenu instanceof CraftAmountContainer) {
+            final CraftAmountContainer cca = (CraftAmountContainer) player.containerMenu;
             final Object target = cca.getTarget();
             if (target instanceof IActionHost) {
                 final IActionHost ah = (IActionHost) target;
@@ -90,11 +90,11 @@ public class CraftRequestPacket extends BasePacket {
                     if (locator != null) {
                         ContainerOpener.openContainer(CraftConfirmContainer.TYPE, player, locator);
 
-                        if (player.openContainer instanceof CraftConfirmContainer) {
-                            final CraftConfirmContainer ccc = (CraftConfirmContainer) player.openContainer;
+                        if (player.containerMenu instanceof CraftConfirmContainer) {
+                            final CraftConfirmContainer ccc = (CraftConfirmContainer) player.containerMenu;
                             ccc.setAutoStart(this.heldShift);
                             ccc.setJob(futureJob);
-                            cca.detectAndSendChanges();
+                            cca.broadcastChanges();
                         }
                     }
                 } catch (final Throwable e) {

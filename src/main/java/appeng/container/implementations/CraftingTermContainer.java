@@ -84,7 +84,7 @@ public class CraftingTermContainer extends MEMonitorableContainer
 
         this.bindPlayerInventory(ip, 0, 0);
 
-        this.onCraftMatrixChanged(new WrapperInvItemHandler(crafting));
+        this.slotsChanged(new WrapperInvItemHandler(crafting));
     }
 
     /**
@@ -92,25 +92,25 @@ public class CraftingTermContainer extends MEMonitorableContainer
      */
 
     @Override
-    public void onCraftMatrixChanged(IInventory inventory) {
+    public void slotsChanged(IInventory inventory) {
         final ContainerNull cn = new ContainerNull();
         final CraftingInventory ic = new CraftingInventory(cn, 3, 3);
 
         for (int x = 0; x < 9; x++) {
-            ic.setInventorySlotContents(x, this.craftingSlots[x].getStack());
+            ic.setItem(x, this.craftingSlots[x].getItem());
         }
 
-        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, this.getPlayerInv().player.world)) {
-            World world = this.getPlayerInv().player.world;
-            this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
+        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, this.getPlayerInv().player.level)) {
+            World world = this.getPlayerInv().player.level;
+            this.currentRecipe = world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, ic, world).orElse(null);
         }
 
         if (this.currentRecipe == null) {
-            this.outputSlot.putStack(ItemStack.EMPTY);
+            this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            final ItemStack craftingResult = this.currentRecipe.getCraftingResult(ic);
+            final ItemStack craftingResult = this.currentRecipe.assemble(ic);
 
-            this.outputSlot.putStack(craftingResult);
+            this.outputSlot.set(craftingResult);
         }
     }
 

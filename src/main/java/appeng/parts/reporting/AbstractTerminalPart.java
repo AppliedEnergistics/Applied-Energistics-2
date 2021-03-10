@@ -106,7 +106,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (!super.onPartActivate(player, hand, pos)) {
-            if (!player.world.isRemote) {
+            if (!player.level.isClientSide) {
                 ContainerOpener.openContainer(getContainerType(player), player, ContainerLocator.forPart(this));
             }
         }

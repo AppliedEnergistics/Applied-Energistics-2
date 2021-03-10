@@ -93,9 +93,9 @@ public class InterfaceContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override

@@ -53,15 +53,15 @@ public class AETextField extends TextFieldWidget {
     public AETextField(final FontRenderer fontRenderer, final int xPos, final int yPos, final int width,
             final int height) {
         super(fontRenderer, xPos + PADDING, yPos + PADDING,
-                width - 2 * PADDING - (int) fontRenderer.getStringWidth("_"), height - 2 * PADDING,
+                width - 2 * PADDING - (int) fontRenderer.width("_"), height - 2 * PADDING,
                 StringTextComponent.EMPTY);
 
-        this._fontPad = (int) fontRenderer.getStringWidth("_");
+        this._fontPad = (int) fontRenderer.width("_");
     }
 
     public void selectAll() {
-        this.setCursorPosition(0);
-        this.setSelectionPos(this.getMaxStringLength());
+        this.moveCursorTo(0);
+        this.setHighlightPos(this.getMaxLength());
     }
 
     public void setSelectionColor(int color) {
@@ -70,7 +70,7 @@ public class AETextField extends TextFieldWidget {
 
     @Override
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
-        if (this.getVisible()) {
+        if (this.isVisible()) {
             if (this.isFocused()) {
                 fill(matrixStack, this.x - PADDING + 1, this.y - PADDING + 1,
                         this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
@@ -85,7 +85,7 @@ public class AETextField extends TextFieldWidget {
     }
 
     @Override
-    public void drawSelectionBox(int startX, int startY, int endX, int endY) {
+    public void renderHighlight(int startX, int startY, int endX, int endY) {
         if (!this.isFocused()) {
             return;
         }
@@ -116,7 +116,7 @@ public class AETextField extends TextFieldWidget {
         }
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
 
         float red = (this.selectionColor >> 16 & 255) / 255.0F;
         float blue = (this.selectionColor >> 8 & 255) / 255.0F;
@@ -128,11 +128,11 @@ public class AETextField extends TextFieldWidget {
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferbuilder.pos(startX, endY, 0.0D).endVertex();
-        bufferbuilder.pos(endX, endY, 0.0D).endVertex();
-        bufferbuilder.pos(endX, startY, 0.0D).endVertex();
-        bufferbuilder.pos(startX, startY, 0.0D).endVertex();
-        tessellator.draw();
+        bufferbuilder.vertex(startX, endY, 0.0D).endVertex();
+        bufferbuilder.vertex(endX, endY, 0.0D).endVertex();
+        bufferbuilder.vertex(endX, startY, 0.0D).endVertex();
+        bufferbuilder.vertex(startX, startY, 0.0D).endVertex();
+        tessellator.end();
         RenderSystem.disableColorLogicOp();
         RenderSystem.enableTexture();
         RenderSystem.color4f(1, 1, 1, 1);

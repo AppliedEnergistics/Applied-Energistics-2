@@ -17,7 +17,7 @@ import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
 public class P2PTunnelFrequencyModel implements BasicUnbakedModel<P2PTunnelFrequencyModel> {
-    private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "part/p2p_tunnel_frequency"));
 
     @Override

@@ -42,7 +42,7 @@ public class FalloutSand extends FalloutCopy {
     @Override
     public void getOther(final IWorld w, BlockPos pos, final double a) {
         if (a > GLASS_THRESHOLD) {
-            this.putter.put(w, pos, Blocks.GLASS.getDefaultState());
+            this.putter.put(w, pos, Blocks.GLASS.defaultBlockState());
         }
     }
 }

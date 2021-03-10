@@ -20,6 +20,7 @@ package appeng.debug;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -52,13 +53,13 @@ public class MeteoritePlacerItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        if (world.isRemote()) {
-            return ActionResult.resultPass(player.getHeldItem(hand));
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        if (world.isClientSide()) {
+            return ActionResult.pass(player.getItemInHand(hand));
         }
 
-        if (player.isSneaking()) {
-            final ItemStack itemStack = player.getHeldItem(hand);
+        if (player.isShiftKeyDown()) {
+            final ItemStack itemStack = player.getItemInHand(hand);
             final CompoundNBT tag = itemStack.getOrCreateTag();
 
             if (tag.contains(MODE_TAG)) {
@@ -70,23 +71,23 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
-            player.sendMessage(new StringTextComponent(craterType.name()), Util.DUMMY_UUID);
+            player.sendMessage(new StringTextComponent(craterType.name()), Util.NIL_UUID);
 
-            return ActionResult.resultSuccess(itemStack);
+            return ActionResult.success(itemStack);
         }
 
-        return super.onItemRightClick(world, player, hand);
+        return super.use(world, player, hand);
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getWorld().isRemote()) {
+        if (context.getLevel().isClientSide()) {
             return ActionResultType.PASS;
         }
 
         ServerPlayerEntity player = (ServerPlayerEntity) context.getPlayer();
-        ServerWorld world = (ServerWorld) context.getWorld();
-        BlockPos pos = context.getPos();
+        ServerWorld world = (ServerWorld) context.getLevel();
+        BlockPos pos = context.getClickedPos();
 
         if (player == null) {
             return ActionResultType.PASS;
@@ -107,7 +108,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
                 pureCrater, false);
 
         if (spawned == null) {
-            player.sendMessage(new StringTextComponent("Un-suitable Location."), Util.DUMMY_UUID);
+            player.sendMessage(new StringTextComponent("Un-suitable Location."), Util.NIL_UUID);
             return ActionResultType.FAIL;
         }
 
@@ -122,14 +123,14 @@ public class MeteoritePlacerItem extends AEBaseItem {
         placer.place();
 
         player.sendMessage(new StringTextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
-                + " biomeCategory=" + world.getBiome(pos).getCategory()), Util.DUMMY_UUID);
+                + " biomeCategory=" + world.getBiome(pos).getBiomeCategory()), Util.NIL_UUID);
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this
         // is a debug tool, we'll not care about being terribly efficient here
-        ChunkPos.getAllInBox(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
+        ChunkPos.rangeClosed(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
             Chunk c = world.getChunk(cp.x, cp.z);
-            player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
+            player.connection.send(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
         });
 
         return ActionResultType.SUCCESS;

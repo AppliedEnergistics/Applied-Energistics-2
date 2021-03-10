@@ -18,6 +18,7 @@
 
 package appeng.items.storage;
 
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 

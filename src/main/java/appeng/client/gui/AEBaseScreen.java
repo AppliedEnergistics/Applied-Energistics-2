@@ -126,7 +126,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     private List<Slot> getInventorySlots() {
-        return this.container.inventorySlots;
+        return this.menu.slots;
     }
 
     @Override
@@ -135,19 +135,19 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
         RenderSystem.pushMatrix();
-        RenderSystem.translatef(this.guiLeft, this.guiTop, 0.0F);
+        RenderSystem.translatef(this.leftPos, this.topPos, 0.0F);
         RenderSystem.enableDepthTest();
         for (final CustomSlotWidget c : this.guiSlots) {
             this.drawGuiSlot(matrixStack, c, mouseX, mouseY, partialTicks);
         }
         RenderSystem.disableDepthTest();
         for (final CustomSlotWidget c : this.guiSlots) {
-            this.drawTooltip(matrixStack, c, mouseX - this.guiLeft, mouseY - this.guiTop);
+            this.drawTooltip(matrixStack, c, mouseX - this.leftPos, mouseY - this.topPos);
         }
         RenderSystem.popMatrix();
         RenderSystem.enableDepthTest();
 
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
 
         for (final Object c : this.buttons) {
             if (c instanceof ITooltip) {
@@ -166,7 +166,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
             slot.drawContent(matrixStack, getMinecraft(), mouseX, mouseY, partialTicks);
 
-            if (this.isPointInRegion(left, top, slot.getTooltipAreaWidth(), slot.getTooltipAreaHeight(), mouseX, mouseY)
+            if (this.isHovering(left, top, slot.getTooltipAreaWidth(), slot.getTooltipAreaHeight(), mouseX, mouseY)
                     && slot.canClick(getPlayer())) {
                 RenderSystem.colorMask(true, true, true, false);
                 this.fillGradient(matrixStack, left, top, right, bottom, -2130706433, -2130706433);
@@ -203,8 +203,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     // FIXME FABRIC: move out to json (?)
-    private static final Style TOOLTIP_HEADER = Style.EMPTY.applyFormatting(TextFormatting.WHITE);
-    private static final Style TOOLTIP_BODY = Style.EMPTY.applyFormatting(TextFormatting.GRAY);
+    private static final Style TOOLTIP_HEADER = Style.EMPTY.applyFormat(TextFormatting.WHITE);
+    private static final Style TOOLTIP_BODY = Style.EMPTY.applyFormat(TextFormatting.GRAY);
 
     protected void drawTooltip(MatrixStack matrices, int x, int y, List<ITextComponent> lines) {
         if (lines.isEmpty()) {
@@ -216,17 +216,17 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         List<ITextComponent> styledLines = new ArrayList<>(lines.size());
         for (int i = 0; i < lines.size(); i++) {
             Style style = (i == 0) ? TOOLTIP_HEADER : TOOLTIP_BODY;
-            styledLines.add(lines.get(i).deepCopy().modifyStyle(s -> style));
+            styledLines.add(lines.get(i).copy().withStyle(s -> style));
         }
 
-        this.func_243308_b(matrices, styledLines, x, y);
+        this.renderComponentTooltip(matrices, styledLines, x, y);
 
     }
 
     @Override
-    protected final void drawGuiContainerForegroundLayer(MatrixStack matrixStack, final int x, final int y) {
-        final int ox = this.guiLeft; // (width - xSize) / 2;
-        final int oy = this.guiTop; // (height - ySize) / 2;
+    protected final void renderLabels(MatrixStack matrixStack, final int x, final int y) {
+        final int ox = this.leftPos; // (width - xSize) / 2;
+        final int oy = this.topPos; // (height - ySize) / 2;
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (this.getScrollBar() != null) {
@@ -239,10 +239,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     public abstract void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY);
 
     @Override
-    protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
+    protected final void renderBg(MatrixStack matrixStack, final float f, final int x,
             final int y) {
-        final int ox = this.guiLeft; // (width - xSize) / 2;
-        final int oy = this.guiTop; // (height - ySize) / 2;
+        final int ox = this.leftPos; // (width - xSize) / 2;
+        final int oy = this.topPos; // (height - ySize) / 2;
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawBG(matrixStack, ox, oy, x, y, f);
 
@@ -253,12 +253,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 if (optionalSlot.isRenderDisabled()) {
                     final AppEngSlot aeSlot = (AppEngSlot) slot;
                     if (aeSlot.isSlotEnabled()) {
-                        GuiUtils.drawTexturedModalRect(ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1,
+                        GuiUtils.drawTexturedModalRect(ox + aeSlot.x - 1, oy + aeSlot.y - 1,
                                 optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18, 18, getBlitOffset());
                     } else {
                         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.4F);
                         RenderSystem.enableBlend();
-                        GuiUtils.drawTexturedModalRect(ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1,
+                        GuiUtils.drawTexturedModalRect(ox + aeSlot.x - 1, oy + aeSlot.y - 1,
                                 optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18, 18, getBlitOffset());
                         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                     }
@@ -292,15 +292,15 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
 
         for (CustomSlotWidget slot : this.guiSlots) {
-            if (this.isPointInRegion(slot.getTooltipAreaX(), slot.getTooltipAreaY(), slot.getTooltipAreaWidth(),
+            if (this.isHovering(slot.getTooltipAreaX(), slot.getTooltipAreaY(), slot.getTooltipAreaWidth(),
                     slot.getTooltipAreaHeight(), xCoord, yCoord) && slot.canClick(getPlayer())) {
-                slot.slotClicked(getPlayer().inventory.getItemStack(), btn);
+                slot.slotClicked(getPlayer().inventory.getCarried(), btn);
             }
         }
 
         // Forward left mouse button down events to the scrollbar
         if (btn == 0 && this.getScrollBar() != null) {
-            if (this.getScrollBar().mouseDown(xCoord - this.guiLeft, yCoord - this.guiTop)) {
+            if (this.getScrollBar().mouseDown(xCoord - this.leftPos, yCoord - this.topPos)) {
                 return true;
             }
         }
@@ -312,7 +312,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         // Forward left mouse button up events to the scrollbar
         if (button == 0 && this.getScrollBar() != null) {
-            if (this.getScrollBar().mouseUp(mouseX - this.guiLeft, mouseY - this.guiTop)) {
+            if (this.getScrollBar().mouseUp(mouseX - this.leftPos, mouseY - this.topPos)) {
                 return true;
             }
         }
@@ -323,11 +323,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
         final Slot slot = this.getSlot((int) mouseX, (int) mouseY);
-        final ItemStack itemstack = getPlayer().inventory.getItemStack();
+        final ItemStack itemstack = getPlayer().inventory.getCarried();
 
         if (this.getScrollBar() != null) {
             // FIXME: Coordinate system of mouseX/mouseY is unclear
-            this.getScrollBar().mouseDragged((int) mouseX - this.guiLeft, (int) mouseY - this.guiTop);
+            this.getScrollBar().mouseDragged((int) mouseX - this.leftPos, (int) mouseY - this.topPos);
         }
 
         if (slot instanceof FakeSlot && !itemstack.isEmpty()) {
@@ -336,7 +336,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 for (final Slot dr : this.drag_click) {
                     final InventoryActionPacket p = new InventoryActionPacket(
                             mouseButton == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
-                            dr.slotNumber, 0);
+                            dr.index, 0);
                     NetworkHandler.instance().sendToServer(p);
                 }
             }
@@ -349,7 +349,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     // TODO 1.9.4 aftermath - Whole ClickType thing, to be checked.
     @Override
-    protected void handleMouseClick(final Slot slot, final int slotIdx, final int mouseButton,
+    protected void slotClicked(final Slot slot, final int slotIdx, final int mouseButton,
             final ClickType clickType) {
         final PlayerEntity player = getPlayer();
 
@@ -392,7 +392,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             return;
         }
 
-        if (InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
+        if (InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
             if (this.enableSpaceClicking()) {
                 IAEItemStack stack = null;
                 if (slot instanceof SlotME) {
@@ -402,10 +402,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 int slotNum = this.getInventorySlots().size();
 
                 if (!(slot instanceof SlotME) && slot != null) {
-                    slotNum = slot.slotNumber;
+                    slotNum = slot.index;
                 }
 
-                ((AEBaseContainer) this.container).setTargetStack(stack);
+                ((AEBaseContainer) this.menu).setTargetStack(stack);
                 final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
                 NetworkHandler.instance().sendToServer(p);
                 return;
@@ -426,7 +426,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
                 case CLONE: // creative dupe:
 
-                    if (player.abilities.isCreativeMode) {
+                    if (player.abilities.instabuild) {
                         action = InventoryAction.CREATIVE_DUPLICATE;
                     }
 
@@ -456,7 +456,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                     stack = ((SlotME) slot).getAEStack();
 
                     if (stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0
-                            && player.inventory.getItemStack().isEmpty()) {
+                            && player.inventory.getCarried().isEmpty()) {
                         action = InventoryAction.AUTO_CRAFT;
                     }
 
@@ -471,7 +471,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                     stack = ((SlotME) slot).getAEStack();
                     if (stack != null && stack.isCraftable()) {
                         action = InventoryAction.AUTO_CRAFT;
-                    } else if (player.abilities.isCreativeMode) {
+                    } else if (player.abilities.instabuild) {
                         final IAEItemStack slotItem = ((SlotME) slot).getAEStack();
                         if (slotItem != null) {
                             action = InventoryAction.CREATIVE_DUPLICATE;
@@ -484,7 +484,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             }
 
             if (action != null) {
-                this.container.setTargetStack(stack);
+                this.menu.setTargetStack(stack);
                 final InventoryActionPacket p = new InventoryActionPacket(action, this.getInventorySlots().size(), 0);
                 NetworkHandler.instance().sendToServer(p);
             }
@@ -501,7 +501,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 this.bl_clicked = slot;
                 this.dbl_clickTimer = Stopwatch.createStarted();
                 if (slot != null) {
-                    this.dbl_whichItem = slot.getHasStack() ? slot.getStack().copy() : ItemStack.EMPTY;
+                    this.dbl_whichItem = slot.hasItem() ? slot.getItem().copy() : ItemStack.EMPTY;
                 } else {
                     this.dbl_whichItem = ItemStack.EMPTY;
                 }
@@ -510,10 +510,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
                 final List<Slot> slots = this.getInventorySlots();
                 for (final Slot inventorySlot : slots) {
-                    if (inventorySlot != null && inventorySlot.canTakeStack(getPlayer()) && inventorySlot.getHasStack()
+                    if (inventorySlot != null && inventorySlot.mayPickup(getPlayer()) && inventorySlot.hasItem()
                             && inventorySlot.isSameInventory(slot)
-                            && Container.canAddItemToSlot(inventorySlot, this.dbl_whichItem, true)) {
-                        this.handleMouseClick(inventorySlot, inventorySlot.slotNumber, 0, ClickType.QUICK_MOVE);
+                            && Container.canItemQuickReplace(inventorySlot, this.dbl_whichItem, true)) {
+                        this.slotClicked(inventorySlot, inventorySlot.index, 0, ClickType.QUICK_MOVE);
                     }
                 }
                 this.dbl_whichItem = ItemStack.EMPTY;
@@ -522,11 +522,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             this.disableShiftClick = false;
         }
 
-        super.handleMouseClick(slot, slotIdx, mouseButton, clickType);
+        super.slotClicked(slot, slotIdx, mouseButton, clickType);
     }
 
-    protected boolean itemStackMoved(int keyCode, int scanCode) {
-        return checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode));
+    protected boolean checkHotbarKeyPressed(int keyCode, int scanCode) {
+        return checkHotbarKeys(InputMappings.getKey(keyCode, scanCode));
     }
 
     protected ClientPlayerEntity getPlayer() {
@@ -538,27 +538,27 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     protected boolean checkHotbarKeys(final InputMappings.Input input) {
         final Slot theSlot = this.getSlotUnderMouse();
 
-        if (getPlayer().inventory.getItemStack().isEmpty() && theSlot != null) {
+        if (getPlayer().inventory.getCarried().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
-                if (getMinecraft().gameSettings.keyBindsHotbar[j].isActiveAndMatches(input)) {
+                if (getMinecraft().options.keyHotbarSlots[j].isActiveAndMatches(input)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
-                        if (s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) this.container).getPlayerInv()) {
-                            if (!s.canTakeStack(((AEBaseContainer) this.container).getPlayerInv().player)) {
+                        if (s.getSlotIndex() == j && s.container == ((AEBaseContainer) this.menu).getPlayerInv()) {
+                            if (!s.mayPickup(((AEBaseContainer) this.menu).getPlayerInv().player)) {
                                 return false;
                             }
                         }
                     }
 
-                    if (theSlot.getSlotStackLimit() == 64) {
-                        this.handleMouseClick(theSlot, theSlot.slotNumber, j, ClickType.SWAP);
+                    if (theSlot.getMaxStackSize() == 64) {
+                        this.slotClicked(theSlot, theSlot.index, j, ClickType.SWAP);
                         return true;
                     } else {
                         for (final Slot s : slots) {
                             if (s.getSlotIndex() == j
-                                    && s.inventory == ((AEBaseContainer) this.container).getPlayerInv()) {
+                                    && s.container == ((AEBaseContainer) this.menu).getPlayerInv()) {
                                 NetworkHandler.instance()
-                                        .sendToServer(new SwapSlotsPacket(s.slotNumber, theSlot.slotNumber));
+                                        .sendToServer(new SwapSlotsPacket(s.index, theSlot.index));
                                 return true;
                             }
                         }
@@ -574,7 +574,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         final List<Slot> slots = this.getInventorySlots();
         for (final Slot slot : slots) {
             // isPointInRegion
-            if (this.isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY)) {
+            if (this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
                 return slot;
             }
         }
@@ -602,7 +602,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         if (slot instanceof SlotME) {
             final IAEItemStack item = ((SlotME) slot).getAEStack();
             if (item != null) {
-                this.container.setTargetStack(item);
+                this.menu.setTargetStack(item);
                 final InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
                 final int times = (int) Math.abs(wheel);
                 final int inventorySize = this.getInventorySlots().size();
@@ -620,18 +620,18 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public void bindTexture(final String base, final String file) {
         final ResourceLocation loc = new ResourceLocation(base, "textures/" + file);
-        getMinecraft().getTextureManager().bindTexture(loc);
+        getMinecraft().getTextureManager().bind(loc);
     }
 
     protected void drawItem(final int x, final int y, final ItemStack is) {
-        this.itemRenderer.zLevel = 100.0F;
+        this.itemRenderer.blitOffset = 100.0F;
 
         // FIXME I dont think this is needed anymore...
-        RenderHelper.enableStandardItemLighting();
-        this.itemRenderer.renderItemAndEffectIntoGUI(is, x, y);
-        RenderHelper.disableStandardItemLighting();
+        RenderHelper.turnBackOn();
+        this.itemRenderer.renderAndDecorateItem(is, x, y);
+        RenderHelper.turnOff();
 
-        this.itemRenderer.zLevel = 0.0F;
+        this.itemRenderer.blitOffset = 0.0F;
     }
 
     protected ITextComponent getGuiDisplayName(final ITextComponent in) {
@@ -642,18 +642,18 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      * This overrides the base-class method through some access transformer hackery...
      */
     @Override
-    public void moveItems(MatrixStack matrices, Slot s) {
+    public void renderSlot(MatrixStack matrices, Slot s) {
         if (s instanceof SlotME) {
 
             try {
                 if (!this.isPowered()) {
-                    fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+                    fill(matrices, s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
                 }
 
                 // Annoying but easier than trying to splice into render item
-                super.moveItems(matrices, new Size1Slot((SlotME) s));
+                super.renderSlot(matrices, new Size1Slot((SlotME) s));
 
-                this.stackSizeRenderer.renderStackSize(this.font, ((SlotME) s).getAEStack(), s.xPos, s.yPos);
+                this.stackSizeRenderer.renderStackSize(this.font, ((SlotME) s).getAEStack(), s.x, s.y);
 
             } catch (final Exception err) {
                 AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err.toString());
@@ -668,10 +668,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 RenderSystem.disableBlend();
                 final Fluid fluid = fs.getFluid();
                 FluidAttributes fluidAttributes = fluid.getAttributes();
-                bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                bindTexture(AtlasTexture.LOCATION_BLOCKS);
                 ResourceLocation fluidStillTexture = fluidAttributes.getStillTexture(fs.getFluidStack());
                 final TextureAtlasSprite sprite = getMinecraft()
-                        .getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluidStillTexture);
+                        .getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(fluidStillTexture);
 
                 // Set color for dynamic fluids
                 // Convert int color to RGB
@@ -680,19 +680,19 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 float blue = (fluidAttributes.getColor() & 255) / 255.0F;
                 RenderSystem.color3f(red, green, blue);
 
-                blit(matrices, s.xPos, s.yPos, 0 /* FIXME: Validate this was previous the controls zindex */, 16, 16,
+                blit(matrices, s.x, s.y, 0 /* FIXME: Validate this was previous the controls zindex */, 16, 16,
                         sprite);
                 RenderSystem.enableBlend();
 
-                this.fluidStackSizeRenderer.renderStackSize(this.font, fs, s.xPos, s.yPos);
+                this.fluidStackSizeRenderer.renderStackSize(this.font, fs, s.x, s.y);
             } else if (!this.isPowered()) {
-                fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+                fill(matrices, s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
             }
 
             return;
         } else {
             try {
-                final ItemStack is = s.getStack();
+                final ItemStack is = s.getItem();
                 if (s instanceof AppEngSlot && (((AppEngSlot) s).renderIconWithItem() || is.isEmpty())
                         && (((AppEngSlot) s).shouldDisplay())) {
                     final AppEngSlot aes = (AppEngSlot) s;
@@ -707,29 +707,30 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                             RenderSystem.enableTexture();
                             RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-                            final float par1 = aes.xPos;
-                            final float par2 = aes.yPos;
+                            final float par1 = aes.x;
+                            final float par2 = aes.y;
                             final float par3 = uv_x * 16;
                             final float par4 = uv_y * 16;
 
                             final Tessellator tessellator = Tessellator.getInstance();
-                            final BufferBuilder vb = tessellator.getBuffer();
+                            final BufferBuilder vb = tessellator.getBuilder();
 
                             vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
                             final float f1 = 0.00390625F;
                             final float f = 0.00390625F;
                             final float par6 = 16;
-                            vb.pos(par1 + 0, par2 + par6, getBlitOffset()).tex((par3 + 0) * f, (par4 + par6) * f1)
+                            vb.vertex(par1 + 0, par2 + par6, getBlitOffset()).uv((par3 + 0) * f, (par4 + par6) * f1)
                                     .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon()).endVertex();
                             final float par5 = 16;
-                            vb.pos(par1 + par5, par2 + par6, getBlitOffset()).tex((par3 + par5) * f, (par4 + par6) * f1)
+                            vb.vertex(par1 + par5, par2 + par6, getBlitOffset())
+                                    .uv((par3 + par5) * f, (par4 + par6) * f1)
                                     .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon()).endVertex();
-                            vb.pos(par1 + par5, par2 + 0, getBlitOffset()).tex((par3 + par5) * f, (par4 + 0) * f1)
+                            vb.vertex(par1 + par5, par2 + 0, getBlitOffset()).uv((par3 + par5) * f, (par4 + 0) * f1)
                                     .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon()).endVertex();
-                            vb.pos(par1 + 0, par2 + 0, getBlitOffset()).tex((par3 + 0) * f, (par4 + 0) * f1)
+                            vb.vertex(par1 + 0, par2 + 0, getBlitOffset()).uv((par3 + 0) * f, (par4 + 0) * f1)
                                     .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon()).endVertex();
-                            tessellator.draw();
+                            tessellator.end();
 
                         } catch (final Exception err) {
                             err.printStackTrace();
@@ -740,13 +741,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 if (!is.isEmpty() && s instanceof AppEngSlot) {
                     AppEngSlot aeSlot = (AppEngSlot) s;
                     if (aeSlot.getIsValid() == CalculatedValidity.NotAvailable) {
-                        boolean isValid = s.isItemValid(is) || s instanceof OutputSlot
+                        boolean isValid = s.mayPlace(is) || s instanceof OutputSlot
                                 || s instanceof AppEngCraftingSlot || s instanceof DisabledSlot
                                 || s instanceof InaccessibleSlot || s instanceof FakeSlot
                                 || s instanceof RestrictedInputSlot || s instanceof SlotDisconnected;
                         if (isValid && s instanceof RestrictedInputSlot) {
                             try {
-                                isValid = ((RestrictedInputSlot) s).isValid(is, getMinecraft().world);
+                                isValid = ((RestrictedInputSlot) s).isValid(is, getMinecraft().level);
                             } catch (final Exception err) {
                                 AELog.debug(err);
                             }
@@ -756,20 +757,20 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
                     if (aeSlot.getIsValid() == CalculatedValidity.Invalid) {
                         setBlitOffset(100);
-                        this.itemRenderer.zLevel = 100.0F;
+                        this.itemRenderer.blitOffset = 100.0F;
 
-                        fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66ff6666);
+                        fill(matrices, s.x, s.y, 16 + s.x, 16 + s.y, 0x66ff6666);
 
                         setBlitOffset(0);
-                        this.itemRenderer.zLevel = 0.0F;
+                        this.itemRenderer.blitOffset = 0.0F;
                     }
                 }
 
                 if (s instanceof AppEngSlot) {
                     ((AppEngSlot) s).setDisplay(true);
-                    super.moveItems(matrices, s);
+                    super.renderSlot(matrices, s);
                 } else {
-                    super.moveItems(matrices, s);
+                    super.renderSlot(matrices, s);
                 }
 
                 return;
@@ -778,7 +779,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             }
         }
         // do the usual for non-ME Slots.
-        super.moveItems(matrices, s);
+        super.renderSlot(matrices, s);
     }
 
     protected boolean isPowered() {
@@ -787,11 +788,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public void bindTexture(final String file) {
         final ResourceLocation loc = new ResourceLocation(AppEng.MOD_ID, "textures/" + file);
-        getMinecraft().getTextureManager().bindTexture(loc);
+        getMinecraft().getTextureManager().bind(loc);
     }
 
     public void bindTexture(final ResourceLocation loc) {
-        getMinecraft().getTextureManager().bindTexture(loc);
+        getMinecraft().getTextureManager().bind(loc);
     }
 
     protected Scrollbar getScrollBar() {

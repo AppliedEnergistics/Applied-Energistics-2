@@ -48,7 +48,7 @@ public class MetaRotation implements IOrientable {
 
     @Override
     public Direction getForward() {
-        if (this.getUp().getYOffset() == 0) {
+        if (this.getUp().getStepY() == 0) {
             return Direction.UP;
         }
         return Direction.SOUTH;
@@ -59,12 +59,12 @@ public class MetaRotation implements IOrientable {
         final BlockState state = this.w.getBlockState(this.pos);
 
         if (this.facingProp != null && state.hasProperty(this.facingProp)) {
-            return state.get(this.facingProp);
+            return state.getValue(this.facingProp);
         }
 
         // TODO 1.10.2-R - Temp
         if (state.hasProperty(QuartzPillarBlock.AXIS)) {
-            Axis a = state.get(QuartzPillarBlock.AXIS);
+            Axis a = state.getValue(QuartzPillarBlock.AXIS);
             switch (a) {
                 case X:
                     return Direction.EAST;
@@ -83,11 +83,12 @@ public class MetaRotation implements IOrientable {
     public void setOrientation(final Direction forward, final Direction up) {
         if (this.w instanceof World) {
             if (this.facingProp != null) {
-                ((World) this.w).setBlockState(this.pos, this.w.getBlockState(this.pos).with(this.facingProp, up));
+                ((World) this.w).setBlockAndUpdate(this.pos,
+                        this.w.getBlockState(this.pos).setValue(this.facingProp, up));
             } else {
                 // TODO 1.10.2-R - Temp
-                ((World) this.w).setBlockState(this.pos,
-                        this.w.getBlockState(this.pos).with(QuartzPillarBlock.AXIS, up.getAxis()));
+                ((World) this.w).setBlockAndUpdate(this.pos,
+                        this.w.getBlockState(this.pos).setValue(QuartzPillarBlock.AXIS, up.getAxis()));
             }
         } else {
             throw new IllegalStateException(this.w.getClass().getName() + " received, expected World");

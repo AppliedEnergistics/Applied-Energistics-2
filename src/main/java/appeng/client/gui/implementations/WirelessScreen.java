@@ -34,32 +34,32 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
 
     public WirelessScreen(WirelessContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 166;
+        this.imageHeight = 166;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.addButton(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
+        this.addButton(CommonButtons.togglePowerUnit(this.leftPos - 18, this.topPos + 8));
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Wireless.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.Wireless.text()).getString(), 8, 6, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.getLocal(), 8, this.imageHeight - 96 + 3, 4210752);
 
-        if (container.getRange() > 0) {
-            final String firstMessage = GuiText.Range.getLocal() + ": " + (container.getRange() / 10.0) + " m";
+        if (menu.getRange() > 0) {
+            final String firstMessage = GuiText.Range.getLocal() + ": " + (menu.getRange() / 10.0) + " m";
             final String secondMessage = GuiText.PowerUsageRate.getLocal() + ": "
-                    + Platform.formatPowerLong(container.getDrain(), true);
+                    + Platform.formatPowerLong(menu.getDrain(), true);
 
-            final int strWidth = Math.max(this.font.getStringWidth(firstMessage),
-                    this.font.getStringWidth(secondMessage));
-            final int cOffset = (this.xSize / 2) - (strWidth / 2);
-            this.font.drawString(matrixStack, firstMessage, cOffset, 20, 4210752);
-            this.font.drawString(matrixStack, secondMessage, cOffset, 20 + 12, 4210752);
+            final int strWidth = Math.max(this.font.width(firstMessage),
+                    this.font.width(secondMessage));
+            final int cOffset = (this.imageWidth / 2) - (strWidth / 2);
+            this.font.draw(matrixStack, firstMessage, cOffset, 20, 4210752);
+            this.font.draw(matrixStack, secondMessage, cOffset, 20 + 12, 4210752);
         }
     }
 
@@ -67,6 +67,6 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/wireless.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.imageWidth, this.imageHeight, getBlitOffset());
     }
 }

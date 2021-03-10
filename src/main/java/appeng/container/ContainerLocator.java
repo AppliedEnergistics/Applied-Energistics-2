@@ -68,7 +68,7 @@ public final class ContainerLocator {
     private final AEPartLocation side;
 
     private ContainerLocator(Type type, int itemIndex, World world, BlockPos blockPos, AEPartLocation side) {
-        this(type, itemIndex, world.getDimensionKey().getLocation(), blockPos, side);
+        this(type, itemIndex, world.dimension().location(), blockPos, side);
     }
 
     private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
@@ -81,17 +81,17 @@ public final class ContainerLocator {
     }
 
     public static ContainerLocator forTileEntity(TileEntity te) {
-        if (te.getWorld() == null) {
+        if (te.getLevel() == null) {
             throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
         }
-        return new ContainerLocator(Type.BLOCK, -1, te.getWorld(), te.getPos(), null);
+        return new ContainerLocator(Type.BLOCK, -1, te.getLevel(), te.getBlockPos(), null);
     }
 
     public static ContainerLocator forTileEntitySide(TileEntity te, Direction side) {
-        if (te.getWorld() == null) {
+        if (te.getLevel() == null) {
             throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
         }
-        return new ContainerLocator(Type.PART, -1, te.getWorld(), te.getPos(), AEPartLocation.fromFacing(side));
+        return new ContainerLocator(Type.PART, -1, te.getLevel(), te.getBlockPos(), AEPartLocation.fromFacing(side));
     }
 
     /**
@@ -104,8 +104,9 @@ public final class ContainerLocator {
             throw new IllegalArgumentException("Cannot open a container without a player");
         }
         int slot = getPlayerInventorySlotFromHand(player, context.getHand());
-        AEPartLocation side = AEPartLocation.fromFacing(context.getFace());
-        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, player.world, context.getPos(),
+        AEPartLocation side = AEPartLocation.fromFacing(context.getClickedFace());
+        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, player.level,
+                context.getClickedPos(),
                 side);
     }
 
@@ -115,13 +116,13 @@ public final class ContainerLocator {
     }
 
     private static int getPlayerInventorySlotFromHand(PlayerEntity player, Hand hand) {
-        ItemStack is = player.getHeldItem(hand);
+        ItemStack is = player.getItemInHand(hand);
         if (is.isEmpty()) {
             throw new IllegalArgumentException("Cannot open an item-inventory with empty hands");
         }
-        int invSize = player.inventory.getSizeInventory();
+        int invSize = player.inventory.getContainerSize();
         for (int i = 0; i < invSize; i++) {
-            if (player.inventory.getStackInSlot(i) == is) {
+            if (player.inventory.getItem(i) == is) {
                 return i;
             }
         }

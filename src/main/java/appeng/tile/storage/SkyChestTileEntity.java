@@ -85,9 +85,9 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
             onOpenOrClose();
 
             if (this.getPlayerOpen() == 1) {
-                this.getWorld().playSound(player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D,
-                        this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F,
-                        this.getWorld().rand.nextFloat() * 0.1F + 0.9F);
+                this.getLevel().playSound(player, this.worldPosition.getX() + 0.5D, this.worldPosition.getY() + 0.5D,
+                        this.worldPosition.getZ() + 0.5D, SoundEvents.CHEST_OPEN, SoundCategory.BLOCKS, 0.5F,
+                        this.getLevel().random.nextFloat() * 0.1F + 0.9F);
                 this.markForUpdate();
             }
         }
@@ -103,9 +103,9 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
             }
 
             if (this.getPlayerOpen() == 0) {
-                this.getWorld().playSound(player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D,
-                        this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F,
-                        this.getWorld().rand.nextFloat() * 0.1F + 0.9F);
+                this.getLevel().playSound(player, this.worldPosition.getX() + 0.5D, this.worldPosition.getY() + 0.5D,
+                        this.worldPosition.getZ() + 0.5D, SoundEvents.CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F,
+                        this.getLevel().random.nextFloat() * 0.1F + 0.9F);
                 this.markForUpdate();
             }
         }
@@ -115,10 +115,10 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     private void onOpenOrClose() {
         Block block = this.getBlockState().getBlock();
         if (block instanceof SkyChestBlock) {
-            this.world.addBlockEvent(this.pos, block, 1, this.numPlayersUsing);
-            this.world.notifyNeighborsOfStateChange(this.pos, block);
+            this.level.blockEvent(this.worldPosition, block, 1, this.numPlayersUsing);
+            this.level.updateNeighborsAt(this.worldPosition, block);
             // FIXME: Uhm, we are we doing this?
-            this.world.notifyNeighborsOfStateChange(this.pos.down(), block);
+            this.level.updateNeighborsAt(this.worldPosition.below(), block);
         }
     }
 
@@ -159,7 +159,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     }
 
     @Override
-    public float getLidAngle(float partialTicks) {
+    public float getOpenNess(float partialTicks) {
         return MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
     }
 

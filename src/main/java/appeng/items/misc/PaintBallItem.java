@@ -18,6 +18,8 @@
 
 package appeng.items.misc;
 
+import net.minecraft.item.Item.Properties;
+
 import appeng.api.util.AEColor;
 import appeng.items.AEBaseItem;
 

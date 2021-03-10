@@ -63,10 +63,10 @@ public class InWorldToolOperationResult {
 
         for (final ItemStack l : items) {
             if (b == null) {
-                final Block bl = Block.getBlockFromItem(l.getItem());
+                final Block bl = Block.byItem(l.getItem());
 
                 if (bl != null && !(bl instanceof AirBlock)) {
-                    b = bl.getDefaultState();
+                    b = bl.defaultBlockState();
                     continue;
                 }
             }

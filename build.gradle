@@ -186,6 +186,21 @@ minecraft {
 }
 
 ///////////
+// Update mappings to include other source sets
+if (project.hasProperty('UPDATE_MAPPINGS')) {
+    extractRangeMap {
+        sources sourceSets.api.java.srcDirs
+        sources sourceSets.test.java.srcDirs
+    }
+    applyRangeMap {
+        sources sourceSets.api.java.srcDirs
+        sources sourceSets.test.java.srcDirs
+    }
+    sourceSets.api.java.srcDirs.each { extractMappedNew.addTarget it }
+    sourceSets.test.java.srcDirs.each { extractMappedNew.addTarget it }
+}
+
+///////////
 // Mixins
 mixin {
     add sourceSets.main, "appliedenergistics2.mixins.refmap.json"

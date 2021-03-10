@@ -121,7 +121,7 @@ public class TickHandler {
      * @param c the callback
      */
     public void addCallable(final IWorld w, final IWorldCallable<?> c) {
-        Preconditions.checkArgument(w == null || !w.isRemote(), "Can only register serverside callbacks");
+        Preconditions.checkArgument(w == null || !w.isClientSide(), "Can only register serverside callbacks");
 
         if (w == null) {
             this.serverQueue.add(c);
@@ -139,7 +139,7 @@ public class TickHandler {
 
     public void addInit(final AEBaseTileEntity tile) {
         // for no there is no reason to care about this on the client...
-        if (!tile.getWorld().isRemote()) {
+        if (!tile.getLevel().isClientSide()) {
             this.getRepo().addTile(tile);
         }
     }
@@ -176,14 +176,14 @@ public class TickHandler {
 
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
         // for no there is no reason to care about this on the client...
-        if (!ev.getWorld().isRemote()) {
+        if (!ev.getWorld().isClientSide()) {
             this.getRepo().tiles.get(ev.getWorld()).remove(ev.getChunk().getPos());
         }
     }
 
     public void onUnloadWorld(final WorldEvent.Unload ev) {
         // for no there is no reason to care about this on the client...
-        if (!ev.getWorld().isRemote()) {
+        if (!ev.getWorld().isClientSide()) {
             final List<IGridNode> toDestroy = new ArrayList<>();
 
             this.getRepo().updateNetworks();
@@ -291,16 +291,16 @@ public class TickHandler {
             Entry<ChunkPos, Queue<AEBaseTileEntity>> entry = it.next();
 
             ChunkPos pos = entry.getKey();
-            AbstractChunkProvider chunkProvider = world.getChunkProvider();
+            AbstractChunkProvider chunkProvider = world.getChunkSource();
 
             // Using the blockpos of the chunk start to test if it can tick.
             // Relies on the world to test the chunkpos and not the explicit blockpos.
-            BlockPos testBlockPos = new BlockPos(pos.getXStart(), 0, pos.getZStart());
+            BlockPos testBlockPos = new BlockPos(pos.getMinBlockX(), 0, pos.getMinBlockZ());
 
             // Readies this chunk, if it can tick and does exist.
             // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
             // will be readied.
-            if (world.chunkExists(pos.x, pos.z) && chunkProvider.canTick(testBlockPos)) {
+            if (world.hasChunk(pos.x, pos.z) && chunkProvider.isTickingChunk(testBlockPos)) {
                 Queue<AEBaseTileEntity> queue = entry.getValue();
 
                 while (!queue.isEmpty()) {
@@ -369,8 +369,8 @@ public class TickHandler {
         }
 
         private synchronized void addTile(AEBaseTileEntity tile) {
-            IWorld world = tile.getWorld();
-            ChunkPos chunkPos = new ChunkPos(tile.getPos());
+            IWorld world = tile.getLevel();
+            ChunkPos chunkPos = new ChunkPos(tile.getBlockPos());
 
             Map<ChunkPos, Queue<AEBaseTileEntity>> worldQueue = this.tiles.computeIfAbsent(world, (key) -> {
                 return new HashMap<>();

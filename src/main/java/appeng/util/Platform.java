@@ -182,9 +182,9 @@ public class Platform {
     }
 
     public static Direction crossProduct(final Direction forward, final Direction up) {
-        final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
-        final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
-        final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
+        final int west_x = forward.getStepY() * up.getStepZ() - forward.getStepZ() * up.getStepY();
+        final int west_y = forward.getStepZ() * up.getStepX() - forward.getStepX() * up.getStepZ();
+        final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
 
         switch (west_x + west_y * 2 + west_z * 3) {
             case 1:
@@ -222,10 +222,10 @@ public class Platform {
     }
 
     public static boolean hasPermissions(final DimensionalCoord dc, final PlayerEntity player) {
-        if (!dc.isInWorld(player.world)) {
+        if (!dc.isInWorld(player.level)) {
             return false;
         }
-        return player.world.isBlockModifiable(player, dc.getPos());
+        return player.level.mayInteract(player, dc.getPos());
     }
 
     public static boolean checkPermissions(final PlayerEntity player, final Object accessInterface,
@@ -248,7 +248,7 @@ public class Platform {
                     final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
                         player.sendMessage(new TranslationTextComponent("appliedenergistics2.permission_denied")
-                                .mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+                                .withStyle(TextFormatting.RED), Util.NIL_UUID);
                         // FIXME trace logging?
                         return false;
                     }
@@ -269,7 +269,7 @@ public class Platform {
         ServerWorld serverWorld = (ServerWorld) w;
 
         final BlockState state = w.getBlockState(pos);
-        final TileEntity tileEntity = w.getTileEntity(pos);
+        final TileEntity tileEntity = w.getBlockEntity(pos);
 
         List<ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
 
@@ -289,7 +289,7 @@ public class Platform {
                         final double offset_z = (getRandomInt() % 32 - 16) / 82;
                         final ItemEntity ei = new ItemEntity(w, 0.5 + offset_x + pos.getX(),
                                 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy());
-                        w.addEntity(ei);
+                        w.addFreshEntity(ei);
                     }
                 }
             }
@@ -324,10 +324,10 @@ public class Platform {
         }
 
         try {
-            ITooltipFlag.TooltipFlags tooltipFlag = Minecraft.getInstance().gameSettings.advancedItemTooltips
+            ITooltipFlag.TooltipFlags tooltipFlag = Minecraft.getInstance().options.advancedItemTooltips
                     ? ITooltipFlag.TooltipFlags.ADVANCED
                     : ITooltipFlag.TooltipFlags.NORMAL;
-            return itemStack.getTooltip(Minecraft.getInstance().player, tooltipFlag);
+            return itemStack.getTooltipLines(Minecraft.getInstance().player, tooltipFlag);
         } catch (final Exception errB) {
             return Collections.emptyList();
         }
@@ -372,10 +372,10 @@ public class Platform {
         }
 
         try {
-            return itemStack.getDisplayName();
+            return itemStack.getHoverName();
         } catch (final Exception errA) {
             try {
-                return new TranslationTextComponent(itemStack.getTranslationKey());
+                return new TranslationTextComponent(itemStack.getDescriptionId());
             } catch (final Exception errB) {
                 return new StringTextComponent("** Exception");
             }
@@ -664,12 +664,12 @@ public class Platform {
     }
 
     public static LookDirection getPlayerRay(final PlayerEntity playerIn, double reachDistance) {
-        final double x = playerIn.prevPosX + (playerIn.getPosX() - playerIn.prevPosX);
-        final double y = playerIn.prevPosY + (playerIn.getPosY() - playerIn.prevPosY) + playerIn.getEyeHeight();
-        final double z = playerIn.prevPosZ + (playerIn.getPosZ() - playerIn.prevPosZ);
+        final double x = playerIn.xo + (playerIn.getX() - playerIn.xo);
+        final double y = playerIn.yo + (playerIn.getY() - playerIn.yo) + playerIn.getEyeHeight();
+        final double z = playerIn.zo + (playerIn.getZ() - playerIn.zo);
 
-        final float playerPitch = playerIn.prevRotationPitch + (playerIn.rotationPitch - playerIn.prevRotationPitch);
-        final float playerYaw = playerIn.prevRotationYaw + (playerIn.rotationYaw - playerIn.prevRotationYaw);
+        final float playerPitch = playerIn.xRotO + (playerIn.xRot - playerIn.xRotO);
+        final float playerYaw = playerIn.yRotO + (playerIn.yRot - playerIn.yRotO);
 
         final float yawRayX = MathHelper.sin(-playerYaw * 0.017453292f - (float) Math.PI);
         final float yawRayZ = MathHelper.cos(-playerYaw * 0.017453292f - (float) Math.PI);
@@ -686,14 +686,14 @@ public class Platform {
     }
 
     public static RayTraceResult rayTrace(final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities) {
-        final World w = p.getEntityWorld();
+        final World w = p.getCommandSenderWorld();
 
         final float f = 1.0F;
-        float f1 = p.prevRotationPitch + (p.rotationPitch - p.prevRotationPitch) * f;
-        final float f2 = p.prevRotationYaw + (p.rotationYaw - p.prevRotationYaw) * f;
-        final double d0 = p.prevPosX + (p.getPosX() - p.prevPosX) * f;
-        final double d1 = p.prevPosY + (p.getPosY() - p.prevPosY) * f + 1.62D - p.getYOffset();
-        final double d2 = p.prevPosZ + (p.getPosZ() - p.prevPosZ) * f;
+        float f1 = p.xRotO + (p.xRot - p.xRotO) * f;
+        final float f2 = p.yRotO + (p.yRot - p.yRotO) * f;
+        final double d0 = p.xo + (p.getX() - p.xo) * f;
+        final double d1 = p.yo + (p.getY() - p.yo) * f + 1.62D - p.getMyRidingOffset();
+        final double d2 = p.zo + (p.getZ() - p.zo) * f;
         final Vector3d vec3 = new Vector3d(d0, d1, d2);
         final float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
         final float f4 = MathHelper.sin(-f2 * 0.017453292F - (float) Math.PI);
@@ -707,27 +707,27 @@ public class Platform {
 
         final AxisAlignedBB bb = new AxisAlignedBB(Math.min(vec3.x, vec31.x), Math.min(vec3.y, vec31.y),
                 Math.min(vec3.z, vec31.z), Math.max(vec3.x, vec31.x), Math.max(vec3.y, vec31.y),
-                Math.max(vec3.z, vec31.z)).grow(16, 16, 16);
+                Math.max(vec3.z, vec31.z)).inflate(16, 16, 16);
 
         Entity entity = null;
         double closest = 9999999.0D;
         if (hitEntities) {
-            final List<Entity> list = w.getEntitiesWithinAABBExcludingEntity(p, bb);
+            final List<Entity> list = w.getEntities(p, bb);
 
             for (final Entity entity1 : list) {
                 if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
                     // prevent killing / flying of mounts.
-                    if (entity1.isRidingOrBeingRiddenBy(p)) {
+                    if (entity1.hasIndirectPassenger(p)) {
                         continue;
                     }
 
                     f1 = 0.3F;
                     // FIXME: Three different bounding boxes available, should double-check
-                    final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
-                    final Vector3d rtResult = boundingBox.rayTrace(vec3, vec31).orElse(null);
+                    final AxisAlignedBB boundingBox = entity1.getBoundingBox().inflate(f1, f1, f1);
+                    final Vector3d rtResult = boundingBox.clip(vec3, vec31).orElse(null);
 
                     if (rtResult != null) {
-                        final double nd = vec3.squareDistanceTo(rtResult);
+                        final double nd = vec3.distanceToSqr(rtResult);
 
                         if (nd < closest) {
                             entity = entity1;
@@ -744,11 +744,11 @@ public class Platform {
         if (hitBlocks) {
             vec = new Vector3d(d0, d1, d2);
             // FIXME: passing p as entity here might be incorrect
-            pos = w.rayTraceBlocks(new RayTraceContext(vec3, vec31, RayTraceContext.BlockMode.COLLIDER,
+            pos = w.clip(new RayTraceContext(vec3, vec31, RayTraceContext.BlockMode.COLLIDER,
                     RayTraceContext.FluidMode.ANY, p));
         }
 
-        if (entity != null && pos != null && pos.getHitVec().squareDistanceTo(vec) > closest) {
+        if (entity != null && pos != null && pos.getLocation().distanceToSqr(vec) > closest) {
             pos = new EntityRayTraceResult(entity);
         } else if (entity != null && pos == null) {
             pos = new EntityRayTraceResult(entity);
@@ -1006,7 +1006,7 @@ public class Platform {
                 break;
         }
 
-        player.setLocationAndAngles(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5,
+        player.moveTo(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5,
                 yaw, pitch);
     }
 
@@ -1058,17 +1058,17 @@ public class Platform {
             final boolean checkFuzzy = /*
                                         * FIXME ae_req.getOre().isPresent() || FIXME providedTemplate.getDamage() ==
                                         * OreDictionary.WILDCARD_VALUE ||
-                                        */ providedTemplate.hasTag() || providedTemplate.isDamageable();
+                                        */ providedTemplate.hasTag() || providedTemplate.isDamageableItem();
 
             if (items != null && checkFuzzy) {
                 for (final IAEItemStack x : items) {
                     final ItemStack sh = x.getDefinition();
                     if ((Platform.itemComparisons().isEqualItemType(providedTemplate, sh))
-                            && !ItemStack.areItemsEqual(sh, output)) {
+                            && !ItemStack.isSame(sh, output)) {
                         final ItemStack cp = sh.copy();
                         cp.setCount(1);
-                        ci.setInventorySlotContents(slot, cp);
-                        if (r.matches(ci, w) && ItemStack.areItemsEqual(r.getCraftingResult(ci), output)) {
+                        ci.setItem(slot, cp);
+                        if (r.matches(ci, w) && ItemStack.isSame(r.assemble(ci), output)) {
                             final IAEItemStack ax = x.copy();
                             ax.setStackSize(1);
                             if (filter == null || filter.isListed(ax)) {
@@ -1079,7 +1079,7 @@ public class Platform {
                                 }
                             }
                         }
-                        ci.setInventorySlotContents(slot, providedTemplate);
+                        ci.setItem(slot, providedTemplate);
                     }
                 }
             }
@@ -1106,7 +1106,7 @@ public class Platform {
         }
 
         ItemStack ci = i.getContainerItem(stackInSlot.copy());
-        if (!ci.isEmpty() && ci.isDamageable() && ci.getDamage() == ci.getMaxDamage()) {
+        if (!ci.isEmpty() && ci.isDamageableItem() && ci.getDamageValue() == ci.getMaxDamage()) {
             ci = ItemStack.EMPTY;
         }
 
@@ -1114,7 +1114,7 @@ public class Platform {
     }
 
     public static void notifyBlocksOfNeighbors(final World world, final BlockPos pos) {
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             TickHandler.instance().addCallable(world, new BlockUpdate(pos));
         }
     }
@@ -1138,9 +1138,9 @@ public class Platform {
     }
 
     public static float getEyeOffset(final PlayerEntity player) {
-        assert player.world.isRemote : "Valid only on client";
+        assert player.level.isClientSide : "Valid only on client";
         // FIXME: The entire premise of this seems broken
-        return (float) (player.getPosY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight() */ 1.62F);
+        return (float) (player.getY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight() */ 1.62F);
     }
 
     public static boolean isRecipePrioritized(final ItemStack what) {

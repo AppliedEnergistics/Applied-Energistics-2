@@ -64,15 +64,15 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
         return data;
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
         }
@@ -87,7 +87,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
     }
 
     public void updateRedstoneState() {
-        final YesNo currentState = this.world.getRedstonePowerFromNeighbors(this.pos) != 0 ? YesNo.YES : YesNo.NO;
+        final YesNo currentState = this.level.getBestNeighborSignal(this.worldPosition) != 0 ? YesNo.YES : YesNo.NO;
         if (this.lastRedstoneState != currentState) {
             this.lastRedstoneState = currentState;
             if (this.lastRedstoneState == YesNo.YES) {
@@ -115,10 +115,10 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
 
     @Override
     public Void call(final World world) throws Exception {
-        if (!(this.world instanceof ServerWorld)) {
+        if (!(this.level instanceof ServerWorld)) {
             return null;
         }
-        ServerWorld serverWorld = (ServerWorld) this.world;
+        ServerWorld serverWorld = (ServerWorld) this.level;
 
         final ItemStack cell = this.inv.getStackInSlot(0);
         if (this.isSpatialCell(cell) && this.inv.getStackInSlot(1).isEmpty()) {

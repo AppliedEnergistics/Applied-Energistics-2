@@ -69,7 +69,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     private final Map<CondenserOutput, IDrawable> buttonIcons;
 
     public CondenserCategory(IGuiHelper guiHelper) {
-        this.localizedName = I18n.format("gui.appliedenergistics2.Condenser");
+        this.localizedName = I18n.get("gui.appliedenergistics2.Condenser");
         this.icon = guiHelper.createDrawableIngredient(Api.INSTANCE.definitions().blocks().condenser().stack(1));
 
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/condenser.png");

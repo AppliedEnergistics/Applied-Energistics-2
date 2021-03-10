@@ -45,11 +45,11 @@ public class ItemRenderable<T extends TileEntity> implements Renderable<T> {
             if (pair.getRight() != null) {
                 pair.getRight().push(matrixStack);
             } else {
-                matrixStack.push();
+                matrixStack.pushPose();
             }
-            Minecraft.getInstance().getItemRenderer().renderItem(pair.getLeft(),
+            Minecraft.getInstance().getItemRenderer().renderStatic(pair.getLeft(),
                     ItemCameraTransforms.TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers);
-            matrixStack.pop();
+            matrixStack.popPose();
         }
     }
 

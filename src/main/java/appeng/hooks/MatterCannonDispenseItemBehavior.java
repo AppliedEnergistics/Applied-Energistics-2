@@ -35,28 +35,28 @@ import appeng.util.Platform;
 public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack dispenseStack(final IBlockSource dispenser, ItemStack dispensedItem) {
+    protected ItemStack execute(final IBlockSource dispenser, ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
         if (i instanceof MatterCannonItem) {
-            final Direction Direction = dispenser.getBlockState().get(DispenserBlock.FACING);
+            final Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
             AEPartLocation dir = AEPartLocation.INTERNAL;
             for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
-                if (Direction.getXOffset() == d.xOffset && Direction.getYOffset() == d.yOffset
-                        && Direction.getZOffset() == d.zOffset) {
+                if (Direction.getStepX() == d.xOffset && Direction.getStepY() == d.yOffset
+                        && Direction.getStepZ() == d.zOffset) {
                     dir = d;
                 }
             }
 
             final MatterCannonItem tm = (MatterCannonItem) i;
 
-            final World w = dispenser.getWorld();
+            final World w = dispenser.getLevel();
             if (w instanceof ServerWorld) {
                 final PlayerEntity p = Platform.getPlayer((ServerWorld) w);
-                Platform.configurePlayer(p, dir, dispenser.getBlockTileEntity());
+                Platform.configurePlayer(p, dir, dispenser.getEntity());
 
-                p.setPosition(p.getPosX() + dir.xOffset, p.getPosY() + dir.yOffset, p.getPosZ() + dir.zOffset);
+                p.setPos(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
 
-                dispensedItem = tm.onItemRightClick(w, p, null).getResult();
+                dispensedItem = tm.use(w, p, null).getObject();
             }
         }
         return dispensedItem;

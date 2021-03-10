@@ -20,7 +20,7 @@ public class AEItemGroup extends ItemGroup {
     }
 
     @Override
-    public ItemStack createIcon() {
+    public ItemStack makeIcon() {
         final IDefinitions definitions = Api.instance().definitions();
         final IBlocks blocks = definitions.blocks();
         return blocks.controller().stack(1);
@@ -31,9 +31,9 @@ public class AEItemGroup extends ItemGroup {
     }
 
     @Override
-    public void fill(NonNullList<ItemStack> items) {
+    public void fillItemList(NonNullList<ItemStack> items) {
         for (IItemDefinition itemDef : this.itemDefs) {
-            itemDef.item().fillItemGroup(this, items);
+            itemDef.item().fillItemCategory(this, items);
         }
     }
 

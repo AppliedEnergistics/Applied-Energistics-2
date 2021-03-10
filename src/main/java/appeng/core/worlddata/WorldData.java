@@ -60,12 +60,12 @@ public final class WorldData implements IWorldData {
         Preconditions.checkNotNull(overworld);
 
         // Attach shared data to the server's overworld dimension
-        if (overworld.getDimensionKey() != ServerWorld.OVERWORLD) {
+        if (overworld.dimension() != ServerWorld.OVERWORLD) {
             throw new IllegalStateException("The server doesn't have an overworld we could store our data on!");
         }
 
-        final PlayerData playerData = overworld.getSavedData().getOrCreate(PlayerData::new, PlayerData.NAME);
-        final StorageData storageData = overworld.getSavedData().getOrCreate(StorageData::new, StorageData.NAME);
+        final PlayerData playerData = overworld.getDataStorage().computeIfAbsent(PlayerData::new, PlayerData.NAME);
+        final StorageData storageData = overworld.getDataStorage().computeIfAbsent(StorageData::new, StorageData.NAME);
 
         final ThreadFactory compassThreadFactory = new CompassThreadFactory();
         final CompassService compassService = new CompassService(server, compassThreadFactory);
@@ -93,7 +93,7 @@ public final class WorldData implements IWorldData {
                 throw new IllegalStateException("No server set.");
             }
 
-            ServerWorld overworld = server.getWorld(ServerWorld.OVERWORLD);
+            ServerWorld overworld = server.getLevel(ServerWorld.OVERWORLD);
             instance = new WorldData(overworld);
         }
         return instance;

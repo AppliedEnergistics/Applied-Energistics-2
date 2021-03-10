@@ -107,7 +107,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
             ItemStack oldStack = this.previousStack;
             InvOperation op = InvOperation.SET;
 
-            if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.areItemsEqual(newStack, oldStack)) {
+            if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.isSame(newStack, oldStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
                     newStack.shrink(oldStack.getCount());
                     oldStack = ItemStack.EMPTY;

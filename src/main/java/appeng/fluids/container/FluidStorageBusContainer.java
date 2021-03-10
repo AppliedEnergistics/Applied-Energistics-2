@@ -124,7 +124,7 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -150,7 +150,7 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
         for (int i = 0; i < h.getSlots(); ++i) {
             h.setFluidInSlot(i, null);
         }
-        this.detectAndSendChanges();
+        this.broadcastChanges();
     }
 
     public void partition() {
@@ -172,7 +172,7 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
                 h.setFluidInSlot(x, null);
             }
         }
-        this.detectAndSendChanges();
+        this.broadcastChanges();
     }
 
     public AccessRestriction getReadWriteMode() {

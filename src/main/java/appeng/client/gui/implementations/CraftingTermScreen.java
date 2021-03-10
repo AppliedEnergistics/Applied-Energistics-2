@@ -42,14 +42,14 @@ public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContaine
 
     private void clear() {
         Slot s = null;
-        for (final Object j : this.container.inventorySlots) {
+        for (final Object j : this.menu.slots) {
             if (j instanceof CraftingMatrixSlot) {
                 s = (Slot) j;
             }
         }
 
         if (s != null) {
-            final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, s.slotNumber, 0);
+            final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, s.index, 0);
             NetworkHandler.instance().sendToServer(p);
         }
     }
@@ -58,7 +58,8 @@ public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContaine
     public void init() {
         super.init();
         ActionButton clearBtn = this.addButton(
-                new ActionButton(this.guiLeft + 92, this.guiTop + this.ySize - 156, ActionItems.STASH, btn -> clear()));
+                new ActionButton(this.leftPos + 92, this.topPos + this.imageHeight - 156, ActionItems.STASH,
+                        btn -> clear()));
         clearBtn.setHalfSize(true);
     }
 
@@ -66,8 +67,8 @@ public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContaine
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
-        this.font.drawString(matrixStack, GuiText.CraftingTerminal.getLocal(), 8,
-                this.ySize - 96 + 1 - this.getReservedSpace(), 4210752);
+        this.font.draw(matrixStack, GuiText.CraftingTerminal.getLocal(), 8,
+                this.imageHeight - 96 + 1 - this.getReservedSpace(), 4210752);
     }
 
     @Override

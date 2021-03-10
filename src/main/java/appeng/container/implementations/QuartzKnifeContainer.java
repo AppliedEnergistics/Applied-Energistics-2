@@ -67,7 +67,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
                 new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip));
         this.addSlot(new QuartzKniveSlot(this.inSlot, 0, 134, 44, -1));
 
-        this.lockPlayerInventorySlot(ip.currentItem);
+        this.lockPlayerInventorySlot(ip.selected);
 
         this.bindPlayerInventory(ip, 0, 184 - /* height of player inventory */82);
     }
@@ -77,13 +77,13 @@ public class QuartzKnifeContainer extends AEBaseContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        final ItemStack currentItem = this.getPlayerInv().getCurrentItem();
+    public void broadcastChanges() {
+        final ItemStack currentItem = this.getPlayerInv().getSelected();
 
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
-                if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem,
+                if (ItemStack.isSame(this.toolInv.getItemStack(), currentItem)) {
+                    this.getPlayerInv().setItem(this.getPlayerInv().selected,
                             this.toolInv.getItemStack());
                 } else {
                     this.setValidContainer(false);
@@ -93,13 +93,13 @@ public class QuartzKnifeContainer extends AEBaseContainer {
             }
         }
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
+    public void removed(final PlayerEntity par1PlayerEntity) {
         if (this.inSlot.getStackInSlot(0) != null) {
-            par1PlayerEntity.dropItem(this.inSlot.getStackInSlot(0), false);
+            par1PlayerEntity.drop(this.inSlot.getStackInSlot(0), false);
         }
     }
 
@@ -109,7 +109,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         }
 
         @Override
-        public ItemStack getStack() {
+        public ItemStack getItem() {
             final IItemHandler baseInv = this.getItemHandler();
             final ItemStack input = baseInv.getStackInSlot(0);
             if (input == ItemStack.EMPTY) {
@@ -131,8 +131,8 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
         @Override
         @Nonnull
-        public ItemStack decrStackSize(int amount) {
-            ItemStack ret = this.getStack();
+        public ItemStack remove(int amount) {
+            ItemStack ret = this.getItem();
             if (!ret.isEmpty()) {
                 this.makePlate();
             }
@@ -140,7 +140,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         }
 
         @Override
-        public void putStack(final ItemStack stack) {
+        public void set(final ItemStack stack) {
             if (stack.isEmpty()) {
                 this.makePlate();
             }
@@ -151,14 +151,14 @@ public class QuartzKnifeContainer extends AEBaseContainer {
                 if (!this.getItemHandler().extractItem(0, 1, false).isEmpty()) {
                     final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
                     final ItemStack before = item.copy();
-                    item.damageItem(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
-                        QuartzKnifeContainer.this.getPlayerInv().setInventorySlotContents(
-                                QuartzKnifeContainer.this.getPlayerInv().currentItem, ItemStack.EMPTY);
+                    item.hurtAndBreak(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
+                        QuartzKnifeContainer.this.getPlayerInv().setItem(
+                                QuartzKnifeContainer.this.getPlayerInv().selected, ItemStack.EMPTY);
                         MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(
                                 QuartzKnifeContainer.this.getPlayerInv().player, before, null));
                     });
 
-                    QuartzKnifeContainer.this.detectAndSendChanges();
+                    QuartzKnifeContainer.this.broadcastChanges();
                 }
             }
         }

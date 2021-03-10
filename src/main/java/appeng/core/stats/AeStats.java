@@ -44,7 +44,7 @@ public enum AeStats {
     }
 
     public void addToPlayer(final PlayerEntity player, final int howMany) {
-        player.addStat(this.registryName, howMany);
+        player.awardStat(this.registryName, howMany);
     }
 
     public ResourceLocation getRegistryName() {

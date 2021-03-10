@@ -266,10 +266,10 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 
         final DimensionalCoord dc = wap.getLocation();
 
-        if (dc.getWorld() == this.myPlayer.world) {
-            final double offX = dc.x - this.myPlayer.getPosX();
-            final double offY = dc.y - this.myPlayer.getPosY();
-            final double offZ = dc.z - this.myPlayer.getPosZ();
+        if (dc.getWorld() == this.myPlayer.level) {
+            final double offX = dc.x - this.myPlayer.getX();
+            final double offY = dc.y - this.myPlayer.getY();
+            final double offZ = dc.z - this.myPlayer.getZ();
 
             final double r = offX * offX + offY * offY + offZ * offZ;
             if (r < rangeLimit && this.sqRange > r) {

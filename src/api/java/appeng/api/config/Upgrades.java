@@ -94,7 +94,7 @@ public enum Upgrades {
 
             for (int i = 0; i < supported.size(); i++) {
                 Supported supported = this.supported.get(i);
-                ITextComponent name = supported.item.getName();
+                ITextComponent name = supported.item.getDescription();
 
                 // If the group was already added by a previous item, skip this
                 if (supported.getTooltipGroup() != null && namesAdded.contains(supported.getTooltipGroup())) {
@@ -116,7 +116,7 @@ public enum Upgrades {
                 if (namesAdded.add(name)) {
                     // append the supported count only if its > 1
                     if (supported.maxCount > 1) {
-                        name = name.deepCopy().appendString(" (" + supported.maxCount + ")");
+                        name = name.copy().append(" (" + supported.maxCount + ")");
                     }
                     supportedTooltipLines.add(name);
                 }

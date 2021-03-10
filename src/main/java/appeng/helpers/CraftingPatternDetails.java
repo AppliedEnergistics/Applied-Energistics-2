@@ -103,25 +103,25 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             final IAEItemStack ais = ingredients.get(x);
             final ItemStack gs = ais != null ? ais.createItemStack() : ItemStack.EMPTY;
 
-            this.crafting.setInventorySlotContents(x, gs);
+            this.crafting.setItem(x, gs);
 
             if (!gs.isEmpty() && (!this.isCraftable) || !gs.hasTag()) {
                 this.markItemAs(x, gs, TestStatus.ACCEPT);
             }
 
             in.add(ais != null ? ais.copy() : null);
-            this.testFrame.setInventorySlotContents(x, gs);
+            this.testFrame.setItem(x, gs);
         }
 
         if (this.isCraftable) {
-            IRecipe<?> recipe = w.getRecipeManager().getRecipes(IRecipeType.CRAFTING).get(recipeId);
+            IRecipe<?> recipe = w.getRecipeManager().byType(IRecipeType.CRAFTING).get(recipeId);
 
             if (recipe == null || recipe.getType() != IRecipeType.CRAFTING) {
                 throw new IllegalStateException("recipe id is not a crafting recipe");
             }
 
             this.standardRecipe = (ICraftingRecipe) recipe;
-            this.correctOutput = this.standardRecipe.getCraftingResult(this.crafting);
+            this.correctOutput = this.standardRecipe.assemble(this.crafting);
 
             out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                     .createStack(this.correctOutput));
@@ -176,11 +176,11 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
                 break;
         }
 
-        for (int x = 0; x < this.crafting.getSizeInventory(); x++) {
-            this.testFrame.setInventorySlotContents(x, this.crafting.getStackInSlot(x));
+        for (int x = 0; x < this.crafting.getContainerSize(); x++) {
+            this.testFrame.setItem(x, this.crafting.getItem(x));
         }
 
-        this.testFrame.setInventorySlotContents(slotIndex, i);
+        this.testFrame.setItem(slotIndex, i);
 
         // If we cannot substitute, the items must match exactly
         if (!canSubstitute && slotIndex < sparseInputs.length) {
@@ -191,10 +191,10 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         if (this.standardRecipe.matches(this.testFrame, w)) {
-            final ItemStack testOutput = this.standardRecipe.getCraftingResult(this.testFrame);
+            final ItemStack testOutput = this.standardRecipe.assemble(this.testFrame);
 
             if (Platform.itemComparisons().isSameItem(this.correctOutput, testOutput)) {
-                this.testFrame.setInventorySlotContents(slotIndex, this.crafting.getStackInSlot(slotIndex));
+                this.testFrame.setItem(slotIndex, this.crafting.getItem(slotIndex));
                 this.markItemAs(slotIndex, i, TestStatus.ACCEPT);
                 return true;
             }
@@ -240,7 +240,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         return this.substituteInputs.computeIfAbsent(slot, value -> {
-            ItemStack[] matchingStacks = getRecipeIngredient(slot).getMatchingStacks();
+            ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();
             List<IAEItemStack> itemList = new ArrayList<>(matchingStacks.length + 1);
             for (ItemStack matchingStack : matchingStacks) {
                 itemList.add(AEItemStack.fromItemStack(matchingStack));
@@ -330,8 +330,8 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             throw new IllegalStateException("Only crafting recipes supported.");
         }
 
-        for (int x = 0; x < craftingInv.getSizeInventory(); x++) {
-            if (!this.isValidItemForSlot(x, craftingInv.getStackInSlot(x), w)) {
+        for (int x = 0; x < craftingInv.getContainerSize(); x++) {
+            if (!this.isValidItemForSlot(x, craftingInv.getItem(x), w)) {
                 return ItemStack.EMPTY;
             }
         }
@@ -344,7 +344,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     private TestStatus getStatus(final int slotIndex, final ItemStack i) {
-        if (this.crafting.getStackInSlot(slotIndex).isEmpty()) {
+        if (this.crafting.getItem(slotIndex).isEmpty()) {
             return i.isEmpty() ? TestStatus.ACCEPT : TestStatus.DECLINE;
         }
 
@@ -435,12 +435,12 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         private final int hash;
 
         public TestLookup(final int slot, final ItemStack i) {
-            this(slot, i.getItem(), i.getDamage());
+            this(slot, i.getItem(), i.getDamageValue());
         }
 
         public TestLookup(final int slot, final Item item, final int dmg) {
             this.slot = slot;
-            this.ref = (dmg << Platform.DEF_OFFSET) | (Item.getIdFromItem(item) & 0xffff);
+            this.ref = (dmg << Platform.DEF_OFFSET) | (Item.getId(item) & 0xffff);
             final int offset = 3 * slot;
             this.hash = (this.ref << offset) | (this.ref >> (offset + 32));
         }

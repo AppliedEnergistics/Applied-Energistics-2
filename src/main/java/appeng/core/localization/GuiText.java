@@ -116,11 +116,11 @@ public enum GuiText {
     }
 
     public IFormattableTextComponent withSuffix(String text) {
-        return text().deepCopy().appendString(text);
+        return text().copy().append(text);
     }
 
     public IFormattableTextComponent withSuffix(ITextComponent text) {
-        return text().deepCopy().append(text);
+        return text().copy().append(text);
     }
 
     public IFormattableTextComponent text(Object... args) {

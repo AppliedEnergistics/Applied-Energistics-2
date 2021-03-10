@@ -19,7 +19,7 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(container, playerInventory, title);
-        this.ySize = 251;
+        this.imageHeight = 251;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
         final int xo = 8;
         final int yo = 23 + 6;
 
-        final IAEFluidTank config = container.getFluidConfigInventory();
+        final IAEFluidTank config = menu.getFluidConfigInventory();
 
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
@@ -37,7 +37,7 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
                 if (y < 2) {
                     this.guiSlots.add(new FluidSlotWidget(config, idx, idx, xo + x * 18, yo + y * 18));
                 } else {
-                    this.guiSlots.add(new OptionalFluidSlotWidget(config, container, idx, idx, y - 2, xo, yo, x, y));
+                    this.guiSlots.add(new OptionalFluidSlotWidget(config, menu, idx, idx, y - 2, xo, yo, x, y));
                 }
             }
         }
@@ -45,7 +45,7 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
 
     @Override
     protected void addButtons() {
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
+        this.addButton(new TabButton(this.leftPos + 154, this.topPos, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
     }
 

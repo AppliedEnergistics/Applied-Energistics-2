@@ -93,8 +93,8 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         data.putDouble("burnTime", this.getBurnTime());
         data.putDouble("maxBurnTime", this.getMaxBurnTime());
         data.putInt("burnSpeed", this.getBurnSpeed());
@@ -102,8 +102,8 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.setBurnTime(data.getDouble("burnTime"));
         this.setMaxBurnTime(data.getDouble("maxBurnTime"));
         this.setBurnSpeed(data.getInt("burnSpeed"));
@@ -238,8 +238,8 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
             this.isOn = this.getBurnTime() > 0;
             this.markForUpdate();
 
-            if (this.hasWorld()) {
-                Platform.notifyBlocksOfNeighbors(this.world, this.pos);
+            if (this.hasLevel()) {
+                Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
             }
         }
     }

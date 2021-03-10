@@ -57,8 +57,8 @@ public class ConfigValuePacket extends BasePacket {
     private final String Value;
 
     public ConfigValuePacket(final PacketBuffer stream) {
-        this.Name = stream.readString(MAX_STRING_LENGTH);
-        this.Value = stream.readString(MAX_STRING_LENGTH);
+        this.Name = stream.readUtf(MAX_STRING_LENGTH);
+        this.Value = stream.readUtf(MAX_STRING_LENGTH);
     }
 
     // api
@@ -70,32 +70,32 @@ public class ConfigValuePacket extends BasePacket {
 
         data.writeInt(this.getPacketID());
 
-        data.writeString(name);
-        data.writeString(value);
+        data.writeUtf(name);
+        data.writeUtf(value);
 
         this.configureWrite(data);
     }
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final Container c = player.openContainer;
+        final Container c = player.containerMenu;
 
-        if (this.Name.equals("Item") && ((!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
-                && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem)
-                || (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
-                        && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem))) {
+        if (this.Name.equals("Item") && ((!player.getItemInHand(Hand.MAIN_HAND).isEmpty()
+                && player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem)
+                || (!player.getItemInHand(Hand.OFF_HAND).isEmpty()
+                        && player.getItemInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem))) {
             final Hand hand;
-            if (!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
-                    && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {
+            if (!player.getItemInHand(Hand.MAIN_HAND).isEmpty()
+                    && player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {
                 hand = Hand.MAIN_HAND;
-            } else if (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
-                    && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
+            } else if (!player.getItemInHand(Hand.OFF_HAND).isEmpty()
+                    && player.getItemInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
                 hand = Hand.OFF_HAND;
             } else {
                 return;
             }
 
-            final ItemStack is = player.getHeldItem(hand);
+            final ItemStack is = player.getItemInHand(hand);
             final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
             si.onWheel(is, this.Value.equals("WheelUp"));
         } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingCPUCyclingContainer) {
@@ -187,12 +187,12 @@ public class ConfigValuePacket extends BasePacket {
 
     @Override
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Container c = player.openContainer;
+        final Container c = player.containerMenu;
 
         if (this.Name.startsWith("SyncDat.")) {
             ((AEBaseContainer) c).stringSync(Integer.parseInt(this.Name.substring(8)), this.Value);
         } else if (this.Name.equals("CraftingStatus") && this.Value.equals("Clear")) {
-            final Screen gs = Minecraft.getInstance().currentScreen;
+            final Screen gs = Minecraft.getInstance().screen;
             if (gs instanceof CraftingCPUScreen) {
                 ((CraftingCPUScreen<?>) gs).clearItems();
             }

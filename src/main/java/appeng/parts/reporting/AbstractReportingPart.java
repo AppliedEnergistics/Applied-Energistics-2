@@ -104,7 +104,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
+        if (pos.relative(this.getSide().getFacing()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         }
@@ -172,7 +172,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         final TileEntity te = this.getTile();
 
-        if (Platform.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
+        if (Platform.isWrench(player, player.inventory.getSelected(), te.getBlockPos())) {
             if (Platform.isServer()) {
                 if (this.getSpin() > 3) {
                     this.spin = 0;
@@ -207,7 +207,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
 
-        final byte rotation = (byte) (MathHelper.floor((player.rotationYaw * 4F) / 360F + 2.5D) & 3);
+        final byte rotation = (byte) (MathHelper.floor((player.yRot * 4F) / 360F + 2.5D) & 3);
         if (side == AEPartLocation.UP) {
             this.spin = rotation;
         } else if (side == AEPartLocation.DOWN) {
@@ -218,9 +218,9 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     private final int blockLight(final int emit) {
         if (this.opacity < 0) {
             final TileEntity te = this.getTile();
-            World world = te.getWorld();
-            BlockPos pos = te.getPos().offset(this.getSide().getFacing());
-            this.opacity = 255 - world.getBlockState(pos).getOpacity(world, pos);
+            World world = te.getLevel();
+            BlockPos pos = te.getBlockPos().relative(this.getSide().getFacing());
+            this.opacity = 255 - world.getBlockState(pos).getLightBlock(world, pos);
         }
 
         return (int) (emit * (this.opacity / 255.0f));

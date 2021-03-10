@@ -18,11 +18,11 @@ import appeng.spatial.SpatialStorageSkyProperties;
 public class SkyPropertiesMixin {
 
     @Shadow
-    private static Object2ObjectMap<ResourceLocation, DimensionRenderInfo> field_239208_a_/* BY_IDENTIFIER */;
+    private static Object2ObjectMap<ResourceLocation, DimensionRenderInfo> EFFECTS/* BY_IDENTIFIER */;
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void init(CallbackInfo ci) {
-        field_239208_a_.put(SpatialStorageDimensionIds.SKY_PROPERTIES_ID, SpatialStorageSkyProperties.INSTANCE);
+        EFFECTS.put(SpatialStorageDimensionIds.SKY_PROPERTIES_ID, SpatialStorageSkyProperties.INSTANCE);
     }
 
 }

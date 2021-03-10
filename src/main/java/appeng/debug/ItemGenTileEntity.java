@@ -49,21 +49,21 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
         if (POSSIBLE_ITEMS.isEmpty()) {
             for (final Item mi : ForgeRegistries.ITEMS) {
                 if (mi != null && mi != Items.AIR) {
-                    if (mi.isDamageable()) {
+                    if (mi.canBeDepleted()) {
                         ItemStack sampleStack = new ItemStack(mi);
                         int maxDamage = sampleStack.getMaxDamage();
                         for (int dmg = 0; dmg < maxDamage; dmg++) {
                             ItemStack is = sampleStack.copy();
-                            is.setDamage(dmg);
+                            is.setDamageValue(dmg);
                             POSSIBLE_ITEMS.add(is);
                         }
                     } else {
-                        if (mi.getGroup() == null) {
+                        if (mi.getItemCategory() == null) {
                             continue;
                         }
 
                         final NonNullList<ItemStack> list = NonNullList.create();
-                        mi.fillItemGroup(mi.getGroup(), list);
+                        mi.fillItemCategory(mi.getItemCategory(), list);
                         POSSIBLE_ITEMS.addAll(list);
                     }
                 }

@@ -40,11 +40,11 @@ public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternT
         if (container.isCraftingMode()
                 && recipeLayout.getRecipeCategory().getUid() != VanillaRecipeCategoryUid.CRAFTING) {
             return this.helper
-                    .createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.requires_processing_mode"));
+                    .createUserErrorWithTooltip(I18n.get("jei.appliedenergistics2.requires_processing_mode"));
         }
 
-        if (recipe.getRecipeOutput().isEmpty()) {
-            return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.no_output"));
+        if (recipe.getResultItem().isEmpty()) {
+            return this.helper.createUserErrorWithTooltip(I18n.get("jei.appliedenergistics2.no_output"));
         }
 
         return null;

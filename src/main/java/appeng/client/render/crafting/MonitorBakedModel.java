@@ -74,7 +74,7 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
 
         // Now add the three layered light textures
         AEColor color = getColor(modelData);
-        boolean powered = state.get(CraftingMonitorBlock.POWERED);
+        boolean powered = state.getValue(CraftingMonitorBlock.POWERED);
 
         builder.setEmissiveMaterial(powered);
 

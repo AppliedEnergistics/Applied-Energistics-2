@@ -18,6 +18,8 @@
 
 package appeng.block.crafting;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 import appeng.tile.crafting.CraftingMonitorTileEntity;
 
 public class CraftingMonitorBlock extends AbstractCraftingUnitBlock<CraftingMonitorTileEntity> {

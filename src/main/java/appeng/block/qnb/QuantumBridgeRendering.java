@@ -14,7 +14,7 @@ public class QuantumBridgeRendering extends BlockRenderingCustomizer {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderType.cutout());
         // Disable auto rotation
         rendering.modelCustomizer((location, model) -> model);
     }

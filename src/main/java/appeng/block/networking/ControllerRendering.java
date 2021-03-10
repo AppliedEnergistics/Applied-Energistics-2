@@ -29,6 +29,6 @@ public class ControllerRendering extends BlockRenderingCustomizer {
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
         // Disables the default model rotator
         rendering.modelCustomizer((loc, model) -> model);
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderType.cutout());
     }
 }

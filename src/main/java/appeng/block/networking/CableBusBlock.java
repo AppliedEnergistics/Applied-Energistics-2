@@ -93,9 +93,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public CableBusBlock() {
-        super(defaultProps(AEMaterials.GLASS).notSolid().noDrops().variableOpacity()
-                .setLightLevel(state -> state.get(LIGHT_LEVEL)));
-        setDefaultState(getDefaultState().with(LIGHT_LEVEL, 0).with(WATERLOGGED, false));
+        super(defaultProps(AEMaterials.GLASS).noOcclusion().noDrops().dynamicShape()
+                .lightLevel(state -> state.getValue(LIGHT_LEVEL)));
+        registerDefaultState(defaultBlockState().setValue(LIGHT_LEVEL, 0).setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -114,32 +114,32 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public int getWeakPower(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
+    public int getSignal(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
         return this.cb(w, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
     }
 
     @Override
-    public boolean canProvidePower(final BlockState state) {
+    public boolean isSignalSource(final BlockState state) {
         return true;
     }
 
     @Override
-    public void onEntityCollision(BlockState state, World w, BlockPos pos, Entity entityIn) {
+    public void entityInside(BlockState state, World w, BlockPos pos, Entity entityIn) {
         this.cb(w, pos).onEntityCollision(entityIn);
     }
 
     @Override
-    public int getStrongPower(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
+    public int getDirectSignal(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
         return this.cb(w, pos).isProvidingStrongPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(LIGHT_LEVEL, WATERLOGGED);
     }
 
@@ -149,15 +149,16 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
+    public boolean canBeReplaced(BlockState state, BlockItemUseContext useContext) {
         // FIXME: Potentially check the fluid one too
-        return super.isReplaceable(state, useContext) && this.cb(useContext.getWorld(), useContext.getPos()).isEmpty();
+        return super.canBeReplaced(state, useContext)
+                && this.cb(useContext.getLevel(), useContext.getClickedPos()).isEmpty();
     }
 
     @Override
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player,
             boolean willHarvest, FluidState fluid) {
-        if (player.abilities.isCreativeMode) {
+        if (player.abilities.instabuild) {
             final AEBaseTileEntity tile = this.getTileEntity(world, pos);
             if (tile != null) {
                 tile.disableDrops();
@@ -181,7 +182,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos,
             PlayerEntity player) {
-        final Vector3d v3 = target.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ());
+        final Vector3d v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
         final SelectedPart sp = this.cb(world, pos).selectPart(v3);
 
         if (sp.part != null) {
@@ -207,13 +208,13 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         if (target.getType() != Type.BLOCK) {
             return false;
         }
-        BlockPos blockPos = new BlockPos(target.getHitVec().x, target.getHitVec().y, target.getHitVec().z);
+        BlockPos blockPos = new BlockPos(target.getLocation().x, target.getLocation().y, target.getLocation().z);
 
         ICableBusContainer cb = this.cb(world, blockPos);
 
         // Our built-in model has the actual baked sprites we need
-        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher()
-                .getModelForState(this.getDefaultState());
+        IBakedModel model = Minecraft.getInstance().getBlockRenderer()
+                .getBlockModel(this.defaultBlockState());
 
         // We cannot add the effect if we don't have the model
         if (!(model instanceof CableBusBakedModel)) {
@@ -227,13 +228,13 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         // Spawn a particle for one of the particle textures
         TextureAtlasSprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
         if (texture != null) {
-            double x = target.getHitVec().x;
-            double y = target.getHitVec().y;
-            double z = target.getHitVec().z;
+            double x = target.getLocation().x;
+            double y = target.getLocation().y;
+            double z = target.getLocation().z;
             // FIXME: Check how this looks, probably like shit, maybe provide parts the
             // ability to supply particle textures???
-            effectRenderer.addEffect(
-                    new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).multiplyParticleScaleBy(0.8F));
+            effectRenderer.add(
+                    new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).scale(0.8F));
         }
 
         return true;
@@ -245,8 +246,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         ICableBusContainer cb = this.cb(world, pos);
 
         // Our built-in model has the actual baked sprites we need
-        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher()
-                .getModelForState(this.getDefaultState());
+        IBakedModel model = Minecraft.getInstance().getBlockRenderer()
+                .getBlockModel(this.defaultBlockState());
 
         // We cannot add the effect if we dont have the model
         if (!(model instanceof CableBusBakedModel)) {
@@ -276,7 +277,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
                         // ability to supply particle textures???
                         Particle effect = new CableBusBreakingParticle((ClientWorld) world, x, y, z,
                                 x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
-                        effectRenderer.addEffect(effect);
+                        effectRenderer.add(effect);
                     }
                 }
             }
@@ -294,7 +295,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     private ICableBusContainer cb(final IBlockReader w, final BlockPos pos) {
-        final TileEntity te = w.getTileEntity(pos);
+        final TileEntity te = w.getBlockEntity(pos);
         ICableBusContainer out = null;
 
         if (te instanceof CableBusTileEntity) {
@@ -306,7 +307,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Nullable
     private IFacadeContainer fc(final IBlockReader w, final BlockPos pos) {
-        final TileEntity te = w.getTileEntity(pos);
+        final TileEntity te = w.getBlockEntity(pos);
         IFacadeContainer out = null;
 
         if (te instanceof CableBusTileEntity) {
@@ -317,17 +318,19 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
-        if (worldIn.isRemote()) {
-            final RayTraceResult rtr = Minecraft.getInstance().objectMouseOver;
+    public void attack(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
+        if (worldIn.isClientSide()) {
+            final RayTraceResult rtr = Minecraft.getInstance().hitResult;
             if (rtr instanceof BlockRayTraceResult) {
                 BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
-                if (brtr.getPos().equals(pos)) {
-                    final Vector3d hitVec = rtr.getHitVec().subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
+                if (brtr.getBlockPos().equals(pos)) {
+                    final Vector3d hitVec = rtr.getLocation()
+                            .subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
 
                     if (this.cb(worldIn, pos).clicked(player, Hand.MAIN_HAND, hitVec)) {
-                        NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getFace(), (float) hitVec.x,
-                                (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
+                        NetworkHandler.instance()
+                                .sendToServer(new ClickPacket(pos, brtr.getDirection(), (float) hitVec.x,
+                                        (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
                     }
                 }
             }
@@ -342,7 +345,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         // Transform from world into block space
-        Vector3d hitVec = hit.getHitVec();
+        Vector3d hitVec = hit.getLocation();
         Vector3d hitInBlock = new Vector3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
         return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResultType.SUCCESS : ActionResultType.PASS;
     }
@@ -358,7 +361,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }
 
@@ -402,33 +405,33 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
             return currentState;
         }
         int lightLevel = te.getCableBus().getLightValue();
-        return super.updateBlockStateFromTileEntity(currentState, te).with(LIGHT_LEVEL, lightLevel);
+        return super.updateBlockStateFromTileEntity(currentState, te).setValue(LIGHT_LEVEL, lightLevel);
     }
 
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        BlockPos pos = context.getPos();
-        FluidState fluidState = context.getWorld().getFluidState(pos);
-        BlockState blockState = this.getDefaultState()
-                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+        BlockPos pos = context.getClickedPos();
+        FluidState fluidState = context.getLevel().getFluidState(pos);
+        BlockState blockState = this.defaultBlockState()
+                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
 
         return blockState;
     }
 
     public FluidState getFluidState(BlockState blockState) {
-        return blockState.get(WATERLOGGED).booleanValue()
-                ? Fluids.WATER.getStillFluidState(false)
+        return blockState.getValue(WATERLOGGED).booleanValue()
+                ? Fluids.WATER.getSource(false)
                 : super.getFluidState(blockState);
     }
 
-    public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
+    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
             BlockPos currentPos, BlockPos facingPos) {
-        if (blockState.get(WATERLOGGED)) {
-            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER,
-                    Fluids.WATER.getTickRate(world));
+        if (blockState.getValue(WATERLOGGED)) {
+            world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickDelay(world));
         }
 
-        return super.updatePostPlacement(blockState, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(blockState, facing, facingState, world, currentPos, facingPos);
     }
 
 }

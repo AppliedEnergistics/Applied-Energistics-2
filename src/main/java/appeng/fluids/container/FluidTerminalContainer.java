@@ -170,21 +170,21 @@ public class FluidTerminalContainer extends AEBaseContainer
 
     @Override
     public void onListUpdate() {
-        for (final IContainerListener c : this.listeners) {
+        for (final IContainerListener c : this.containerListeners) {
             this.queueInventory(c);
         }
     }
 
     @Override
-    public void addListener(IContainerListener listener) {
-        super.addListener(listener);
+    public void addSlotListener(IContainerListener listener) {
+        super.addSlotListener(listener);
 
         this.queueInventory(listener);
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(final PlayerEntity player) {
+        super.removed(player);
         if (this.monitor != null) {
             this.monitor.removeListener(this);
         }
@@ -245,7 +245,7 @@ public class FluidTerminalContainer extends AEBaseContainer
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isServer()) {
             if (this.monitor != this.terminal
                     .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class))) {
@@ -258,7 +258,7 @@ public class FluidTerminalContainer extends AEBaseContainer
 
                 if (sideLocal != sideRemote) {
                     this.clientCM.putSetting(set, sideLocal);
-                    for (final IContainerListener crafter : this.listeners) {
+                    for (final IContainerListener crafter : this.containerListeners) {
                         if (crafter instanceof ServerPlayerEntity) {
                             NetworkHandler.instance().sendTo(new ConfigValuePacket(set.name(), sideLocal.name()),
                                     (ServerPlayerEntity) crafter);
@@ -286,7 +286,7 @@ public class FluidTerminalContainer extends AEBaseContainer
                     if (!piu.isEmpty()) {
                         this.fluids.resetStatus();
 
-                        for (final Object c : this.listeners) {
+                        for (final Object c : this.containerListeners) {
                             if (c instanceof PlayerEntity) {
                                 NetworkHandler.instance().sendTo(piu, (ServerPlayerEntity) c);
                             }
@@ -298,7 +298,7 @@ public class FluidTerminalContainer extends AEBaseContainer
             }
             this.updatePowerStatus();
 
-            super.detectAndSendChanges();
+            super.broadcastChanges();
         }
     }
 
@@ -309,7 +309,7 @@ public class FluidTerminalContainer extends AEBaseContainer
             return;
         }
 
-        final ItemStack held = player.inventory.getItemStack();
+        final ItemStack held = player.inventory.getCarried();
         if (held.getCount() != 1) {
             // only support stacksize 1 for now
             return;
@@ -358,10 +358,10 @@ public class FluidTerminalContainer extends AEBaseContainer
 
             if (used != canFill) {
                 AELog.error("Fluid item [%s] reported a different possible amount than it actually accepted.",
-                        held.getDisplayName());
+                        held.getHoverName());
             }
 
-            player.inventory.setItemStack(fh.getContainer());
+            player.inventory.setCarried(fh.getContainer());
             this.updateHeld(player);
         } else if (action == InventoryAction.EMPTY_ITEM) {
             // See how much we can drain from the item
@@ -394,10 +394,10 @@ public class FluidTerminalContainer extends AEBaseContainer
 
             if (notInserted != null && notInserted.getStackSize() > 0) {
                 AELog.error("Fluid item [%s] reported a different possible amount to drain than it actually provided.",
-                        held.getDisplayName());
+                        held.getHoverName());
             }
 
-            player.inventory.setItemStack(fh.getContainer());
+            player.inventory.setCarried(fh.getContainer());
             this.updateHeld(player);
         }
     }

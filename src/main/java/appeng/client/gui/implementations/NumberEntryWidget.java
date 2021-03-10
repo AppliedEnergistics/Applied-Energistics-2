@@ -61,17 +61,17 @@ public class NumberEntryWidget extends AbstractGui {
         this.y = y;
         this.type = type;
 
-        FontRenderer font = parent.getMinecraft().fontRenderer;
+        FontRenderer font = parent.getMinecraft().font;
         int inputX = parent.getGuiLeft() + x;
         int inputY = parent.getGuiTop() + y;
-        this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.FONT_HEIGHT,
+        this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.lineHeight,
                 StringTextComponent.EMPTY);
-        this.textField.setEnableBackgroundDrawing(false);
-        this.textField.setMaxStringLength(16);
+        this.textField.setBordered(false);
+        this.textField.setMaxLength(16);
         this.textField.setTextColor(TEXT_COLOR_NORMAL);
         this.textField.setVisible(true);
-        this.textField.setFocused2(true);
-        parent.setFocusedDefault(this.textField);
+        this.textField.setFocus(true);
+        parent.setInitialFocus(this.textField);
         this.textField.setResponder(text -> {
             validate();
             if (onChange != null) {
@@ -96,7 +96,7 @@ public class NumberEntryWidget extends AbstractGui {
     }
 
     public void setActive(boolean active) {
-        this.textField.setEnabled(active);
+        this.textField.setEditable(active);
         this.buttons.forEach(b -> b.active = active);
     }
 
@@ -160,7 +160,7 @@ public class NumberEntryWidget extends AbstractGui {
      * value.
      */
     public OptionalInt getIntValue() {
-        String text = textField.getText().trim();
+        String text = textField.getValue().trim();
         try {
             int value = Integer.parseInt(text, 10);
             if (value < minValue) {
@@ -177,7 +177,7 @@ public class NumberEntryWidget extends AbstractGui {
      * value.
      */
     public OptionalLong getLongValue() {
-        String text = textField.getText().trim();
+        String text = textField.getValue().trim();
         try {
             long value = Long.parseLong(text, 10);
             if (value < minValue) {
@@ -190,9 +190,9 @@ public class NumberEntryWidget extends AbstractGui {
     }
 
     public void setValue(long value) {
-        this.textField.setText(String.valueOf(Math.max(minValue, value)));
-        this.textField.setCursorPositionEnd();
-        this.textField.setSelectionPos(0);
+        this.textField.setValue(String.valueOf(Math.max(minValue, value)));
+        this.textField.moveCursorToEnd();
+        this.textField.setHighlightPos(0);
         validate();
     }
 
@@ -207,7 +207,7 @@ public class NumberEntryWidget extends AbstractGui {
     private void validate() {
         List<ITextComponent> validationErrors = new ArrayList<>();
 
-        String text = textField.getText().trim();
+        String text = textField.getValue().trim();
         try {
             long value = Long.parseLong(text, 10);
             if (value < minValue) {
@@ -226,7 +226,7 @@ public class NumberEntryWidget extends AbstractGui {
     }
 
     private ITextComponent makeLabel(ITextComponent prefix, int amount) {
-        return prefix.copyRaw().appendString(String.valueOf(amount));
+        return prefix.plainCopy().append(String.valueOf(amount));
     }
 
     public void setHideValidationIcon(boolean hideValidationIcon) {

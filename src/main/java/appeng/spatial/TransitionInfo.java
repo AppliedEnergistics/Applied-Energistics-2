@@ -27,8 +27,8 @@ public final class TransitionInfo {
 
     public TransitionInfo(ResourceLocation worldId, BlockPos min, BlockPos max, Instant timestamp) {
         this.worldId = worldId;
-        this.min = min.toImmutable();
-        this.max = max.toImmutable();
+        this.min = min.immutable();
+        this.max = max.immutable();
         this.timestamp = timestamp;
     }
 

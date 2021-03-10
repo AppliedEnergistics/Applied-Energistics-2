@@ -43,7 +43,7 @@ public class MEInterfaceUpdatePacket extends BasePacket {
 
     public MEInterfaceUpdatePacket(final PacketBuffer stream) {
         this.data = null;
-        this.in = stream.readCompoundTag();
+        this.in = stream.readNbt();
     }
 
     // api
@@ -51,14 +51,14 @@ public class MEInterfaceUpdatePacket extends BasePacket {
         this.in = null;
         this.data = new PacketBuffer(Unpooled.buffer(2048));
         this.data.writeInt(this.getPacketID());
-        this.data.writeCompoundTag(din);
+        this.data.writeNbt(din);
         this.configureWrite(this.data);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Screen gs = Minecraft.getInstance().currentScreen;
+        final Screen gs = Minecraft.getInstance().screen;
 
         if (gs instanceof InterfaceTerminalScreen) {
             ((InterfaceTerminalScreen) gs).postUpdate(this.in);

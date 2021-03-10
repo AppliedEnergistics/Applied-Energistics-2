@@ -25,7 +25,7 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
     }
 
     @Override
-    public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos,
+    public boolean place(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos,
             ChargedQuartzOreConfig config) {
         ChunkPos chunkPos = new ChunkPos(pos);
 
@@ -34,9 +34,9 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
         IChunk chunk = worldIn.getChunk(pos);
         for (int y = 0; y < height; y++) {
             bpos.setY(y);
-            for (int x = chunkPos.getXStart(); x <= chunkPos.getXEnd(); x++) {
+            for (int x = chunkPos.getMinBlockX(); x <= chunkPos.getMaxBlockX(); x++) {
                 bpos.setX(x);
-                for (int z = chunkPos.getZStart(); z <= chunkPos.getZEnd(); z++) {
+                for (int z = chunkPos.getMinBlockZ(); z <= chunkPos.getMaxBlockZ(); z++) {
                     bpos.setZ(z);
                     if (chunk.getBlockState(bpos).getBlock() == config.target.getBlock()
                             && rand.nextFloat() < config.chance) {

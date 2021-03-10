@@ -24,6 +24,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.button.Button.IPressable;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -65,7 +66,7 @@ public abstract class IconButton extends Button implements ITooltip {
             final int iconIndex = this.getIconIndex();
 
             TextureManager textureManager = minecraft.getTextureManager();
-            textureManager.bindTexture(TEXTURE_STATES);
+            textureManager.bind(TEXTURE_STATES);
             RenderSystem.disableDepthTest();
             RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
                                         // it :|

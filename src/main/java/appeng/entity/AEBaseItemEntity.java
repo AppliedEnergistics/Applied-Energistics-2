@@ -38,19 +38,19 @@ public abstract class AEBaseItemEntity extends ItemEntity {
     protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final World world, final double x,
             final double y, final double z, final ItemStack stack) {
         this(entityType, world);
-        this.setPosition(x, y, z);
-        this.rotationYaw = this.rand.nextFloat() * 360.0F;
-        this.setMotion(this.rand.nextDouble() * 0.2D - 0.1D, 0.2D, this.rand.nextDouble() * 0.2D - 0.1D);
+        this.setPos(x, y, z);
+        this.yRot = this.random.nextFloat() * 360.0F;
+        this.setDeltaMovement(this.random.nextDouble() * 0.2D - 0.1D, 0.2D, this.random.nextDouble() * 0.2D - 0.1D);
         this.setItem(stack);
         this.lifespan = stack.getEntityLifespan(world);
     }
 
     protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final AxisAlignedBB region) {
-        return this.world.getEntitiesWithinAABBExcludingEntity(this, region);
+        return this.level.getEntities(this, region);
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

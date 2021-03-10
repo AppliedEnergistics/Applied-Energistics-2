@@ -52,7 +52,7 @@ public class ChunkLogger implements ISubCommand {
 
     @SubscribeEvent
     public void onChunkLoadEvent(final ChunkEvent.Load event) {
-        if (!event.getWorld().isRemote()) {
+        if (!event.getWorld().isClientSide()) {
             AELog.info("Chunk Loaded:   " + event.getChunk().getPos().x + ", " + event.getChunk().getPos().z);
             this.displayStack();
         }
@@ -60,7 +60,7 @@ public class ChunkLogger implements ISubCommand {
 
     @SubscribeEvent
     public void onChunkUnloadEvent(final ChunkEvent.Unload unload) {
-        if (!unload.getWorld().isRemote()) {
+        if (!unload.getWorld().isClientSide()) {
             AELog.info("Chunk Unloaded: " + unload.getChunk().getPos().x + ", " + unload.getChunk().getPos().z);
             this.displayStack();
         }
@@ -72,10 +72,10 @@ public class ChunkLogger implements ISubCommand {
 
         if (this.enabled) {
             MinecraftForge.EVENT_BUS.register(this);
-            sender.sendFeedback(new TranslationTextComponent("commands.ae2.ChunkLoggerOn"), true);
+            sender.sendSuccess(new TranslationTextComponent("commands.ae2.ChunkLoggerOn"), true);
         } else {
             MinecraftForge.EVENT_BUS.unregister(this);
-            sender.sendFeedback(new TranslationTextComponent("commands.ae2.ChunkLoggerOff"), true);
+            sender.sendSuccess(new TranslationTextComponent("commands.ae2.ChunkLoggerOff"), true);
         }
     }
 }

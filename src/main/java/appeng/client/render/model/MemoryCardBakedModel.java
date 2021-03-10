@@ -95,8 +95,8 @@ class MemoryCardBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.baseModel.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.baseModel.useAmbientOcclusion();
     }
 
     @Override
@@ -105,30 +105,30 @@ class MemoryCardBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;// TODO
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
-        return this.baseModel.isBuiltInRenderer();
+    public boolean isCustomRenderer() {
+        return this.baseModel.isCustomRenderer();
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.baseModel.getParticleTexture();
+    public TextureAtlasSprite getParticleIcon() {
+        return this.baseModel.getParticleIcon();
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return this.baseModel.getItemCameraTransforms();
+    public ItemCameraTransforms getTransforms() {
+        return this.baseModel.getTransforms();
     }
 
     @Override
     public ItemOverrideList getOverrides() {
         return new ItemOverrideList() {
             @Override
-            public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, ClientWorld world,
+            public IBakedModel resolve(IBakedModel originalModel, ItemStack stack, ClientWorld world,
                     LivingEntity entity) {
                 try {
                     if (stack.getItem() instanceof IMemoryCard) {

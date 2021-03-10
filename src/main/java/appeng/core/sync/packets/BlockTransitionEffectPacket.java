@@ -85,10 +85,10 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
         this.pos = stream.readBlockPos();
         int blockStateId = stream.readInt();
-        BlockState blockState = GameData.getBlockStateIDMap().getByValue(blockStateId);
+        BlockState blockState = GameData.getBlockStateIDMap().byId(blockStateId);
         if (blockState == null) {
             AELog.warn("Received invalid blockstate id %d from server", blockStateId);
-            blockState = Blocks.AIR.getDefaultState();
+            blockState = Blocks.AIR.defaultBlockState();
         }
         this.blockState = blockState;
         this.direction = AEPartLocation.fromOrdinal(stream.readByte());
@@ -117,7 +117,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
                 double speedY = 0.1f * this.direction.yOffset;
                 double speedZ = 0.1f * this.direction.zOffset;
 
-                Minecraft.getInstance().particles.addParticle(data, x, y, z, speedX, speedY, speedZ);
+                Minecraft.getInstance().particleEngine.createParticle(data, x, y, z, speedX, speedY, speedZ);
             }
         }
     }
@@ -130,13 +130,13 @@ public class BlockTransitionEffectPacket extends BasePacket {
         float pitch;
         if (soundMode == SoundMode.FLUID) {
             // This code is based on what BucketItem does
-            Fluid fluid = blockState.getFluidState().getFluid();
+            Fluid fluid = blockState.getFluidState().getType();
             soundEvent = fluid.getAttributes().getFillSound();
             if (soundEvent == null) {
-                if (fluid.isIn(FluidTags.LAVA)) {
-                    soundEvent = SoundEvents.ITEM_BUCKET_FILL_LAVA;
+                if (fluid.is(FluidTags.LAVA)) {
+                    soundEvent = SoundEvents.BUCKET_FILL_LAVA;
                 } else {
-                    soundEvent = SoundEvents.ITEM_BUCKET_FILL;
+                    soundEvent = SoundEvents.BUCKET_FILL;
                 }
             }
             volume = 1;
@@ -152,7 +152,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
         SimpleSound sound = new SimpleSound(soundEvent, SoundCategory.BLOCKS, (volume + 1.0F) / 2.0F, pitch * 0.8F,
                 pos);
-        Minecraft.getInstance().getSoundHandler().play(sound);
+        Minecraft.getInstance().getSoundManager().play(sound);
     }
 
 }

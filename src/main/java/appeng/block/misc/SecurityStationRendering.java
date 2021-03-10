@@ -34,7 +34,7 @@ public class SecurityStationRendering extends BlockRenderingCustomizer {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderType.cutout());
         rendering.blockColor(ColorableTileBlockColor.INSTANCE);
         itemRendering.color(new StaticItemColor(AEColor.TRANSPARENT));
     }

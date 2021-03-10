@@ -136,7 +136,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             return null; // No block was clicked
         }
 
-        TileEntity tileEntity = player.world.getTileEntity(locator.getBlockPos());
+        TileEntity tileEntity = player.level.getBlockEntity(locator.getBlockPos());
 
         // The tile entity itself can host a terminal (i.e. Chest!)
         if (interfaceClass.isInstance(tileEntity)) {
@@ -170,7 +170,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     private I getHostFromPlayerInventory(PlayerEntity player, ContainerLocator locator) {
 
-        ItemStack it = player.inventory.getStackInSlot(locator.getItemIndex());
+        ItemStack it = player.inventory.getItem(locator.getItemIndex());
 
         if (it.isEmpty()) {
             AELog.debug("Cannot open container for player %s since they no longer hold the item in slot %d", player,
@@ -182,7 +182,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             IGuiItem guiItem = (IGuiItem) it.getItem();
             // Optionally contains the block the item was used on to open the container
             BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
-            IGuiItemObject guiObject = guiItem.getGuiObject(it, locator.getItemIndex(), player.world, blockPos);
+            IGuiItemObject guiObject = guiItem.getGuiObject(it, locator.getItemIndex(), player.level, blockPos);
             if (interfaceClass.isInstance(guiObject)) {
                 return interfaceClass.cast(guiObject);
             }

@@ -79,11 +79,11 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public int getSlotStackLimit() {
+    public int getMaxStackSize() {
         if (this.stackLimit != -1) {
             return this.stackLimit;
         }
-        return super.getSlotStackLimit();
+        return super.getMaxStackSize();
     }
 
     public boolean isValid(final ItemStack is, final World theWorld) {
@@ -99,7 +99,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean isItemValid(final ItemStack stack) {
+    public boolean mayPlace(final ItemStack stack) {
         if (!this.getContainer().isValidForSlot(this, stack)) {
             return false;
         }
@@ -112,7 +112,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        if (!super.isItemValid(stack)) {
+        if (!super.mayPlace(stack)) {
             return false;
         }
 
@@ -127,7 +127,7 @@ public class RestrictedInputSlot extends AppEngSlot {
 
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
-                final ICraftingPatternDetails de = crafting.decodePattern(stack, this.p.player.world);
+                final ICraftingPatternDetails de = crafting.decodePattern(stack, this.p.player.level);
                 if (de != null) {
                     return de.isCraftable();
                 }
@@ -147,7 +147,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                     return true;
                 }
 
-                return InscriberRecipes.isValidOptionalIngredient(p.player.world, stack);
+                return InscriberRecipes.isValidOptionalIngredient(p.player.level, stack);
 
             case INSCRIBER_INPUT:
                 return true;/*
@@ -162,7 +162,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case VIEW_CELL:
                 return items.viewCell().isSameAs(stack);
             case ORE:
-                return GrinderRecipes.isValidIngredient(p.player.world, stack);
+                return GrinderRecipes.isValidIngredient(p.player.level, stack);
             case FUEL:
                 return ForgeHooks.getBurnTime(stack) > 0;
             case POWERED_TOOL:
@@ -207,14 +207,14 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity player) {
+    public boolean mayPickup(final PlayerEntity player) {
         return this.isAllowEdit();
     }
 
     @Override
     public ItemStack getDisplayStack() {
         if (Platform.isClient() && (this.which == PlacableItemType.ENCODED_PATTERN)) {
-            final ItemStack is = super.getStack();
+            final ItemStack is = super.getItem();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
                 final ItemStack out = iep.getOutput(is);
@@ -223,7 +223,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 }
             }
         }
-        return super.getStack();
+        return super.getItem();
     }
 
     public static boolean isMetalIngot(final ItemStack i) {

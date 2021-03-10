@@ -64,22 +64,22 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
             this.slot = slotIndex;
         } else {
             this.slot = -1;
-            this.lockPlayerInventorySlot(ip.currentItem);
+            this.lockPlayerInventorySlot(ip.selected);
         }
         this.civ = monitorable;
         this.bindPlayerInventory(ip, 0, 0);
     }
 
     @Override
-    public void detectAndSendChanges() {
-        final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem()
-                : this.getPlayerInv().getStackInSlot(this.slot);
+    public void broadcastChanges() {
+        final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getSelected()
+                : this.getPlayerInv().getItem(this.slot);
 
         if (this.civ == null || currentItem.isEmpty()) {
             this.setValidContainer(false);
         } else if (this.civ != null && !this.civ.getItemStack().isEmpty() && currentItem != this.civ.getItemStack()) {
-            if (ItemStack.areItemsEqual(this.civ.getItemStack(), currentItem)) {
-                this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.civ.getItemStack());
+            if (ItemStack.isSame(this.civ.getItemStack(), currentItem)) {
+                this.getPlayerInv().setItem(this.getPlayerInv().selected, this.civ.getItemStack());
             } else {
                 this.setValidContainer(false);
             }
@@ -92,7 +92,7 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
                     PowerMultiplier.CONFIG);
             this.ticks = 0;
         }
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     private double getPowerMultiplier() {

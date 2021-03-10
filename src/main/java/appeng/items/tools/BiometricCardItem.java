@@ -26,6 +26,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -51,35 +52,35 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+    public ActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
         if (p.isCrouching()) {
-            this.encode(p.getHeldItem(hand), p);
-            p.swingArm(hand);
-            return ActionResult.resultSuccess(p.getHeldItem(hand));
+            this.encode(p.getItemInHand(hand), p);
+            p.swing(hand);
+            return ActionResult.success(p.getItemInHand(hand));
         }
 
-        return ActionResult.resultPass(p.getHeldItem(hand));
+        return ActionResult.pass(p.getItemInHand(hand));
     }
 
     @Override
-    public ActionResultType itemInteractionForEntity(ItemStack is, final PlayerEntity player, final LivingEntity target,
+    public ActionResultType interactLivingEntity(ItemStack is, final PlayerEntity player, final LivingEntity target,
             final Hand hand) {
         if (target instanceof PlayerEntity && !player.isCrouching()) {
             if (player.isCreative()) {
-                is = player.getHeldItem(hand);
+                is = player.getItemInHand(hand);
             }
             this.encode(is, (PlayerEntity) target);
-            player.swingArm(hand);
+            player.swing(hand);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
     }
 
     @Override
-    public ITextComponent getDisplayName(final ItemStack is) {
+    public ITextComponent getName(final ItemStack is) {
         final GameProfile username = this.getProfile(is);
-        return username != null ? super.getDisplayName(is).deepCopy().appendString(" - " + username.getName())
-                : super.getDisplayName(is);
+        return username != null ? super.getName(is).copy().append(" - " + username.getName())
+                : super.getName(is);
     }
 
     private void encode(final ItemStack is, final PlayerEntity p) {
@@ -155,7 +156,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
         final EnumSet<SecurityPermissions> perms = this.getPermissions(stack);
         if (perms.isEmpty()) {
@@ -167,7 +168,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
                 if (msg == null) {
                     msg = new TranslationTextComponent(sp.getTranslatedName());
                 } else {
-                    msg = msg.deepCopy().appendString(", ")
+                    msg = msg.copy().append(", ")
                             .append(new TranslationTextComponent(sp.getTranslatedName()));
                 }
             }

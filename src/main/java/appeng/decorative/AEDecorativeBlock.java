@@ -18,6 +18,8 @@
 
 package appeng.decorative;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 import appeng.block.AEBaseBlock;
 
 public class AEDecorativeBlock extends AEBaseBlock {

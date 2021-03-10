@@ -29,7 +29,7 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
     }
 
     private static InscriberProcessType getMode(JsonObject json) {
-        String mode = JSONUtils.getString(json, "mode", "inscribe");
+        String mode = JSONUtils.getAsString(json, "mode", "inscribe");
         switch (mode) {
             case "inscribe":
                 return InscriberProcessType.INSCRIBE;
@@ -42,23 +42,23 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
     }
 
     @Override
-    public InscriberRecipe read(ResourceLocation recipeId, JsonObject json) {
+    public InscriberRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 
         InscriberProcessType mode = getMode(json);
 
-        String group = JSONUtils.getString(json, "group", "");
-        ItemStack result = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
+        String group = JSONUtils.getAsString(json, "group", "");
+        ItemStack result = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, "result"));
 
         // Deserialize the three parts of the input
-        JsonObject ingredients = JSONUtils.getJsonObject(json, "ingredients");
-        Ingredient middle = Ingredient.deserialize(ingredients.get("middle"));
+        JsonObject ingredients = JSONUtils.getAsJsonObject(json, "ingredients");
+        Ingredient middle = Ingredient.fromJson(ingredients.get("middle"));
         Ingredient top = Ingredient.EMPTY;
         if (ingredients.has("top")) {
-            top = Ingredient.deserialize(ingredients.get("top"));
+            top = Ingredient.fromJson(ingredients.get("top"));
         }
         Ingredient bottom = Ingredient.EMPTY;
         if (ingredients.has("bottom")) {
-            bottom = Ingredient.deserialize(ingredients.get("bottom"));
+            bottom = Ingredient.fromJson(ingredients.get("bottom"));
         }
 
         return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
@@ -66,25 +66,25 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
 
     @Nullable
     @Override
-    public InscriberRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-        String group = buffer.readString(BasePacket.MAX_STRING_LENGTH);
-        Ingredient middle = Ingredient.read(buffer);
-        ItemStack result = buffer.readItemStack();
-        Ingredient top = Ingredient.read(buffer);
-        Ingredient bottom = Ingredient.read(buffer);
-        InscriberProcessType mode = buffer.readEnumValue(InscriberProcessType.class);
+    public InscriberRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+        String group = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);
+        Ingredient middle = Ingredient.fromNetwork(buffer);
+        ItemStack result = buffer.readItem();
+        Ingredient top = Ingredient.fromNetwork(buffer);
+        Ingredient bottom = Ingredient.fromNetwork(buffer);
+        InscriberProcessType mode = buffer.readEnum(InscriberProcessType.class);
 
         return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
     }
 
     @Override
-    public void write(PacketBuffer buffer, InscriberRecipe recipe) {
-        buffer.writeString(recipe.getGroup());
-        recipe.getMiddleInput().write(buffer);
-        buffer.writeItemStack(recipe.getRecipeOutput());
-        recipe.getTopOptional().write(buffer);
-        recipe.getBottomOptional().write(buffer);
-        buffer.writeEnumValue(recipe.getProcessType());
+    public void toNetwork(PacketBuffer buffer, InscriberRecipe recipe) {
+        buffer.writeUtf(recipe.getGroup());
+        recipe.getMiddleInput().toNetwork(buffer);
+        buffer.writeItem(recipe.getResultItem());
+        recipe.getTopOptional().toNetwork(buffer);
+        recipe.getBottomOptional().toNetwork(buffer);
+        buffer.writeEnum(recipe.getProcessType());
     }
 
 }

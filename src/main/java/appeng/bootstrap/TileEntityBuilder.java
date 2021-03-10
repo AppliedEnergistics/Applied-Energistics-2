@@ -90,7 +90,7 @@ public class TileEntityBuilder<T extends AEBaseTileEntity> {
             }
 
             Supplier<T> factory = () -> supplier.apply(type);
-            type = TileEntityType.Builder.create(factory, blocks.toArray(new Block[0])).build(null);
+            type = TileEntityType.Builder.of(factory, blocks.toArray(new Block[0])).build(null);
             type.setRegistryName(AppEng.MOD_ID, registryName);
             registry.register(type);
 

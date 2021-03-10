@@ -97,13 +97,13 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
     }
 
     @Override
-    public void read(CompoundNBT tag) {
+    public void load(CompoundNBT tag) {
 
         nextGridId = tag.getLong(TAG_NEXT_ID);
 
         // Load serialized grid storage
         CompoundNBT storageTag = tag.getCompound(TAG_STORAGE);
-        for (String storageIdStr : storageTag.keySet()) {
+        for (String storageIdStr : storageTag.getAllKeys()) {
             long storageId;
             try {
                 storageId = Long.parseLong(storageIdStr);
@@ -117,14 +117,14 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
         // Load ordered values map
         CompoundNBT orderedValuesTag = tag.getCompound(TAG_ORDERED_VALUES);
         this.orderedValues.clear();
-        for (String key : orderedValuesTag.keySet()) {
+        for (String key : orderedValuesTag.getAllKeys()) {
             this.orderedValues.put(key, orderedValuesTag.getInt(key));
         }
 
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
 
         tag.putLong(TAG_NEXT_ID, nextGridId);
 

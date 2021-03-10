@@ -43,6 +43,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -281,7 +282,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             return null;
         }
         // Client-side we'll need to actually use the synced state
-        if (world == null || world.isRemote) {
+        if (level == null || level.isClientSide) {
             return cellItem;
         }
         ItemStack cell = getCell();
@@ -331,7 +332,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
     @Override
     public void tick() {
-        if (this.world.isRemote) {
+        if (this.level.isClientSide) {
             return;
         }
 
@@ -394,14 +395,14 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         this.paintedColor = AEColor.values()[data.readByte()];
         this.cellItem = data.readRegistryIdUnsafe(ForgeRegistries.ITEMS);
 
-        this.lastStateChange = this.world.getGameTime();
+        this.lastStateChange = this.level.getGameTime();
 
         return oldPaintedColor != this.paintedColor || (this.state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || c;
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.config.readFromNBT(data);
         this.priority = data.getInt("priority");
         if (data.contains("paintedColor")) {
@@ -410,8 +411,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         this.config.writeToNBT(data);
         data.putInt("priority", this.priority);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
@@ -460,8 +461,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             }
 
             // update the neighbors
-            if (this.world != null) {
-                Platform.notifyBlocksOfNeighbors(this.world, this.pos);
+            if (this.level != null) {
+                Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
                 this.markForUpdate();
             }
         }
@@ -529,7 +530,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
     @Override
     public void blinkCell(final int slot) {
-        final long now = this.world.getGameTime();
+        final long now = this.level.getGameTime();
         if (now - this.lastStateChange > 8) {
             this.state = 0;
         }
@@ -591,7 +592,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         if (cellInventory != null) {
             cellInventory.persist();
         }
-        this.world.markChunkDirty(this.pos, this);
+        this.level.blockEntityChanged(this.worldPosition, this);
     }
 
     private class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T> {

@@ -223,7 +223,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
                     return entry.getValue();
                 }
 
-                if (ItemStack.areItemsEqual(is, trigger)) {
+                if (ItemStack.isSame(is, trigger)) {
                     return entry.getValue();
                 }
             }

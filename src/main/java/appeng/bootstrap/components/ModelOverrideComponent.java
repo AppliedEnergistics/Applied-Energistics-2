@@ -45,7 +45,7 @@ public class ModelOverrideComponent implements IModelBakeComponent {
     public void onModelBakeEvent(final ModelBakeEvent event) {
         Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
-        IBakedModel missingModel = modelRegistry.get(ModelBakery.MODEL_MISSING);
+        IBakedModel missingModel = modelRegistry.get(ModelBakery.MISSING_MODEL_LOCATION);
 
         for (ResourceLocation location : keys) {
             if (!location.getNamespace().equals(AppEng.MOD_ID)) {

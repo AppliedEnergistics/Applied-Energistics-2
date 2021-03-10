@@ -426,8 +426,8 @@ public class GridNode implements IGridNode, IPathItem {
 
     private IGridHost findGridHost(final IWorld world, final int x, final int y, final int z) {
         final BlockPos pos = new BlockPos(x, y, z);
-        if (world.isBlockLoaded(pos)) {
-            final TileEntity te = world.getTileEntity(pos);
+        if (world.hasChunkAt(pos)) {
+            final TileEntity te = world.getBlockEntity(pos);
             if (te instanceof IGridHost) {
                 return (IGridHost) te;
             }

@@ -25,6 +25,7 @@ import net.minecraft.network.PacketBuffer;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
+import appeng.core.sync.BasePacketHandler.PacketTypes;
 
 public final class ServerPacketHandler extends BasePacketHandler implements IPacketHandler {
 

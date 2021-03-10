@@ -23,6 +23,7 @@ import java.util.List;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -59,7 +60,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
                 this.getSettingsName(stack));
@@ -89,7 +90,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
      */
     private String getFirstValidTranslationKey(final String... name) {
         for (final String n : name) {
-            if (I18n.hasKey(n)) {
+            if (I18n.exists(n)) {
                 return n;
             }
         }
@@ -146,45 +147,45 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
         switch (msg) {
             case SETTINGS_CLEARED:
-                player.sendMessage(PlayerMessages.SettingCleared.get(), Util.DUMMY_UUID);
+                player.sendMessage(PlayerMessages.SettingCleared.get(), Util.NIL_UUID);
                 break;
             case INVALID_MACHINE:
-                player.sendMessage(PlayerMessages.InvalidMachine.get(), Util.DUMMY_UUID);
+                player.sendMessage(PlayerMessages.InvalidMachine.get(), Util.NIL_UUID);
                 break;
             case SETTINGS_LOADED:
-                player.sendMessage(PlayerMessages.LoadedSettings.get(), Util.DUMMY_UUID);
+                player.sendMessage(PlayerMessages.LoadedSettings.get(), Util.NIL_UUID);
                 break;
             case SETTINGS_SAVED:
-                player.sendMessage(PlayerMessages.SavedSettings.get(), Util.DUMMY_UUID);
+                player.sendMessage(PlayerMessages.SavedSettings.get(), Util.NIL_UUID);
                 break;
             case SETTINGS_RESET:
-                player.sendMessage(PlayerMessages.ResetSettings.get(), Util.DUMMY_UUID);
+                player.sendMessage(PlayerMessages.ResetSettings.get(), Util.NIL_UUID);
                 break;
             default:
         }
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         if (context.getPlayer().isCrouching()) {
-            if (!context.getPlayer().world.isRemote) {
-                this.clearCard(context.getPlayer(), context.getWorld(), context.getHand());
+            if (!context.getPlayer().level.isClientSide) {
+                this.clearCard(context.getPlayer(), context.getLevel(), context.getHand());
             }
             return ActionResultType.SUCCESS;
         } else {
-            return super.onItemUse(context);
+            return super.useOn(context);
         }
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World w, PlayerEntity player, Hand hand) {
+    public ActionResult<ItemStack> use(World w, PlayerEntity player, Hand hand) {
         if (player.isCrouching()) {
-            if (!w.isRemote) {
+            if (!w.isClientSide) {
                 this.clearCard(player, w, hand);
             }
         }
 
-        return super.onItemRightClick(w, player, hand);
+        return super.use(w, player, hand);
     }
 
     @Override
@@ -193,8 +194,8 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     private void clearCard(final PlayerEntity player, final World w, final Hand hand) {
-        final IMemoryCard mem = (IMemoryCard) player.getHeldItem(hand).getItem();
+        final IMemoryCard mem = (IMemoryCard) player.getItemInHand(hand).getItem();
         mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
-        player.getHeldItem(hand).setTag(null);
+        player.getItemInHand(hand).setTag(null);
     }
 }

@@ -115,8 +115,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private long remainingItemCount;
 
     public CraftingCPUCluster(final BlockPos boundsMin, final BlockPos boundsMax) {
-        this.boundsMin = boundsMin.toImmutable();
-        this.boundsMax = boundsMax.toImmutable();
+        this.boundsMin = boundsMin.immutable();
+        this.boundsMax = boundsMax.immutable();
     }
 
     @Override
@@ -684,7 +684,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                                                 if (!is.isEmpty()) {
                                                     this.postChange(AEItemStack.fromItemStack(is), this.machineSrc);
-                                                    ic.setInventorySlotContents(x, is);
+                                                    ic.setItem(x, is);
                                                     found = true;
                                                     break;
                                                 }
@@ -697,7 +697,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                                         if (!is.isEmpty()) {
                                             this.postChange(input[x], this.machineSrc);
-                                            ic.setInventorySlotContents(x, is);
+                                            ic.setItem(x, is);
                                             if (is.getCount() == input[x].getStackSize()) {
                                                 found = true;
                                                 continue;
@@ -713,8 +713,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                             if (!found) {
                                 // put stuff back..
-                                for (int x = 0; x < ic.getSizeInventory(); x++) {
-                                    final ItemStack is = ic.getStackInSlot(x);
+                                for (int x = 0; x < ic.getContainerSize(); x++) {
+                                    final ItemStack is = ic.getItem(x);
                                     if (!is.isEmpty()) {
                                         this.inventory.injectItems(AEItemStack.fromItemStack(is), Actionable.MODULATE,
                                                 this.machineSrc);
@@ -739,8 +739,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                                 BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) getWorld()),
                                         details.getOutput(ic, this.getWorld()), ic);
 
-                                for (int x = 0; x < ic.getSizeInventory(); x++) {
-                                    final ItemStack output = Platform.getContainerItem(ic.getStackInSlot(x));
+                                for (int x = 0; x < ic.getContainerSize(); x++) {
+                                    final ItemStack output = Platform.getContainerItem(ic.getItem(x));
                                     if (!output.isEmpty()) {
                                         final IAEItemStack cItem = AEItemStack.fromItemStack(output);
                                         this.postChange(cItem, this.machineSrc);
@@ -767,8 +767,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                 if (ic != null) {
                     // put stuff back..
-                    for (int x = 0; x < ic.getSizeInventory(); x++) {
-                        final ItemStack is = ic.getStackInSlot(x);
+                    for (int x = 0; x < ic.getContainerSize(); x++) {
+                        final ItemStack is = ic.getItem(x);
                         if (!is.isEmpty()) {
                             this.inventory.injectItems(AEItemStack.fromItemStack(is), Actionable.MODULATE,
                                     this.machineSrc);
@@ -1157,9 +1157,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
             if (te.hasCustomInventoryName()) {
                 if (this.myName != null) {
-                    this.myName.deepCopy().appendString(" ").append(te.getCustomInventoryName());
+                    this.myName.copy().append(" ").append(te.getCustomInventoryName());
                 } else {
-                    this.myName = te.getCustomInventoryName().deepCopy();
+                    this.myName = te.getCustomInventoryName().copy();
                 }
             }
         }
@@ -1184,7 +1184,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     private World getWorld() {
-        return this.getCore().getWorld();
+        return this.getCore().getLevel();
     }
 
     public IAEItemStack making(final IAEItemStack what) {

@@ -195,8 +195,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     @Override
     protected void resetCache(final boolean fullReset) {
-        if (this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null
-                || this.getHost().getTile().getWorld().isRemote) {
+        if (this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getLevel() == null
+                || this.getHost().getTile().getLevel().isClientSide) {
             return;
         }
 
@@ -267,7 +267,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         this.cached = true;
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+        final TileEntity target = self.getLevel()
+                .getBlockEntity(self.getBlockPos().relative(this.getSide().getFacing()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {

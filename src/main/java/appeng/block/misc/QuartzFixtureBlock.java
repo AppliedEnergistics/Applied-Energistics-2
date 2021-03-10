@@ -67,9 +67,9 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
         SHAPES = new EnumMap<>(Direction.class);
 
         for (Direction facing : Direction.values()) {
-            final double xOff = -0.3 * facing.getXOffset();
-            final double yOff = -0.3 * facing.getYOffset();
-            final double zOff = -0.3 * facing.getZOffset();
+            final double xOff = -0.3 * facing.getStepX();
+            final double yOff = -0.3 * facing.getStepY();
+            final double zOff = -0.3 * facing.getStepZ();
             VoxelShape shape = VoxelShapes
                     .create(new AxisAlignedBB(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
             SHAPES.put(facing, shape);
@@ -86,14 +86,15 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
 
     public QuartzFixtureBlock() {
         super(defaultProps(
-                AEMaterials.FIXTURE).doesNotBlockMovement().notSolid().hardnessAndResistance(0)
-                        .setLightLevel((b) -> 14).sound(SoundType.GLASS));
+                AEMaterials.FIXTURE).noCollission().noOcclusion().strength(0)
+                        .lightLevel((b) -> 14).sound(SoundType.GLASS));
 
-        this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false).with(WATERLOGGED, false));
+        this.registerDefaultState(
+                defaultBlockState().setValue(FACING, Direction.UP).setValue(ODD, false).setValue(WATERLOGGED, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING, ODD, WATERLOGGED);
     }
 
@@ -102,19 +103,19 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockState blockstate = super.getStateForPlacement(context);
-        BlockPos pos = context.getPos();
-        FluidState fluidState = context.getWorld().getFluidState(pos);
+        BlockPos pos = context.getClickedPos();
+        FluidState fluidState = context.getLevel().getFluidState(pos);
 
         // Set the even/odd property
         boolean oddPlacement = ((pos.getX() + pos.getY() + pos.getZ()) % 2) != 0;
-        blockstate = blockstate.with(ODD, oddPlacement).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+        blockstate = blockstate.setValue(ODD, oddPlacement).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
 
-        IWorldReader iworldreader = context.getWorld();
+        IWorldReader iworldreader = context.getLevel();
         Direction[] adirection = context.getNearestLookingDirections();
 
         for (Direction direction : adirection) {
             if (canPlaceAt(iworldreader, pos, direction)) {
-                return blockstate.with(FACING, direction.getOpposite());
+                return blockstate.setValue(FACING, direction.getOpposite());
             }
         }
 
@@ -124,16 +125,16 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     // Break the fixture if the block it is attached to is changed so that it could
     // no longer be placed
     @Override
-    public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
+    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
             BlockPos currentPos, BlockPos facingPos) {
-        if (blockState.get(WATERLOGGED).booleanValue()) {
-            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER,
-                    Fluids.WATER.getTickRate(world));
+        if (blockState.getValue(WATERLOGGED).booleanValue()) {
+            world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickDelay(world));
         }
 
-        Direction fixtureFacing = blockState.get(FACING);
+        Direction fixtureFacing = blockState.getValue(FACING);
         if (facing.getOpposite() == fixtureFacing && !canPlaceAt(world, currentPos, facing)) {
-            return Blocks.AIR.getDefaultState();
+            return Blocks.AIR.defaultBlockState();
         }
         return blockState;
     }
@@ -146,14 +147,14 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     private boolean canPlaceAt(final IWorldReader w, final BlockPos pos, final Direction dir) {
-        final BlockPos test = pos.offset(dir);
+        final BlockPos test = pos.relative(dir);
         BlockState blockstate = w.getBlockState(test);
-        return blockstate.isSolidSide(w, test, dir.getOpposite());
+        return blockstate.isFaceSturdy(w, test, dir.getOpposite());
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        Direction facing = state.get(FACING);
+        Direction facing = state.getValue(FACING);
         return SHAPES.get(facing);
     }
 
@@ -169,9 +170,9 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
         }
 
         final Direction up = this.getOrientable(w, pos).getUp();
-        final double xOff = -0.3 * up.getXOffset();
-        final double yOff = -0.3 * up.getYOffset();
-        final double zOff = -0.3 * up.getZOffset();
+        final double xOff = -0.3 * up.getStepX();
+        final double yOff = -0.3 * up.getStepY();
+        final double zOff = -0.3 * up.getStepZ();
         for (int bolts = 0; bolts < 3; bolts++) {
             if (AppEng.proxy.shouldAddParticles(r)) {
                 w.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(),
@@ -193,11 +194,11 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     private void dropTorch(final World w, final BlockPos pos) {
         final BlockState prev = w.getBlockState(pos);
         w.destroyBlock(pos, true);
-        w.notifyBlockUpdate(pos, prev, w.getBlockState(pos), 3);
+        w.sendBlockUpdated(pos, prev, w.getBlockState(pos), 3);
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos) {
+    public boolean canSurvive(BlockState state, IWorldReader w, BlockPos pos) {
         for (final Direction dir : Direction.values()) {
             if (this.canPlaceAt(w, pos, dir)) {
                 return true;
@@ -212,8 +213,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     public FluidState getFluidState(BlockState blockState) {
-        return blockState.get(WATERLOGGED).booleanValue()
-                ? Fluids.WATER.getStillFluidState(false)
+        return blockState.getValue(WATERLOGGED).booleanValue()
+                ? Fluids.WATER.getSource(false)
                 : super.getFluidState(blockState);
     }
 

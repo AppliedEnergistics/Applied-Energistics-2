@@ -71,7 +71,7 @@ public class CachedPlane {
 
         Block matrixFrameBlock = Api.instance().definitions().blocks().matrixFrame().maybeBlock().orElse(null);
         if (matrixFrameBlock != null) {
-            this.matrixBlockState = matrixFrameBlock.getDefaultState();
+            this.matrixBlockState = matrixFrameBlock.defaultBlockState();
         } else {
             this.matrixBlockState = null;
         }
@@ -121,12 +121,12 @@ public class CachedPlane {
                 final Chunk c = w.getChunk(minCX + cx, minCZ + cz);
                 this.myChunks[cx][cz] = c;
 
-                final List<Entry<BlockPos, TileEntity>> rawTiles = new ArrayList<>(c.getTileEntityMap().entrySet());
+                final List<Entry<BlockPos, TileEntity>> rawTiles = new ArrayList<>(c.getBlockEntities().entrySet());
                 for (final Entry<BlockPos, TileEntity> tx : rawTiles) {
                     final BlockPos cp = tx.getKey();
                     final TileEntity te = tx.getValue();
 
-                    final BlockPos tePOS = te.getPos();
+                    final BlockPos tePOS = te.getBlockPos();
                     if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
                             && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
                         if (mr.askToMove(te)) {
@@ -147,20 +147,20 @@ public class CachedPlane {
                 }
 
                 for (final BlockPos cp : deadTiles) {
-                    c.getTileEntityMap().remove(cp);
+                    c.getBlockEntities().remove(cp);
                 }
 
                 final long gameTime = this.getWorld().getGameTime();
-                final ITickList<Block> pendingBlockTicks = this.getWorld().getPendingBlockTicks();
+                final ITickList<Block> pendingBlockTicks = this.getWorld().getBlockTicks();
                 if (pendingBlockTicks instanceof ServerTickList) {
                     List<NextTickListEntry<Block>> pending = ((ServerTickList<Block>) pendingBlockTicks)
-                            .getPending(c.getPos(), false, true);
+                            .fetchTicksInChunk(c.getPos(), false, true);
                     for (final NextTickListEntry<Block> entry : pending) {
-                        final BlockPos tePOS = entry.position;
+                        final BlockPos tePOS = entry.pos;
                         if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
                                 && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
-                            this.ticks.add(new NextTickListEntry<>(tePOS, entry.getTarget(),
-                                    entry.field_235017_b_ - gameTime, entry.priority));
+                            this.ticks.add(new NextTickListEntry<>(tePOS, entry.getType(),
+                                    entry.triggerTick - gameTime, entry.priority));
                         }
                     }
                 }
@@ -169,9 +169,9 @@ public class CachedPlane {
 
         for (final TileEntity te : this.tiles) {
             try {
-                this.getWorld().loadedTileEntityList.remove(te);
+                this.getWorld().blockEntityList.remove(te);
                 if (te instanceof ITickableTileEntity) {
-                    this.getWorld().tickableTileEntities.remove(te);
+                    this.getWorld().tickableBlockEntities.remove(te);
                 }
             } catch (final Exception e) {
                 AELog.debug(e);
@@ -222,25 +222,25 @@ public class CachedPlane {
             AELog.info("Block Copy Time: " + duration);
 
             for (final TileEntity te : this.tiles) {
-                final BlockPos tePOS = te.getPos();
+                final BlockPos tePOS = te.getBlockPos();
                 dst.addTile(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
                         te, this, mr);
             }
 
             for (final TileEntity te : dst.tiles) {
-                final BlockPos tePOS = te.getPos();
+                final BlockPos tePOS = te.getBlockPos();
                 this.addTile(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset, te,
                         dst, mr);
             }
 
             for (final NextTickListEntry<Block> entry : this.ticks) {
-                final BlockPos tePOS = entry.position;
+                final BlockPos tePOS = entry.pos;
                 dst.addTick(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
                         entry);
             }
 
             for (final NextTickListEntry<Block> entry : dst.ticks) {
-                final BlockPos tePOS = entry.position;
+                final BlockPos tePOS = entry.pos;
                 this.addTick(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset,
                         entry);
             }
@@ -264,7 +264,7 @@ public class CachedPlane {
 
     private void addTick(final int x, final int y, final int z, final NextTickListEntry<Block> entry) {
         BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
-        this.world.getPendingBlockTicks().scheduleTick(where, entry.getTarget(), (int) entry.field_235017_b_,
+        this.world.getBlockTicks().scheduleTick(where, entry.getType(), (int) entry.triggerTick,
                 entry.priority);
     }
 
@@ -285,9 +285,9 @@ public class CachedPlane {
                     final BlockPos pos = new BlockPos(x, y, z);
 
                     // attempt recovery...
-                    c.c.addTileEntity(te);
+                    c.c.addBlockEntity(te);
 
-                    this.world.notifyBlockUpdate(pos, this.world.getBlockState(pos), this.world.getBlockState(pos), z);
+                    this.world.sendBlockUpdated(pos, this.world.getBlockState(pos), this.world.getBlockState(pos), z);
                 }
 
                 mr.doneMoving(te);
@@ -301,7 +301,7 @@ public class CachedPlane {
 
     private void updateChunks() {
 
-        WorldLightManager lightManager = world.getLightManager();
+        WorldLightManager lightManager = world.getLightEngine();
 
         // update shit..
         if (lightManager instanceof ServerWorldLightManager) {
@@ -310,7 +310,7 @@ public class CachedPlane {
                 for (int z = 0; z < this.cz_size; z++) {
                     final Chunk c = this.myChunks[x][z];
                     serverLightManager.lightChunk(c, false);
-                    c.markDirty();
+                    c.markUnsaved();
                 }
             }
         }
@@ -324,13 +324,13 @@ public class CachedPlane {
                 WorldData.instance().compassData().service().updateArea(this.getWorld(), c);
 
                 SChunkDataPacket cdp = new SChunkDataPacket(c, verticalBits);
-                world.getChunkProvider().chunkManager.getTrackingPlayers(c.getPos(), false)
-                        .forEach(spe -> spe.connection.sendPacket(cdp));
+                world.getChunkSource().chunkMap.getPlayers(c.getPos(), false)
+                        .forEach(spe -> spe.connection.send(cdp));
             }
         }
 
         // FIXME check if this makes any sense at all to send changes to players asap
-        world.getChunkProvider().tick(() -> false);
+        world.getChunkSource().tick(() -> false);
     }
 
     List<WorldCoord> getUpdates() {
@@ -370,7 +370,7 @@ public class CachedPlane {
 
         private void setBlockState(final int y, BlockStorageData data) {
             if (data.state == CachedPlane.this.matrixBlockState) {
-                data.state = Blocks.AIR.getDefaultState();
+                data.state = Blocks.AIR.defaultBlockState();
             }
             final ChunkSection[] storage = this.c.getSections();
             final ChunkSection extendedBlockStorage = storage[y >> 4];

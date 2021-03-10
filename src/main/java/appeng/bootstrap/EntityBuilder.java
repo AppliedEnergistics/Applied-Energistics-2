@@ -29,7 +29,7 @@ public class EntityBuilder<T extends Entity> {
             EntityClassification classification) {
         this.factory = factory;
         this.id = id;
-        this.builder = EntityType.Builder.create(entityFactory, classification);
+        this.builder = EntityType.Builder.of(entityFactory, classification);
     }
 
     public EntityBuilder<T> features(AEFeature... features) {

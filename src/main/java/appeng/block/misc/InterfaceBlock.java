@@ -47,18 +47,18 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
     private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
     public InterfaceBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(OMNIDIRECTIONAL);
     }
 
     @Override
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, InterfaceTileEntity te) {
-        return currentState.with(OMNIDIRECTIONAL, te.isOmniDirectional());
+        return currentState.setValue(OMNIDIRECTIONAL, te.isOmniDirectional());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(InterfaceContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
             return ActionResultType.SUCCESS;
         }

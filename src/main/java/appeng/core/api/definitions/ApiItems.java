@@ -158,54 +158,54 @@ public final class ApiItems implements IItems {
         FeatureFactory certusTools = registry.features(AEFeature.CERTUS_QUARTZ_TOOLS);
         this.certusQuartzAxe = certusTools
                 .item("certus_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
+                .itemGroup(ItemGroup.TAB_TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
         this.certusQuartzHoe = certusTools
                 .item("certus_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
+                .itemGroup(ItemGroup.TAB_TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
         this.certusQuartzShovel = certusTools
                 .item("certus_quartz_shovel", props -> new QuartzSpadeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
+                .itemGroup(ItemGroup.TAB_TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
         this.certusQuartzPick = certusTools
                 .item("certus_quartz_pickaxe", props -> new QuartzPickaxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
+                .itemGroup(ItemGroup.TAB_TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
         this.certusQuartzSword = certusTools
                 .item("certus_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
+                .itemGroup(ItemGroup.TAB_COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
         this.certusQuartzWrench = certusTools.item("certus_quartz_wrench", QuartzWrenchItem::new)
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
+                .itemGroup(ItemGroup.TAB_TOOLS).props(props -> props.stacksTo(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
                 .build();
         this.certusQuartzKnife = certusTools
                 .item("certus_quartz_cutting_knife",
                         props -> new QuartzCuttingKnifeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
+                .itemGroup(ItemGroup.TAB_TOOLS).props(props -> props.stacksTo(1).durability(50).setNoRepair())
                 .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
         FeatureFactory netherTools = registry.features(AEFeature.NETHER_QUARTZ_TOOLS);
         this.netherQuartzAxe = netherTools
                 .item("nether_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
+                .itemGroup(ItemGroup.TAB_TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
         this.netherQuartzHoe = netherTools
                 .item("nether_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
+                .itemGroup(ItemGroup.TAB_TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
         this.netherQuartzShovel = netherTools
                 .item("nether_quartz_shovel", props -> new QuartzSpadeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
+                .itemGroup(ItemGroup.TAB_TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
         this.netherQuartzPick = netherTools
                 .item("nether_quartz_pickaxe", props -> new QuartzPickaxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
+                .itemGroup(ItemGroup.TAB_TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
         this.netherQuartzSword = netherTools
                 .item("nether_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
+                .itemGroup(ItemGroup.TAB_COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
         this.netherQuartzWrench = netherTools.item("nether_quartz_wrench", QuartzWrenchItem::new)
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
+                .itemGroup(ItemGroup.TAB_TOOLS).props(props -> props.stacksTo(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
                 .build();
         this.netherQuartzKnife = netherTools
                 .item("nether_quartz_cutting_knife",
                         props -> new QuartzCuttingKnifeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
+                .itemGroup(ItemGroup.TAB_TOOLS).props(props -> props.stacksTo(1).durability(50).setNoRepair())
                 .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
-        Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1).maxDamage(32).setNoRepair();
+        Consumer<Item.Properties> chargedDefaults = props -> props.stacksTo(1).durability(32).setNoRepair();
 
         FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
         this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)
@@ -241,7 +241,7 @@ public final class ApiItems implements IItems {
                     @OnlyIn(Dist.CLIENT)
                     public void setup() {
                         ColorApplicatorItem colorApplicatorItem = (ColorApplicatorItem) item;
-                        ItemModelsProperties.registerProperty(item, new ResourceLocation(AppEng.MOD_ID, "colored"),
+                        ItemModelsProperties.register(item, new ResourceLocation(AppEng.MOD_ID, "colored"),
                                 (itemStack, world, entity) -> {
                                     // If the stack has no color, don't use the colored model since the impact of
                                     // calling getColor for every quad is extremely high, if the stack tries to
@@ -254,20 +254,20 @@ public final class ApiItems implements IItems {
                 }).rendering(new ColorApplicatorItemRendering()).build();
 
         this.biometricCard = registry.item("biometric_card", BiometricCardItem::new)
-                .props(props -> props.maxStackSize(1)).features(AEFeature.SECURITY).build();
-        this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxStackSize(1))
+                .props(props -> props.stacksTo(1)).features(AEFeature.SECURITY).build();
+        this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.stacksTo(1))
                 .features(AEFeature.MEMORY_CARD).build();
         this.networkTool = registry.item("network_tool", NetworkToolItem::new)
-                .props(props -> props.maxStackSize(1).addToolType(ToolType.get("wrench"), 0))
+                .props(props -> props.stacksTo(1).addToolType(ToolType.get("wrench"), 0))
                 .features(AEFeature.NETWORK_TOOL).build();
 
         this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
-                .props(props -> props.maxStackSize(1).rarity(Rarity.EPIC))
+                .props(props -> props.stacksTo(1).rarity(Rarity.EPIC))
                 .features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
-        this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxStackSize(1))
+        this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.stacksTo(1))
                 .features(AEFeature.VIEW_CELL).build();
 
-        Consumer<Item.Properties> storageCellProps = p -> p.maxStackSize(1);
+        Consumer<Item.Properties> storageCellProps = p -> p.stacksTo(1);
 
         FeatureFactory storageCells = registry.features(AEFeature.STORAGE_CELLS);
         this.cell1k = storageCells
@@ -332,11 +332,11 @@ public final class ApiItems implements IItems {
 
         GrowingCrystalEntity.TYPE = registry
                 .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, EntityClassification.MISC)
-                .customize(builder -> builder.size(0.25F, 0.4F)).build();
+                .customize(builder -> builder.sized(0.25F, 0.4F)).build();
 
         // rv1
         this.encodedPattern = registry.item("encoded_pattern", EncodedPatternItem::new)
-                .props(props -> props.maxStackSize(1)).features(AEFeature.PATTERNS).build();
+                .props(props -> props.stacksTo(1)).features(AEFeature.PATTERNS).build();
 
         this.coloredPaintBall = createPaintBalls(registry, "_paint_ball", false);
         this.coloredLumenPaintBall = createPaintBalls(registry, "_lumen_paint_ball", true);

@@ -18,6 +18,7 @@
 
 package appeng.decorative.solid;
 
+import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -47,7 +48,7 @@ public class SkyStoneBlock extends AEBaseBlock {
 
     private void breakFaster(final PlayerEvent.BreakSpeed event) {
         if (event.getState().getBlock() == this && event.getPlayer() != null) {
-            final ItemStack is = event.getPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+            final ItemStack is = event.getPlayer().getItemBySlot(EquipmentSlotType.MAINHAND);
             int level = -1;
 
             if (!is.isEmpty()) {
@@ -61,23 +62,23 @@ public class SkyStoneBlock extends AEBaseBlock {
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
             BlockPos currentPos, BlockPos facingPos) {
         if (worldIn instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) worldIn;
             WorldData.instance().compassData().service().notifyBlockChange(serverWorld, currentPos);
         }
 
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
 
     @Override
-    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        super.onReplaced(state, w, pos, newState, isMoving);
+        super.onRemove(state, w, pos, newState, isMoving);
 
         if (w instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) w;

@@ -52,7 +52,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
         OFF, ON, HAS_CHANNEL;
 
         @Override
-        public String getString() {
+        public String getSerializedName() {
             return this.name().toLowerCase(Locale.ROOT);
         }
     }
@@ -60,8 +60,8 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 
     public WirelessBlock() {
-        super(defaultProps(AEMaterials.GLASS).notSolid());
-        this.setDefaultState(this.getDefaultState().with(STATE, State.OFF));
+        super(defaultProps(AEMaterials.GLASS).noOcclusion());
+        this.registerDefaultState(this.defaultBlockState().setValue(STATE, State.OFF));
     }
 
     @Override
@@ -74,29 +74,29 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
             teState = State.ON;
         }
 
-        return currentState.with(STATE, teState);
+        return currentState.setValue(STATE, teState);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(STATE);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand,
+    public ActionResultType use(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand,
             BlockRayTraceResult hit) {
         final WirelessTileEntity tg = this.getTileEntity(w, pos);
 
         if (tg != null && !player.isCrouching()) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(WirelessContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
             return ActionResultType.SUCCESS;
         }
 
-        return super.onBlockActivated(state, w, pos, player, hand, hit);
+        return super.use(state, w, pos, player, hand, hit);
     }
 
     @Override

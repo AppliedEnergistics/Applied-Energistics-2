@@ -63,14 +63,14 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isServer()) {
             this.remainingBurnTime = this.vibrationChamber.getMaxBurnTime() <= 0 ? 0
                     : (int) (100.0 * this.vibrationChamber.getBurnTime() / this.vibrationChamber.getMaxBurnTime());
             this.burnSpeed = this.remainingBurnTime <= 0 ? 0 : this.vibrationChamber.getBurnSpeed();
 
         }
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override

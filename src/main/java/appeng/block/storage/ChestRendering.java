@@ -34,7 +34,7 @@ public class ChestRendering extends BlockRenderingCustomizer {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderType.cutout());
 
         // I checked, the ME chest doesn't keep its color in item form
         itemRendering.color(new StaticItemColor(AEColor.TRANSPARENT));

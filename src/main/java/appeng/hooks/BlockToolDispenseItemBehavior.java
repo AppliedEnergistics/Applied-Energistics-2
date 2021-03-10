@@ -32,17 +32,17 @@ import net.minecraft.world.server.ServerWorld;
 public final class BlockToolDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack dispenseStack(final IBlockSource dispenser, final ItemStack dispensedItem) {
+    protected ItemStack execute(final IBlockSource dispenser, final ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
         if (i instanceof IBlockTool) {
-            final Direction direction = dispenser.getBlockState().get(DispenserBlock.FACING);
+            final Direction direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
             final IBlockTool tm = (IBlockTool) i;
 
-            final World w = dispenser.getWorld();
+            final World w = dispenser.getLevel();
             if (w instanceof ServerWorld) {
-                ItemUseContext context = new DirectionalPlaceContext(w, dispenser.getBlockPos().offset(direction),
+                ItemUseContext context = new DirectionalPlaceContext(w, dispenser.getPos().relative(direction),
                         direction, dispensedItem, direction.getOpposite());
-                tm.onItemUse(context);
+                tm.useOn(context);
             }
         }
         return dispensedItem;

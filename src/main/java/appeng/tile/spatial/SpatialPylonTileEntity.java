@@ -88,17 +88,17 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     @Override
     public void onReady() {
         super.onReady();
-        this.calc.calculateMultiblock(world, pos);
+        this.calc.calculateMultiblock(level, worldPosition);
     }
 
     @Override
-    public void remove() {
+    public void setRemoved() {
         this.disconnect(false);
-        super.remove();
+        super.setRemoved();
     }
 
     public void neighborChanged(BlockPos changedPos) {
-        this.calc.updateMultiblockAfterNeighborUpdate(this.world, pos, changedPos);
+        this.calc.updateMultiblockAfterNeighborUpdate(this.level, worldPosition, changedPos);
     }
 
     @Override
@@ -131,9 +131,9 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
         this.displayBits = 0;
 
         if (this.cluster != null) {
-            if (this.cluster.getBoundsMin().equals(this.pos)) {
+            if (this.cluster.getBoundsMin().equals(this.worldPosition)) {
                 this.displayBits = DISPLAY_END_MIN;
-            } else if (this.cluster.getBoundsMax().equals(this.pos)) {
+            } else if (this.cluster.getBoundsMax().equals(this.worldPosition)) {
                 this.displayBits = DISPLAY_END_MAX;
             } else {
                 this.displayBits = DISPLAY_MIDDLE;
@@ -178,7 +178,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
         final boolean hasLight = this.getLightValue() > 0;
         if (hasLight != this.didHaveLight) {
             this.didHaveLight = hasLight;
-            this.world.getLightManager().checkBlock(this.pos);
+            this.level.getLightEngine().checkBlock(this.worldPosition);
         }
     }
 

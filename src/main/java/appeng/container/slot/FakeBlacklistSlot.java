@@ -38,8 +38,8 @@ public class FakeBlacklistSlot extends FakeTypeOnlySlot {
 
     @Override
     public int getIcon() {
-        if (this.getHasStack()) {
-            return this.getStack().getCount() > 0 ? 16 + 14 : 14;
+        if (this.hasItem()) {
+            return this.getItem().getCount() > 0 ? 16 + 14 : 14;
         }
         return -1;
     }

@@ -106,23 +106,23 @@ public class InventoryActionPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
-        if (sender.openContainer instanceof AEBaseContainer) {
-            final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+        if (sender.containerMenu instanceof AEBaseContainer) {
+            final AEBaseContainer baseContainer = (AEBaseContainer) sender.containerMenu;
             if (this.action == InventoryAction.AUTO_CRAFT) {
                 final ContainerLocator locator = baseContainer.getLocator();
                 if (locator != null) {
                     ContainerOpener.openContainer(CraftAmountContainer.TYPE, player, locator);
 
-                    if (sender.openContainer instanceof CraftAmountContainer) {
-                        final CraftAmountContainer cca = (CraftAmountContainer) sender.openContainer;
+                    if (sender.containerMenu instanceof CraftAmountContainer) {
+                        final CraftAmountContainer cca = (CraftAmountContainer) sender.containerMenu;
 
                         if (baseContainer.getTargetStack() != null) {
-                            cca.getCraftingItem().putStack(baseContainer.getTargetStack().asItemStackRepresentation());
+                            cca.getCraftingItem().set(baseContainer.getTargetStack().asItemStackRepresentation());
                             // This is the *actual* item that matters, not the display item above
                             cca.setItemToCraft(baseContainer.getTargetStack());
                         }
 
-                        cca.detectAndSendChanges();
+                        cca.broadcastChanges();
                     }
                 }
             } else {
@@ -135,9 +135,9 @@ public class InventoryActionPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         if (this.action == InventoryAction.UPDATE_HAND) {
             if (this.slotItem == null) {
-                AppEng.proxy.getPlayers().get(0).inventory.setItemStack(ItemStack.EMPTY);
+                AppEng.proxy.getPlayers().get(0).inventory.setCarried(ItemStack.EMPTY);
             } else {
-                AppEng.proxy.getPlayers().get(0).inventory.setItemStack(this.slotItem.createItemStack());
+                AppEng.proxy.getPlayers().get(0).inventory.setCarried(this.slotItem.createItemStack());
             }
         }
     }

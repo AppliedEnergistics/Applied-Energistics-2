@@ -186,8 +186,8 @@ public class FluidLevelEmitterPart extends UpgradeablePart
             this.getHost().markForUpdate();
             final TileEntity te = this.getHost().getTile();
             this.prevState = isOn;
-            Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
-            Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos().offset(this.getSide().getFacing()));
+            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
+            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos().relative(this.getSide().getFacing()));
         }
     }
 
@@ -278,7 +278,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
             final double d1 = d.yOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
             final double d2 = d.zOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
 
-            world.addParticle(RedstoneParticleData.REDSTONE_DUST, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
+            world.addParticle(RedstoneParticleData.REDSTONE, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
                     0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D);
         }
     }

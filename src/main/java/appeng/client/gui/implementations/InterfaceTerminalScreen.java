@@ -72,34 +72,34 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             ITextComponent title) {
         super(container, playerInventory, title);
         this.setScrollBar(new Scrollbar().setLeft(175).setTop(18).setHeight(106));
-        this.xSize = 195;
-        this.ySize = 222;
+        this.imageWidth = 195;
+        this.imageHeight = 222;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.searchField = new AETextField(this.font, this.guiLeft + 104, this.guiTop + 4, 65, 12);
-        this.searchField.setEnableBackgroundDrawing(false);
-        this.searchField.setMaxStringLength(25);
+        this.searchField = new AETextField(this.font, this.leftPos + 104, this.topPos + 4, 65, 12);
+        this.searchField.setBordered(false);
+        this.searchField.setMaxLength(25);
         this.searchField.setTextColor(0xFFFFFF);
         this.searchField.setVisible(true);
         this.searchField.setResponder(str -> this.refreshList());
-        this.addListener(this.searchField);
+        this.addWidget(this.searchField);
         this.changeFocus(true);
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()).getString(), 8, 6,
+        this.font.draw(matrixStack, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()).getString(), 8, 6,
                 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.draw(matrixStack, GuiText.inventory.text().getString(), 8, this.imageHeight - 96 + 3, 4210752);
 
         final int ex = this.getScrollBar().getCurrentScroll();
 
-        this.container.inventorySlots.removeIf(slot -> slot instanceof SlotDisconnected);
+        this.menu.slots.removeIf(slot -> slot instanceof SlotDisconnected);
 
         int offset = 17;
         for (int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++) {
@@ -107,7 +107,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             if (lineObj instanceof ClientDCInternalInv) {
                 final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
                 for (int z = 0; z < inv.getInventory().getSlots(); z++) {
-                    this.container.inventorySlots.add(new SlotDisconnected(inv, z, z * 18 + 8, 1 + offset));
+                    this.menu.slots.add(new SlotDisconnected(inv, z, z * 18 + 8, 1 + offset));
                 }
             } else if (lineObj instanceof String) {
                 String name = (String) lineObj;
@@ -116,11 +116,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     name = name + " (" + rows + ')';
                 }
 
-                while (name.length() > 2 && this.font.getStringWidth(name) > 155) {
+                while (name.length() > 2 && this.font.width(name) > 155) {
                     name = name.substring(0, name.length() - 1);
                 }
 
-                this.font.drawString(matrixStack, name, 10, 6 + offset, 4210752);
+                this.font.draw(matrixStack, name, 10, 6 + offset, 4210752);
             }
             offset += 18;
         }
@@ -129,7 +129,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     @Override
     public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
         if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
-            this.searchField.setText("");
+            this.searchField.setValue("");
             return true;
         }
 
@@ -140,7 +140,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.imageWidth, this.imageHeight, getBlitOffset());
 
         int offset = 17;
         final int ex = this.getScrollBar().getCurrentScroll();
@@ -164,7 +164,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     @Override
     public boolean charTyped(char character, int key) {
-        if (character == ' ' && this.searchField.getText().isEmpty()) {
+        if (character == ' ' && this.searchField.getValue().isEmpty()) {
             return true;
         }
         return super.charTyped(character, key);
@@ -173,18 +173,18 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
             if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
-                this.searchField.setFocused2(!this.searchField.isFocused());
+                this.searchField.setFocus(!this.searchField.isFocused());
                 return true;
             }
 
             // Forward keypresses to the search field
             if (this.searchField.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.searchField.setFocused2(false);
+                    this.searchField.setFocus(false);
                     return true;
                 }
 
@@ -205,19 +205,19 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             this.refreshList = true;
         }
 
-        for (final Object oKey : in.keySet()) {
+        for (final Object oKey : in.getAllKeys()) {
             final String key = (String) oKey;
             if (key.startsWith("=")) {
                 try {
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
                     final CompoundNBT invData = in.getCompound(key);
-                    ITextComponent un = ITextComponent.Serializer.getComponentFromJson(invData.getString("un"));
+                    ITextComponent un = ITextComponent.Serializer.fromJson(invData.getString("un"));
                     final ClientDCInternalInv current = this.getById(id, invData.getLong("sortBy"), un);
 
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setStackInSlot(x, ItemStack.read(invData.getCompound(which)));
+                            current.getInventory().setStackInSlot(x, ItemStack.of(invData.getCompound(which)));
                         }
                     }
                 } catch (final NumberFormatException ignored) {
@@ -241,7 +241,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private void refreshList() {
         this.byName.clear();
 
-        final String searchFilterLowerCase = this.searchField.getText().toLowerCase();
+        final String searchFilterLowerCase = this.searchField.getValue().toLowerCase();
 
         final Set<Object> cachedSearch = this.getCacheForSearchTerm(searchFilterLowerCase);
         final boolean rebuild = cachedSearch.isEmpty();
@@ -312,7 +312,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         for (int i = 0; i < outTag.size(); i++) {
 
-            final ItemStack parsedItemStack = ItemStack.read(outTag.getCompound(i));
+            final ItemStack parsedItemStack = ItemStack.of(outTag.getCompound(i));
             if (!parsedItemStack.isEmpty()) {
                 final String displayName = Platform.getItemDisplayName(Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createStack(parsedItemStack)).getString()

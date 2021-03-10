@@ -67,8 +67,8 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         final PacketBuffer myDat = new PacketBuffer(Unpooled.buffer());
         this.writeBuffer(myDat);
         if (myDat.hasArray()) {
@@ -91,8 +91,8 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         if (data.contains("dots")) {
             this.readBuffer(new PacketBuffer(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }
@@ -127,8 +127,8 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
             this.isLit = 14;
         }
 
-        if (this.world != null) {
-            this.world.getLightFor(LightType.BLOCK, this.pos);
+        if (this.level != null) {
+            this.level.getBrightness(LightType.BLOCK, this.worldPosition);
         }
     }
 
@@ -160,9 +160,9 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     public boolean isSideValid(final Direction side) {
-        final BlockPos p = this.pos.offset(side);
-        final BlockState blk = this.world.getBlockState(p);
-        return blk.isSolidSide(world, p, side.getOpposite());
+        final BlockPos p = this.worldPosition.relative(side);
+        final BlockState blk = this.level.getBlockState(p);
+        return blk.isFaceSturdy(level, p, side.getOpposite());
     }
 
     private void removeSide(final Direction side) {
@@ -193,7 +193,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         }
 
         if (this.dots == null) {
-            this.world.removeBlock(this.pos, false);
+            this.level.removeBlock(this.worldPosition, false);
         }
     }
 
@@ -212,10 +212,10 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     public void addBlot(final ItemStack type, final Direction side, final Vector3d hitVec) {
-        final BlockPos p = this.pos.offset(side);
+        final BlockPos p = this.worldPosition.relative(side);
 
-        final BlockState blk = this.world.getBlockState(p);
-        if (blk.isSolidSide(this.world, p, side.getOpposite())) {
+        final BlockState blk = this.level.getBlockState(p);
+        if (blk.isFaceSturdy(this.level, p, side.getOpposite())) {
             final PaintBallItem ipb = (PaintBallItem) type.getItem();
 
             final AEColor col = ipb.getColor();

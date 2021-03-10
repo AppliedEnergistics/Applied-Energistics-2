@@ -415,7 +415,7 @@ public class CraftingGridCache
             if (details != null && details.isCraftable()) {
                 for (final IAEItemStack ais : this.craftableItems.keySet()) {
                     if (ais.getItem() == whatToCraft.getItem()
-                            && (!ais.getItem().isDamageable() || ais.getItemDamage() == whatToCraft.getItemDamage())) {
+                            && (!ais.getItem().canBeDepleted() || ais.getItemDamage() == whatToCraft.getItemDamage())) {
                         // TODO: check if OK
                         // TODO: this is slightly hacky, but fine as long as we only deal with
                         // itemstacks

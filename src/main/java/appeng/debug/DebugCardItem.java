@@ -23,6 +23,7 @@ import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
@@ -60,14 +61,14 @@ public class DebugCardItem extends AEBaseItem {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getWorld().isRemote()) {
+        if (context.getLevel().isClientSide()) {
             return ActionResultType.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction side = context.getFace();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction side = context.getClickedFace();
 
         if (player == null) {
             return ActionResultType.PASS;
@@ -85,7 +86,7 @@ public class DebugCardItem extends AEBaseItem {
             this.outputMsg(player, "Grids: " + grids);
             this.outputMsg(player, "Total Nodes: " + totalNodes);
         } else {
-            final TileEntity te = world.getTileEntity(pos);
+            final TileEntity te = world.getBlockEntity(pos);
 
             if (te instanceof IGridHost) {
                 final GridNode node = (GridNode) ((IGridHost) te).getGridNode(AEPartLocation.fromFacing(side));
@@ -187,7 +188,7 @@ public class DebugCardItem extends AEBaseItem {
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendMessage(new StringTextComponent(string), Util.DUMMY_UUID);
+        player.sendMessage(new StringTextComponent(string), Util.NIL_UUID);
     }
 
     private String timeMeasurement(final long nanos) {

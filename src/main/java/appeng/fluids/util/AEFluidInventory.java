@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;

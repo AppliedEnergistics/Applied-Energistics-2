@@ -64,8 +64,8 @@ public class TargetItemStackPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        if (player.openContainer instanceof AEBaseContainer) {
-            ((AEBaseContainer) player.openContainer).setTargetStack(this.stack);
+        if (player.containerMenu instanceof AEBaseContainer) {
+            ((AEBaseContainer) player.containerMenu).setTargetStack(this.stack);
         }
     }
 }

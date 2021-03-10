@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.IParticleData.IDeserializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -23,7 +24,7 @@ public class LightningArcParticleData implements IParticleData {
 
     public static final IDeserializer<LightningArcParticleData> DESERIALIZER = new IDeserializer<LightningArcParticleData>() {
         @Override
-        public LightningArcParticleData deserialize(ParticleType<LightningArcParticleData> particleTypeIn,
+        public LightningArcParticleData fromCommand(ParticleType<LightningArcParticleData> particleTypeIn,
                 StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             float x = reader.readFloat();
@@ -35,7 +36,7 @@ public class LightningArcParticleData implements IParticleData {
         }
 
         @Override
-        public LightningArcParticleData read(ParticleType<LightningArcParticleData> particleTypeIn,
+        public LightningArcParticleData fromNetwork(ParticleType<LightningArcParticleData> particleTypeIn,
                 PacketBuffer buffer) {
             float x = buffer.readFloat();
             float y = buffer.readFloat();
@@ -50,14 +51,14 @@ public class LightningArcParticleData implements IParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void writeToNetwork(PacketBuffer buffer) {
         buffer.writeFloat((float) target.x);
         buffer.writeFloat((float) target.y);
         buffer.writeFloat((float) target.z);
     }
 
     @Override
-    public String getParameters() {
+    public String writeToString() {
         return String.format(Locale.ROOT, "%.2f %.2f %.2f", target.x, target.y, target.z);
     }
 

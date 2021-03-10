@@ -86,7 +86,7 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
         try {
             final SecurityPermissions permission = SecurityPermissions.valueOf(value);
 
-            final ItemStack a = this.configSlot.getStack();
+            final ItemStack a = this.configSlot.getItem();
             if (!a.isEmpty() && a.getItem() instanceof IBiometricCard) {
                 final IBiometricCard bc = (IBiometricCard) a.getItem();
                 if (bc.hasPermission(a, permission)) {
@@ -101,12 +101,12 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.SECURITY, false);
 
         this.setPermissionMode(0);
 
-        final ItemStack a = this.configSlot.getStack();
+        final ItemStack a = this.configSlot.getItem();
         if (!a.isEmpty() && a.getItem() instanceof IBiometricCard) {
             final IBiometricCard bc = (IBiometricCard) a.getItem();
 
@@ -117,19 +117,19 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
 
         this.updatePowerStatus();
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(final PlayerEntity player) {
+        super.removed(player);
 
-        if (this.wirelessIn.getHasStack()) {
-            player.dropItem(this.wirelessIn.getStack(), false);
+        if (this.wirelessIn.hasItem()) {
+            player.drop(this.wirelessIn.getItem(), false);
         }
 
-        if (this.wirelessOut.getHasStack()) {
-            player.dropItem(this.wirelessOut.getStack(), false);
+        if (this.wirelessOut.hasItem()) {
+            player.drop(this.wirelessOut.getItem(), false);
         }
     }
 
@@ -141,9 +141,9 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
-        if (!this.wirelessOut.getHasStack()) {
-            if (this.wirelessIn.getHasStack()) {
-                final ItemStack term = this.wirelessIn.getStack().copy();
+        if (!this.wirelessOut.hasItem()) {
+            if (this.wirelessIn.hasItem()) {
+                final ItemStack term = this.wirelessIn.getItem().copy();
                 INetworkEncodable networkEncodable = null;
 
                 if (term.getItem() instanceof INetworkEncodable) {
@@ -159,13 +159,13 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
                 if (networkEncodable != null) {
                     networkEncodable.setEncryptionKey(term, String.valueOf(this.securityBox.getSecurityKey()), "");
 
-                    this.wirelessIn.putStack(ItemStack.EMPTY);
-                    this.wirelessOut.putStack(term);
+                    this.wirelessIn.set(ItemStack.EMPTY);
+                    this.wirelessOut.set(term);
 
                     // update the two slots in question...
-                    for (final IContainerListener listener : this.listeners) {
-                        listener.sendSlotContents(this, this.wirelessIn.slotNumber, this.wirelessIn.getStack());
-                        listener.sendSlotContents(this, this.wirelessOut.slotNumber, this.wirelessOut.getStack());
+                    for (final IContainerListener listener : this.containerListeners) {
+                        listener.slotChanged(this, this.wirelessIn.index, this.wirelessIn.getItem());
+                        listener.slotChanged(this, this.wirelessOut.index, this.wirelessOut.getItem());
                     }
                 }
             }

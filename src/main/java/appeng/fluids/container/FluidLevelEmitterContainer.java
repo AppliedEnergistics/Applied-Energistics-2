@@ -75,7 +75,7 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {

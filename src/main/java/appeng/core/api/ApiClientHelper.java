@@ -53,10 +53,10 @@ public class ApiClientHelper implements IClientHelper {
 
         if (cellInventory != null) {
             lines.add(new StringTextComponent(cellInventory.getUsedBytes() + " ").append(GuiText.Of.text())
-                    .appendString(" " + cellInventory.getTotalBytes() + " ").append(GuiText.BytesUsed.text()));
+                    .append(" " + cellInventory.getTotalBytes() + " ").append(GuiText.BytesUsed.text()));
 
             lines.add(new StringTextComponent(cellInventory.getStoredItemTypes() + " ").append(GuiText.Of.text())
-                    .appendString(" " + cellInventory.getTotalItemTypes() + " ").append(GuiText.Types.text()));
+                    .append(" " + cellInventory.getTotalItemTypes() + " ").append(GuiText.Types.text()));
         }
 
         if (handler.isPreformatted()) {

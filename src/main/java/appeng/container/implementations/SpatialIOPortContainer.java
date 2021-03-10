@@ -85,7 +85,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -117,7 +117,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
             }
         }
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     public long getCurrentPower() {
