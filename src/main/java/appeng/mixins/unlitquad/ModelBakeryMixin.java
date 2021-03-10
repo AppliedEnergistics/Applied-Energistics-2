@@ -20,13 +20,13 @@ import appeng.hooks.UnlitQuadHooks;
 @Mixin(ModelBakery.class)
 public class ModelBakeryMixin {
 
-    @Inject(method = "loadModel", at = @At("HEAD"), allow = 1)
+    @Inject(method = "loadBlockModel", at = @At("HEAD"), allow = 1)
     protected void onBeginLoadModel(ResourceLocation location, CallbackInfoReturnable<BlockModel> cri)
             throws IOException {
         UnlitQuadHooks.beginDeserializingModel(location);
     }
 
-    @Inject(method = "loadModel", at = @At("RETURN"))
+    @Inject(method = "loadBlockModel", at = @At("RETURN"))
     protected void onEndLoadModel(ResourceLocation location, CallbackInfoReturnable<BlockModel> cri) {
         UnlitQuadHooks.endDeserializingModel();
     }
