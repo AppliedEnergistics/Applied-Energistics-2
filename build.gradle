@@ -23,7 +23,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
@@ -140,7 +140,7 @@ configurations {
 ////////////////////
 // Forge/Minecraft
 minecraft {
-    mappings channel: "snapshot", version: project.mcp_mappings
+    mappings channel: project.mcp_channel, version: project.mcp_mappings
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
