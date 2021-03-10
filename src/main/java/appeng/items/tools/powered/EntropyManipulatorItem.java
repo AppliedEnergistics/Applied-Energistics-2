@@ -61,8 +61,8 @@ import appeng.container.ContainerNull;
 import appeng.core.AEConfig;
 import appeng.hooks.IBlockTool;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.recipes.handlers.EntropyRecipe;
-import appeng.recipes.handlers.EntropyRecipe.EntropyMode;
+import appeng.recipes.entropy.EntropyMode;
+import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.Platform;
 
 public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockTool {
@@ -85,8 +85,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     private void heat(final BlockState block, FluidState fluid, final World w, final BlockPos pos) {
         EntropyRecipe recipe = findForInput(w, EntropyMode.HEAT, block, fluid);
 
-        if (recipe.getOutputBlockState() != null) {
-            w.setBlockState(pos, recipe.getOutputBlockState(), 3);
+        if (recipe.getOutputBlockState(block) != null) {
+            w.setBlockState(pos, recipe.getOutputBlockState(block), 3);
         } else if (recipe.getOutputFluidState() != null) {
             w.setBlockState(pos, recipe.getOutputFluidState().getBlockState(), 3);
         } else {
@@ -116,8 +116,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     private void cool(final BlockState block, FluidState fluid, final World w, final BlockPos pos) {
         EntropyRecipe recipe = findForInput(w, EntropyMode.COOL, block, fluid);
 
-        if (recipe.getOutputBlockState() != null) {
-            w.setBlockState(pos, recipe.getOutputBlockState(), 3);
+        if (recipe.getOutputBlockState(block) != null) {
+            w.setBlockState(pos, recipe.getOutputBlockState(block), 3);
         } else if (recipe.getOutputFluidState() != null) {
             w.setBlockState(pos, recipe.getOutputFluidState().getBlockState(), 3);
         } else {

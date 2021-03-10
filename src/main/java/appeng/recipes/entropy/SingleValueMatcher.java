@@ -16,30 +16,31 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.recipes.handlers;
+package appeng.recipes.entropy;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.StateHolder;
 
 /**
- * Describes an optional result of a grinder recipe.
+ * Matches an exact value.
  */
-public class GrinderOptionalResult {
-    private final float chance;
-    private final ItemStack result;
+class SingleValueMatcher implements StateMatcher {
 
-    public GrinderOptionalResult(float chance, ItemStack result) {
-        this.chance = chance;
-        this.result = result;
+    private final String propertyName;
+    private final String propertyValue;
+
+    public SingleValueMatcher(String propertyName, String propertyValue) {
+        this.propertyName = propertyName;
+        this.propertyValue = propertyValue;
     }
 
-    /**
-     * Chance to occur from 0 (0%) to 1 (100%).
-     */
-    public float getChance() {
-        return chance;
-    }
+    @Override
+    public boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state) {
+        Property<?> baseProperty = base.getProperty(this.propertyName);
+        Comparable<?> property = state.get(baseProperty);
+        Comparable<?> expectedValue = baseProperty.parseValue(this.propertyValue).orElse(null);
 
-    public ItemStack getResult() {
-        return result;
+        return property.equals(expectedValue);
     }
 }

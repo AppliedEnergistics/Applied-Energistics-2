@@ -1,4 +1,22 @@
-package appeng.recipes.handlers;
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
+package appeng.recipes.entropy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +41,6 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-
-import appeng.recipes.handlers.EntropyRecipe.EntropyMode;
 
 public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
         implements IRecipeSerializer<EntropyRecipe> {
@@ -87,11 +103,14 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         CompoundNBT inputBlockNbt = reserialiseInputProperties(inputBlockObject);
         CompoundNBT inputFluidNbt = reserialiseInputProperties(inputFluidObject);
 
-        CompoundNBT outputlockNbt = reserialiseOutputProperties(outputBlockObject);
+        CompoundNBT outputBlockNbt = reserialiseOutputProperties(outputBlockObject);
         CompoundNBT outputFluidNbt = reserialiseOutputProperties(outputFluidObject);
 
+        boolean outputBlockKeep = JSONUtils.getBoolean(outputBlockObject, "keep", false);
+        boolean outputFluidKeep = JSONUtils.getBoolean(outputFluidObject, "keep", false);
+
         return new EntropyRecipe(recipeId, mode, inputBlock, inputBlockNbt, inputFluid, inputFluidNbt, outputBlock,
-                outputlockNbt, outputFluid, outputFluidNbt, drops);
+                outputBlockNbt, outputBlockKeep, outputFluid, outputFluidNbt, outputFluidKeep, drops);
     }
 
     @Nullable
@@ -115,16 +134,20 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
         Block outputBlock = null;
         CompoundNBT outputBlockProperties = null;
+        boolean outputBlockKeep = false;
         if (buffer.readBoolean()) {
             outputBlock = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
             outputBlockProperties = buffer.readCompoundTag();
+            outputBlockKeep = buffer.readBoolean();
         }
 
         Fluid outputFluid = null;
         CompoundNBT outputFluidProperties = null;
+        boolean outputFluidKeep = false;
         if (buffer.readBoolean()) {
             outputFluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
             outputFluidProperties = buffer.readCompoundTag();
+            outputFluidKeep = buffer.readBoolean();
         }
 
         // We use an empty list later when null, so avoid instantiating an empty ArrayList.
@@ -138,7 +161,8 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         }
 
         return new EntropyRecipe(recipeId, mode, inputBlock, inputBlockProperties, inputFluid, inputFluidProperties,
-                outputBlock, outputBlockProperties, outputFluid, outputFluidProperties, drops);
+                outputBlock, outputBlockProperties, outputBlockKeep, outputFluid, outputFluidProperties,
+                outputFluidKeep, drops);
     }
 
     @Override
@@ -167,6 +191,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         if (recipe.getOutputFluid() != null) {
             buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, recipe.getOutputFluid());
             buffer.writeCompoundTag(recipe.getOutputFluidProperties());
+            buffer.writeBoolean(recipe.getOutputBlockKeep());
         }
 
         buffer.writeInt(recipe.getDrops().size());

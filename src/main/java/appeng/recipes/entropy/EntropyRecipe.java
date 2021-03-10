@@ -1,9 +1,26 @@
-package appeng.recipes.handlers;
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
+package appeng.recipes.entropy;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -24,7 +41,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.StateHolder;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -51,30 +67,34 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     @Nullable
     private final CompoundNBT inputBlockProperties;
     @Nonnull
-    private final List<Matcher> inputBlockMatchers;
+    private final List<StateMatcher> inputBlockMatchers;
 
     @Nullable
     private final Fluid inputFluid;
     @Nullable
     private final CompoundNBT inputFluidProperties;
     @Nonnull
-    private final List<Matcher> inputFluidMatchers;
+    private final List<StateMatcher> inputFluidMatchers;
 
     @Nullable
     private final Block outputBlock;
+    private List<StateApplier> outputBlockAppliers;
     @Nullable
     private final CompoundNBT outputBlockProperties;
+    private final boolean outputBlockKeep;
     @Nullable
     private final Fluid outputFluid;
     @Nullable
     private final CompoundNBT outputFluidProperties;
+    private final boolean outputFluidKeep;
 
     @Nonnull
     private final List<ItemStack> drops;
 
     public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock, CompoundNBT inputBlockProperties,
             Fluid inputFluid, CompoundNBT inputFluidProperties, Block outputBlock, CompoundNBT outputBlockNbt,
-            Fluid outputFluid, CompoundNBT outputFluidNbt, List<ItemStack> drops) {
+            boolean outputBlockKeep, Fluid outputFluid, CompoundNBT outputFluidNbt, boolean outputFluidKeep,
+            List<ItemStack> drops) {
         Preconditions.checkArgument(id != null);
         Preconditions.checkArgument(mode != null);
         Preconditions.checkArgument(drops == null || !drops.isEmpty(),
@@ -93,10 +113,34 @@ public class EntropyRecipe implements IRecipe<IInventory> {
 
         this.outputBlock = outputBlock;
         this.outputBlockProperties = outputBlockNbt;
+        this.outputBlockAppliers = createAppliers(outputBlockNbt);
+        this.outputBlockKeep = outputBlockKeep;
+
         this.outputFluid = outputFluid;
         this.outputFluidProperties = outputFluidNbt;
+        this.outputFluidKeep = outputFluidKeep;
 
         this.drops = drops != null ? drops : Collections.emptyList();
+    }
+
+    private List<StateApplier> createAppliers(CompoundNBT outputBlockNbt) {
+        if (this.getOutputBlock() == null) {
+            return Collections.emptyList();
+        }
+
+        List<StateApplier> list = new ArrayList<>();
+
+        StateContainer<Block, BlockState> base = this.getOutputBlock().getStateContainer();
+
+        for (String key : outputBlockNbt.keySet()) {
+            Property baseProperty = base.getProperty(key);
+            String value = outputBlockNbt.getString(key);
+            Comparable propertyValue = (Comparable) baseProperty.parseValue(value).orElse(null);
+
+            list.add(new StateApplier(baseProperty, propertyValue));
+        }
+
+        return list;
     }
 
     @Override
@@ -174,25 +218,42 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         return outputBlockProperties;
     }
 
+    public boolean getOutputBlockKeep() {
+        return this.outputBlockKeep;
+    }
+
     @Nullable
-    public BlockState getOutputBlockState() {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public BlockState getOutputBlockState(BlockState originalBlockState) {
         if (this.getOutputBlock() == null) {
             return null;
         }
 
         BlockState state = getOutputBlock().getDefaultState();
 
-        if (this.outputBlockProperties != null && !this.outputBlockProperties.isEmpty()) {
-            StateContainer<Block, BlockState> base = this.getOutputBlock().getStateContainer();
-
-            for (String key : this.outputBlockProperties.keySet()) {
-                String value = this.outputBlockProperties.getString(key);
-                Property baseProperty = base.getProperty(key);
-                Comparable propertyValue = (Comparable) baseProperty.parseValue(value).orElse(null);
-
-                state = state.with(baseProperty, propertyValue);
+        if (this.outputBlockKeep) {
+            for (Property property : originalBlockState.getProperties()) {
+                if (state.hasProperty(property)) {
+                    state = state.with(property, originalBlockState.get(property));
+                }
             }
         }
+
+        for (StateApplier entry : this.outputBlockAppliers) {
+            state = (BlockState) entry.apply(state);
+        }
+
+//        if (this.outputBlockProperties != null && !this.outputBlockProperties.isEmpty()) {
+//            StateContainer<Block, BlockState> base = this.getOutputBlock().getStateContainer();
+//
+//            for (String key : this.outputBlockProperties.keySet()) {
+//                String value = this.outputBlockProperties.getString(key);
+//                Property baseProperty = base.getProperty(key);
+//                Comparable propertyValue = (Comparable) baseProperty.parseValue(value).orElse(null);
+//
+//                state = state.with(baseProperty, propertyValue);
+//            }
+//        }
 
         return state;
     }
@@ -205,6 +266,10 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     @Nullable
     public CompoundNBT getOutputFluidProperties() {
         return outputFluidProperties;
+    }
+
+    public boolean getOutputFluidKeep() {
+        return this.outputFluidKeep;
     }
 
     @Nullable
@@ -262,7 +327,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     /**
      * Creates matchers from the passed NBT structure.
      * 
-     * @see Matcher
+     * @see StateMatcher
      * @see SingleValueMatcher
      * @see MultipleValuesMatcher
      * @see RangeValueMatcher
@@ -270,11 +335,11 @@ public class EntropyRecipe implements IRecipe<IInventory> {
      * @param nbt
      * @return
      */
-    private static List<Matcher> createMatchers(CompoundNBT nbt) {
+    private static List<StateMatcher> createMatchers(CompoundNBT nbt) {
         if (nbt == null || nbt.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Matcher> matchers = new ArrayList<>();
+        List<StateMatcher> matchers = new ArrayList<>();
 
         for (String key : nbt.keySet()) {
             CompoundNBT entry = nbt.getCompound(key);
@@ -295,89 +360,6 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         }
 
         return matchers;
-    }
-
-    public static enum EntropyMode {
-        HEAT,
-        COOL;
-    }
-
-    /**
-     * An interface to match against the passed block/fluid state
-     */
-    private static abstract interface Matcher {
-        abstract boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> fluidState);
-    }
-
-    /**
-     * Matches an exact value.
-     */
-    private static class SingleValueMatcher implements Matcher {
-
-        private final String propertyName;
-        private final String propertyValue;
-
-        public SingleValueMatcher(String propertyName, String propertyValue) {
-            this.propertyName = propertyName;
-            this.propertyValue = propertyValue;
-        }
-
-        @Override
-        public boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state) {
-            Property<?> baseProperty = base.getProperty(this.propertyName);
-            Comparable<?> property = state.get(baseProperty);
-            Comparable<?> expectedValue = baseProperty.parseValue(this.propertyValue).orElse(null);
-
-            return property.equals(expectedValue);
-        }
-    }
-
-    /**
-     * Matches against a list of values.
-     */
-    private static class MultipleValuesMatcher implements Matcher {
-
-        private final String propertyName;
-        private final List<String> propertyValues;
-
-        public MultipleValuesMatcher(String propertyName, List<String> propertyValue) {
-            this.propertyName = propertyName;
-            this.propertyValues = propertyValue;
-        }
-
-        @Override
-        public boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state) {
-            Property<?> baseProperty = base.getProperty(this.propertyName);
-            Comparable<?> property = state.get(baseProperty);
-            return this.propertyValues.stream().map(baseProperty::parseValue).filter(Optional::isPresent)
-                    .anyMatch(p -> property.equals(p));
-        }
-    }
-
-    /**
-     * Matches a range between a min and max value (inclusive).
-     */
-    private static class RangeValueMatcher implements Matcher {
-
-        private final String propertyName;
-        private final String propertyMinValue;
-        private final String propertyMaxValue;
-
-        public RangeValueMatcher(String propertyName, String propertyMinValue, String propertyMaxValue) {
-            this.propertyName = propertyName;
-            this.propertyMinValue = propertyMinValue;
-            this.propertyMaxValue = propertyMaxValue;
-        }
-
-        @Override
-        public boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state) {
-            Property<?> baseProperty = base.getProperty(this.propertyName);
-            Comparable property = state.get(baseProperty);
-            Comparable minValue = baseProperty.parseValue(this.propertyMinValue).orElse(null);
-            Comparable maxValue = baseProperty.parseValue(this.propertyMaxValue).orElse(null);
-
-            return property.compareTo(minValue) >= 0 && property.compareTo(maxValue) <= 0;
-        }
     }
 
 }
