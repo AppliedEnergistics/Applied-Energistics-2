@@ -18,45 +18,43 @@
 
 package appeng.recipes.entropy;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.StateHolder;
 
 /**
- * Matches an exact value.
+ * Applies a property to a {@link BlockState}
  */
-class SingleValueMatcher extends StateMatcher {
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public class BlockStateApplier {
 
-    private final String propertyName;
-    private final String propertyValue;
+    private final String key;
+    private final String value;
 
-    public SingleValueMatcher(String propertyName, String propertyValue) {
-        this.propertyName = propertyName;
-        this.propertyValue = propertyValue;
+    public BlockStateApplier(String key, String value) {
+        this.key = key;
+        this.value = value;
     }
 
-    @Override
-    public boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state) {
-        Property<?> baseProperty = base.getProperty(this.propertyName);
-        Comparable<?> property = state.get(baseProperty);
-        Comparable<?> expectedValue = baseProperty.parseValue(this.propertyValue).orElse(null);
+    BlockState apply(BlockState state) {
+        StateContainer<Block, BlockState> base = state.getBlock().getStateContainer();
 
-        return property.equals(expectedValue);
+        Property property = base.getProperty(key);
+        Comparable propertyValue = (Comparable) property.parseValue(value).orElse(null);
+        return state.with(property, propertyValue);
     }
 
-    @Override
     void writeToPacket(PacketBuffer buffer) {
-        buffer.writeEnumValue(MatcherType.SINGLE);
-        buffer.writeString(propertyName);
-        buffer.writeString(propertyValue);
+        buffer.writeString(key);
+        buffer.writeString(value);
     }
 
-    public static StateMatcher readFromPacket(PacketBuffer buffer) {
+    static BlockStateApplier read(PacketBuffer buffer) {
         String key = buffer.readString();
         String value = buffer.readString();
 
-        return new SingleValueMatcher(key, value);
+        return new BlockStateApplier(key, value);
     }
-
 }

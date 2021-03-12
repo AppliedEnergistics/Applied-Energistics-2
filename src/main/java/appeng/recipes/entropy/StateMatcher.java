@@ -18,12 +18,34 @@
 
 package appeng.recipes.entropy;
 
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.StateHolder;
 
 /**
  * An interface to match against the passed block/fluid state
  */
-interface StateMatcher {
-    boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state);
+abstract class StateMatcher {
+    abstract boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state);
+
+    abstract void writeToPacket(PacketBuffer buffer);
+
+    static StateMatcher read(PacketBuffer buffer) {
+        MatcherType type = buffer.readEnumValue(MatcherType.class);
+
+        switch (type) {
+            case SINGLE:
+                return SingleValueMatcher.readFromPacket(buffer);
+            case MULTIPLE:
+                return MultipleValuesMatcher.readFromPacket(buffer);
+            case RANGE:
+                return RangeValueMatcher.readFromPacket(buffer);
+        }
+
+        return null;
+    }
+
+    enum MatcherType {
+        SINGLE, MULTIPLE, RANGE;
+    }
 }

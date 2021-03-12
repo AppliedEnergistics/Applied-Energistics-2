@@ -18,6 +18,7 @@
 
 package appeng.recipes.entropy;
 
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.StateHolder;
@@ -25,7 +26,7 @@ import net.minecraft.state.StateHolder;
 /**
  * Matches a range between a min and max value (inclusive).
  */
-class RangeValueMatcher implements StateMatcher {
+class RangeValueMatcher extends StateMatcher {
 
     private final String propertyName;
     private final String propertyMinValue;
@@ -45,5 +46,21 @@ class RangeValueMatcher implements StateMatcher {
         Comparable maxValue = baseProperty.parseValue(this.propertyMaxValue).orElse(null);
 
         return property.compareTo(minValue) >= 0 && property.compareTo(maxValue) <= 0;
+    }
+
+    @Override
+    void writeToPacket(PacketBuffer buffer) {
+        buffer.writeEnumValue(MatcherType.RANGE);
+        buffer.writeString(propertyName);
+        buffer.writeString(propertyMinValue);
+        buffer.writeString(propertyMaxValue);
+    }
+
+    public static StateMatcher readFromPacket(PacketBuffer buffer) {
+        String key = buffer.readString();
+        String min = buffer.readString();
+        String max = buffer.readString();
+
+        return new RangeValueMatcher(key, min, max);
     }
 }

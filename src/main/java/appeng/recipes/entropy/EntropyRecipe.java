@@ -18,10 +18,8 @@
 
 package appeng.recipes.entropy;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,9 +36,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -64,37 +60,30 @@ public class EntropyRecipe implements IRecipe<IInventory> {
 
     @Nullable
     private final Block inputBlock;
-    @Nullable
-    private final CompoundNBT inputBlockProperties;
     @Nonnull
     private final List<StateMatcher> inputBlockMatchers;
 
     @Nullable
     private final Fluid inputFluid;
-    @Nullable
-    private final CompoundNBT inputFluidProperties;
     @Nonnull
     private final List<StateMatcher> inputFluidMatchers;
 
     @Nullable
     private final Block outputBlock;
-    private List<StateApplier> outputBlockAppliers;
-    @Nullable
-    private final CompoundNBT outputBlockProperties;
+    private List<BlockStateApplier> outputBlockStateAppliers;
     private final boolean outputBlockKeep;
     @Nullable
     private final Fluid outputFluid;
-    @Nullable
-    private final CompoundNBT outputFluidProperties;
+    private List<FluidStateApplier> outputFluidStateAppliers;
     private final boolean outputFluidKeep;
 
     @Nonnull
     private final List<ItemStack> drops;
 
-    public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock, CompoundNBT inputBlockProperties,
-            Fluid inputFluid, CompoundNBT inputFluidProperties, Block outputBlock, CompoundNBT outputBlockNbt,
-            boolean outputBlockKeep, Fluid outputFluid, CompoundNBT outputFluidNbt, boolean outputFluidKeep,
-            List<ItemStack> drops) {
+    public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock, List<StateMatcher> inputBlockMatchers,
+            Fluid inputFluid, List<StateMatcher> inputFluidMatchers, Block outputBlock,
+            List<BlockStateApplier> outputBlockStateAppliers, boolean outputBlockKeep, Fluid outputFluid,
+            List<FluidStateApplier> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
         Preconditions.checkArgument(id != null);
         Preconditions.checkArgument(mode != null);
         Preconditions.checkArgument(drops == null || !drops.isEmpty(),
@@ -104,43 +93,20 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         this.mode = mode;
 
         this.inputBlock = inputBlock;
-        this.inputBlockProperties = inputBlockProperties;
-        this.inputBlockMatchers = createMatchers(inputBlockProperties);
+        this.inputBlockMatchers = inputBlockMatchers;
 
         this.inputFluid = inputFluid;
-        this.inputFluidProperties = inputFluidProperties;
-        this.inputFluidMatchers = createMatchers(inputFluidProperties);
+        this.inputFluidMatchers = inputFluidMatchers;
 
         this.outputBlock = outputBlock;
-        this.outputBlockProperties = outputBlockNbt;
-        this.outputBlockAppliers = createAppliers(outputBlockNbt);
+        this.outputBlockStateAppliers = outputBlockStateAppliers;
         this.outputBlockKeep = outputBlockKeep;
 
         this.outputFluid = outputFluid;
-        this.outputFluidProperties = outputFluidNbt;
+        this.outputFluidStateAppliers = outputFluidStateAppliers;
         this.outputFluidKeep = outputFluidKeep;
 
         this.drops = drops != null ? drops : Collections.emptyList();
-    }
-
-    private List<StateApplier> createAppliers(CompoundNBT outputBlockNbt) {
-        if (this.getOutputBlock() == null) {
-            return Collections.emptyList();
-        }
-
-        List<StateApplier> list = new ArrayList<>();
-
-        StateContainer<Block, BlockState> base = this.getOutputBlock().getStateContainer();
-
-        for (String key : outputBlockNbt.keySet()) {
-            Property baseProperty = base.getProperty(key);
-            String value = outputBlockNbt.getString(key);
-            Comparable propertyValue = (Comparable) baseProperty.parseValue(value).orElse(null);
-
-            list.add(new StateApplier(baseProperty, propertyValue));
-        }
-
-        return list;
     }
 
     @Override
@@ -194,28 +160,13 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     }
 
     @Nullable
-    public CompoundNBT getInputBlockProperties() {
-        return inputBlockProperties;
-    }
-
-    @Nullable
     public Fluid getInputFluid() {
         return this.inputFluid;
     }
 
     @Nullable
-    public CompoundNBT getInputFluidProperties() {
-        return inputFluidProperties;
-    }
-
-    @Nullable
     public Block getOutputBlock() {
         return this.outputBlock;
-    }
-
-    @Nullable
-    public CompoundNBT getOutputBlockProperties() {
-        return outputBlockProperties;
     }
 
     public boolean getOutputBlockKeep() {
@@ -239,21 +190,9 @@ public class EntropyRecipe implements IRecipe<IInventory> {
             }
         }
 
-        for (StateApplier entry : this.outputBlockAppliers) {
-            state = (BlockState) entry.apply(state);
+        for (BlockStateApplier entry : this.outputBlockStateAppliers) {
+            state = entry.apply(state);
         }
-
-//        if (this.outputBlockProperties != null && !this.outputBlockProperties.isEmpty()) {
-//            StateContainer<Block, BlockState> base = this.getOutputBlock().getStateContainer();
-//
-//            for (String key : this.outputBlockProperties.keySet()) {
-//                String value = this.outputBlockProperties.getString(key);
-//                Property baseProperty = base.getProperty(key);
-//                Comparable propertyValue = (Comparable) baseProperty.parseValue(value).orElse(null);
-//
-//                state = state.with(baseProperty, propertyValue);
-//            }
-//        }
 
         return state;
     }
@@ -263,33 +202,29 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         return this.outputFluid;
     }
 
-    @Nullable
-    public CompoundNBT getOutputFluidProperties() {
-        return outputFluidProperties;
-    }
-
     public boolean getOutputFluidKeep() {
         return this.outputFluidKeep;
     }
 
     @Nullable
-    public FluidState getOutputFluidState() {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public FluidState getOutputFluidState(FluidState originalFluidState) {
         if (this.getOutputFluid() == null) {
             return null;
         }
 
         FluidState state = getOutputFluid().getDefaultState();
 
-        if (this.outputFluidProperties != null && !this.outputFluidProperties.isEmpty()) {
-            StateContainer<Fluid, FluidState> base = state.getFluid().getStateContainer();
-
-            for (String key : this.outputFluidProperties.keySet()) {
-                String value = this.outputFluidProperties.getString(key);
-                Property baseProperty = base.getProperty(key);
-                Comparable propertyValue = (Comparable) baseProperty.parseValue(value).orElse(null);
-
-                state = state.with(baseProperty, propertyValue);
+        if (this.outputFluidKeep) {
+            for (Property property : originalFluidState.getProperties()) {
+                if (state.hasProperty(property)) {
+                    state = state.with(property, originalFluidState.get(property));
+                }
             }
+        }
+
+        for (FluidStateApplier entry : this.outputFluidStateAppliers) {
+            state = entry.apply(state);
         }
 
         return state;
@@ -324,42 +259,20 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         return isValid;
     }
 
-    /**
-     * Creates matchers from the passed NBT structure.
-     * 
-     * @see StateMatcher
-     * @see SingleValueMatcher
-     * @see MultipleValuesMatcher
-     * @see RangeValueMatcher
-     * 
-     * @param nbt
-     * @return
-     */
-    private static List<StateMatcher> createMatchers(CompoundNBT nbt) {
-        if (nbt == null || nbt.isEmpty()) {
-            return Collections.emptyList();
-        }
-        List<StateMatcher> matchers = new ArrayList<>();
+    List<StateMatcher> getInputBlockMatchers() {
+        return inputBlockMatchers;
+    }
 
-        for (String key : nbt.keySet()) {
-            CompoundNBT entry = nbt.getCompound(key);
+    List<StateMatcher> getInputFluidMatchers() {
+        return inputFluidMatchers;
+    }
 
-            if (entry.contains("value")) {
-                String value = entry.get("value").getString();
-                matchers.add(new SingleValueMatcher(key, value));
-            } else if (entry.contains("values")) {
-                List<String> values = entry.getList("values", 8).stream().map(e -> e.toString())
-                        .collect(Collectors.toList());
-                matchers.add(new MultipleValuesMatcher(key, values));
-            } else if (entry.contains("range")) {
-                String min = entry.getCompound("range").getString("min");
-                String max = entry.getCompound("range").getString("max");
-                matchers.add(new RangeValueMatcher(key, min, max));
-            }
+    List<BlockStateApplier> getOutputBlockStateAppliers() {
+        return outputBlockStateAppliers;
+    }
 
-        }
-
-        return matchers;
+    List<FluidStateApplier> getOutputFluidStateAppliers() {
+        return outputFluidStateAppliers;
     }
 
 }

@@ -18,9 +18,11 @@
 
 package appeng.recipes.entropy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.StateHolder;
@@ -28,7 +30,7 @@ import net.minecraft.state.StateHolder;
 /**
  * Matches against a list of values.
  */
-class MultipleValuesMatcher implements StateMatcher {
+class MultipleValuesMatcher extends StateMatcher {
 
     private final String propertyName;
     private final List<String> propertyValues;
@@ -45,4 +47,26 @@ class MultipleValuesMatcher implements StateMatcher {
         return this.propertyValues.stream().map(baseProperty::parseValue).filter(Optional::isPresent)
                 .anyMatch(p -> property.equals(p));
     }
+
+    @Override
+    void writeToPacket(PacketBuffer buffer) {
+        buffer.writeEnumValue(MatcherType.MULTIPLE);
+        buffer.writeString(propertyName);
+        buffer.writeInt(propertyValues.size());
+        for (String value : propertyValues) {
+            buffer.writeString(value);
+        }
+    }
+
+    public static StateMatcher readFromPacket(PacketBuffer buffer) {
+        String key = buffer.readString();
+        int size = buffer.readInt();
+
+        List<String> values = new ArrayList<String>(size);
+        for (int i = 0; i < size; i++) {
+            values.add(buffer.readString());
+        }
+        return new MultipleValuesMatcher(key, values);
+    }
+
 }

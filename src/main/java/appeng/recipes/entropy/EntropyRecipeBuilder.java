@@ -18,11 +18,15 @@
 
 package appeng.recipes.entropy;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class EntropyRecipeBuilder {
@@ -30,30 +34,137 @@ public class EntropyRecipeBuilder {
     private EntropyMode mode;
 
     private Block inputBlock;
-    private CompoundNBT inputBlockProperties;
-    private List<StateMatcher> inputBlockMatchers;
+    private List<StateMatcher> inputBlockMatchers = Collections.emptyList();
 
     private Fluid inputFluid;
-    private CompoundNBT inputFluidProperties;
-    private List<StateMatcher> inputFluidMatchers;
+    private List<StateMatcher> inputFluidMatchers = Collections.emptyList();
+
     private Block outputBlock;
-    private CompoundNBT outputBlockProperties;
+    private List<BlockStateApplier> outputBlockStateAppliers = Collections.emptyList();
     private boolean outputBlockKeep;
     private Fluid outputFluid;
-    private CompoundNBT outputFluidProperties;
+    private List<FluidStateApplier> outputFluidStateAppliers = Collections.emptyList();
     private boolean outputFluidKeep;
+    private List<ItemStack> drops;
 
     public EntropyRecipeBuilder() {
     }
 
     EntropyRecipeBuilder setId(ResourceLocation id) {
+        Preconditions.checkArgument(id != null);
         this.id = id;
         return this;
     }
 
-    public EntropyRecipeBuilder setMode(EntropyMode mode) {
+    EntropyRecipeBuilder setMode(EntropyMode mode) {
+        Preconditions.checkArgument(mode != null);
         this.mode = mode;
         return this;
+    }
+
+    EntropyRecipeBuilder setInputBlock(Block inputBlock) {
+        Preconditions.checkArgument(inputBlock != null);
+        this.inputBlock = inputBlock;
+        return this;
+    }
+
+    EntropyRecipeBuilder setInputFluid(Fluid inputFluid) {
+        Preconditions.checkArgument(inputFluid != null);
+        this.inputFluid = inputFluid;
+        return this;
+    }
+
+    EntropyRecipeBuilder setOutputBlock(Block outputBlock) {
+        Preconditions.checkArgument(outputBlock != null);
+        this.outputBlock = outputBlock;
+        return this;
+    }
+
+    EntropyRecipeBuilder setOutputBlockKeep(boolean outputBlockKeep) {
+        this.outputBlockKeep = outputBlockKeep;
+        return this;
+    }
+
+    EntropyRecipeBuilder setOutputFluid(Fluid outputFluid) {
+        Preconditions.checkArgument(outputFluid != null);
+        this.outputFluid = outputFluid;
+        return this;
+    }
+
+    EntropyRecipeBuilder setOutputFluidKeep(boolean outputFluidKeep) {
+        this.outputFluidKeep = outputFluidKeep;
+        return this;
+    }
+
+    EntropyRecipeBuilder setDrops(List<ItemStack> drops) {
+        Preconditions.checkArgument(drops == null || !drops.isEmpty(),
+                "drops needs to be either null or a non empty list");
+
+        this.drops = drops;
+        return this;
+    }
+
+    EntropyRecipeBuilder addBlockStateMatcher(StateMatcher matcher) {
+        Preconditions.checkArgument(this.inputBlock != null,
+                "Can only add appliers when an input block is present.");
+
+        if (this.inputBlockMatchers.isEmpty()) {
+            this.inputBlockMatchers = new ArrayList<>();
+        }
+
+        this.inputBlockMatchers.add(matcher);
+
+        return this;
+    }
+
+    EntropyRecipeBuilder addFluidStateMatcher(StateMatcher matcher) {
+        Preconditions.checkArgument(this.inputFluid != null,
+                "Can only add appliers when an input fluid is present.");
+
+        if (this.inputFluidMatchers.isEmpty()) {
+            this.inputFluidMatchers = new ArrayList<>();
+        }
+
+        this.inputFluidMatchers.add(matcher);
+
+        return this;
+    }
+
+    EntropyRecipeBuilder addBlockStateAppliers(BlockStateApplier applier) {
+        Preconditions.checkArgument(this.outputBlock != null,
+                "Can only add appliers when an output block is present.");
+
+        if (this.outputBlockStateAppliers.isEmpty()) {
+            this.outputBlockStateAppliers = new ArrayList<>();
+        }
+
+        this.outputBlockStateAppliers.add(applier);
+
+        return this;
+    }
+
+    EntropyRecipeBuilder addFluidStateAppliers(FluidStateApplier applier) {
+        Preconditions.checkArgument(this.outputFluid != null,
+                "Can only add appliers when an output fluid is present.");
+
+        if (this.outputFluidStateAppliers.isEmpty()) {
+            this.outputFluidStateAppliers = new ArrayList<>();
+        }
+
+        this.outputFluidStateAppliers.add(applier);
+
+        return this;
+    }
+
+    EntropyRecipe build() {
+        Preconditions.checkState(id != null);
+        Preconditions.checkState(mode != null);
+        Preconditions.checkState(drops == null || !drops.isEmpty(),
+                "drops needs to be either null or a non empty list");
+
+        return new EntropyRecipe(id, mode, inputBlock, inputBlockMatchers, inputFluid, inputFluidMatchers, outputBlock,
+                outputBlockStateAppliers, outputBlockKeep, outputFluid, outputFluidStateAppliers, outputFluidKeep,
+                drops);
     }
 
 }

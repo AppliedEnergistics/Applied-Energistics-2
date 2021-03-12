@@ -87,8 +87,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         if (recipe.getOutputBlockState(block) != null) {
             w.setBlockState(pos, recipe.getOutputBlockState(block), 3);
-        } else if (recipe.getOutputFluidState() != null) {
-            w.setBlockState(pos, recipe.getOutputFluidState().getBlockState(), 3);
+        } else if (recipe.getOutputFluidState(fluid) != null) {
+            w.setBlockState(pos, recipe.getOutputFluidState(fluid).getBlockState(), 3);
         } else {
             w.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
@@ -118,8 +118,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         if (recipe.getOutputBlockState(block) != null) {
             w.setBlockState(pos, recipe.getOutputBlockState(block), 3);
-        } else if (recipe.getOutputFluidState() != null) {
-            w.setBlockState(pos, recipe.getOutputFluidState().getBlockState(), 3);
+        } else if (recipe.getOutputFluidState(fluid) != null) {
+            w.setBlockState(pos, recipe.getOutputFluidState(fluid).getBlockState(), 3);
         } else {
             w.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
