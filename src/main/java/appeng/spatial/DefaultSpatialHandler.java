@@ -51,6 +51,7 @@ public class DefaultSpatialHandler implements IMovableHandler {
             final BlockState state = w.getBlockState(newPosition);
             w.addTileEntity(te);
             w.notifyBlockUpdate(newPosition, state, state, 1);
+            te.updateContainingBlockInfo();
         }
     }
 }
