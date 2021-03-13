@@ -18,6 +18,8 @@
 
 package appeng.client.render.cablebus;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 import net.minecraftforge.client.model.data.IModelData;
@@ -55,4 +57,20 @@ public final class P2PTunnelFrequencyModelData implements IModelData {
         return null;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(frequency);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        P2PTunnelFrequencyModelData that = (P2PTunnelFrequencyModelData) o;
+        return frequency.equals(that.frequency);
+    }
 }

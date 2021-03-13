@@ -18,6 +18,8 @@
 
 package appeng.parts.reporting;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 import net.minecraftforge.client.model.data.IModelData;
@@ -55,4 +57,22 @@ public class ReportingModelData implements IModelData {
     public <T> T setData(ModelProperty<T> prop, T data) {
         return null;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(spin);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ReportingModelData that = (ReportingModelData) o;
+        return spin.equals(that.spin);
+    }
+
 }

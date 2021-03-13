@@ -18,6 +18,8 @@
 
 package appeng.parts.automation;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 import net.minecraftforge.client.model.data.IModelData;
@@ -52,6 +54,23 @@ public class PlaneModelData implements IModelData {
     @Nullable
     public <T> T setData(ModelProperty<T> prop, T data) {
         return null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(connections);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PlaneModelData that = (PlaneModelData) o;
+        return connections.equals(that.connections);
     }
 
 }

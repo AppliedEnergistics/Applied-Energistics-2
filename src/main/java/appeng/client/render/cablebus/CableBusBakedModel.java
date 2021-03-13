@@ -58,6 +58,21 @@ public class CableBusBakedModel implements IBakedModel {
     // The number of quads overall that will be cached
     private static final int CACHE_QUAD_COUNT = 5000;
 
+    /**
+     * Lookup table to match the spin of a part with an up direction.
+     * 
+     * DUNSWE for the facing index, 4 spin values per facing.
+     * 
+     */
+    private static final Direction[] SPIN_TO_DIRECTION = new Direction[] {
+            Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
+            Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, // UP
+            Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST, // NORTH
+            Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST, // SOUTH
+            Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH, // WEST
+            Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH // EAST
+    };
+
     private final LoadingCache<CableBusRenderState, List<BakedQuad>> cableModelCache;
 
     private final CableBuilder cableBuilder;
@@ -181,39 +196,10 @@ public class CableBusBakedModel implements IBakedModel {
     private static Direction getPartSpin(Direction facing, IModelData partModelData) {
         if (partModelData.hasProperty(AEModelData.SPIN)) {
             byte spin = partModelData.getData(AEModelData.SPIN);
-            switch (facing) {
-                case UP:
-                    return spinAround(spin, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
-                case DOWN:
-                    return spinAround(spin, Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST);
-                case NORTH:
-                    return spinAround(spin, Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST);
-                case SOUTH:
-                    return spinAround(spin, Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST);
-                case WEST:
-                    return spinAround(spin, Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH);
-                case EAST:
-                    return spinAround(spin, Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH);
-            }
-
+            return SPIN_TO_DIRECTION[facing.ordinal() * 4 + spin];
         }
+
         return Direction.UP;
-    }
-
-    private static Direction spinAround(byte index, Direction first, Direction second, Direction third,
-            Direction fourth) {
-        switch (index) {
-            case 0:
-                return first;
-            case 1:
-                return second;
-            case 2:
-                return third;
-            case 3:
-                return fourth;
-            default:
-                return first;
-        }
     }
 
     private void addCableQuads(CableBusRenderState renderState, List<BakedQuad> quadsOut) {
