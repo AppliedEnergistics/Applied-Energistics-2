@@ -22,14 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.block.AirBlock;
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.TNTBlock;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
@@ -67,76 +68,19 @@ import appeng.util.Platform;
 
 public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockTool {
 
+    /**
+     * The amount of AE energy consumed per use.
+     */
+    private static final int ENERGY_PER_USE = 1600;
+
     public EntropyManipulatorItem(Item.Properties props) {
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);
     }
 
-    public static EntropyRecipe findForInput(World world, EntropyMode mode, BlockState block, FluidState fluid) {
-        for (IRecipe<IInventory> recipe : world.getRecipeManager().getRecipes(EntropyRecipe.TYPE).values()) {
-            EntropyRecipe entropyRecipe = (EntropyRecipe) recipe;
-
-            if (entropyRecipe.matches(mode, block, fluid)) {
-                return entropyRecipe;
-            }
-        }
-        return null;
-    }
-
-    private void heat(final BlockState block, FluidState fluid, final World w, final BlockPos pos) {
-        EntropyRecipe recipe = findForInput(w, EntropyMode.HEAT, block, fluid);
-
-        if (recipe.getOutputBlockState(block) != null) {
-            w.setBlockState(pos, recipe.getOutputBlockState(block), 3);
-        } else if (recipe.getOutputFluidState(fluid) != null) {
-            w.setBlockState(pos, recipe.getOutputFluidState(fluid).getBlockState(), 3);
-        } else {
-            w.setBlockState(pos, Blocks.AIR.getDefaultState());
-        }
-
-        if (!recipe.getDrops().isEmpty()) {
-            Platform.spawnDrops(w, pos, recipe.getDrops());
-        }
-
-        if (!w.isRemote()) {
-            // Same effect as emptying a water bucket in the nether (see BucketItem)
-            w.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
-                    2.6F + (w.rand.nextFloat() - w.rand.nextFloat()) * 0.8F);
-            for (int l = 0; l < 8; ++l) {
-                w.addParticle(ParticleTypes.LARGE_SMOKE, (double) pos.getX() + Math.random(),
-                        (double) pos.getY() + Math.random(), (double) pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
-            }
-        }
-
-    }
-
-    private boolean canHeat(World world, BlockState block, FluidState fluid) {
-        return findForInput(world, EntropyMode.HEAT, block, fluid) != null;
-    }
-
-    private void cool(final BlockState block, FluidState fluid, final World w, final BlockPos pos) {
-        EntropyRecipe recipe = findForInput(w, EntropyMode.COOL, block, fluid);
-
-        if (recipe.getOutputBlockState(block) != null) {
-            w.setBlockState(pos, recipe.getOutputBlockState(block), 3);
-        } else if (recipe.getOutputFluidState(fluid) != null) {
-            w.setBlockState(pos, recipe.getOutputFluidState(fluid).getBlockState(), 3);
-        } else {
-            w.setBlockState(pos, Blocks.AIR.getDefaultState());
-        }
-
-        if (!recipe.getDrops().isEmpty()) {
-            Platform.spawnDrops(w, pos, recipe.getDrops());
-        }
-    }
-
-    private boolean canCool(World world, BlockState block, FluidState fluid) {
-        return findForInput(world, EntropyMode.COOL, block, fluid) != null;
-    }
-
     @Override
     public boolean hitEntity(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
-        if (this.getAECurrentPower(item) > 1600) {
-            this.extractAEPower(item, 1600, Actionable.MODULATE);
+        if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
+            this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
             target.setFire(8);
         }
 
@@ -146,16 +90,16 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     // Overridden to allow use of the item on WATER and LAVA which are otherwise not considered for onItemUse
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        final RayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
+        final BlockRayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
 
         if (target.getType() != RayTraceResult.Type.BLOCK) {
             return new ActionResult<>(ActionResultType.FAIL, p.getHeldItem(hand));
         } else {
-            BlockPos pos = ((BlockRayTraceResult) target).getPos();
+            BlockPos pos = target.getPos();
             final BlockState state = w.getBlockState(pos);
             if (!state.getFluidState().isEmpty()) {
                 if (Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
-                    ItemUseContext context = new ItemUseContext(p, hand, (BlockRayTraceResult) target);
+                    ItemUseContext context = new ItemUseContext(p, hand, target);
                     this.onItemUse(context);
                 }
             }
@@ -172,12 +116,6 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         Direction side = context.getFace();
         PlayerEntity p = context.getPlayer();
 
-        // Correct pos for fluids as these are normally not taken into account.
-        final RayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
-        if (target.getType() == RayTraceResult.Type.BLOCK) {
-            pos = ((BlockRayTraceResult) target).getPos();
-        }
-
         boolean tryBoth = false;
         if (p == null) {
             if (w.isRemote) {
@@ -188,7 +126,13 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             tryBoth = true;
         }
 
-        if (this.getAECurrentPower(item) > 1600) {
+        // Correct pos for fluids as these are normally not taken into account.
+        final BlockRayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
+        if (target.getType() == RayTraceResult.Type.BLOCK) {
+            pos = target.getPos();
+        }
+
+        if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
             if (!p.canPlayerEdit(pos, side, item)) {
                 return ActionResultType.FAIL;
             }
@@ -196,12 +140,12 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             final BlockState blockState = w.getBlockState(pos);
             final Block block = blockState.getBlock();
             final FluidState fluidState = w.getFluidState(pos);
-            final Fluid fluid = fluidState.getFluid();
 
             if (tryBoth || p.isCrouching()) {
-                if (this.canCool(w, blockState, fluidState)) {
+                EntropyRecipe coolRecipe = findRecipe(w, EntropyMode.COOL, blockState, fluidState);
+                if (coolRecipe != null) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
-                    this.cool(blockState, fluidState, w, pos);
+                    applyRecipe(coolRecipe, w, pos, blockState, fluidState);
                     return ActionResultType.SUCCESS;
                 }
             }
@@ -218,120 +162,144 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                     return ActionResultType.SUCCESS;
                 }
 
-                if (this.canHeat(w, blockState, fluidState)) {
+                EntropyRecipe heatRecipe = findRecipe(w, EntropyMode.HEAT, blockState, fluidState);
+                if (heatRecipe != null) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
-                    this.heat(blockState, fluidState, w, pos);
+                    applyRecipe(heatRecipe, w, pos, blockState, fluidState);
                     return ActionResultType.SUCCESS;
                 }
 
-                final ItemStack[] stack = Platform.getBlockDrops(w, pos);
-                final List<ItemStack> out = new ArrayList<>();
-                boolean hasFurnaceable = false;
-                boolean canFurnaceable = true;
-
-                for (final ItemStack i : stack) {
-                    CraftingInventory tempInv = new CraftingInventory(new ContainerNull(), 1, 1);
-                    tempInv.setInventorySlotContents(0, i);
-                    Optional<FurnaceRecipe> recipe = w.getRecipeManager().getRecipe(IRecipeType.SMELTING, tempInv, w);
-
-                    if (recipe.isPresent()) {
-                        ItemStack result = recipe.get().getCraftingResult(tempInv);
-                        if (result.getItem() instanceof BlockItem) {
-                            // Anti-Dupe-Bug I presume...
-                            if (Block.getBlockFromItem(result.getItem()) == block) {
-                                canFurnaceable = false;
-                            }
-                        }
-                        hasFurnaceable = true;
-                        out.add(result);
-                    } else {
-                        canFurnaceable = false;
-                        out.add(i);
-                    }
-                }
-
-                if (hasFurnaceable && canFurnaceable) {
-                    this.extractAEPower(item, 1600, Actionable.MODULATE);
-                    final InWorldToolOperationResult or = InWorldToolOperationResult
-                            .getBlockOperationResult(out.toArray(new ItemStack[0]));
-
-                    w.playSound(p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
-                            SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
-                            random.nextFloat() * 0.4F + 0.8F);
-
-                    if (or.getBlockState() == null) {
-                        w.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-                    } else {
-                        w.setBlockState(pos, or.getBlockState(), 3);
-                    }
-
-                    if (or.getDrops() != null) {
-                        Platform.spawnDrops(w, pos, or.getDrops());
-                    }
-
-                    return ActionResultType.SUCCESS;
-                } else {
-                    final BlockPos offsetPos = pos.offset(side);
-
-                    if (!p.canPlayerEdit(offsetPos, side, item)) {
-                        return ActionResultType.FAIL;
-                    }
-
-                    if (w.isAirBlock(offsetPos)) {
-                        this.extractAEPower(item, 1600, Actionable.MODULATE);
-                        w.playSound(p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D,
-                                SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
-                                random.nextFloat() * 0.4F + 0.8F);
-                        w.setBlockState(offsetPos, Blocks.FIRE.getDefaultState());
-                    }
-
+                if (performInWorldSmelting(item, w, p, pos, block)) {
                     return ActionResultType.SUCCESS;
                 }
+
+                if (applyFlintAndSteelEffect(w, item, pos, side, p)) {
+                    return ActionResultType.SUCCESS;
+                }
+
+                return ActionResultType.FAIL;
             }
         }
 
         return ActionResultType.PASS;
     }
 
-    /**
-     * A helper class to handle in world operations when meltable blocks are involved.
-     */
-    private static class InWorldToolOperationResult {
-
-        private final BlockState blockState;
-        private final List<ItemStack> drops;
-
-        public InWorldToolOperationResult(final BlockState block, final List<ItemStack> drops) {
-            this.blockState = block;
-            this.drops = drops;
+    private boolean applyFlintAndSteelEffect(World w, ItemStack item, BlockPos pos, Direction side, PlayerEntity p) {
+        final BlockPos offsetPos = pos.offset(side);
+        if (!p.canPlayerEdit(offsetPos, side, item)) {
+            return false;
         }
 
-        public static InWorldToolOperationResult getBlockOperationResult(final ItemStack[] items) {
-            final List<ItemStack> temp = new ArrayList<>();
-            BlockState b = null;
+        if (w.isAirBlock(offsetPos)) {
+            this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
+            w.playSound(p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D,
+                    SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
+                    random.nextFloat() * 0.4F + 0.8F);
+            w.setBlockState(offsetPos, Blocks.FIRE.getDefaultState());
+        }
+        return true;
+    }
 
-            for (final ItemStack l : items) {
-                if (b == null) {
-                    final Block bl = Block.getBlockFromItem(l.getItem());
+    /**
+     * The entropy manipulator in heat-mode can directly smelt in-world blocks and drop the smelted results, but only if
+     * all drops of the block have smelting recipes.
+     */
+    private boolean performInWorldSmelting(ItemStack item, World w, PlayerEntity p, BlockPos pos, Block block) {
+        ItemStack[] stack = Platform.getBlockDrops(w, pos);
 
-                    if (bl != null && !(bl instanceof AirBlock)) {
-                        b = bl.getDefaultState();
-                        continue;
-                    }
-                }
+        // Results of the operation
+        BlockState smeltedBlockState = null;
+        List<ItemStack> smeltedDrops = new ArrayList<>();
 
-                temp.add(l);
+        CraftingInventory tempInv = new CraftingInventory(new ContainerNull(), 1, 1);
+        for (final ItemStack i : stack) {
+            tempInv.setInventorySlotContents(0, i);
+            Optional<FurnaceRecipe> recipe = w.getRecipeManager().getRecipe(IRecipeType.SMELTING, tempInv, w);
+
+            if (!recipe.isPresent()) {
+                return false;
             }
 
-            return new InWorldToolOperationResult(b, temp);
+            ItemStack result = recipe.get().getCraftingResult(tempInv);
+            if (result.getItem() instanceof BlockItem) {
+                Block smeltedBlock = Block.getBlockFromItem(result.getItem());
+                if (smeltedBlock == block) {
+                    // Prevent auto-smelting if we wouldn't actually change the blockstate of the block at all,
+                    // but still could drop additional items
+                    return false;
+                }
+                // The first smelted drop that could be placed as a block itself will not be dropped, but
+                // rather replace the current block.
+                if (smeltedBlockState == null
+                        && smeltedBlock != Blocks.AIR
+                        && smeltedBlock.getDefaultState().getMaterial() != Material.AIR) {
+                    smeltedBlockState = smeltedBlock.getDefaultState();
+                    continue;
+                }
+            }
+
+            smeltedDrops.add(result);
         }
 
-        public BlockState getBlockState() {
-            return this.blockState;
+        if (smeltedBlockState == null && smeltedDrops.isEmpty()) {
+            return false; // Block has no drops
         }
 
-        public List<ItemStack> getDrops() {
-            return this.drops;
+        this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
+
+        w.playSound(p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
+                SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
+                random.nextFloat() * 0.4F + 0.8F);
+
+        if (smeltedBlockState == null) {
+            w.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
+        } else {
+            w.setBlockState(pos, smeltedBlockState, 3);
+        }
+
+        Platform.spawnDrops(w, pos, smeltedDrops);
+        return true;
+    }
+
+    @Nullable
+    private static EntropyRecipe findRecipe(World world, EntropyMode mode, BlockState blockState,
+            FluidState fluidState) {
+        for (IRecipe<IInventory> recipe : world.getRecipeManager().getRecipes(EntropyRecipe.TYPE).values()) {
+            EntropyRecipe entropyRecipe = (EntropyRecipe) recipe;
+
+            if (entropyRecipe.matches(mode, blockState, fluidState)) {
+                return entropyRecipe;
+            }
+        }
+        return null;
+    }
+
+    private static void applyRecipe(EntropyRecipe recipe, World w, BlockPos pos, BlockState blockState,
+            FluidState fluidState) {
+        BlockState outputBlockState = recipe.getOutputBlockState(blockState);
+        if (outputBlockState != null) {
+            w.setBlockState(pos, outputBlockState, 3);
+        } else {
+            FluidState outputFluidState = recipe.getOutputFluidState(fluidState);
+            if (outputFluidState != null) {
+                w.setBlockState(pos, outputFluidState.getBlockState(), 3);
+            } else {
+                w.setBlockState(pos, Blocks.AIR.getDefaultState());
+            }
+        }
+
+        if (!recipe.getDrops().isEmpty()) {
+            Platform.spawnDrops(w, pos, recipe.getDrops());
+        }
+
+        if (recipe.getMode() == EntropyMode.HEAT && !w.isRemote()) {
+            // Same effect as emptying a water bucket in the nether (see BucketItem)
+            w.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
+                    2.6F + (w.rand.nextFloat() - w.rand.nextFloat()) * 0.8F);
+            for (int l = 0; l < 8; ++l) {
+                w.addParticle(ParticleTypes.LARGE_SMOKE, (double) pos.getX() + Math.random(),
+                        (double) pos.getY() + Math.random(), (double) pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
+            }
         }
     }
 }

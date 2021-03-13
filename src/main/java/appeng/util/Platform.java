@@ -280,7 +280,7 @@ public class Platform {
      * Generates Item entities in the world similar to how items are generally dropped.
      */
     public static void spawnDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
-        if (isServer()) {
+        if (!w.isRemote()) {
             for (final ItemStack i : drops) {
                 if (!i.isEmpty()) {
                     if (i.getCount() > 0) {
