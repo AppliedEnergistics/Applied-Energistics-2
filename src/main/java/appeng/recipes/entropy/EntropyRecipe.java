@@ -71,10 +71,12 @@ public class EntropyRecipe implements IRecipe<IInventory> {
 
     @Nullable
     private final Block outputBlock;
+    @Nonnull
     private final List<StateApplier<?>> outputBlockStateAppliers;
     private final boolean outputBlockKeep;
     @Nullable
     private final Fluid outputFluid;
+    @Nonnull
     private final List<StateApplier<?>> outputFluidStateAppliers;
     private final boolean outputFluidKeep;
 
@@ -254,18 +256,22 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         return isValid;
     }
 
+    @Nonnull
     List<StateMatcher> getInputBlockMatchers() {
         return inputBlockMatchers;
     }
 
+    @Nonnull
     List<StateMatcher> getInputFluidMatchers() {
         return inputFluidMatchers;
     }
 
+    @Nonnull
     List<StateApplier<?>> getOutputBlockStateAppliers() {
         return outputBlockStateAppliers;
     }
 
+    @Nonnull
     List<StateApplier<?>> getOutputFluidStateAppliers() {
         return outputFluidStateAppliers;
     }
