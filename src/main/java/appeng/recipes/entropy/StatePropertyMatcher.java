@@ -19,18 +19,37 @@
 package appeng.recipes.entropy;
 
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.StateHolder;
+
+import appeng.core.AELog;
 
 /**
  * An interface to match against the passed block/fluid state
  */
-abstract class StateMatcher {
-    abstract boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state);
+abstract class StatePropertyMatcher {
+    protected final String propertyName;
+
+    public StatePropertyMatcher(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    public final boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state) {
+        Property<?> baseProperty = base.getProperty(this.propertyName);
+        if (baseProperty == null) {
+            AELog.warn("Entropy manipulator recipe failed to find property '%s' on state container '%s'",
+                    this.propertyName, base);
+            return false;
+        }
+        return matchProperty(state, baseProperty);
+    }
+
+    protected abstract <T extends Comparable<T>> boolean matchProperty(StateHolder<?, ?> state, Property<T> property);
 
     abstract void writeToPacket(PacketBuffer buffer);
 
-    static StateMatcher read(PacketBuffer buffer) {
+    static StatePropertyMatcher read(PacketBuffer buffer) {
         MatcherType type = buffer.readEnumValue(MatcherType.class);
 
         switch (type) {

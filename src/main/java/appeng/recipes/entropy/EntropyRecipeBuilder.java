@@ -34,10 +34,10 @@ class EntropyRecipeBuilder {
     private EntropyMode mode;
 
     private Block inputBlock;
-    private List<StateMatcher> inputBlockMatchers = Collections.emptyList();
+    private List<StatePropertyMatcher> inputBlockMatchers = Collections.emptyList();
 
     private Fluid inputFluid;
-    private List<StateMatcher> inputFluidMatchers = Collections.emptyList();
+    private List<StatePropertyMatcher> inputFluidMatchers = Collections.emptyList();
 
     private Block outputBlock;
     private List<BlockStateApplier> outputBlockStateAppliers = Collections.emptyList();
@@ -92,7 +92,7 @@ class EntropyRecipeBuilder {
         this.drops = drops;
     }
 
-    void addBlockStateMatcher(StateMatcher matcher) {
+    void addBlockStateMatcher(StatePropertyMatcher matcher) {
         Preconditions.checkArgument(this.inputBlock != null,
                 "Can only add appliers when an input block is present.");
 
@@ -104,7 +104,7 @@ class EntropyRecipeBuilder {
 
     }
 
-    void addFluidStateMatcher(StateMatcher matcher) {
+    void addFluidStateMatcher(StatePropertyMatcher matcher) {
         Preconditions.checkArgument(this.inputFluid != null,
                 "Can only add appliers when an input fluid is present.");
 

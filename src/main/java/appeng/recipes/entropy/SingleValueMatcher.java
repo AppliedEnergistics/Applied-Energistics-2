@@ -18,31 +18,26 @@
 
 package appeng.recipes.entropy;
 
+import java.util.Objects;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
 import net.minecraft.state.StateHolder;
 
 /**
  * Matches an exact value.
  */
-class SingleValueMatcher extends StateMatcher {
-
-    private final String propertyName;
+class SingleValueMatcher extends StatePropertyMatcher {
     private final String propertyValue;
 
     public SingleValueMatcher(String propertyName, String propertyValue) {
-        this.propertyName = propertyName;
-        this.propertyValue = propertyValue;
+        super(propertyName);
+        this.propertyValue = Objects.requireNonNull(propertyValue, "propertyValue");
     }
 
     @Override
-    public boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state) {
-        Property<?> baseProperty = base.getProperty(this.propertyName);
-        Comparable<?> property = state.get(baseProperty);
-        Comparable<?> expectedValue = baseProperty.parseValue(this.propertyValue).orElse(null);
-
-        return property.equals(expectedValue);
+    protected <T extends Comparable<T>> boolean matchProperty(StateHolder<?, ?> state, Property<T> property) {
+        return propertyValue.equals(property.getName(state.get(property)));
     }
 
     @Override
@@ -52,7 +47,7 @@ class SingleValueMatcher extends StateMatcher {
         buffer.writeString(propertyValue);
     }
 
-    public static StateMatcher readFromPacket(PacketBuffer buffer) {
+    public static StatePropertyMatcher readFromPacket(PacketBuffer buffer) {
         String key = buffer.readString();
         String value = buffer.readString();
 

@@ -20,32 +20,29 @@ package appeng.recipes.entropy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
 import net.minecraft.state.StateHolder;
 
 /**
  * Matches against a list of values.
  */
-class MultipleValuesMatcher extends StateMatcher {
+class MultipleValuesMatcher extends StatePropertyMatcher {
 
-    private final String propertyName;
-    private final List<String> propertyValues;
+    private final Set<String> propertyValues;
 
-    public MultipleValuesMatcher(String propertyName, List<String> propertyValue) {
-        this.propertyName = propertyName;
-        this.propertyValues = propertyValue;
+    public MultipleValuesMatcher(String propertyName, List<String> propertyValues) {
+        super(propertyName);
+        this.propertyValues = ImmutableSet.copyOf(propertyValues);
     }
 
-    @Override
-    public boolean matches(StateContainer<?, ?> base, StateHolder<?, ?> state) {
-        Property<?> baseProperty = base.getProperty(this.propertyName);
-        Comparable<?> property = state.get(baseProperty);
-        return this.propertyValues.stream().map(baseProperty::parseValue).filter(Optional::isPresent)
-                .anyMatch(p -> property.equals(p));
+    protected <T extends Comparable<T>> boolean matchProperty(StateHolder<?, ?> state, Property<T> property) {
+        String valueString = property.getName(state.get(property));
+        return propertyValues.contains(valueString);
     }
 
     @Override
@@ -58,15 +55,15 @@ class MultipleValuesMatcher extends StateMatcher {
         }
     }
 
-    public static StateMatcher readFromPacket(PacketBuffer buffer) {
-        String key = buffer.readString();
+    public static StatePropertyMatcher readFromPacket(PacketBuffer buffer) {
+        String propertyName = buffer.readString();
         int size = buffer.readInt();
 
         List<String> values = new ArrayList<String>(size);
         for (int i = 0; i < size; i++) {
             values.add(buffer.readString());
         }
-        return new MultipleValuesMatcher(key, values);
+        return new MultipleValuesMatcher(propertyName, values);
     }
 
 }
