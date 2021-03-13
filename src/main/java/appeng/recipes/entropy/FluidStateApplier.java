@@ -21,41 +21,26 @@ package appeng.recipes.entropy;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 
 /**
  * Applies a property to a {@link FluidState}
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public class FluidStateApplier {
-
-    private final String key;
-    private final String value;
-
+public class FluidStateApplier extends StateApplier<FluidState, Fluid> {
     public FluidStateApplier(String key, String value) {
-        this.key = key;
-        this.value = value;
+        super(key, value);
     }
 
-    FluidState apply(FluidState state) {
-        StateContainer<Fluid, FluidState> base = state.getFluid().getStateContainer();
-
-        Property property = base.getProperty(key);
-        Comparable propertyValue = (Comparable) property.parseValue(value).orElse(null);
-
-        return state.with(property, propertyValue);
+    private FluidStateApplier(PacketBuffer buffer) {
+        super(buffer);
     }
 
-    void writeToPacket(PacketBuffer buffer) {
-        buffer.writeString(key);
-        buffer.writeString(value);
+    @Override
+    protected StateContainer<Fluid, FluidState> getStateContainer(FluidState state) {
+        return state.getFluid().getStateContainer();
     }
 
     static FluidStateApplier read(PacketBuffer buffer) {
-        String key = buffer.readString();
-        String value = buffer.readString();
-
-        return new FluidStateApplier(key, value);
+        return new FluidStateApplier(buffer);
     }
 }

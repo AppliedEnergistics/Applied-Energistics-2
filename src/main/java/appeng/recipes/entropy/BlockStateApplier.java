@@ -21,40 +21,26 @@ package appeng.recipes.entropy;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 
 /**
  * Applies a property to a {@link BlockState}
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public class BlockStateApplier {
-
-    private final String key;
-    private final String value;
-
+public class BlockStateApplier extends StateApplier<BlockState, Block> {
     public BlockStateApplier(String key, String value) {
-        this.key = key;
-        this.value = value;
+        super(key, value);
     }
 
-    BlockState apply(BlockState state) {
-        StateContainer<Block, BlockState> base = state.getBlock().getStateContainer();
-
-        Property property = base.getProperty(key);
-        Comparable propertyValue = (Comparable) property.parseValue(value).orElse(null);
-        return state.with(property, propertyValue);
+    private BlockStateApplier(PacketBuffer buffer) {
+        super(buffer);
     }
 
-    void writeToPacket(PacketBuffer buffer) {
-        buffer.writeString(key);
-        buffer.writeString(value);
+    @Override
+    protected StateContainer<Block, BlockState> getStateContainer(BlockState state) {
+        return state.getBlock().getStateContainer();
     }
 
     static BlockStateApplier read(PacketBuffer buffer) {
-        String key = buffer.readString();
-        String value = buffer.readString();
-
-        return new BlockStateApplier(key, value);
+        return new BlockStateApplier(buffer);
     }
 }

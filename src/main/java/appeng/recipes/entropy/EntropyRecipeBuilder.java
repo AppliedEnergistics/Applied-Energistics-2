@@ -29,7 +29,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class EntropyRecipeBuilder {
+class EntropyRecipeBuilder {
     private ResourceLocation id;
     private EntropyMode mode;
 
@@ -47,64 +47,52 @@ public class EntropyRecipeBuilder {
     private boolean outputFluidKeep;
     private List<ItemStack> drops;
 
-    public EntropyRecipeBuilder() {
-    }
-
-    EntropyRecipeBuilder setId(ResourceLocation id) {
+    void setId(ResourceLocation id) {
         Preconditions.checkArgument(id != null);
         this.id = id;
-        return this;
     }
 
-    EntropyRecipeBuilder setMode(EntropyMode mode) {
+    void setMode(EntropyMode mode) {
         Preconditions.checkArgument(mode != null);
         this.mode = mode;
-        return this;
     }
 
-    EntropyRecipeBuilder setInputBlock(Block inputBlock) {
+    void setInputBlock(Block inputBlock) {
         Preconditions.checkArgument(inputBlock != null);
         this.inputBlock = inputBlock;
-        return this;
     }
 
-    EntropyRecipeBuilder setInputFluid(Fluid inputFluid) {
+    void setInputFluid(Fluid inputFluid) {
         Preconditions.checkArgument(inputFluid != null);
         this.inputFluid = inputFluid;
-        return this;
     }
 
-    EntropyRecipeBuilder setOutputBlock(Block outputBlock) {
+    void setOutputBlock(Block outputBlock) {
         Preconditions.checkArgument(outputBlock != null);
         this.outputBlock = outputBlock;
-        return this;
     }
 
-    EntropyRecipeBuilder setOutputBlockKeep(boolean outputBlockKeep) {
+    void setOutputBlockKeep(boolean outputBlockKeep) {
         this.outputBlockKeep = outputBlockKeep;
-        return this;
     }
 
-    EntropyRecipeBuilder setOutputFluid(Fluid outputFluid) {
+    void setOutputFluid(Fluid outputFluid) {
         Preconditions.checkArgument(outputFluid != null);
         this.outputFluid = outputFluid;
-        return this;
     }
 
-    EntropyRecipeBuilder setOutputFluidKeep(boolean outputFluidKeep) {
+    void setOutputFluidKeep(boolean outputFluidKeep) {
         this.outputFluidKeep = outputFluidKeep;
-        return this;
     }
 
-    EntropyRecipeBuilder setDrops(List<ItemStack> drops) {
+    void setDrops(List<ItemStack> drops) {
         Preconditions.checkArgument(drops == null || !drops.isEmpty(),
                 "drops needs to be either null or a non empty list");
 
         this.drops = drops;
-        return this;
     }
 
-    EntropyRecipeBuilder addBlockStateMatcher(StateMatcher matcher) {
+    void addBlockStateMatcher(StateMatcher matcher) {
         Preconditions.checkArgument(this.inputBlock != null,
                 "Can only add appliers when an input block is present.");
 
@@ -114,10 +102,9 @@ public class EntropyRecipeBuilder {
 
         this.inputBlockMatchers.add(matcher);
 
-        return this;
     }
 
-    EntropyRecipeBuilder addFluidStateMatcher(StateMatcher matcher) {
+    void addFluidStateMatcher(StateMatcher matcher) {
         Preconditions.checkArgument(this.inputFluid != null,
                 "Can only add appliers when an input fluid is present.");
 
@@ -127,10 +114,9 @@ public class EntropyRecipeBuilder {
 
         this.inputFluidMatchers.add(matcher);
 
-        return this;
     }
 
-    EntropyRecipeBuilder addBlockStateAppliers(BlockStateApplier applier) {
+    void addBlockStateAppliers(BlockStateApplier applier) {
         Preconditions.checkArgument(this.outputBlock != null,
                 "Can only add appliers when an output block is present.");
 
@@ -140,10 +126,9 @@ public class EntropyRecipeBuilder {
 
         this.outputBlockStateAppliers.add(applier);
 
-        return this;
     }
 
-    EntropyRecipeBuilder addFluidStateAppliers(FluidStateApplier applier) {
+    void addFluidStateAppliers(FluidStateApplier applier) {
         Preconditions.checkArgument(this.outputFluid != null,
                 "Can only add appliers when an output fluid is present.");
 
@@ -153,7 +138,6 @@ public class EntropyRecipeBuilder {
 
         this.outputFluidStateAppliers.add(applier);
 
-        return this;
     }
 
     EntropyRecipe build() {

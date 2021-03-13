@@ -20,5 +20,5 @@ package appeng.recipes.entropy;
 
 public enum EntropyMode {
     HEAT,
-    COOL;
+    COOL
 }
