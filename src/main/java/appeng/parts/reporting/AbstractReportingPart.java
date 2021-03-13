@@ -20,6 +20,8 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,6 +33,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IMonitorPart;
@@ -259,6 +262,12 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         } else {
             return offModels;
         }
+    }
+
+    @Override
+    @Nonnull
+    public IModelData getModelData() {
+        return new ReportingModelData(getSpin());
     }
 
     public final int getClientFlags() {

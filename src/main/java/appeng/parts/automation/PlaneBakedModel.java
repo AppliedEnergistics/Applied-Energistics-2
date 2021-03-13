@@ -81,8 +81,8 @@ public class PlaneBakedModel implements IDynamicBakedModel {
             IModelData modelData) {
         if (side == null) {
             PlaneConnections connections = DEFAULT_PERMUTATION;
-            if (modelData instanceof PlaneModelData) {
-                connections = ((PlaneModelData) modelData).getConnections();
+            if (modelData.hasProperty(PlaneModelData.CONNECTIONS)) {
+                connections = modelData.getData(PlaneModelData.CONNECTIONS);
             }
             return this.quads.get(connections);
         } else {

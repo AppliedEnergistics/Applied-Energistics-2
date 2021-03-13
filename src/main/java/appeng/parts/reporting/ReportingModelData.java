@@ -16,36 +16,34 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.render.cablebus;
+package appeng.parts.reporting;
 
 import javax.annotation.Nullable;
 
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-public final class P2PTunnelFrequencyModelData implements IModelData {
+public class ReportingModelData implements IModelData {
+    public static final ModelProperty<Byte> SPIN = new ModelProperty<>();
 
-    public static final ModelProperty<Long> FREQUENCY = new ModelProperty<>();
+    private final Byte spin;
 
-    private final Long frequency;
-
-    public P2PTunnelFrequencyModelData(long frequency) {
-        this.frequency = frequency;
+    public ReportingModelData(byte spin) {
+        this.spin = spin;
     }
 
     @Override
     public boolean hasProperty(ModelProperty<?> prop) {
-        return prop == FREQUENCY;
+        return prop == SPIN;
     }
 
     @Override
     @Nullable
     @SuppressWarnings("unchecked")
     public <T> T getData(ModelProperty<T> prop) {
-        if (prop == FREQUENCY) {
-            return (T) this.frequency;
+        if (prop == SPIN) {
+            return (T) this.spin;
         }
-
         return null;
     }
 
@@ -54,5 +52,4 @@ public final class P2PTunnelFrequencyModelData implements IModelData {
     public <T> T setData(ModelProperty<T> prop, T data) {
         return null;
     }
-
 }
