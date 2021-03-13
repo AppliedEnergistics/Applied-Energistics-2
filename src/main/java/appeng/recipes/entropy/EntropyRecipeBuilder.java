@@ -34,16 +34,16 @@ class EntropyRecipeBuilder {
     private EntropyMode mode;
 
     private Block inputBlock;
-    private List<StatePropertyMatcher> inputBlockMatchers = Collections.emptyList();
+    private List<StateMatcher> inputBlockMatchers = Collections.emptyList();
 
     private Fluid inputFluid;
-    private List<StatePropertyMatcher> inputFluidMatchers = Collections.emptyList();
+    private List<StateMatcher> inputFluidMatchers = Collections.emptyList();
 
     private Block outputBlock;
-    private List<BlockStateApplier> outputBlockStateAppliers = Collections.emptyList();
+    private List<StateApplier<?>> outputBlockStateAppliers = Collections.emptyList();
     private boolean outputBlockKeep;
     private Fluid outputFluid;
-    private List<FluidStateApplier> outputFluidStateAppliers = Collections.emptyList();
+    private List<StateApplier<?>> outputFluidStateAppliers = Collections.emptyList();
     private boolean outputFluidKeep;
     private List<ItemStack> drops;
 
@@ -92,7 +92,7 @@ class EntropyRecipeBuilder {
         this.drops = drops;
     }
 
-    void addBlockStateMatcher(StatePropertyMatcher matcher) {
+    void addBlockStateMatcher(StateMatcher matcher) {
         Preconditions.checkArgument(this.inputBlock != null,
                 "Can only add appliers when an input block is present.");
 
@@ -104,7 +104,7 @@ class EntropyRecipeBuilder {
 
     }
 
-    void addFluidStateMatcher(StatePropertyMatcher matcher) {
+    void addFluidStateMatcher(StateMatcher matcher) {
         Preconditions.checkArgument(this.inputFluid != null,
                 "Can only add appliers when an input fluid is present.");
 
@@ -116,7 +116,7 @@ class EntropyRecipeBuilder {
 
     }
 
-    void addBlockStateAppliers(BlockStateApplier applier) {
+    void addBlockStateAppliers(StateApplier<?> applier) {
         Preconditions.checkArgument(this.outputBlock != null,
                 "Can only add appliers when an output block is present.");
 
@@ -128,7 +128,7 @@ class EntropyRecipeBuilder {
 
     }
 
-    void addFluidStateAppliers(FluidStateApplier applier) {
+    void addFluidStateAppliers(StateApplier<?> applier) {
         Preconditions.checkArgument(this.outputFluid != null,
                 "Can only add appliers when an output fluid is present.");
 

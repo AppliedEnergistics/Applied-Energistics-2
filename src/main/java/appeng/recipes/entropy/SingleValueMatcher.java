@@ -18,40 +18,47 @@
 
 package appeng.recipes.entropy;
 
-import java.util.Objects;
-
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.StateHolder;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Matches an exact value.
  */
-class SingleValueMatcher extends StatePropertyMatcher {
-    private final String propertyValue;
+class SingleValueMatcher<T extends Comparable<T>> implements StateMatcher {
 
-    public SingleValueMatcher(String propertyName, String propertyValue) {
-        super(propertyName);
-        this.propertyValue = Objects.requireNonNull(propertyValue, "propertyValue");
+    private final Property<T> property;
+    private final T value;
+
+    private SingleValueMatcher(Property<T> property, String value) {
+        this.property = property;
+        this.value = PropertyUtils.getRequiredPropertyValue(property, value);
     }
 
     @Override
-    protected <T extends Comparable<T>> boolean matchProperty(StateHolder<?, ?> state, Property<T> property) {
-        return propertyValue.equals(property.getName(state.get(property)));
+    public boolean matches(StateHolder<?, ?> state) {
+        return value.equals(state.get(property));
     }
 
     @Override
-    void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(PacketBuffer buffer) {
         buffer.writeEnumValue(MatcherType.SINGLE);
-        buffer.writeString(propertyName);
-        buffer.writeString(propertyValue);
+        buffer.writeString(property.getName());
+        buffer.writeString(property.getName(value));
     }
 
-    public static StatePropertyMatcher readFromPacket(PacketBuffer buffer) {
-        String key = buffer.readString();
+    public static SingleValueMatcher<?> create(StateContainer<?, ?> stateContainer, String propertyName, String value) {
+        Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
+        return new SingleValueMatcher<>(property, value);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static SingleValueMatcher<?> readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
+        String propertyName = buffer.readString();
         String value = buffer.readString();
-
-        return new SingleValueMatcher(key, value);
+        return create(stateContainer, propertyName, value);
     }
-
 }

@@ -21,49 +21,61 @@ package appeng.recipes.entropy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
+import java.util.stream.Collectors;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.StateHolder;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Matches against a list of values.
  */
-class MultipleValuesMatcher extends StatePropertyMatcher {
+class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
 
-    private final Set<String> propertyValues;
+    private final Property<T> property;
+    private final Set<T> propertyValues;
 
-    public MultipleValuesMatcher(String propertyName, List<String> propertyValues) {
-        super(propertyName);
-        this.propertyValues = ImmutableSet.copyOf(propertyValues);
-    }
-
-    protected <T extends Comparable<T>> boolean matchProperty(StateHolder<?, ?> state, Property<T> property) {
-        String valueString = property.getName(state.get(property));
-        return propertyValues.contains(valueString);
+    public MultipleValuesMatcher(Property<T> property, List<String> propertyValues) {
+        this.property = property;
+        this.propertyValues = propertyValues.stream()
+                .map(name -> PropertyUtils.getRequiredPropertyValue(property, name))
+                .collect(Collectors.toSet());
     }
 
     @Override
-    void writeToPacket(PacketBuffer buffer) {
+    public boolean matches(StateHolder<?, ?> state) {
+        return propertyValues.contains(state.get(property));
+    }
+
+    @Override
+    public void writeToPacket(PacketBuffer buffer) {
         buffer.writeEnumValue(MatcherType.MULTIPLE);
-        buffer.writeString(propertyName);
+        buffer.writeString(property.getName());
         buffer.writeInt(propertyValues.size());
-        for (String value : propertyValues) {
-            buffer.writeString(value);
+        for (T value : propertyValues) {
+            buffer.writeString(property.getName(value));
         }
     }
 
-    public static StatePropertyMatcher readFromPacket(PacketBuffer buffer) {
+    public static MultipleValuesMatcher<?> create(StateContainer<?, ?> stateContainer, String propertyName,
+            List<String> values) {
+        Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
+        return new MultipleValuesMatcher<>(property, values);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static MultipleValuesMatcher<?> readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
         String propertyName = buffer.readString();
         int size = buffer.readInt();
-
-        List<String> values = new ArrayList<String>(size);
+        List<String> values = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             values.add(buffer.readString());
         }
-        return new MultipleValuesMatcher(propertyName, values);
+
+        return create(stateContainer, propertyName, values);
     }
 
 }

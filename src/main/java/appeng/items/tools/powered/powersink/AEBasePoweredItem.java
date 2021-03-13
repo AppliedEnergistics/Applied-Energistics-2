@@ -42,7 +42,6 @@ import appeng.items.AEBaseItem;
 
 public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
     private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
-    private static final String MAX_POWER_NBT_KEY = "internalMaxPower";
     private final DoubleSupplier powerCapacity;
 
     public AEBasePoweredItem(final DoubleSupplier powerCapacity, Properties props) {
@@ -73,37 +72,24 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public boolean isDamageable() {
-        return true;
-    }
-
-    @Override
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
 
         if (this.isInGroup(group)) {
             final ItemStack charged = new ItemStack(this, 1);
-            final CompoundNBT tag = charged.getOrCreateTag();
-            tag.putDouble(CURRENT_POWER_NBT_KEY, this.getAEMaxPower(charged));
-            tag.putDouble(MAX_POWER_NBT_KEY, this.getAEMaxPower(charged));
-
+            injectAEPower(charged, getAEMaxPower(charged), Actionable.MODULATE);
             items.add(charged);
         }
     }
 
     @Override
-    public double getDurabilityForDisplay(final ItemStack is) {
-        return 1 - this.getAECurrentPower(is) / this.getAEMaxPower(is);
-    }
-
-    @Override
-    public boolean isDamaged(final ItemStack stack) {
+    public boolean showDurabilityBar(ItemStack stack) {
         return true;
     }
 
     @Override
-    public void setDamage(final ItemStack stack, final int damage) {
-
+    public double getDurabilityForDisplay(final ItemStack is) {
+        return 1 - this.getAECurrentPower(is) / this.getAEMaxPower(is);
     }
 
     @Override

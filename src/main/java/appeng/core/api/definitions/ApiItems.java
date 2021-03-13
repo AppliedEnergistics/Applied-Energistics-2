@@ -205,7 +205,7 @@ public final class ApiItems implements IItems {
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
                 .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
-        Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1).maxDamage(32).setNoRepair();
+        Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1);
 
         FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
         this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)

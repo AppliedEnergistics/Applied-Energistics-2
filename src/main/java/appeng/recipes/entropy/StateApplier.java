@@ -4,52 +4,42 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.StateHolder;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.core.AELog;
 
 /**
  * Generic template to apply named properties to block and fluid states.
  */
-abstract class StateApplier<SH extends StateHolder<O, SH>, O> {
-    private final String key;
-    private final String value;
+class StateApplier<T extends Comparable<T>> {
+    private final Property<T> property;
+    private final T value;
 
-    public StateApplier(String key, String value) {
-        this.key = key;
-        this.value = value;
+    private StateApplier(Property<T> property, String valueName) {
+        this.property = property;
+        this.value = PropertyUtils.getRequiredPropertyValue(property, valueName);
     }
 
-    protected StateApplier(PacketBuffer buffer) {
-        this.key = buffer.readString();
-        this.value = buffer.readString();
-    }
-
-    SH apply(SH state) {
-        StateContainer<O, SH> base = getStateContainer(state);
-
-        Property<?> property = base.getProperty(key);
-        if (property == null) {
-            AELog.warn("Cannot set unknown state property %s in entropy manipulator recipe", key);
-            return state;
-        }
-        return applyProperty(state, property);
-    }
-
-    private <T extends Comparable<T>> SH applyProperty(SH state, Property<T> property) {
-        T propertyValue = property.parseValue(value).orElse(null);
-        if (propertyValue == null) {
-            AELog.warn("Cannot set invalid value '%s' for state property %s in entropy manipulator recipe", value,
-                    key);
-            return state;
-        }
-        return state.with(property, propertyValue);
+    <SH extends StateHolder<O, SH>, O> SH apply(SH state) {
+        return state.with(property, value);
     }
 
     void writeToPacket(PacketBuffer buffer) {
-        buffer.writeString(key);
-        buffer.writeString(value);
+        buffer.writeString(property.getName());
+        buffer.writeString(property.getName(value));
     }
 
-    protected abstract StateContainer<O, SH> getStateContainer(SH state);
+    static StateApplier<?> create(StateContainer<?, ?> stateContainer, String propertyName, String value) {
+        Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
+        return new StateApplier<>(property, value);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    static StateApplier<?> readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
+        String propertyName = buffer.readString();
+        String value = buffer.readString();
+        return create(stateContainer, propertyName, value);
+    }
 
 }

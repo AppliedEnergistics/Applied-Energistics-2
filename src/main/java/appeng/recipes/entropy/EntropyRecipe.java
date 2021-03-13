@@ -62,30 +62,30 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     @Nullable
     private final Block inputBlock;
     @Nonnull
-    private final List<StatePropertyMatcher> inputBlockMatchers;
+    private final List<StateMatcher> inputBlockMatchers;
 
     @Nullable
     private final Fluid inputFluid;
     @Nonnull
-    private final List<StatePropertyMatcher> inputFluidMatchers;
+    private final List<StateMatcher> inputFluidMatchers;
 
     @Nullable
     private final Block outputBlock;
-    private final List<BlockStateApplier> outputBlockStateAppliers;
+    private final List<StateApplier<?>> outputBlockStateAppliers;
     private final boolean outputBlockKeep;
     @Nullable
     private final Fluid outputFluid;
-    private final List<FluidStateApplier> outputFluidStateAppliers;
+    private final List<StateApplier<?>> outputFluidStateAppliers;
     private final boolean outputFluidKeep;
 
     @Nonnull
     private final List<ItemStack> drops;
 
     public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock,
-            List<StatePropertyMatcher> inputBlockMatchers,
-            Fluid inputFluid, List<StatePropertyMatcher> inputFluidMatchers, Block outputBlock,
-            List<BlockStateApplier> outputBlockStateAppliers, boolean outputBlockKeep, Fluid outputFluid,
-            List<FluidStateApplier> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
+            List<StateMatcher> inputBlockMatchers,
+            Fluid inputFluid, List<StateMatcher> inputFluidMatchers, Block outputBlock,
+            List<StateApplier<?>> outputBlockStateAppliers, boolean outputBlockKeep, Fluid outputFluid,
+            List<StateApplier<?>> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
         Preconditions.checkArgument(id != null);
         Preconditions.checkArgument(mode != null);
         Preconditions.checkArgument(drops == null || !drops.isEmpty(),
@@ -189,7 +189,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
             }
         }
 
-        for (BlockStateApplier entry : this.outputBlockStateAppliers) {
+        for (StateApplier<?> entry : this.outputBlockStateAppliers) {
             state = entry.apply(state);
         }
 
@@ -219,7 +219,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
             }
         }
 
-        for (FluidStateApplier entry : this.outputFluidStateAppliers) {
+        for (StateApplier<?> entry : this.outputFluidStateAppliers) {
             state = entry.apply(state);
         }
 
@@ -248,26 +248,26 @@ public class EntropyRecipe implements IRecipe<IInventory> {
 
         if (fluidState.getFluid() == this.getInputFluid()) {
             isValid = this.inputFluidMatchers.stream().allMatch(m -> {
-                return m.matches(fluidState.getFluid().getStateContainer(), fluidState);
+                return m.matches(fluidState);
             });
         }
 
         return isValid;
     }
 
-    List<StatePropertyMatcher> getInputBlockMatchers() {
+    List<StateMatcher> getInputBlockMatchers() {
         return inputBlockMatchers;
     }
 
-    List<StatePropertyMatcher> getInputFluidMatchers() {
+    List<StateMatcher> getInputFluidMatchers() {
         return inputFluidMatchers;
     }
 
-    List<BlockStateApplier> getOutputBlockStateAppliers() {
+    List<StateApplier<?>> getOutputBlockStateAppliers() {
         return outputBlockStateAppliers;
     }
 
-    List<FluidStateApplier> getOutputFluidStateAppliers() {
+    List<StateApplier<?>> getOutputFluidStateAppliers() {
         return outputFluidStateAppliers;
     }
 

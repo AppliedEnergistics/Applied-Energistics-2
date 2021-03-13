@@ -137,51 +137,62 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 return ActionResultType.FAIL;
             }
 
-            final BlockState blockState = w.getBlockState(pos);
-            final Block block = blockState.getBlock();
-            final FluidState fluidState = w.getFluidState(pos);
-
-            if (tryBoth || p.isCrouching()) {
-                EntropyRecipe coolRecipe = findRecipe(w, EntropyMode.COOL, blockState, fluidState);
-                if (coolRecipe != null) {
-                    this.extractAEPower(item, 1600, Actionable.MODULATE);
-                    applyRecipe(coolRecipe, w, pos, blockState, fluidState);
-                    return ActionResultType.SUCCESS;
-                }
-            }
-            if (tryBoth || !p.isCrouching()) {
-                if (block instanceof TNTBlock) {
-                    w.removeBlock(pos, false);
-                    block.catchFire(w.getBlockState(pos), w, pos, context.getFace(), p);
-                    return ActionResultType.SUCCESS;
-                }
-
-                if (block instanceof TinyTNTBlock) {
-                    w.removeBlock(pos, false);
-                    ((TinyTNTBlock) block).startFuse(w, pos, p);
-                    return ActionResultType.SUCCESS;
-                }
-
-                EntropyRecipe heatRecipe = findRecipe(w, EntropyMode.HEAT, blockState, fluidState);
-                if (heatRecipe != null) {
-                    this.extractAEPower(item, 1600, Actionable.MODULATE);
-                    applyRecipe(heatRecipe, w, pos, blockState, fluidState);
-                    return ActionResultType.SUCCESS;
-                }
-
-                if (performInWorldSmelting(item, w, p, pos, block)) {
-                    return ActionResultType.SUCCESS;
-                }
-
-                if (applyFlintAndSteelEffect(w, item, pos, side, p)) {
-                    return ActionResultType.SUCCESS;
-                }
-
+            // Delegate to the server from here on
+            if (!w.isRemote() && !tryApplyEffect(w, item, pos, side, p, tryBoth)) {
                 return ActionResultType.FAIL;
             }
+
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         return ActionResultType.PASS;
+    }
+
+    private boolean tryApplyEffect(World w, ItemStack item, BlockPos pos, Direction side, PlayerEntity p,
+            boolean tryBoth) {
+        final BlockState blockState = w.getBlockState(pos);
+        final Block block = blockState.getBlock();
+        final FluidState fluidState = w.getFluidState(pos);
+
+        if (tryBoth || p.isCrouching()) {
+            EntropyRecipe coolRecipe = findRecipe(w, EntropyMode.COOL, blockState, fluidState);
+            if (coolRecipe != null) {
+                this.extractAEPower(item, 1600, Actionable.MODULATE);
+                applyRecipe(coolRecipe, w, pos, blockState, fluidState);
+                return true;
+            }
+        }
+
+        if (tryBoth || !p.isCrouching()) {
+            if (block instanceof TNTBlock) {
+                w.removeBlock(pos, false);
+                block.catchFire(w.getBlockState(pos), w, pos, side, p);
+                return true;
+            }
+
+            if (block instanceof TinyTNTBlock) {
+                w.removeBlock(pos, false);
+                ((TinyTNTBlock) block).startFuse(w, pos, p);
+                return true;
+            }
+
+            EntropyRecipe heatRecipe = findRecipe(w, EntropyMode.HEAT, blockState, fluidState);
+            if (heatRecipe != null) {
+                this.extractAEPower(item, 1600, Actionable.MODULATE);
+                applyRecipe(heatRecipe, w, pos, blockState, fluidState);
+                return true;
+            }
+
+            if (performInWorldSmelting(item, w, p, pos, block)) {
+                return true;
+            }
+
+            if (applyFlintAndSteelEffect(w, item, pos, side, p)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean applyFlintAndSteelEffect(World w, ItemStack item, BlockPos pos, Direction side, PlayerEntity p) {

@@ -20,57 +20,50 @@ package appeng.recipes.entropy;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.StateHolder;
-
-import appeng.core.AELog;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Matches a range between a min and max value (inclusive).
  */
-class RangeValueMatcher extends StatePropertyMatcher {
+class RangeValueMatcher<T extends Comparable<T>> implements StateMatcher {
+    private final Property<T> property;
+    private final T minValue;
+    private final T maxValue;
 
-    private final String propertyMinValue;
-    private final String propertyMaxValue;
-
-    public RangeValueMatcher(String propertyName, String propertyMinValue, String propertyMaxValue) {
-        super(propertyName);
-        this.propertyMinValue = propertyMinValue;
-        this.propertyMaxValue = propertyMaxValue;
+    private RangeValueMatcher(Property<T> property, String minValueName, String maxValueName) {
+        this.property = property;
+        this.minValue = PropertyUtils.getRequiredPropertyValue(property, minValueName);
+        this.maxValue = PropertyUtils.getRequiredPropertyValue(property, maxValueName);
     }
 
     @Override
-    protected <T extends Comparable<T>> boolean matchProperty(StateHolder<?, ?> state, Property<T> property) {
-        T minValue = property.parseValue(this.propertyMinValue).orElse(null);
-        if (minValue == null) {
-            AELog.warn("Entropy manipulator range matcher has min-value '%s' unsupported by property '%s' on '%s'",
-                    propertyMinValue, property.getName(), state);
-            return false;
-        }
-
-        T maxValue = property.parseValue(this.propertyMaxValue).orElse(null);
-        if (maxValue == null) {
-            AELog.warn("Entropy manipulator range matcher has max-value '%s' unsupported by property '%s' on '%s'",
-                    propertyMaxValue, property.getName(), state);
-            return false;
-        }
-
+    public boolean matches(StateHolder<?, ?> state) {
         T value = state.get(property);
         return value.compareTo(minValue) >= 0 && value.compareTo(maxValue) <= 0;
     }
 
     @Override
-    void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(PacketBuffer buffer) {
         buffer.writeEnumValue(MatcherType.RANGE);
-        buffer.writeString(propertyName);
-        buffer.writeString(propertyMinValue);
-        buffer.writeString(propertyMaxValue);
+        buffer.writeString(property.getName());
+        buffer.writeString(property.getName(minValue));
+        buffer.writeString(property.getName(maxValue));
     }
 
-    public static StatePropertyMatcher readFromPacket(PacketBuffer buffer) {
-        String key = buffer.readString();
-        String min = buffer.readString();
-        String max = buffer.readString();
+    public static StateMatcher create(StateContainer<?, ?> stateContainer, String propertyName, String minValueName,
+            String maxValueName) {
+        Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
+        return new RangeValueMatcher<>(property, minValueName, maxValueName);
+    }
 
-        return new RangeValueMatcher(key, min, max);
+    @OnlyIn(Dist.CLIENT)
+    public static StateMatcher readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
+        String propertyName = buffer.readString();
+        String minName = buffer.readString();
+        String maxName = buffer.readString();
+        return create(stateContainer, propertyName, minName, maxName);
     }
 }

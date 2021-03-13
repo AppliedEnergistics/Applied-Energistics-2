@@ -1,5 +1,5 @@
 /*
-* This file is part of Applied Energistics 2.
+ * This file is part of Applied Energistics 2.
  * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@ package appeng.recipes.entropy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
@@ -28,14 +29,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
         implements IRecipeSerializer<EntropyRecipe> {
@@ -64,16 +70,18 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         JsonObject inputBlockObject = JSONUtils.getJsonObject(inputJson, "block", new JsonObject());
         String inputBlockId = JSONUtils.getString(inputBlockObject, "id", null);
         if (inputBlockId != null) {
-            builder.setInputBlock(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(inputBlockId)));
-            addInputBlockStateMatchers(inputBlockObject, builder);
+            Block block = getRequiredEntry(ForgeRegistries.BLOCKS, inputBlockId);
+            builder.setInputBlock(block);
+            parseStateMatchers(block.getStateContainer(), inputBlockObject, builder::addBlockStateMatcher);
         }
 
         // input fluid
         JsonObject inputFluidObject = JSONUtils.getJsonObject(inputJson, "fluid", new JsonObject());
         String inputFluidId = JSONUtils.getString(inputFluidObject, "id", null);
         if (inputFluidId != null) {
-            builder.setInputFluid(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(inputFluidId)));
-            addInputFluidStateMatchers(inputFluidObject, builder);
+            Fluid fluid = getRequiredEntry(ForgeRegistries.FLUIDS, inputFluidId);
+            builder.setInputFluid(fluid);
+            parseStateMatchers(fluid.getStateContainer(), inputFluidObject, builder::addFluidStateMatcher);
         }
 
         //// Parse outputs
@@ -83,24 +91,26 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         JsonObject outputBlockObject = JSONUtils.getJsonObject(outputJson, "block", new JsonObject());
         String outputBlockId = JSONUtils.getString(outputBlockObject, "id", null);
         if (outputBlockId != null) {
-            builder.setOutputBlock(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(outputBlockId)));
+            Block block = getRequiredEntry(ForgeRegistries.BLOCKS, outputBlockId);
+            builder.setOutputBlock(block);
 
             boolean outputBlockKeep = JSONUtils.getBoolean(outputBlockObject, "keep", false);
             builder.setOutputBlockKeep(outputBlockKeep);
 
-            addOutputBlockStateAppliers(outputBlockObject, builder);
+            parseStateAppliers(block.getStateContainer(), outputBlockObject, builder::addBlockStateAppliers);
         }
 
         // Output fluid
         JsonObject outputFluidObject = JSONUtils.getJsonObject(outputJson, "fluid", new JsonObject());
         String outputFluidId = JSONUtils.getString(outputFluidObject, "id", null);
         if (outputFluidId != null) {
-            builder.setOutputFluid(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(outputFluidId)));
+            Fluid fluid = getRequiredEntry(ForgeRegistries.FLUIDS, outputFluidId);
+            builder.setOutputFluid(fluid);
 
             boolean outputFluidKeep = JSONUtils.getBoolean(outputFluidObject, "keep", false);
             builder.setOutputFluidKeep(outputFluidKeep);
 
-            addOutputFluidStateAppliers(outputFluidObject, builder);
+            parseStateAppliers(fluid.getStateContainer(), outputFluidObject, builder::addFluidStateAppliers);
         }
 
         // Parse additional drops
@@ -122,6 +132,14 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         return builder.build();
     }
 
+    private static <T extends IForgeRegistryEntry<T>> T getRequiredEntry(IForgeRegistry<T> registry, String id) {
+        T entry = registry.getValue(new ResourceLocation(id));
+        if (entry == null) {
+            throw new IllegalArgumentException("Unknown id " + id + " for " + registry.getRegistryName());
+        }
+        return entry;
+    }
+
     @Nullable
     @Override
     public EntropyRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
@@ -131,36 +149,40 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         builder.setMode(buffer.readEnumValue(EntropyMode.class));
 
         if (buffer.readBoolean()) {
-            builder.setInputBlock(buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS));
+            Block inputBlock = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
+            builder.setInputBlock(inputBlock);
             int matcherSize = buffer.readInt();
             for (int i = 0; i < matcherSize; i++) {
-                builder.addBlockStateMatcher(StatePropertyMatcher.read(buffer));
+                builder.addBlockStateMatcher(StateMatcher.read(inputBlock.getStateContainer(), buffer));
             }
         }
 
         if (buffer.readBoolean()) {
-            builder.setInputFluid(buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS));
+            Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
+            builder.setInputFluid(fluid);
             int matcherSize = buffer.readInt();
             for (int i = 0; i < matcherSize; i++) {
-                builder.addFluidStateMatcher(StatePropertyMatcher.read(buffer));
+                builder.addFluidStateMatcher(StateMatcher.read(fluid.getStateContainer(), buffer));
             }
         }
 
         if (buffer.readBoolean()) {
-            builder.setOutputBlock(buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS));
+            Block block = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
+            builder.setOutputBlock(block);
             builder.setOutputBlockKeep(buffer.readBoolean());
             int appliersSize = buffer.readInt();
             for (int i = 0; i < appliersSize; i++) {
-                builder.addBlockStateAppliers(BlockStateApplier.read(buffer));
+                builder.addBlockStateAppliers(StateApplier.readFromPacket(block.getStateContainer(), buffer));
             }
         }
 
         if (buffer.readBoolean()) {
-            builder.setOutputFluid(buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS));
+            Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
+            builder.setOutputFluid(fluid);
             builder.setOutputFluidKeep(buffer.readBoolean());
             int appliersSize = buffer.readInt();
             for (int i = 0; i < appliersSize; i++) {
-                builder.addFluidStateAppliers(FluidStateApplier.read(buffer));
+                builder.addFluidStateAppliers(StateApplier.readFromPacket(fluid.getStateContainer(), buffer));
             }
         }
 
@@ -185,9 +207,9 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         if (recipe.getInputBlock() != null) {
             buffer.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, recipe.getInputBlock());
 
-            List<StatePropertyMatcher> inputBlockMatchers = recipe.getInputBlockMatchers();
+            List<StateMatcher> inputBlockMatchers = recipe.getInputBlockMatchers();
             buffer.writeInt(inputBlockMatchers.size());
-            for (StatePropertyMatcher stateMatcher : inputBlockMatchers) {
+            for (StateMatcher stateMatcher : inputBlockMatchers) {
                 stateMatcher.writeToPacket(buffer);
             }
         }
@@ -196,9 +218,9 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         if (recipe.getInputFluid() != null) {
             buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, recipe.getInputFluid());
 
-            List<StatePropertyMatcher> inputFluidMatchers = recipe.getInputFluidMatchers();
+            List<StateMatcher> inputFluidMatchers = recipe.getInputFluidMatchers();
             buffer.writeInt(inputFluidMatchers.size());
-            for (StatePropertyMatcher stateMatcher : inputFluidMatchers) {
+            for (StateMatcher stateMatcher : inputFluidMatchers) {
                 stateMatcher.writeToPacket(buffer);
             }
         }
@@ -208,9 +230,9 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
             buffer.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, recipe.getOutputBlock());
             buffer.writeBoolean(recipe.getOutputBlockKeep());
 
-            List<BlockStateApplier> appliers = recipe.getOutputBlockStateAppliers();
+            List<StateApplier<?>> appliers = recipe.getOutputBlockStateAppliers();
             buffer.writeInt(appliers.size());
-            for (BlockStateApplier blockStateApplier : appliers) {
+            for (StateApplier<?> blockStateApplier : appliers) {
                 blockStateApplier.writeToPacket(buffer);
             }
         }
@@ -220,9 +242,9 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
             buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, recipe.getOutputFluid());
             buffer.writeBoolean(recipe.getOutputFluidKeep());
 
-            List<FluidStateApplier> appliers = recipe.getOutputFluidStateAppliers();
+            List<StateApplier<?>> appliers = recipe.getOutputFluidStateAppliers();
             buffer.writeInt(appliers.size());
-            for (FluidStateApplier fluidStateApplier : appliers) {
+            for (StateApplier<?> fluidStateApplier : appliers) {
                 fluidStateApplier.writeToPacket(buffer);
             }
         }
@@ -233,7 +255,9 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         }
     }
 
-    private static void addInputBlockStateMatchers(JsonObject propertiesContainer, EntropyRecipeBuilder builder) {
+    private static void parseStateMatchers(StateContainer<?, ?> stateContainer,
+            JsonObject propertiesContainer,
+            Consumer<StateMatcher> consumer) {
         JsonObject properties = JSONUtils.getJsonObject(propertiesContainer, "properties", new JsonObject());
 
         properties.entrySet().forEach(entry -> {
@@ -245,73 +269,36 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
             }
 
             if (value.isJsonPrimitive()) {
-                builder.addBlockStateMatcher(new SingleValueMatcher(key, value.getAsString()));
+                consumer.accept(SingleValueMatcher.create(stateContainer, key, value.getAsString()));
             } else if (value.isJsonArray()) {
                 JsonArray array = value.getAsJsonArray();
                 List<String> list = new ArrayList<>();
                 for (JsonElement e : array) {
                     list.add(e.getAsString());
                 }
-                builder.addBlockStateMatcher(new MultipleValuesMatcher(key, list));
+                consumer.accept(MultipleValuesMatcher.create(stateContainer, key, list));
             } else if (value.isJsonObject() && value.getAsJsonObject().has("min")
                     && value.getAsJsonObject().has("max")) {
                 String min = value.getAsJsonObject().get("min").getAsString();
                 String max = value.getAsJsonObject().get("max").getAsString();
 
-                builder.addBlockStateMatcher(new RangeValueMatcher(key, min, max));
+                consumer.accept(RangeValueMatcher.create(stateContainer, key, min, max));
+            } else {
+                throw new IllegalArgumentException("Invalid matcher: " + value);
             }
         });
     }
 
-    private static void addInputFluidStateMatchers(JsonObject propertiesContainer, EntropyRecipeBuilder builder) {
-        JsonObject properties = JSONUtils.getJsonObject(propertiesContainer, "properties", new JsonObject());
-
-        properties.entrySet().forEach(entry -> {
-            String key = entry.getKey();
-            JsonElement value = entry.getValue();
-
-            if (value == null) {
-                return;
-            }
-
-            if (value.isJsonPrimitive()) {
-                builder.addFluidStateMatcher(new SingleValueMatcher(key, value.getAsString()));
-            } else if (value.isJsonArray()) {
-                JsonArray array = value.getAsJsonArray();
-                List<String> list = new ArrayList<>();
-                for (JsonElement e : array) {
-                    list.add(e.getAsString());
-                }
-                builder.addFluidStateMatcher(new MultipleValuesMatcher(key, list));
-            } else if (value.isJsonObject() && value.getAsJsonObject().has("min")
-                    && value.getAsJsonObject().has("max")) {
-                String min = value.getAsJsonObject().get("min").getAsString();
-                String max = value.getAsJsonObject().get("max").getAsString();
-
-                builder.addFluidStateMatcher(new RangeValueMatcher(key, min, max));
-            }
-        });
-    }
-
-    private static void addOutputBlockStateAppliers(JsonObject propertiesContainer, EntropyRecipeBuilder builder) {
+    private static void parseStateAppliers(StateContainer<?, ?> stateContainer,
+            JsonObject propertiesContainer,
+            Consumer<StateApplier<?>> consumer) {
         JsonObject properties = JSONUtils.getJsonObject(propertiesContainer, "properties", new JsonObject());
 
         properties.entrySet().forEach(entry -> {
             String key = entry.getKey();
             String value = entry.getValue().getAsString();
 
-            builder.addBlockStateAppliers(new BlockStateApplier(key, value));
-        });
-    }
-
-    private static void addOutputFluidStateAppliers(JsonObject propertiesContainer, EntropyRecipeBuilder builder) {
-        JsonObject properties = JSONUtils.getJsonObject(propertiesContainer, "properties", new JsonObject());
-
-        properties.entrySet().forEach(entry -> {
-            String key = entry.getKey();
-            String value = entry.getValue().getAsString();
-
-            builder.addFluidStateAppliers(new FluidStateApplier(key, value));
+            consumer.accept(StateApplier.create(stateContainer, key, value));
         });
     }
 
