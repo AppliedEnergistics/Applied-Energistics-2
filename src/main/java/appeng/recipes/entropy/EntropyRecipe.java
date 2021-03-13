@@ -18,8 +18,8 @@
 
 package appeng.recipes.entropy;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -81,34 +81,33 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     @Nonnull
     private final List<ItemStack> drops;
 
-    public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock,
-            List<StateMatcher> inputBlockMatchers,
+    public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock, List<StateMatcher> inputBlockMatchers,
             Fluid inputFluid, List<StateMatcher> inputFluidMatchers, Block outputBlock,
             List<StateApplier<?>> outputBlockStateAppliers, boolean outputBlockKeep, Fluid outputFluid,
             List<StateApplier<?>> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
-        Preconditions.checkArgument(id != null);
-        Preconditions.checkArgument(mode != null);
-        Preconditions.checkArgument(drops == null || !drops.isEmpty(),
-                "drops needs to be either null or a non empty list");
+        Preconditions.checkArgument(inputBlock != null || inputFluid != null,
+                "One of inputBlock or inputFluid must not be null");
 
-        this.id = id;
-        this.mode = mode;
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.mode = Objects.requireNonNull(mode, "mode must not be null");
 
         this.inputBlock = inputBlock;
-        this.inputBlockMatchers = inputBlockMatchers;
+        this.inputBlockMatchers = Objects.requireNonNull(inputBlockMatchers, "inputBlockMatchers must be not null");
 
         this.inputFluid = inputFluid;
-        this.inputFluidMatchers = inputFluidMatchers;
+        this.inputFluidMatchers = Objects.requireNonNull(inputFluidMatchers, "inputFluidMatchers must be not null");
 
         this.outputBlock = outputBlock;
-        this.outputBlockStateAppliers = outputBlockStateAppliers;
+        this.outputBlockStateAppliers = Objects.requireNonNull(outputBlockStateAppliers,
+                "outputBlockStateAppliers must be not null");
         this.outputBlockKeep = outputBlockKeep;
 
         this.outputFluid = outputFluid;
-        this.outputFluidStateAppliers = outputFluidStateAppliers;
+        this.outputFluidStateAppliers = Objects.requireNonNull(outputFluidStateAppliers,
+                "outputFluidStateAppliers must be not null");
         this.outputFluidKeep = outputFluidKeep;
 
-        this.drops = drops != null ? drops : Collections.emptyList();
+        this.drops = Objects.requireNonNull(drops, "drops must not be null");
     }
 
     @Override

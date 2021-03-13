@@ -20,6 +20,7 @@ package appeng.recipes.entropy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,10 +40,9 @@ class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
     private final Set<T> propertyValues;
 
     public MultipleValuesMatcher(Property<T> property, List<String> propertyValues) {
-        this.property = property;
+        this.property = Objects.requireNonNull(property, "property must be not null");
         this.propertyValues = propertyValues.stream()
-                .map(name -> PropertyUtils.getRequiredPropertyValue(property, name))
-                .collect(Collectors.toSet());
+                .map(name -> PropertyUtils.getRequiredPropertyValue(property, name)).collect(Collectors.toSet());
     }
 
     @Override

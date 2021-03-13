@@ -255,8 +255,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         }
     }
 
-    private static void parseStateMatchers(StateContainer<?, ?> stateContainer,
-            JsonObject propertiesContainer,
+    private static void parseStateMatchers(StateContainer<?, ?> stateContainer, JsonObject propertiesContainer,
             Consumer<StateMatcher> consumer) {
         JsonObject properties = JSONUtils.getJsonObject(propertiesContainer, "properties", new JsonObject());
 
@@ -289,8 +288,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         });
     }
 
-    private static void parseStateAppliers(StateContainer<?, ?> stateContainer,
-            JsonObject propertiesContainer,
+    private static void parseStateAppliers(StateContainer<?, ?> stateContainer, JsonObject propertiesContainer,
             Consumer<StateApplier<?>> consumer) {
         JsonObject properties = JSONUtils.getJsonObject(propertiesContainer, "properties", new JsonObject());
 

@@ -154,7 +154,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         final Block block = blockState.getBlock();
         final FluidState fluidState = w.getFluidState(pos);
 
-        if (tryBoth || p.isCrouching()) {
+        if (tryBoth || p.isSneaking()) {
             EntropyRecipe coolRecipe = findRecipe(w, EntropyMode.COOL, blockState, fluidState);
             if (coolRecipe != null) {
                 this.extractAEPower(item, 1600, Actionable.MODULATE);
@@ -163,7 +163,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        if (tryBoth || !p.isCrouching()) {
+        if (tryBoth || !p.isSneaking()) {
             if (block instanceof TNTBlock) {
                 w.removeBlock(pos, false);
                 block.catchFire(w.getBlockState(pos), w, pos, side, p);

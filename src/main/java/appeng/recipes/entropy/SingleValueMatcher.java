@@ -18,6 +18,8 @@
 
 package appeng.recipes.entropy;
 
+import java.util.Objects;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
@@ -34,7 +36,7 @@ class SingleValueMatcher<T extends Comparable<T>> implements StateMatcher {
     private final T value;
 
     private SingleValueMatcher(Property<T> property, String value) {
-        this.property = property;
+        this.property = Objects.requireNonNull(property, "property must not be null");
         this.value = PropertyUtils.getRequiredPropertyValue(property, value);
     }
 

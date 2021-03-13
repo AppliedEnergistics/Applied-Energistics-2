@@ -18,6 +18,8 @@
 
 package appeng.recipes.entropy;
 
+import java.util.Objects;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
@@ -34,7 +36,7 @@ class RangeValueMatcher<T extends Comparable<T>> implements StateMatcher {
     private final T maxValue;
 
     private RangeValueMatcher(Property<T> property, String minValueName, String maxValueName) {
-        this.property = property;
+        this.property = Objects.requireNonNull(property, "property must not be null");
         this.minValue = PropertyUtils.getRequiredPropertyValue(property, minValueName);
         this.maxValue = PropertyUtils.getRequiredPropertyValue(property, maxValueName);
     }
