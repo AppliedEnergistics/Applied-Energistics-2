@@ -178,25 +178,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
         if (InteractionUtil.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
             if (Platform.isServer()) {
-                if (this.getSpin() > 3) {
-                    this.spin = 0;
-                }
-
-                switch (this.getSpin()) {
-                    case 0:
-                        this.spin = 1;
-                        break;
-                    case 1:
-                        this.spin = 3;
-                        break;
-                    case 2:
-                        this.spin = 0;
-                        break;
-                    case 3:
-                        this.spin = 2;
-                        break;
-                }
-
+                this.spin = (byte) (this.spin + 1 % 3);
                 this.getHost().markForUpdate();
                 this.saveChanges();
             }

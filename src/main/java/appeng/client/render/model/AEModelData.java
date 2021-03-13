@@ -20,6 +20,7 @@ public class AEModelData implements IModelData {
     public static final ModelProperty<Direction> UP = new ModelProperty<>();
     public static final ModelProperty<Direction> FORWARD = new ModelProperty<>();
     public static final ModelProperty<Boolean> CACHEABLE = new ModelProperty<>();
+    public static final ModelProperty<Byte> SPIN = new ModelProperty<>();
 
     private final Direction up;
     private final Direction forward;

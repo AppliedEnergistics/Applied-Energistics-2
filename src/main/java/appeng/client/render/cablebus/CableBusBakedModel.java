@@ -51,6 +51,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.client.render.model.AEModelData;
 
 public class CableBusBakedModel implements IBakedModel {
 
@@ -134,9 +135,11 @@ public class CableBusBakedModel implements IBakedModel {
 
                     List<BakedQuad> partQuads = bakedModel.getQuads(state, null, rand, partModelData);
 
+                    Direction spinDirection = getPartSpin(facing, partModelData);
+
                     // Rotate quads accordingly
                     QuadRotator rotator = new QuadRotator();
-                    partQuads = rotator.rotateQuads(partQuads, facing, Direction.UP);
+                    partQuads = rotator.rotateQuads(partQuads, facing, spinDirection);
 
                     quads.addAll(partQuads);
                 }
@@ -173,6 +176,44 @@ public class CableBusBakedModel implements IBakedModel {
         final AECableType secondType = sides.get(firstSide.getOpposite());
 
         return firstType == secondType && cableType == firstType && cableType == secondType;
+    }
+
+    private static Direction getPartSpin(Direction facing, IModelData partModelData) {
+        if (partModelData.hasProperty(AEModelData.SPIN)) {
+            byte spin = partModelData.getData(AEModelData.SPIN);
+            switch (facing) {
+                case UP:
+                    return spinAround(spin, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
+                case DOWN:
+                    return spinAround(spin, Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST);
+                case NORTH:
+                    return spinAround(spin, Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST);
+                case SOUTH:
+                    return spinAround(spin, Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST);
+                case WEST:
+                    return spinAround(spin, Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH);
+                case EAST:
+                    return spinAround(spin, Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH);
+            }
+
+        }
+        return Direction.UP;
+    }
+
+    private static Direction spinAround(byte index, Direction first, Direction second, Direction third,
+            Direction fourth) {
+        switch (index) {
+            case 0:
+                return first;
+            case 1:
+                return second;
+            case 2:
+                return third;
+            case 3:
+                return fourth;
+            default:
+                return first;
+        }
     }
 
     private void addCableQuads(CableBusRenderState renderState, List<BakedQuad> quadsOut) {

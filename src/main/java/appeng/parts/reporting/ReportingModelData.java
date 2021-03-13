@@ -23,8 +23,11 @@ import javax.annotation.Nullable;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
+import appeng.client.render.model.AEModelData;
+
 public class ReportingModelData implements IModelData {
-    public static final ModelProperty<Byte> SPIN = new ModelProperty<>();
+
+    public static final ModelProperty<Byte> SPIN = AEModelData.SPIN;
 
     private final Byte spin;
 
