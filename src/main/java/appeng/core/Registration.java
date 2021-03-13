@@ -219,6 +219,7 @@ import appeng.me.cache.TickManagerCache;
 import appeng.mixins.feature.ConfiguredFeaturesAccessor;
 import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
 import appeng.parts.automation.PlaneModelLoader;
+import appeng.recipes.entropy.EntropyRecipeSerializer;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.handlers.GrinderRecipeSerializer;
@@ -490,7 +491,8 @@ final class Registration {
 
         FacadeItem facadeItem = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
         r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE,
-                InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem));
+                InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem),
+                EntropyRecipeSerializer.INSTANCE);
     }
 
     public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {

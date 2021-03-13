@@ -1,0 +1,14 @@
+{
+  "type": "appliedenergistics2:entropy",
+  "mode": "cool",
+  "input": {
+    "block": {
+      "id": "minecraft:stone_bricks"
+    }
+  },
+  "output": {
+    "block": {
+      "id": "minecraft:cracked_stone_bricks"
+    }
+  }
+}
