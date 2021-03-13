@@ -37,6 +37,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.state.Property;
+import net.minecraft.state.StateHolder;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -70,11 +71,11 @@ public class EntropyRecipe implements IRecipe<IInventory> {
 
     @Nullable
     private final Block outputBlock;
-    private List<BlockStateApplier> outputBlockStateAppliers;
+    private final List<BlockStateApplier> outputBlockStateAppliers;
     private final boolean outputBlockKeep;
     @Nullable
     private final Fluid outputFluid;
-    private List<FluidStateApplier> outputFluidStateAppliers;
+    private final List<FluidStateApplier> outputFluidStateAppliers;
     private final boolean outputFluidKeep;
 
     @Nonnull
@@ -174,7 +175,6 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     }
 
     @Nullable
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public BlockState getOutputBlockState(BlockState originalBlockState) {
         if (this.getOutputBlock() == null) {
             return null;
@@ -183,10 +183,8 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         BlockState state = getOutputBlock().getDefaultState();
 
         if (this.outputBlockKeep) {
-            for (Property property : originalBlockState.getProperties()) {
-                if (state.hasProperty(property)) {
-                    state = state.with(property, originalBlockState.get(property));
-                }
+            for (Property<?> property : originalBlockState.getProperties()) {
+                state = copyProperty(originalBlockState, state, property);
             }
         }
 
@@ -207,7 +205,6 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     }
 
     @Nullable
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public FluidState getOutputFluidState(FluidState originalFluidState) {
         if (this.getOutputFluid() == null) {
             return null;
@@ -216,10 +213,8 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         FluidState state = getOutputFluid().getDefaultState();
 
         if (this.outputFluidKeep) {
-            for (Property property : originalFluidState.getProperties()) {
-                if (state.hasProperty(property)) {
-                    state = state.with(property, originalFluidState.get(property));
-                }
+            for (Property<?> property : originalFluidState.getProperties()) {
+                state = copyProperty(originalFluidState, state, property);
             }
         }
 
@@ -251,9 +246,9 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         boolean isValid = true;
 
         if (fluidState.getFluid() == this.getInputFluid()) {
-            isValid = this.inputFluidMatchers.stream().map(m -> {
+            isValid = this.inputFluidMatchers.stream().allMatch(m -> {
                 return m.matches(fluidState.getFluid().getStateContainer(), fluidState);
-            }).allMatch(Boolean::valueOf);
+            });
         }
 
         return isValid;
@@ -273,6 +268,18 @@ public class EntropyRecipe implements IRecipe<IInventory> {
 
     List<FluidStateApplier> getOutputFluidStateAppliers() {
         return outputFluidStateAppliers;
+    }
+
+    /**
+     * Copies a property from one stateholder to another (if that stateholder also has that property).
+     */
+    private static <T extends Comparable<T>, SH extends StateHolder<?, SH>> SH copyProperty(SH from, SH to,
+            Property<T> property) {
+        if (to.hasProperty(property)) {
+            return to.with(property, from.get(property));
+        } else {
+            return to;
+        }
     }
 
 }
