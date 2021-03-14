@@ -104,8 +104,6 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
         if (block instanceof SkyChestBlock) {
             this.world.addBlockEvent(this.pos, block, 1, this.numPlayersUsing);
             this.world.notifyNeighborsOfStateChange(this.pos, block);
-            // FIXME: Uhm, we are we doing this?
-            // this.world.notifyNeighborsOfStateChange(this.pos.down(), block);
         }
     }
 
