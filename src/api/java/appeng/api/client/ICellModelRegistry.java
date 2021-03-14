@@ -43,7 +43,7 @@ public interface ICellModelRegistry {
      * 
      * <p>
      * You are responsible for ensuring that the given model is actually loaded by the game. See
-     * {@see net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
+     * {@link net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
      * 
      * This method only maps an {@link Item} to a {@link ResourceLocation} which can be looked up from the
      * {@link ModelBakery}. No validation about missing models will be done.
@@ -54,7 +54,6 @@ public interface ICellModelRegistry {
      * 
      * @param item  The cell item
      * @param model The {@link ResourceLocation} representing the model.
-     * @return
      */
     void registerModel(@Nonnull Item item, @Nonnull ResourceLocation model);
 

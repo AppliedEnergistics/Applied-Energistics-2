@@ -29,52 +29,30 @@ public final class EnumCycler {
     private EnumCycler() {
     }
 
+    private static int mod(int x, int y) {
+        // Java's '%' is remainder, not mod - we want mod so we can cycle through negatives correctly.
+        int result = x % y;
+        return result < 0 ? result + y : result;
+    }
+
     public static <T extends Enum<T>> T rotateEnum(T ce, final boolean backwards, final EnumSet<T> validOptions) {
+        int direction = backwards ? -1 : 1;
+        T[] values = ce.getDeclaringClass().getEnumConstants();
+
         do {
-            if (backwards) {
-                ce = prevEnum(ce);
-            } else {
-                ce = next(ce);
-            }
+            // mod naturally cycles a changing integer on a range [0, N]
+            int pLoc = mod(ce.ordinal() + direction, values.length);
+            ce = values[pLoc];
         } while (!validOptions.contains(ce));
 
         return ce;
     }
 
-    /*
-     * Simple way to cycle an enum...
-     */
-    public static <T extends Enum<T>> T prevEnum(final T ce) {
-        T[] values = ce.getDeclaringClass().getEnumConstants();
-
-        int pLoc = ce.ordinal() - 1;
-        if (pLoc < 0) {
-            pLoc = values.length - 1;
-        }
-
-        if (pLoc < 0 || pLoc >= values.length) {
-            pLoc = 0;
-        }
-
-        return values[pLoc];
-    }
-
-    /*
-     * Simple way to cycle an enum...
-     */
     public static <T extends Enum<T>> T next(final T ce) {
-        T[] values = ce.getDeclaringClass().getEnumConstants();
-
-        int pLoc = ce.ordinal() + 1;
-        if (pLoc >= values.length) {
-            pLoc = 0;
-        }
-
-        if (pLoc < 0 || pLoc >= values.length) {
-            pLoc = 0;
-        }
-
-        return values[pLoc];
+        return rotateEnum(ce, false, EnumSet.allOf(ce.getDeclaringClass()));
     }
 
+    public static <T extends Enum<T>> T prev(final T ce) {
+        return rotateEnum(ce, true, EnumSet.allOf(ce.getDeclaringClass()));
+    }
 }

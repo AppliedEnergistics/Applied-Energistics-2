@@ -91,7 +91,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             this.grid = anchor.getActionableNode().getGrid();
         }
 
-        this.bindPlayerInventory(ip, 0, 222 - /* height of player inventory */82);
+        this.bindPlayerInventory(ip, 0, 0);
     }
 
     @Override

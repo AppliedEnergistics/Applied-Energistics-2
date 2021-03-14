@@ -19,6 +19,7 @@
 package appeng.client.gui.implementations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,28 +36,33 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
+import appeng.api.config.Settings;
+import appeng.api.config.TerminalStyle;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.InterfaceTerminalContainer;
+import appeng.container.slot.AppEngSlot;
+import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
 public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalContainer> {
-
-    private static final int LINES_ON_PAGE = 6;
 
     private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<>();
     private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
@@ -68,18 +74,37 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private boolean refreshList = false;
     private AETextField searchField;
 
+    // Bounding boxes of key areas in the UI texture.
+    private final List<Integer> HEADER_BBOX = Arrays.asList(0, 0, 195, 18);
+    private final List<Integer> INV_SLICE_BBOX = Arrays.asList(7, 87, 162, 18);
+    private final List<Integer> FOOTER_BBOX = Arrays.asList(0, 72, 195, 98);
+    private int numLines = 0;
+
+    // A version of blit that lets us pass a BBOX List rather than having lots of integer constants.
+    private void blit(MatrixStack matrixStack, int offsetX, int offsetY, List<Integer> bbox) {
+        blit(matrixStack, offsetX, offsetY, bbox.get(0), bbox.get(1), bbox.get(2), bbox.get(3));
+    }
+
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(container, playerInventory, title);
-        this.setScrollBar(new Scrollbar().setLeft(175).setTop(18).setHeight(106));
+        final Scrollbar scrollbar = new Scrollbar();
+        this.setScrollBar(scrollbar);
         this.xSize = 195;
         this.ySize = 222;
     }
 
     @Override
     public void init() {
-        super.init();
+        // Decide on number of rows.
+        TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
+        int maxLines = terminalStyle == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
+        this.numLines = (this.height - 115) / 18; // 97 (footer size) + 17 (header size) + ...1?
+        this.numLines = MathHelper.clamp(this.numLines, 3, maxLines);
+        // Render inventory in correct place.
+        this.ySize = 115 + this.numLines * 18; // 17 (header size) + 97 (footer size) + all the lines
 
+        super.init();
         this.searchField = new AETextField(this.font, this.guiLeft + 104, this.guiTop + 4, 65, 12);
         this.searchField.setEnableBackgroundDrawing(false);
         this.searchField.setMaxStringLength(25);
@@ -88,42 +113,64 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         this.searchField.setResponder(str -> this.refreshList());
         this.addListener(this.searchField);
         this.changeFocus(true);
+
+        // Add a terminalstyle button
+        int offset = this.guiTop + 8;
+        this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, terminalStyle,
+                this::toggleTerminalStyle));
+
+        // Reposition player inventory slots.
+        for (final Slot s : this.container.inventorySlots) {
+            if (s instanceof AppEngSlot) {
+                s.yPos = ((AppEngSlot) s).getY() + this.ySize - 82; // Start at the top of the inventory (-97) but below
+                                                                    // the title (+15)
+            }
+        }
+
+        // numLines may have changed, recalculate scroll bar.
+        this.resetScrollbar();
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
+        final int TEXT_X_OFFSET = 10;
+        final int INV_TEXT_Y_OFFSET = 3;
+        final int MAIN_TEXT_Y_OFFSET = 6;
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()).getString(), 8, 6,
                 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
-
-        final int ex = this.getScrollBar().getCurrentScroll();
 
         this.container.inventorySlots.removeIf(slot -> slot instanceof SlotDisconnected);
 
-        int offset = 17;
-        for (int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++) {
-            final Object lineObj = this.lines.get(ex + x);
-            if (lineObj instanceof ClientDCInternalInv) {
-                final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
-                for (int z = 0; z < inv.getInventory().getSlots(); z++) {
-                    this.container.inventorySlots.add(new SlotDisconnected(inv, z, z * 18 + 8, 1 + offset));
-                }
-            } else if (lineObj instanceof String) {
-                String name = (String) lineObj;
-                final int rows = this.byName.get(name).size();
-                if (rows > 1) {
-                    name = name + " (" + rows + ')';
-                }
+        final int scrollLevel = this.getScrollBar().getCurrentScroll();
+        int i = 0;
+        for (; i < this.numLines; ++i) {
+            if (scrollLevel + i < this.lines.size()) {
+                final Object lineObj = this.lines.get(scrollLevel + i);
+                if (lineObj instanceof ClientDCInternalInv) {
+                    // Note: We have to shift everything after the header up by 1 to avoid black line duplication.
+                    final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
+                    for (int z = 0; z < inv.getInventory().getSlots(); z++) {
+                        this.container.inventorySlots.add(new SlotDisconnected(inv, z, z * 18 + 8, (i + 1) * 18));
+                    }
+                } else if (lineObj instanceof String) {
+                    String name = (String) lineObj;
+                    final int rows = this.byName.get(name).size();
+                    if (rows > 1) {
+                        name = name + " (" + rows + ')';
+                    }
 
-                while (name.length() > 2 && this.font.getStringWidth(name) > 155) {
-                    name = name.substring(0, name.length() - 1);
-                }
+                    while (name.length() > 2 && this.font.getStringWidth(name) > 155) {
+                        name = name.substring(0, name.length() - 1);
+                    }
 
-                this.font.drawString(matrixStack, name, 10, 6 + offset, 4210752);
+                    this.font.drawString(matrixStack, name, TEXT_X_OFFSET, MAIN_TEXT_Y_OFFSET + 17 + i * 18, 4210752);
+                }
             }
-            offset += 18;
         }
+
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), TEXT_X_OFFSET,
+                INV_TEXT_Y_OFFSET + 17 + i * 18, 4210752);
     }
 
     @Override
@@ -140,23 +187,41 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
 
-        int offset = 17;
-        final int ex = this.getScrollBar().getCurrentScroll();
+        // Things get a bit tricky here with the white and black shading lines at the top and bottom
+        // of the scrollable area + whether or not the top or bottom rows are inventory or string rows.
+        // The string row texture doesn't (and shouldn't) include shading lines, but the
+        // inventory line texture should (incase they're joined together).
+        // Therefore to avoid an inventory row duplicating the shading lines at the bottom of the
+        // header or the top of the footer, we have to overlap them by 1 pixel.
+        // Then, to make sure the inventory rows and string rows are always the same size, we have to
+        // draw only 17 pixels of a string row iff it's at the top or bottom.
 
-        for (int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++) {
-            final Object lineObj = this.lines.get(ex + x);
-            if (lineObj instanceof ClientDCInternalInv) {
-                final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
-
-                RenderSystem.color4f(1, 1, 1, 1);
-                final int width = inv.getInventory().getSlots() * 18;
-                GuiUtils.drawTexturedModalRect(offsetX + 7, offsetY + offset, 7, 139, width, 18, getBlitOffset());
+        blit(matrixStack, offsetX, offsetY, HEADER_BBOX);
+        final int scrollLevel = this.getScrollBar().getCurrentScroll();
+        boolean isInvLine = false;
+        int i = 0;
+        for (; i < this.numLines; ++i) {
+            boolean firstLine = i == 0;
+            boolean lastLine = i == this.numLines - 1;
+            int firstAdj = firstLine ? 1 : 0;
+            int lastAdj = lastLine ? 1 : 0;
+            isInvLine = false;
+            if (scrollLevel + i < this.lines.size()) {
+                final Object lineObj = this.lines.get(scrollLevel + i);
+                isInvLine = lineObj instanceof ClientDCInternalInv;
             }
-            offset += 18;
+            blit(matrixStack, offsetX, offsetY + 17 + 18 * i + firstAdj, 0, 18, 195, 18 - firstAdj - lastAdj);
+            if (isInvLine && !lastLine) {
+                blit(matrixStack, offsetX + 7, offsetY + 17 + 18 * i, INV_SLICE_BBOX);
+            }
+        }
+        blit(matrixStack, offsetX, offsetY + 17 + 18 * i - 1, FOOTER_BBOX);
+        if (isInvLine) {
+            blit(matrixStack, offsetX + 7, offsetY + 17 + 18 * (i - 1), INV_SLICE_BBOX);
         }
 
+        // Draw search field.
         if (this.searchField != null) {
             this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
         }
@@ -292,7 +357,17 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             this.lines.addAll(clientInventories);
         }
 
-        this.getScrollBar().setRange(0, this.lines.size() - LINES_ON_PAGE, 2);
+        // lines may have changed - recalculate scroll bar.
+        this.resetScrollbar();
+    }
+
+    /**
+     * Should be called whenever this.lines.size() or this.numLines changes.
+     */
+    private void resetScrollbar() {
+        Scrollbar bar = this.getScrollBar();
+        bar.setLeft(175).setTop(18).setHeight(this.numLines * 18 - 2);
+        bar.setRange(0, this.lines.size() - this.numLines, 2);
     }
 
     private boolean itemStackMatchesSearchTerm(final ItemStack itemStack, final String searchTerm) {
@@ -347,6 +422,19 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         }
 
         return cache;
+    }
+
+    private void reinitialize() {
+        this.children.removeAll(this.buttons);
+        this.buttons.clear();
+        this.init();
+    }
+
+    private void toggleTerminalStyle(SettingToggleButton<TerminalStyle> btn, boolean backwards) {
+        TerminalStyle next = btn.getNextValue(backwards);
+        AEConfig.instance().setTerminalStyle(next);
+        btn.set(next);
+        this.reinitialize();
     }
 
     /**
