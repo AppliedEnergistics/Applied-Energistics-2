@@ -45,6 +45,7 @@ import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 import appeng.util.inv.AdaptorItemHandler;
 
@@ -107,7 +108,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         Hand hand = context.getHand();
-        if (player.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             final TileEntity te = context.getWorld().getTileEntity(context.getPos());
             IItemHandler upgrades = null;
 

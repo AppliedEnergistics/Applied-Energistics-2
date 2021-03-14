@@ -74,6 +74,7 @@ import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
 import appeng.parts.networking.CablePart;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class CableBusContainer extends CableBusStorage implements AEMultiTile, ICableBusContainer {
@@ -655,7 +656,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         if (p != null && p.part != null) {
             // forge sends activate even when sneaking in some cases (eg emtpy hand)
             // if sneaking try shift activate first.
-            if (player.isCrouching() && p.part.onShiftActivate(player, hand, pos)) {
+            if (InteractionUtil.isInAlternateUseMode(player) && p.part.onShiftActivate(player, hand, pos)) {
                 return true;
             }
             return p.part.onActivate(player, hand, pos);
@@ -667,7 +668,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     public boolean clicked(PlayerEntity player, Hand hand, Vector3d hitVec) {
         final SelectedPart p = this.selectPart(hitVec);
         if (p != null && p.part != null) {
-            if (player.isCrouching()) {
+            if (InteractionUtil.isInAlternateUseMode(player)) {
                 return p.part.onShiftClicked(player, hand, hitVec);
             } else {
                 return p.part.onClicked(player, hand, hitVec);

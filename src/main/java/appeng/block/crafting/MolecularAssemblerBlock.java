@@ -35,6 +35,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.MolecularAssemblerContainer;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
+import appeng.util.InteractionUtil;
 
 public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerTileEntity> {
 
@@ -60,7 +61,7 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
     public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
             BlockRayTraceResult hit) {
         final MolecularAssemblerTileEntity tg = this.getTileEntity(w, pos);
-        if (tg != null && !p.isCrouching()) {
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!tg.isRemote()) {
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));

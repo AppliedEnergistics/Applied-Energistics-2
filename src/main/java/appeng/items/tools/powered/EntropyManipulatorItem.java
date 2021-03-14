@@ -64,6 +64,7 @@ import appeng.hooks.IBlockTool;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockTool {
@@ -154,7 +155,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         final Block block = blockState.getBlock();
         final FluidState fluidState = w.getFluidState(pos);
 
-        if (tryBoth || p.isSneaking()) {
+        if (tryBoth || InteractionUtil.isInAlternateUseMode(p)) {
             EntropyRecipe coolRecipe = findRecipe(w, EntropyMode.COOL, blockState, fluidState);
             if (coolRecipe != null) {
                 this.extractAEPower(item, 1600, Actionable.MODULATE);
@@ -163,7 +164,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        if (tryBoth || !p.isSneaking()) {
+        if (tryBoth || !InteractionUtil.isInAlternateUseMode(p)) {
             if (block instanceof TNTBlock) {
                 w.removeBlock(pos, false);
                 block.catchFire(w.getBlockState(pos), w, pos, side, p);

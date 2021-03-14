@@ -33,6 +33,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.tile.misc.CellWorkbenchTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity> {
@@ -44,7 +45,7 @@ public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity>
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             return ActionResultType.PASS;
         }
 

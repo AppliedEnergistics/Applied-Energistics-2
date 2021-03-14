@@ -50,6 +50,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.IMouseWheelItem;
 import appeng.server.ServerHelper;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class ClientHelper extends ServerHelper {
@@ -220,7 +221,7 @@ public class ClientHelper extends ServerHelper {
 
         final Minecraft mc = Minecraft.getInstance();
         final PlayerEntity player = mc.player;
-        if (player.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             final boolean mainHand = player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
             final boolean offHand = player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 

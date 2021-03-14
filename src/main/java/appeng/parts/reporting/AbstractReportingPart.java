@@ -43,6 +43,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 /**
@@ -172,7 +173,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         final TileEntity te = this.getTile();
 
-        if (Platform.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
+        if (InteractionUtil.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
             if (Platform.isServer()) {
                 if (this.getSpin() > 3) {
                     this.spin = 0;

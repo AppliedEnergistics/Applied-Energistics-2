@@ -38,6 +38,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialAnchorContainer;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 /**
@@ -66,7 +67,7 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
     @Override
     public ActionResultType onActivated(final World worldIn, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             return ActionResultType.PASS;
         }
 

@@ -54,6 +54,7 @@ import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class EncodedPatternItem extends AEBaseItem {
@@ -83,7 +84,7 @@ public class EncodedPatternItem extends AEBaseItem {
     }
 
     private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {
-        if (player.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             if (Platform.isClient()) {
                 return false;
             }

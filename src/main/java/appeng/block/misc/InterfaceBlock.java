@@ -40,6 +40,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InterfaceContainer;
 import appeng.tile.misc.InterfaceTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
@@ -64,7 +65,7 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             return ActionResultType.PASS;
         }
 

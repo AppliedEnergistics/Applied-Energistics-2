@@ -77,6 +77,7 @@ import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
 import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -179,7 +180,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             }
         }
 
-        if (p != null && p.isCrouching()) {
+        if (p != null && InteractionUtil.isInAlternateUseMode(p)) {
             this.cycleColors(is, paintBall, 1);
         }
 

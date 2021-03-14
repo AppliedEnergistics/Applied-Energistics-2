@@ -49,6 +49,7 @@ import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.materials.MaterialType;
+import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
@@ -140,7 +141,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     private boolean disassembleDrive(final ItemStack stack, final World world, final PlayerEntity player) {
-        if (player.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             if (Platform.isClient()) {
                 return false;
             }

@@ -42,6 +42,7 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.PartModel;
+import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -90,7 +91,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
-            } else if (Platform.isWrench(player, eq, this.getLocation().getPos())
+            } else if (InteractionUtil.isWrench(player, eq, this.getLocation().getPos())
                     && (this.getDisplayed() == null || !this.getDisplayed().equals(eq))) {
                 // wrench it
                 return super.onPartActivate(player, hand, pos);

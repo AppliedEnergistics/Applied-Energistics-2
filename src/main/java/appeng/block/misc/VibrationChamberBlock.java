@@ -44,6 +44,7 @@ import appeng.container.implementations.VibrationChamberContainer;
 import appeng.core.AEConfig;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.misc.VibrationChamberTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChamberTileEntity> {
@@ -70,13 +71,13 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (player.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             return ActionResultType.PASS;
         }
 
         if (Platform.isServer()) {
             final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
-            if (tc != null && !player.isCrouching()) {
+            if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getFace()));
                 return ActionResultType.SUCCESS;

@@ -30,6 +30,7 @@ import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.AEBaseBlock;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
@@ -40,7 +41,7 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (!context.getPlayer().isCrouching() && Platform
+        if (!InteractionUtil.isInAlternateUseMode(context.getPlayer()) && Platform
                 .hasPermissions(new DimensionalCoord(context.getWorld(), context.getPos()), context.getPlayer())) {
 
             Block block = context.getWorld().getBlockState(context.getPos()).getBlock();
