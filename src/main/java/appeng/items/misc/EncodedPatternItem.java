@@ -83,7 +83,7 @@ public class EncodedPatternItem extends AEBaseItem {
     }
 
     private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {
-        if (player.isSneaking()) {
+        if (Platform.isEntityHoldingShift(player)) {
             if (Platform.isClient()) {
                 return false;
             }

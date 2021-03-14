@@ -179,7 +179,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         if (player != null && !player.getHeldItem(hand).isEmpty()) {
             heldItem = player.getHeldItem(hand);
 
-            if (Platform.isWrench(player, heldItem, pos) && player.isSneaking()) {
+            if (Platform.isWrench(player, heldItem, pos) && Platform.isEntityHoldingShift(player)) {
                 final BlockState blockState = world.getBlockState(pos);
                 final Block block = blockState.getBlock();
 
@@ -224,7 +224,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
                 final String name = this.getTranslationKey();
 
-                if (player.isSneaking()) {
+                if (Platform.isEntityHoldingShift(player)) {
                     final CompoundNBT data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
                     if (data != null) {
                         memoryCard.setMemoryCardContents(heldItem, name, data);

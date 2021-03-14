@@ -56,7 +56,7 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isSneaking()) {
+        if (Platform.isEntityHoldingShift(p)) {
             return ActionResultType.PASS;
         }
 

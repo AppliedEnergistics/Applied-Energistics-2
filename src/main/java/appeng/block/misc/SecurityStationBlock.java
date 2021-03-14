@@ -38,6 +38,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.tile.misc.SecurityStationTileEntity;
+import appeng.util.Platform;
 
 public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEntity> {
 
@@ -63,7 +64,7 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isSneaking()) {
+        if (Platform.isEntityHoldingShift(p)) {
             return ActionResultType.PASS;
         }
 

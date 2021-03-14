@@ -40,6 +40,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.ChestContainer;
 import appeng.core.localization.PlayerMessages;
 import appeng.tile.storage.ChestTileEntity;
+import appeng.util.Platform;
 
 public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
 
@@ -75,7 +76,7 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final ChestTileEntity tg = this.getTileEntity(w, pos);
-        if (tg != null && !p.isSneaking()) {
+        if (tg != null && !Platform.isEntityHoldingShift(p)) {
             if (w.isRemote()) {
                 return ActionResultType.SUCCESS;
             }

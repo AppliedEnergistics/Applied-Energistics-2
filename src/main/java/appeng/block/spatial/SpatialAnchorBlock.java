@@ -66,7 +66,7 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
     @Override
     public ActionResultType onActivated(final World worldIn, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isSneaking()) {
+        if (Platform.isEntityHoldingShift(p)) {
             return ActionResultType.PASS;
         }
 

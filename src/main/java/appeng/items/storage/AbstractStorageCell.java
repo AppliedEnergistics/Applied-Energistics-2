@@ -140,11 +140,11 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     private boolean disassembleDrive(final ItemStack stack, final World world, final PlayerEntity player) {
-        if (player.isSneaking()) {
-            if (Platform.isClient()) {
-                return false;
-            }
+        if (Platform.isClient()) {
+            return false;
+        }
 
+        if (Platform.isEntityHoldingShift(player)) {
             final PlayerInventory playerInventory = player.inventory;
             final IMEInventoryHandler inv = Api.instance().registries().cell().getCellInventory(stack, null,
                     this.getChannel());

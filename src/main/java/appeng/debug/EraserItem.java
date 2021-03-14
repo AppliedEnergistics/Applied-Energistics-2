@@ -35,6 +35,7 @@ import net.minecraft.world.World;
 
 import appeng.core.AELog;
 import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 
 public class EraserItem extends AEBaseItem {
 
@@ -61,7 +62,7 @@ public class EraserItem extends AEBaseItem {
         }
 
         final Block state = world.getBlockState(pos).getBlock();
-        final boolean bulk = player.isSneaking();
+        final boolean bulk = Platform.isEntityHoldingShift(player);
         final Queue<BlockPos> next = new ArrayDeque<>();
         final Set<BlockPos> closed = new HashSet<>();
         final Set<Block> commonBlocks = this.getCommonBlocks();

@@ -757,6 +757,19 @@ public class Platform {
         return pos;
     }
 
+    /**
+     * Using {@link Entity#isSneaking()} to determine if a player is holding shift.
+     * <p>
+     * {@link Entity#isCrouching()} just indicates that the player is in a crouching pose. Which will also be true when
+     * the player is in a 1.5 block high space and cannot stand up properly.
+     * 
+     * @param player
+     * @return
+     */
+    public static boolean isEntityHoldingShift(Entity player) {
+        return player.isSneaking();
+    }
+
     public static <T extends IAEStack<T>> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> cell,
             final T request, final IActionSource src) {
         return poweredExtraction(energy, cell, request, src, Actionable.MODULATE);

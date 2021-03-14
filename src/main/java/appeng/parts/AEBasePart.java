@@ -414,7 +414,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
             final String name = is.getTranslationKey();
 
-            if (player.isSneaking()) {
+            if (Platform.isEntityHoldingShift(player)) {
                 final CompoundNBT data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
                 if (data != null) {
                     memoryCard.setMemoryCardContents(memCardIS, name, data);

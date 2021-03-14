@@ -220,7 +220,7 @@ public class ClientHelper extends ServerHelper {
 
         final Minecraft mc = Minecraft.getInstance();
         final PlayerEntity player = mc.player;
-        if (player.isSneaking()) {
+        if (Platform.isEntityHoldingShift(player)) {
             final boolean mainHand = player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
             final boolean offHand = player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 

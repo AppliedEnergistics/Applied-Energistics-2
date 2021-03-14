@@ -46,6 +46,7 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 
 public class ReplicatorCardItem extends AEBaseItem {
 
@@ -94,7 +95,7 @@ public class ReplicatorCardItem extends AEBaseItem {
         int y = pos.getY();
         int z = pos.getZ();
 
-        if (player.isSneaking()) {
+        if (Platform.isEntityHoldingShift(player)) {
             if (world.getTileEntity(pos) instanceof IGridHost) {
                 final CompoundNBT tag = player.getHeldItem(hand).getOrCreateTag();
                 tag.putInt("x", x);

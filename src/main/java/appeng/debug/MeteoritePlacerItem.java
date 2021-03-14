@@ -57,7 +57,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
             return ActionResult.resultPass(player.getHeldItem(hand));
         }
 
-        if (player.isSneaking()) {
+        if (Platform.isEntityHoldingShift(player)) {
             final ItemStack itemStack = player.getHeldItem(hand);
             final CompoundNBT tag = itemStack.getOrCreateTag();
 

@@ -75,7 +75,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isSneaking()) {
+        if (Platform.isEntityHoldingShift(p)) {
             return ActionResultType.PASS;
         }
 

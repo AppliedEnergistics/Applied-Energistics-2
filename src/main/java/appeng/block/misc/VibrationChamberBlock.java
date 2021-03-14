@@ -70,13 +70,13 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (player.isSneaking()) {
+        if (Platform.isEntityHoldingShift(player)) {
             return ActionResultType.PASS;
         }
 
         if (Platform.isServer()) {
             final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
-            if (tc != null && !player.isSneaking()) {
+            if (tc != null && !Platform.isEntityHoldingShift(player)) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getFace()));
                 return ActionResultType.SUCCESS;

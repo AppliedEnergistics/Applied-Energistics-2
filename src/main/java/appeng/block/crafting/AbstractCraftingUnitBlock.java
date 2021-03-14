@@ -38,6 +38,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CraftingCPUContainer;
 import appeng.tile.crafting.CraftingTileEntity;
+import appeng.util.Platform;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> extends AEBaseTileBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
@@ -96,7 +97,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
             BlockRayTraceResult hit) {
         final CraftingTileEntity tg = this.getTileEntity(w, pos);
 
-        if (tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive()) {
+        if (tg != null && !Platform.isEntityHoldingShift(p) && tg.isFormed() && tg.isActive()) {
             if (!w.isRemote()) {
                 ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));

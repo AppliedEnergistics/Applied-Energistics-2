@@ -40,7 +40,7 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (!context.getPlayer().isSneaking() && Platform
+        if (!Platform.isEntityHoldingShift(context.getPlayer()) && Platform
                 .hasPermissions(new DimensionalCoord(context.getWorld(), context.getPos()), context.getPlayer())) {
 
             Block block = context.getWorld().getBlockState(context.getPos()).getBlock();

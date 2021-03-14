@@ -90,7 +90,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
             if (hand.isEmpty()) {
                 this.is = ItemStack.EMPTY;
 
-                if (player.isSneaking()) {
+                if (Platform.isEntityHoldingShift(player)) {
                     this.size--;
                 } else {
                     this.size++;
