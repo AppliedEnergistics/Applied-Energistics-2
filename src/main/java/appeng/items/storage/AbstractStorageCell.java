@@ -140,7 +140,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     private boolean disassembleDrive(final ItemStack stack, final World world, final PlayerEntity player) {
-        if (player.isCrouching()) {
+        if (player.isSneaking()) {
             if (Platform.isClient()) {
                 return false;
             }

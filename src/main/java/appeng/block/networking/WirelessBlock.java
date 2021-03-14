@@ -88,7 +88,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
             BlockRayTraceResult hit) {
         final WirelessTileEntity tg = this.getTileEntity(w, pos);
 
-        if (tg != null && !player.isCrouching()) {
+        if (tg != null && !player.isSneaking()) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(WirelessContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));

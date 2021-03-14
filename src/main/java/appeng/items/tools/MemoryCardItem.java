@@ -166,7 +166,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
-        if (context.getPlayer().isCrouching()) {
+        if (context.getPlayer().isSneaking()) {
             if (!context.getPlayer().world.isRemote) {
                 this.clearCard(context.getPlayer(), context.getWorld(), context.getHand());
             }
@@ -178,7 +178,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World w, PlayerEntity player, Hand hand) {
-        if (player.isCrouching()) {
+        if (player.isSneaking()) {
             if (!w.isRemote) {
                 this.clearCard(player, w, hand);
             }

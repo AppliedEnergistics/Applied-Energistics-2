@@ -64,7 +64,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (player.isCrouching()) {
+        if (player.isSneaking()) {
             return ActionResultType.PASS;
         }
 

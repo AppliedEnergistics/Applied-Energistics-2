@@ -73,7 +73,7 @@ public class DebugCardItem extends AEBaseItem {
             return ActionResultType.PASS;
         }
 
-        if (player.isCrouching()) {
+        if (player.isSneaking()) {
             int grids = 0;
             int totalNodes = 0;
 

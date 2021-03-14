@@ -179,7 +179,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             }
         }
 
-        if (p != null && p.isCrouching()) {
+        if (p != null && p.isSneaking()) {
             this.cycleColors(is, paintBall, 1);
         }
 

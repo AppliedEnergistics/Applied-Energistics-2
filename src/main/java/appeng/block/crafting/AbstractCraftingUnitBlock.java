@@ -96,7 +96,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
             BlockRayTraceResult hit) {
         final CraftingTileEntity tg = this.getTileEntity(w, pos);
 
-        if (tg != null && !p.isCrouching() && tg.isFormed() && tg.isActive()) {
+        if (tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive()) {
             if (!w.isRemote()) {
                 ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));

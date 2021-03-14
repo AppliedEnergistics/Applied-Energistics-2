@@ -45,13 +45,13 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (player.isCrouching()) {
+        if (player.isSneaking()) {
             return ActionResultType.PASS;
         }
 
         if (Platform.isServer()) {
             final CondenserTileEntity tc = this.getTileEntity(w, pos);
-            if (tc != null && !player.isCrouching()) {
+            if (tc != null && !player.isSneaking()) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getFace()));
                 return ActionResultType.SUCCESS;

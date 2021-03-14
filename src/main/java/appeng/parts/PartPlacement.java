@@ -85,7 +85,7 @@ public class PartPlacement {
         final BlockRayTraceResult mop = world.rayTraceBlocks(rtc);
         BlockItemUseContext useContext = new BlockItemUseContext(new ItemUseContext(player, hand, mop));
 
-        if (!held.isEmpty() && Platform.isWrench(player, held, pos) && player.isCrouching()) {
+        if (!held.isEmpty() && Platform.isWrench(player, held, pos) && player.isSneaking()) {
             if (!Platform.hasPermissions(new DimensionalCoord(world, pos), player)) {
                 return ActionResultType.FAIL;
             }
@@ -179,7 +179,7 @@ public class PartPlacement {
         }
 
         if (held.isEmpty()) {
-            if (host != null && player.isCrouching() && world.isAirBlock(pos)) {
+            if (host != null && player.isSneaking() && world.isAirBlock(pos)) {
                 if (mop.getType() == RayTraceResult.Type.BLOCK) {
                     Vector3d hitVec = mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(),
                             -mop.getPos().getZ());
@@ -286,7 +286,7 @@ public class PartPlacement {
                         mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
 
                 if (sp.part != null) {
-                    if (!player.isCrouching() && sp.part.onActivate(player, hand, mop.getHitVec())) {
+                    if (!player.isSneaking() && sp.part.onActivate(player, hand, mop.getHitVec())) {
                         return ActionResultType.FAIL;
                     }
                 }
@@ -383,7 +383,7 @@ public class PartPlacement {
                 boolean supportedItem = items.memoryCard().isSameAs(held);
                 supportedItem |= items.colorApplicator().isSameAs(held);
 
-                if (event.getPlayer().isCrouching() && !held.isEmpty() && supportedItem) {
+                if (event.getPlayer().isSneaking() && !held.isEmpty() && supportedItem) {
                     NetworkHandler.instance().sendToServer(new ClickPacket(event.getHand()));
                 }
             }

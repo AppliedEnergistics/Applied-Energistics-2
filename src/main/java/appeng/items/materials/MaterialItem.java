@@ -107,7 +107,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         Hand hand = context.getHand();
-        if (player.isCrouching()) {
+        if (player.isSneaking()) {
             final TileEntity te = context.getWorld().getTileEntity(context.getPos());
             IItemHandler upgrades = null;
 

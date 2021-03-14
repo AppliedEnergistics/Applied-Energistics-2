@@ -96,7 +96,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             if (part.part != null || part.facade != null) {
                 if (part.part instanceof INetworkToolAgent && !((INetworkToolAgent) part.part).showNetworkInfo(mop)) {
                     return ActionResultType.FAIL;
-                } else if (context.getPlayer().isCrouching()) {
+                } else if (context.getPlayer().isSneaking()) {
                     return ActionResultType.PASS;
                 }
             }
@@ -128,7 +128,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         }
 
         final BlockState bs = w.getBlockState(pos);
-        if (!p.isCrouching()) {
+        if (!p.isSneaking()) {
             final TileEntity te = w.getTileEntity(pos);
             if (!(te instanceof IGridHost)) {
                 if (bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
@@ -139,7 +139,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             }
         }
 
-        if (!p.isCrouching()) {
+        if (!p.isSneaking()) {
             if (p.openContainer instanceof AEBaseContainer) {
                 return true;
             }

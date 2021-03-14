@@ -52,7 +52,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        if (p.isCrouching()) {
+        if (p.isSneaking()) {
             this.encode(p.getHeldItem(hand), p);
             p.swingArm(hand);
             return ActionResult.resultSuccess(p.getHeldItem(hand));
@@ -64,7 +64,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     @Override
     public ActionResultType itemInteractionForEntity(ItemStack is, final PlayerEntity player, final LivingEntity target,
             final Hand hand) {
-        if (target instanceof PlayerEntity && !player.isCrouching()) {
+        if (target instanceof PlayerEntity && !player.isSneaking()) {
             if (player.isCreative()) {
                 is = player.getHeldItem(hand);
             }

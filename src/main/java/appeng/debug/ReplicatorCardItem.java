@@ -94,7 +94,7 @@ public class ReplicatorCardItem extends AEBaseItem {
         int y = pos.getY();
         int z = pos.getZ();
 
-        if (player.isCrouching()) {
+        if (player.isSneaking()) {
             if (world.getTileEntity(pos) instanceof IGridHost) {
                 final CompoundNBT tag = player.getHeldItem(hand).getOrCreateTag();
                 tag.putInt("x", x);

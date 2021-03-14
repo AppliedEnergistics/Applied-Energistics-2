@@ -45,7 +45,7 @@ public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntit
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+        if (p.isSneaking()) {
             return ActionResultType.PASS;
         }
 

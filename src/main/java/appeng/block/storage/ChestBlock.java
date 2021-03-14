@@ -75,7 +75,7 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final ChestTileEntity tg = this.getTileEntity(w, pos);
-        if (tg != null && !p.isCrouching()) {
+        if (tg != null && !p.isSneaking()) {
             if (w.isRemote()) {
                 return ActionResultType.SUCCESS;
             }

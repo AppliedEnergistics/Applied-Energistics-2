@@ -51,7 +51,7 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (!p.isCrouching()) {
+        if (!p.isSneaking()) {
             final InscriberTileEntity tg = this.getTileEntity(w, pos);
             if (tg != null) {
                 if (!tg.isRemote()) {
