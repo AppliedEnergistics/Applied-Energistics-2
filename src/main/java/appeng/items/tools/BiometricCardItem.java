@@ -44,7 +44,7 @@ import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.ISecurityRegistry;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     public BiometricCardItem(Properties properties) {
@@ -53,7 +53,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        if (Platform.isEntityHoldingShift(p)) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             this.encode(p.getHeldItem(hand), p);
             p.swingArm(hand);
             return ActionResult.resultSuccess(p.getHeldItem(hand));
@@ -65,7 +65,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     @Override
     public ActionResultType itemInteractionForEntity(ItemStack is, final PlayerEntity player, final LivingEntity target,
             final Hand hand) {
-        if (target instanceof PlayerEntity && !Platform.isEntityHoldingShift(player)) {
+        if (target instanceof PlayerEntity && !InteractionUtil.isInAlternateUseMode(player)) {
             if (player.isCreative()) {
                 is = player.getHeldItem(hand);
             }

@@ -32,6 +32,7 @@ import net.minecraft.util.text.StringTextComponent;
 
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickableTileEntity {
@@ -90,7 +91,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
             if (hand.isEmpty()) {
                 this.is = ItemStack.EMPTY;
 
-                if (Platform.isEntityHoldingShift(player)) {
+                if (InteractionUtil.isInAlternateUseMode(player)) {
                     this.size--;
                 } else {
                     this.size++;

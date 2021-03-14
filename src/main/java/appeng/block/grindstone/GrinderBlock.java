@@ -34,7 +34,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.GrinderContainer;
 import appeng.tile.grindstone.GrinderTileEntity;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
 
@@ -46,7 +46,7 @@ public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final GrinderTileEntity tg = this.getTileEntity(w, pos);
-        if (tg != null && !Platform.isEntityHoldingShift(p)) {
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (p instanceof ServerPlayerEntity) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));

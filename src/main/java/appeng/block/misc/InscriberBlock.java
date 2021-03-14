@@ -35,7 +35,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InscriberContainer;
 import appeng.tile.misc.InscriberTileEntity;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
 
@@ -52,7 +52,7 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (!Platform.isEntityHoldingShift(p)) {
+        if (!InteractionUtil.isInAlternateUseMode(p)) {
             final InscriberTileEntity tg = this.getTileEntity(w, pos);
             if (tg != null) {
                 if (!tg.isRemote()) {

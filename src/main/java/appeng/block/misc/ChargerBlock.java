@@ -48,6 +48,7 @@ import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.tile.misc.ChargerTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
@@ -64,7 +65,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (Platform.isEntityHoldingShift(player)) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             return ActionResultType.PASS;
         }
 

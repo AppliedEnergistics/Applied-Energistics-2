@@ -35,6 +35,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.tile.FluidInterfaceTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntity> {
@@ -45,7 +46,7 @@ public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntit
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (Platform.isEntityHoldingShift(p)) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             return ActionResultType.PASS;
         }
 

@@ -53,6 +53,7 @@ import appeng.tile.AEBaseInvTileEntity;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.networking.CableBusTileEntity;
 import appeng.tile.storage.SkyChestTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -179,7 +180,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         if (player != null && !player.getHeldItem(hand).isEmpty()) {
             heldItem = player.getHeldItem(hand);
 
-            if (Platform.isWrench(player, heldItem, pos) && Platform.isEntityHoldingShift(player)) {
+            if (InteractionUtil.isWrench(player, heldItem, pos) && InteractionUtil.isInAlternateUseMode(player)) {
                 final BlockState blockState = world.getBlockState(pos);
                 final Block block = blockState.getBlock();
 
@@ -224,7 +225,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
                 final String name = this.getTranslationKey();
 
-                if (Platform.isEntityHoldingShift(player)) {
+                if (InteractionUtil.isInAlternateUseMode(player)) {
                     final CompoundNBT data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
                     if (data != null) {
                         memoryCard.setMemoryCardContents(heldItem, name, data);

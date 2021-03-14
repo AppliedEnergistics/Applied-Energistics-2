@@ -36,6 +36,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialIOPortContainer;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity> {
@@ -56,7 +57,7 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (Platform.isEntityHoldingShift(p)) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             return ActionResultType.PASS;
         }
 

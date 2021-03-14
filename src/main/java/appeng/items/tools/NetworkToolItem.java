@@ -53,6 +53,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
@@ -96,7 +97,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             if (part.part != null || part.facade != null) {
                 if (part.part instanceof INetworkToolAgent && !((INetworkToolAgent) part.part).showNetworkInfo(mop)) {
                     return ActionResultType.FAIL;
-                } else if (Platform.isEntityHoldingShift(context.getPlayer())) {
+                } else if (InteractionUtil.isInAlternateUseMode(context.getPlayer())) {
                     return ActionResultType.PASS;
                 }
             }
@@ -128,7 +129,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         }
 
         final BlockState bs = w.getBlockState(pos);
-        if (!Platform.isEntityHoldingShift(p)) {
+        if (!InteractionUtil.isInAlternateUseMode(p)) {
             final TileEntity te = w.getTileEntity(pos);
             if (!(te instanceof IGridHost)) {
                 if (bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
@@ -139,7 +140,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             }
         }
 
-        if (!Platform.isEntityHoldingShift(p)) {
+        if (!InteractionUtil.isInAlternateUseMode(p)) {
             if (p.openContainer instanceof AEBaseContainer) {
                 return true;
             }

@@ -79,6 +79,7 @@ import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
@@ -142,7 +143,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                             return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
                         }
 
-                        final LookDirection dir = Platform.getPlayerRay(p, 32);
+                        final LookDirection dir = InteractionUtil.getPlayerRay(p, 32);
 
                         final Vector3d rayFrom = dir.getA();
                         final Vector3d rayTo = dir.getB();

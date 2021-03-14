@@ -34,6 +34,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.DriveContainer;
 import appeng.tile.storage.DriveTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
@@ -45,7 +46,7 @@ public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (Platform.isEntityHoldingShift(p)) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             return ActionResultType.PASS;
         }
 

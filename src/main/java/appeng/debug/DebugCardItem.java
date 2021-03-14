@@ -51,7 +51,7 @@ import appeng.me.GridNode;
 import appeng.me.cache.TickManagerCache;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.tile.networking.ControllerTileEntity;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 public class DebugCardItem extends AEBaseItem {
 
@@ -74,7 +74,7 @@ public class DebugCardItem extends AEBaseItem {
             return ActionResultType.PASS;
         }
 
-        if (Platform.isEntityHoldingShift(player)) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             int grids = 0;
             int totalNodes = 0;
 

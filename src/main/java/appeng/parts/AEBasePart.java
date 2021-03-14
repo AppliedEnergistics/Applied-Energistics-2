@@ -75,6 +75,7 @@ import appeng.me.helpers.IGridProxyable;
 import appeng.parts.automation.LevelEmitterPart;
 import appeng.parts.networking.CablePart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -414,7 +415,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
             final String name = is.getTranslationKey();
 
-            if (Platform.isEntityHoldingShift(player)) {
+            if (InteractionUtil.isInAlternateUseMode(player)) {
                 final CompoundNBT data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
                 if (data != null) {
                     memoryCard.setMemoryCardContents(memCardIS, name, data);

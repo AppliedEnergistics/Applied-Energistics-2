@@ -43,6 +43,7 @@ import appeng.container.implementations.QNBContainer;
 import appeng.core.AppEng;
 import appeng.helpers.AEMaterials;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class QuantumLinkChamberBlock extends QuantumBaseBlock {
@@ -75,7 +76,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (Platform.isEntityHoldingShift(p)) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             return ActionResultType.PASS;
         }
 

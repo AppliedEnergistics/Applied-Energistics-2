@@ -37,6 +37,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.MeteoritePlacer;
@@ -57,7 +58,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
             return ActionResult.resultPass(player.getHeldItem(hand));
         }
 
-        if (Platform.isEntityHoldingShift(player)) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             final ItemStack itemStack = player.getHeldItem(hand);
             final CompoundNBT tag = itemStack.getOrCreateTag();
 

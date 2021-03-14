@@ -45,6 +45,7 @@ import appeng.api.util.AEColor;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
@@ -166,7 +167,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
-        if (Platform.isEntityHoldingShift(context.getPlayer())) {
+        if (InteractionUtil.isInAlternateUseMode(context.getPlayer())) {
             if (!context.getPlayer().world.isRemote) {
                 this.clearCard(context.getPlayer(), context.getWorld(), context.getHand());
             }
@@ -178,7 +179,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World w, PlayerEntity player, Hand hand) {
-        if (Platform.isEntityHoldingShift(player)) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             if (!w.isRemote) {
                 this.clearCard(player, w, hand);
             }

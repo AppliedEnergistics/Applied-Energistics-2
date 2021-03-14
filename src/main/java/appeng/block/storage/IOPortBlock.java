@@ -36,6 +36,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.IOPortContainer;
 import appeng.tile.storage.IOPortTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
@@ -56,7 +57,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (Platform.isEntityHoldingShift(p)) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             return ActionResultType.PASS;
         }
 
