@@ -26,8 +26,8 @@ import net.minecraft.network.PacketBuffer;
 import appeng.api.util.AEColor;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.hooks.TickHandler;
-import appeng.hooks.TickHandler.PlayerColor;
+import appeng.hooks.ticking.PlayerColor;
+import appeng.hooks.ticking.TickHandler;
 
 public class PaintedEntityPacket extends BasePacket {
 

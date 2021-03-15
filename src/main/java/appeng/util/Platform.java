@@ -106,7 +106,7 @@ import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;

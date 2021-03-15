@@ -42,7 +42,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.settings.TickRates;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.Connections;

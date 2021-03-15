@@ -66,7 +66,7 @@ import appeng.entity.GrowingCrystalEntity;
 import appeng.entity.SingularityEntity;
 import appeng.entity.TinyTNTPrimedEntity;
 import appeng.entity.TinyTNTPrimedRenderer;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.integration.Integrations;
 import appeng.parts.PartPlacement;
 import appeng.server.ServerHelper;
