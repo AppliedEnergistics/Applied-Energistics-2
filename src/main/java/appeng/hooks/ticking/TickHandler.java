@@ -49,6 +49,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.DistExecutor.SafeRunnable;
+import net.minecraftforge.fml.LogicalSide;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.CableRenderMode;
@@ -71,7 +72,8 @@ public class TickHandler {
     private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
     private final Multimap<IWorld, CraftingJob> craftingJobs = LinkedListMultimap.create();
     private final Map<IWorld, Queue<IWorldCallable<?>>> callQueue = new HashMap<>();
-    private final HandlerRep server = new HandlerRep();
+    private final ServerTileRepo tiles = new ServerTileRepo();
+    private final ServerGridRepo grids = new ServerGridRepo();
     private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
     private final Map<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
     private CableRenderMode crm = CableRenderMode.STANDARD;
@@ -141,76 +143,63 @@ public class TickHandler {
     public void addInit(final AEBaseTileEntity tile) {
         // for no there is no reason to care about this on the client...
         if (!tile.getWorld().isRemote()) {
-            this.getRepo().addTile(tile);
+            this.tiles.addTile(tile);
         }
-    }
-
-    private HandlerRep getRepo() {
-        if (Platform.isClient()) {
-            throw new IllegalAccessError("Only supported on the server");
-        }
-
-        return this.server;
     }
 
     public void addNetwork(final Grid grid) {
         // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
-            this.getRepo().addNetwork(grid);
-        }
+        Platform.assertServerThread();
+        this.grids.addNetwork(grid);
     }
 
     public void removeNetwork(final Grid grid) {
         // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
-            this.getRepo().removeNetwork(grid);
-        }
+        Platform.assertServerThread();
+        this.grids.removeNetwork(grid);
     }
 
     public Iterable<Grid> getGridList() {
-        return this.getRepo().getNetworks();
+        Platform.assertServerThread();
+        return this.grids.getNetworks();
     }
 
     public void shutdown() {
-        this.getRepo().clear();
+        Platform.assertServerThread();
+        this.tiles.clear();
+        this.grids.clear();
     }
 
     /**
-     * Handle a chunk unload.
-     * 
-     * @param ev
+     * When a chunk unloads (on the server), remove any pending initialization callbacks for tile-entities in that
+     * chunk.
      */
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
-        // for no there is no reason to care about this on the client...
         if (!ev.getWorld().isRemote()) {
-            this.getRepo().getTiles(ev.getWorld()).remove(ev.getChunk().getPos().asLong());
+            this.tiles.removeWorldChunk(ev.getWorld(), ev.getChunk().getPos().asLong());
         }
     }
 
     /**
      * Handle a newly loaded world and setup defaults when necessary.
-     * 
-     * @param ev
      */
     public void onLoadWorld(final WorldEvent.Load ev) {
         // for no there is no reason to care about this on the client...
         if (!ev.getWorld().isRemote()) {
-            this.getRepo().addWorld(ev.getWorld());
+            this.tiles.addWorld(ev.getWorld());
         }
     }
 
     /**
      * Handle a world unload and tear down related data structures.
-     * 
-     * @param ev
      */
     public void onUnloadWorld(final WorldEvent.Unload ev) {
         // for no there is no reason to care about this on the client...
         if (!ev.getWorld().isRemote()) {
             final List<IGridNode> toDestroy = new ArrayList<>();
 
-            this.getRepo().updateNetworks();
-            for (final Grid g : this.getRepo().getNetworks()) {
+            this.grids.updateNetworks();
+            for (final Grid g : this.grids.getNetworks()) {
                 for (final IGridNode n : g.getNodes()) {
                     if (n.getWorld() == ev.getWorld()) {
                         toDestroy.add(n);
@@ -222,21 +211,20 @@ public class TickHandler {
                 n.destroy();
             }
 
-            this.getRepo().removeWorld(ev.getWorld());
+            this.tiles.removeWorld(ev.getWorld());
             this.callQueue.remove(ev.getWorld());
         }
     }
 
     /**
      * Clientside ticking similar to the global server tick.
-     * 
-     * @param ev
      */
     public void onClientTick(final ClientTickEvent ev) {
         if (ev.phase == Phase.START) {
             this.tickColors(this.cliPlayerColors);
             final CableRenderMode currentMode = Api.instance().partHelper().getCableRenderMode();
 
+            // Handle changes to the cable-rendering mode
             if (currentMode != this.crm) {
                 this.crm = currentMode;
                 AppEng.proxy.triggerUpdates();
@@ -248,34 +236,35 @@ public class TickHandler {
      * Tick a single {@link World}
      * 
      * This can happen multiple times per world, but each world should only be ticked once per minecraft tick.
-     * 
-     * @param ev
      */
     public void onWorldTick(final WorldTickEvent ev) {
-        if (ev.phase == Phase.START) {
-            final World world = ev.world;
-            final Queue<IWorldCallable<?>> queue = this.callQueue.get(world);
-            this.processQueue(queue, world);
+        final World world = ev.world;
+
+        if (world.isRemote || ev.side != LogicalSide.SERVER) {
+            // While forge doesn't generate this event for client worlds,
+            // the event is generic enough that some other mod might be insane enough to do so.
+            return;
         }
 
-        if (ev.phase == Phase.END) {
-            this.simulateCraftingJobs(ev.world);
-            this.readyTiles(ev.world);
+        if (ev.phase == Phase.START) {
+            final Queue<IWorldCallable<?>> queue = this.callQueue.get(world);
+            this.processQueue(queue, world);
+        } else if (ev.phase == Phase.END) {
+            this.simulateCraftingJobs(world);
+            this.readyTiles(world);
         }
     }
 
     /**
      * Tick everything related to a the global server tick once per minecraft tick.
-     * 
-     * @param ev
      */
     public void onServerTick(final ServerTickEvent ev) {
         if (ev.phase == Phase.END) {
             this.tickColors(this.srvPlayerColors);
 
             // tick networks.
-            this.getRepo().updateNetworks();
-            for (final Grid g : this.getRepo().getNetworks()) {
+            this.grids.updateNetworks();
+            for (final Grid g : this.grids.getNetworks()) {
                 g.update();
             }
 
@@ -285,6 +274,8 @@ public class TickHandler {
     }
 
     public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
+        Preconditions.checkArgument(!world.isRemote, "Trying to register a crafting job for a client-world");
+
         synchronized (this.craftingJobs) {
             this.craftingJobs.put(world, craftingJob);
         }
@@ -292,8 +283,6 @@ public class TickHandler {
 
     /**
      * Simulates the current crafting requests before they user can submit them to be processed.
-     * 
-     * @param world
      */
     private void simulateCraftingJobs(IWorld world) {
         synchronized (this.craftingJobs) {
@@ -318,12 +307,9 @@ public class TickHandler {
 
     /**
      * Ready the tiles in this world
-     * 
-     * @param world
      */
     private void readyTiles(IWorld world) {
-        final HandlerRep repo = this.getRepo();
-        final Map<Long, Queue<AEBaseTileEntity>> worldQueue = repo.getTiles(world);
+        final Map<Long, Queue<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
 
         Iterator<Entry<Long, Queue<AEBaseTileEntity>>> it = worldQueue.entrySet().iterator();
         while (it.hasNext()) {
@@ -359,8 +345,6 @@ public class TickHandler {
 
     /**
      * Tick all currently players having a color applied by a {@link PaintBallItem}.
-     * 
-     * @param playerSet
      */
     private void tickColors(final Map<Integer, PlayerColor> playerSet) {
         final Iterator<PlayerColor> i = playerSet.values().iterator();
@@ -389,16 +373,20 @@ public class TickHandler {
 
         final Stopwatch sw = Stopwatch.createStarted();
 
-        IWorldCallable<?> c = null;
+        IWorldCallable<?> c;
+        int processed = 0;
         while ((c = queue.poll()) != null) {
             try {
                 c.call(world);
+                processed++;
 
                 if (sw.elapsed(TimeUnit.MILLISECONDS) > MILLISECONDS_PER_PROCESS_QUEUE) {
+                    AELog.warn("Exceeded time limit of %d ms after processing %d queued tick callbacks (%d remain)",
+                            MILLISECONDS_PER_PROCESS_QUEUE, processed, queue.size());
                     break;
                 }
             } catch (final Exception e) {
-                AELog.debug(e);
+                AELog.warn(e);
             }
         }
     }

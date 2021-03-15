@@ -35,17 +35,11 @@ import appeng.me.Grid;
 import appeng.tile.AEBaseTileEntity;
 
 /**
- * A class to hold data related to ticking networks and tiles.
+ * A class to hold data related to ticking tiles.
  */
-class HandlerRep {
+class ServerTileRepo {
 
     private Map<IWorld, Map<Long, Queue<AEBaseTileEntity>>> tiles = new Object2ObjectOpenHashMap<>();
-    private Set<Grid> networks = new ObjectOpenHashSet<>();
-    private Set<Grid> toAdd = new ObjectOpenHashSet<>();
-    private Set<Grid> toRemove = new ObjectOpenHashSet<>();
-
-    public HandlerRep() {
-    }
 
     /**
      * Resets all internal data
@@ -53,15 +47,10 @@ class HandlerRep {
      */
     void clear() {
         this.tiles = new Object2ObjectOpenHashMap<>();
-        this.networks = new HashSet<>();
-        this.toAdd = new HashSet<>();
-        this.toRemove = new HashSet<>();
     }
 
     /**
      * Add a new tile to be initializes in a later tick.
-     * 
-     * @param tile
      */
     synchronized void addTile(AEBaseTileEntity tile) {
         final IWorld world = tile.getWorld();
@@ -79,51 +68,7 @@ class HandlerRep {
     }
 
     /**
-     * Queues adding a new network.
-     * 
-     * Is added once {@link HandlerRep#updateNetworks()} is called.
-     * 
-     * Also removes it from the removal list, in case the network is validated again.
-     * 
-     * @param g
-     */
-    synchronized void addNetwork(Grid g) {
-        this.toAdd.add(g);
-        this.toRemove.remove(g);
-    }
-
-    /**
-     * Queues removal of a network.
-     * 
-     * Is fully removed once {@link HandlerRep#updateNetworks()} is called.
-     * 
-     * Also removes it from the list to add in case it got invalid.
-     * 
-     * @param g
-     */
-    synchronized void removeNetwork(Grid g) {
-        this.toRemove.add(g);
-        this.toAdd.remove(g);
-    }
-
-    /**
-     * Processes all networks to add or remove.
-     * 
-     * First all removals are handled, then the ones queued to be added.
-     * 
-     */
-    synchronized void updateNetworks() {
-        this.networks.removeAll(this.toRemove);
-        this.toRemove.clear();
-
-        this.networks.addAll(this.toAdd);
-        this.toAdd.clear();
-    }
-
-    /**
      * Sets up the necessary defaults when a new world is loaded
-     * 
-     * @param world
      */
     synchronized public void addWorld(IWorld world) {
         this.tiles.computeIfAbsent(world, (key) -> {
@@ -133,8 +78,6 @@ class HandlerRep {
 
     /**
      * Tears down data related to a now unloaded world
-     * 
-     * @param world
      */
     synchronized void removeWorld(IWorld world) {
         this.tiles.remove(world);
@@ -145,28 +88,13 @@ class HandlerRep {
      * 
      * There is no related addWorldChunk. The necessary queue will be created once the first tile is added to a chunk to
      * save memory.
-     * 
-     * @param world
-     * @param chunkPos
      */
-    synchronized void removeWorldChunk(IWorld world, Long chunkPos) {
+    synchronized void removeWorldChunk(IWorld world, long chunkPos) {
         this.tiles.get(world).remove(chunkPos);
     }
 
     /**
-     * Get all registered {@link Grid}s
-     * 
-     * @return
-     */
-    public Set<Grid> getNetworks() {
-        return networks;
-    }
-
-    /**
      * Get the tiles needing to be initialized in this specific {@link IWorld}.
-     * 
-     * @param world
-     * @return
      */
     public Map<Long, Queue<AEBaseTileEntity>> getTiles(IWorld world) {
         return tiles.get(world);
