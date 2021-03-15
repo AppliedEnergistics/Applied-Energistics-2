@@ -90,7 +90,10 @@ class ServerTileRepo {
      * save memory.
      */
     synchronized void removeWorldChunk(IWorld world, long chunkPos) {
-        this.tiles.get(world).remove(chunkPos);
+        Map<Long, Queue<AEBaseTileEntity>> queue = this.tiles.get(world);
+        if (queue != null) {
+            queue.remove(chunkPos);
+        }
     }
 
     /**
