@@ -31,7 +31,7 @@ public class ReportingModelData implements IModelData {
 
     public static final ModelProperty<Byte> SPIN = AEModelData.SPIN;
 
-    private final Byte spin;
+    private final byte spin;
 
     public ReportingModelData(byte spin) {
         this.spin = spin;
@@ -47,7 +47,7 @@ public class ReportingModelData implements IModelData {
     @SuppressWarnings("unchecked")
     public <T> T getData(ModelProperty<T> prop) {
         if (prop == SPIN) {
-            return (T) this.spin;
+            return (T) (Byte) this.spin;
         }
         return null;
     }
@@ -60,7 +60,7 @@ public class ReportingModelData implements IModelData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(spin);
+        return Byte.hashCode(spin);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ReportingModelData implements IModelData {
             return false;
         }
         ReportingModelData that = (ReportingModelData) o;
-        return spin.equals(that.spin);
+        return spin == that.spin;
     }
 
 }

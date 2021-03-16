@@ -32,7 +32,7 @@ public class PlaneModelData implements IModelData {
     private final PlaneConnections connections;
 
     public PlaneModelData(PlaneConnections connections) {
-        this.connections = connections;
+        this.connections = Objects.requireNonNull(connections);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class PlaneModelData implements IModelData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(connections);
+        return connections.hashCode();
     }
 
     @Override

@@ -177,8 +177,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         final TileEntity te = this.getTile();
 
         if (InteractionUtil.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
-            if (Platform.isServer()) {
-                this.spin = (byte) (this.spin + 1 % 3);
+            if (!player.getEntityWorld().isRemote()) {
+                this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
                 this.saveChanges();
             }
@@ -201,7 +201,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         }
     }
 
-    private final int blockLight(final int emit) {
+    private int blockLight(final int emit) {
         if (this.opacity < 0) {
             final TileEntity te = this.getTile();
             World world = te.getWorld();
