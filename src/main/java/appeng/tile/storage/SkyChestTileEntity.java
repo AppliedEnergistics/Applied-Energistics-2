@@ -45,10 +45,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
 
-    // server
     private int numPlayersUsing;
-    // client..
-    private long lastEvent;
     private float lidAngle;
     private float prevLidAngle;
 
@@ -68,11 +65,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
         final int wasOpen = this.numPlayersUsing;
         this.numPlayersUsing = data.readBoolean() ? 1 : 0;
 
-        if (wasOpen != this.numPlayersUsing) {
-            this.setLastEvent(System.currentTimeMillis());
-        }
-
-        return c; // TESR yo!
+        return wasOpen != numPlayersUsing || c;
     }
 
     @Override
@@ -111,27 +104,27 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     public void tick() {
         this.prevLidAngle = this.lidAngle;
         // Play a sound on initial opening.
-        if (this.numPlayersUsing > 0 && this.lidAngle == 0.0F) {
+        if (this.numPlayersUsing > 0 && this.lidAngle == 0.0f) {
             this.playSound(SoundEvents.BLOCK_CHEST_OPEN);
         }
 
-        if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F) {
-            this.lidAngle = Math.max(this.lidAngle - 0.1F, 0);
+        if (this.numPlayersUsing == 0 && this.lidAngle > 0.0f) {
+            this.lidAngle = Math.max(this.lidAngle - 0.1f, 0);
             // Play a sound on the way down.
-            if (this.lidAngle < 0.5F && this.prevLidAngle >= 0.5F) {
+            if (this.lidAngle < 0.5f && this.prevLidAngle >= 0.5f) {
                 this.playSound(SoundEvents.BLOCK_CHEST_CLOSE);
             }
-        } else if (this.numPlayersUsing > 0 && this.lidAngle < 1.0F) {
-            this.lidAngle = Math.min(this.lidAngle + 0.1F, 1);
+        } else if (this.numPlayersUsing > 0 && this.lidAngle < 1.0f) {
+            this.lidAngle = Math.min(this.lidAngle + 0.1f, 1);
         }
     }
 
     private void playSound(SoundEvent soundIn) {
-        double d0 = (double) this.pos.getX() + 0.5D;
-        double d1 = (double) this.pos.getY() + 0.5D;
-        double d2 = (double) this.pos.getZ() + 0.5D;
-        this.world.playSound((PlayerEntity) null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5F,
-                this.world.rand.nextFloat() * 0.1F + 0.9F);
+        double d0 = this.pos.getX() + 0.5d;
+        double d1 = this.pos.getY() + 0.5d;
+        double d2 = this.pos.getZ() + 0.5d;
+        this.world.playSound((PlayerEntity) null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5f,
+                this.world.rand.nextFloat() * 0.1f + 0.9f);
     }
 
     public boolean receiveClientEvent(int id, int type) {
@@ -146,14 +139,6 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
 
-    }
-
-    public long getLastEvent() {
-        return this.lastEvent;
-    }
-
-    private void setLastEvent(final long lastEvent) {
-        this.lastEvent = lastEvent;
     }
 
     @Override
