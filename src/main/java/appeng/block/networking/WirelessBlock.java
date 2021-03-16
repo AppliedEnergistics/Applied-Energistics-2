@@ -45,7 +45,6 @@ import appeng.container.implementations.WirelessContainer;
 import appeng.helpers.AEMaterials;
 import appeng.tile.networking.WirelessTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
 
@@ -90,11 +89,11 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
         final WirelessTileEntity tg = this.getTileEntity(w, pos);
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(player)) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(WirelessContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         return super.onBlockActivated(state, w, pos, player, hand, hit);

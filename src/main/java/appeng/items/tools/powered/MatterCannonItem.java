@@ -128,19 +128,22 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         IAEItemStack aeAmmo = req.copy();
                         this.extractAEPower(p.getHeldItem(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
 
-                        if (Platform.isClient()) {
-                            return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+                        if (w.isRemote()) {
+                            return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()),
+                                    p.getHeldItem(hand));
                         }
 
                         aeAmmo.setStackSize(1);
                         final ItemStack ammo = aeAmmo.createItemStack();
                         if (ammo.isEmpty()) {
-                            return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+                            return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()),
+                                    p.getHeldItem(hand));
                         }
 
                         aeAmmo = inv.extractItems(aeAmmo, Actionable.MODULATE, new PlayerSource(p, null));
                         if (aeAmmo == null) {
-                            return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+                            return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()),
+                                    p.getHeldItem(hand));
                         }
 
                         final LookDirection dir = InteractionUtil.getPlayerRay(p, 32);
@@ -160,16 +163,17 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                             if (type.getItem() instanceof PaintBallItem) {
                                 this.shootPaintBalls(type, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                             }
-                            return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+                            return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()),
+                                    p.getHeldItem(hand));
                         } else {
                             this.standardAmmo(penetration, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                         }
                     }
                 } else {
-                    if (Platform.isServer()) {
+                    if (!w.isRemote()) {
                         p.sendMessage(PlayerMessages.AmmoDepleted.get(), Util.DUMMY_UUID);
                     }
-                    return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+                    return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), p.getHeldItem(hand));
                 }
             }
         }

@@ -63,7 +63,7 @@ public abstract class CommonHelper {
     /**
      * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that
      * player's cable render mode from calls to {@link #getCableRenderMode()}, until another player or null is set.
-     * 
+     *
      * @param player Null to revert to the default cable render mode.
      */
     public abstract void setPartInteractionPlayer(@Nullable PlayerEntity player);

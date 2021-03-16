@@ -168,10 +168,11 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         if (InteractionUtil.isInAlternateUseMode(context.getPlayer())) {
-            if (!context.getPlayer().world.isRemote) {
+            World w = context.getWorld();
+            if (!w.isRemote()) {
                 this.clearCard(context.getPlayer(), context.getWorld(), context.getHand());
             }
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         } else {
             return super.onItemUse(context);
         }

@@ -70,13 +70,12 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
 
         final SecurityStationTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (w.isRemote()) {
-                return ActionResultType.SUCCESS;
+            if (!w.isRemote()) {
+                ContainerOpener.openContainer(SecurityStationContainer.TYPE, p,
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
 
-            ContainerOpener.openContainer(SecurityStationContainer.TYPE, p,
-                    ContainerLocator.forTileEntitySide(tg, hit.getFace()));
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
         return ActionResultType.PASS;
     }

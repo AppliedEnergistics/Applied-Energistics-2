@@ -64,7 +64,7 @@ public enum FacingToRotation implements IStringSerializable {
     private final Quaternion zRot;
     private final Matrix4f mat;
 
-    private FacingToRotation(Vector3f rot) {
+    FacingToRotation(Vector3f rot) {
         this.rot = rot;
         this.mat = new Matrix4f();
         this.mat.setIdentity();

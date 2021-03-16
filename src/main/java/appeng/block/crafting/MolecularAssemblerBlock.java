@@ -62,11 +62,11 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
             BlockRayTraceResult hit) {
         final MolecularAssemblerTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
-            if (!tg.isRemote()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         return super.onBlockActivated(state, w, pos, p, hand, hit);

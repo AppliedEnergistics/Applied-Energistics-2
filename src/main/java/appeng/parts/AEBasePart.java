@@ -162,6 +162,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         return this.proxy.getNode();
     }
 
+    @Override
     public void saveChanges() {
         this.host.markForSave();
     }

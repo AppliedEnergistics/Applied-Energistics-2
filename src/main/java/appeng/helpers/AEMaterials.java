@@ -32,7 +32,7 @@ public class AEMaterials {
 
     /**
      * Small factory helper with named parameters.
-     * 
+     *
      * @param color
      * @param isLiquid
      * @param isSolid

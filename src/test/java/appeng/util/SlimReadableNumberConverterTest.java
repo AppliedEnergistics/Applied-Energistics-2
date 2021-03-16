@@ -1,10 +1,3 @@
-
-package appeng.util;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
 /*
  * This file is part of Applied Energistics 2.
  * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
@@ -22,6 +15,12 @@ import org.junit.Test;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
+
+package appeng.util;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
  * Test for {@link ISlimReadableNumberConverter}

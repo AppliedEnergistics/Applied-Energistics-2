@@ -184,7 +184,7 @@ public class DebugCardItem extends AEBaseItem {
                 }
             }
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(world.isRemote());
     }
 
     private void outputMsg(final Entity player, final String string) {

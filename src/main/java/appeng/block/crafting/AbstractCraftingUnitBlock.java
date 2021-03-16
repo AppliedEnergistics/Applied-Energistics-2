@@ -103,7 +103,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
 
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         return super.onBlockActivated(state, w, pos, p, hand, hit);

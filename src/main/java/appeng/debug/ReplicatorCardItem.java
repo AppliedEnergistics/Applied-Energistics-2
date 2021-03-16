@@ -76,9 +76,10 @@ public class ReplicatorCardItem extends AEBaseItem {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getWorld().isRemote()) {
+        World w = context.getWorld();
+        if (w.isRemote()) {
             // Needed, otherwise client will trigger onItemRightClick also on server...
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         PlayerEntity player = context.getPlayer();
@@ -213,7 +214,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 this.outputMsg(player, "No Source Defined");
             }
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
     private void outputMsg(final Entity player, final String string) {

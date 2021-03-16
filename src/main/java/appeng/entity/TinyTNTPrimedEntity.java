@@ -66,8 +66,8 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
             final LivingEntity igniter) {
         super(TYPE, w);
         this.setPosition(x, y, z);
-        double d0 = w.rand.nextDouble() * (double) ((float) Math.PI * 2F);
-        this.setMotion(-Math.sin(d0) * 0.02D, (double) 0.2F, -Math.cos(d0) * 0.02D);
+        double d0 = w.rand.nextDouble() * ((float) Math.PI * 2F);
+        this.setMotion(-Math.sin(d0) * 0.02D, 0.2F, -Math.cos(d0) * 0.02D);
         this.setFuse(80);
         this.prevPosX = x;
         this.prevPosY = y;

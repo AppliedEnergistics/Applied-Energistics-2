@@ -35,7 +35,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.core.AELog;
 import appeng.me.cache.helpers.TickTracker;
 
 public class TickManagerCache implements ITickManager {

@@ -212,6 +212,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         return false;
     }
 
+    @Override
     public boolean equals(final ItemStack is) {
         return this.isSameType(is);
     }

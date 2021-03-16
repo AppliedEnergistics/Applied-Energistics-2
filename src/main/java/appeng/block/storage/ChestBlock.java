@@ -77,20 +77,18 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final ChestTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
-            if (w.isRemote()) {
-                return ActionResultType.SUCCESS;
-            }
-
-            if (hit.getFace() == tg.getUp()) {
-                if (!tg.openGui(p)) {
-                    p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.DUMMY_UUID);
+            if (!w.isRemote()) {
+                if (hit.getFace() == tg.getUp()) {
+                    if (!tg.openGui(p)) {
+                        p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.DUMMY_UUID);
+                    }
+                } else {
+                    ContainerOpener.openContainer(ChestContainer.TYPE, p,
+                            ContainerLocator.forTileEntitySide(tg, hit.getFace()));
                 }
-            } else {
-                ContainerOpener.openContainer(ChestContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
 
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         return ActionResultType.PASS;

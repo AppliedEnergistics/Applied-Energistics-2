@@ -49,11 +49,12 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        if (Platform.isServer() && player != null) {
+        World w = context.getWorld();
+        if (!w.isRemote() && player != null) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, context.getPlayer(),
                     ContainerLocator.forItemUseContext(context));
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
     @Override
@@ -62,7 +63,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
         p.swingArm(hand);
-        return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), p.getHeldItem(hand));
     }
 
     @Override

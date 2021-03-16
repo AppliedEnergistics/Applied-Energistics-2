@@ -76,7 +76,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             }
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
     @Override

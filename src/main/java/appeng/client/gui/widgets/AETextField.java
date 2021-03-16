@@ -53,10 +53,10 @@ public class AETextField extends TextFieldWidget {
     public AETextField(final FontRenderer fontRenderer, final int xPos, final int yPos, final int width,
             final int height) {
         super(fontRenderer, xPos + PADDING, yPos + PADDING,
-                width - 2 * PADDING - (int) fontRenderer.getStringWidth("_"), height - 2 * PADDING,
+                width - 2 * PADDING - fontRenderer.getStringWidth("_"), height - 2 * PADDING,
                 StringTextComponent.EMPTY);
 
-        this._fontPad = (int) fontRenderer.getStringWidth("_");
+        this._fontPad = fontRenderer.getStringWidth("_");
     }
 
     public void selectAll() {

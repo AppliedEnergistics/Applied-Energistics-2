@@ -100,17 +100,17 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
      * The state of all cells inside a drive as bitset, using the following format.
      *
      * - Bit 31: power state. 0 = off, 1 = on.
-     * 
+     *
      * - Bit 30: reserved
-     * 
+     *
      * - Bit 29-0: 3 bits for the state of each cell
      *
      * Cell states:
-     * 
+     *
      * - Bit 2-0: {@link CellState} ordinal
      *
      *
-     * 
+     *
      */
     private int state = 0;
 

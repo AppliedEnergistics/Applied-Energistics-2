@@ -41,7 +41,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.InterfaceContainer;
 import appeng.tile.misc.InterfaceTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
 
@@ -71,11 +70,11 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
 
         final InterfaceTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(InterfaceContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
         return ActionResultType.PASS;
     }

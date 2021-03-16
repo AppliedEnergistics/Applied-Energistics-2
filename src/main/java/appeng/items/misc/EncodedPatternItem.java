@@ -75,12 +75,14 @@ public class EncodedPatternItem extends AEBaseItem {
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
         this.clearPattern(player.getHeldItem(hand), player);
 
-        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), player.getHeldItem(hand));
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return this.clearPattern(stack, context.getPlayer()) ? ActionResultType.SUCCESS : ActionResultType.PASS;
+        return this.clearPattern(stack, context.getPlayer())
+                ? ActionResultType.func_233537_a_(context.getWorld().isRemote())
+                : ActionResultType.PASS;
     }
 
     private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {

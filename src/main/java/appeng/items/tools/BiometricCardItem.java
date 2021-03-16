@@ -71,7 +71,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
             }
             this.encode(is, (PlayerEntity) target);
             player.swingArm(hand);
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(player.getEntityWorld().isRemote());
         }
         return ActionResultType.PASS;
     }

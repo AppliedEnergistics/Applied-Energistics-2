@@ -40,7 +40,7 @@ public interface IOverlayDataSource {
 
     /**
      * {@link TileEntity} in case needed for additional data.
-     * 
+     *
      * @return the tile entity providing the data
      */
     @Nonnull
@@ -52,7 +52,7 @@ public interface IOverlayDataSource {
      * Used as cache key for later lookups.
      * <p>
      * World is needed to hide the particular render when the player is in another world
-     * 
+     *
      * @return the location of this source.
      */
     @Nonnull

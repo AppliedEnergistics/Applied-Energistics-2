@@ -234,6 +234,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         return this.canSubstitute;
     }
 
+    @Override
     public List<IAEItemStack> getSubstituteInputs(int slot) {
         if (this.sparseInputs[slot] == null) {
             return Collections.emptyList();

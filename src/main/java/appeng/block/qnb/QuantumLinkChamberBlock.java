@@ -44,7 +44,6 @@ import appeng.core.AppEng;
 import appeng.helpers.AEMaterials;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
@@ -82,11 +81,12 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
         final QuantumBridgeTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
+
         return ActionResultType.PASS;
     }
 

@@ -35,7 +35,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.CondenserContainer;
 import appeng.tile.misc.CondenserTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
 
@@ -50,15 +49,14 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
             return ActionResultType.PASS;
         }
 
-        if (Platform.isServer()) {
+        if (!w.isRemote()) {
             final CondenserTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getFace()));
-                return ActionResultType.SUCCESS;
             }
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 }

@@ -127,13 +127,13 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
                 final Upgrades u = um.getType(player.getHeldItem(hand));
 
                 if (u != null) {
-                    if (player.world.isRemote) {
+                    if (player.getEntityWorld().isRemote()) {
                         return ActionResultType.PASS;
                     }
 
                     final InventoryAdaptor ad = new AdaptorItemHandler(upgrades);
                     player.setHeldItem(hand, ad.addItems(player.getHeldItem(hand)));
-                    return ActionResultType.SUCCESS;
+                    return ActionResultType.func_233537_a_(player.getEntityWorld().isRemote());
                 }
             }
         }

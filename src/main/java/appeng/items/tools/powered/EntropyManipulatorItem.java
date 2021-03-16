@@ -106,7 +106,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), p.getHeldItem(hand));
     }
 
     @Override
@@ -309,8 +309,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             w.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
                     2.6F + (w.rand.nextFloat() - w.rand.nextFloat()) * 0.8F);
             for (int l = 0; l < 8; ++l) {
-                w.addParticle(ParticleTypes.LARGE_SMOKE, (double) pos.getX() + Math.random(),
-                        (double) pos.getY() + Math.random(), (double) pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
+                w.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(),
+                        pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
             }
         }
     }

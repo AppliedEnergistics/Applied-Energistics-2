@@ -35,6 +35,7 @@ public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternT
         super(containerClass, helper);
     }
 
+    @Override
     protected IRecipeTransferError doTransferRecipe(PatternTermContainer container, IRecipe<?> recipe,
             IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer) {
         if (container.isCraftingMode()

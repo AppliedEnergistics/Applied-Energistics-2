@@ -344,7 +344,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         // Transform from world into block space
         Vector3d hitVec = hit.getHitVec();
         Vector3d hitInBlock = new Vector3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
-        return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResultType.SUCCESS : ActionResultType.PASS;
+        return this.cb(w, pos).activate(player, hand, hitInBlock)
+                ? ActionResultType.func_233537_a_(w.isRemote())
+                : ActionResultType.PASS;
     }
 
     public boolean recolorBlock(final IBlockReader world, final BlockPos pos, final Direction side,
@@ -405,6 +407,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         return super.updateBlockStateFromTileEntity(currentState, te).with(LIGHT_LEVEL, lightLevel);
     }
 
+    @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockPos pos = context.getPos();
@@ -415,12 +418,14 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         return blockState;
     }
 
+    @Override
     public FluidState getFluidState(BlockState blockState) {
         return blockState.get(WATERLOGGED).booleanValue()
                 ? Fluids.WATER.getStillFluidState(false)
                 : super.getFluidState(blockState);
     }
 
+    @Override
     public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
             BlockPos currentPos, BlockPos facingPos) {
         if (blockState.get(WATERLOGGED)) {

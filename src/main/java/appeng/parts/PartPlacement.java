@@ -131,7 +131,7 @@ public class PartPlacement {
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                 }
-                return ActionResultType.SUCCESS;
+                return ActionResultType.func_233537_a_(world.isRemote());
             }
 
             return ActionResultType.FAIL;
@@ -159,7 +159,7 @@ public class PartPlacement {
                                 host.markForUpdate();
                                 if (!player.isCreative()) {
                                     held.grow(-1);
-                                    ;
+
                                     if (held.getCount() == 0) {
                                         player.inventory.mainInventory.set(player.inventory.currentItem,
                                                 ItemStack.EMPTY);
@@ -173,7 +173,7 @@ public class PartPlacement {
                         player.swingArm(hand);
                         NetworkHandler.instance()
                                 .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                        return ActionResultType.SUCCESS;
+                        return ActionResultType.func_233537_a_(world.isRemote());
                     }
                 }
                 return ActionResultType.FAIL;
@@ -188,11 +188,11 @@ public class PartPlacement {
                     final SelectedPart sPart = selectPart(player, host, hitVec);
                     if (sPart != null && sPart.part != null) {
                         if (sPart.part.onShiftActivate(player, hand, hitVec)) {
-                            if (world.isRemote) {
+                            if (world.isRemote()) {
                                 NetworkHandler.instance()
                                         .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                             }
-                            return ActionResultType.SUCCESS;
+                            return ActionResultType.func_233537_a_(world.isRemote());
                         }
                     }
                 }
@@ -254,7 +254,7 @@ public class PartPlacement {
                     player.swingArm(hand);
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                    return ActionResultType.SUCCESS;
+                    return ActionResultType.func_233537_a_(world.isRemote());
                 }
             } else if (host != null && !host.canAddPart(held, AEPartLocation.fromFacing(side))) {
                 return ActionResultType.FAIL;
@@ -321,7 +321,7 @@ public class PartPlacement {
         } else {
             player.swingArm(hand);
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(world.isRemote());
     }
 
     private static float getEyeOffset(final PlayerEntity p) {
@@ -398,8 +398,9 @@ public class PartPlacement {
             this.placing.set(event);
 
             final ItemStack held = event.getPlayer().getHeldItem(event.getHand());
+            World w = event.getWorld();
             if (place(held, event.getPos(), event.getFace(), event.getPlayer(), event.getHand(),
-                    event.getPlayer().world, PlaceType.INTERACT_FIRST_PASS, 0) == ActionResultType.SUCCESS) {
+                    w, PlaceType.INTERACT_FIRST_PASS, 0) == ActionResultType.func_233537_a_(w.isRemote())) {
                 event.setCanceled(true);
                 this.wasCanceled = true;
             }

@@ -156,6 +156,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
         return new MetaRotation(w, pos, BlockStateProperties.FACING);
     }
 
+    @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockPos pos = context.getPos();
@@ -166,12 +167,14 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
         return blockState;
     }
 
+    @Override
     public FluidState getFluidState(BlockState blockState) {
         return blockState.get(WATERLOGGED).booleanValue()
                 ? Fluids.WATER.getStillFluidState(false)
                 : super.getFluidState(blockState);
     }
 
+    @Override
     public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
             BlockPos currentPos, BlockPos facingPos) {
         if (blockState.get(WATERLOGGED).booleanValue()) {
