@@ -28,7 +28,6 @@ plugins {
 
 repositories {
     mavenLocal()
-    jcenter()
     mavenCentral()
     maven { url = "https://maven.fabricmc.net/" }
     maven {
@@ -43,6 +42,13 @@ repositories {
         url = "https://maven.tehnut.info/"
         content {
             includeGroup "mcp.mobius.waila"
+        }
+    }
+    maven {
+        name = "shedaniel"
+        url = "https://maven.shedaniel.me"
+        content {
+            includeGroup "me.shedaniel"
         }
     }
 }
