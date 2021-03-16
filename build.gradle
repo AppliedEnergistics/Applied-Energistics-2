@@ -59,7 +59,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     //Fabric api
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "alexiil.mc.lib:libblockattributes-core:${libblockattributes_version}"
     modImplementation "alexiil.mc.lib:libblockattributes-items:${libblockattributes_version}"

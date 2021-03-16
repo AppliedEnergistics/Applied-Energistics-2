@@ -99,7 +99,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
         this.y = (this.height - this.backgroundHeight) / 2;
 
         this.searchField = new AETextField(this.textRenderer, this.x + 80, this.y + 4, 90, 12);
-        this.searchField.setHasBorder(false);
+        this.searchField.setDrawsBackground(false);
         this.searchField.setMaxLength(25);
         this.searchField.setEditableColor(0xFFFFFF);
         this.searchField.setSelectionColor(0xFF99FF99);

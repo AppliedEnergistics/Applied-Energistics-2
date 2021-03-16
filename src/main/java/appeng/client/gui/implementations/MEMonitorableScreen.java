@@ -230,7 +230,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         }
 
         this.searchField = new AETextField(this.textRenderer, this.x + Math.max(80, this.offsetX), this.y + 4, 90, 12);
-        this.searchField.setHasBorder(false);
+        this.searchField.setDrawsBackground(false);
         this.searchField.setMaxLength(25);
         this.searchField.setEditableColor(0xFFFFFF);
         this.searchField.setSelectionColor(0xFF008000);

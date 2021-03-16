@@ -80,7 +80,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         super.init();
 
         this.searchField = new AETextField(this.textRenderer, this.x + 104, this.y + 4, 65, 12);
-        this.searchField.setHasBorder(false);
+        this.searchField.setDrawsBackground(false);
         this.searchField.setMaxLength(25);
         this.searchField.setEditableColor(0xFFFFFF);
         this.searchField.setVisible(true);
