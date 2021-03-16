@@ -19,19 +19,16 @@
 package appeng.hooks.ticking;
 
 import java.util.ArrayDeque;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-import appeng.me.Grid;
 import appeng.tile.AEBaseTileEntity;
 
 /**
@@ -39,14 +36,14 @@ import appeng.tile.AEBaseTileEntity;
  */
 class ServerTileRepo {
 
-    private Map<IWorld, Map<Long, Queue<AEBaseTileEntity>>> tiles = new Object2ObjectOpenHashMap<>();
+    private final Map<IWorld, Long2ObjectMap<Queue<AEBaseTileEntity>>> tiles = new Object2ObjectOpenHashMap<>();
 
     /**
      * Resets all internal data
      * 
      */
     void clear() {
-        this.tiles = new Object2ObjectOpenHashMap<>();
+        this.tiles.clear();
     }
 
     /**
@@ -58,9 +55,9 @@ class ServerTileRepo {
         final int z = tile.getPos().getZ() >> 4;
         final long chunkPos = ChunkPos.asLong(x, z);
 
-        Map<Long, Queue<AEBaseTileEntity>> worldQueue = this.tiles.get(world);
+        Long2ObjectMap<Queue<AEBaseTileEntity>> worldQueue = this.tiles.get(world);
 
-        Queue<AEBaseTileEntity> queue = worldQueue.computeIfAbsent(chunkPos, (key) -> {
+        Queue<AEBaseTileEntity> queue = worldQueue.computeIfAbsent(chunkPos, key -> {
             return new ArrayDeque<>();
         });
 
@@ -70,7 +67,7 @@ class ServerTileRepo {
     /**
      * Sets up the necessary defaults when a new world is loaded
      */
-    synchronized public void addWorld(IWorld world) {
+    synchronized void addWorld(IWorld world) {
         this.tiles.computeIfAbsent(world, (key) -> {
             return new Long2ObjectOpenHashMap<>();
         });
@@ -99,7 +96,7 @@ class ServerTileRepo {
     /**
      * Get the tiles needing to be initialized in this specific {@link IWorld}.
      */
-    public Map<Long, Queue<AEBaseTileEntity>> getTiles(IWorld world) {
+    public Long2ObjectMap<Queue<AEBaseTileEntity>> getTiles(IWorld world) {
         return tiles.get(world);
     }
 

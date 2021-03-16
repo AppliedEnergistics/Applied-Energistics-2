@@ -40,10 +40,14 @@ public class PlayerColor {
         return new PaintedEntityPacket(this.myEntity, this.myColor, this.ticksLeft);
     }
 
+    public AEColor getColor() {
+        return myColor;
+    }
+
     /**
      * Tick this player color once.
      */
-    public void tick() {
+    void tick() {
         this.ticksLeft--;
     }
 
@@ -52,7 +56,7 @@ public class PlayerColor {
      * 
      * @return true once done.
      */
-    public boolean isDone() {
+    boolean isDone() {
         return this.ticksLeft <= 0;
     }
 

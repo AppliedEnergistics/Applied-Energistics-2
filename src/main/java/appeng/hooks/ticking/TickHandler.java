@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
@@ -51,6 +51,9 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.DistExecutor.SafeRunnable;
 import net.minecraftforge.fml.LogicalSide;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap.Entry;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.CableRenderMode;
 import appeng.core.AEConfig;
@@ -66,7 +69,10 @@ import appeng.util.Platform;
 
 public class TickHandler {
 
-    private static final int MILLISECONDS_PER_PROCESS_QUEUE = 50;
+    /**
+     * Time limit for process queues with respect to the 50ms of a minecraft tick.
+     */
+    private static final int TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS = 25;
 
     private static final TickHandler INSTANCE = new TickHandler();
     private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
@@ -77,6 +83,16 @@ public class TickHandler {
     private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
     private final Map<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
     private CableRenderMode crm = CableRenderMode.STANDARD;
+
+    /**
+     * A stop watch to limit processing the additional queues to honor
+     * {@link TickHandler#TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS}.
+     * 
+     * This cumulative for all queues of one server tick.
+     */
+    private final Stopwatch sw = Stopwatch.createUnstarted();
+    private int processQueueElementsProcessed = 0;
+    private int processQueueElementsRemaining = 0;
 
     public static TickHandler instance() {
         return INSTANCE;
@@ -100,7 +116,6 @@ public class TickHandler {
             @Override
             public void run() {
                 eventBus.addListener(INSTANCE::onClientTick);
-
             }
         });
     }
@@ -140,22 +155,44 @@ public class TickHandler {
         }
     }
 
+    /**
+     * Add a {@link AEBaseTileEntity} to be initializes with the next update.
+     * 
+     * Must be called on the server.
+     * 
+     * @param tile to be added, must be not null
+     */
     public void addInit(final AEBaseTileEntity tile) {
         // for no there is no reason to care about this on the client...
         if (!tile.getWorld().isRemote()) {
+            Objects.requireNonNull(tile);
             this.tiles.addTile(tile);
         }
     }
 
+    /**
+     * Add a new grid for ticking on the next update.
+     * 
+     * Must only be called on the server.
+     * 
+     * @param grid the {@link Grid} to add, must be not null
+     */
     public void addNetwork(final Grid grid) {
-        // for no there is no reason to care about this on the client...
         Platform.assertServerThread();
+
         this.grids.addNetwork(grid);
     }
 
+    /**
+     * Mark a {@link Grid} to be removed with the next update.
+     * 
+     * Must only be called on the server.
+     * 
+     * @param grid the {@link Grid} to remove, must be not null
+     */
     public void removeNetwork(final Grid grid) {
-        // for no there is no reason to care about this on the client...
         Platform.assertServerThread();
+
         this.grids.removeNetwork(grid);
     }
 
@@ -171,8 +208,9 @@ public class TickHandler {
     }
 
     /**
-     * When a chunk unloads (on the server), remove any pending initialization callbacks for tile-entities in that
-     * chunk.
+     * Handles a chunk being unloaded (on the server)
+     * 
+     * Removes any pending initialization callbacks for tile-entities in that chunk.
      */
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
         if (!ev.getWorld().isRemote()) {
@@ -184,7 +222,6 @@ public class TickHandler {
      * Handle a newly loaded world and setup defaults when necessary.
      */
     public void onLoadWorld(final WorldEvent.Load ev) {
-        // for no there is no reason to care about this on the client...
         if (!ev.getWorld().isRemote()) {
             this.tiles.addWorld(ev.getWorld());
         }
@@ -217,7 +254,7 @@ public class TickHandler {
     }
 
     /**
-     * Clientside ticking similar to the global server tick.
+     * Client side ticking similar to the global server tick.
      */
     public void onClientTick(final ClientTickEvent ev) {
         if (ev.phase == Phase.START) {
@@ -248,7 +285,7 @@ public class TickHandler {
 
         if (ev.phase == Phase.START) {
             final Queue<IWorldCallable<?>> queue = this.callQueue.get(world);
-            this.processQueue(queue, world);
+            processQueueElementsRemaining += this.processQueue(queue, world);
         } else if (ev.phase == Phase.END) {
             this.simulateCraftingJobs(world);
             this.readyTiles(world);
@@ -259,6 +296,13 @@ public class TickHandler {
      * Tick everything related to a the global server tick once per minecraft tick.
      */
     public void onServerTick(final ServerTickEvent ev) {
+        if (ev.phase == Phase.START) {
+            // Reset the stop watch on the start of each server tick.
+            this.processQueueElementsProcessed = 0;
+            this.processQueueElementsRemaining = 0;
+            this.sw.reset();
+        }
+
         if (ev.phase == Phase.END) {
             this.tickColors(this.srvPlayerColors);
 
@@ -269,7 +313,13 @@ public class TickHandler {
             }
 
             // cross world queue.
-            this.processQueue(this.serverQueue, null);
+            processQueueElementsRemaining += this.processQueue(this.serverQueue, null);
+
+            if (this.sw.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
+                AELog.warn("Exceeded time limit of %d ms after processing %d queued tick callbacks (%d remain)",
+                        TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS, processQueueElementsProcessed,
+                        processQueueElementsRemaining);
+            }
         }
     }
 
@@ -309,13 +359,14 @@ public class TickHandler {
      * Ready the tiles in this world
      */
     private void readyTiles(IWorld world) {
-        final Map<Long, Queue<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
+        final Long2ObjectMap<Queue<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
 
-        Iterator<Entry<Long, Queue<AEBaseTileEntity>>> it = worldQueue.entrySet().iterator();
+        Iterator<Entry<Queue<AEBaseTileEntity>>> it = worldQueue.long2ObjectEntrySet().iterator();
+
         while (it.hasNext()) {
-            Entry<Long, Queue<AEBaseTileEntity>> entry = it.next();
+            Entry<Queue<AEBaseTileEntity>> entry = it.next();
 
-            ChunkPos pos = new ChunkPos(entry.getKey());
+            ChunkPos pos = new ChunkPos(entry.getLongKey());
             AbstractChunkProvider chunkProvider = world.getChunkProvider();
 
             // Using the blockpos of the chunk start to test if it can tick.
@@ -365,29 +416,34 @@ public class TickHandler {
      * 
      * @param queue the queue to process
      * @param world the world in which the queue is processed or null for the server queue
+     * 
+     * @return the amount of remaining callbacks
      */
-    private void processQueue(final Queue<IWorldCallable<?>> queue, final World world) {
+    private int processQueue(final Queue<IWorldCallable<?>> queue, final World world) {
         if (queue == null) {
-            return;
+            return 0;
         }
 
-        final Stopwatch sw = Stopwatch.createStarted();
+        // start the clock
+        sw.start();
 
-        IWorldCallable<?> c;
-        int processed = 0;
-        while ((c = queue.poll()) != null) {
+        while (!queue.isEmpty()) {
             try {
-                c.call(world);
-                processed++;
+                // call the first queue element.
+                queue.poll().call(world);
+                this.processQueueElementsProcessed++;
 
-                if (sw.elapsed(TimeUnit.MILLISECONDS) > MILLISECONDS_PER_PROCESS_QUEUE) {
-                    AELog.warn("Exceeded time limit of %d ms after processing %d queued tick callbacks (%d remain)",
-                            MILLISECONDS_PER_PROCESS_QUEUE, processed, queue.size());
+                if (sw.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
                     break;
                 }
             } catch (final Exception e) {
                 AELog.warn(e);
             }
         }
+
+        // stop watch for the next call
+        sw.stop();
+
+        return queue.size();
     }
 }
