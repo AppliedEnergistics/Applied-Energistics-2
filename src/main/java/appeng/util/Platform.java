@@ -80,6 +80,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
+import appeng.api.exceptions.AppEngException;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
@@ -106,7 +107,7 @@ import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
@@ -301,6 +302,16 @@ public class Platform {
      */
     public static boolean isServer() {
         return Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER;
+    }
+
+    /**
+     * Throws an exception if the current thread is not one of the server threads.
+     */
+    public static void assertServerThread() {
+        if (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER) {
+            throw new UnsupportedOperationException(
+                    "This code can only be called server-side and this is most likely a bug.");
+        }
     }
 
     public static int getRandomInt() {

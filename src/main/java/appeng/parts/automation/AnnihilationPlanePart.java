@@ -67,7 +67,7 @@ import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
 import appeng.core.sync.packets.ItemTransitionEffectPacket;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;

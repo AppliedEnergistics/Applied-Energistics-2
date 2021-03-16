@@ -16,21 +16,17 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.hooks;
+package appeng.hooks.ticking;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Queue;
-import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Preconditions;
@@ -53,16 +49,19 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.DistExecutor.SafeRunnable;
+import net.minecraftforge.fml.LogicalSide;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap.Entry;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.CableRenderMode;
-import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.crafting.CraftingJob;
+import appeng.items.misc.PaintBallItem;
 import appeng.me.Grid;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.IWorldCallable;
@@ -70,23 +69,43 @@ import appeng.util.Platform;
 
 public class TickHandler {
 
+    /**
+     * Time limit for process queues with respect to the 50ms of a minecraft tick.
+     */
+    private static final int TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS = 25;
+
     private static final TickHandler INSTANCE = new TickHandler();
     private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
     private final Multimap<IWorld, CraftingJob> craftingJobs = LinkedListMultimap.create();
     private final Map<IWorld, Queue<IWorldCallable<?>>> callQueue = new HashMap<>();
-    private final HandlerRep server = new HandlerRep();
+    private final ServerTileRepo tiles = new ServerTileRepo();
+    private final ServerGridRepo grids = new ServerGridRepo();
     private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
     private final Map<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
     private CableRenderMode crm = CableRenderMode.STANDARD;
 
+    /**
+     * A stop watch to limit processing the additional queues to honor
+     * {@link TickHandler#TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS}.
+     * 
+     * This cumulative for all queues of one server tick.
+     */
+    private final Stopwatch sw = Stopwatch.createUnstarted();
+    private int processQueueElementsProcessed = 0;
+    private int processQueueElementsRemaining = 0;
+
     public static TickHandler instance() {
         return INSTANCE;
+    }
+
+    private TickHandler() {
     }
 
     public static void setup(IEventBus eventBus) {
         eventBus.addListener(INSTANCE::onServerTick);
         eventBus.addListener(INSTANCE::onWorldTick);
         eventBus.addListener(INSTANCE::onUnloadChunk);
+        eventBus.addListener(INSTANCE::onLoadWorld);
         eventBus.addListener(INSTANCE::onUnloadWorld);
 
         // DistExecutor does not like functional interfaces
@@ -97,7 +116,6 @@ public class TickHandler {
             @Override
             public void run() {
                 eventBus.addListener(INSTANCE::onClientTick);
-
             }
         });
     }
@@ -137,57 +155,88 @@ public class TickHandler {
         }
     }
 
+    /**
+     * Add a {@link AEBaseTileEntity} to be initializes with the next update.
+     * 
+     * Must be called on the server.
+     * 
+     * @param tile to be added, must be not null
+     */
     public void addInit(final AEBaseTileEntity tile) {
         // for no there is no reason to care about this on the client...
         if (!tile.getWorld().isRemote()) {
-            this.getRepo().addTile(tile);
+            Objects.requireNonNull(tile);
+            this.tiles.addTile(tile);
         }
     }
 
-    private HandlerRep getRepo() {
-        if (Platform.isClient()) {
-            throw new IllegalAccessError("Only supported on the server");
-        }
-
-        return this.server;
-    }
-
+    /**
+     * Add a new grid for ticking on the next update.
+     * 
+     * Must only be called on the server.
+     * 
+     * @param grid the {@link Grid} to add, must be not null
+     */
     public void addNetwork(final Grid grid) {
-        // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
-            this.getRepo().addNetwork(grid);
-        }
+        Platform.assertServerThread();
+
+        this.grids.addNetwork(grid);
     }
 
+    /**
+     * Mark a {@link Grid} to be removed with the next update.
+     * 
+     * Must only be called on the server.
+     * 
+     * @param grid the {@link Grid} to remove, must be not null
+     */
     public void removeNetwork(final Grid grid) {
-        // for no there is no reason to care about this on the client...
-        if (Platform.isServer()) {
-            this.getRepo().removeNetwork(grid);
-        }
+        Platform.assertServerThread();
+
+        this.grids.removeNetwork(grid);
     }
 
     public Iterable<Grid> getGridList() {
-        return this.getRepo().networks;
+        Platform.assertServerThread();
+        return this.grids.getNetworks();
     }
 
     public void shutdown() {
-        this.getRepo().clear();
+        Platform.assertServerThread();
+        this.tiles.clear();
+        this.grids.clear();
     }
 
+    /**
+     * Handles a chunk being unloaded (on the server)
+     * 
+     * Removes any pending initialization callbacks for tile-entities in that chunk.
+     */
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
-        // for no there is no reason to care about this on the client...
         if (!ev.getWorld().isRemote()) {
-            this.getRepo().tiles.get(ev.getWorld()).remove(ev.getChunk().getPos());
+            this.tiles.removeWorldChunk(ev.getWorld(), ev.getChunk().getPos().asLong());
         }
     }
 
+    /**
+     * Handle a newly loaded world and setup defaults when necessary.
+     */
+    public void onLoadWorld(final WorldEvent.Load ev) {
+        if (!ev.getWorld().isRemote()) {
+            this.tiles.addWorld(ev.getWorld());
+        }
+    }
+
+    /**
+     * Handle a world unload and tear down related data structures.
+     */
     public void onUnloadWorld(final WorldEvent.Unload ev) {
         // for no there is no reason to care about this on the client...
         if (!ev.getWorld().isRemote()) {
             final List<IGridNode> toDestroy = new ArrayList<>();
 
-            this.getRepo().updateNetworks();
-            for (final Grid g : this.getRepo().networks) {
+            this.grids.updateNetworks();
+            for (final Grid g : this.grids.getNetworks()) {
                 for (final IGridNode n : g.getNodes()) {
                     if (n.getWorld() == ev.getWorld()) {
                         toDestroy.add(n);
@@ -199,16 +248,20 @@ public class TickHandler {
                 n.destroy();
             }
 
-            this.getRepo().tiles.remove(ev.getWorld());
+            this.tiles.removeWorld(ev.getWorld());
             this.callQueue.remove(ev.getWorld());
         }
     }
 
+    /**
+     * Client side ticking similar to the global server tick.
+     */
     public void onClientTick(final ClientTickEvent ev) {
         if (ev.phase == Phase.START) {
             this.tickColors(this.cliPlayerColors);
             final CableRenderMode currentMode = Api.instance().partHelper().getCableRenderMode();
 
+            // Handle changes to the cable-rendering mode
             if (currentMode != this.crm) {
                 this.crm = currentMode;
                 AppEng.proxy.triggerUpdates();
@@ -216,35 +269,63 @@ public class TickHandler {
         }
     }
 
+    /**
+     * Tick a single {@link World}
+     * 
+     * This can happen multiple times per world, but each world should only be ticked once per minecraft tick.
+     */
     public void onWorldTick(final WorldTickEvent ev) {
-        if (ev.phase == Phase.START) {
-            final World world = ev.world;
-            final Queue<IWorldCallable<?>> queue = this.callQueue.get(world);
-            this.processQueue(queue, world);
+        final World world = ev.world;
+
+        if (world.isRemote || ev.side != LogicalSide.SERVER) {
+            // While forge doesn't generate this event for client worlds,
+            // the event is generic enough that some other mod might be insane enough to do so.
+            return;
         }
 
-        if (ev.phase == Phase.END) {
-            this.simulateCraftingJobs(ev.world);
-            this.readyTiles(ev.world);
+        if (ev.phase == Phase.START) {
+            final Queue<IWorldCallable<?>> queue = this.callQueue.get(world);
+            processQueueElementsRemaining += this.processQueue(queue, world);
+        } else if (ev.phase == Phase.END) {
+            this.simulateCraftingJobs(world);
+            this.readyTiles(world);
         }
     }
 
+    /**
+     * Tick everything related to a the global server tick once per minecraft tick.
+     */
     public void onServerTick(final ServerTickEvent ev) {
+        if (ev.phase == Phase.START) {
+            // Reset the stop watch on the start of each server tick.
+            this.processQueueElementsProcessed = 0;
+            this.processQueueElementsRemaining = 0;
+            this.sw.reset();
+        }
+
         if (ev.phase == Phase.END) {
             this.tickColors(this.srvPlayerColors);
 
             // tick networks.
-            this.getRepo().updateNetworks();
-            for (final Grid g : this.getRepo().networks) {
+            this.grids.updateNetworks();
+            for (final Grid g : this.grids.getNetworks()) {
                 g.update();
             }
 
             // cross world queue.
-            this.processQueue(this.serverQueue, null);
+            processQueueElementsRemaining += this.processQueue(this.serverQueue, null);
+
+            if (this.sw.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
+                AELog.warn("Exceeded time limit of %d ms after processing %d queued tick callbacks (%d remain)",
+                        TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS, processQueueElementsProcessed,
+                        processQueueElementsRemaining);
+            }
         }
     }
 
     public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
+        Preconditions.checkArgument(!world.isRemote, "Trying to register a crafting job for a client-world");
+
         synchronized (this.craftingJobs) {
             this.craftingJobs.put(world, craftingJob);
         }
@@ -252,8 +333,6 @@ public class TickHandler {
 
     /**
      * Simulates the current crafting requests before they user can submit them to be processed.
-     * 
-     * @param world
      */
     private void simulateCraftingJobs(IWorld world) {
         synchronized (this.craftingJobs) {
@@ -278,19 +357,16 @@ public class TickHandler {
 
     /**
      * Ready the tiles in this world
-     * 
-     * @param world
      */
     private void readyTiles(IWorld world) {
-        final HandlerRep repo = this.getRepo();
-        final Map<ChunkPos, Queue<AEBaseTileEntity>> worldQueue = repo.tiles.getOrDefault(world,
-                Collections.emptyMap());
+        final Long2ObjectMap<Queue<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
 
-        Iterator<Entry<ChunkPos, Queue<AEBaseTileEntity>>> it = worldQueue.entrySet().iterator();
+        Iterator<Entry<Queue<AEBaseTileEntity>>> it = worldQueue.long2ObjectEntrySet().iterator();
+
         while (it.hasNext()) {
-            Entry<ChunkPos, Queue<AEBaseTileEntity>> entry = it.next();
+            Entry<Queue<AEBaseTileEntity>> entry = it.next();
 
-            ChunkPos pos = entry.getKey();
+            ChunkPos pos = new ChunkPos(entry.getLongKey());
             AbstractChunkProvider chunkProvider = world.getChunkProvider();
 
             // Using the blockpos of the chunk start to test if it can tick.
@@ -318,105 +394,56 @@ public class TickHandler {
         }
     }
 
+    /**
+     * Tick all currently players having a color applied by a {@link PaintBallItem}.
+     */
     private void tickColors(final Map<Integer, PlayerColor> playerSet) {
         final Iterator<PlayerColor> i = playerSet.values().iterator();
 
         while (i.hasNext()) {
             final PlayerColor pc = i.next();
-            if (pc.ticksLeft <= 0) {
+            if (pc.isDone()) {
                 i.remove();
             }
-            pc.ticksLeft--;
+            pc.tick();
         }
     }
 
-    private void processQueue(final Queue<IWorldCallable<?>> queue, final World world) {
+    /**
+     * Process the {@link IWorldCallable} queue in this {@link World}
+     * 
+     * This has a hard limit of about 50 ms before deferring further processing into the next tick.
+     * 
+     * @param queue the queue to process
+     * @param world the world in which the queue is processed or null for the server queue
+     * 
+     * @return the amount of remaining callbacks
+     */
+    private int processQueue(final Queue<IWorldCallable<?>> queue, final World world) {
         if (queue == null) {
-            return;
+            return 0;
         }
 
-        final Stopwatch sw = Stopwatch.createStarted();
+        // start the clock
+        sw.start();
 
-        IWorldCallable<?> c = null;
-        while ((c = queue.poll()) != null) {
+        while (!queue.isEmpty()) {
             try {
-                c.call(world);
+                // call the first queue element.
+                queue.poll().call(world);
+                this.processQueueElementsProcessed++;
 
-                if (sw.elapsed(TimeUnit.MILLISECONDS) > 50) {
+                if (sw.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
                     break;
                 }
             } catch (final Exception e) {
-                AELog.debug(e);
+                AELog.warn(e);
             }
         }
-    }
 
-    private static class HandlerRep {
+        // stop watch for the next call
+        sw.stop();
 
-        private Map<IWorld, Map<ChunkPos, Queue<AEBaseTileEntity>>> tiles = new HashMap<>();
-        private Set<Grid> networks = new HashSet<>();
-        private Set<Grid> toAdd = new HashSet<>();
-        private Set<Grid> toRemove = new HashSet<>();
-
-        public HandlerRep() {
-        }
-
-        private void clear() {
-            this.tiles = new WeakHashMap<>();
-            this.networks = new HashSet<>();
-            this.toAdd = new HashSet<>();
-            this.toRemove = new HashSet<>();
-        }
-
-        private synchronized void addTile(AEBaseTileEntity tile) {
-            IWorld world = tile.getWorld();
-            ChunkPos chunkPos = new ChunkPos(tile.getPos());
-
-            Map<ChunkPos, Queue<AEBaseTileEntity>> worldQueue = this.tiles.computeIfAbsent(world, (key) -> {
-                return new HashMap<>();
-            });
-
-            Queue<AEBaseTileEntity> queue = worldQueue.computeIfAbsent(chunkPos, (key) -> {
-                return new ArrayDeque<>();
-            });
-
-            queue.add(tile);
-
-        }
-
-        private synchronized void addNetwork(Grid g) {
-            this.toAdd.add(g);
-            this.toRemove.remove(g);
-        }
-
-        private synchronized void removeNetwork(Grid g) {
-            this.toRemove.add(g);
-            this.toAdd.remove(g);
-        }
-
-        private synchronized void updateNetworks() {
-            this.networks.removeAll(this.toRemove);
-            this.toRemove.clear();
-
-            this.networks.addAll(this.toAdd);
-            this.toAdd.clear();
-        }
-    }
-
-    public static class PlayerColor {
-
-        public final AEColor myColor;
-        private final int myEntity;
-        private int ticksLeft;
-
-        public PlayerColor(final int id, final AEColor col, final int ticks) {
-            this.myEntity = id;
-            this.myColor = col;
-            this.ticksLeft = ticks;
-        }
-
-        public PaintedEntityPacket getPacket() {
-            return new PaintedEntityPacket(this.myEntity, this.myColor, this.ticksLeft);
-        }
+        return queue.size();
     }
 }

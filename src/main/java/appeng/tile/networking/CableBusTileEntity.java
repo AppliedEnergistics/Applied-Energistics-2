@@ -53,7 +53,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.helpers.AEMultiTile;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.parts.CableBusContainer;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;

@@ -36,7 +36,7 @@ import appeng.api.networking.events.MENetworkPostCacheConstruction;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.util.ReadOnlyCollection;
 
 public class Grid implements IGrid {
