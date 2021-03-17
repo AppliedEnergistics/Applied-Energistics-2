@@ -525,6 +525,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         super.handleMouseClick(slot, slotIdx, mouseButton, clickType);
     }
 
+    @Override
     protected boolean itemStackMoved(int keyCode, int scanCode) {
         return checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode));
     }
@@ -651,7 +652,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 }
 
                 // Annoying but easier than trying to splice into render item
-                super.moveItems(matrices, new Size1Slot((SlotME) s));
+                super.moveItems(matrices, new Size1Slot(s));
 
                 this.stackSizeRenderer.renderStackSize(this.font, ((SlotME) s).getAEStack(), s.xPos, s.yPos);
 
@@ -806,6 +807,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return this.meSlots;
     }
 
+    @Override
     public void tick() {
         super.tick();
 

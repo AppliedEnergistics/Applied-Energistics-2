@@ -56,6 +56,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
         super(is);
     }
 
+    @Override
     protected float getPowerDrainPerTick() {
         return 0.5f;
     }

@@ -10,14 +10,12 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 /**
- * To be implemented on blocks that "hide" another block inside, so connected
- * textures can still be accomplished.
+ * To be implemented on blocks that "hide" another block inside, so connected textures can still be accomplished.
  */
 public interface IFacade {
 
     /**
-     * @deprecated Use
-     *             {@link #getFacade(IBlockReader, BlockPos, Direction, BlockPos)}
+     * @deprecated Use {@link #getFacade(IBlockReader, BlockPos, Direction, BlockPos)}
      */
     @Nonnull
     @Deprecated
@@ -30,8 +28,7 @@ public interface IFacade {
      * @param pos        The Blocks position
      * @param side       The side being rendered, NOT the side being connected from.
      *                   <p>
-     *                   This value can be null if no side is specified. Please
-     *                   handle this appropriately.
+     *                   This value can be null if no side is specified. Please handle this appropriately.
      * @param connection The position of the block being connected to.
      * @return The blockstate which your block appears as.
      */

@@ -128,5 +128,5 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
             POSSIBLE_ITEMS.add(is);
             return is.copy();
         }
-    };
+    }
 }

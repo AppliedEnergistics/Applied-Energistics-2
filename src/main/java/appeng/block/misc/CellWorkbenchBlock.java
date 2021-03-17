@@ -34,7 +34,6 @@ import appeng.container.ContainerLocator;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.tile.misc.CellWorkbenchTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity> {
 
@@ -51,10 +50,10 @@ public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity>
 
         final CellWorkbenchTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 CellWorkbenchContainer.open(p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
         return ActionResultType.PASS;
     }

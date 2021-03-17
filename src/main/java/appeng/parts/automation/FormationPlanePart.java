@@ -438,7 +438,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         @Override
         public float getPlacementYaw() {
-            return (float) (this.lookDirection.getHorizontalIndex() * 90);
+            return this.lookDirection.getHorizontalIndex() * 90;
         }
     }
 }

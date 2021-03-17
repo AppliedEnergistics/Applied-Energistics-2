@@ -101,7 +101,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                         if (matches) {
                             while (item.getCount() > 0 && other.getCount() > 0) {
                                 other.grow(-1);
-                                ;
+
                                 if (other.getCount() == 0) {
                                     e.remove();
                                 }

@@ -30,7 +30,7 @@ public interface ITooltip {
 
     /**
      * Returns the tooltip message.
-     * 
+     *
      * Should use {@link StringTextComponent#EMPTY} for no tooltip
      *
      * @return tooltip message

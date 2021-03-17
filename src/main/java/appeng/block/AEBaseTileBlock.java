@@ -243,7 +243,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                     }
                 }
 
-                return ActionResultType.SUCCESS;
+                return ActionResultType.func_233537_a_(world.isRemote());
             }
         }
 

@@ -45,7 +45,6 @@ import appeng.core.AEConfig;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.misc.VibrationChamberTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChamberTileEntity> {
 
@@ -75,16 +74,15 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             return ActionResultType.PASS;
         }
 
-        if (Platform.isServer()) {
+        if (w.isRemote()) {
             final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getFace()));
-                return ActionResultType.SUCCESS;
             }
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
     @Override

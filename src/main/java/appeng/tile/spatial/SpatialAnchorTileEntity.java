@@ -279,7 +279,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     /**
      * Used to restore loaded chunks from {@link ForgeChunkManager}
-     * 
+     *
      * @param world
      * @param chunkPos
      */
@@ -324,7 +324,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     /**
      * Adds the chunk to the current loaded list.
-     * 
+     *
      * @param chunkPos
      * @return
      */

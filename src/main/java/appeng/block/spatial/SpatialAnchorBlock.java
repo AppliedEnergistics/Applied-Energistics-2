@@ -39,7 +39,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialAnchorContainer;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 /**
  * The block for our chunk loader
@@ -73,11 +72,11 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
 
         final SpatialAnchorTileEntity tg = this.getTileEntity(worldIn, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!worldIn.isRemote()) {
                 ContainerOpener.openContainer(SpatialAnchorContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(worldIn.isRemote());
         }
         return ActionResultType.PASS;
     }

@@ -37,7 +37,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.IOPortContainer;
 import appeng.tile.storage.IOPortTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
 
@@ -63,11 +62,11 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
 
         final IOPortTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(IOPortContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
         return ActionResultType.PASS;
     }

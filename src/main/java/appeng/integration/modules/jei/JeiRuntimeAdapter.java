@@ -37,6 +37,7 @@ class JeiRuntimeAdapter implements IJEI {
         return true;
     }
 
+    @Override
     public IJeiRuntime getRuntime() {
         return runtime;
     }

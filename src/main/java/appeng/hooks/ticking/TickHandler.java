@@ -129,12 +129,12 @@ public class TickHandler {
 
     /**
      * Add a server or world callback which gets called the next time the queue is ticked.
-     * 
+     *
      * Callbacks on the client are not support.
      * <p>
      * Using null as world will queue it into the global {@link ServerTickEvent}, otherwise it will be ticked with the
      * corresponding {@link WorldTickEvent}.
-     * 
+     *
      * @param w null or the specific {@link World}
      * @param c the callback
      */
@@ -333,6 +333,8 @@ public class TickHandler {
 
     /**
      * Simulates the current crafting requests before they user can submit them to be processed.
+     *
+     * @param world
      */
     private void simulateCraftingJobs(IWorld world) {
         synchronized (this.craftingJobs) {
@@ -357,6 +359,8 @@ public class TickHandler {
 
     /**
      * Ready the tiles in this world
+     *
+     * @param world
      */
     private void readyTiles(IWorld world) {
         final Long2ObjectMap<Queue<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);

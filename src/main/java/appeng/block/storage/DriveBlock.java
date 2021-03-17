@@ -35,7 +35,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.DriveContainer;
 import appeng.tile.storage.DriveTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
 
@@ -52,10 +51,10 @@ public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
 
         final DriveTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
         return ActionResultType.PASS;
     }

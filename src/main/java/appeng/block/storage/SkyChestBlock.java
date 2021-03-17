@@ -53,7 +53,6 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SkyChestContainer;
 import appeng.tile.storage.SkyChestTileEntity;
-import appeng.util.Platform;
 
 public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implements IWaterLoggable {
 
@@ -76,7 +75,7 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
 
     public enum SkyChestType {
         STONE, BLOCK
-    };
+    }
 
     public final SkyChestType type;
 
@@ -105,16 +104,14 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (Platform.isServer()) {
+        if (!w.isRemote()) {
             SkyChestTileEntity tile = getTileEntity(w, pos);
-            if (tile == null) {
-                return ActionResultType.PASS;
+            if (tile != null) {
+                ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
             }
-
-            ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
     @Override
@@ -147,6 +144,7 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
         return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
+    @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockPos pos = context.getPos();
@@ -157,12 +155,14 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
         return blockState;
     }
 
+    @Override
     public FluidState getFluidState(BlockState blockState) {
         return blockState.get(WATERLOGGED).booleanValue()
                 ? Fluids.WATER.getStillFluidState(false)
                 : super.getFluidState(blockState);
     }
 
+    @Override
     public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
             BlockPos currentPos, BlockPos facingPos) {
         if (blockState.get(WATERLOGGED)) {

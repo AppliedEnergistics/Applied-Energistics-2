@@ -272,7 +272,7 @@ public class CraftingGridCache
 
         for (final IGridNode cst : this.grid.getMachines(CraftingStorageTileEntity.class)) {
             final CraftingStorageTileEntity tile = (CraftingStorageTileEntity) cst.getMachine();
-            final CraftingCPUCluster cluster = (CraftingCPUCluster) tile.getCluster();
+            final CraftingCPUCluster cluster = tile.getCluster();
             if (cluster != null) {
                 this.craftingCPUClusters.add(cluster);
 

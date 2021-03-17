@@ -133,6 +133,6 @@ public class MeteoritePlacerItem extends AEBaseItem {
             player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
         });
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(world.isRemote());
     }
 }

@@ -42,7 +42,7 @@ public class PhantomNodeBlock extends AEBaseTileBlock<PhantomNodeTileEntity> {
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final PhantomNodeTileEntity tpn = this.getTileEntity(w, pos);
         tpn.triggerCrashMode();
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
 }

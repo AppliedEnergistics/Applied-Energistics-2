@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
@@ -41,21 +42,25 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (!InteractionUtil.isInAlternateUseMode(context.getPlayer()) && Platform
-                .hasPermissions(new DimensionalCoord(context.getWorld(), context.getPos()), context.getPlayer())) {
+        PlayerEntity p = context.getPlayer();
+        World w = context.getWorld();
+        BlockPos pos = context.getPos();
 
-            Block block = context.getWorld().getBlockState(context.getPos()).getBlock();
+        if (!InteractionUtil.isInAlternateUseMode(p) && Platform
+                .hasPermissions(new DimensionalCoord(w, pos), p)) {
+
+            Block block = w.getBlockState(pos).getBlock();
             if (block instanceof AEBaseBlock) {
-                if (Platform.isClient()) {
+                if (w.isRemote()) {
                     // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
                     // Fix that in all Block#onItemUseFirst overrides.
-                    return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.PASS;
+                    return !w.isRemote() ? ActionResultType.func_233537_a_(w.isRemote()) : ActionResultType.PASS;
                 }
 
                 AEBaseBlock aeBlock = (AEBaseBlock) block;
-                if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getPos(), context.getFace())) {
-                    context.getPlayer().swingArm(context.getHand());
-                    return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+                if (aeBlock.rotateAroundFaceAxis(w, pos, context.getFace())) {
+                    p.swingArm(context.getHand());
+                    return !w.isRemote() ? ActionResultType.func_233537_a_(w.isRemote()) : ActionResultType.FAIL;
                 }
             }
         }

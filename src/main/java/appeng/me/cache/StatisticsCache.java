@@ -40,7 +40,7 @@ import appeng.api.util.DimensionalCoord;
 
 /**
  * A grid providing precomupted statistics about a network.
- * 
+ *
  * Currently this tracks the chunks a network is occupying.
  */
 public class StatisticsCache implements IGridCache {
@@ -101,7 +101,7 @@ public class StatisticsCache implements IGridCache {
 
     /**
      * A set of all {@link IWorld} this grid spans.
-     * 
+     *
      * @return
      */
     public Set<IWorld> worlds() {
@@ -110,7 +110,7 @@ public class StatisticsCache implements IGridCache {
 
     /**
      * A set of chunks this grid spans in a specific world.
-     * 
+     *
      * @param world
      * @return
      */
@@ -124,7 +124,7 @@ public class StatisticsCache implements IGridCache {
 
     /**
      * Mark the chunk of the {@link BlockPos} as location of the network.
-     * 
+     *
      * @param world
      * @param pos
      * @return
@@ -141,10 +141,10 @@ public class StatisticsCache implements IGridCache {
 
     /**
      * Remove the chunk of this {@link BlockPos} from the network locations.
-     * 
+     *
      * This uses a {@link Multiset} to ensure it will only marked as no longer containing a grid once all other
      * gridnodes are removed as well.
-     * 
+     *
      * @param world
      * @param pos
      * @return
@@ -170,7 +170,7 @@ public class StatisticsCache implements IGridCache {
 
     /**
      * Cleanup the map in case a whole world is unloaded
-     * 
+     *
      * @param world
      */
     private void clearWorld(IWorld world) {

@@ -131,6 +131,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     public void func_230352_b_(IWorld world, StructureManager accessor, IChunk chunk) {
     }
 
+    @Override
     public IBlockReader func_230348_a_(int x, int z) {
         return columnSample;
     }

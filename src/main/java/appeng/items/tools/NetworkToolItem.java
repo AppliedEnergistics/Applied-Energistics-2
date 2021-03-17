@@ -74,7 +74,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        if (Platform.isClient()) {
+        if (w.isRemote()) {
             final RayTraceResult mop = AppEng.proxy.getRTR();
 
             if (mop == null || mop.getType() == RayTraceResult.Type.MISS) {
@@ -82,14 +82,15 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             }
         }
 
-        return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), p.getHeldItem(hand));
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        World w = context.getWorld();
         final BlockRayTraceResult mop = new BlockRayTraceResult(context.getHitVec(), context.getFace(),
                 context.getPos(), context.isInside());
-        final TileEntity te = context.getWorld().getTileEntity(context.getPos());
+        final TileEntity te = w.getTileEntity(context.getPos());
 
         if (te instanceof IPartHost) {
             final SelectedPart part = ((IPartHost) te).selectPart(mop.getHitVec());
@@ -109,7 +110,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             NetworkHandler.instance().sendToServer(new ClickPacket(context));
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
     @Override

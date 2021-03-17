@@ -211,6 +211,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
         return new MetaRotation(w, pos, FACING);
     }
 
+    @Override
     public FluidState getFluidState(BlockState blockState) {
         return blockState.get(WATERLOGGED).booleanValue()
                 ? Fluids.WATER.getStillFluidState(false)

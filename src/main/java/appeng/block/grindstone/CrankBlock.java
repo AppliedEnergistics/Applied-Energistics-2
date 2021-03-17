@@ -59,7 +59,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (player instanceof FakePlayer || player == null) {
             this.dropCrank(w, pos);
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         final CrankTileEntity tile = this.getTileEntity(w, pos);
@@ -67,7 +67,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
             if (tile.power()) {
                 AeStats.TurnedCranks.addToPlayer(player, 1);
             }
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         return ActionResultType.PASS;

@@ -55,11 +55,11 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
         if (!InteractionUtil.isInAlternateUseMode(p)) {
             final InscriberTileEntity tg = this.getTileEntity(w, pos);
             if (tg != null) {
-                if (!tg.isRemote()) {
+                if (!w.isRemote()) {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,
                             ContainerLocator.forTileEntitySide(tg, hit.getFace()));
                 }
-                return ActionResultType.SUCCESS;
+                return ActionResultType.func_233537_a_(w.isRemote());
             }
         }
         return ActionResultType.PASS;

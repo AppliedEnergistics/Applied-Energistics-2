@@ -102,7 +102,7 @@ public class EraserItem extends AEBaseItem {
 
         AELog.info("Delete " + blocks + " blocks");
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(world.isRemote());
     }
 
     private boolean isInsideBox(BlockPos pos, BlockPos origin) {
@@ -123,7 +123,7 @@ public class EraserItem extends AEBaseItem {
 
     /**
      * Filling needs to be deferred as the tags might not be populated at construction time.
-     * 
+     *
      * @return
      */
     private Set<Block> getCommonBlocks() {

@@ -75,7 +75,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             heldItem.damageItem(1, player, p -> {
                 p.sendBreakAnimation(handIn);
             }); // FIXME Check if onBroken is equivalent
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(world.isRemote());
         } else {
             return super.onBlockActivated(state, world, pos, player, handIn, hit);
         }
