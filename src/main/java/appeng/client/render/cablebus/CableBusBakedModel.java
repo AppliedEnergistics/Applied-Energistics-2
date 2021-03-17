@@ -51,11 +51,27 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.client.render.model.AEModelData;
 
 public class CableBusBakedModel implements IBakedModel {
 
     // The number of quads overall that will be cached
     private static final int CACHE_QUAD_COUNT = 5000;
+
+    /**
+     * Lookup table to match the spin of a part with an up direction.
+     * 
+     * DUNSWE for the facing index, 4 spin values per facing.
+     * 
+     */
+    private static final Direction[] SPIN_TO_DIRECTION = new Direction[] {
+            Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
+            Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, // UP
+            Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST, // NORTH
+            Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST, // SOUTH
+            Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH, // WEST
+            Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH // EAST
+    };
 
     private final LoadingCache<CableBusRenderState, List<BakedQuad>> cableModelCache;
 
@@ -134,9 +150,11 @@ public class CableBusBakedModel implements IBakedModel {
 
                     List<BakedQuad> partQuads = bakedModel.getQuads(state, null, rand, partModelData);
 
+                    Direction spinDirection = getPartSpin(facing, partModelData);
+
                     // Rotate quads accordingly
                     QuadRotator rotator = new QuadRotator();
-                    partQuads = rotator.rotateQuads(partQuads, facing, Direction.UP);
+                    partQuads = rotator.rotateQuads(partQuads, facing, spinDirection);
 
                     quads.addAll(partQuads);
                 }
@@ -173,6 +191,15 @@ public class CableBusBakedModel implements IBakedModel {
         final AECableType secondType = sides.get(firstSide.getOpposite());
 
         return firstType == secondType && cableType == firstType && cableType == secondType;
+    }
+
+    private static Direction getPartSpin(Direction facing, IModelData partModelData) {
+        if (partModelData.hasProperty(AEModelData.SPIN)) {
+            byte spin = partModelData.getData(AEModelData.SPIN);
+            return SPIN_TO_DIRECTION[facing.ordinal() * 4 + spin];
+        }
+
+        return Direction.UP;
     }
 
     private void addCableQuads(CableBusRenderState renderState, List<BakedQuad> quadsOut) {

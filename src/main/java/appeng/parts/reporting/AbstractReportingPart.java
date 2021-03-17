@@ -20,6 +20,8 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,6 +33,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IMonitorPart;
@@ -174,26 +177,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         final TileEntity te = this.getTile();
 
         if (InteractionUtil.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
-            if (Platform.isServer()) {
-                if (this.getSpin() > 3) {
-                    this.spin = 0;
-                }
-
-                switch (this.getSpin()) {
-                    case 0:
-                        this.spin = 1;
-                        break;
-                    case 1:
-                        this.spin = 3;
-                        break;
-                    case 2:
-                        this.spin = 0;
-                        break;
-                    case 3:
-                        this.spin = 2;
-                        break;
-                }
-
+            if (!player.getEntityWorld().isRemote()) {
+                this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
                 this.saveChanges();
             }
@@ -216,7 +201,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         }
     }
 
-    private final int blockLight(final int emit) {
+    private int blockLight(final int emit) {
         if (this.opacity < 0) {
             final TileEntity te = this.getTile();
             World world = te.getWorld();
@@ -259,6 +244,12 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         } else {
             return offModels;
         }
+    }
+
+    @Override
+    @Nonnull
+    public IModelData getModelData() {
+        return new ReportingModelData(getSpin());
     }
 
     public final int getClientFlags() {

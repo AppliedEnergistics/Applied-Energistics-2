@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.render.cablebus;
+package appeng.parts.reporting;
 
 import java.util.Objects;
 
@@ -25,29 +25,30 @@ import javax.annotation.Nullable;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-public final class P2PTunnelFrequencyModelData implements IModelData {
+import appeng.client.render.model.AEModelData;
 
-    public static final ModelProperty<Long> FREQUENCY = new ModelProperty<>();
+public class ReportingModelData implements IModelData {
 
-    private final Long frequency;
+    public static final ModelProperty<Byte> SPIN = AEModelData.SPIN;
 
-    public P2PTunnelFrequencyModelData(long frequency) {
-        this.frequency = frequency;
+    private final byte spin;
+
+    public ReportingModelData(byte spin) {
+        this.spin = spin;
     }
 
     @Override
     public boolean hasProperty(ModelProperty<?> prop) {
-        return prop == FREQUENCY;
+        return prop == SPIN;
     }
 
     @Override
     @Nullable
     @SuppressWarnings("unchecked")
     public <T> T getData(ModelProperty<T> prop) {
-        if (prop == FREQUENCY) {
-            return (T) this.frequency;
+        if (prop == SPIN) {
+            return (T) (Byte) this.spin;
         }
-
         return null;
     }
 
@@ -59,7 +60,7 @@ public final class P2PTunnelFrequencyModelData implements IModelData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(frequency);
+        return Byte.hashCode(spin);
     }
 
     @Override
@@ -70,7 +71,8 @@ public final class P2PTunnelFrequencyModelData implements IModelData {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        P2PTunnelFrequencyModelData that = (P2PTunnelFrequencyModelData) o;
-        return frequency.equals(that.frequency);
+        ReportingModelData that = (ReportingModelData) o;
+        return spin == that.spin;
     }
+
 }
