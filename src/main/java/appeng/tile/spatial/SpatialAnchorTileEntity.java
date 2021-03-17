@@ -40,6 +40,7 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
+import appeng.api.movable.IMovableTile;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -65,7 +66,16 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 
 public class SpatialAnchorTileEntity extends AENetworkTileEntity
-        implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource {
+        implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource, IMovableTile {
+
+    /**
+     * Loads this radius after being move via a spatial transfer. This accounts for the anchor not being placed in the
+     * center of the SCS, but not as much as trying to fully load a 128 cubic cell with 8x8 chunks. This would need to
+     * load a 17x17 square.
+     * 
+     * TODO: 1.17 better handling, e.g. provide the SCS size via {@link IMovableTile} or another handler.
+     */
+    private static final int SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE = 4;
 
     private final ConfigManager manager = new ConfigManager(this);
     private final Set<ChunkPos> chunks = new HashSet<>();
@@ -387,5 +397,29 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
             return (ServerWorld) this.getWorld();
         }
         throw new IllegalStateException("Cannot be called on a client");
+    }
+
+    @Override
+    public boolean prepareToMove() {
+        // Just in case there are still some chunks left, as the world will change.F
+        this.releaseAll();
+
+        return true;
+    }
+
+    @Override
+    public void doneMoving() {
+        // reset the init state to keep the temporary loaded area until the network ist ready.
+        this.initialized = false;
+
+        // Temporary load an area after a spatial transfer until the network is constructed and cleanup is performed.
+        int d = SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE;
+        ChunkPos center = new ChunkPos(this.getPos());
+        for (int x = center.x - d; x <= center.x + d; x++) {
+            for (int z = center.z - d; z <= center.z + d; z++) {
+                this.force(new ChunkPos(x, z));
+            }
+        }
+
     }
 }
