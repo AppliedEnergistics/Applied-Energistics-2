@@ -73,7 +73,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
      * center of the SCS, but not as much as trying to fully load a 128 cubic cell with 8x8 chunks. This would need to
      * load a 17x17 square.
      * 
-     * TODO: 1.17 better handling, e.g. provide the SCS size via {@link IMovableTile} or another handler.
+     * TODO: 1.17 Break API compat and pass plot id or plot-descriptor to {@link IMovableTile}.
      */
     private static final int SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE = 4;
 
@@ -130,7 +130,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         OverlayManager.getInstance().removeHandlers(this);
 
         if (this.displayOverlay) {
-            this.chunks.addAll(Arrays.stream(data.readLongArray(null)).boxed().map(c -> new ChunkPos(c))
+            this.chunks.addAll(Arrays.stream(data.readLongArray(null)).mapToObj(ChunkPos::new)
                     .collect(Collectors.toSet()));
             // Register it again to render the overlay
             OverlayManager.getInstance().showArea(this);
@@ -200,7 +200,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     @Override
     public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue) {
         if (settingName == Settings.OVERLAY_MODE) {
-            this.displayOverlay = newValue == YesNo.YES ? true : false;
+            this.displayOverlay = newValue == YesNo.YES;
             this.markForUpdate();
         }
     }
@@ -289,9 +289,6 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     /**
      * Used to restore loaded chunks from {@link ForgeChunkManager}
-     *
-     * @param world
-     * @param chunkPos
      */
     public void registerChunk(ChunkPos chunkPos) {
         this.chunks.add(chunkPos);
@@ -334,9 +331,6 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     /**
      * Adds the chunk to the current loaded list.
-     *
-     * @param chunkPos
-     * @return
      */
     private boolean force(ChunkPos chunkPos) {
         // Avoid loading chunks after the anchor is destroyed
@@ -357,10 +351,6 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         return forced;
     }
 
-    /**
-     * @param chunkPos
-     * @return
-     */
     private boolean release(ChunkPos chunkPos, boolean remove) {
         ServerWorld world = this.getServerWorld();
         boolean removed = ChunkLoadingService.getInstance().releaseChunk(world, this.getPos(), chunkPos, true);
@@ -409,10 +399,10 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     @Override
     public void doneMoving() {
-        // reset the init state to keep the temporary loaded area until the network ist ready.
+        // reset the init state to keep the temporary loaded area until the network is ready.
         this.initialized = false;
 
-        // Temporary load an area after a spatial transfer until the network is constructed and cleanup is performed.
+        // Temporarily load an area after a spatial transfer until the network is constructed and cleanup is performed.
         int d = SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE;
         ChunkPos center = new ChunkPos(this.getPos());
         for (int x = center.x - d; x <= center.x + d; x++) {
