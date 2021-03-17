@@ -19,9 +19,15 @@
 package appeng.parts.automation;
 
 
+import javax.annotation.Nonnull;
+
 import java.util.Collection;
 import java.util.Random;
 
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -82,7 +88,7 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 
-public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
+public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider, IGridTickable
 {
 
 	@PartModels
@@ -118,6 +124,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	private double centerX;
 	private double centerY;
 	private double centerZ;
+	private IBaseMonitor<IAEItemStack> changedMonitor;
 
 	@Reflected
 	public PartLevelEmitter( final ItemStack is )
@@ -400,7 +407,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource actionSource )
 	{
-		this.updateReportingValue( (IMEMonitor<IAEItemStack>) monitor );
+		this.changedMonitor = monitor;
 	}
 
 	@Override
@@ -575,5 +582,23 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			return this.isLevelEmitterOn() ? MODEL_ON_OFF : MODEL_OFF_OFF;
 		}
+	}
+
+	@Nonnull
+	@Override
+	public TickingRequest getTickingRequest( @Nonnull IGridNode node )
+	{
+		return new TickingRequest( 1,1,false,false );
+	}
+
+	@Nonnull
+	@Override
+	public TickRateModulation tickingRequest( @Nonnull IGridNode node, int ticksSinceLastCall )
+	{
+		if (this.changedMonitor != null)
+		{
+			this.updateReportingValue((IMEMonitor<IAEItemStack>) changedMonitor);
+		}
+		return TickRateModulation.SAME;
 	}
 }
