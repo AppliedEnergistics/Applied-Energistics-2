@@ -215,7 +215,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     @Override
     public final boolean isPowered() {
         try {
-            if (Platform.isServer()) {
+            if (!isRemote()) {
                 return this.getProxy().getEnergy().isNetworkPowered();
             } else {
                 return ((this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG);

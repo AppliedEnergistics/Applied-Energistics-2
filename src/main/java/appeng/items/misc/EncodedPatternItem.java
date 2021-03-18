@@ -87,7 +87,7 @@ public class EncodedPatternItem extends AEBaseItem {
 
     private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            if (Platform.isClient()) {
+            if (player.getEntityWorld().isRemote()) {
                 return false;
             }
 

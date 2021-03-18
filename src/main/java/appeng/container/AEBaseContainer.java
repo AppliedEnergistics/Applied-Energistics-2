@@ -138,6 +138,10 @@ public abstract class AEBaseContainer extends Container {
         return null;
     }
 
+    public boolean isRemote() {
+        return this.invPlayer.player.getEntityWorld().isRemote();
+    }
+
     private void prepareSync() {
         for (final Field f : this.getClass().getFields()) {
             if (f.isAnnotationPresent(GuiSync.class)) {
@@ -157,7 +161,7 @@ public abstract class AEBaseContainer extends Container {
 
     public void setTargetStack(final IAEItemStack stack) {
         // client doesn't need to re-send, makes for lower overhead rapid packets.
-        if (Platform.isClient()) {
+        if (isRemote()) {
             if (stack == null && this.clientRequestedTargetItem == null) {
                 return;
             }
@@ -832,10 +836,8 @@ public abstract class AEBaseContainer extends Container {
     }
 
     protected void updateHeld(final ServerPlayerEntity p) {
-        if (Platform.isServer()) {
-            NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0,
-                    AEItemStack.fromItemStack(p.inventory.getItemStack())), p);
-        }
+        NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0,
+                AEItemStack.fromItemStack(p.inventory.getItemStack())), p);
     }
 
     protected ItemStack transferStackToContainer(final ItemStack input) {

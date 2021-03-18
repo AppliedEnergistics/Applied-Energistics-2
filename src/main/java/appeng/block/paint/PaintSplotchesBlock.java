@@ -68,7 +68,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
 
     @Override
     public void fillWithRain(final World w, final BlockPos pos) {
-        if (Platform.isServer()) {
+        if (!w.isRemote()) {
             w.removeBlock(pos, false);
         }
     }

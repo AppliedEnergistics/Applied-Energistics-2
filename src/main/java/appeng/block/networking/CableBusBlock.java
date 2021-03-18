@@ -288,7 +288,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        if (Platform.isServer()) {
+        if (!world.isRemote()) {
             this.cb(world, pos).onNeighborChanged(world, pos, fromPos);
         }
     }

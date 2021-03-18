@@ -41,7 +41,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
     public boolean hitEntity(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
         if (this.getAECurrentPower(item) > 300) {
             this.extractAEPower(item, 300, Actionable.MODULATE);
-            if (Platform.isServer()) {
+            if (!target.world.isRemote()) {
                 for (int x = 0; x < 2; x++) {
                     final AxisAlignedBB entityBoundingBox = target.getBoundingBox();
                     final float dx = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minX);

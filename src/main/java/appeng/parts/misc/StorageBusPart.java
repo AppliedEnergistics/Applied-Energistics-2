@@ -276,7 +276,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!player.getEntityWorld().isRemote()) {
             ContainerOpener.openContainer(StorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;

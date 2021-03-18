@@ -235,7 +235,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
     @Override
     public CellState getCellStatus(final int slot) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             final int cellState = ((this.state >> (slot * BIT_CELL_STATE_BITS)) & BIT_CELL_STATE_MASK);
             return CellState.values()[cellState];
         }

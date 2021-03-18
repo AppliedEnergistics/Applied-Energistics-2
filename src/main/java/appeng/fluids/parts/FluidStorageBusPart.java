@@ -215,7 +215,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!player.getEntityWorld().isRemote()) {
             ContainerOpener.openContainer(FluidStorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;

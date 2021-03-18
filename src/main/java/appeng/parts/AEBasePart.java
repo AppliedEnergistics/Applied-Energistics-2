@@ -95,6 +95,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         this.proxy.setValidSides(EnumSet.noneOf(Direction.class));
     }
 
+    public final boolean isRemote() {
+        return this.tile == null
+                || this.tile.getWorld() == null
+                || this.tile.getWorld().isRemote();
+    }
+
     public IPartHost getHost() {
         return this.host;
     }

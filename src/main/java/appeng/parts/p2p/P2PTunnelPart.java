@@ -163,7 +163,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return true;
         }
 

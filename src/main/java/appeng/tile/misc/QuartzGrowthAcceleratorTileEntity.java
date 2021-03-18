@@ -83,7 +83,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
 
     @Override
     public boolean isPowered() {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             try {
                 return this.getProxy().getEnergy().isNetworkPowered();
             } catch (final GridAccessException e) {

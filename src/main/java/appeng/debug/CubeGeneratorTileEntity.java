@@ -48,7 +48,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
 
     @Override
     public void tick() {
-        if (!this.is.isEmpty() && Platform.isServer()) {
+        if (!this.is.isEmpty() && !isRemote()) {
             this.countdown--;
 
             if (this.countdown % 20 == 0) {
@@ -84,7 +84,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
     }
 
     void click(final PlayerEntity player) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             final ItemStack hand = player.inventory.getCurrentItem();
             this.who = player;
 

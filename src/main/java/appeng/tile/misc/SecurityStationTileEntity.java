@@ -226,7 +226,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     @Override
     public void onReady() {
         super.onReady();
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             this.isActive = true;
             MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.REGISTER));
         }

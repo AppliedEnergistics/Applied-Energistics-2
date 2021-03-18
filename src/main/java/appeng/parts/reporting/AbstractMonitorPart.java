@@ -163,7 +163,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     @Override
     public boolean onPartShiftActivate(PlayerEntity player, Hand hand, Vector3d pos) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return true;
         }
 

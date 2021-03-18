@@ -119,7 +119,7 @@ public class CablePart extends AEBasePart implements ICablePart {
             }
 
             if (newPart != null && hasPermission) {
-                if (Platform.isClient()) {
+                if (isRemote()) {
                     return true;
                 }
 
@@ -147,16 +147,9 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public void getBoxes(final IPartCollisionHelper bch) {
-        bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
+        updateConnections();
 
-        if (Platform.isServer()) {
-            final IGridNode n = this.getGridNode();
-            if (n != null) {
-                this.setConnections(n.getConnectedSides());
-            } else {
-                this.getConnections().clear();
-            }
-        }
+        bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
 
         final IPartHost ph = this.getHost();
         if (ph != null) {
@@ -215,6 +208,17 @@ public class CablePart extends AEBasePart implements ICablePart {
                     bch.addBox(0.0, 6.0, 6.0, 6.0, 10.0, 10.0);
                     break;
                 default:
+            }
+        }
+    }
+
+    protected void updateConnections() {
+        if (!isRemote()) {
+            final IGridNode n = this.getGridNode();
+            if (n != null) {
+                this.setConnections(n.getConnectedSides());
+            } else {
+                this.getConnections().clear();
             }
         }
     }

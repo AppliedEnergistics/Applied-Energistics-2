@@ -92,7 +92,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!player.getEntityWorld().isRemote()) {
             ContainerOpener.openContainer(FluidIOContainer.TYPE, player, ContainerLocator.forPart(this));
         }
 

@@ -214,7 +214,7 @@ public class PartPlacement {
             // an item use context
             if (!blockState.isAir(world, pos) && !blockState.isReplaceable(useContext)) {
                 offset = side;
-                if (Platform.isServer()) {
+                if (!world.isRemote()) {
                     side = side.getOpposite();
                 }
             }

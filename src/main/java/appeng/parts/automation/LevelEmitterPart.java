@@ -165,7 +165,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     // TODO: Make private again
     public boolean isLevelEmitterOn() {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return (this.getClientFlags() & FLAG_ON) == FLAG_ON;
         }
 
@@ -405,7 +405,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!player.getEntityWorld().isRemote()) {
             ContainerOpener.openContainer(LevelEmitterContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;

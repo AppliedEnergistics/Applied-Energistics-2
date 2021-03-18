@@ -201,7 +201,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!player.getEntityWorld().isRemote()) {
             ContainerOpener.openContainer(FluidFormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
         }
 

@@ -265,7 +265,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         final List<ItemStack> drops = new ArrayList<>();
 
         // add one of each item to the items on the board...
-        if (Platform.isServer()) {
+        if (!p.getEntityWorld().isRemote()) {
             // set new items onto the crafting table...
             for (int x = 0; x < this.craftInv.getSlots(); x++) {
                 if (this.craftInv.getStackInSlot(x).isEmpty()) {
