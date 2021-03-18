@@ -206,8 +206,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     private void resetCache(final boolean fullReset) {
-        if (this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null
-                || this.getHost().getTile().getWorld().isRemote) {
+        if (isRemote()) {
             return;
         }
 
@@ -276,7 +275,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (!player.getEntityWorld().isRemote()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(StorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;

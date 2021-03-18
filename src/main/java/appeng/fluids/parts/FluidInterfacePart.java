@@ -133,7 +133,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public boolean onPartActivate(final PlayerEntity p, final Hand hand, final Vector3d pos) {
-        if (!p.getEntityWorld().isRemote()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p, ContainerLocator.forPart(this));
         }
 

@@ -177,7 +177,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         final TileEntity te = this.getTile();
 
         if (InteractionUtil.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
-            if (!player.getEntityWorld().isRemote()) {
+            if (!isRemote()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
                 this.saveChanges();
