@@ -66,10 +66,10 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final World world,
             final BlockPos pos) {
         if (pos == null) {
-            return new NetworkToolViewer(is, null);
+            return new NetworkToolViewer(is, null, world.isRemote());
         }
         final TileEntity te = world.getTileEntity(pos);
-        return new NetworkToolViewer(is, (IGridHost) (te instanceof IGridHost ? te : null));
+        return new NetworkToolViewer(is, (IGridHost) (te instanceof IGridHost ? te : null), world.isRemote());
     }
 
     @Override

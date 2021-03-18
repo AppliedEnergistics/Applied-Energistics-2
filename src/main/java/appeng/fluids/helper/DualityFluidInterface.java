@@ -23,6 +23,7 @@ import java.util.Optional;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -401,6 +402,12 @@ public class DualityFluidInterface
 
     public void setPriority(final int newValue) {
         this.priority = newValue;
+    }
+
+    @Override
+    public boolean isRemote() {
+        World world = this.iHost.getTileEntity().getWorld();
+        return world == null || world.isRemote();
     }
 
     public void writeToNBT(final CompoundNBT data) {
