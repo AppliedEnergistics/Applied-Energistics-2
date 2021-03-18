@@ -139,7 +139,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
         this.cached = false;
-        if (this.parent != null && Platform.isServer()) {
+        if (this.parent != null && !this.parent.isRemote()) {
             this.parent.onChangeInventory(inv, slot, mc, removedStack, newStack);
         }
     }

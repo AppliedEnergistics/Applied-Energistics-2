@@ -192,13 +192,14 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             Arrays.fill(set, ItemStack.EMPTY);
 
             // add one of each item to the items on the board...
-            if (Platform.isServer()) {
+            World world = p.world;
+            if (!world.isRemote()) {
                 final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
                 for (int x = 0; x < 9; x++) {
                     ic.setInventorySlotContents(x, this.getPattern().getStackInSlot(x));
                 }
 
-                final IRecipe<CraftingInventory> r = this.findRecipe(ic, p.world);
+                final IRecipe<CraftingInventory> r = this.findRecipe(ic, world);
 
                 if (r == null) {
                     final Item target = request.getItem();
@@ -228,7 +229,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 if (inv != null) {
                     for (int x = 0; x < this.getPattern().getSlots(); x++) {
                         if (!this.getPattern().getStackInSlot(x).isEmpty()) {
-                            set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, p.world, r, is, ic,
+                            set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, world, r, is, ic,
                                     this.getPattern().getStackInSlot(x), x, all, Actionable.MODULATE,
                                     ViewCellItem.createFilter(this.container.getViewCells()));
                             ic.setInventorySlotContents(x, set[x]);

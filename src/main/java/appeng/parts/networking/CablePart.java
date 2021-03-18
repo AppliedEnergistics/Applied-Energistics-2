@@ -46,7 +46,6 @@ import appeng.core.Api;
 import appeng.items.parts.ColoredPartItem;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
-import appeng.util.Platform;
 
 public class CablePart extends AEBasePart implements ICablePart {
 
@@ -227,17 +226,14 @@ public class CablePart extends AEBasePart implements ICablePart {
     public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
 
-        if (Platform.isServer()) {
-            final IGridNode node = this.getGridNode();
-
-            if (node != null) {
-                int howMany = 0;
-                for (final IGridConnection gc : node.getConnections()) {
-                    howMany = Math.max(gc.getUsedChannels(), howMany);
-                }
-
-                data.putByte("usedChannels", (byte) howMany);
+        final IGridNode node = this.getGridNode();
+        if (node != null) {
+            int howMany = 0;
+            for (final IGridConnection gc : node.getConnections()) {
+                howMany = Math.max(gc.getUsedChannels(), howMany);
             }
+
+            data.putByte("usedChannels", (byte) howMany);
         }
     }
 

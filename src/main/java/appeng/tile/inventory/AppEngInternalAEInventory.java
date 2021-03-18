@@ -31,7 +31,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
@@ -185,7 +184,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         this.inv[slot] = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                 .createStack(newItemStack);
 
-        if (this.te != null && Platform.isServer()) {
+        if (this.te != null && !this.te.isRemote()) {
             ItemStack newStack = newItemStack.copy();
             InvOperation op = InvOperation.SET;
 
@@ -205,7 +204,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     }
 
     private void fireOnChangeInventory(int slot, InvOperation op, ItemStack removed, ItemStack inserted) {
-        if (this.te != null && Platform.isServer() && !this.dirtyFlag) {
+        if (this.te != null && !this.te.isRemote() && !this.dirtyFlag) {
             this.dirtyFlag = true;
             this.te.onChangeInventory(this, slot, op, removed, inserted);
             this.te.saveChanges();

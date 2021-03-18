@@ -25,4 +25,6 @@ public interface IAEAppEngInventory {
     void saveChanges();
 
     void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack);
+
+    boolean isRemote();
 }

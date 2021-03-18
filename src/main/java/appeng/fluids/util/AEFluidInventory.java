@@ -73,7 +73,7 @@ public class AEFluidInventory implements IAEFluidTank {
     }
 
     private void onContentChanged(final int slot) {
-        if (this.handler != null && Platform.isServer()) {
+        if (this.handler != null && !this.handler.isRemote()) {
             this.handler.onFluidInventoryChanged(this, slot);
         }
     }

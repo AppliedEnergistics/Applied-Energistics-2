@@ -198,6 +198,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         }
     }
 
+    @Override
+    public boolean isRemote() {
+        World world = this.iHost.getTileEntity().getWorld();
+        return world == null || world.isRemote();
+    }
+
     public void writeToNBT(final CompoundNBT data) {
         this.config.writeToNBT(data, "config");
         this.patterns.writeToNBT(data, "patterns");

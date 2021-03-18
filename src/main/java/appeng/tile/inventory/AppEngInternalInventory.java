@@ -101,7 +101,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
 
     @Override
     protected void onContentsChanged(int slot) {
-        if (this.getTileEntity() != null && this.eventsEnabled() && !this.dirtyFlag) {
+        if (this.te != null && this.eventsEnabled() && !this.dirtyFlag) {
             this.dirtyFlag = true;
             ItemStack newStack = this.getStackInSlot(slot).copy();
             ItemStack oldStack = this.previousStack;
@@ -128,7 +128,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
     }
 
     protected boolean eventsEnabled() {
-        return Platform.isServer() || this.isEnableClientEvents();
+        return this.te != null && !this.te.isRemote() || this.isEnableClientEvents();
     }
 
     public void setMaxStackSize(final int slot, final int size) {
