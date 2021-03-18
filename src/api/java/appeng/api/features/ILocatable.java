@@ -31,6 +31,8 @@ import appeng.api.events.LocatableEventAnnounce;
  */
 public interface ILocatable {
 
+    // TODO 1.17: Break compat and add World getWorld() to allow detecting isRemote()
+
     /**
      * @return the serial for a locatable object
      */

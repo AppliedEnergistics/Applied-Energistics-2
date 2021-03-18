@@ -180,7 +180,7 @@ public abstract class AEBaseContainer extends Container {
     }
 
     public void verifyPermissions(final SecurityPermissions security, final boolean requirePower) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return;
         }
 
@@ -315,7 +315,7 @@ public abstract class AEBaseContainer extends Container {
 
     @Override
     public ItemStack transferStackInSlot(final PlayerEntity p, final int idx) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return ItemStack.EMPTY;
         }
 

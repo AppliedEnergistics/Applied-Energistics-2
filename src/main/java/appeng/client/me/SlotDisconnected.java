@@ -51,7 +51,7 @@ public class SlotDisconnected extends AppEngSlot {
 
     @Override
     public ItemStack getDisplayStack() {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             final ItemStack is = super.getStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();

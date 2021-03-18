@@ -109,7 +109,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
     @Override
     public boolean onClicked(PlayerEntity player, Hand hand, Vector3d pos) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return true;
         }
 

@@ -95,7 +95,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         if (this.getStack().isEmpty()) {
             return;
         }
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return;
         }
 

@@ -141,7 +141,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     public void notifyUser(final PlayerEntity player, final MemoryCardMessages msg) {
-        if (Platform.isClient()) {
+        if (player.getEntityWorld().isRemote()) {
             return;
         }
 

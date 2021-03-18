@@ -106,7 +106,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             return ActionResultType.FAIL;
         }
 
-        if (Platform.isClient()) {
+        if (w.isRemote()) {
             NetworkHandler.instance().sendToServer(new ClickPacket(context));
         }
 
