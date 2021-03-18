@@ -1,0 +1,17 @@
+{
+  "name": "Meteorites",
+  "category": "appliedenergistics2:world_gen",
+  "icon": "appliedenergistics2:sky_stone_block",
+  "pages": [
+    {
+      "type": "text",
+      "title": "Meteorites",
+      "anchor": "meteorite",
+      "text": "$(thing)Meteorites$() spawn during world generation on the surface or underground, and vary in size. They generally contain a $(l:appliedenergistics2:simple_tools/sky_stone_chests)Sky Stone Chest$(/l) which can contain various ingredients required for advanced technology. You can use a $(l:appliedenergistics2:simple_tools/meteorite_compass)Meteorite Compass$(/l) to locate $(thing)meteorites$() near you and as you explore."
+    },
+    {
+      "type": "text",
+      "text": "$(todo)To-do: Image Page of a Meteorite!$()"
+    }
+  ]
+}

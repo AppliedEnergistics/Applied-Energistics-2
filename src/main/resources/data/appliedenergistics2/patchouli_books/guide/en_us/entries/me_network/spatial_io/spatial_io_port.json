@@ -5,11 +5,23 @@
   "pages": [
     {
       "type": "text",
-      "text": "Spatial IO Port are used to capture and deploy regions of space that are defiend by Spatial Pylon.$(br2)To Capture/Deploy a region of space you must first construct a Spatial Containtment Structure, once constructed and ready your Spatial IO Port will show your required power, and current power, the next step would be to adjust your SCS design, or to build and power your required Energy Cell or Dense Energy Cell to meet the demands of the Spatial IO Port.$(br2)Once power is available and your SCS is valid, you need to insert a 2Cubed Spatial Storage Cell, 16Cubed Spatial Storage Cell, or 128Cubed Spatial Storage Cell depending on the required size you may need a larger or small storage cell.$(br2)When everything is ready, and the storage cell is placed inside the Spatial IO Port applying a redstone signal to the Spatial IO Port will trigger the capture/deployment of the cell into the SCS.$(br2)Requires a channel to function.$(br2)$(l)* Note Spatial uses a white list compatibilty system, only tile entities marked as \"whitelisted\" can be moved with this system, other mod authors can opt-into this, AE2 provides support for itself, and Vanilla.$()"
+      "text": "Spatial IO Port are used to capture and deploy regions of space that are defiend by Spatial Pylon.$(br2)Requires a channel to function."
     },
     {
       "type": "crafting",
       "recipe": "appliedenergistics2:network/blocks/spatial_io_port"
+    },
+    {
+      "type": "text",
+      "text": "To Capture/Deploy a region of space you must first construct a Spatial Containtment Structure, once constructed and ready your Spatial IO Port will show your required power, and current power, the next step would be to adjust your SCS design, or to build and power your required Energy Cell or Dense Energy Cell to meet the demands of the Spatial IO Port."
+    },
+    {
+      "type": "text",
+      "text": "Once power is available and your SCS is valid, you need to insert a 2Cubed Spatial Storage Cell, 16Cubed Spatial Storage Cell, or 128Cubed Spatial Storage Cell depending on the required size you may need a larger or small storage cell.$(br2)When everything is ready, and the storage cell is placed inside the Spatial IO Port applying a redstone signal to the Spatial IO Port will trigger the capture/deployment of the cell into the SCS."
+    },
+    {
+      "type": "text",
+      "text": "$(l)* Note Spatial uses a white list compatibilty system, only tile entities marked as \"whitelisted\" can be moved with this system, other mod authors can opt-into this, AE2 provides support for itself, and Vanilla.$()"
     }
   ]
 }

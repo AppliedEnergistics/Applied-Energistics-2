@@ -1,0 +1,21 @@
+{
+  "name": "Quartz Blocks",
+  "category": "appliedenergistics2:decorative_blocks",
+  "icon": "appliedenergistics2:quartz_block",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(l:appliedenergistics2:world_gen/quartz_crystals)Certus Quartz$(/l) can be crafted into decorative quartz blocks similar to $(item)Nether Quartz$()$(br2)An additional use of the $(item)Certus Quartz Block$() is to craft $(item)Pure Certus$() back into normal $(item)Certus$()."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:decorative/certus_quartz_block",
+      "recipe2": "appliedenergistics2:decorative/certus_quartz_block_pure"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:decorative/certus_quartz_pillar",
+      "recipe2": "appliedenergistics2:decorative/chiseled_quartz_block"
+    }
+  ]
+}

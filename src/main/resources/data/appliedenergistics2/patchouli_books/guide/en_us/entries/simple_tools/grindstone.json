@@ -1,11 +1,20 @@
 {
-  "name": "(to-do) Quartz Grindstone",
+  "name": "Quartz Grindstone",
   "category": "appliedenergistics2:simple_tools",
   "icon": "appliedenergistics2:grindstone",
   "pages": [
     {
       "type": "text",
-      "text": "$(todo)Page not written yet.$()"
+      "text": "The Quartz Grindstone provides a low tech solution for getting more out of your mining trips. It is much cheaper than its more high-tech counter parts of other mods, but it is slow and a considerable time sink, but what else do you have to do while smelting those dusts? Why not grind up some other ores into dusts?"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:misc/grindstone",
+      "recipe2": "appliedenergistics2:misc/grindstone_crank"
+    },
+    {
+      "type": "text",
+      "text": "Used to grind items up in the Quartz Grindstone or used to hand crank the Charger. To install the crank sneak and right-click with it on the hole."
     }
   ]
 }

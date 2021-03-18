@@ -1,0 +1,26 @@
+{
+  "name": "Quartz Glass",
+  "category": "appliedenergistics2:decorative_blocks",
+  "icon": "appliedenergistics2:quartz_block",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "appliedenergistics2:quartz_glass",
+      "text": "Mostly clear glass made with $(item)Certus Quartz Dust$() or $(item)Nether Quartz Dust$(), seems to have energy conducting properties. Can be used to make $(l:appliedenergistics2:decorative_blocks/quartz_glass#quartz_vibrant_glass)Vibrant Quartz Glass$(/l)."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:decorative/quartz_glass"
+    },
+    {
+      "type": "spotlight",
+      "anchor": "quartz_vibrant_glass",
+      "item": "appliedenergistics2:quartz_vibrant_glass",
+      "text": "A variant of $(item)Quartz Glass$() that glows like glowstone."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:decorative/quartz_vibrant_glass"
+    }
+  ]
+}

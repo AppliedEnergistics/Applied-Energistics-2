@@ -1,0 +1,21 @@
+{
+  "name": "Sky Stone Stairs",
+  "category": "appliedenergistics2:decorative_blocks",
+  "icon": "appliedenergistics2:sky_stone_stairs",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Each block variant of $(l:appliedenergistics2:world_gen/sky_stone)Sky Stone$(/l) also has a matching stair block."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:shaped/stairs/sky_stone_block",
+      "recipe2": "appliedenergistics2:shaped/stairs/smooth_sky_stone_block"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:shaped/stairs/sky_stone_brick",
+      "recipe2": "appliedenergistics2:shaped/stairs/sky_stone_small_brick"
+    }
+  ]
+}

@@ -2,5 +2,5 @@
   "name": "Cell Storage",
   "description": "Storage Cells, are one of the core mechanics of storage in Applied Energistics 2, there are three kinds, one for quantities of items, one for quantities of fluids, and one for regions of space. Item storage cells can hold up to 63 distinct types of items; the number of items they can store depends in part on how many types they're holding.",
   "icon": "appliedenergistics2:1k_storage_cell",
-  "sortnum": 3
+  "sortnum": 1
 }

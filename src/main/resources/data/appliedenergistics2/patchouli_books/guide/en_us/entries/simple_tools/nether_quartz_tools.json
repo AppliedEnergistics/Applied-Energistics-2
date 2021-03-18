@@ -1,0 +1,36 @@
+{
+  "name": "Nether Quartz Tools",
+  "category": "appliedenergistics2:simple_tools",
+  "icon": "appliedenergistics2:certus_quartz_pickaxe",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Various tools can be crafted from $(item)Nether Quartz$(/).$(br2)With the exception of the $(item)Nether Quartz Wrench$() and $(item)Nether Quartz Cutting Knife$() all tools behave like other minecraft tools.$(br2)All tools have a the hardness and durability of iron tools."
+    },
+    {
+      "type": "spotlight",
+      "item": "appliedenergistics2:nether_quartz_wrench",
+      "text": "A wrench made from $(item)Nether Quartz$(/).$(br2)Used to rotate or instantaneously break ME blocks and remove parts and facades from cables."
+    },
+    {
+      "type": "spotlight",
+      "item": "appliedenergistics2:certus_quartz_cutting_knife",
+      "title": "Cutting Knife",
+      "text": "A cutting knife made out of $(item)Nether Quartz$(/).$(br)Used to make Inscriber Name Press, Cable Anchor, and Cable Facade."
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:tools/nether_quartz_pickaxe",
+      "recipe2": "appliedenergistics2:tools/nether_quartz_axe"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:tools/nether_quartz_hoe",
+      "recipe2": "appliedenergistics2:tools/nether_quartz_spade"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:tools/nether_quartz_sword"
+    }
+  ]
+}

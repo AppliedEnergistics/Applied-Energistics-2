@@ -1,0 +1,15 @@
+{
+  "name": "Tiny TNT",
+  "category": "appliedenergistics2:simple_tools",
+  "icon": "appliedenergistics2:tiny_tnt",
+  "pages": [
+    {
+      "type": "text",
+      "text": "A smaller less damaging block of TNT.$(br2)Can be used to craft $(l:appliedenergistics2:spatial/quantum_entangled_singularity)Quantum Entangled Singularity$(/l)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedenergistics2:misc/tiny_tnt"
+    }
+  ]
+}
