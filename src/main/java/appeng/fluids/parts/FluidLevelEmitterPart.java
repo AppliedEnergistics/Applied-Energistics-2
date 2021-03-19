@@ -253,7 +253,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     private boolean isLevelEmitterOn() {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return (this.getClientFlags() & FLAG_ON) == FLAG_ON;
         }
 
@@ -302,7 +302,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FluidLevelEmitterContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;

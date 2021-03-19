@@ -83,7 +83,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
     }
 
     public void calculateMultiblock(final World world, final BlockPos loc) {
-        if (Platform.isClient() || isModificationInProgress()) {
+        if (world.isRemote() || isModificationInProgress()) {
             return;
         }
 

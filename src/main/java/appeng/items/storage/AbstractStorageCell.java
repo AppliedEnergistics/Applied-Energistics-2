@@ -142,7 +142,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     private boolean disassembleDrive(final ItemStack stack, final World world, final PlayerEntity player) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            if (Platform.isClient()) {
+            if (world.isRemote()) {
                 return false;
             }
 

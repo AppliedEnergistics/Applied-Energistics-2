@@ -18,7 +18,8 @@
 
 package appeng.fluids.util;
 
-@FunctionalInterface
 public interface IAEFluidInventory {
     void onFluidInventoryChanged(final IAEFluidTank inv, final int slot);
+
+    boolean isRemote();
 }

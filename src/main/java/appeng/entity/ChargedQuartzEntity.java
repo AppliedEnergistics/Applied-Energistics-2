@@ -66,7 +66,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
             return;
         }
 
-        if (world.isRemote && this.delay > 30 && AEConfig.instance().isEnableEffects()) {
+        if (world.isRemote() && this.delay > 30 && AEConfig.instance().isEnableEffects()) {
             AppEng.proxy.spawnEffect(EffectType.Lightning, this.world, this.getPosX(), this.getPosY(), this.getPosZ(),
                     null);
             this.delay = 0;
@@ -81,7 +81,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         BlockState state = this.world.getBlockState(new BlockPos(j, i, k));
         final Material mat = state.getMaterial();
 
-        if (Platform.isServer() && mat.isLiquid()) {
+        if (!world.isRemote() && mat.isLiquid()) {
             this.transformTime++;
             if (this.transformTime > 60) {
                 if (!this.transform()) {

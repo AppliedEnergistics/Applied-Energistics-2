@@ -64,7 +64,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
     }
 
     private void doExplosion() {
-        if (Platform.isClient()) {
+        if (world.isRemote()) {
             return;
         }
 

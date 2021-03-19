@@ -59,7 +59,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        if (Platform.isServer()) {
+        if (!w.isRemote()) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
         p.swingArm(hand);

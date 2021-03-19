@@ -120,7 +120,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(UpgradeableContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;

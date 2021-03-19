@@ -179,7 +179,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;

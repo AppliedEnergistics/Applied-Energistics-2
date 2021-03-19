@@ -99,7 +99,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
             this.setMotion(this.getMotion().mul(0.699999988079071D, 0.699999988079071D, -0.5D));
         }
 
-        if (this.isInWater() && Platform.isServer()) // put out the fuse.
+        if (this.isInWater() && !this.world.isRemote()) // put out the fuse.
         {
             Api.instance().definitions().blocks().tinyTNT().maybeStack(1).ifPresent(tntStack -> {
                 final ItemEntity item = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(),

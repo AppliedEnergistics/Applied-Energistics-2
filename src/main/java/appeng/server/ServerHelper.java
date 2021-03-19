@@ -84,7 +84,7 @@ public class ServerHelper extends CommonHelper {
     @Override
     public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
             final double dist, final World w, final BasePacket packet) {
-        if (Platform.isClient()) {
+        if (p.getEntityWorld().isRemote()) {
             return;
         }
         for (final PlayerEntity o : this.getPlayers()) {

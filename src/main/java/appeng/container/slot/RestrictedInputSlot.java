@@ -213,7 +213,7 @@ public class RestrictedInputSlot extends AppEngSlot {
 
     @Override
     public ItemStack getDisplayStack() {
-        if (Platform.isClient() && (this.which == PlacableItemType.ENCODED_PATTERN)) {
+        if (isRemote() && (this.which == PlacableItemType.ENCODED_PATTERN)) {
             final ItemStack is = super.getStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();

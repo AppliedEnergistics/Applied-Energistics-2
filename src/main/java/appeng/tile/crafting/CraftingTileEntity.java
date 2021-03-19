@@ -306,7 +306,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
     @Override
     public boolean isActive() {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             return this.getProxy().isActive();
         }
         return this.isPowered() && this.isFormed();

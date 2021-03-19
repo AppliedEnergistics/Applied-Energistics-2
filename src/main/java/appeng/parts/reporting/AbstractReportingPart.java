@@ -177,7 +177,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         final TileEntity te = this.getTile();
 
         if (InteractionUtil.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
-            if (!player.getEntityWorld().isRemote()) {
+            if (!isRemote()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
                 this.saveChanges();
@@ -215,7 +215,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     @Override
     public final boolean isPowered() {
         try {
-            if (Platform.isServer()) {
+            if (!isRemote()) {
                 return this.getProxy().getEnergy().isNetworkPowered();
             } else {
                 return ((this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG);

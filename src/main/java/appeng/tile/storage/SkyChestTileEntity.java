@@ -76,7 +76,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     public void openInventory(final PlayerEntity player) {
         // Ignore calls to this function on the client, since the server is responsible for
         // calculating the numPlayersUsing count.
-        if (!player.isSpectator() && !player.getEntityWorld().isRemote()) {
+        if (!player.isSpectator() && !isRemote()) {
             this.numPlayersUsing++;
             onOpenOrClose();
         }
@@ -85,7 +85,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     public void closeInventory(final PlayerEntity player) {
         // Ignore calls to this function on the client, since the server is responsible for
         // calculating the numPlayersUsing count.
-        if (!player.isSpectator() && !player.getEntityWorld().isRemote()) {
+        if (!player.isSpectator() && !isRemote()) {
             this.numPlayersUsing = Math.max(this.numPlayersUsing - 1, 0);
             onOpenOrClose();
         }

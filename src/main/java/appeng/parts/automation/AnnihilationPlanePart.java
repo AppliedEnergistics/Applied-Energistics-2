@@ -141,7 +141,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     @Override
     public void onEntityCollision(final Entity entity) {
-        if (this.isAccepting && entity instanceof ItemEntity && entity.isAlive() && Platform.isServer()
+        if (this.isAccepting && entity instanceof ItemEntity && entity.isAlive() && !isRemote()
                 && this.getProxy().isActive()) {
 
             ItemEntity itemEntity = (ItemEntity) entity;

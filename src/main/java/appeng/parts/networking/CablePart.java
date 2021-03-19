@@ -46,7 +46,6 @@ import appeng.core.Api;
 import appeng.items.parts.ColoredPartItem;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
-import appeng.util.Platform;
 
 public class CablePart extends AEBasePart implements ICablePart {
 
@@ -119,7 +118,7 @@ public class CablePart extends AEBasePart implements ICablePart {
             }
 
             if (newPart != null && hasPermission) {
-                if (Platform.isClient()) {
+                if (isRemote()) {
                     return true;
                 }
 
@@ -147,16 +146,9 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public void getBoxes(final IPartCollisionHelper bch) {
-        bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
+        updateConnections();
 
-        if (Platform.isServer()) {
-            final IGridNode n = this.getGridNode();
-            if (n != null) {
-                this.setConnections(n.getConnectedSides());
-            } else {
-                this.getConnections().clear();
-            }
-        }
+        bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
 
         final IPartHost ph = this.getHost();
         if (ph != null) {
@@ -219,21 +211,29 @@ public class CablePart extends AEBasePart implements ICablePart {
         }
     }
 
+    protected void updateConnections() {
+        if (!isRemote()) {
+            final IGridNode n = this.getGridNode();
+            if (n != null) {
+                this.setConnections(n.getConnectedSides());
+            } else {
+                this.getConnections().clear();
+            }
+        }
+    }
+
     @Override
     public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
 
-        if (Platform.isServer()) {
-            final IGridNode node = this.getGridNode();
-
-            if (node != null) {
-                int howMany = 0;
-                for (final IGridConnection gc : node.getConnections()) {
-                    howMany = Math.max(gc.getUsedChannels(), howMany);
-                }
-
-                data.putByte("usedChannels", (byte) howMany);
+        final IGridNode node = this.getGridNode();
+        if (node != null) {
+            int howMany = 0;
+            for (final IGridConnection gc : node.getConnections()) {
+                howMany = Math.max(gc.getUsedChannels(), howMany);
             }
+
+            data.putByte("usedChannels", (byte) howMany);
         }
     }
 

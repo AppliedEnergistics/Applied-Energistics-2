@@ -97,7 +97,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
     }
 
     private void triggerTransition() {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             final ItemStack cell = this.inv.getStackInSlot(0);
             if (this.isSpatialCell(cell)) {
                 TickHandler.instance().addCallable(null, this);// this needs to be cross world synced.

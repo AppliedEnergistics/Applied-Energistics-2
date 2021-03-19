@@ -195,8 +195,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     @Override
     protected void resetCache(final boolean fullReset) {
-        if (this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null
-                || this.getHost().getTile().getWorld().isRemote) {
+        if (isRemote()) {
             return;
         }
 
@@ -215,7 +214,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FluidStorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;

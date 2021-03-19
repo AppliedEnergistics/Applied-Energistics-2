@@ -53,16 +53,9 @@ public class SmartCablePart extends CablePart {
 
     @Override
     public void getBoxes(final IPartCollisionHelper bch) {
-        bch.addBox(5.0, 5.0, 5.0, 11.0, 11.0, 11.0);
+        updateConnections();
 
-        if (Platform.isServer()) {
-            final IGridNode n = this.getGridNode();
-            if (n != null) {
-                this.setConnections(n.getConnectedSides());
-            } else {
-                this.getConnections().clear();
-            }
-        }
+        bch.addBox(5.0, 5.0, 5.0, 11.0, 11.0, 11.0);
 
         for (final AEPartLocation of : this.getConnections()) {
             switch (of) {

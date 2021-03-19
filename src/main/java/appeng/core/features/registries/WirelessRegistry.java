@@ -73,7 +73,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
 
     @Override
     public void openWirelessTerminalGui(ItemStack item, IBlockReader world, PlayerEntity player, Hand hand) {
-        if (Platform.isClient()) {
+        if (player.getEntityWorld().isRemote()) {
             return;
         }
 

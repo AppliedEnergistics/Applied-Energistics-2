@@ -69,7 +69,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             return ActionResultType.PASS;
         }
 
-        if (Platform.isServer()) {
+        if (!w.isRemote()) {
             final ChargerTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null) {
                 tc.activate(player);

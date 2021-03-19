@@ -49,20 +49,13 @@ public abstract class DenseCablePart extends CablePart {
 
     @Override
     public void getBoxes(final IPartCollisionHelper bch) {
+        updateConnections();
+
         final boolean noLadder = !bch.isBBCollision();
         final double min = noLadder ? 3.0 : 4.9;
         final double max = noLadder ? 13.0 : 11.1;
 
         bch.addBox(min, min, min, max, max, max);
-
-        if (Platform.isServer()) {
-            final IGridNode n = this.getGridNode();
-            if (n != null) {
-                this.setConnections(n.getConnectedSides());
-            } else {
-                this.getConnections().clear();
-            }
-        }
 
         for (final AEPartLocation of : this.getConnections()) {
             if (this.isDense(of)) {
