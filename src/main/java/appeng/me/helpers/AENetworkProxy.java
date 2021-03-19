@@ -64,7 +64,7 @@ public class AENetworkProxy implements IGridBlock {
     private final String nbtName; // name
     private AEColor myColor = AEColor.TRANSPARENT;
     private CompoundNBT data = null; // input
-    private ItemStack myRepInstance = ItemStack.EMPTY;
+    private ItemStack myRepInstance;
     private boolean isReady = false;
     private IGridNode node = null;
     private EnumSet<Direction> validSides;
@@ -325,14 +325,6 @@ public class AENetworkProxy implements IGridBlock {
 
     @Nonnull
     private <T extends IGridCache> T getGridCache(Class<T> clazz) throws GridAccessException {
-        final IGrid grid = this.getGrid();
-        if (grid == null) {
-            throw new GridAccessException();
-        }
-        final T eg = grid.getCache(clazz);
-        if (eg == null) {
-            throw new GridAccessException();
-        }
-        return eg;
+        return this.getGrid().getCache(clazz);
     }
 }
