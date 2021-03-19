@@ -128,14 +128,14 @@ public class GridNode implements IGridNode, IPathItem {
         final GridSplitDetector gsd = new GridSplitDetector(this.getInternalGrid().getPivot());
         this.beginVisit(gsd);
         if (!gsd.isPivotFound()) {
-            final IGridVisitor gp = new GridPropagator(new Grid(this));
+            final IGridVisitor gp = new GridPropagator(Grid.create(this));
             this.beginVisit(gp);
         }
     }
 
     public Grid getInternalGrid() {
         if (this.myGrid == null) {
-            this.myGrid = new Grid(this);
+            this.myGrid = Grid.create(this);
         }
 
         return this.myGrid;
