@@ -51,7 +51,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 
     @Override
     public boolean isRemote() {
-        return this.parent != null && !this.parent.isRemote();
+        return this.parent == null || this.parent.isRemote();
     }
 
     @Override
