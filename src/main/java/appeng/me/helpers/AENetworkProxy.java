@@ -20,6 +20,7 @@ package appeng.me.helpers;
 
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -60,25 +61,24 @@ import appeng.util.Platform;
 public class AENetworkProxy implements IGridBlock {
 
     private final IGridProxyable gp;
-    private final boolean worldNode;
+    private final boolean isWorldAccessible;
     private final String nbtName; // name
     private AEColor myColor = AEColor.TRANSPARENT;
     private CompoundNBT data = null; // input
     private ItemStack myRepInstance;
     private boolean isReady = false;
     private IGridNode node = null;
-    private EnumSet<Direction> validSides;
+    private EnumSet<Direction> validSides = EnumSet.allOf(Direction.class);
     private EnumSet<GridFlags> flags = EnumSet.noneOf(GridFlags.class);
     private double idleDraw = 1.0;
     private PlayerEntity owner;
 
     public AENetworkProxy(final IGridProxyable te, final String nbtName, final ItemStack visual,
             final boolean inWorld) {
-        this.gp = te;
-        this.nbtName = nbtName;
-        this.worldNode = inWorld;
-        this.myRepInstance = visual;
-        this.validSides = EnumSet.allOf(Direction.class);
+        this.gp = Objects.requireNonNull(te);
+        this.nbtName = Objects.requireNonNull(nbtName);
+        this.isWorldAccessible = inWorld;
+        this.myRepInstance = Objects.requireNonNull(visual);
     }
 
     public void setVisualRepresentation(final ItemStack is) {
@@ -167,7 +167,7 @@ public class AENetworkProxy implements IGridBlock {
 
     @Override
     public boolean isWorldAccessible() {
-        return this.worldNode;
+        return this.isWorldAccessible;
     }
 
     @Override
