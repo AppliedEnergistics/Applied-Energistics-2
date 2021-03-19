@@ -24,7 +24,10 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -82,7 +85,7 @@ public class AENetworkProxy implements IGridBlock {
     }
 
     public void setVisualRepresentation(final ItemStack is) {
-        this.myRepInstance = is;
+        this.myRepInstance = Objects.requireNonNull(is);
     }
 
     public void writeToNBT(final CompoundNBT tag) {
@@ -213,6 +216,9 @@ public class AENetworkProxy implements IGridBlock {
     }
 
     public void setFlags(final GridFlags... requireChannel) {
+        Preconditions.checkNotNull(requireChannel);
+        Preconditions.checkArgument(!ArrayUtils.contains(requireChannel, null));
+
         final EnumSet<GridFlags> flags = EnumSet.noneOf(GridFlags.class);
 
         Collections.addAll(flags, requireChannel);
@@ -262,7 +268,7 @@ public class AENetworkProxy implements IGridBlock {
     }
 
     public void setColor(final AEColor myColor) {
-        this.myColor = myColor;
+        this.myColor = Objects.requireNonNull(myColor);
     }
 
     /**
