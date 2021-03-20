@@ -1,7 +1,7 @@
 {
   "name": "ME Chest",
   "category": "appliedenergistics2:me_network/network_storage",
-  "icon": "appliedenergistics2:storage_chest",
+  "icon": "appliedenergistics2:chest",
   "pages": [
     {
       "type": "text",
