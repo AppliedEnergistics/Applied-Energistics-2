@@ -22,7 +22,7 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.util.AECableType;
 
-public class SmartDenseCablePart extends DenseCablePart {
+public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelProvider {
 
     public SmartDenseCablePart(ItemStack is) {
         super(is);

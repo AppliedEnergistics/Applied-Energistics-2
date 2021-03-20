@@ -30,7 +30,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
-public class SmartCablePart extends CablePart {
+public class SmartCablePart extends CablePart implements IUsedChannelProvider {
     @Reflected
     public SmartCablePart(final ItemStack is) {
         super(is);

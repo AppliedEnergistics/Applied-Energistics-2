@@ -23,7 +23,6 @@ import java.util.EnumSet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
@@ -219,21 +218,6 @@ public class CablePart extends AEBasePart implements ICablePart {
             } else {
                 this.getConnections().clear();
             }
-        }
-    }
-
-    @Override
-    public void writeToNBT(final CompoundNBT data) {
-        super.writeToNBT(data);
-
-        final IGridNode node = this.getGridNode();
-        if (node != null) {
-            int howMany = 0;
-            for (final IGridConnection gc : node.getConnections()) {
-                howMany = Math.max(gc.getUsedChannels(), howMany);
-            }
-
-            data.putByte("usedChannels", (byte) howMany);
         }
     }
 
