@@ -1,19 +1,15 @@
 package appeng.parts.networking;
 
-import javax.annotation.Nullable;
-
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
+import appeng.api.parts.IPart;
 
 /**
- * Provides information about channel capacity and used capacity to probes like HWYLA and TheOneProbe.
+ * Extended part that provides info about channel capacity and usage to probes like HWYLA and TheOneProbe.
  */
-public interface IUsedChannelProvider {
-
-    @Nullable
-    IGridNode getGridNode();
+public interface IUsedChannelProvider extends IPart {
 
     /**
      * @return The number of channels carried on this cable. Purely for informational purposes.
@@ -30,7 +26,7 @@ public interface IUsedChannelProvider {
     }
 
     /**
-     * @return The number of channels that can be carried at most.
+     * @return The number of channels that can be carried at most. Purely for informational purposes.
      */
     default int getMaxChannelsInfo() {
         IGridNode node = this.getGridNode();
