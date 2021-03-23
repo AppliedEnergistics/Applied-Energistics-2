@@ -108,7 +108,19 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         final boolean isCraftable = buffer.readBoolean();
         final long stackSize = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
-        final ItemStack itemstack = buffer.readItemStack();
+
+        // based on buffer.readItemStack()
+        // Adapted to also handle forge capabilities
+        ItemStack itemstack = ItemStack.EMPTY;
+        if (buffer.readBoolean()) {
+            int i = buffer.readVarInt();
+            int j = buffer.readByte();
+            CompoundNBT nbt = buffer.readCompoundTag();
+            CompoundNBT forgeCap = buffer.readCompoundTag();
+
+            itemstack = new ItemStack(Item.getItemById(i), j, forgeCap);
+            itemstack.readShareTag(nbt);
+        }
 
         if (itemstack.isEmpty()) {
             return null;
@@ -126,6 +138,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
         buffer.writeItemStack(getDefinition(), false);
+
+        // Workaround to also serialize caps as writeItemStack will ignore these.
+        buffer.writeCompoundTag(getDefinition().capNBT);
     }
 
     @Override
