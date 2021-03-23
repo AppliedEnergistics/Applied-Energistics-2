@@ -20,7 +20,6 @@ package appeng.integration.modules.theoneprobe.part;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
@@ -30,25 +29,18 @@ import mcjty.theoneprobe.api.ProbeMode;
 
 import appeng.api.parts.IPart;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
-import appeng.parts.networking.SmartCablePart;
-import appeng.parts.networking.SmartDenseCablePart;
+import appeng.parts.networking.IUsedChannelProvider;
 
 public class ChannelInfoProvider implements IPartProbInfoProvider {
 
     @Override
     public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
             BlockState blockState, IProbeHitData data) {
-        if (part instanceof SmartDenseCablePart || part instanceof SmartCablePart) {
-            final int usedChannels;
-            final int maxChannels = (part instanceof SmartDenseCablePart) ? 32 : 8;
+        if (part instanceof IUsedChannelProvider) {
+            IUsedChannelProvider usedChannelProvider = (IUsedChannelProvider) part;
 
-            if (part.getGridNode().isActive()) {
-                final CompoundNBT tmp = new CompoundNBT();
-                part.writeToNBT(tmp);
-                usedChannels = tmp.getByte("usedChannels");
-            } else {
-                usedChannels = 0;
-            }
+            final int usedChannels = usedChannelProvider.getUsedChannelsInfo();
+            final int maxChannels = usedChannelProvider.getMaxChannelsInfo();
 
             final ITextComponent formattedChannelString = TheOneProbeText.CHANNELS.getTranslationComponent(usedChannels,
                     maxChannels);
