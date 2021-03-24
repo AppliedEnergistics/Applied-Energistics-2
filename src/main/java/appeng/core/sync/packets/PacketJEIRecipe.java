@@ -237,22 +237,6 @@ public class PacketJEIRecipe extends AppEngPacket
 										// Fall back using an existing item
 										out = storage.extractItems( request, Actionable.SIMULATE, cct.getActionSource() );
 									}
-
-									if( out == null )
-									{
-										IItemList<IAEItemStack> items = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-										Iterator<IAEItemStack> iterator = inv.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getAvailableItems( items ).iterator();
-										while ( iterator.hasNext() )
-										{
-											final IAEItemStack o = iterator.next();
-											if( o.getDefinition().isItemEqual( request.getDefinition() ) && o.isCraftable() )
-											{
-												out = o;
-												break;
-											}
-											iterator.remove();
-										}
-									}
 								}
 
 								if( out != null )
@@ -274,13 +258,13 @@ public class PacketJEIRecipe extends AppEngPacket
 								else
 								{
 									currentItem = ad.simulateSimilarRemove(recipe[x][y].getCount(), this.recipe[x][y],FuzzyMode.IGNORE_ALL, null );
-									if( currentItem.isEmpty() )
-									{
-										currentItem = this.recipe[x][y].copy();
-									}
 								}
 							}
 						}
+					}
+					if( currentItem.isEmpty() && this.recipe[x] != null)
+					{
+						currentItem = this.recipe[x][0].copy();
 					}
 				}
 				ItemHandlerUtil.setStackInSlot( craftMatrix, x, currentItem );
