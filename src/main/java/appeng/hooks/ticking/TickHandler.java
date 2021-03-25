@@ -282,12 +282,12 @@ public class TickHandler {
     private void readyTiles(World world) {
         final Long2ObjectMap<Queue<AEBaseBlockEntity>> worldQueue = tiles.getTiles(world);
 
-        Iterator<Long2ObjectMap.Entry<Queue<AEBaseBlockEntity>>> it = worldQueue.long2ObjectEntrySet().iterator();
+        // Make a copy (hopefully stack-allocated) because this set may be modified
+        // when new chunks are loaded by an onReady call below
+        long[] chunksQueued = worldQueue.keySet().toLongArray();
 
-        while (it.hasNext()) {
-            Long2ObjectMap.Entry<Queue<AEBaseBlockEntity>> entry = it.next();
-
-            ChunkPos pos = new ChunkPos(entry.getLongKey());
+        for (long chunkPos : chunksQueued) {
+            ChunkPos pos = new ChunkPos(chunkPos);
             ChunkManager chunkManager = world.getChunkManager();
 
             // Using the blockpos of the chunk start to test if it can tick.
@@ -298,19 +298,19 @@ public class TickHandler {
             // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
             // will be readied.
             if (world.isChunkLoaded(pos.x, pos.z) && chunkManager.shouldTickBlock(testBlockPos)) {
-                Queue<AEBaseBlockEntity> queue = entry.getValue();
+                Queue<AEBaseBlockEntity> chunkQueue = worldQueue.remove(chunkPos);
+                if (chunkQueue == null) {
+                    continue; // This should never happen, chunk unloaded under our noses
+                }
 
-                while (!queue.isEmpty()) {
-                    final AEBaseBlockEntity bt = queue.poll();
-
+                for (AEBaseBlockEntity bt : chunkQueue) {
                     // Only ready tile entities which weren't destroyed in the meantime.
                     if (!bt.isRemoved()) {
+                        // Note that this can load more chunks, but they'll at the earliest
+                        // be initialized on the next tick
                         bt.onReady();
                     }
                 }
-
-                // cleanup empty chunk queue
-                it.remove();
             }
         }
     }
