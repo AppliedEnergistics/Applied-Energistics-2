@@ -11,6 +11,8 @@ import net.minecraft.client.MinecraftClient;
 import appeng.api.parts.CableRenderMode;
 import appeng.client.AppEngClient;
 import appeng.core.Api;
+import appeng.hooks.ticking.PlayerColor;
+import appeng.hooks.ticking.TickHandler;
 import appeng.util.Platform;
 
 @Environment(EnvType.CLIENT)

@@ -54,7 +54,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.core.AELog;
 import appeng.core.worlddata.WorldData;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.IWorldCallable;
 import appeng.util.ReadOnlyCollection;

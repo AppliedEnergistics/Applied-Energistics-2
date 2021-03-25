@@ -44,7 +44,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 
 public class CraftingJob implements Runnable, ICraftingJob {
     private static final String LOG_CRAFTING_JOB = "CraftingJob (%s) issued by %s requesting [%s] using %s bytes took %s ms";

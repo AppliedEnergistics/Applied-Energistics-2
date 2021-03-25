@@ -59,7 +59,7 @@ import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
