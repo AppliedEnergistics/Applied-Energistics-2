@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.world.World;
 
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.util.IWorldCallable;
 
 /**

@@ -45,7 +45,7 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.tile.grid.AENetworkInvBlockEntity;
 import appeng.tile.inventory.AppEngInternalInventory;

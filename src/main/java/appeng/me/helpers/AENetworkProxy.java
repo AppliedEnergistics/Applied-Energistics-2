@@ -46,7 +46,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IOrientable;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.parts.networking.CablePart;

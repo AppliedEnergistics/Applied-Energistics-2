@@ -17,7 +17,7 @@ import appeng.client.EffectType;
 import appeng.core.AppEngBase;
 import appeng.core.sync.network.ServerNetworkHandler;
 import appeng.core.worlddata.WorldData;
-import appeng.hooks.TickHandler;
+import appeng.hooks.ticking.TickHandler;
 
 public final class AppEngServer extends AppEngBase {
 
