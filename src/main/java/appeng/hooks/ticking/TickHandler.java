@@ -52,7 +52,6 @@ import net.minecraftforge.fml.DistExecutor.SafeRunnable;
 import net.minecraftforge.fml.LogicalSide;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap.Entry;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.CableRenderMode;
@@ -333,8 +332,6 @@ public class TickHandler {
 
     /**
      * Simulates the current crafting requests before they user can submit them to be processed.
-     *
-     * @param world
      */
     private void simulateCraftingJobs(IWorld world) {
         synchronized (this.craftingJobs) {
@@ -359,18 +356,16 @@ public class TickHandler {
 
     /**
      * Ready the tiles in this world
-     *
-     * @param world
      */
     private void readyTiles(IWorld world) {
         final Long2ObjectMap<Queue<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
 
-        Iterator<Entry<Queue<AEBaseTileEntity>>> it = worldQueue.long2ObjectEntrySet().iterator();
+        // Make a copy (hopefully stack-allocated) because this set may be modified
+        // when new chunks are loaded by an onReady call below
+        long[] chunksQueued = worldQueue.keySet().toLongArray();
 
-        while (it.hasNext()) {
-            Entry<Queue<AEBaseTileEntity>> entry = it.next();
-
-            ChunkPos pos = new ChunkPos(entry.getLongKey());
+        for (long chunkPos : chunksQueued) {
+            ChunkPos pos = new ChunkPos(chunkPos);
             AbstractChunkProvider chunkProvider = world.getChunkProvider();
 
             // Using the blockpos of the chunk start to test if it can tick.
@@ -381,19 +376,19 @@ public class TickHandler {
             // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
             // will be readied.
             if (world.chunkExists(pos.x, pos.z) && chunkProvider.canTick(testBlockPos)) {
-                Queue<AEBaseTileEntity> queue = entry.getValue();
+                Queue<AEBaseTileEntity> chunkQueue = worldQueue.remove(chunkPos);
+                if (chunkQueue == null) {
+                    continue; // This should never happen, chunk unloaded under our noses
+                }
 
-                while (!queue.isEmpty()) {
-                    final AEBaseTileEntity bt = queue.poll();
-
+                for (AEBaseTileEntity bt : chunkQueue) {
                     // Only ready tile entites which weren't destroyed in the meantime.
                     if (!bt.isRemoved()) {
+                        // Note that this can load more chunks, but they'll at the earliest
+                        // be initialized on the next tick
                         bt.onReady();
                     }
                 }
-
-                // cleanup empty chunk queue
-                it.remove();
             }
         }
     }
