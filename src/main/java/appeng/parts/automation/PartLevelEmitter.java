@@ -599,6 +599,6 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			this.updateReportingValue((IMEMonitor<IAEItemStack>) changedMonitor);
 		}
-		return TickRateModulation.SAME;
+		return TickRateModulation.URGENT;
 	}
 }
