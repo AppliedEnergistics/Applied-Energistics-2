@@ -172,7 +172,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
                     }
                 } else {
                     final int breakpoint = fuzzy.calculateBreakPoint(itemStack.getMaxDamage());
-                    damage = breakpoint <= itemStack.getDamage() ? breakpoint : -1;
+                    damage = breakpoint <= itemStack.getDamage() ? breakpoint : MIN_DAMAGE_VALUE;
                 }
             }
 

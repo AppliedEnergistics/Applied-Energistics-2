@@ -24,12 +24,15 @@ import java.util.Queue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -40,35 +43,35 @@ import appeng.tile.AEBaseTileEntity;
 
 public class ItemGenTileEntity extends AEBaseTileEntity {
 
-    private static final Queue<ItemStack> POSSIBLE_ITEMS = new ArrayDeque<>();
+    private static final Queue<ItemStack> SHARED_POSSIBLE_ITEMS = new ArrayDeque<>();
 
     private final IItemHandler handler = new QueuedItemHandler();
 
+    private Item filter = Items.AIR;
+    private final Queue<ItemStack> possibleItems = new ArrayDeque<>();
+
     public ItemGenTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        if (POSSIBLE_ITEMS.isEmpty()) {
-            for (final Item mi : ForgeRegistries.ITEMS) {
-                if (mi != null && mi != Items.AIR) {
-                    if (mi.isDamageable()) {
-                        ItemStack sampleStack = new ItemStack(mi);
-                        int maxDamage = sampleStack.getMaxDamage();
-                        for (int dmg = 0; dmg < maxDamage; dmg++) {
-                            ItemStack is = sampleStack.copy();
-                            is.setDamage(dmg);
-                            POSSIBLE_ITEMS.add(is);
-                        }
-                    } else {
-                        if (mi.getGroup() == null) {
-                            continue;
-                        }
-
-                        final NonNullList<ItemStack> list = NonNullList.create();
-                        mi.fillItemGroup(mi.getGroup(), list);
-                        POSSIBLE_ITEMS.addAll(list);
-                    }
-                }
+        if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
+            for (final Item item : ForgeRegistries.ITEMS) {
+                addPossibleItem(item, SHARED_POSSIBLE_ITEMS);
             }
         }
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT data) {
+        data.putString("filter", filter.getRegistryName().toString());
+        return super.write(data);
+    }
+
+    @Override
+    public void read(BlockState blockState, CompoundNBT data) {
+        if (data.contains("filter")) {
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getString("filter")));
+            this.setItem(item);
+        }
+        super.read(blockState, data);
     }
 
     @SuppressWarnings("unchecked")
@@ -79,6 +82,39 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
             return (LazyOptional<T>) LazyOptional.of(() -> this.handler);
         }
         return super.getCapability(capability, facing);
+    }
+
+    public void setItem(Item item) {
+        this.filter = item;
+        this.possibleItems.clear();
+
+        addPossibleItem(this.filter, this.possibleItems);
+    }
+
+    private Queue<ItemStack> getPossibleItems() {
+        return this.filter != Items.AIR ? this.possibleItems : SHARED_POSSIBLE_ITEMS;
+    }
+
+    private static void addPossibleItem(Item item, Queue<ItemStack> queue) {
+        if (item == null || item == Items.AIR) {
+            return;
+        }
+
+        if (item.isDamageable()) {
+            ItemStack sampleStack = new ItemStack(item);
+            int maxDamage = sampleStack.getMaxDamage();
+            for (int dmg = 0; dmg < maxDamage; dmg++) {
+                ItemStack is = sampleStack.copy();
+                is.setDamage(dmg);
+                queue.add(is);
+            }
+        } else {
+            if (item.getGroup() != null) {
+                final NonNullList<ItemStack> list = NonNullList.create();
+                item.fillItemGroup(item.getGroup(), list);
+                queue.addAll(list);
+            }
+        }
     }
 
     class QueuedItemHandler implements IItemHandler {
@@ -92,7 +128,7 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
         @Override
         @Nonnull
         public ItemStack getStackInSlot(int slot) {
-            return POSSIBLE_ITEMS.peek() != null ? POSSIBLE_ITEMS.peek().copy() : ItemStack.EMPTY;
+            return getPossibleItems().peek() != null ? getPossibleItems().peek().copy() : ItemStack.EMPTY;
         }
 
         @Override
@@ -113,7 +149,7 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            final ItemStack is = POSSIBLE_ITEMS.peek();
+            final ItemStack is = getPossibleItems().peek();
 
             if (is == null) {
                 return ItemStack.EMPTY;
@@ -123,9 +159,9 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
         }
 
         private ItemStack getNextItem() {
-            final ItemStack is = POSSIBLE_ITEMS.poll();
+            final ItemStack is = getPossibleItems().poll();
 
-            POSSIBLE_ITEMS.add(is);
+            getPossibleItems().add(is);
             return is.copy();
         }
     }
