@@ -377,8 +377,8 @@ public class TickHandler {
             // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
             // will be readied.
             if (world.chunkExists(chunkPos.x, chunkPos.z) && chunkProvider.canTick(testBlockPos)) {
-                // Take the currently waiting tiles for this chunk and ready them all. Should more tiles be added to this
-                // chunk while we're working on it, a new list will be added automatically and we'll work on this
+                // Take the currently waiting tiles for this chunk and ready them all. Should more tiles be added to
+                // this chunk while we're working on it, a new list will be added automatically and we'll work on this
                 // chunk again next tick.
                 List<AEBaseTileEntity> chunkQueue = worldQueue.remove(packedChunkPos);
                 if (chunkQueue == null) {
