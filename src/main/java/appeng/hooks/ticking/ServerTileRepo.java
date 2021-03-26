@@ -18,9 +18,9 @@
 
 package appeng.hooks.ticking;
 
-import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
@@ -36,11 +36,11 @@ import appeng.tile.AEBaseTileEntity;
  */
 class ServerTileRepo {
 
-    private final Map<IWorld, Long2ObjectMap<Queue<AEBaseTileEntity>>> tiles = new Object2ObjectOpenHashMap<>();
+    // Mapping is world -> encoded chunk pos -> tile entities waiting to be initialized
+    private final Map<IWorld, Long2ObjectMap<List<AEBaseTileEntity>>> tiles = new Object2ObjectOpenHashMap<>();
 
     /**
      * Resets all internal data
-     * 
      */
     void clear() {
         this.tiles.clear();
@@ -55,13 +55,11 @@ class ServerTileRepo {
         final int z = tile.getPos().getZ() >> 4;
         final long chunkPos = ChunkPos.asLong(x, z);
 
-        Long2ObjectMap<Queue<AEBaseTileEntity>> worldQueue = this.tiles.get(world);
+        Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = this.tiles.get(world);
 
-        Queue<AEBaseTileEntity> queue = worldQueue.computeIfAbsent(chunkPos, key -> {
-            return new ArrayDeque<>();
-        });
-
-        queue.add(tile);
+        worldQueue.computeIfAbsent(chunkPos, key -> {
+            return new ArrayList<>();
+        }).add(tile);
     }
 
     /**
@@ -87,7 +85,7 @@ class ServerTileRepo {
      * save memory.
      */
     synchronized void removeWorldChunk(IWorld world, long chunkPos) {
-        Map<Long, Queue<AEBaseTileEntity>> queue = this.tiles.get(world);
+        Map<Long, List<AEBaseTileEntity>> queue = this.tiles.get(world);
         if (queue != null) {
             queue.remove(chunkPos);
         }
@@ -96,7 +94,7 @@ class ServerTileRepo {
     /**
      * Get the tiles needing to be initialized in this specific {@link IWorld}.
      */
-    public Long2ObjectMap<Queue<AEBaseTileEntity>> getTiles(IWorld world) {
+    public Long2ObjectMap<List<AEBaseTileEntity>> getTiles(IWorld world) {
         return tiles.get(world);
     }
 

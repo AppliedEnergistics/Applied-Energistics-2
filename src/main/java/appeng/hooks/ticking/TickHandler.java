@@ -358,26 +358,31 @@ public class TickHandler {
      * Ready the tiles in this world
      */
     private void readyTiles(IWorld world) {
-        final Long2ObjectMap<Queue<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
+        AbstractChunkProvider chunkProvider = world.getChunkProvider();
 
-        // Make a copy (hopefully stack-allocated) because this set may be modified
+        final Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
+
+        // Make a copy because this set may be modified
         // when new chunks are loaded by an onReady call below
-        long[] chunksQueued = worldQueue.keySet().toLongArray();
+        long[] workSet = worldQueue.keySet().toLongArray();
 
-        for (long chunkPos : chunksQueued) {
-            ChunkPos pos = new ChunkPos(chunkPos);
-            AbstractChunkProvider chunkProvider = world.getChunkProvider();
+        for (long packedChunkPos : workSet) {
+            ChunkPos chunkPos = new ChunkPos(packedChunkPos);
 
             // Using the blockpos of the chunk start to test if it can tick.
             // Relies on the world to test the chunkpos and not the explicit blockpos.
-            BlockPos testBlockPos = new BlockPos(pos.getXStart(), 0, pos.getZStart());
+            BlockPos testBlockPos = new BlockPos(chunkPos.getXStart(), 0, chunkPos.getZStart());
 
             // Readies this chunk, if it can tick and does exist.
             // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
             // will be readied.
-            if (world.chunkExists(pos.x, pos.z) && chunkProvider.canTick(testBlockPos)) {
-                Queue<AEBaseTileEntity> chunkQueue = worldQueue.remove(chunkPos);
+            if (world.chunkExists(chunkPos.x, chunkPos.z) && chunkProvider.canTick(testBlockPos)) {
+                // Take the currently waiting tiles for this chunk and ready them all. Should more tiles be added to this
+                // chunk while we're working on it, a new list will be added automatically and we'll work on this
+                // chunk again next tick.
+                List<AEBaseTileEntity> chunkQueue = worldQueue.remove(packedChunkPos);
                 if (chunkQueue == null) {
+                    AELog.warn("Chunk %s was unloaded while we were readying tiles", chunkPos);
                     continue; // This should never happen, chunk unloaded under our noses
                 }
 
