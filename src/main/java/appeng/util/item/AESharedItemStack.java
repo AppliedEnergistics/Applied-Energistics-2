@@ -36,9 +36,21 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
     private final int hashCode;
 
     public AESharedItemStack(final ItemStack itemStack) {
+        this(itemStack, itemStack.getDamage());
+    }
+
+    /**
+     * A constructor to explicitly set the damage value and not fetch it from the {@link ItemStack}
+     * 
+     * @param itemStack The {@link ItemStack} to filter
+     * @param damage    The damage of the item
+     */
+    private AESharedItemStack(ItemStack itemStack, int damage) {
         this.itemStack = itemStack;
         this.itemId = Item.getIdFromItem(itemStack.getItem());
-        this.itemDamage = itemStack.getDamage();
+        this.itemDamage = damage;
+
+        // Ensure this is always called last.
         this.hashCode = this.makeHashCode();
     }
 
@@ -98,8 +110,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             return damageValue;
         }
 
-        return System.identityHashCode(this.getDefinition().getTag())
-                - System.identityHashCode(b.getDefinition().getTag());
+        return this.hashCode - b.hashCode;
     }
 
     private int makeHashCode() {
@@ -111,10 +122,15 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
      */
     public static final class Bounds {
         /**
-         * Bounds enforced by {@link ItemStack#isEmpty()}
+         * Minecraft reverses the damage values. So anything with a damage of 0 is undamaged and increases the more
+         * damaged the item is.
+         * 
+         * Further the used subMap follows [MAX_DAMAGE, MIN_DAMAGE), so to include undamaged items, we have to start
+         * with a lower damage value than 0, while it is fine to use {@link ItemStack#getMaxDamage()} for the upper
+         * bound.
          */
-        private static final int MIN_DAMAGE_VALUE = 0;
-        private static final int MAX_DAMAGE_VALUE = Short.MAX_VALUE;
+        private static final int MIN_DAMAGE_VALUE = -1;
+        private static final int UNDAMAGED_DAMAGE_VALUE = 0;
 
         private final AESharedItemStack lower;
         private final AESharedItemStack upper;
@@ -123,10 +139,12 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             Preconditions.checkState(!stack.isEmpty(), "ItemStack#isEmpty() has to be false");
             Preconditions.checkState(stack.getCount() == 1, "ItemStack#getCount() has to be 1");
 
-            final CompoundNBT tag = stack.hasTag() ? stack.getTag() : null;
+            final CompoundNBT tag = stack.hasTag() ? stack.getTag().copy() : null;
 
             this.lower = this.makeLowerBound(stack, tag, fuzzy);
             this.upper = this.makeUpperBound(stack, tag, fuzzy);
+
+            Preconditions.checkState(this.lower.compareTo(this.upper) < 0);
         }
 
         public AESharedItemStack lower() {
@@ -140,48 +158,49 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
         private AESharedItemStack makeLowerBound(final ItemStack itemStack, final CompoundNBT tag,
                 final FuzzyMode fuzzy) {
             final ItemStack newDef = itemStack.copy();
+            newDef.setTag(tag);
+            int damage = newDef.getDamage();
 
             if (newDef.getItem().isDamageable()) {
                 if (fuzzy == FuzzyMode.IGNORE_ALL) {
-                    newDef.setDamage(MIN_DAMAGE_VALUE);
+                    damage = MIN_DAMAGE_VALUE;
                 } else if (fuzzy == FuzzyMode.PERCENT_99) {
-                    if (itemStack.getDamage() == MIN_DAMAGE_VALUE) {
-                        newDef.setDamage(MIN_DAMAGE_VALUE);
+                    if (itemStack.getDamage() == UNDAMAGED_DAMAGE_VALUE) {
+                        damage = MIN_DAMAGE_VALUE;
                     } else {
-                        newDef.setDamage(MIN_DAMAGE_VALUE + 1);
+                        damage = UNDAMAGED_DAMAGE_VALUE;
                     }
                 } else {
                     final int breakpoint = fuzzy.calculateBreakPoint(itemStack.getMaxDamage());
-                    final int damage = breakpoint <= itemStack.getDamage() ? breakpoint : 0;
-                    newDef.setDamage(damage);
+                    damage = breakpoint <= itemStack.getDamage() ? breakpoint : -1;
                 }
             }
 
-            return new AESharedItemStack(newDef);
+            return new AESharedItemStack(newDef, damage);
         }
 
         private AESharedItemStack makeUpperBound(final ItemStack itemStack, final CompoundNBT tag,
                 final FuzzyMode fuzzy) {
             final ItemStack newDef = itemStack.copy();
+            newDef.setTag(tag);
+            int damage = newDef.getDamage();
 
             if (newDef.getItem().isDamageable()) {
                 if (fuzzy == FuzzyMode.IGNORE_ALL) {
-                    newDef.setDamage(itemStack.getMaxDamage() + 1);
+                    damage = itemStack.getMaxDamage();
                 } else if (fuzzy == FuzzyMode.PERCENT_99) {
-                    if (itemStack.getDamage() == MIN_DAMAGE_VALUE) {
-                        newDef.setDamage(MIN_DAMAGE_VALUE);
+                    if (itemStack.getDamage() == UNDAMAGED_DAMAGE_VALUE) {
+                        damage = UNDAMAGED_DAMAGE_VALUE;
                     } else {
-                        newDef.setDamage(itemStack.getMaxDamage() + 1);
+                        damage = itemStack.getMaxDamage();
                     }
                 } else {
                     final int breakpoint = fuzzy.calculateBreakPoint(itemStack.getMaxDamage());
-                    final int damage = itemStack.getDamage() < breakpoint ? breakpoint - 1
-                            : itemStack.getMaxDamage() + 1;
-                    newDef.setDamage(damage);
+                    damage = itemStack.getDamage() < breakpoint ? breakpoint - 1 : itemStack.getMaxDamage();
                 }
             }
 
-            return new AESharedItemStack(newDef);
+            return new AESharedItemStack(newDef, damage);
         }
 
     }
