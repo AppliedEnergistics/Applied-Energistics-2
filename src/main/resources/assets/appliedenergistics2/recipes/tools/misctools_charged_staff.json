@@ -1,12 +1,17 @@
 {
     "conditions": [
         {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:charged_staff"
-        },
-        {
-            "type": "appliedenergistics2:material_exists",
-            "material": "material.certus_quartz_crystal_charged"
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:charged_staff"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.certus_quartz_crystal_charged"
+                }
+            ]
         }
     ],
     "result": {

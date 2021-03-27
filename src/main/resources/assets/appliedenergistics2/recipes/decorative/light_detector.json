@@ -1,17 +1,8 @@
 {
     "conditions": [
         {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:light_detector"
-                },
-                {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:netherCrystal"
-                }
-            ]
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:light_detector"
         }
     ],
     "result": {

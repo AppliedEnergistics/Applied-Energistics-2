@@ -1,17 +1,8 @@
 {
     "conditions": [
         {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:inscriber"
-                },
-                {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:fluixCrystal"
-                }
-            ]
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:inscriber"
         }
     ],
     "result": {

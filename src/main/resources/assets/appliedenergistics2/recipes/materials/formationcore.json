@@ -8,10 +8,6 @@
                     "material": "material.formation_core"
                 },
                 {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:certusCrystal"
-                },
-                {
                     "type": "appliedenergistics2:material_exists",
                     "material": "material.logic_processor"
                 }

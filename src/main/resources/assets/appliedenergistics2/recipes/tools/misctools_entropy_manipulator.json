@@ -12,10 +12,6 @@
                     "item": "appliedenergistics2:entropy_manipulator"
                 },
                 {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:fluixCrystal"
-                },
-                {
                     "type": "appliedenergistics2:material_exists",
                     "material": "material.engineering_processor"
                 }

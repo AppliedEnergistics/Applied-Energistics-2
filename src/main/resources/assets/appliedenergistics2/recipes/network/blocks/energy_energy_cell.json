@@ -10,10 +10,6 @@
                 {
                     "type": "minecraft:item_exists",
                     "item": "appliedenergistics2:quartz_glass"
-                },
-                {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:certusCrystal"
                 }
             ]
         }

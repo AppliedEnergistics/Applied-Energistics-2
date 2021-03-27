@@ -1,12 +1,17 @@
 {
     "conditions": [
         {
-            "type": "appliedenergistics2:material_exists",
-            "material": "material.calculation_processor"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:cell_workbench"
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:cell_workbench"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.calculation_processor"
+                }
+            ]
         }
     ],
     "result": {

@@ -1,12 +1,17 @@
 {
     "conditions": [
         {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:biometric_card"
-        },
-        {
-            "type": "appliedenergistics2:material_exists",
-            "material": "material.engineering_processor"
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:biometric_card"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.engineering_processor"
+                }
+            ]
         }
     ],
     "result": {
