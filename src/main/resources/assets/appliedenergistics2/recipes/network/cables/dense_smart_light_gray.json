@@ -4,12 +4,12 @@
             "type": "forge:and",
             "values": [
                 {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:cable_dense_smart.light_gray"
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "cable_dense_smart.light_gray"
                 },
                 {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:cable_dense_smart.fluix"
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "cable_dense_smart.fluix"
                 }
             ]
         }

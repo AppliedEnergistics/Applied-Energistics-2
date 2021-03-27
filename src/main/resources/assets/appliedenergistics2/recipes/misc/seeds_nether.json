@@ -1,8 +1,8 @@
 {
     "conditions": [
         {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:part:crystal_seed.nether"
+            "type": "appliedenergistics2:part_exists",
+            "part": "crystal_seed.nether"
         }
     ],
     "result": {

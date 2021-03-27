@@ -12,8 +12,8 @@
                     "material": "material.fluix_pearl"
                 },
                 {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:part.quartz_fiber"
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.quartz_fiber"
                 }
             ]
         }

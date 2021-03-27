@@ -1,7 +1,8 @@
 {
     "conditions": {
         "material_exists": "appeng.recipes.factories.conditions.MaterialExists",
-        "features": "appeng.recipes.factories.conditions.Features"
+        "features": "appeng.recipes.factories.conditions.Features",
+        "part_exists": "appeng.recipes.factories.conditions.PartExists"
     },
     "ingredients": {
         "part": "appeng.recipes.factories.ingredients.PartIngredientFactory"

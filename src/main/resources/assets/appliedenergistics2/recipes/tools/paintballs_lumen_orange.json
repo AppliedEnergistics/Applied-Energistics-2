@@ -1,8 +1,8 @@
 {
     "conditions": [
         {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:part:lumen_paint_ball.orange"
+            "type": "appliedenergistics2:part_exists",
+            "part": "lumen_paint_ball.orange"
         }
     ],
     "result": {

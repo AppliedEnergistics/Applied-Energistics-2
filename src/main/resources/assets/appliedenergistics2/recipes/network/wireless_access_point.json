@@ -12,8 +12,8 @@
                     "material": "material.wireless"
                 },
                 {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:cable_glass.fluix"
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "cable_glass.fluix"
                 },
                 {
                     "type": "appliedenergistics2:material_exists",

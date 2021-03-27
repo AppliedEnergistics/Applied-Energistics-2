@@ -1,12 +1,17 @@
 {
     "conditions": [
         {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:part:part.toggle_bus"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:part:part.inverted_toggle_bus"
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.toggle_bus"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.inverted_toggle_bus"
+                }
+            ]
         }
     ],
     "result": {

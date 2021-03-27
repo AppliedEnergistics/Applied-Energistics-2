@@ -12,8 +12,8 @@
                     "item": "appliedenergistics2:dense_energy_cell"
                 },
                 {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:part.terminal"
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.terminal"
                 },
                 {
                     "type": "appliedenergistics2:material_exists",

@@ -4,12 +4,12 @@
             "type": "forge:and",
             "values": [
                 {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:cable_covered.fluix"
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "cable_covered.fluix"
                 },
                 {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:cable_covered"
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "cable_covered"
                 }
             ]
         }

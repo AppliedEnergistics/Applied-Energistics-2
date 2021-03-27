@@ -4,8 +4,8 @@
             "type": "forge:and",
             "values": [
                 {
-                    "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:part.export_bus"
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.export_bus"
                 },
                 {
                     "type": "appliedenergistics2:material_exists",
