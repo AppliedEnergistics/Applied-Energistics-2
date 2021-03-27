@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:part:lumen_paint_ball.light_gray"
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "lumen_paint_ball.light_gray",

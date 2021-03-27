@@ -3,6 +3,10 @@
         {
             "type": "appliedenergistics2:material_exists",
             "material": "material.certus_quartz_crystal"
+        },
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:chiseled_quartz_block"
         }
     ],
     "result": {

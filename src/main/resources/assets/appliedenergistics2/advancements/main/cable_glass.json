@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:part:CABLE_GLASS"
+        }
+    ],
     "display": {
         "icon": {
             "item": "appliedenergistics2:part",

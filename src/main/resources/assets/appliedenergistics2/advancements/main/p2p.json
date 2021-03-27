@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:part:P2P_TUNNEL_ME"
+        }
+    ],
     "display": {
         "icon": {
             "item": "appliedenergistics2:part",

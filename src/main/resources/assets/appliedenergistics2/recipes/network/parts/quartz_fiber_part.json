@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:part:part.quartz_fiber"
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "part.quartz_fiber",

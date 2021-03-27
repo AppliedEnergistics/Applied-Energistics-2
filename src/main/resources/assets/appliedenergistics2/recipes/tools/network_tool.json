@@ -1,4 +1,14 @@
 {
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:network_tool"
+        },
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.calculation_processor"
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:network_tool"
     },

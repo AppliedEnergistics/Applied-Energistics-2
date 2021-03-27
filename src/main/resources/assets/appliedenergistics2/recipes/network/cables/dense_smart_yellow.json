@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:part:cable_dense_smart.yellow"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:part:cable_dense_smart.fluix"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "cable_dense_smart.yellow",

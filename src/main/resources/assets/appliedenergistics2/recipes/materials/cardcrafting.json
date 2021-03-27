@@ -1,8 +1,17 @@
 {
     "conditions": [
         {
-            "type": "appliedenergistics2:material_exists",
-            "material": "material.card_crafting"
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.card_crafting"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.basic_card"
+                }
+            ]
         }
     ],
     "result": {

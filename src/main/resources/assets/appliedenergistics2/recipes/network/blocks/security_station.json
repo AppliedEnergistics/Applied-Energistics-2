@@ -1,4 +1,31 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:security_station"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:chest"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.cell16k_part"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.engineering_processor"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:part:cable_glass.fluix"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:security_station"
     },

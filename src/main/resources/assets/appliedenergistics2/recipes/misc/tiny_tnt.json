@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:tiny_tnt"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:dustQuartz"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:tiny_tnt"
     },

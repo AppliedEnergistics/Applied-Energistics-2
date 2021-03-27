@@ -1,4 +1,27 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:io_port"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:drive"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.logic_processor"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:part:cable_glass.fluix"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:io_port"
     },

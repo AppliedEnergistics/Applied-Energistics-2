@@ -1,4 +1,23 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:crafting_storage_4k"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:crafting_unit"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.cell4k_part"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:crafting_storage_4k"
     },

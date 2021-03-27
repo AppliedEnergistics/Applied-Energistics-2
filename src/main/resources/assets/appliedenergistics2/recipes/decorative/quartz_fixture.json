@@ -1,4 +1,14 @@
 {
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.certus_quartz_crystal_charged"
+        },
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:quartz_fixture"
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:quartz_fixture",
         "count": 2

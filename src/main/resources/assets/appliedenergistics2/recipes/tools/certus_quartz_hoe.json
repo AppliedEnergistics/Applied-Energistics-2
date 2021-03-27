@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:certus_quartz_hoe"
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:certus_quartz_hoe"
     },

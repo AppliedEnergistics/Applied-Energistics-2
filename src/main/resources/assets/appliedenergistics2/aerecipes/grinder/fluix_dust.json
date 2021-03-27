@@ -1,4 +1,10 @@
 {
+	"conditions": [
+		{
+			"type": "appliedenergistics2:material_exists",
+			"material": "material.fluix_dust"
+		}
+	],
 	"type": "appliedenergistics2:grinder",
 	"input": {
 		"type": "forge:ore_dict",

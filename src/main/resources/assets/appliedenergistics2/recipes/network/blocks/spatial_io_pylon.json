@@ -1,4 +1,27 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:spatial_pylon"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:quartz_glass"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:fluixCrystal"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:part:cable_glass.fluix"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:spatial_pylon"
     },

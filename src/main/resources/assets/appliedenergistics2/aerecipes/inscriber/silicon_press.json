@@ -1,4 +1,10 @@
 {
+	"conditions": [
+		{
+			"type": "appliedenergistics2:material_exists",
+			"material": "material.silicon_press"
+		}
+	],
 	"type": "appliedenergistics2:inscriber",
 	"mode": "inscribe",
 	"result": {

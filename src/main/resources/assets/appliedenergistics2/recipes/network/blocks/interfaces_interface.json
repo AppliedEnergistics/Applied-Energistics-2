@@ -1,4 +1,27 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:interface"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.formation_core"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.annihilation_core"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:glass"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:interface"
     },

@@ -1,4 +1,8 @@
 {
+    "conditions": [{
+        "type": "minecraft:item_exists",
+        "item": "appliedenergistics2:nether_quartz_sword"
+    }],
     "result": {
         "item": "appliedenergistics2:nether_quartz_sword"
     },

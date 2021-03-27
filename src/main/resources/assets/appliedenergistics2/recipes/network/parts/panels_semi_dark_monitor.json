@@ -1,4 +1,14 @@
 {
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:part:part.semi_dark_monitor"
+        },
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:quartz_glass"
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "part.semi_dark_monitor",

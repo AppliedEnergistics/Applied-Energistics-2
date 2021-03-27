@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:part:part.cable_anchor"
+        }
+    ],
     "type": "appliedenergistics2:part_shapeless",
     "result": {
         "part": "part.cable_anchor",

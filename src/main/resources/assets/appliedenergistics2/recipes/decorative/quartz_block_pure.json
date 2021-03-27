@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.purified_nether_quartz_crystal"
+        }
+    ],
     "result": {
         "item": "minecraft:quartz_block",
         "data": 0

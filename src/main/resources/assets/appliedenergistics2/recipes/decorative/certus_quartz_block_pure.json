@@ -1,4 +1,14 @@
 {
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.purified_certus_quartz_crystal"
+        },
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:quartz_block"
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:quartz_block"
     },

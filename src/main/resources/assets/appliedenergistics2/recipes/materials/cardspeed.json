@@ -1,8 +1,17 @@
 {
     "conditions": [
         {
-            "type": "appliedenergistics2:material_exists",
-            "material": "material.card_speed"
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.card_speed"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.advanced_card"
+                }
+            ]
         }
     ],
     "result": {
