@@ -1,10 +1,4 @@
 {
-    "conditions": [
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:netherCrystal"
-        }
-    ],
     "result": {
         "item": "minecraft:comparator"
     },

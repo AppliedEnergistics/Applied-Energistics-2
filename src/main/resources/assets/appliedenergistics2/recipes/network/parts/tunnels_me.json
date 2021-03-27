@@ -5,10 +5,6 @@
             "values": [
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:fluixCrystal"
-                },
-                {
-                    "type": "minecraft:item_exists",
                     "item": "appliedenergistics2:part:part.p2p_tunnel_me"
                 },
                 {
