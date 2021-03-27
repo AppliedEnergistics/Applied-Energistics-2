@@ -38,6 +38,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
+import appeng.mixins.ItemStackAccessor;
 import appeng.util.Platform;
 
 public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack {
@@ -140,7 +141,18 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         buffer.writeItemStack(getDefinition(), false);
 
         // Workaround to also serialize caps as writeItemStack will ignore these.
-        buffer.writeCompoundTag(getDefinition().capNBT);
+        buffer.writeCompoundTag(getCapabilityTag());
+    }
+
+    /**
+     * We're assuming that using capNBT here is safe, because {@link #getDefinition()} should have been created by
+     * {@link ItemStack#copy()}, and then never mutated. Copying an item stack will automatically serialize the
+     * capabilities of the source stack and initialize the target stacks capNBT field using that tag, which we are then
+     * reusing here.
+     */
+    @SuppressWarnings("ConstantConditions")
+    private CompoundNBT getCapabilityTag() {
+        return ((ItemStackAccessor) (Object) getDefinition()).appeng2_getCapNBT();
     }
 
     @Override
