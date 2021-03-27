@@ -52,7 +52,6 @@ import net.minecraftforge.fml.DistExecutor.SafeRunnable;
 import net.minecraftforge.fml.LogicalSide;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap.Entry;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.CableRenderMode;
@@ -333,8 +332,6 @@ public class TickHandler {
 
     /**
      * Simulates the current crafting requests before they user can submit them to be processed.
-     *
-     * @param world
      */
     private void simulateCraftingJobs(IWorld world) {
         synchronized (this.craftingJobs) {
@@ -359,41 +356,44 @@ public class TickHandler {
 
     /**
      * Ready the tiles in this world
-     *
-     * @param world
      */
     private void readyTiles(IWorld world) {
-        final Long2ObjectMap<Queue<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
+        AbstractChunkProvider chunkProvider = world.getChunkProvider();
 
-        Iterator<Entry<Queue<AEBaseTileEntity>>> it = worldQueue.long2ObjectEntrySet().iterator();
+        final Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
 
-        while (it.hasNext()) {
-            Entry<Queue<AEBaseTileEntity>> entry = it.next();
+        // Make a copy because this set may be modified
+        // when new chunks are loaded by an onReady call below
+        long[] workSet = worldQueue.keySet().toLongArray();
 
-            ChunkPos pos = new ChunkPos(entry.getLongKey());
-            AbstractChunkProvider chunkProvider = world.getChunkProvider();
+        for (long packedChunkPos : workSet) {
+            ChunkPos chunkPos = new ChunkPos(packedChunkPos);
 
             // Using the blockpos of the chunk start to test if it can tick.
             // Relies on the world to test the chunkpos and not the explicit blockpos.
-            BlockPos testBlockPos = new BlockPos(pos.getXStart(), 0, pos.getZStart());
+            BlockPos testBlockPos = new BlockPos(chunkPos.getXStart(), 0, chunkPos.getZStart());
 
             // Readies this chunk, if it can tick and does exist.
             // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
             // will be readied.
-            if (world.chunkExists(pos.x, pos.z) && chunkProvider.canTick(testBlockPos)) {
-                Queue<AEBaseTileEntity> queue = entry.getValue();
+            if (world.chunkExists(chunkPos.x, chunkPos.z) && chunkProvider.canTick(testBlockPos)) {
+                // Take the currently waiting tiles for this chunk and ready them all. Should more tiles be added to
+                // this chunk while we're working on it, a new list will be added automatically and we'll work on this
+                // chunk again next tick.
+                List<AEBaseTileEntity> chunkQueue = worldQueue.remove(packedChunkPos);
+                if (chunkQueue == null) {
+                    AELog.warn("Chunk %s was unloaded while we were readying tiles", chunkPos);
+                    continue; // This should never happen, chunk unloaded under our noses
+                }
 
-                while (!queue.isEmpty()) {
-                    final AEBaseTileEntity bt = queue.poll();
-
+                for (AEBaseTileEntity bt : chunkQueue) {
                     // Only ready tile entites which weren't destroyed in the meantime.
                     if (!bt.isRemoved()) {
+                        // Note that this can load more chunks, but they'll at the earliest
+                        // be initialized on the next tick
                         bt.onReady();
                     }
                 }
-
-                // cleanup empty chunk queue
-                it.remove();
             }
         }
     }
