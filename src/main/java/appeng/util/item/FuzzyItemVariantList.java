@@ -38,10 +38,6 @@ class FuzzyItemVariantList extends ItemVariantList {
 
     @Override
     public Collection<IAEItemStack> findFuzzy(final IAEItemStack filter, final FuzzyMode fuzzy) {
-        if (filter == null) {
-            return Collections.emptyList();
-        }
-
         final AEItemStack itemStack = (AEItemStack) filter;
         final Bounds bounds = itemStack.getSharedStack().getBounds(fuzzy);
 
