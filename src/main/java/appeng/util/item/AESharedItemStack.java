@@ -24,16 +24,8 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 
-import appeng.api.config.FuzzyMode;
-
-final class AESharedItemStack implements Comparable<AESharedItemStack> {
-
-    /**
-     * Marker Item Stack to facilitate range lookups that only check against item damage, and ignore everything else.
-     */
-    private static final ItemStack DAMAGE_BOUND_STACK = new ItemStack(Items.AIR);
+final class AESharedItemStack {
 
     private final ItemStack itemStack;
     private final int itemId;
@@ -59,12 +51,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
         this.hashCode = this.makeHashCode();
     }
 
-    Bounds getBounds(final FuzzyMode fuzzy) {
-        return new Bounds(this.itemStack, fuzzy);
-    }
-
     ItemStack getDefinition() {
-        Preconditions.checkState(!isBound(), "Bounds may not be used for anything other than compareTo");
         return this.itemStack;
     }
 
@@ -72,29 +59,21 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
         return this.itemDamage;
     }
 
-    int getItemID() {
-        return this.itemId;
-    }
-
     @Override
     public int hashCode() {
-        Preconditions.checkState(!isBound(), "Bounds may not be used for anything other than compareTo");
         return this.hashCode;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof AESharedItemStack)) {
-            return false;
-        }
-        final AESharedItemStack other = (AESharedItemStack) obj;
-        Preconditions.checkArgument(!other.isBound(), "Bounds may not be used for anything other than compareTo");
-        Preconditions.checkArgument(!isBound(), "Bounds may not be used for anything other than compareTo");
-
         if (this == obj) {
             return true;
         }
+        if (!(obj instanceof AESharedItemStack)) {
+            return false;
+        }
 
+        final AESharedItemStack other = (AESharedItemStack) obj;
         Preconditions.checkState(this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1");
         Preconditions.checkArgument(other.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1");
 
@@ -104,118 +83,11 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
         return ItemStack.areItemStacksEqual(this.itemStack, other.itemStack);
     }
 
-    @Override
-    public int compareTo(final AESharedItemStack b) {
-        // When either side is one of the two special bounds, we only compare item damage.
-        if (isBound() || b.isBound()) {
-            // Damaged items are sorted before undamaged items
-            return Integer.compare(b.itemDamage, itemDamage);
-        }
-
-        Preconditions.checkState(this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1");
-        Preconditions.checkArgument(b.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1");
-
-        if (this.itemStack == b.getDefinition()) {
-            return 0;
-        }
-
-        final int id = this.itemId - b.itemId;
-        if (id != 0) {
-            return id;
-        }
-
-        // Damaged items are sorted before undamaged items
-        final int damageValue = b.itemDamage - this.itemDamage;
-        if (damageValue != 0) {
-            return damageValue;
-        }
-
-        // As a final tie breaker, order by the object identity of the item stack
-        // While this will order seemingly at random, we only need the order of
-        // damage values to be predictable, while still having to satisfy the
-        // complete order requirements of the sorted map
-        return Long.compare(System.identityHashCode(this.itemStack), System.identityHashCode(b.itemStack));
-    }
-
-    private boolean isBound() {
-        return itemStack == DAMAGE_BOUND_STACK;
-    }
-
     private int makeHashCode() {
         return Objects.hash(
                 this.itemId,
                 this.itemDamage,
                 this.itemStack.hasTag() ? this.itemStack.getTag() : 0);
-    }
-
-    /**
-     * Creates the lower and upper bounds for a specific shared itemstack.
-     */
-    public static final class Bounds {
-        /**
-         * Minecraft reverses the damage values. So anything with a damage of 0 is undamaged and increases the more
-         * damaged the item is.
-         * 
-         * Further the used subMap follows [MAX_DAMAGE, MIN_DAMAGE), so to include undamaged items, we have to start
-         * with a lower damage value than 0, while it is fine to use {@link ItemStack#getMaxDamage()} for the upper
-         * bound.
-         */
-        private static final int MIN_DAMAGE_VALUE = -1;
-
-        private final AESharedItemStack lower;
-        private final AESharedItemStack upper;
-
-        public Bounds(final ItemStack stack, final FuzzyMode fuzzy) {
-            Preconditions.checkState(!stack.isEmpty(), "ItemStack#isEmpty() has to be false");
-            Preconditions.checkState(stack.getCount() == 1, "ItemStack#getCount() has to be 1");
-            Preconditions.checkState(stack.isDamageable(), "ItemStack#isDamageable() has to be true");
-
-            this.lower = this.makeLowerBound(stack, fuzzy);
-            this.upper = this.makeUpperBound(stack, fuzzy);
-
-            Preconditions.checkState(this.lower.compareTo(this.upper) < 0);
-        }
-
-        public AESharedItemStack lower() {
-            return this.lower;
-        }
-
-        public AESharedItemStack upper() {
-            return this.upper;
-        }
-
-        /*
-         * Keep in mind that the stack order is from most damaged to least damaged, so this lower bound will actually be
-         * a higher number than the upper bound.
-         */
-        private AESharedItemStack makeLowerBound(final ItemStack itemStack, final FuzzyMode fuzzy) {
-            int damage;
-            if (fuzzy == FuzzyMode.IGNORE_ALL) {
-                damage = itemStack.getMaxDamage();
-            } else {
-                final int breakpoint = fuzzy.calculateBreakPoint(itemStack.getMaxDamage());
-                damage = itemStack.getDamage() <= breakpoint ? breakpoint : itemStack.getMaxDamage();
-            }
-
-            return new AESharedItemStack(DAMAGE_BOUND_STACK, damage);
-        }
-
-        /*
-         * Keep in mind that the stack order is from most damaged to least damaged, so this upper bound will actually be
-         * a lower number than the lower bound. It also is exclusive.
-         */
-        private AESharedItemStack makeUpperBound(final ItemStack itemStack, final FuzzyMode fuzzy) {
-            int damage;
-            if (fuzzy == FuzzyMode.IGNORE_ALL) {
-                damage = MIN_DAMAGE_VALUE;
-            } else {
-                final int breakpoint = fuzzy.calculateBreakPoint(itemStack.getMaxDamage());
-                damage = itemStack.getDamage() <= breakpoint ? MIN_DAMAGE_VALUE : breakpoint;
-            }
-
-            return new AESharedItemStack(DAMAGE_BOUND_STACK, damage);
-        }
-
     }
 
 }

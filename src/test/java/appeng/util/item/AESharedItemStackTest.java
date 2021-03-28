@@ -72,44 +72,15 @@ class AESharedItemStackTest {
                 String otherStackName = stacks.get(otherStack);
 
                 if (stack == otherStack) {
-                    assertThat(stack).as("%s.compareTo(%s) == 0", stackName, stackName)
-                            .isEqualByComparingTo(otherStack);
                     assertThat(stack).as("%s.equals(%s)", stackName, stackName)
                             .isEqualTo(otherStack);
                 } else {
-                    assertThat(stack)
-                            .as("%s.compareTo(%s) != 0", stackName, otherStackName)
-                            .isNotEqualByComparingTo(otherStack);
                     assertThat(stack)
                             .as("!%s.equals(%s)", stackName, otherStackName)
                             .isNotEqualTo(otherStack);
                 }
             }
         }
-    }
-
-    @Test
-    void testCompareToForDamagedItems() {
-        // Diamond Sword @ 100% durability
-        ItemStack undamagedSword = new ItemStack(Items.DIAMOND_SWORD);
-        AESharedItemStack undamagedStack = new AESharedItemStack(undamagedSword);
-
-        // Unenchanted Diamond Sword @ 0% durability
-        ItemStack damagedSword = new ItemStack(Items.DIAMOND_SWORD);
-        damagedSword.setDamage(damagedSword.getMaxDamage());
-        AESharedItemStack damagedStack = new AESharedItemStack(damagedSword);
-
-        // Create a list of stacks and sort by their natural order
-        AESharedItemStack[] stacks = new AESharedItemStack[] {
-                damagedStack, undamagedStack
-        };
-        Arrays.sort(stacks);
-        assertThat(stacks).containsExactly(damagedStack, undamagedStack);
-    }
-
-    @Test
-    void testCompareToWithBounds() {
-
     }
 
     private AESharedItemStack diamondSword(int damage, String displayName) {
@@ -119,127 +90,6 @@ class AESharedItemStackTest {
             sword.setDisplayName(new StringTextComponent(displayName));
         }
         return new AESharedItemStack(sword);
-    }
-
-    @Nested
-    class Bounds {
-        final ItemStack vanillaStack = new ItemStack(Items.DIAMOND_SWORD);
-        final AESharedItemStack stack = new AESharedItemStack(vanillaStack);
-        final AESharedItemStack damagedStack;
-        {
-            ItemStack damagedVanillaStack = vanillaStack.copy();
-            damagedVanillaStack.setDamage(damagedVanillaStack.getMaxDamage());
-            damagedStack = new AESharedItemStack(damagedVanillaStack);
-        }
-
-        @Test
-        void testIgnoreAll() {
-            AESharedItemStack.Bounds bounds = stack.getBounds(FuzzyMode.IGNORE_ALL);
-            assertBoundsCompareTo(bounds);
-            assertEquals(vanillaStack.getMaxDamage(), bounds.lower().getItemDamage());
-            assertEquals(-1, bounds.upper().getItemDamage());
-        }
-
-        /**
-         * PERCENT_99 with an undamaged item should select only undamaged items, which translates to a damage range of
-         * [0, -1).
-         */
-        @Test
-        void test99PercentDurabilityWithUndamagedItem() {
-            AESharedItemStack.Bounds bounds = stack.getBounds(FuzzyMode.PERCENT_99);
-            assertBoundsCompareTo(bounds);
-            assertEquals(0, bounds.lower().getItemDamage());
-            assertEquals(-1, bounds.upper().getItemDamage());
-        }
-
-        /**
-         * PERCENT_99 with a damaged item should select only damaged items, which translates to a damage range of
-         * [maxDmg, 0).
-         */
-        @Test
-        void test99PercentDurabilityWithDamagedItem() {
-            AESharedItemStack.Bounds bounds = damagedStack.getBounds(FuzzyMode.PERCENT_99);
-            assertBoundsCompareTo(bounds);
-            assertEquals(vanillaStack.getMaxDamage(), bounds.lower().getItemDamage());
-            assertEquals(0, bounds.upper().getItemDamage());
-        }
-
-        /**
-         * PERCENT_75 with an undamaged item should select items that have 75% or more durability, which should
-         * translate to a damage range of [0.25*maxDmg, -1).
-         */
-        @Test
-        void test75PercentWithUndamagedItem() {
-            AESharedItemStack.Bounds bounds = stack.getBounds(FuzzyMode.PERCENT_75);
-            assertBoundsCompareTo(bounds);
-            assertEquals((int) (0.25 * vanillaStack.getMaxDamage()), bounds.lower().getItemDamage());
-            assertEquals(-1, bounds.upper().getItemDamage());
-        }
-
-        /**
-         * PERCENT_75 with a damaged item should select items that have less than 75% durability, which should translate
-         * to a damage range of [maxDmg, 0.25*maxDmg).
-         */
-        @Test
-        void test75PercentWithDamagedItem() {
-            AESharedItemStack.Bounds bounds = damagedStack.getBounds(FuzzyMode.PERCENT_75);
-            assertBoundsCompareTo(bounds);
-            assertEquals(vanillaStack.getMaxDamage(), bounds.lower().getItemDamage());
-            assertEquals((int) (0.25 * vanillaStack.getMaxDamage()), bounds.upper().getItemDamage());
-        }
-
-        /**
-         * PERCENT_50 with an undamaged item should select items that have 50% or more durability, which should
-         * translate to a damage range of [0.50*maxDmg, -1).
-         */
-        @Test
-        void test50PercentWithUndamagedItem() {
-            AESharedItemStack.Bounds bounds = stack.getBounds(FuzzyMode.PERCENT_50);
-            assertBoundsCompareTo(bounds);
-            assertEquals((int) (0.50 * vanillaStack.getMaxDamage()), bounds.lower().getItemDamage());
-            assertEquals(-1, bounds.upper().getItemDamage());
-        }
-
-        /**
-         * PERCENT_50 with a damaged item should select items that have less than 50% durability, which should translate
-         * to a damage range of [maxDmg, 0.50*maxDmg).
-         */
-        @Test
-        void test50PercentWithDamagedItem() {
-            AESharedItemStack.Bounds bounds = damagedStack.getBounds(FuzzyMode.PERCENT_50);
-            assertBoundsCompareTo(bounds);
-            assertEquals(vanillaStack.getMaxDamage(), bounds.lower().getItemDamage());
-            assertEquals((int) (0.50 * vanillaStack.getMaxDamage()), bounds.upper().getItemDamage());
-        }
-
-        /**
-         * PERCENT_25 with an undamaged item should select items that have 25% or more durability, which should
-         * translate to a damage range of [0.75*maxDmg, -1).
-         */
-        @Test
-        void test25PercentWithUndamagedItem() {
-            AESharedItemStack.Bounds bounds = stack.getBounds(FuzzyMode.PERCENT_25);
-            assertBoundsCompareTo(bounds);
-            assertEquals((int) (0.75 * vanillaStack.getMaxDamage()), bounds.lower().getItemDamage());
-            assertEquals(-1, bounds.upper().getItemDamage());
-        }
-
-        /**
-         * PERCENT_25 with a damaged item should select items that have less than 25% durability, which should translate
-         * to a damage range of [maxDmg, 0.75*maxDmg).
-         */
-        @Test
-        void test25PercentWithDamagedItem() {
-            AESharedItemStack.Bounds bounds = damagedStack.getBounds(FuzzyMode.PERCENT_25);
-            assertBoundsCompareTo(bounds);
-            assertEquals(vanillaStack.getMaxDamage(), bounds.lower().getItemDamage());
-            assertEquals((int) (0.75 * vanillaStack.getMaxDamage()), bounds.upper().getItemDamage());
-        }
-
-        private void assertBoundsCompareTo(AESharedItemStack.Bounds bounds) {
-            assertTrue(bounds.lower().compareTo(bounds.upper()) < 0); // lower should be less than upper
-            assertTrue(bounds.upper().compareTo(bounds.lower()) > 0); // upper should be greater than lower
-        }
     }
 
 }
