@@ -80,7 +80,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			this.grid = anchor.getActionableNode().getGrid();
 		}
 
-		this.bindPlayerInventory( ip, 0, 236 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 14, 256 - /* height of player inventory */82 );
 	}
 
 	@Override
@@ -258,7 +258,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					if( hasItemInHand )
 					{
 						ItemStack extra = playerHand.removeItems( 1, ItemStack.EMPTY, null );
-						if( !extra.isEmpty() )
+						if( !extra.isEmpty() && !interfaceSlot.containsItems())
 						{
 							extra = interfaceSlot.addItems( extra );
 						}

@@ -22,13 +22,15 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.*;
 
+import appeng.api.config.ActionItems;
+import appeng.api.config.Settings;
+import appeng.client.gui.widgets.GuiImgButton;
 import appeng.util.BlockPosUtils;
 import com.google.common.collect.HashMultimap;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -58,7 +60,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private static final int LINES_ON_PAGE = 6;
 
 	// TODO: copied from GuiMEMonitorable. It looks not changed, maybe unneeded?
-	private final int offsetX = 9;
+	private final int offsetX = 21;
 
 	private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<>();
 	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
@@ -83,8 +85,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.partInterfaceTerminal = te;
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
-		this.xSize = 195;
-		this.ySize = 236;
+		this.xSize = 208;
+		this.ySize = 256;
 	}
 
 	@Override
@@ -92,19 +94,18 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	{
 		super.initGui();
 
-		this.getScrollBar().setLeft( 175 );
+		this.getScrollBar().setLeft( 190 );
 		this.getScrollBar().setHeight( 106 );
-		this.getScrollBar().setTop( 32 );
+		this.getScrollBar().setTop( 51 );
 
-		this.searchFieldInputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 16, this.offsetX ), this.guiTop + 18, 65, 12 );
+		this.searchFieldInputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 32, this.offsetX ), this.guiTop + 25, 65, 12 );
 		this.searchFieldInputs.setEnableBackgroundDrawing( false );
 		this.searchFieldInputs.setMaxStringLength( 25 );
 		this.searchFieldInputs.setTextColor( 0xFFFFFF );
 		this.searchFieldInputs.setVisible( true );
 		this.searchFieldInputs.setFocused( false );
 
-//		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 105, this.offsetX ), this.guiTop + 4, 65, 12 );
-		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 94, this.offsetX ), this.guiTop + 18, 65, 12 );
+		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 32, this.offsetX ), this.guiTop + 38, 65, 12 );
 		this.searchFieldOutputs.setEnableBackgroundDrawing( false );
 		this.searchFieldOutputs.setMaxStringLength( 25 );
 		this.searchFieldOutputs.setTextColor( 0xFFFFFF );
@@ -123,31 +124,34 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
+	protected boolean isPointInRegion( int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY )
+	{
+		if( searchFieldInputs.isMouseIn( pointX, pointY ) ) drawTooltip( pointX - guiLeft - offsetX, pointY - guiTop , "Inputs OR names" );
+		else if( searchFieldOutputs.isMouseIn( pointX, pointY ) ) drawTooltip( pointX - guiLeft - offsetX, pointY - guiTop, "Outputs OR names" );
+		return super.isPointInRegion( rectX, rectY, rectWidth, rectHeight, pointX, pointY );
+	}
+
+	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.buttonList.clear();
 
 		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.fontRenderer.drawString( GuiText.inventory.getLocal(), offsetX, this.ySize - 96 + 3, 4210752 );
 
 		final int ex = this.getScrollBar().getCurrentScroll();
 
-		this.guiButtonNextAssembler = new GuiButton( -1, guiLeft + 110, guiTop + 4, 12, 12, "M" );
+		this.guiButtonNextAssembler = new GuiImgButton(guiLeft + 123, guiTop + 25,Settings.ACTIONS, ActionItems.FREE_MOLECULAR_SLOT_SHORTCUT);
 		this.buttonList.add( guiButtonNextAssembler );
 
-		this.guiButtonHide = new GuiButton( -1, guiLeft + 128, guiTop + 4, 60, 12, "Hide Full" );
+		guiButtonHide = new GuiImgButton( guiLeft + 141, guiTop + 25,Settings.ACTIONS, this.partInterfaceTerminal.onlyInterfacesWithFreeSlots ?
+																							ActionItems.TOGGLE_SHOW_FULL_INTERFACES_OFF :
+																							ActionItems.TOGGLE_SHOW_FULL_INTERFACES_ON);
 		this.buttonList.add( guiButtonHide );
 
-		final Iterator<Slot> o = this.inventorySlots.inventorySlots.iterator();
-		while( o.hasNext() )
-		{
-			if( o.next() instanceof SlotDisconnected )
-			{
-				o.remove();
-			}
-		}
+		this.inventorySlots.inventorySlots.removeIf( slot -> slot instanceof SlotDisconnected );
 
-		int offset = 32;
+		int offset = 51;
 		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
 		{
 			final Object lineObj = this.lines.get( ex + x );
@@ -156,9 +160,10 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
 				for( int z = 0; z < inv.getInventory().getSlots(); z++ )
 				{
-					this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 8, 1 + offset ) );
+					this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 22, 1 + offset ) );
 				}
-				GuiButton guiButton = new GuiButton( x, guiLeft + 1, guiTop + offset + 3, 8, 10, "?" );
+
+				GuiButton guiButton = new GuiImgButton(guiLeft + 4, guiTop + offset + 1, Settings.ACTIONS, ActionItems.HIGHLIGHT_INTERFACE);
 				guiButtonHashMap.put( guiButton , inv);
 				this.buttonList.add( guiButton );
 
@@ -177,7 +182,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					name = name.substring( 0, name.length() - 1 );
 				}
 
-				this.fontRenderer.drawString( name, 10, 6 + offset, 4210752 );
+				this.fontRenderer.drawString( name, 22, 6 + offset, 4210752 );
 			}
 			offset += 18;
 		}
@@ -213,7 +218,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			BlockPos blockPos = blockPosHashMap.get( guiButtonHashMap.get( this.selectedButton ) );
 			BlockPos blockPos2 = mc.player.getPosition();
 			hilightBlock( blockPos, System.currentTimeMillis() + 500 * BlockPosUtils.getDistance(blockPos, blockPos2) );
-			mc.player.sendStatusMessage( new TextComponentString( "The interface is now highlighted at " + "X: " + blockPos.getX() + "Y: " + blockPos.getY() + "Z: " + blockPos.getZ() ), false );
+			mc.player.sendStatusMessage( new TextComponentString( "The interface is now highlighted at " + "X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() ), false );
 			mc.player.closeScreen();
 		}
 
@@ -245,7 +250,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.bindTexture( "guis/newinterfaceterminal.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 
-		int offset = 32;
+		int offset = 51;
 		final int ex = this.getScrollBar().getCurrentScroll();
 
 		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
@@ -257,7 +262,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 				GlStateManager.color( 1, 1, 1, 1 );
 				final int width = inv.getInventory().getSlots() * 18;
-				this.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 153, width, 18 );
+				this.drawTexturedModalRect( offsetX + 20, offsetY + offset, 20, 173, width, 18 );
 			}
 			offset += 18;
 		}

@@ -363,6 +363,12 @@ gui.tooltips.appliedenergistics2.DecreaseByOne=Decrease one
 gui.tooltips.appliedenergistics2.DecreaseByOneDesc=Will try to add decrease the items set in the crafting slots by one DOES NOT MAINTAIN INGREDIENT RATIO
 gui.tooltips.appliedenergistics2.MaxCount=Maximize slot count
 gui.tooltips.appliedenergistics2.MaxCountDesc=Will maximize the output maintaing the input ratio of the items set in the crafting slots
+gui.tooltips.appliedenergistics2.FreeMolecularSlotShortcut=Show Crafting interfaces with free slots
+gui.tooltips.appliedenergistics2.FreeMolecularSlotShortcutDesc=Shortcut that toggles interfaces with free slots and searches for molecular assemblers
+gui.tooltips.appliedenergistics2.ToggleShowFullInterfaces=Toggles showing interfaces with full slots
+gui.tooltips.appliedenergistics2.ToggleShowFullInterfacesOnDesc=Showing all interfaces
+gui.tooltips.appliedenergistics2.ToggleShowFullInterfacesOffDesc=Showing only interfaces with free slots
+gui.tooltips.appliedenergistics2.HighlightInterface=Highlight interface
 
 // Units
 gui.appliedenergistics2.units.appliedenergstics=AE

@@ -262,9 +262,12 @@ public class PacketJEIRecipe extends AppEngPacket
 							}
 						}
 					}
-					if( currentItem.isEmpty() && this.recipe[x] != null)
+					if (!cct.useRealItems())
 					{
-						currentItem = this.recipe[x][0].copy();
+						if( currentItem.isEmpty() && this.recipe[x] != null )
+						{
+							currentItem = this.recipe[x][0].copy();
+						}
 					}
 				}
 				ItemHandlerUtil.setStackInSlot( craftMatrix, x, currentItem );

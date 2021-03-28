@@ -19,6 +19,7 @@
 package appeng.core.localization;
 
 
+import appeng.api.config.SchedulingMode;
 import net.minecraft.util.text.translation.I18n;
 
 
@@ -151,6 +152,13 @@ public enum ButtonToolTips
 	DecreaseByOneDesc,
 	MaxCount,
 	MaxCountDesc,
+	FreeMolecularSlotShortcut,
+	FreeMolecularSlotShortcutDesc,
+	ToggleShowFullInterfaces,
+	ToggleShowFullInterfacesOnDesc,
+	ToggleShowFullInterfacesOffDesc,
+	HighlightInterface,
+	HighlightInterfaceDesc,
 
 	// Used in the tooltips of the items in the terminal, when moused over
 	ItemsStored,
