@@ -335,9 +335,55 @@ public class ItemListTest {
         }
     }
 
-    @Test
-    void testFindFuzzyForNullArgument() {
+    /**
+     * Tests how ItemList behaves w.r.t. null arguments, given that {@link AEItemStack#fromItemStack(ItemStack)}
+     * can return null for an empty stack, this sometimes leaks into method parameters.
+     * As such, methods should behave as if an empty item stack was passed.
+     */
+    @Nested
+    class NullArguments {
+        @BeforeEach
+        void addItem() {
+            itemList.add(diamondSword(100, 1, 0, false));
+        }
 
+        @Test
+        void testFindFuzzy() {
+            assertThat(itemList.findFuzzy(null, FuzzyMode.PERCENT_99)).isEmpty();
+        }
+
+        @Test
+        void testFindPrecise() {
+            assertThat(itemList.findPrecise(null)).isNull();
+        }
+
+        @Test
+        void testAdd() {
+            assertThat(itemList.size()).isEqualTo(1);
+            itemList.add(null);
+            assertThat(itemList.size()).isEqualTo(1);
+        }
+
+        @Test
+        void testAddStorage() {
+            assertThat(itemList.size()).isEqualTo(1);
+            itemList.addStorage(null);
+            assertThat(itemList.size()).isEqualTo(1);
+        }
+
+        @Test
+        void testAddRequestable() {
+            assertThat(itemList.size()).isEqualTo(1);
+            itemList.addRequestable(null);
+            assertThat(itemList.size()).isEqualTo(1);
+        }
+
+        @Test
+        void testAddCrafting() {
+            assertThat(itemList.size()).isEqualTo(1);
+            itemList.addCrafting(null);
+            assertThat(itemList.size()).isEqualTo(1);
+        }
     }
 
     private void assertListContent(AEItemStack... stacks) {
