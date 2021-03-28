@@ -18,22 +18,22 @@
 
 package appeng.util.item;
 
-import appeng.api.config.FuzzyMode;
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.Items;
 
-import java.util.Objects;
+import appeng.api.config.FuzzyMode;
 
 final class AESharedItemStack implements Comparable<AESharedItemStack> {
 
     /**
-     * Marker Item Stack to facilitate bound comparisons for stacks that
-     * are otherwise randomly ordered.
+     * Marker Item Stack to facilitate range lookups that only check against item damage, and ignore everything else.
      */
-    private static final ItemStack LOWER_BOUND_STACK = new ItemStack(null);
-    private static final ItemStack UPPER_BOUND_STACK = new ItemStack(null);
+    private static final ItemStack DAMAGE_BOUND_STACK = new ItemStack(Items.AIR);
 
     private final ItemStack itemStack;
     private final int itemId;
@@ -104,18 +104,22 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
 
     @Override
     public int compareTo(final AESharedItemStack b) {
-        if (!isBound() && !b.isBound()) {
-            Preconditions.checkState(this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1");
-            Preconditions.checkArgument(b.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1");
+        // When either side is one of the two special bounds, we only compare item damage.
+        if (isBound() || b.isBound()) {
+            // Damaged items are sorted before undamaged items
+            return Integer.compare(b.itemDamage, itemDamage);
+        }
 
-            if (this.itemStack == b.getDefinition()) {
-                return 0;
-            }
+        Preconditions.checkState(this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1");
+        Preconditions.checkArgument(b.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1");
 
-            final int id = this.itemId - b.itemId;
-            if (id != 0) {
-                return id;
-            }
+        if (this.itemStack == b.getDefinition()) {
+            return 0;
+        }
+
+        final int id = this.itemId - b.itemId;
+        if (id != 0) {
+            return id;
         }
 
         // Damaged items are sorted before undamaged items
@@ -128,31 +132,18 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
         // While this will order seemingly at random, we only need the order of
         // damage values to be predictable, while still having to satisfy the
         // complete order requirements of the sorted map
-        return Long.compare(getItemStackOrder(this.itemStack), getItemStackOrder(b.itemStack));
+        return Long.compare(System.identityHashCode(this.itemStack), System.identityHashCode(b.itemStack));
     }
 
     private boolean isBound() {
-        return itemStack == LOWER_BOUND_STACK || itemStack == UPPER_BOUND_STACK;
-    }
-
-    private static long getItemStackOrder(ItemStack stack) {
-        // the identity hash code is 32-bit, so to ensure no collisions with the
-        // upper/lower bounds, we up-cast to 64-bit
-        if (stack == LOWER_BOUND_STACK) {
-            return Integer.MIN_VALUE - 1L;
-        } else if (stack == UPPER_BOUND_STACK) {
-            return Integer.MAX_VALUE + 1L;
-        } else {
-            return System.identityHashCode(stack);
-        }
+        return itemStack == DAMAGE_BOUND_STACK;
     }
 
     private int makeHashCode() {
         return Objects.hash(
                 this.itemId,
                 this.itemDamage,
-                this.itemStack.hasTag() ? this.itemStack.getTag() : 0
-        );
+                this.itemStack.hasTag() ? this.itemStack.getTag() : 0);
     }
 
     /**
@@ -192,8 +183,8 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
         }
 
         /*
-         * Keep in mind that the stack order is from most damaged to least damaged, so this lower bound
-         * will actually be a higher number than the upper bound.
+         * Keep in mind that the stack order is from most damaged to least damaged, so this lower bound will actually be
+         * a higher number than the upper bound.
          */
         private AESharedItemStack makeLowerBound(final ItemStack itemStack, final FuzzyMode fuzzy) {
             int damage;
@@ -204,12 +195,12 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
                 damage = itemStack.getDamage() <= breakpoint ? breakpoint : itemStack.getMaxDamage();
             }
 
-            return new AESharedItemStack(LOWER_BOUND_STACK, damage);
+            return new AESharedItemStack(DAMAGE_BOUND_STACK, damage);
         }
 
         /*
-         * Keep in mind that the stack order is from most damaged to least damaged, so this upper bound
-         * will actually be a lower number than the lower bound. It also is exclusive.
+         * Keep in mind that the stack order is from most damaged to least damaged, so this upper bound will actually be
+         * a lower number than the lower bound. It also is exclusive.
          */
         private AESharedItemStack makeUpperBound(final ItemStack itemStack, final FuzzyMode fuzzy) {
             int damage;
@@ -220,7 +211,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
                 damage = itemStack.getDamage() <= breakpoint ? MIN_DAMAGE_VALUE : breakpoint;
             }
 
-            return new AESharedItemStack(UPPER_BOUND_STACK, damage);
+            return new AESharedItemStack(DAMAGE_BOUND_STACK, damage);
         }
 
     }
