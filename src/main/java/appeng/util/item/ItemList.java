@@ -20,12 +20,13 @@ package appeng.util.item;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 import net.minecraft.item.Item;
+
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
@@ -35,7 +36,7 @@ public final class ItemList implements IItemList<IAEItemStack> {
 
     private final static IItemList<IAEItemStack> NULL_ITEMLIST = new NullItemList();
 
-    private final Map<Item, IItemList<IAEItemStack>> records = new IdentityHashMap<>();
+    private final Reference2ObjectMap<Item, IItemList<IAEItemStack>> records = new Reference2ObjectOpenHashMap<>();
 
     @Override
     public IAEItemStack findPrecise(final IAEItemStack itemStack) {

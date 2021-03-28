@@ -21,15 +21,16 @@ package appeng.util.item;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMap;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AESharedItemStack.Bounds;
 
 class FuzzyItemList extends AbstractItemList {
-    private final NavigableMap<AESharedItemStack, IAEItemStack> records = new TreeMap<>();
+    private final Object2ObjectSortedMap<AESharedItemStack, IAEItemStack> records = new Object2ObjectAVLTreeMap<>();
 
     @Override
     public Collection<IAEItemStack> findFuzzy(final IAEItemStack filter, final FuzzyMode fuzzy) {
@@ -49,7 +50,7 @@ class FuzzyItemList extends AbstractItemList {
         final AEItemStack itemStack = (AEItemStack) filter;
         final Bounds bounds = itemStack.getSharedStack().getBounds(fuzzy);
 
-        return this.records.subMap(bounds.lower(), true, bounds.upper(), true).descendingMap().values();
+        return this.records.subMap(bounds.lower(), bounds.upper()).values();
     }
 
 }

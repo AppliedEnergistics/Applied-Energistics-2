@@ -19,6 +19,14 @@
 package appeng.debug;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 
@@ -26,6 +34,21 @@ public class ItemGenBlock extends AEBaseTileBlock<ItemGenTileEntity> {
 
     public ItemGenBlock() {
         super(defaultProps(Material.IRON));
+    }
+
+    @Override
+    public ActionResultType onActivated(World w, BlockPos pos, PlayerEntity player, Hand hand, ItemStack heldItem,
+            BlockRayTraceResult hit) {
+
+        TileEntity tileEntity = w.getTileEntity(pos);
+        if (tileEntity instanceof ItemGenTileEntity) {
+            ItemGenTileEntity itemGen = (ItemGenTileEntity) tileEntity;
+            itemGen.setItem(heldItem.getItem());
+
+            return ActionResultType.func_233537_a_(w.isRemote);
+        }
+
+        return ActionResultType.PASS;
     }
 
 }

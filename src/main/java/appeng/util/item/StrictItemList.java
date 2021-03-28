@@ -18,14 +18,16 @@
 
 package appeng.util.item;
 
-import java.util.IdentityHashMap;
 import java.util.Map;
+
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import appeng.api.storage.data.IAEItemStack;
 
 class StrictItemList extends AbstractItemList {
 
-    private final Map<AESharedItemStack, IAEItemStack> records = new IdentityHashMap<>();
+    private final Reference2ObjectMap<AESharedItemStack, IAEItemStack> records = new Reference2ObjectOpenHashMap<>();
 
     @Override
     Map<AESharedItemStack, IAEItemStack> getRecords() {
