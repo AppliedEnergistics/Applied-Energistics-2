@@ -77,7 +77,8 @@ dependencies {
     }
 
     // unit test dependencies
-    testCompile "junit:junit:4.13"
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
     
     // Annotation Processors
     annotationProcessor 'org.spongepowered:mixin:0.8:processor'
@@ -135,6 +136,10 @@ sourceSets {
 
 configurations {
     apiCompile.extendsFrom(compile)
+}
+
+test {
+    useJUnitPlatform()
 }
 
 ////////////////////

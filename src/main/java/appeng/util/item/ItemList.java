@@ -34,8 +34,6 @@ import appeng.api.storage.data.IItemList;
 
 public final class ItemList implements IItemList<IAEItemStack> {
 
-    private final static IItemList<IAEItemStack> NULL_ITEMLIST = new NullItemList();
-
     private final Reference2ObjectMap<Item, IItemList<IAEItemStack>> records = new Reference2ObjectOpenHashMap<>();
 
     @Override
@@ -44,7 +42,8 @@ public final class ItemList implements IItemList<IAEItemStack> {
             return null;
         }
 
-        return this.getRecord(itemStack.getItem()).findPrecise(itemStack);
+        IItemList<IAEItemStack> record = this.records.get(itemStack.getItem());
+        return record != null ? record.findPrecise(itemStack) : null;
     }
 
     @Override
@@ -53,7 +52,8 @@ public final class ItemList implements IItemList<IAEItemStack> {
             return Collections.emptyList();
         }
 
-        return this.getRecord(filter.getItem()).findFuzzy(filter, fuzzy);
+        IItemList<IAEItemStack> record = this.records.get(filter.getItem());
+        return record != null ? record.findFuzzy(filter, fuzzy) : Collections.emptyList();
     }
 
     @Override
@@ -128,10 +128,6 @@ public final class ItemList implements IItemList<IAEItemStack> {
         }
     }
 
-    private IItemList<IAEItemStack> getRecord(Item item) {
-        return this.records.getOrDefault(item, NULL_ITEMLIST);
-    }
-
     private IItemList<IAEItemStack> getOrCreateRecord(Item item) {
         return this.records.computeIfAbsent(item, this::makeRecordMap);
     }
@@ -144,33 +140,22 @@ public final class ItemList implements IItemList<IAEItemStack> {
         }
     }
 
-    private class ChainedIterator implements Iterator<IAEItemStack> {
+    /**
+     * Iterates over multiple item lists as if they were one list.
+     */
+    private static class ChainedIterator implements Iterator<IAEItemStack> {
 
         private final Iterator<IItemList<IAEItemStack>> parent;
         private Iterator<IAEItemStack> next;
 
         public ChainedIterator(Iterator<IItemList<IAEItemStack>> iterator) {
             this.parent = iterator;
-            if (this.parent.hasNext()) {
-                this.next = this.parent.next().iterator();
-            }
+            this.ensureItems();
         }
 
         @Override
         public boolean hasNext() {
-            while (this.next != null) {
-                if (this.next.hasNext()) {
-                    return true;
-                }
-
-                if (this.parent.hasNext()) {
-                    this.next = this.parent.next().iterator();
-                } else {
-                    this.next = null;
-                }
-            }
-
-            return false;
+            return next != null && next.hasNext();
         }
 
         @Override
@@ -179,8 +164,27 @@ public final class ItemList implements IItemList<IAEItemStack> {
                 throw new NoSuchElementException();
             }
 
-            return this.next.next();
+            IAEItemStack result = this.next.next();
+            this.ensureItems();
+            return result;
         }
 
+        private void ensureItems() {
+            if (hasNext()) {
+                return; // Still items left in the current one
+            }
+
+            // Find the next iterator willing to return some items...
+            while (this.parent.hasNext()) {
+                this.next = this.parent.next().iterator();
+
+                if (this.next.hasNext()) {
+                    return; // Found one!
+                }
+            }
+
+            // No more items
+            this.next = null;
+        }
     }
 }

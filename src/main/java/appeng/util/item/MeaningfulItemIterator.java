@@ -18,44 +18,28 @@
 
 package appeng.util.item;
 
-import java.util.ArrayList;
+import appeng.api.storage.data.IAEItemStack;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import appeng.api.storage.data.IAEItemStack;
-
+/**
+ * This iterator will only return items from a collection that are meaningful (w.r.t. {@link IAEItemStack#isMeaningful()}.
+ * Items that are not meaningful are automatically removed from the collection as it is being iterated.
+ */
 public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<T> {
-
-    private final Collection<T> collection;
     private final Iterator<T> parent;
     private T next;
-    private final Collection<T> toRemove = new ArrayList<>();
 
     public MeaningfulItemIterator(final Collection<T> collection) {
-        this.collection = collection;
         this.parent = collection.iterator();
+        this.next = seekNext();
     }
 
     @Override
     public boolean hasNext() {
-        while (this.parent.hasNext()) {
-            this.next = this.parent.next();
-
-            if (this.next.isMeaningful()) {
-                return true;
-            } else {
-                // TODO: Avoid if possible
-                this.toRemove.add(this.next);
-                // this.parent.remove(); // self cleaning :3
-            }
-        }
-
-        // Cleanup afterwards to avoid CMEs
-        this.toRemove.forEach(entry -> this.collection.remove(entry));
-
-        this.next = null;
-        return false;
+        return this.next != null;
     }
 
     @Override
@@ -64,11 +48,22 @@ public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<
             throw new NoSuchElementException();
         }
 
-        return this.next;
+        T result = this.next;
+        this.next = this.seekNext();
+        return result;
     }
 
-    @Override
-    public void remove() {
-        this.parent.remove();
+    private T seekNext() {
+        while (this.parent.hasNext()) {
+            T item = this.parent.next();
+
+            if (item.isMeaningful()) {
+                return item;
+            } else {
+                this.parent.remove();
+            }
+        }
+
+        return null;
     }
 }

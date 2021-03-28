@@ -38,19 +38,15 @@ class FuzzyItemList extends AbstractItemList {
             return Collections.emptyList();
         }
 
-        return this.findFuzzyDamage(filter, fuzzy);
+        final AEItemStack itemStack = (AEItemStack) filter;
+        final Bounds bounds = itemStack.getSharedStack().getBounds(fuzzy);
+
+        return this.records.subMap(bounds.lower(), bounds.upper()).values();
     }
 
     @Override
     Map<AESharedItemStack, IAEItemStack> getRecords() {
         return this.records;
-    }
-
-    private Collection<IAEItemStack> findFuzzyDamage(final IAEItemStack filter, final FuzzyMode fuzzy) {
-        final AEItemStack itemStack = (AEItemStack) filter;
-        final Bounds bounds = itemStack.getSharedStack().getBounds(fuzzy);
-
-        return this.records.subMap(bounds.lower(), bounds.upper()).values();
     }
 
 }
