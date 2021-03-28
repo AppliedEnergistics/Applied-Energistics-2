@@ -19,7 +19,6 @@
 package appeng.client.gui.implementations;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,10 +29,10 @@ import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -42,7 +41,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
@@ -75,15 +73,10 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private AETextField searchField;
 
     // Bounding boxes of key areas in the UI texture.
-    private final List<Integer> HEADER_BBOX = Arrays.asList(0, 0, 195, 18);
-    private final List<Integer> INV_SLICE_BBOX = Arrays.asList(7, 87, 162, 18);
-    private final List<Integer> FOOTER_BBOX = Arrays.asList(0, 72, 195, 98);
+    private final Rectangle2d HEADER_BBOX = new Rectangle2d(0, 0, 195, 18);
+    private final Rectangle2d INV_SLICE_BBOX = new Rectangle2d(7, 87, 162, 18);
+    private final Rectangle2d FOOTER_BBOX = new Rectangle2d(0, 72, 195, 98);
     private int numLines = 0;
-
-    // A version of blit that lets us pass a BBOX List rather than having lots of integer constants.
-    private void blit(MatrixStack matrixStack, int offsetX, int offsetY, List<Integer> bbox) {
-        blit(matrixStack, offsetX, offsetY, bbox.get(0), bbox.get(1), bbox.get(2), bbox.get(3));
-    }
 
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
@@ -175,6 +168,10 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     @Override
     public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
+        if (this.searchField.mouseClicked(xCoord, yCoord, btn)) {
+            return true;
+        }
+
         if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
             this.searchField.setText("");
             return true;
@@ -322,7 +319,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             boolean found = searchFilterLowerCase.isEmpty();
 
             // Search if the current inventory holds a pattern containing the search term.
-            if (!found && !searchFilterLowerCase.isEmpty()) {
+            if (!found) {
                 for (final ItemStack itemStack : entry.getInventory()) {
                     found = this.itemStackMatchesSearchTerm(itemStack, searchFilterLowerCase);
                     if (found) {
@@ -456,4 +453,10 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         return o;
     }
+
+    // A version of blit that lets us pass a source rectangle
+    private void blit(MatrixStack matrixStack, int offsetX, int offsetY, Rectangle2d srcRect) {
+        blit(matrixStack, offsetX, offsetY, srcRect.getX(), srcRect.getY(), srcRect.getWidth(), srcRect.getHeight());
+    }
+
 }
