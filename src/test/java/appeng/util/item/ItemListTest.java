@@ -2,12 +2,17 @@ package appeng.util.item;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.util.SortedArraySet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -218,72 +223,100 @@ public class ItemListTest {
     @Nested
     class FindFuzzy {
 
-        AEItemStack swordMinus1 = diamondSword(-1, 1, 0, false);
-        AEItemStack sword25 = diamondSword(25, 1, 0, false);
-        AEItemStack sword26 = diamondSword(26, 1, 0, false);
-        AEItemStack sword50 = diamondSword(50, 1, 0, false);
-        AEItemStack sword51 = diamondSword(51, 1, 0, false);
-        AEItemStack sword75 = diamondSword(75, 1, 0, false);
-        AEItemStack sword76 = diamondSword(76, 1, 0, false);
-        AEItemStack sword99 = diamondSword(99, 1, 0, false);
-        AEItemStack sword100 = diamondSword(100, 1, 0, false);
-        AEItemStack sword101 = diamondSword(101, 1, 0, false);
-        AEItemStack filter = diamondSwordFilter(100);
+        // Swords to cover all durability values
+        AEItemStack swordBelow0 = diamondSword(-1, 1, 0, false);
+        AEItemStack swordAbove100 = diamondSword(101, 1, 0, false);
+        AEItemStack[] swords = new AEItemStack[101];
+        // Filters for inverting the filter as needed
+        AEItemStack undamagedFilter = diamondSwordFilter(100);
+        AEItemStack damagedFilter = diamondSwordFilter(0);
 
         @BeforeEach
         void addItems() {
-            add(swordMinus1, sword25, sword26, sword50, sword51, sword75, sword76, sword99, sword100, sword101);
+            itemList.add(swordBelow0);
+            itemList.add(swordAbove100);
+            for (int i = 0; i <= 100; i++) {
+                swords[i] = diamondSword(i, 1, 0, false);
+                itemList.add(swords[i]);
+            }
         }
 
         @Test
-        public void testIgnoreAll() {
-            Collection<IAEItemStack> found = itemList.findFuzzy(filter, FuzzyMode.IGNORE_ALL);
-            assertIterableEquals(
-                    // Note how the "broken" ones (-1%, 101% durability) are not returned
-                    ImmutableList.of(sword100, sword99, sword76, sword75, sword51, sword50, sword26, sword25),
-                    found);
+        public void testIgnoreAllUndamaged() {
+            assertReturnedDurabilities(undamagedFilter, FuzzyMode.IGNORE_ALL, 0, 100, false, false);
         }
 
         @Test
-        public void test99PercentOrLessDurability() {
-            Collection<IAEItemStack> found = itemList.findFuzzy(filter, FuzzyMode.PERCENT_99);
-            assertIterableEquals(
-                    // Note how the "broken" one (-1%) is not returned
-                    ImmutableList.of(sword99, sword76, sword75, sword51, sword50, sword26, sword25),
-                    found);
+        public void testIgnoreAllDamaged() {
+            assertReturnedDurabilities(damagedFilter, FuzzyMode.IGNORE_ALL, 0, 100, false, false);
         }
 
         @Test
-        public void test75PercentOrLessDurability() {
-            Collection<IAEItemStack> found = itemList.findFuzzy(filter, FuzzyMode.PERCENT_75);
-            assertIterableEquals(
-                    // Note how the "broken" one (-1%) is not returned
-                    ImmutableList.of(sword75, sword51, sword50, sword26, sword25),
-                    found);
+        public void testPercent99WithUndamagedFilter() {
+            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_99, 0, 100, false, false);
         }
 
         @Test
-        public void test50PercentOrLessDurability() {
-            Collection<IAEItemStack> found = itemList.findFuzzy(filter, FuzzyMode.PERCENT_50);
-            assertIterableEquals(
-                    // Note how the "broken" one (-1%) is not returned
-                    ImmutableList.of(sword50, sword26, sword25),
-                    found);
+        public void testPercent99WithDamagedFilter() {
+            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_99, 0, 100, false, false);
         }
 
         @Test
-        public void test25PercentOrLessDurability() {
-            Collection<IAEItemStack> found = itemList.findFuzzy(filter, FuzzyMode.PERCENT_25);
-            assertIterableEquals(
-                    // Note how the "broken" one (-1%) is not returned
-                    ImmutableList.of(sword25),
-                    found);
+        public void testPercent75WithUndamagedFilter() {
+            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_75, 0, 100, false, false);
         }
-    }
 
-    private void add(IAEItemStack... stacks) {
-        for (IAEItemStack stack : stacks) {
-            itemList.add(stack);
+        @Test
+        public void testPercent75WithDamagedFilter() {
+            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_75, 0, 100, false, false);
+        }
+
+        @Test
+        public void testPercent50WithUndamagedFilter() {
+            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_50, 0, 100, false, false);
+        }
+
+        @Test
+        public void testPercent50WithDamagedFilter() {
+            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_50, 0, 100, false, false);
+        }
+
+        @Test
+        public void testPercent25WithUndamagedFilter() {
+            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_25, 0, 100, false, false);
+        }
+
+        @Test
+        public void testPercent25WithDamagedFilter() {
+            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_25, 0, 100, false, false);
+        }
+
+        private void assertReturnedDurabilities(IAEItemStack filter, FuzzyMode fuzzyMode, int minDurabilityInclusive, int maxDurabilityInclusive, boolean below0, boolean above100) {
+            Collection<IAEItemStack> items = itemList.findFuzzy(filter, fuzzyMode);
+
+            // Build a list of the durabilities that got returned
+            List<Integer> durabilities = items.stream().map(this::getDurabilityPercent)
+                    .sorted()
+                    .collect(Collectors.toList());
+
+            // Build a sorted list of the durabilities we expect
+            List<Integer> expectedDurabilities = new ArrayList<>();
+            for (int i = minDurabilityInclusive; i <= maxDurabilityInclusive; i++) {
+                expectedDurabilities.add(getDurabilityPercent(swords[i]));
+            }
+            if (below0) {
+                expectedDurabilities.add(getDurabilityPercent(swordBelow0));
+            }
+            if (above100) {
+                expectedDurabilities.add(getDurabilityPercent(swordAbove100));
+            }
+            expectedDurabilities.sort(Integer::compare);
+
+            assertEquals(expectedDurabilities, durabilities);
+        }
+
+        private int getDurabilityPercent(IAEItemStack stack) {
+            return 100 - (stack.getItemDamage() * 100 / stack.getDefinition().getMaxDamage());
         }
     }
 
