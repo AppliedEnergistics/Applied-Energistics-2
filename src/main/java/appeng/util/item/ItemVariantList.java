@@ -19,22 +19,19 @@
 package appeng.util.item;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
 
-abstract class AbstractItemList implements IItemList<IAEItemStack> {
+/**
+ * Stores variants of a single type of {@link net.minecraft.item.Item}, i.e. versions with different durability, or
+ * different NBT or capabilities.
+ */
+abstract class ItemVariantList {
 
-    @Override
     public void add(final IAEItemStack option) {
-        if (option == null) {
-            return;
-        }
-
         final IAEItemStack st = this.getRecords().get(((AEItemStack) option).getSharedStack());
 
         if (st != null) {
@@ -47,35 +44,11 @@ abstract class AbstractItemList implements IItemList<IAEItemStack> {
         this.putItemRecord(opt);
     }
 
-    @Override
     public IAEItemStack findPrecise(final IAEItemStack itemStack) {
-        if (itemStack == null) {
-            return null;
-        }
-
         return this.getRecords().get(((AEItemStack) itemStack).getSharedStack());
     }
 
-    @Override
-    public Collection<IAEItemStack> findFuzzy(final IAEItemStack filter, final FuzzyMode fuzzy) {
-        if (filter == null) {
-            return Collections.emptyList();
-        }
-
-        return this.getRecords().values();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return !this.iterator().hasNext();
-    }
-
-    @Override
     public void addStorage(final IAEItemStack option) {
-        if (option == null) {
-            return;
-        }
-
         final IAEItemStack st = this.getRecords().get(((AEItemStack) option).getSharedStack());
 
         if (st != null) {
@@ -88,12 +61,7 @@ abstract class AbstractItemList implements IItemList<IAEItemStack> {
         this.putItemRecord(opt);
     }
 
-    @Override
     public void addCrafting(final IAEItemStack option) {
-        if (option == null) {
-            return;
-        }
-
         final IAEItemStack st = this.getRecords().get(((AEItemStack) option).getSharedStack());
 
         if (st != null) {
@@ -108,12 +76,7 @@ abstract class AbstractItemList implements IItemList<IAEItemStack> {
         this.putItemRecord(opt);
     }
 
-    @Override
     public void addRequestable(final IAEItemStack option) {
-        if (option == null) {
-            return;
-        }
-
         final IAEItemStack st = this.getRecords().get(((AEItemStack) option).getSharedStack());
 
         if (st != null) {
@@ -129,16 +92,6 @@ abstract class AbstractItemList implements IItemList<IAEItemStack> {
         this.putItemRecord(opt);
     }
 
-    @Override
-    public IAEItemStack getFirstItem() {
-        for (final IAEItemStack stackType : this) {
-            return stackType;
-        }
-
-        return null;
-    }
-
-    @Override
     public int size() {
         int size = 0;
         for (IAEItemStack entry : getRecords().values()) {
@@ -150,22 +103,16 @@ abstract class AbstractItemList implements IItemList<IAEItemStack> {
         return size;
     }
 
-    @Override
     public Iterator<IAEItemStack> iterator() {
         return new MeaningfulItemIterator<>(this.getRecords().values());
     }
 
-    @Override
-    public void resetStatus() {
-        for (final IAEItemStack i : this) {
-            i.reset();
-        }
+    private void putItemRecord(final IAEItemStack itemStack) {
+        this.getRecords().put(((AEItemStack) itemStack).getSharedStack(), itemStack);
     }
 
     abstract Map<AESharedItemStack, IAEItemStack> getRecords();
 
-    private IAEItemStack putItemRecord(final IAEItemStack itemStack) {
-        return this.getRecords().put(((AEItemStack) itemStack).getSharedStack(), itemStack);
-    }
+    public abstract Collection<IAEItemStack> findFuzzy(final IAEItemStack filter, final FuzzyMode fuzzy);
 
 }

@@ -29,7 +29,11 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AESharedItemStack.Bounds;
 
-class FuzzyItemList extends AbstractItemList {
+/**
+ * This variant list is optimized for damageable items, and supports selecting durability ranges with
+ * {@link #findFuzzy(IAEItemStack, FuzzyMode)}.
+ */
+class FuzzyItemVariantList extends ItemVariantList {
     private final Object2ObjectSortedMap<AESharedItemStack, IAEItemStack> records = new Object2ObjectAVLTreeMap<>();
 
     @Override

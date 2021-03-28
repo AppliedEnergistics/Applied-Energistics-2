@@ -18,20 +18,34 @@
 
 package appeng.util.item;
 
+import java.util.Collection;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
+import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 
-class StrictItemList extends AbstractItemList {
+/**
+ * This variant list is optimized for items that cannot be damaged and thus do not support querying durability ranges
+ * via {@link #findFuzzy(IAEItemStack, FuzzyMode)}.
+ */
+class NormalItemVariantList extends ItemVariantList {
 
     private final Reference2ObjectMap<AESharedItemStack, IAEItemStack> records = new Reference2ObjectOpenHashMap<>();
 
     @Override
     Map<AESharedItemStack, IAEItemStack> getRecords() {
         return this.records;
+    }
+
+    /**
+     * For items that do not support durability, we just return all variants to a fuzzy search.
+     */
+    @Override
+    public Collection<IAEItemStack> findFuzzy(IAEItemStack filter, FuzzyMode fuzzy) {
+        return this.getRecords().values();
     }
 
 }

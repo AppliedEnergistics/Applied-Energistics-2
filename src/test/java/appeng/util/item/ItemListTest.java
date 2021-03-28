@@ -1,5 +1,6 @@
 package appeng.util.item;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
@@ -218,7 +219,7 @@ public class ItemListTest {
     }
 
     @Nested
-    class FindFuzzy {
+    class FindFuzzyDamageableItems {
 
         // Swords to cover all durability values
         AEItemStack swordAbove100 = diamondSword(101, 1, 0, false);
@@ -315,6 +316,28 @@ public class ItemListTest {
             }
             return (int) ((1.0f - (stack.getItemDamage() / (float) stack.getDefinition().getMaxDamage())) * 100);
         }
+    }
+
+    @Test
+    void testFindFuzzyForNormalItems() {
+        AEItemStack item1 = nameTag(null, 1, 0, false);
+        itemList.add(item1);
+        AEItemStack item2 = nameTag("name1", 1, 0, false);
+        itemList.add(item2);
+        AEItemStack item3 = nameTag("name2", 1, 0, false);
+        itemList.add(item3);
+        // Add another item to ensure this is not returned
+        itemList.add(AEItemStack.fromItemStack(new ItemStack(Items.CRAFTING_TABLE)));
+
+        for (FuzzyMode fuzzyMode : FuzzyMode.values()) {
+            Collection<IAEItemStack> result = itemList.findFuzzy(nameTag(null, 0, 0, false), fuzzyMode);
+            assertThat(result).containsOnly(item1, item2, item3);
+        }
+    }
+
+    @Test
+    void testFindFuzzyForNullArgument() {
+
     }
 
     private void assertListContent(AEItemStack... stacks) {

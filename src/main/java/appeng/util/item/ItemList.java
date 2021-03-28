@@ -34,7 +34,7 @@ import appeng.api.storage.data.IItemList;
 
 public final class ItemList implements IItemList<IAEItemStack> {
 
-    private final Reference2ObjectMap<Item, IItemList<IAEItemStack>> records = new Reference2ObjectOpenHashMap<>();
+    private final Reference2ObjectMap<Item, ItemVariantList> records = new Reference2ObjectOpenHashMap<>();
 
     @Override
     public IAEItemStack findPrecise(final IAEItemStack itemStack) {
@@ -42,7 +42,7 @@ public final class ItemList implements IItemList<IAEItemStack> {
             return null;
         }
 
-        IItemList<IAEItemStack> record = this.records.get(itemStack.getItem());
+        ItemVariantList record = this.records.get(itemStack.getItem());
         return record != null ? record.findPrecise(itemStack) : null;
     }
 
@@ -52,7 +52,7 @@ public final class ItemList implements IItemList<IAEItemStack> {
             return Collections.emptyList();
         }
 
-        IItemList<IAEItemStack> record = this.records.get(filter.getItem());
+        ItemVariantList record = this.records.get(filter.getItem());
         return record != null ? record.findFuzzy(filter, fuzzy) : Collections.emptyList();
     }
 
@@ -109,7 +109,7 @@ public final class ItemList implements IItemList<IAEItemStack> {
     @Override
     public int size() {
         int size = 0;
-        for (IItemList<IAEItemStack> entry : records.values()) {
+        for (ItemVariantList entry : records.values()) {
             size += entry.size();
         }
 
@@ -128,15 +128,15 @@ public final class ItemList implements IItemList<IAEItemStack> {
         }
     }
 
-    private IItemList<IAEItemStack> getOrCreateRecord(Item item) {
+    private ItemVariantList getOrCreateRecord(Item item) {
         return this.records.computeIfAbsent(item, this::makeRecordMap);
     }
 
-    private IItemList<IAEItemStack> makeRecordMap(Item item) {
+    private ItemVariantList makeRecordMap(Item item) {
         if (item.isDamageable()) {
-            return new FuzzyItemList();
+            return new FuzzyItemVariantList();
         } else {
-            return new StrictItemList();
+            return new NormalItemVariantList();
         }
     }
 
@@ -145,10 +145,10 @@ public final class ItemList implements IItemList<IAEItemStack> {
      */
     private static class ChainedIterator implements Iterator<IAEItemStack> {
 
-        private final Iterator<IItemList<IAEItemStack>> parent;
+        private final Iterator<ItemVariantList> parent;
         private Iterator<IAEItemStack> next;
 
-        public ChainedIterator(Iterator<IItemList<IAEItemStack>> iterator) {
+        public ChainedIterator(Iterator<ItemVariantList> iterator) {
             this.parent = iterator;
             this.ensureItems();
         }
