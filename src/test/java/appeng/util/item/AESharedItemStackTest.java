@@ -1,24 +1,17 @@
 package appeng.util.item;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.registry.Bootstrap;
 import net.minecraft.util.text.StringTextComponent;
-
-import appeng.api.config.FuzzyMode;
 
 class AESharedItemStackTest {
 
@@ -81,15 +74,6 @@ class AESharedItemStackTest {
                 }
             }
         }
-    }
-
-    private AESharedItemStack diamondSword(int damage, String displayName) {
-        ItemStack sword = new ItemStack(Items.DIAMOND_SWORD);
-        sword.setDamage(damage);
-        if (displayName != null) {
-            sword.setDisplayName(new StringTextComponent(displayName));
-        }
-        return new AESharedItemStack(sword);
     }
 
 }

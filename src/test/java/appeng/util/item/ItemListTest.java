@@ -336,9 +336,9 @@ public class ItemListTest {
     }
 
     /**
-     * Tests how ItemList behaves w.r.t. null arguments, given that {@link AEItemStack#fromItemStack(ItemStack)}
-     * can return null for an empty stack, this sometimes leaks into method parameters.
-     * As such, methods should behave as if an empty item stack was passed.
+     * Tests how ItemList behaves w.r.t. null arguments, given that {@link AEItemStack#fromItemStack(ItemStack)} can
+     * return null for an empty stack, this sometimes leaks into method parameters. As such, methods should behave as if
+     * an empty item stack was passed.
      */
     @Nested
     class NullArguments {
