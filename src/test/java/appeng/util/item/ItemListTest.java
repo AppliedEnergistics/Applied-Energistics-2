@@ -1,28 +1,30 @@
 package appeng.util.item;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IAEItemStack;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.text.StringTextComponent;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collection;
 import java.util.Iterator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.text.StringTextComponent;
+
+import appeng.api.config.FuzzyMode;
+import appeng.api.storage.data.IAEItemStack;
 
 public class ItemListTest {
 
     ItemList itemList = new ItemList();
 
     /**
-     * add should merge item stacks by adding stored/requestable counts, and setting craftable if
-     * it wasn't set before.
+     * add should merge item stacks by adding stored/requestable counts, and setting craftable if it wasn't set before.
      */
     @Test
     public void testAddMergesAllStackProperties() {
@@ -37,9 +39,8 @@ public class ItemListTest {
     }
 
     /**
-     * addStorage only considers {@link IAEItemStack#getStackSize()} and ignores
-     * other properties when merging stacks, but inherits all properties when
-     * it's adding a new item.
+     * addStorage only considers {@link IAEItemStack#getStackSize()} and ignores other properties when merging stacks,
+     * but inherits all properties when it's adding a new item.
      */
     @Test
     public void testAddStorageForNewItem() {
@@ -56,8 +57,8 @@ public class ItemListTest {
     }
 
     /**
-     * addRequestable only considers {@link IAEItemStack#getCountRequestable()} and sets
-     * the stored amount to 0 and craftable to false when adding an item.
+     * addRequestable only considers {@link IAEItemStack#getCountRequestable()} and sets the stored amount to 0 and
+     * craftable to false when adding an item.
      */
     @Test
     public void testAddRequestableForNewItem() {
@@ -66,8 +67,7 @@ public class ItemListTest {
     }
 
     /**
-     * addRequestable only considers {@link IAEItemStack#getCountRequestable()} when merging into an
-     * existing item.
+     * addRequestable only considers {@link IAEItemStack#getCountRequestable()} when merging into an existing item.
      */
     @Test
     public void testAddRequestableForExistingItem() {
@@ -77,8 +77,8 @@ public class ItemListTest {
     }
 
     /**
-     * addCraftable only considers {@link IAEItemStack#isCraftable()} and sets
-     * the stored and requestable amounts to 0 when adding an item.
+     * addCraftable only considers {@link IAEItemStack#isCraftable()} and sets the stored and requestable amounts to 0
+     * when adding an item.
      */
     @Test
     public void testAddCraftingForNewItem() {
@@ -88,8 +88,7 @@ public class ItemListTest {
     }
 
     /**
-     * addRequestable only considers {@link IAEItemStack#getCountRequestable()} when merging into an
-     * existing item.
+     * addRequestable only considers {@link IAEItemStack#getCountRequestable()} when merging into an existing item.
      */
     @Test
     public void testAddCraftingForExistingItem() {
@@ -136,8 +135,8 @@ public class ItemListTest {
     }
 
     /**
-     * Even if the stack has no stored or requestable amounts, it should be returned by the item list
-     * if it is craftable.
+     * Even if the stack has no stored or requestable amounts, it should be returned by the item list if it is
+     * craftable.
      */
     @Test
     public void testSizeAndIterateForEmptyButCraftableStack() {
@@ -189,8 +188,8 @@ public class ItemListTest {
     }
 
     /**
-     * Regression test for broken iterators that mutated state in {@see Iterator#hasNext}.
-     * This was the case for both the top-level and sub-iterator.
+     * Regression test for broken iterators that mutated state in {@see Iterator#hasNext}. This was the case for both
+     * the top-level and sub-iterator.
      */
     @Test
     public void testIteratorHasNextDoesNotSkipItems() {
@@ -242,8 +241,7 @@ public class ItemListTest {
             assertIterableEquals(
                     // Note how the "broken" ones (-1%, 101% durability) are not returned
                     ImmutableList.of(sword100, sword99, sword76, sword75, sword51, sword50, sword26, sword25),
-                    found
-            );
+                    found);
         }
 
         @Test
@@ -252,8 +250,7 @@ public class ItemListTest {
             assertIterableEquals(
                     // Note how the "broken" one (-1%) is not returned
                     ImmutableList.of(sword99, sword76, sword75, sword51, sword50, sword26, sword25),
-                    found
-            );
+                    found);
         }
 
         @Test
@@ -262,8 +259,7 @@ public class ItemListTest {
             assertIterableEquals(
                     // Note how the "broken" one (-1%) is not returned
                     ImmutableList.of(sword75, sword51, sword50, sword26, sword25),
-                    found
-            );
+                    found);
         }
 
         @Test
@@ -272,8 +268,7 @@ public class ItemListTest {
             assertIterableEquals(
                     // Note how the "broken" one (-1%) is not returned
                     ImmutableList.of(sword50, sword26, sword25),
-                    found
-            );
+                    found);
         }
 
         @Test
@@ -282,8 +277,7 @@ public class ItemListTest {
             assertIterableEquals(
                     // Note how the "broken" one (-1%) is not returned
                     ImmutableList.of(sword25),
-                    found
-            );
+                    found);
         }
     }
 
@@ -307,7 +301,8 @@ public class ItemListTest {
         return diamondSword(durabilityPercent, null, stored, requestable, craftable);
     }
 
-    private AEItemStack diamondSword(int durabilityPercent, String customName, long stored, long requestable, boolean craftable) {
+    private AEItemStack diamondSword(int durabilityPercent, String customName, long stored, long requestable,
+            boolean craftable) {
         ItemStack is = new ItemStack(Items.DIAMOND_SWORD);
         if (customName != null) {
             is.setDisplayName(new StringTextComponent(customName));

@@ -18,15 +18,16 @@
 
 package appeng.util.item;
 
-import appeng.api.storage.data.IAEItemStack;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import appeng.api.storage.data.IAEItemStack;
+
 /**
- * This iterator will only return items from a collection that are meaningful (w.r.t. {@link IAEItemStack#isMeaningful()}.
- * Items that are not meaningful are automatically removed from the collection as it is being iterated.
+ * This iterator will only return items from a collection that are meaningful (w.r.t.
+ * {@link IAEItemStack#isMeaningful()}. Items that are not meaningful are automatically removed from the collection as
+ * it is being iterated.
  */
 public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<T> {
     private final Iterator<T> parent;

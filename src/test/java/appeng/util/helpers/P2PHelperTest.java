@@ -18,11 +18,12 @@
 
 package appeng.util.helpers;
 
-import appeng.api.util.AEColor;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import appeng.api.util.AEColor;
 
 public class P2PHelperTest {
 
