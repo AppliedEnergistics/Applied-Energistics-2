@@ -72,9 +72,19 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private boolean refreshList = false;
     private AETextField searchField;
 
+    /**
+     * Height of a table-row in pixels.
+     */
+    private static final int ROW_HEIGHT = 18;
+
     // Bounding boxes of key areas in the UI texture.
+    // The upper part of the UI, anything above the scrollable area (incl. its top border)
     private final Rectangle2d HEADER_BBOX = new Rectangle2d(0, 0, 195, 18);
-    private final Rectangle2d INV_SLICE_BBOX = new Rectangle2d(7, 87, 162, 18);
+    // Background for a row in the scroll-box, including the left and right area of the dialog, plus scrollbar
+    private final Rectangle2d ROW_BG_BBOX = new Rectangle2d(0, 18, 195, ROW_HEIGHT);
+    // Covers one row of slots representing an interface inventory
+    private final Rectangle2d ROW_SLOT_BBOX = new Rectangle2d(7, 87, 162, ROW_HEIGHT);
+    // This is the lower part of the UI, anything below the scrollable area (incl. its bottom border)
     private final Rectangle2d FOOTER_BBOX = new Rectangle2d(0, 72, 195, 98);
     private int numLines = 0;
 
@@ -84,7 +94,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
         this.xSize = 195;
-        this.ySize = 222;
     }
 
     @Override
@@ -92,10 +101,10 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         // Decide on number of rows.
         TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
         int maxLines = terminalStyle == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
-        this.numLines = (this.height - 115) / 18; // 97 (footer size) + 17 (header size) + ...1?
+        this.numLines = (this.height - 115) / ROW_HEIGHT; // 97 (footer size) + 17 (header size) + ...1?
         this.numLines = MathHelper.clamp(this.numLines, 3, maxLines);
         // Render inventory in correct place.
-        this.ySize = 115 + this.numLines * 18; // 17 (header size) + 97 (footer size) + all the lines
+        this.ySize = 115 + this.numLines * ROW_HEIGHT; // 17 (header size) + 97 (footer size) + all the lines
 
         super.init();
         this.searchField = new AETextField(this.font, this.guiLeft + 104, this.guiTop + 4, 65, 12);
@@ -115,8 +124,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         // Reposition player inventory slots.
         for (final Slot s : this.container.inventorySlots) {
             if (s instanceof AppEngSlot) {
-                s.yPos = ((AppEngSlot) s).getY() + this.ySize - 82; // Start at the top of the inventory (-97) but below
-                                                                    // the title (+15)
+                // The first slot must be positioned 83 pixels from the bottom of the dialog (see the dialog PNG)
+                s.yPos = ((AppEngSlot) s).getY() + this.ySize - 83;
             }
         }
 
@@ -131,7 +140,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         final int INV_TEXT_Y_OFFSET = 3;
         final int MAIN_TEXT_Y_OFFSET = 6;
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()).getString(), 8, 6,
-                4210752);
+                COLOR_DARK_GRAY);
 
         this.container.inventorySlots.removeIf(slot -> slot instanceof SlotDisconnected);
 
@@ -144,7 +153,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     // Note: We have to shift everything after the header up by 1 to avoid black line duplication.
                     final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
                     for (int z = 0; z < inv.getInventory().getSlots(); z++) {
-                        this.container.inventorySlots.add(new SlotDisconnected(inv, z, z * 18 + 8, (i + 1) * 18));
+                        this.container.inventorySlots
+                                .add(new SlotDisconnected(inv, z, z * 18 + 8, (i + 1) * ROW_HEIGHT));
                     }
                 } else if (lineObj instanceof String) {
                     String name = (String) lineObj;
@@ -157,13 +167,14 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                         name = name.substring(0, name.length() - 1);
                     }
 
-                    this.font.drawString(matrixStack, name, TEXT_X_OFFSET, MAIN_TEXT_Y_OFFSET + 17 + i * 18, 4210752);
+                    this.font.drawString(matrixStack, name, TEXT_X_OFFSET, MAIN_TEXT_Y_OFFSET + 17 + i * 18,
+                            COLOR_DARK_GRAY);
                 }
             }
         }
 
         this.font.drawString(matrixStack, GuiText.inventory.text().getString(), TEXT_X_OFFSET,
-                INV_TEXT_Y_OFFSET + 17 + i * 18, 4210752);
+                INV_TEXT_Y_OFFSET + 17 + i * ROW_HEIGHT, COLOR_DARK_GRAY);
     }
 
     @Override
@@ -185,37 +196,40 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
 
-        // Things get a bit tricky here with the white and black shading lines at the top and bottom
-        // of the scrollable area + whether or not the top or bottom rows are inventory or string rows.
-        // The string row texture doesn't (and shouldn't) include shading lines, but the
-        // inventory line texture should (incase they're joined together).
-        // Therefore to avoid an inventory row duplicating the shading lines at the bottom of the
-        // header or the top of the footer, we have to overlap them by 1 pixel.
-        // Then, to make sure the inventory rows and string rows are always the same size, we have to
-        // draw only 17 pixels of a string row iff it's at the top or bottom.
-
+        // Draw the top of the dialog
         blit(matrixStack, offsetX, offsetY, HEADER_BBOX);
+
         final int scrollLevel = this.getScrollBar().getCurrentScroll();
-        boolean isInvLine = false;
-        int i = 0;
-        for (; i < this.numLines; ++i) {
+        boolean isInvLine;
+
+        int currentY = offsetY + 17;
+
+        // Draw the footer now so slots will draw on top of it
+        blit(matrixStack, offsetX, currentY + this.numLines * ROW_HEIGHT - 1, FOOTER_BBOX);
+
+        for (int i = 0; i < this.numLines; ++i) {
+            // Draw the dialog background for this row
+            // Skip 1 pixel for the first row in order to not over-draw on the top scrollbox border,
+            // and do the same but for the bottom border on the last row
             boolean firstLine = i == 0;
             boolean lastLine = i == this.numLines - 1;
             int firstAdj = firstLine ? 1 : 0;
             int lastAdj = lastLine ? 1 : 0;
+            blit(matrixStack, offsetX, currentY + firstAdj,
+                    ROW_BG_BBOX.getX(), ROW_BG_BBOX.getY(),
+                    ROW_BG_BBOX.getWidth(), ROW_BG_BBOX.getHeight() - firstAdj - lastAdj);
+
+            // Draw the background for the slots in an inventory row
             isInvLine = false;
             if (scrollLevel + i < this.lines.size()) {
                 final Object lineObj = this.lines.get(scrollLevel + i);
                 isInvLine = lineObj instanceof ClientDCInternalInv;
             }
-            blit(matrixStack, offsetX, offsetY + 17 + 18 * i + firstAdj, 0, 18, 195, 18 - firstAdj - lastAdj);
-            if (isInvLine && !lastLine) {
-                blit(matrixStack, offsetX + 7, offsetY + 17 + 18 * i, INV_SLICE_BBOX);
+            if (isInvLine) {
+                blit(matrixStack, offsetX + 7, currentY, ROW_SLOT_BBOX);
             }
-        }
-        blit(matrixStack, offsetX, offsetY + 17 + 18 * i - 1, FOOTER_BBOX);
-        if (isInvLine) {
-            blit(matrixStack, offsetX + 7, offsetY + 17 + 18 * (i - 1), INV_SLICE_BBOX);
+
+            currentY += ROW_HEIGHT;
         }
 
         // Draw search field.
