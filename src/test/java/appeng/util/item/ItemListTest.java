@@ -254,10 +254,6 @@ public class ItemListTest {
 
         @Test
         public void testPercent99WithDamagedFilter() {
-            ItemList il = new ItemList();
-            il.add(swords[100]);
-            ArrayList<IAEItemStack> found = new ArrayList<>(il.findFuzzy(damagedFilter, FuzzyMode.PERCENT_99));
-
             assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_99, 0, 99, false);
         }
 

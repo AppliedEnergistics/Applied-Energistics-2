@@ -24,25 +24,32 @@
 package appeng.api.config;
 
 public enum FuzzyMode {
-    // Note that percentage damaged, is the inverse of percentage durability.
+    /**
+     * Matches between 0% and 100% durability.
+     */
     IGNORE_ALL(-1),
     /**
-     * Matches items that have less than 100% durability (that is, at least 1 damage point).
+     * Matches items that have less than 100% durability (that is, at least 1 damage point) if a damaged item is used as
+     * the filter, or undamaged items otherwise.
      */
     PERCENT_99(0),
     /**
-     * Matches 75% durability or less.
+     * If an item with less than 75% durability is used as the filter, items with less than 75% durability are matched.
+     * Otherwise items with 75% durability or more are matched.
      */
     PERCENT_75(25),
     /**
-     * Matches 50% durability or less.
+     * If an item with less than 50% durability is used as the filter, items with less than 50% durability are matched.
+     * Otherwise items with 50% durability or more are matched.
      */
     PERCENT_50(50),
     /**
-     * Matches 25% durability or less.
+     * If an item with less than 25% durability is used as the filter, items with less than 50% durability are matched.
+     * Otherwise items with 25% durability or more are matched.
      */
     PERCENT_25(75);
 
+    // Note that percentage damaged, is the inverse of percentage durability.
     public final float breakPoint;
     public final float percentage;
 

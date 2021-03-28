@@ -84,15 +84,17 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
         if (!(obj instanceof AESharedItemStack)) {
             return false;
         }
         final AESharedItemStack other = (AESharedItemStack) obj;
         Preconditions.checkArgument(!other.isBound(), "Bounds may not be used for anything other than compareTo");
         Preconditions.checkArgument(!isBound(), "Bounds may not be used for anything other than compareTo");
+
+        if (this == obj) {
+            return true;
+        }
+
         Preconditions.checkState(this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1");
         Preconditions.checkArgument(other.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1");
 
