@@ -1,28 +1,22 @@
 package appeng.util.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.stream.Collectors;
-
+import appeng.api.config.FuzzyMode;
+import appeng.api.storage.data.IAEItemStack;
 import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.util.SortedArraySet;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.text.StringTextComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.text.StringTextComponent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IAEItemStack;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ItemListTest {
 
@@ -237,6 +231,7 @@ public class ItemListTest {
             itemList.add(swordAbove100);
             for (int i = 0; i <= 100; i++) {
                 swords[i] = diamondSword(i, 1, 0, false);
+                assertEquals(i, getDurabilityPercent(swords[i]));
                 itemList.add(swords[i]);
             }
         }
@@ -253,42 +248,42 @@ public class ItemListTest {
 
         @Test
         public void testPercent99WithUndamagedFilter() {
-            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_99, 0, 100, false, false);
+            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_99, 100, 100, false, false);
         }
 
         @Test
         public void testPercent99WithDamagedFilter() {
-            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_99, 0, 100, false, false);
+            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_99, 0, 99, false, false);
         }
 
         @Test
         public void testPercent75WithUndamagedFilter() {
-            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_75, 0, 100, false, false);
+            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_75, 75, 100, false, false);
         }
 
         @Test
         public void testPercent75WithDamagedFilter() {
-            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_75, 0, 100, false, false);
+            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_75, 0, 74, false, false);
         }
 
         @Test
         public void testPercent50WithUndamagedFilter() {
-            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_50, 0, 100, false, false);
+            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_50, 50, 100, false, false);
         }
 
         @Test
         public void testPercent50WithDamagedFilter() {
-            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_50, 0, 100, false, false);
+            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_50, 0, 49, false, false);
         }
 
         @Test
         public void testPercent25WithUndamagedFilter() {
-            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_25, 0, 100, false, false);
+            assertReturnedDurabilities(undamagedFilter, FuzzyMode.PERCENT_25, 25, 100, false, false);
         }
 
         @Test
         public void testPercent25WithDamagedFilter() {
-            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_25, 0, 100, false, false);
+            assertReturnedDurabilities(damagedFilter, FuzzyMode.PERCENT_25, 0, 24, false, false);
         }
 
         private void assertReturnedDurabilities(IAEItemStack filter, FuzzyMode fuzzyMode, int minDurabilityInclusive, int maxDurabilityInclusive, boolean below0, boolean above100) {
@@ -316,7 +311,12 @@ public class ItemListTest {
         }
 
         private int getDurabilityPercent(IAEItemStack stack) {
-            return 100 - (stack.getItemDamage() * 100 / stack.getDefinition().getMaxDamage());
+            if (stack == swordBelow0) {
+                return -1;
+            } else if (stack == swordAbove100) {
+                return 101;
+            }
+            return (int)((1.0f - (stack.getItemDamage() / (float)stack.getDefinition().getMaxDamage())) * 100);
         }
     }
 
@@ -335,7 +335,7 @@ public class ItemListTest {
     }
 
     private AEItemStack diamondSword(int durabilityPercent, String customName, long stored, long requestable,
-            boolean craftable) {
+                                     boolean craftable) {
         ItemStack is = new ItemStack(Items.DIAMOND_SWORD);
         if (customName != null) {
             is.setDisplayName(new StringTextComponent(customName));
