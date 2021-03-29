@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 
+import com.google.common.collect.Iterators;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -188,6 +190,21 @@ public class ItemListTest {
         itemList.add(nameTag2);
 
         assertListContent(sword1, sword2, sword3, sword4, nameTag1, nameTag2);
+    }
+
+    @Test
+    void testConcurrentModificationByAddingItemType() {
+        AEItemStack sword = diamondSword(100, 1, 0, false);
+        itemList.add(sword);
+        AEItemStack nameTag = nameTag(1, 0, false);
+        itemList.add(nameTag);
+        AEItemStack craftingTable = AEItemStack.fromItemStack(new ItemStack(Items.CRAFTING_TABLE));
+
+        assertThrows(ConcurrentModificationException.class, () -> {
+            Iterator<IAEItemStack> it = itemList.iterator();
+            itemList.add(craftingTable);
+            assertThat(Iterators.toArray(it, IAEItemStack.class)).containsOnly(sword, nameTag);
+        });
     }
 
     /**

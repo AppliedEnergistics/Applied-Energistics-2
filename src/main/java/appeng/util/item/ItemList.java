@@ -18,23 +18,24 @@
 
 package appeng.util.item;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import net.minecraft.item.Item;
-
-import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import net.minecraft.item.Item;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class ItemList implements IItemList<IAEItemStack> {
 
     private final Reference2ObjectMap<Item, ItemVariantList> records = new Reference2ObjectOpenHashMap<>();
+    private final AtomicInteger version = new AtomicInteger(0);
 
     @Override
     public IAEItemStack findPrecise(final IAEItemStack itemStack) {
@@ -63,6 +64,8 @@ public final class ItemList implements IItemList<IAEItemStack> {
 
     @Override
     public void add(final IAEItemStack itemStack) {
+        version.incrementAndGet();
+
         if (itemStack == null) {
             return;
         }
@@ -72,6 +75,8 @@ public final class ItemList implements IItemList<IAEItemStack> {
 
     @Override
     public void addStorage(final IAEItemStack itemStack) {
+        version.incrementAndGet();
+
         if (itemStack == null) {
             return;
         }
@@ -81,6 +86,8 @@ public final class ItemList implements IItemList<IAEItemStack> {
 
     @Override
     public void addCrafting(final IAEItemStack itemStack) {
+        version.incrementAndGet();
+
         if (itemStack == null) {
             return;
         }
@@ -90,6 +97,8 @@ public final class ItemList implements IItemList<IAEItemStack> {
 
     @Override
     public void addRequestable(final IAEItemStack itemStack) {
+        version.incrementAndGet();
+
         if (itemStack == null) {
             return;
         }
@@ -118,7 +127,7 @@ public final class ItemList implements IItemList<IAEItemStack> {
 
     @Override
     public Iterator<IAEItemStack> iterator() {
-        return new ChainedIterator(this.records.values().iterator());
+        return new ChainedIterator(this.records.values().iterator(), version);
     }
 
     @Override
@@ -145,11 +154,15 @@ public final class ItemList implements IItemList<IAEItemStack> {
      */
     private static class ChainedIterator implements Iterator<IAEItemStack> {
 
+        private final AtomicInteger parentVersion;
+        private final int version;
         private final Iterator<ItemVariantList> parent;
         private Iterator<IAEItemStack> next;
 
-        public ChainedIterator(Iterator<ItemVariantList> iterator) {
+        public ChainedIterator(Iterator<ItemVariantList> iterator, AtomicInteger parentVersion) {
             this.parent = iterator;
+            this.parentVersion = parentVersion;
+            this.version = parentVersion.get();
             this.ensureItems();
         }
 
@@ -162,6 +175,9 @@ public final class ItemList implements IItemList<IAEItemStack> {
         public IAEItemStack next() {
             if (this.next == null) {
                 throw new NoSuchElementException();
+            }
+            if (this.version != this.parentVersion.get()) {
+                throw new ConcurrentModificationException();
             }
 
             IAEItemStack result = this.next.next();
