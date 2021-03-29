@@ -18,9 +18,9 @@
 
 package appeng.util;
 
-import com.google.common.base.Preconditions;
-
 import java.util.EnumSet;
+
+import com.google.common.base.Preconditions;
 
 /**
  * Simple utility class to help with select the "next" or "previous" value in a list of options represented by an
