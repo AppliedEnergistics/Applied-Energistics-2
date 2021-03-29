@@ -109,11 +109,11 @@ public interface IStorageHelper {
     /**
      * Inserts items into a {@link IMEInventory} respecting power requirements.
      *
-     * @param energy  Energy source.
-     * @param inv     Inventory to insert into.
-     * @param request Items to insert.
-     * @param src     Action source.
-     * @param mode    Simulate or modulate
+     * @param energy Energy source.
+     * @param inv    Inventory to insert into.
+     * @param input  Items to insert.
+     * @param src    Action source.
+     * @param mode   Simulate or modulate
      * @return items not inserted or {@code null} if everything was inserted.
      */
     <T extends IAEStack<T>> T poweredInsert(final IEnergySource energy, final IMEInventory<T> inv, final T input,

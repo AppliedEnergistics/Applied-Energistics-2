@@ -20,6 +20,8 @@ package appeng.util;
 
 import java.util.EnumSet;
 
+import com.google.common.base.Preconditions;
+
 /**
  * Simple utility class to help with select the "next" or "previous" value in a list of options represented by an
  * enumeration.
@@ -30,51 +32,25 @@ public final class EnumCycler {
     }
 
     public static <T extends Enum<T>> T rotateEnum(T ce, final boolean backwards, final EnumSet<T> validOptions) {
+        Preconditions.checkArgument(!validOptions.isEmpty());
+
+        int direction = backwards ? -1 : 1;
+        T[] values = ce.getDeclaringClass().getEnumConstants();
+
         do {
-            if (backwards) {
-                ce = prevEnum(ce);
-            } else {
-                ce = next(ce);
-            }
+            // mod naturally cycles a changing integer on a range [0, N]
+            int pLoc = Math.floorMod(ce.ordinal() + direction, values.length);
+            ce = values[pLoc];
         } while (!validOptions.contains(ce));
 
         return ce;
     }
 
-    /*
-     * Simple way to cycle an enum...
-     */
-    public static <T extends Enum<T>> T prevEnum(final T ce) {
-        T[] values = ce.getDeclaringClass().getEnumConstants();
-
-        int pLoc = ce.ordinal() - 1;
-        if (pLoc < 0) {
-            pLoc = values.length - 1;
-        }
-
-        if (pLoc < 0 || pLoc >= values.length) {
-            pLoc = 0;
-        }
-
-        return values[pLoc];
-    }
-
-    /*
-     * Simple way to cycle an enum...
-     */
     public static <T extends Enum<T>> T next(final T ce) {
-        T[] values = ce.getDeclaringClass().getEnumConstants();
-
-        int pLoc = ce.ordinal() + 1;
-        if (pLoc >= values.length) {
-            pLoc = 0;
-        }
-
-        if (pLoc < 0 || pLoc >= values.length) {
-            pLoc = 0;
-        }
-
-        return values[pLoc];
+        return rotateEnum(ce, false, EnumSet.allOf(ce.getDeclaringClass()));
     }
 
+    public static <T extends Enum<T>> T prev(final T ce) {
+        return rotateEnum(ce, true, EnumSet.allOf(ce.getDeclaringClass()));
+    }
 }

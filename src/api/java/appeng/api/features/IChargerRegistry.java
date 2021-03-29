@@ -65,7 +65,7 @@ public interface IChargerRegistry {
      * power issues arise.
      *
      * @param item       A {@link Item} implementing {@link IAEItemPowerStorage}.
-     * @param chargeRate the custom rate, must be > 0, capped to 16000d
+     * @param chargeRate the custom rate, must be &gt; 0, capped to 16000d
      */
     void addChargeRate(@Nonnull Item item, @Nonnegative double chargeRate);
 

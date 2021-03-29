@@ -84,7 +84,7 @@ public interface ICellRegistry {
      * get the handler, for the requested channel.
      *
      * @param channel requested channel
-     * @param Cell    ItemStack
+     * @param is      ItemStack
      * @return the handler registered for this channel.
      */
     @Nullable
