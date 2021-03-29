@@ -137,7 +137,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.buttonList.clear();
 
 		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), offsetX, this.ySize - 96 + 3, 4210752 );
+		this.fontRenderer.drawString( GuiText.inventory.getLocal(), this.offsetX + 2, this.ySize - 96 + 3, 4210752 );
 
 		final int ex = this.getScrollBar().getCurrentScroll();
 
@@ -182,7 +182,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					name = name.substring( 0, name.length() - 1 );
 				}
 
-				this.fontRenderer.drawString( name, 22, 6 + offset, 4210752 );
+				this.fontRenderer.drawString( name, this.offsetX + 2, 6 + offset, 4210752 );
 			}
 			offset += 18;
 		}

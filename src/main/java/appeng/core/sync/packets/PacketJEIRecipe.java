@@ -171,6 +171,11 @@ public class PacketJEIRecipe extends AppEngPacket
 					// already the correct item?
 					ItemStack newItem = this.canUseInSlot( x, currentItem );
 
+					if ( !cct.useRealItems() && this.recipe[x] != null ) {
+						if (this.recipe[x].length > 0 )
+						currentItem.setCount( recipe[x][0].getCount() );
+					}
+
 					// put away old item
 					if( newItem != currentItem && security.hasPermission( player, SecurityPermissions.INJECT ) )
 					{
@@ -210,7 +215,7 @@ public class PacketJEIRecipe extends AppEngPacket
 										IAEItemStack mostDamaged = null;
 										for( IAEItemStack is : outList )
 										{
-											if( !is.isCraftable() )
+											if( !is.isCraftable() && is.getItem().isDamageable() )
 											{
 												if( mostDamaged == null || mostDamaged.getItemDamage() < is.getItemDamage() )
 												{
