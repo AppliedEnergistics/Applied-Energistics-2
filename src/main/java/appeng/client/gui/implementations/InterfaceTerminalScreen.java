@@ -32,6 +32,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
@@ -62,6 +63,68 @@ import appeng.util.Platform;
 
 public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalContainer> {
 
+    private static final int GUI_WIDTH = 195;
+
+    private static final int GUI_PADDING_X = 8;
+    private static final int GUI_PADDING_Y = 6;
+    private static final int GUI_BUTTON_X_MARGIN = -18;
+    private static final int GUI_BUTTON_Y_MARGIN = 8;
+
+    private static final int GUI_HEADER_HEIGHT = 17;
+    private static final int GUI_FOOTER_HEIGHT = 97;
+
+    /**
+     * Margin in pixel of a header text after the previous element.
+     */
+    private static final int HEADER_TEXT_MARGIN_Y = 3;
+
+    /**
+     * Additional margin in pixel for a text row inside the scrolling box.
+     */
+    private static final int INTERFACE_NAME_MARGIN_X = 2;
+
+    /**
+     * The maximum length for the string of a text row in pixel.
+     */
+    private static final int TEXT_MAX_WIDTH = 155;
+
+    /**
+     * Height of a table-row in pixels.
+     */
+    private static final int ROW_HEIGHT = 18;
+
+    /**
+     * Number of rows for a normal terminal (not tall)
+     */
+    private static final int DEFAULT_ROW_COUNT = 6;
+    /**
+     * Minimum rows for a tall terminal. Should prevent some strange aspect ratios from not displaying any rows.
+     */
+    private static final int MIN_ROW_COUNT = 3;
+
+    /**
+     * Size of a slot in both x and y dimensions in pixel, most likely always the same as ROW_HEIGHT.
+     */
+    private static final int SLOT_SIZE = ROW_HEIGHT;
+
+    // Bounding boxes of key areas in the UI texture.
+    // The upper part of the UI, anything above the scrollable area (incl. its top border)
+    private static final Rectangle2d HEADER_BBOX = new Rectangle2d(0, 0, GUI_WIDTH, GUI_HEADER_HEIGHT);
+    // Background for a text row in the scroll-box.
+    // Spans across the whole texture including the right and left borders including the scrollbar.
+    // Covers separate textures for the top, middle and bottoms rows for more customization.
+    private static final Rectangle2d ROW_TEXT_TOP_BBOX = new Rectangle2d(0, 17, GUI_WIDTH, ROW_HEIGHT);
+    private static final Rectangle2d ROW_TEXT_MIDDLE_BBOX = new Rectangle2d(0, 53, GUI_WIDTH, ROW_HEIGHT);
+    private static final Rectangle2d ROW_TEXT_BOTTOM_BBOX = new Rectangle2d(0, 89, GUI_WIDTH, ROW_HEIGHT);
+    // Background for a inventory row in the scroll-box.
+    // Spans across the whole texture including the right and left borders including the scrollbar.
+    // Covers separate textures for the top, middle and bottoms rows for more customization.
+    private static final Rectangle2d ROW_INVENTORY_TOP_BBOX = new Rectangle2d(0, 35, GUI_WIDTH, ROW_HEIGHT);
+    private static final Rectangle2d ROW_INVENTORY_MIDDLE_BBOX = new Rectangle2d(0, 71, GUI_WIDTH, ROW_HEIGHT);
+    private static final Rectangle2d ROW_INVENTORY_BOTTOM_BBOX = new Rectangle2d(0, 107, GUI_WIDTH, ROW_HEIGHT);
+    // This is the lower part of the UI, anything below the scrollable area (incl. its bottom border)
+    private static final Rectangle2d FOOTER_BBOX = new Rectangle2d(0, 125, GUI_WIDTH, GUI_FOOTER_HEIGHT);
+
     private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<>();
     private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
     private final ArrayList<String> names = new ArrayList<>();
@@ -71,21 +134,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     private boolean refreshList = false;
     private AETextField searchField;
-
-    /**
-     * Height of a table-row in pixels.
-     */
-    private static final int ROW_HEIGHT = 18;
-
-    // Bounding boxes of key areas in the UI texture.
-    // The upper part of the UI, anything above the scrollable area (incl. its top border)
-    private final Rectangle2d HEADER_BBOX = new Rectangle2d(0, 0, 195, 18);
-    // Background for a row in the scroll-box, including the left and right area of the dialog, plus scrollbar
-    private final Rectangle2d ROW_BG_BBOX = new Rectangle2d(0, 18, 195, ROW_HEIGHT);
-    // Covers one row of slots representing an interface inventory
-    private final Rectangle2d ROW_SLOT_BBOX = new Rectangle2d(7, 87, 162, ROW_HEIGHT);
-    // This is the lower part of the UI, anything below the scrollable area (incl. its bottom border)
-    private final Rectangle2d FOOTER_BBOX = new Rectangle2d(0, 72, 195, 98);
     private int numLines = 0;
 
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory,
@@ -93,18 +141,18 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         super(container, playerInventory, title);
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
-        this.xSize = 195;
+        this.xSize = GUI_WIDTH;
     }
 
     @Override
     public void init() {
         // Decide on number of rows.
         TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
-        int maxLines = terminalStyle == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
-        this.numLines = (this.height - 115) / ROW_HEIGHT; // 97 (footer size) + 17 (header size) + ...1?
-        this.numLines = MathHelper.clamp(this.numLines, 3, maxLines);
+        int maxLines = terminalStyle == TerminalStyle.SMALL ? DEFAULT_ROW_COUNT : Integer.MAX_VALUE;
+        this.numLines = (this.height - GUI_HEADER_HEIGHT - GUI_FOOTER_HEIGHT) / ROW_HEIGHT;
+        this.numLines = MathHelper.clamp(this.numLines, MIN_ROW_COUNT, maxLines);
         // Render inventory in correct place.
-        this.ySize = 115 + this.numLines * ROW_HEIGHT; // 17 (header size) + 97 (footer size) + all the lines
+        this.ySize = GUI_HEADER_HEIGHT + GUI_FOOTER_HEIGHT + this.numLines * ROW_HEIGHT;
 
         super.init();
         this.searchField = new AETextField(this.font, this.guiLeft + 104, this.guiTop + 4, 65, 12);
@@ -117,9 +165,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         this.changeFocus(true);
 
         // Add a terminalstyle button
-        int offset = this.guiTop + 8;
-        this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, terminalStyle,
-                this::toggleTerminalStyle));
+        int offset = this.guiTop + GUI_BUTTON_Y_MARGIN;
+        this.addButton(new SettingToggleButton<>(this.guiLeft + GUI_BUTTON_X_MARGIN, offset,
+                Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
 
         // Reposition player inventory slots.
         for (final Slot s : this.container.inventorySlots) {
@@ -136,11 +184,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        final int TEXT_X_OFFSET = 10;
-        final int INV_TEXT_Y_OFFSET = 3;
-        final int MAIN_TEXT_Y_OFFSET = 6;
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()).getString(),
+                GUI_PADDING_X, GUI_PADDING_Y, COLOR_DARK_GRAY);
 
         this.container.inventorySlots.removeIf(slot -> slot instanceof SlotDisconnected);
 
@@ -154,7 +199,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
                     for (int z = 0; z < inv.getInventory().getSlots(); z++) {
                         this.container.inventorySlots
-                                .add(new SlotDisconnected(inv, z, z * 18 + 8, (i + 1) * ROW_HEIGHT));
+                                .add(new SlotDisconnected(inv, z, z * SLOT_SIZE + GUI_PADDING_X, (i + 1) * SLOT_SIZE));
                     }
                 } else if (lineObj instanceof String) {
                     String name = (String) lineObj;
@@ -163,18 +208,16 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                         name = name + " (" + rows + ')';
                     }
 
-                    while (name.length() > 2 && this.font.getStringWidth(name) > 155) {
-                        name = name.substring(0, name.length() - 1);
-                    }
+                    name = this.font.func_238413_a_(name, TEXT_MAX_WIDTH, true);
 
-                    this.font.drawString(matrixStack, name, TEXT_X_OFFSET, MAIN_TEXT_Y_OFFSET + 17 + i * 18,
-                            COLOR_DARK_GRAY);
+                    this.font.drawString(matrixStack, name, GUI_PADDING_X + INTERFACE_NAME_MARGIN_X,
+                            GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, COLOR_DARK_GRAY);
                 }
             }
         }
 
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), TEXT_X_OFFSET,
-                INV_TEXT_Y_OFFSET + 17 + i * ROW_HEIGHT, COLOR_DARK_GRAY);
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), GUI_PADDING_X,
+                HEADER_TEXT_MARGIN_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, COLOR_DARK_GRAY);
     }
 
     @Override
@@ -202,10 +245,10 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         final int scrollLevel = this.getScrollBar().getCurrentScroll();
         boolean isInvLine;
 
-        int currentY = offsetY + 17;
+        int currentY = offsetY + GUI_HEADER_HEIGHT;
 
         // Draw the footer now so slots will draw on top of it
-        blit(matrixStack, offsetX, currentY + this.numLines * ROW_HEIGHT - 1, FOOTER_BBOX);
+        blit(matrixStack, offsetX, currentY + this.numLines * ROW_HEIGHT, FOOTER_BBOX);
 
         for (int i = 0; i < this.numLines; ++i) {
             // Draw the dialog background for this row
@@ -213,11 +256,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             // and do the same but for the bottom border on the last row
             boolean firstLine = i == 0;
             boolean lastLine = i == this.numLines - 1;
-            int firstAdj = firstLine ? 1 : 0;
-            int lastAdj = lastLine ? 1 : 0;
-            blit(matrixStack, offsetX, currentY + firstAdj,
-                    ROW_BG_BBOX.getX(), ROW_BG_BBOX.getY(),
-                    ROW_BG_BBOX.getWidth(), ROW_BG_BBOX.getHeight() - firstAdj - lastAdj);
 
             // Draw the background for the slots in an inventory row
             isInvLine = false;
@@ -225,9 +263,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                 final Object lineObj = this.lines.get(scrollLevel + i);
                 isInvLine = lineObj instanceof ClientDCInternalInv;
             }
-            if (isInvLine) {
-                blit(matrixStack, offsetX + 7, currentY, ROW_SLOT_BBOX);
-            }
+
+            Rectangle2d bbox = selectRowBackgroundBox(isInvLine, firstLine, lastLine);
+            blit(matrixStack, offsetX, currentY, bbox);
 
             currentY += ROW_HEIGHT;
         }
@@ -235,6 +273,26 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         // Draw search field.
         if (this.searchField != null) {
             this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
+        }
+    }
+
+    private Rectangle2d selectRowBackgroundBox(boolean isInvLine, boolean firstLine, boolean lastLine) {
+        if (isInvLine) {
+            if (firstLine) {
+                return ROW_INVENTORY_TOP_BBOX;
+            } else if (lastLine) {
+                return ROW_INVENTORY_BOTTOM_BBOX;
+            } else {
+                return ROW_INVENTORY_MIDDLE_BBOX;
+            }
+        } else {
+            if (firstLine) {
+                return ROW_TEXT_TOP_BBOX;
+            } else if (lastLine) {
+                return ROW_TEXT_BOTTOM_BBOX;
+            } else {
+                return ROW_TEXT_MIDDLE_BBOX;
+            }
         }
     }
 
@@ -323,8 +381,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         final boolean rebuild = cachedSearch.isEmpty();
 
         for (final ClientDCInternalInv entry : this.byId.values()) {
-            // ignore inventory if not doing a full rebuild or cache already marks it as
-            // miss.
+            // ignore inventory if not doing a full rebuild or cache already marks it as miss.
             if (!rebuild && !cachedSearch.contains(entry)) {
                 continue;
             }
@@ -377,7 +434,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
      */
     private void resetScrollbar() {
         Scrollbar bar = this.getScrollBar();
-        bar.setLeft(175).setTop(18).setHeight(this.numLines * 18 - 2);
+        // Needs to take the border into account, so offset for 1 px on the top and bottom.
+        bar.setLeft(175).setTop(GUI_HEADER_HEIGHT + 1).setHeight(this.numLines * ROW_HEIGHT - 2);
         bar.setRange(0, this.lines.size() - this.numLines, 2);
     }
 
@@ -468,7 +526,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return o;
     }
 
-    // A version of blit that lets us pass a source rectangle
+    /**
+     * A version of blit that lets us pass a source rectangle
+     * 
+     * @see AbstractGui#blit(MatrixStack, int, int, int, int, int, int)
+     */
     private void blit(MatrixStack matrixStack, int offsetX, int offsetY, Rectangle2d srcRect) {
         blit(matrixStack, offsetX, offsetY, srcRect.getX(), srcRect.getY(), srcRect.getWidth(), srcRect.getHeight());
     }

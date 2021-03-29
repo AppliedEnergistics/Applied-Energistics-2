@@ -29,19 +29,13 @@ public final class EnumCycler {
     private EnumCycler() {
     }
 
-    private static int mod(int x, int y) {
-        // Java's '%' is remainder, not mod - we want mod so we can cycle through negatives correctly.
-        int result = x % y;
-        return result < 0 ? result + y : result;
-    }
-
     public static <T extends Enum<T>> T rotateEnum(T ce, final boolean backwards, final EnumSet<T> validOptions) {
         int direction = backwards ? -1 : 1;
         T[] values = ce.getDeclaringClass().getEnumConstants();
 
         do {
             // mod naturally cycles a changing integer on a range [0, N]
-            int pLoc = mod(ce.ordinal() + direction, values.length);
+            int pLoc = Math.floorMod(ce.ordinal() + direction, values.length);
             ce = values[pLoc];
         } while (!validOptions.contains(ce));
 
