@@ -94,7 +94,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	{
 		super.initGui();
 
-		this.getScrollBar().setLeft( 190 );
+		this.getScrollBar().setLeft( 189 );
 		this.getScrollBar().setHeight( 106 );
 		this.getScrollBar().setTop( 51 );
 

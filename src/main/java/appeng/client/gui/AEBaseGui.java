@@ -31,11 +31,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import appeng.tile.inventory.AppEngInternalInventory;
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -378,6 +380,59 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 				}
 			}
 		}
+		else if( slot instanceof SlotDisconnected )
+		{
+			this.drag_click.add( slot );
+			if( this.drag_click.size() > 1 )
+			{
+				if( !itemstack.isEmpty() )
+				{
+					Set<IItemHandler> visitedInterfaces = new HashSet<>();
+					for( final Slot dr : this.drag_click )
+					{
+						IItemHandler interfaceHandler = ( (SlotDisconnected) slot ).getSlot().getInventory();
+						if (visitedInterfaces.contains( interfaceHandler )) break;
+						visitedInterfaces.add( interfaceHandler );
+						boolean canInsert = true;
+						for( int s = 0; s < interfaceHandler.getSlots(); s++ )
+						{
+							if( ItemStack.areItemStacksEqual( interfaceHandler.getStackInSlot( s ), itemstack ) )
+							{
+								canInsert = false;
+								break;
+							}
+						}
+						if( canInsert )
+						{
+							if( slot.getStack().isEmpty() )
+							{
+								InventoryAction action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
+								final PacketInventoryAction p = new PacketInventoryAction( action, dr.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
+								NetworkHandler.instance().sendToServer( p );
+							}
+						}
+					}
+				}
+
+				else if( isShiftKeyDown() )
+				{
+					for( final Slot dr : this.drag_click )
+					{
+						InventoryAction action = null;
+						if( !slot.getStack().isEmpty() )
+						{
+							action = InventoryAction.SHIFT_CLICK;
+						}
+						if( action != null )
+						{
+							final PacketInventoryAction p = new PacketInventoryAction( action, dr.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
+							NetworkHandler.instance().sendToServer( p );
+						}
+					}
+				}
+			}
+		}
+
 		else
 		{
 			super.mouseClickMove( x, y, c, d );
@@ -471,15 +526,35 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 
 		if( slot instanceof SlotDisconnected )
 		{
+			if( this.drag_click.size() > 1 )
+			{
+				return;
+			}
+
 			InventoryAction action = null;
 
-			switch( clickType )
+			switch ( clickType )
 			{
 				case PICKUP: // pickup / set-down.
-					if (slot.getStack().isEmpty() && !player.inventory.getItemStack().isEmpty())
-						action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
-					if (!slot.getStack().isEmpty() && player.inventory.getItemStack().getCount() <= 1)
-						action = InventoryAction.PICKUP_OR_SET_DOWN;
+					if( slot.getStack().isEmpty() && !player.inventory.getItemStack().isEmpty() )
+					{
+						boolean canInsert = true;
+						IItemHandler interfaceHandler = ( (SlotDisconnected) slot ).getSlot().getInventory();
+						for( int s = 0; s < interfaceHandler.getSlots(); s++ )
+						{
+							if( ItemStack.areItemStacksEqual( interfaceHandler.getStackInSlot( s ), player.inventory.getItemStack() ) )
+							{
+								canInsert = false;
+								break;
+							}
+						}
+						if( canInsert )
+						{
+							action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
+						}
+						break;
+					}
+					if( !slot.getStack().isEmpty() && player.inventory.getItemStack().getCount() <= 1 ) action = InventoryAction.PICKUP_OR_SET_DOWN;
 					break;
 				case QUICK_MOVE:
 					action = ( mouseButton == 1 ) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
