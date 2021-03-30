@@ -23,11 +23,10 @@ class AESharedItemStackTest {
     private final TestItemWithCaps TEST_ITEM = new TestItemWithCaps();
 
     /**
-     * Creates a bunch of item stacks that should all be considered not-equal, and then performs a sanity check on
-     * compareTo and equals.
+     * Creates a bunch of item stacks that should all be considered not-equal to one another.
      */
     @Test
-    void testCompareTo() {
+    void testEquals() {
         // Test stack -> Name for debuggin the tests
         Map<AESharedItemStack, String> stacks = new IdentityHashMap<>();
 
