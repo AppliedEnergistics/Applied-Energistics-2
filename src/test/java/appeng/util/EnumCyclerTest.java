@@ -1,11 +1,11 @@
 package appeng.util;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.EnumSet;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 class EnumCyclerTest {
 
@@ -36,8 +36,8 @@ class EnumCyclerTest {
     }
 
     /**
-     * When the current enum literal is not part of the valid options, it should just
-     * skip to the next valid option instead.
+     * When the current enum literal is not part of the valid options, it should just skip to the next valid option
+     * instead.
      */
     @Test
     void testRotateEnumCurrentIsNotAValidOption() {
