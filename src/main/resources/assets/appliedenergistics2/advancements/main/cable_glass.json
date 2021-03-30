@@ -1,8 +1,21 @@
 {
     "conditions": [
         {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:part:CABLE_GLASS"
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:charger"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:material:7"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:part:16"
+                }
+            ]
         }
     ],
     "display": {

@@ -1,8 +1,33 @@
 {
     "conditions": [
         {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:network_tool"
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:material:13"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:material:14"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:material:15"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:material:19"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:controller"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:network_tool"
+                }
+            ]
         }
     ],
     "display": {
