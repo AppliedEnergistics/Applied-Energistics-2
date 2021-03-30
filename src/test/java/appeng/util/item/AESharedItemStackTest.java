@@ -1,17 +1,16 @@
 package appeng.util.item;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.IdentityHashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
+import com.google.common.testing.EqualsTester;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.registry.Bootstrap;
 import net.minecraft.util.text.StringTextComponent;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 class AESharedItemStackTest {
 
@@ -20,15 +19,11 @@ class AESharedItemStackTest {
         Bootstrap.register();
     }
 
-    private final TestItemWithCaps TEST_ITEM = new TestItemWithCaps();
+    // Test stack -> Name for debugging the tests
+    final Map<AESharedItemStack, String> stacks = new IdentityHashMap<>();
 
-    /**
-     * Creates a bunch of item stacks that should all be considered not-equal to one another.
-     */
-    @Test
-    void testEquals() {
-        // Test stack -> Name for debuggin the tests
-        Map<AESharedItemStack, String> stacks = new IdentityHashMap<>();
+    AESharedItemStackTest() {
+        TestItemWithCaps TEST_ITEM = new TestItemWithCaps();
 
         ItemStack nameTag1 = new ItemStack(TEST_ITEM);
         stacks.put(new AESharedItemStack(nameTag1), "no-nbt");
@@ -56,23 +51,26 @@ class AESharedItemStackTest {
         ItemStack nameTag5 = new ItemStack(TEST_ITEM, 1, capNbt2);
         nameTag5.setDisplayName(new StringTextComponent("Hello World"));
         stacks.put(new AESharedItemStack(nameTag5), "nbt1+cap2");
+    }
 
-        // Start by sanity checking compareTo & equals
+    /**
+     * Tests equality between shared item stacks.
+     */
+    @Test
+    void testEquals() {
+        EqualsTester tester = new EqualsTester();
         for (AESharedItemStack stack : stacks.keySet()) {
-            for (AESharedItemStack otherStack : stacks.keySet()) {
-                String stackName = stacks.get(stack);
-                String otherStackName = stacks.get(otherStack);
-
-                if (stack == otherStack) {
-                    assertThat(stack).as("%s.equals(%s)", stackName, stackName)
-                            .isEqualTo(otherStack);
-                } else {
-                    assertThat(stack)
-                            .as("!%s.equals(%s)", stackName, otherStackName)
-                            .isNotEqualTo(otherStack);
-                }
-            }
+            tester.addEqualityGroup(stack);
         }
+
+        // Test that using the same item stack instance makes two separate shared stacks equal
+        ItemStack itemStack = new ItemStack(Items.CRAFTING_TABLE);
+        tester.addEqualityGroup(
+                new AESharedItemStack(itemStack),
+                new AESharedItemStack(itemStack)
+        );
+
+        tester.testEquals();
     }
 
 }
