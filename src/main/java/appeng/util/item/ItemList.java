@@ -39,9 +39,8 @@ public final class ItemList implements IItemList<IAEItemStack> {
     private final Reference2ObjectMap<Item, ItemVariantList> records = new Reference2ObjectOpenHashMap<>();
     /**
      * We increment this version field everytime an attempt to mutate this item list (or potentially one of its
-     * sub-lists) is made.
-     * Iterators will copy the version when they are created and compare it against the current version whenever
-     * they advance to trigger a {@link ConcurrentModificationException}.
+     * sub-lists) is made. Iterators will copy the version when they are created and compare it against the current
+     * version whenever they advance to trigger a {@link ConcurrentModificationException}.
      */
     private final AtomicInteger version = new AtomicInteger(0);
 

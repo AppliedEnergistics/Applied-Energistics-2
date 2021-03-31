@@ -1,16 +1,18 @@
 package appeng.util.item;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import com.google.common.testing.EqualsTester;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.registry.Bootstrap;
 import net.minecraft.util.text.StringTextComponent;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 class AESharedItemStackTest {
 
@@ -68,8 +70,7 @@ class AESharedItemStackTest {
         ItemStack itemStack = new ItemStack(Items.CRAFTING_TABLE);
         tester.addEqualityGroup(
                 new AESharedItemStack(itemStack),
-                new AESharedItemStack(itemStack)
-        );
+                new AESharedItemStack(itemStack));
 
         tester.testEquals();
     }

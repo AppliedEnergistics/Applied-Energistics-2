@@ -25,7 +25,8 @@ package appeng.api.config;
 
 public enum FuzzyMode {
     /**
-     * Matches between 0% and 100% durability.
+     * Matches any item from undamaged to including 0% durability, but not negative durability (where item damage
+     * exceeds maxdamage).
      */
     IGNORE_ALL(-1),
     /**
@@ -49,8 +50,10 @@ public enum FuzzyMode {
      */
     PERCENT_25(75);
 
-    // Note that percentage damaged, is the inverse of percentage durability.
     public final float breakPoint;
+    /**
+     * Note this is percentage "damaged". It's the inverse of percentage durability.
+     */
     public final float percentage;
 
     FuzzyMode(final float p) {
