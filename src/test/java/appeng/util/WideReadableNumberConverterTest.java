@@ -18,9 +18,10 @@
 
 package appeng.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link IWideReadableNumberConverter}
@@ -31,13 +32,10 @@ import org.junit.Test;
  */
 public final class WideReadableNumberConverterTest {
     private static final long NUMBER_NEG_999999 = -999999L;
-    private static final String RESULT_NEG_999999 = "-0M";
 
     private static final long NUMBER_NEG_9999 = -9999L;
-    private static final String RESULT_NEG_9999 = "-9K";
 
     private static final long NUMBER_NEG_999 = -999L;
-    private static final String RESULT_NEG_999 = "-999";
 
     private static final long NUMBER_0 = 0L;
     private static final String RESULT_0 = "0";
@@ -68,19 +66,19 @@ public final class WideReadableNumberConverterTest {
 
     private final IWideReadableNumberConverter converter = ReadableNumberConverter.INSTANCE;
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testConvertNeg999999() {
-        assertEquals(RESULT_NEG_999999, this.converter.toWideReadableForm(NUMBER_NEG_999999));
+        assertThrows(AssertionError.class, () -> this.converter.toWideReadableForm(NUMBER_NEG_999999));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testConvertNeg9999() {
-        assertEquals(RESULT_NEG_9999, this.converter.toWideReadableForm(NUMBER_NEG_9999));
+        assertThrows(AssertionError.class, () -> this.converter.toWideReadableForm(NUMBER_NEG_9999));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testConvertNeg999() {
-        assertEquals(RESULT_NEG_999, this.converter.toWideReadableForm(NUMBER_NEG_999));
+        assertThrows(AssertionError.class, () -> this.converter.toWideReadableForm(NUMBER_NEG_999));
     }
 
     @Test
