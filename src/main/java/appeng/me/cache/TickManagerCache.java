@@ -130,7 +130,6 @@ public class TickManagerCache implements ITickManager
 					this.addToQueue( tt );
 				}
 			}
-			PartLevelEmitter.wipeCaches();
 		}
 		catch( final Throwable t )
 		{
@@ -139,6 +138,7 @@ public class TickManagerCache implements ITickManager
 			tt.addEntityCrashInfo( crashreportcategory );
 			throw new ReportedException( crashreport );
 		}
+		PartLevelEmitter.wipeCache();
 	}
 
 	private void addToQueue( final TickTracker tt )
