@@ -100,51 +100,37 @@ public class TickManagerCache implements ITickManager
 				this.upcomingTicks.poll();
 
 				final int diff = (int) ( this.currentTick - tt.getLastTick() );
+				final TickRateModulation mod = tt.getGridTickable().tickingRequest( tt.getNode(), diff );
 
-				if( tt.getGridTickable() instanceof PartLevelEmitter )
+				switch ( mod )
 				{
-					laterTicker.put( tt.getNode(), tt );
-				} else
-				{
-
-					final TickRateModulation mod = tt.getGridTickable().tickingRequest( tt.getNode(), diff );
-
-					switch ( mod )
-					{
-						case FASTER:
-							tt.setCurrentRate( tt.getCurrentRate() - 2 );
-							break;
-						case IDLE:
-							tt.setCurrentRate( tt.getRequest().maxTickRate );
-							break;
-						case SAME:
-							break;
-						case SLEEP:
-							this.sleepDevice( tt.getNode() );
-							break;
-						case SLOWER:
-							tt.setCurrentRate( tt.getCurrentRate() + 1 );
-							break;
-						case URGENT:
-							tt.setCurrentRate( 0 );
-							break;
-						default:
-							break;
-					}
+					case FASTER:
+						tt.setCurrentRate( tt.getCurrentRate() - 2 );
+						break;
+					case IDLE:
+						tt.setCurrentRate( tt.getRequest().maxTickRate );
+						break;
+					case SAME:
+						break;
+					case SLEEP:
+						this.sleepDevice( tt.getNode() );
+						break;
+					case SLOWER:
+						tt.setCurrentRate( tt.getCurrentRate() + 1 );
+						break;
+					case URGENT:
+						tt.setCurrentRate( 0 );
+						break;
+					default:
+						break;
 				}
+
 				if( this.awake.containsKey( tt.getNode() ) )
 				{
 					this.addToQueue( tt );
 				}
 			}
-			Iterator<Map.Entry<IGridNode, TickTracker>> ltIterator = laterTicker.entrySet().iterator();
-			while ( ltIterator.hasNext() )
-			{
-				Map.Entry<IGridNode, TickTracker> tickTracker = ltIterator.next();
-				tickTracker.getValue().getGridTickable().tickingRequest( tickTracker.getKey(), 1 );
-				ltIterator.remove();
-			}
-		PartLevelEmitter.wipeCaches();
+			PartLevelEmitter.wipeCaches();
 		}
 		catch( final Throwable t )
 		{

@@ -90,7 +90,7 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 
-public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider, IGridTickable
+public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
 {
 
 	@PartModels
@@ -610,20 +610,6 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			return this.isLevelEmitterOn() ? MODEL_ON_OFF : MODEL_OFF_OFF;
 		}
-	}
-
-	@Nonnull
-	@Override
-	public TickingRequest getTickingRequest( @Nonnull IGridNode node )
-	{
-		return new TickingRequest( 1,1,false,false );
-	}
-
-	@Nonnull
-	@Override
-	public TickRateModulation tickingRequest( @Nonnull IGridNode node, int ticksSinceLastCall )
-	{
-		return TickRateModulation.URGENT;
 	}
 
 	static public void wipeCaches(){
