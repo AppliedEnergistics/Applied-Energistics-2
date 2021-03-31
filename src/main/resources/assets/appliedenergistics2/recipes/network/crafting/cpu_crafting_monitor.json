@@ -1,4 +1,23 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:crafting_monitor"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:crafting_unit"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.storage_monitor"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:crafting_monitor"
     },

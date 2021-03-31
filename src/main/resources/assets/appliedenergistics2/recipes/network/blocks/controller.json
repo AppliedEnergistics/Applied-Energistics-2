@@ -1,4 +1,27 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:controller"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:smooth_sky_stone_block"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.engineering_processor"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.purified_fluix_crystal"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:controller"
     },

@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "appliedenergistics2:part_exists",
+            "part": "part.quartz_fiber"
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "part.quartz_fiber",

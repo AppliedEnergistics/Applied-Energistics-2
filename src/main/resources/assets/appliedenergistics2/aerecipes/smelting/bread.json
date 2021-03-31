@@ -1,4 +1,10 @@
 {
+	"conditions": [
+		{
+			"type": "appliedenergistics2:material_exists",
+			"material": "material.flour"
+		}
+	],
 	"type": "appliedenergistics2:smelt",
 	"result": {
 		"item": "minecraft:bread"

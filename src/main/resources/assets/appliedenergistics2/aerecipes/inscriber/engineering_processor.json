@@ -1,4 +1,23 @@
 {
+	"conditions": [
+		{
+			"type": "forge:and",
+			"values": [
+				{
+					"type": "appliedenergistics2:material_exists",
+					"material": "material.calculation_processor"
+				},
+				{
+					"type": "appliedenergistics2:material_exists",
+					"material": "material.calculation_processor_print"
+				},
+				{
+					"type": "appliedenergistics2:material_exists",
+					"material": "material.silicon_print"
+				}
+			]
+		}
+	],
 	"type": "appliedenergistics2:inscriber",
 	"mode": "press",
 	"result": {

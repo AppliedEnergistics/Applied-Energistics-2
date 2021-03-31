@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.fluid_level_emitter"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.calculation_processor"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "part.fluid_level_emitter"

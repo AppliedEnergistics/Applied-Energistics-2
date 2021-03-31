@@ -1,4 +1,10 @@
 {
+	"conditions": [
+		{
+			"type": "appliedenergistics2:material_exists",
+			"material": "material.silicon"
+		}
+	],
 	"type": "appliedenergistics2:smelt",
 	"result": {
 		"part": "material.silicon"

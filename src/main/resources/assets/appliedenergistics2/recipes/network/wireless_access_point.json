@@ -1,4 +1,27 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:wireless_access_point"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.wireless"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "cable_glass.fluix"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.calculation_processor"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:wireless_access_point"
     },

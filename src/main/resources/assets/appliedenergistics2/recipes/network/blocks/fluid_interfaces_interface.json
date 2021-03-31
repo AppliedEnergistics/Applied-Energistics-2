@@ -1,4 +1,23 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:fluid_interface"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.formation_core"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.annihilation_core"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:fluid_interface"
     },

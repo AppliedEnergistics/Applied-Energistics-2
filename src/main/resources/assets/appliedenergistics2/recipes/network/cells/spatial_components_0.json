@@ -1,4 +1,23 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.cell16_spatial_part"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.engineering_processor"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.cell2_spatial_part"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "material.cell16_spatial_part"

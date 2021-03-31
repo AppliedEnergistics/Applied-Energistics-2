@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "appliedenergistics2:part_exists",
+            "part": "lumen_paint_ball.orange"
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "lumen_paint_ball.orange",

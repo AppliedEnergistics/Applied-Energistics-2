@@ -1,4 +1,23 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.wireless"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.fluix_pearl"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.quartz_fiber"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "material.wireless"

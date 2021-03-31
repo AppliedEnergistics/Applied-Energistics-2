@@ -1,4 +1,27 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:quartz_glass"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.fluid_cell16k_part"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.fluid_cell4k_part"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.calculation_processor"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "material.fluid_cell16k_part"

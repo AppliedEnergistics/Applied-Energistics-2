@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.storage_monitor"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.level_emitter"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "part.storage_monitor"

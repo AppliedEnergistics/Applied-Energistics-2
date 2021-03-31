@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "cable_dense_covered.magenta"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "cable_dense_covered.fluix"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "cable_dense_covered.magenta",

@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:tiny_tnt"
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:tiny_tnt"
     },

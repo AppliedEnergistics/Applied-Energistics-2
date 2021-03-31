@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "appliedenergistics2:part_exists",
+            "part": "crystal_seed.fluix"
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "crystal_seed.fluix",

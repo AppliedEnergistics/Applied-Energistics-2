@@ -616,7 +616,12 @@ public final class ApiBlocks implements IBlocks
 
 	private static IBlockDefinition makeStairs( String registryName, FeatureFactory registry, IBlockDefinition block )
 	{
-		return registry.block( registryName, () -> new BlockStairCommon( block.maybeBlock().get(), block.identifier() ) )
+		if( !block.maybeBlock().isPresent() )
+		{
+			return new BlockDefinition( registryName, null, null );
+		}
+
+		IBlockDefinition stairs = registry.block( registryName, () -> new BlockStairCommon( block.maybeBlock().get(), block.identifier() ) )
 				.features( AEFeature.DECORATIVE_BLOCKS )
 				.rendering( new BlockRenderingCustomizer()
 				{
@@ -629,6 +634,10 @@ public final class ApiBlocks implements IBlocks
 					}
 				} )
 				.build();
+
+		Verify.verify(stairs.maybeBlock().isPresent());
+
+		return stairs;
 	}
 
 	@Override

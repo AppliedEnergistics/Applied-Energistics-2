@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "cable_covered.light_gray"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "cable_covered.fluix"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "cable_covered.light_gray",

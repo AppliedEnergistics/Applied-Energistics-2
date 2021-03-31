@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.inverted_toggle_bus"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.toggle_bus"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "part.inverted_toggle_bus"

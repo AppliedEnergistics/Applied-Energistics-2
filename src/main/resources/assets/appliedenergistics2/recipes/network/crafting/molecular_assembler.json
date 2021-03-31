@@ -1,4 +1,27 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:molecular_assembler"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:quartz_glass"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.annihilation_core"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.formation_core"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:molecular_assembler"
     },

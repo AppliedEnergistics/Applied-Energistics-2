@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "appliedenergistics2:part_exists",
+            "part": "part.cable_anchor"
+        }
+    ],
     "type": "appliedenergistics2:part_shapeless",
     "result": {
         "part": "part.cable_anchor",

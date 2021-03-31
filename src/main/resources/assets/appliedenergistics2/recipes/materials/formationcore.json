@@ -1,8 +1,17 @@
 {
     "conditions": [
         {
-            "type": "appliedenergistics2:material_exists",
-            "material": "material.formation_core"
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.formation_core"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.logic_processor"
+                }
+            ]
         }
     ],
     "result": {

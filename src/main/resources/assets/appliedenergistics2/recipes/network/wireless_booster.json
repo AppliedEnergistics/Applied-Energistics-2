@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.wireless_booster"
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "material.wireless_booster",

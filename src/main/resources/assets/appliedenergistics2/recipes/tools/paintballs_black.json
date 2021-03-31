@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "paint_ball.black"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.matter_ball"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "paint_ball.black",

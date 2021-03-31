@@ -1,4 +1,23 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.identity_annihilation_plane"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.annihilation_plane"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.fluix_pearl"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "part.identity_annihilation_plane"

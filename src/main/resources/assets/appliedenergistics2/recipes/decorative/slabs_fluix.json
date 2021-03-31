@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:fluix_slab"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:fluix_block"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:fluix_slab",
         "data": 0,

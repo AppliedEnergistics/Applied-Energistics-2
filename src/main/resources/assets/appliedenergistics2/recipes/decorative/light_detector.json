@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:light_detector"
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:light_detector"
     },

@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:sky_compass"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.certus_quartz_crystal_charged"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:sky_compass"
     },

@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:quartz_pillar_stairs"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:quartz_pillar"
+                }
+            ]
+        }
+    ],
     "result": {
         "item": "appliedenergistics2:quartz_pillar_stairs",
         "count": 4

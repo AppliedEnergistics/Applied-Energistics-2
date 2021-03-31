@@ -1,4 +1,10 @@
 {
+	"conditions": [
+		{
+			"type": "minecraft:item_exists",
+			"item": "appliedenergistics2:sky_stone_block"
+		}
+	],
 	"type": "appliedenergistics2:grinder",
 	"input": {
 		"item": "appliedenergistics2:sky_stone_block"

@@ -1,4 +1,19 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:charger"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:material:7"
+                }
+            ]
+        }
+    ],
     "display": {
         "icon": {
             "item": "appliedenergistics2:material",

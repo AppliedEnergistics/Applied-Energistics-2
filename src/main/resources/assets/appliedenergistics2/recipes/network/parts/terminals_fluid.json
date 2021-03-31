@@ -1,4 +1,23 @@
 {
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:part:part.terminal"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.logic_processor"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.fluid_terminal"
+                }
+            ]
+        }
+    ],
     "result": {
         "type": "appliedenergistics2:part",
         "part": "part.fluid_terminal"
