@@ -1,7 +1,15 @@
 package appeng.util.item;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import appeng.api.config.FuzzyMode;
+import appeng.api.storage.data.IAEItemStack;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterators;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.text.StringTextComponent;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,19 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterators;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.text.StringTextComponent;
-
-import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IAEItemStack;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ItemListTest {
 
@@ -306,7 +303,7 @@ public class ItemListTest {
         }
 
         private void assertReturnedDurabilities(IAEItemStack filter, FuzzyMode fuzzyMode, int minDurabilityInclusive,
-                int maxDurabilityInclusive, boolean above100) {
+                                                int maxDurabilityInclusive, boolean above100) {
             Collection<IAEItemStack> items = itemList.findFuzzy(filter, fuzzyMode);
 
             // Build a list of the durabilities that got returned
@@ -418,7 +415,7 @@ public class ItemListTest {
     }
 
     private AEItemStack diamondSword(int durabilityPercent, String customName, long stored, long requestable,
-            boolean craftable) {
+                                     boolean craftable) {
         ItemStack is = new ItemStack(Items.DIAMOND_SWORD);
         if (customName != null) {
             is.setDisplayName(new StringTextComponent(customName));

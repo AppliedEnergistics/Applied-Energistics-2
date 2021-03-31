@@ -60,7 +60,8 @@ class AESharedItemStackTest {
     void testEquals() {
         EqualsTester tester = new EqualsTester();
         for (AESharedItemStack stack : stacks.keySet()) {
-            tester.addEqualityGroup(stack);
+            // Add the stack, and a pristine copy of the stack
+            tester.addEqualityGroup(stack, new AESharedItemStack(stack.getDefinition().copy()));
         }
 
         // Test that using the same item stack instance makes two separate shared stacks equal
