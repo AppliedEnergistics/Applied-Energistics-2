@@ -144,6 +144,7 @@ public class TickManagerCache implements ITickManager
 				tickTracker.getValue().getGridTickable().tickingRequest( tickTracker.getKey(), 1 );
 				ltIterator.remove();
 			}
+		PartLevelEmitter.wipeCaches();
 		}
 		catch( final Throwable t )
 		{

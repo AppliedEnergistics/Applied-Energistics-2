@@ -22,12 +22,14 @@ package appeng.parts.automation;
 import javax.annotation.Nonnull;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Random;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.networking.ticking.*;
+import appeng.me.Grid;
+import appeng.me.GridNode;
+import appeng.util.item.AEItemStack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -124,7 +126,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	private double centerX;
 	private double centerY;
 	private double centerZ;
-	private IBaseMonitor<IAEItemStack> changedMonitor;
+	static HashMap<Grid, Long> gridItemCount = new HashMap<>();
+	static HashMap<Grid, HashMap<AEItemStack,Long>> fuzzyAEItemStackCount = new HashMap<>();
+	static HashMap<Grid, HashMap<AEItemStack,Long>> preciseAEItemStackCount = new HashMap<>();
 
 	@Reflected
 	public PartLevelEmitter( final ItemStack is )
@@ -325,37 +329,61 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		final IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
 
-		if( myStack == null )
+		GridNode node = (GridNode) (this.getGridNode());
+
+		if( node != null )
 		{
-			this.lastReportedValue = 0;
-			for( final IAEItemStack st : monitor.getStorageList() )
+			final Grid g = node.getInternalGrid();
+
+			if( myStack == null )
 			{
-				this.lastReportedValue += st.getStackSize();
+				if( !gridItemCount.containsKey( g ) )
+				{
+					this.lastReportedValue = 0;
+					for( final IAEItemStack st : monitor.getStorageList() )
+					{
+						this.lastReportedValue += st.getStackSize();
+					}
+					gridItemCount.put( g,lastReportedValue );
+				} else { this.lastReportedValue = gridItemCount.get( g ); }
 			}
-		}
-		else if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-		{
-			this.lastReportedValue = 0;
-			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			final Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack, fzMode );
-			for( final IAEItemStack st : fuzzyList )
+			else if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 			{
-				this.lastReportedValue += st.getStackSize();
-			}
-		}
-		else
-		{
-			final IAEItemStack r = monitor.getStorageList().findPrecise( myStack );
-			if( r == null )
-			{
-				this.lastReportedValue = 0;
+				if( fuzzyAEItemStackCount.isEmpty() || !fuzzyAEItemStackCount.containsKey( g ) ||
+						( fuzzyAEItemStackCount.containsKey( g ) && !fuzzyAEItemStackCount.get( g ).containsKey( (AEItemStack) myStack ) ) )
+				{
+					this.lastReportedValue = 0;
+					final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
+					final Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack, fzMode );
+					for( final IAEItemStack st : fuzzyList )
+					{
+						this.lastReportedValue += st.getStackSize();
+					}
+					fuzzyAEItemStackCount.put( g, new HashMap<>( 1 ));
+					fuzzyAEItemStackCount.get( g ).put( (AEItemStack) myStack.copy(),lastReportedValue );
+				} else {
+					this.lastReportedValue = fuzzyAEItemStackCount.get( g ).get( (AEItemStack) myStack );
+				}
 			}
 			else
 			{
-				this.lastReportedValue = r.getStackSize();
+				if( preciseAEItemStackCount.isEmpty() || !preciseAEItemStackCount.containsKey( g ) ||
+						( preciseAEItemStackCount.containsKey( g ) && !preciseAEItemStackCount.get( g ).containsKey( (AEItemStack) myStack ) ) )
+				{
+					final IAEItemStack r = monitor.getStorageList().findPrecise( myStack );
+					if( r == null )
+					{
+						this.lastReportedValue = 0;
+					}
+					else
+					{
+						this.lastReportedValue = r.getStackSize();
+					}
+					preciseAEItemStackCount.put( g, new HashMap<>( 1 ));
+					preciseAEItemStackCount.get( g ).put( (AEItemStack) myStack.copy(),lastReportedValue );
+				} else { this.lastReportedValue = preciseAEItemStackCount.get( g ).get( (AEItemStack) myStack ); }
 			}
 		}
-
 		this.updateState();
 	}
 
@@ -407,7 +435,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource actionSource )
 	{
-		this.changedMonitor = monitor;
+		this.updateReportingValue( (IMEMonitor<IAEItemStack>) monitor );
 	}
 
 	@Override
@@ -595,10 +623,12 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public TickRateModulation tickingRequest( @Nonnull IGridNode node, int ticksSinceLastCall )
 	{
-		if (this.changedMonitor != null)
-		{
-			this.updateReportingValue((IMEMonitor<IAEItemStack>) changedMonitor);
-		}
 		return TickRateModulation.URGENT;
+	}
+
+	static public void wipeCaches(){
+		gridItemCount = new HashMap<>();
+		fuzzyAEItemStackCount = new HashMap<>();
+		preciseAEItemStackCount = new HashMap<>();
 	}
 }
