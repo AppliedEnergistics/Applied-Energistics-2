@@ -218,7 +218,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
             return true;
         }
 
-        if (target.getType() != Type.field_1332) {
+        if (target.getType() != Type.BLOCK) {
             return false;
         }
         BlockPos blockPos = new BlockPos(target.getHitVec().x, target.getHitVec().y, target.getHitVec().z);
@@ -226,7 +226,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         ICableBusContainer cb = this.cb(world, blockPos);
 
         // Our built-in model has the actual baked sprites we need
-        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(this.getDefaultState());
+        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher()
+                .getModelForState(this.getDefaultState());
 
         // We cannot add the effect if we don't have the model
         if (!(model instanceof CableBusBakedModel)) {
@@ -245,7 +246,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
             double z = target.getHitVec().z;
             // FIXME: Check how this looks, probably like shit, maybe provide parts the
             // ability to supply particle textures???
-            effectRenderer.addEffect(new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).multiplyParticleScaleBy(0.8F));
+            effectRenderer.addEffect(
+                    new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).multiplyParticleScaleBy(0.8F));
         }
 
         return true;
@@ -258,7 +260,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         ICableBusContainer cb = this.cb(world, pos);
 
         // Our built-in model has the actual baked sprites we need
-        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(this.getDefaultState());
+        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher()
+                .getModelForState(this.getDefaultState());
 
         // We cannot add the effect if we dont have the model
         if (!(model instanceof CableBusBakedModel)) {
@@ -300,8 +303,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        if (Platform.isServer()) {
-            this.cb(world, pos).onneighborUpdate(world, pos, fromPos);
+        if (!world.isRemote()) {
+            this.cb(world, pos).onNeighborChanged(world, pos, fromPos);
         }
     }
 
@@ -338,9 +341,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
                 if (brtr.getPos().equals(pos)) {
                     final Vector3d hitVec = rtr.getHitVec().subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
 
-                    if (this.cb(worldIn, pos).clicked(player, Hand.field_5808, hitVec)) {
+                    if (this.cb(worldIn, pos).clicked(player, Hand.MAIN_HAND, hitVec)) {
                         NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getFace(), (float) hitVec.x,
-                                (float) hitVec.y, (float) hitVec.z, Hand.field_5808, true));
+                                (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
                     }
                 }
             }
@@ -357,11 +360,13 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         // Transform from world into block space
         Vector3d hitVec = hit.getHitVec();
         Vector3d hitInBlock = new Vector3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
-        return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResultType.field_5812 : ActionResultType.field_5811;
+        return this.cb(w, pos).activate(player, hand, hitInBlock)
+                ? ActionResultType.func_233537_a_(w.isRemote())
+                : ActionResultType.PASS;
     }
 
-    public boolean recolorBlock(final IBlockReader world, final BlockPos pos, final Direction side, final DyeColor color,
-            final PlayerEntity who) {
+    public boolean recolorBlock(final IBlockReader world, final BlockPos pos, final Direction side,
+            final DyeColor color, final PlayerEntity who) {
         try {
             return this.cb(world, pos).recolourBlock(side, AEColor.values()[color.ordinal()], who);
         } catch (final Throwable ignored) {
@@ -370,7 +375,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list) {
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }
 
@@ -394,7 +399,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         if (te == null) {
             return VoxelShapes.empty();
         } else {
-            return te.getCableBus().getOutlineShape();
+            return te.getCableBus().getShape();
         }
     }
 

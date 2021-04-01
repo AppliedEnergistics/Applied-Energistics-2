@@ -78,7 +78,7 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> {
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.field_11456;
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
@@ -89,22 +89,20 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (Platform.isServer()) {
+        if (!w.isRemote()) {
             SkyChestTileEntity tile = getTileEntity(w, pos);
-            if (tile == null) {
-                return ActionResultType.field_5811;
+            if (tile != null) {
+                ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
             }
-
-            ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
         }
 
-        return ActionResultType.field_5812;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         final SkyChestTileEntity sk = this.getTileEntity(worldIn, pos);
-        Direction up = sk != null ? sk.getUp() : Direction.field_11036;
+        Direction up = sk != null ? sk.getUp() : Direction.UP;
         return SHAPES.get(up);
     }
 

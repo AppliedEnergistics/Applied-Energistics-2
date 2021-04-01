@@ -18,6 +18,7 @@
 
 package appeng.block.crafting;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,6 +35,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CraftingCPUContainer;
 import appeng.tile.crafting.CraftingTileEntity;
+import appeng.util.InteractionUtil;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> extends AEBaseTileBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
@@ -41,7 +43,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
 
     public final CraftingUnitType type;
 
-    public AbstractCraftingUnitBlock(Properties props, final CraftingUnitType type) {
+    public AbstractCraftingUnitBlock(AbstractBlock.Properties props, final CraftingUnitType type) {
         super(props);
         this.type = type;
         this.setDefaultState(getDefaultState().with(FORMED, false).with(POWERED, false));
@@ -78,16 +80,17 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
+            BlockRayTraceResult hit) {
         final CraftingTileEntity tg = this.getTileEntity(w, pos);
 
-        if (tg != null && !p.isCrouching() && tg.isFormed() && tg.isActive()) {
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
             if (!w.isRemote()) {
                 ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
 
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         return super.onBlockActivated(state, w, pos, p, hand, hit);

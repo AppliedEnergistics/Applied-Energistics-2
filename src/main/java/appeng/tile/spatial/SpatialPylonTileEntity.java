@@ -86,7 +86,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
         super.remove();
     }
 
-    public void neighborUpdate(BlockPos changedPos) {
+    public void neighborChanged(BlockPos changedPos) {
         this.calc.updateMultiblockAfterNeighborUpdate(this.world, pos, changedPos);
     }
 

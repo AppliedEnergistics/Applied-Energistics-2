@@ -48,7 +48,7 @@ import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.tile.misc.ChargerTileEntity;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
@@ -64,18 +64,18 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (player.isCrouching()) {
-            return ActionResultType.field_5811;
+        if (InteractionUtil.isInAlternateUseMode(player)) {
+            return ActionResultType.PASS;
         }
 
-        if (Platform.isServer()) {
+        if (!w.isRemote()) {
             final ChargerTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null) {
                 tc.activate(player);
             }
         }
 
-        return ActionResultType.field_5812;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
     @Override
@@ -133,22 +133,22 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             }
 
             switch (forward) {
-                case field_11033:
+                case DOWN:
                     bb.maxY = 1;
                     break;
-                case field_11036:
+                case UP:
                     bb.minY = 0;
                     break;
-                case field_11043:
+                case NORTH:
                     bb.maxZ = 1;
                     break;
-                case field_11035:
+                case SOUTH:
                     bb.minZ = 0;
                     break;
-                case field_11034:
+                case EAST:
                     bb.minX = 0;
                     break;
-                case field_11039:
+                case WEST:
                     bb.maxX = 1;
                     break;
                 default:
@@ -161,7 +161,8 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
+            ISelectionContext context) {
         return VoxelShapes.create(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
     }
 

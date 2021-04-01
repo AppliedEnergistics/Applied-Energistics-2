@@ -39,11 +39,12 @@ import appeng.util.Platform;
 
 public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntity> {
     public PaintSplotchesBlock() {
-        super(defaultProps(Material.WATER, MaterialColor.AIR).notSolid().setAir());
+        super(defaultProps(Material.WATER, MaterialColor.AIR).notSolid());
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list) {
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+        // do nothing
     }
 
     @Override
@@ -57,14 +58,14 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
         final PaintSplotchesTileEntity tp = this.getTileEntity(world, pos);
 
         if (tp != null) {
-            tp.neighborUpdate();
+            tp.neighborChanged();
         }
     }
 
     @Override
-    public void fillWithRain(World world, BlockPos pos) {
-        if (Platform.isServer()) {
-            world.removeBlock(pos, false);
+    public void fillWithRain(final World w, final BlockPos pos) {
+        if (!w.isRemote()) {
+            w.removeBlock(pos, false);
         }
     }
 
@@ -81,7 +82,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
 // FIXME FABRIC   }
 
     @Override
-    public boolean isReplaceable(BlockState state, BlockItemUseContext context) {
+    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
         return true;
     }
 

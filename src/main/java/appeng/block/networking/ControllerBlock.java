@@ -28,6 +28,7 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.networking.ControllerTileEntity;
 
@@ -83,8 +84,8 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
      * rudimentary connected texture feel for the controller based on how it is placed.
      */
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState,
-            IWorld world, BlockPos pos, BlockPos facingPos) {
+    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world,
+            BlockPos pos, BlockPos facingPos) {
 
         // FIXME: this might work, or might _NOT_ work, but needs to be investigated
 

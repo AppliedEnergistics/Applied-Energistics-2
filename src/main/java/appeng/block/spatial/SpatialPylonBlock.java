@@ -18,7 +18,6 @@
 
 package appeng.block.spatial;
 
-import appeng.tile.spatial.SpatialPylonTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -26,6 +25,7 @@ import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEMaterials;
+import appeng.tile.spatial.SpatialPylonTileEntity;
 
 public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
 
@@ -38,7 +38,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
             boolean isMoving) {
         final SpatialPylonTileEntity tsp = this.getTileEntity(world, pos);
         if (tsp != null) {
-            tsp.neighborUpdate(fromPos);
+            tsp.neighborChanged(fromPos);
         }
     }
 

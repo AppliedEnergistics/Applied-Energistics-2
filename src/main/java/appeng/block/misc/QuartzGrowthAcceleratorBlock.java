@@ -52,8 +52,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState,
-            QuartzGrowthAcceleratorTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuartzGrowthAcceleratorTileEntity te) {
         return currentState.with(POWERED, te.isPowered());
     }
 
@@ -135,8 +134,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
             ry += dz * forward.getYOffset();
             rz += dz * forward.getZOffset();
 
-            Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D,
-                    0.0D);
+            Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D, 0.0D);
         }
     }
 

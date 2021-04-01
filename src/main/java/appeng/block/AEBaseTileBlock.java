@@ -168,10 +168,11 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public boolean eventReceived(BlockState state, World world, BlockPos pos, int type, int data) {
-        super.eventReceived(state, world, pos, type, data);
-        final TileEntity tileentity = world.getTileEntity(pos);
-        return tileentity != null && tileentity.receiveClientEvent(type, data);
+    public boolean eventReceived(final BlockState state, final World worldIn, final BlockPos pos, final int eventID,
+            final int eventParam) {
+        super.eventReceived(state, worldIn, pos, eventID, eventParam);
+        final TileEntity tileentity = worldIn.getTileEntity(pos);
+        return tileentity != null ? tileentity.receiveClientEvent(eventID, eventParam) : false;
     }
 
     @Override
@@ -192,13 +193,13 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-            BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+            Hand hand, BlockRayTraceResult hit) {
         ItemStack heldItem;
         if (player != null && !player.getHeldItem(hand).isEmpty()) {
             heldItem = player.getHeldItem(hand);
 
-            if (Platform.isWrench(player, heldItem, pos) && player.isCrouching()) {
+            if (InteractionUtil.isWrench(player, heldItem, pos) && InteractionUtil.isInAlternateUseMode(player)) {
                 final BlockState blockState = world.getBlockState(pos);
                 final Block block = blockState.getBlock();
 
@@ -245,7 +246,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
                 final String name = this.getTranslationKey();
 
-                if (player.isCrouching()) {
+                if (InteractionUtil.isInAlternateUseMode(player)) {
                     final CompoundNBT data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
                     if (data != null) {
                         memoryCard.setMemoryCardContents(heldItem, name, data);
@@ -263,7 +264,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                     }
                 }
 
-                return ActionResultType.SUCCESS;
+                return ActionResultType.func_233537_a_(world.isRemote());
             }
         }
 
@@ -282,7 +283,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
     /**
      * Returns the BlockState based on the given BlockState while considering the state of the given TileEntity.
-     * <p>
+     *
      * If the given TileEntity is not of the right type for this block, the state is returned unchanged, this is also
      * the case if the given block state does not belong to this block.
      */
@@ -297,7 +298,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     /**
      * Reimplement this in subclasses to allow tile-entities to update the state of their block when their own state
      * changes.
-     * <p>
+     *
      * It is guaranteed that te is not-null and the block of the given block state is this exact block instance.
      */
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, T te) {

@@ -27,6 +27,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -45,7 +46,7 @@ public class AEBaseBlockItem extends BlockItem {
 
     private final AEBaseBlock blockType;
 
-    public AEBaseBlockItem(final Block id, Properties props) {
+    public AEBaseBlockItem(final Block id, Item.Properties props) {
         super(id, props);
         this.blockType = (AEBaseBlock) id;
     }
@@ -80,29 +81,29 @@ public class AEBaseBlockItem extends BlockItem {
         if (this.blockType instanceof AEBaseTileBlock) {
             if (this.blockType instanceof LightDetectorBlock) {
                 up = side;
-                if (up == Direction.field_11036 || up == Direction.field_11033) {
-                    forward = Direction.field_11035;
+                if (up == Direction.UP || up == Direction.DOWN) {
+                    forward = Direction.SOUTH;
                 } else {
-                    forward = Direction.field_11036;
+                    forward = Direction.UP;
                 }
             } else if (this.blockType instanceof WirelessBlock || this.blockType instanceof SkyCompassBlock) {
                 forward = side;
-                if (forward == Direction.field_11036 || forward == Direction.field_11033) {
-                    up = Direction.field_11035;
+                if (forward == Direction.UP || forward == Direction.DOWN) {
+                    up = Direction.SOUTH;
                 } else {
-                    up = Direction.field_11036;
+                    up = Direction.UP;
                 }
             } else {
-                up = Direction.field_11036;
+                up = Direction.UP;
                 forward = context.getPlacementHorizontalFacing().getOpposite();
 
                 if (player != null) {
                     if (player.rotationPitch > 65) {
                         up = forward.getOpposite();
-                        forward = Direction.field_11036;
+                        forward = Direction.UP;
                     } else if (player.rotationPitch < -65) {
                         up = forward.getOpposite();
-                        forward = Direction.field_11033;
+                        forward = Direction.DOWN;
                     }
                 }
             }
@@ -112,14 +113,14 @@ public class AEBaseBlockItem extends BlockItem {
         if (this.blockType instanceof IOrientableBlock) {
             ori = ((IOrientableBlock) this.blockType).getOrientable(context.getWorld(), context.getPos());
             up = side;
-            forward = Direction.field_11035;
+            forward = Direction.SOUTH;
             if (up.getYOffset() == 0) {
-                forward = Direction.field_11036;
+                forward = Direction.UP;
             }
         }
 
         if (!this.blockType.isValidOrientation(context.getWorld(), context.getPos(), forward, up)) {
-            return ActionResultType.field_5814;
+            return ActionResultType.FAIL;
         }
 
         ActionResultType result = super.tryPlace(context);

@@ -20,7 +20,6 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
-import appeng.tile.storage.ChestTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -40,6 +39,8 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ChestContainer;
 import appeng.core.localization.PlayerMessages;
+import appeng.tile.storage.ChestTileEntity;
+import appeng.util.InteractionUtil;
 
 public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
 
@@ -75,23 +76,21 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final ChestTileEntity tg = this.getTileEntity(w, pos);
-        if (tg != null && !p.isCrouching()) {
-            if (w.isRemote()) {
-                return ActionResultType.field_5812;
-            }
-
-            if (hit.getFace() == tg.getUp()) {
-                if (!tg.openGui(p)) {
-                    p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.DUMMY_UUID);
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
+            if (!w.isRemote()) {
+                if (hit.getFace() == tg.getUp()) {
+                    if (!tg.openGui(p)) {
+                        p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.DUMMY_UUID);
+                    }
+                } else {
+                    ContainerOpener.openContainer(ChestContainer.TYPE, p,
+                            ContainerLocator.forTileEntitySide(tg, hit.getFace()));
                 }
-            } else {
-                ContainerOpener.openContainer(ChestContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
 
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 }

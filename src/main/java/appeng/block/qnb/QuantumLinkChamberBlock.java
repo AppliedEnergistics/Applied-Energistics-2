@@ -43,7 +43,7 @@ import appeng.container.implementations.QNBContainer;
 import appeng.core.AppEng;
 import appeng.helpers.AEMaterials;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
@@ -51,8 +51,8 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
     static {
         final double onePixel = 2.0 / 16.0;
-        SHAPE = VoxelShapes
-                .create(new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+        SHAPE = VoxelShapes.create(
+                new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 
     public QuantumLinkChamberBlock() {
@@ -65,8 +65,8 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
         if (bridge != null) {
             if (bridge.hasQES()) {
                 if (AppEng.instance().shouldAddParticles(rand)) {
-                    AppEng.instance().spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5,
-                            pos.getZ() + 0.5, null);
+                    AppEng.instance().spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                            null);
                 }
             }
         }
@@ -75,18 +75,19 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
-            return ActionResultType.field_5811;
+        if (InteractionUtil.isInAlternateUseMode(p)) {
+            return ActionResultType.PASS;
         }
 
         final QuantumBridgeTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
-        return ActionResultType.field_5811;
+
+        return ActionResultType.PASS;
     }
 
     @Override

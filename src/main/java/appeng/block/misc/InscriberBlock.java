@@ -20,7 +20,6 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import appeng.tile.misc.InscriberTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,6 +34,8 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InscriberContainer;
+import appeng.tile.misc.InscriberTileEntity;
+import appeng.util.InteractionUtil;
 
 public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
 
@@ -51,17 +52,17 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (!p.isCrouching()) {
+        if (!InteractionUtil.isInAlternateUseMode(p)) {
             final InscriberTileEntity tg = this.getTileEntity(w, pos);
             if (tg != null) {
-                if (!tg.isClient()) {
+                if (!w.isRemote()) {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,
                             ContainerLocator.forTileEntitySide(tg, hit.getFace()));
                 }
-                return ActionResultType.field_5812;
+                return ActionResultType.func_233537_a_(w.isRemote());
             }
         }
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
 
     }
 

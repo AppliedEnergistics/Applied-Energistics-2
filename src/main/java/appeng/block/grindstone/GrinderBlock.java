@@ -45,13 +45,13 @@ public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final GrinderTileEntity tg = this.getTileEntity(w, pos);
-        if (tg != null && !p.isCrouching()) {
-            if (p instanceof ServerPlayerEntity) {
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 }

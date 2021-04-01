@@ -58,7 +58,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (FakePlayer.isFakePlayer(player) || player == null) {
             this.dropCrank(w, pos);
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         final CrankTileEntity tile = this.getTileEntity(w, pos);
@@ -66,10 +66,10 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
             if (tile.power()) {
                 AeStats.TurnedCranks.addToPlayer(player, 1);
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 
     private void dropCrank(final World world, final BlockPos pos) {
@@ -78,14 +78,14 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
     }
 
     @Override
-    public void onBlockPlacedBy(final World world, final BlockPos pos, final BlockState state, final LivingEntity placer,
-            final ItemStack stack) {
+    public void onBlockPlacedBy(final World world, final BlockPos pos, final BlockState state,
+            final LivingEntity placer, final ItemStack stack) {
         final AEBaseTileEntity tile = this.getTileEntity(world, pos);
         if (tile != null) {
             final Direction mnt = this.findCrankable(world, pos);
-            Direction forward = Direction.field_11036;
-            if (mnt == Direction.field_11036 || mnt == Direction.field_11033) {
-                forward = Direction.field_11035;
+            Direction forward = Direction.UP;
+            if (mnt == Direction.UP || mnt == Direction.DOWN) {
+                forward = Direction.SOUTH;
             }
             tile.setOrientation(forward, mnt.getOpposite());
         } else {
@@ -94,8 +94,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
     }
 
     @Override
-    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward,
-            final Direction up) {
+    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
         final TileEntity te = w.getTileEntity(pos);
         return !(te instanceof CrankTileEntity) || this.isCrankable(w, pos, up.getOpposite());
     }
@@ -118,7 +117,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.field_11456;
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
@@ -155,8 +154,8 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
             final double xOff = -0.15 * up.getXOffset();
             final double yOff = -0.15 * up.getYOffset();
             final double zOff = -0.15 * up.getZOffset();
-            return VoxelShapes
-                    .create(new AxisAlignedBB(xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85));
+            return VoxelShapes.create(
+                    new AxisAlignedBB(xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85));
         }
 
     }

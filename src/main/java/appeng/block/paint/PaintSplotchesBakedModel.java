@@ -96,36 +96,36 @@ class PaintSplotchesBakedModel implements IBakedModel, FabricBakedModel {
             builder.setCustomUv(s.getSide().getOpposite(), 0, 0, 16, 16);
 
             switch (s.getSide()) {
-                case field_11036:
+                case UP:
                     offset = 1.0f - offset;
-                    builder.addQuad(Direction.field_11033, pos_x - buffer, offset, pos_y - buffer, pos_x + buffer, offset,
+                    builder.addQuad(Direction.DOWN, pos_x - buffer, offset, pos_y - buffer, pos_x + buffer, offset,
                             pos_y + buffer);
                     break;
 
-                case field_11033:
-                    builder.addQuad(Direction.field_11036, pos_x - buffer, offset, pos_y - buffer, pos_x + buffer, offset,
+                case DOWN:
+                    builder.addQuad(Direction.UP, pos_x - buffer, offset, pos_y - buffer, pos_x + buffer, offset,
                             pos_y + buffer);
                     break;
 
-                case field_11034:
+                case EAST:
                     offset = 1.0f - offset;
-                    builder.addQuad(Direction.field_11039, offset, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
+                    builder.addQuad(Direction.WEST, offset, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
                             pos_y + buffer);
                     break;
 
-                case field_11039:
-                    builder.addQuad(Direction.field_11034, offset, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
+                case WEST:
+                    builder.addQuad(Direction.EAST, offset, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
                             pos_y + buffer);
                     break;
 
-                case field_11035:
+                case SOUTH:
                     offset = 1.0f - offset;
-                    builder.addQuad(Direction.field_11043, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
+                    builder.addQuad(Direction.NORTH, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
                             pos_y + buffer, offset);
                     break;
 
-                case field_11043:
-                    builder.addQuad(Direction.field_11035, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
+                case NORTH:
+                    builder.addQuad(Direction.SOUTH, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
                             pos_y + buffer, offset);
                     break;
 

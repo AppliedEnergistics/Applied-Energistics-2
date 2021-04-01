@@ -44,7 +44,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.WirelessContainer;
 import appeng.helpers.AEMaterials;
 import appeng.tile.networking.WirelessTileEntity;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
 
@@ -88,12 +88,12 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
             BlockRayTraceResult hit) {
         final WirelessTileEntity tg = this.getTileEntity(w, pos);
 
-        if (tg != null && !player.isCrouching()) {
-            if (Platform.isServer()) {
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(player)) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(WirelessContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         return super.onBlockActivated(state, w, pos, player, hand, hit);
@@ -113,37 +113,37 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
             double maxZ = 1;
 
             switch (forward) {
-                case field_11033:
+                case DOWN:
                     minZ = minX = 3.0 / 16.0;
                     maxZ = maxX = 13.0 / 16.0;
                     maxY = 1.0;
                     minY = 5.0 / 16.0;
                     break;
-                case field_11034:
+                case EAST:
                     minZ = minY = 3.0 / 16.0;
                     maxZ = maxY = 13.0 / 16.0;
                     maxX = 11.0 / 16.0;
                     minX = 0.0;
                     break;
-                case field_11043:
+                case NORTH:
                     minY = minX = 3.0 / 16.0;
                     maxY = maxX = 13.0 / 16.0;
                     maxZ = 1.0;
                     minZ = 5.0 / 16.0;
                     break;
-                case field_11035:
+                case SOUTH:
                     minY = minX = 3.0 / 16.0;
                     maxY = maxX = 13.0 / 16.0;
                     maxZ = 11.0 / 16.0;
                     minZ = 0.0;
                     break;
-                case field_11036:
+                case UP:
                     minZ = minX = 3.0 / 16.0;
                     maxZ = maxX = 13.0 / 16.0;
                     maxY = 11.0 / 16.0;
                     minY = 0.0;
                     break;
-                case field_11039:
+                case WEST:
                     minZ = minY = 3.0 / 16.0;
                     maxZ = maxY = 13.0 / 16.0;
                     maxX = 1.0;
@@ -173,37 +173,37 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
             double maxZ = 1;
 
             switch (forward) {
-                case field_11033:
+                case DOWN:
                     minZ = minX = 3.0 / 16.0;
                     maxZ = maxX = 13.0 / 16.0;
                     maxY = 1.0;
                     minY = 5.0 / 16.0;
                     break;
-                case field_11034:
+                case EAST:
                     minZ = minY = 3.0 / 16.0;
                     maxZ = maxY = 13.0 / 16.0;
                     maxX = 11.0 / 16.0;
                     minX = 0.0;
                     break;
-                case field_11043:
+                case NORTH:
                     minY = minX = 3.0 / 16.0;
                     maxY = maxX = 13.0 / 16.0;
                     maxZ = 1.0;
                     minZ = 5.0 / 16.0;
                     break;
-                case field_11035:
+                case SOUTH:
                     minY = minX = 3.0 / 16.0;
                     maxY = maxX = 13.0 / 16.0;
                     maxZ = 11.0 / 16.0;
                     minZ = 0.0;
                     break;
-                case field_11036:
+                case UP:
                     minZ = minX = 3.0 / 16.0;
                     maxZ = maxX = 13.0 / 16.0;
                     maxY = 11.0 / 16.0;
                     minY = 0.0;
                     break;
-                case field_11039:
+                case WEST:
                     minZ = minY = 3.0 / 16.0;
                     maxZ = maxY = 13.0 / 16.0;
                     maxX = 1.0;

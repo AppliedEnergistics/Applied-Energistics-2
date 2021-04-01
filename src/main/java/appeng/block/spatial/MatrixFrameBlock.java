@@ -43,7 +43,7 @@ import appeng.block.AEBaseBlock;
 public class MatrixFrameBlock extends AEBaseBlock {
 
     private static final Material MATERIAL = new Material(MaterialColor.AIR, false, true, true, false, false, false,
-            PushReaction.field_15970);
+            PushReaction.PUSH_ONLY);
 
     public MatrixFrameBlock() {
         super(Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).notSolid().noDrops());
@@ -51,16 +51,17 @@ public class MatrixFrameBlock extends AEBaseBlock {
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.field_11455;
+        return BlockRenderType.INVISIBLE;
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list) {
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
+            ISelectionContext context) {
         return VoxelShapes.fullCube();
     }
 
@@ -76,7 +77,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion) {
+    public void onExplosionDestroy(final World world, final BlockPos pos, final Explosion explosion) {
         world.setBlockState(pos, getDefaultState(), 3);
     }
 
@@ -86,7 +87,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 1.0f;
     }
 

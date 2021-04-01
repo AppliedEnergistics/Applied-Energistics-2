@@ -44,7 +44,8 @@ import appeng.entity.TinyTNTPrimedEntity;
 
 public class TinyTNTBlock extends AEBaseBlock {
 
-    private static final VoxelShape SHAPE = VoxelShapes.create(new AxisAlignedBB(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
+    private static final VoxelShape SHAPE = VoxelShapes
+            .create(new AxisAlignedBB(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
     public TinyTNTBlock(Properties props) {
         super(props);
@@ -61,35 +62,35 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand,
-            final BlockRayTraceResult hit) {
-        ItemStack heldItem = player.getHeldItem(hand);
-        if (heldItem.getItem() == Items.FLINT_AND_STEEL) {
-            this.startFuse(w, pos, player);
-            w.removeBlock(pos, false);
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+            Hand handIn, BlockRayTraceResult hit) {
+        ItemStack heldItem = player.getHeldItem(handIn);
+        if (!heldItem.isEmpty() && heldItem.getItem() == Items.FLINT_AND_STEEL) {
+            this.startFuse(world, pos, player);
+            world.removeBlock(pos, false);
             heldItem.damageItem(1, player, p -> {
-                p.sendBreakAnimation(hand);
+                p.sendBreakAnimation(handIn);
             }); // FIXME Check if onBroken is equivalent
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(world.isRemote());
         } else {
-            return super.onBlockActivated(state, w, pos, player, hand, hit);
+            return super.onBlockActivated(state, world, pos, player, handIn, hit);
         }
     }
 
     public void startFuse(final World w, final BlockPos pos, final LivingEntity igniter) {
         if (!w.isRemote) {
-            final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F, pos.getY(),
-                    pos.getZ() + 0.5F, igniter);
+            final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
+                    pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter);
             w.addEntity(primedTinyTNTEntity);
-            w.playSound(null, primedTinyTNTEntity.getPosX(), primedTinyTNTEntity.getPosY(), primedTinyTNTEntity.getPosZ(),
-                    SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.field_15245, 1, 1);
+            w.playSound(null, primedTinyTNTEntity.getPosX(), primedTinyTNTEntity.getPosY(),
+                    primedTinyTNTEntity.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1, 1);
         }
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos,
-            boolean notify) {
-        if (world.isBlockPowered(pos)) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+            boolean isMoving) {
+        if (world.getRedstonePowerFromNeighbors(pos) > 0) {
             this.startFuse(world, pos, null);
             world.removeBlock(pos, false);
         }
@@ -99,7 +100,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     public void onBlockAdded(BlockState state, World w, BlockPos pos, BlockState oldState, boolean isMoving) {
         super.onBlockAdded(state, w, pos, oldState, isMoving);
 
-        if (w.getStrongPower(pos) > 0) {
+        if (w.getRedstonePowerFromNeighbors(pos) > 0) {
             this.startFuse(w, pos, null);
             w.removeBlock(pos, false);
         }
@@ -113,7 +114,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             if (entityarrow.isBurning()) {
                 LivingEntity igniter = null;
                 // Check if the shooter still exists
-                Entity shooter = entityarrow.method_24921();
+                Entity shooter = entityarrow.func_234616_v_();
                 if (shooter instanceof LivingEntity) {
                     igniter = (LivingEntity) shooter;
                 }
@@ -135,7 +136,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getExplosivePlacedBy());
             primedTinyTNTEntity
-                    .setFuse(w.rand.nextInt(primedTinyTNTEntity.getFuseDataManager() / 4) + primedTinyTNTEntity.getFuseDataManager() / 8);
+                    .setFuse(w.rand.nextInt(primedTinyTNTEntity.getFuse() / 4) + primedTinyTNTEntity.getFuse() / 8);
             w.addEntity(primedTinyTNTEntity);
         }
     }

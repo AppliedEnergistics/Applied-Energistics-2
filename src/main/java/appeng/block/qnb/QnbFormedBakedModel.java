@@ -39,14 +39,15 @@ class QnbFormedBakedModel implements IBakedModel, FabricBakedModel {
             new ResourceLocation(AppEng.MOD_ID, "block/quantum_link"));
     private static final RenderMaterial TEXTURE_RING = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring"));
-    private static final RenderMaterial TEXTURE_RING_LIGHT = new RenderMaterial(
-            AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light"));
+    private static final RenderMaterial TEXTURE_RING_LIGHT = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light"));
     private static final RenderMaterial TEXTURE_RING_LIGHT_CORNER = new RenderMaterial(
-            AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
-    private static final RenderMaterial TEXTURE_CABLE_GLASS = new RenderMaterial(
-            AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "part/cable/glass/transparent"));
-    private static final RenderMaterial TEXTURE_COVERED_CABLE = new RenderMaterial(
-            AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "part/cable/covered/transparent"));
+            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
+    private static final RenderMaterial TEXTURE_CABLE_GLASS = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "part/cable/glass/transparent"));
+    private static final RenderMaterial TEXTURE_COVERED_CABLE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
     private static final float DEFAULT_RENDER_MAX = 14.0f;
@@ -191,27 +192,27 @@ class QnbFormedBakedModel implements IBakedModel, FabricBakedModel {
             Set<Direction> connections) {
         builder.setTexture(texture);
 
-        if (connections.contains(Direction.field_11039)) {
+        if (connections.contains(Direction.WEST)) {
             builder.addCube(0, 8 - thickness, 8 - thickness, 8 - thickness - pull, 8 + thickness, 8 + thickness);
         }
 
-        if (connections.contains(Direction.field_11034)) {
+        if (connections.contains(Direction.EAST)) {
             builder.addCube(8 + thickness + pull, 8 - thickness, 8 - thickness, 16, 8 + thickness, 8 + thickness);
         }
 
-        if (connections.contains(Direction.field_11043)) {
+        if (connections.contains(Direction.NORTH)) {
             builder.addCube(8 - thickness, 8 - thickness, 0, 8 + thickness, 8 + thickness, 8 - thickness - pull);
         }
 
-        if (connections.contains(Direction.field_11035)) {
+        if (connections.contains(Direction.SOUTH)) {
             builder.addCube(8 - thickness, 8 - thickness, 8 + thickness + pull, 8 + thickness, 8 + thickness, 16);
         }
 
-        if (connections.contains(Direction.field_11033)) {
+        if (connections.contains(Direction.DOWN)) {
             builder.addCube(8 - thickness, 0, 8 - thickness, 8 + thickness, 8 - thickness - pull, 8 + thickness);
         }
 
-        if (connections.contains(Direction.field_11036)) {
+        if (connections.contains(Direction.UP)) {
             builder.addCube(8 - thickness, 8 + thickness + pull, 8 - thickness, 8 + thickness, 16, 8 + thickness);
         }
     }

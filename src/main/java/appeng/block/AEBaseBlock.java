@@ -20,6 +20,7 @@ package appeng.block;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -49,17 +50,18 @@ public abstract class AEBaseBlock extends Block {
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static FabricBlockSettings defaultProps(Material material) {
+    public static AbstractBlock.Properties defaultProps(Material material) {
         return defaultProps(material, material.getColor());
     }
 
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static FabricBlockSettings defaultProps(Material material, MaterialColor color) {
-        return FabricBlockSettings.create(material, color)
+    public static AbstractBlock.Properties defaultProps(Material material, MaterialColor color) {
+        return FabricBlockSettings.of(material, color)
                 // These values previousls were encoded in AEBaseBlock
-                .hardnessAndResistance(2.2f, 11.f).breakByTool(FabricToolTags.PICKAXES, 0)
+                .breakByTool(FabricToolTags.PICKAXES, 0)
+                .hardnessAndResistance(2.2f, 11.f)
                 .sound(getDefaultSoundByMaterial(material));
     }
 

@@ -20,7 +20,6 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import appeng.tile.misc.CellWorkbenchTileEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -33,7 +32,8 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.util.Platform;
+import appeng.tile.misc.CellWorkbenchTileEntity;
+import appeng.util.InteractionUtil;
 
 public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity> {
 
@@ -44,17 +44,17 @@ public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity>
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
-            return ActionResultType.field_5811;
+        if (InteractionUtil.isInAlternateUseMode(p)) {
+            return ActionResultType.PASS;
         }
 
         final CellWorkbenchTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 CellWorkbenchContainer.open(p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 }

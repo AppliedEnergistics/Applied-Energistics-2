@@ -36,7 +36,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialIOPortContainer;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity> {
 
@@ -56,18 +56,18 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
-            return ActionResultType.field_5811;
+        if (InteractionUtil.isInAlternateUseMode(p)) {
+            return ActionResultType.PASS;
         }
 
         final SpatialIOPortTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(SpatialIOPortContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 }

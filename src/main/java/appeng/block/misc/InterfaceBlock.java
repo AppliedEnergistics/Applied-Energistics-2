@@ -40,7 +40,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InterfaceContainer;
 import appeng.tile.misc.InterfaceTileEntity;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
 
@@ -64,19 +64,19 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
-            return ActionResultType.field_5811;
+        if (InteractionUtil.isInAlternateUseMode(p)) {
+            return ActionResultType.PASS;
         }
 
         final InterfaceTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(InterfaceContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 
     @Override

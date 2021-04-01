@@ -18,6 +18,7 @@
 
 package appeng.block.crafting;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,12 +35,13 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.MolecularAssemblerContainer;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
+import appeng.util.InteractionUtil;
 
 public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerTileEntity> {
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public MolecularAssemblerBlock(Properties props) {
+    public MolecularAssemblerBlock(AbstractBlock.Properties props) {
         super(props);
         setDefaultState(getDefaultState().with(POWERED, false));
     }
@@ -56,14 +58,15 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
+            BlockRayTraceResult hit) {
         final MolecularAssemblerTileEntity tg = this.getTileEntity(w, pos);
-        if (tg != null && !p.isCrouching()) {
-            if (!tg.isClient()) {
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         return super.onBlockActivated(state, w, pos, p, hand, hit);

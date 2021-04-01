@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -31,18 +32,18 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.misc.SkyCompassTileEntity;
 
 public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
 
-    public SkyCompassBlock(Properties props) {
+    public SkyCompassBlock(AbstractBlock.Properties props) {
         super(props);
     }
 
     @Override
-    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward,
-            final Direction up) {
+    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
         final SkyCompassTileEntity sc = this.getTileEntity(w, pos);
         if (sc != null) {
             return false;
@@ -99,37 +100,37 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
             double maxZ = 1;
 
             switch (forward) {
-                case field_11033:
+                case DOWN:
                     minZ = minX = 5.0 / 16.0;
                     maxZ = maxX = 11.0 / 16.0;
                     maxY = 1.0;
                     minY = 14.0 / 16.0;
                     break;
-                case field_11034:
+                case EAST:
                     minZ = minY = 5.0 / 16.0;
                     maxZ = maxY = 11.0 / 16.0;
                     maxX = 2.0 / 16.0;
                     minX = 0.0;
                     break;
-                case field_11043:
+                case NORTH:
                     minY = minX = 5.0 / 16.0;
                     maxY = maxX = 11.0 / 16.0;
                     maxZ = 1.0;
                     minZ = 14.0 / 16.0;
                     break;
-                case field_11035:
+                case SOUTH:
                     minY = minX = 5.0 / 16.0;
                     maxY = maxX = 11.0 / 16.0;
                     maxZ = 2.0 / 16.0;
                     minZ = 0.0;
                     break;
-                case field_11036:
+                case UP:
                     minZ = minX = 5.0 / 16.0;
                     maxZ = maxX = 11.0 / 16.0;
                     maxY = 2.0 / 16.0;
                     minY = 0.0;
                     break;
-                case field_11039:
+                case WEST:
                     minZ = minY = 5.0 / 16.0;
                     maxZ = maxY = 11.0 / 16.0;
                     maxX = 1.0;
@@ -145,13 +146,14 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
+            ISelectionContext context) {
         return VoxelShapes.empty();
     }
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.field_11458;
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
 }

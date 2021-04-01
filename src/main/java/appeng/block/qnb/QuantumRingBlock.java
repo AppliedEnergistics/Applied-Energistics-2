@@ -26,6 +26,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 
 public class QuantumRingBlock extends QuantumBaseBlock {
@@ -50,7 +51,7 @@ public class QuantumRingBlock extends QuantumBaseBlock {
     }
 
     private static VoxelShape createShape(double onePixel) {
-        return VoxelShapes
-                .create(new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+        return VoxelShapes.create(
+                new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 }

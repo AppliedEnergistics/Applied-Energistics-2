@@ -18,9 +18,10 @@
 
 package appeng.block.networking;
 
+import net.minecraft.block.material.Material;
+
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.networking.EnergyAcceptorTileEntity;
-import net.minecraft.block.material.Material;
 
 public class EnergyAcceptorBlock extends AEBaseTileBlock<EnergyAcceptorTileEntity> {
 
