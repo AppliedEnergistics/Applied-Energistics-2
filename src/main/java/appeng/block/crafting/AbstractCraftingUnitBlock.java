@@ -33,9 +33,9 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CraftingCPUContainer;
-import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.tile.crafting.CraftingTileEntity;
 
-public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseTileBlock<T> {
+public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> extends AEBaseTileBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -57,7 +57,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     @Override
     public void neighborChanged(final BlockState state, final World worldIn, final BlockPos pos, final Block blockIn,
             final BlockPos fromPos, boolean isMoving) {
-        final CraftingBlockEntity cp = this.getBlockEntity(worldIn, pos);
+        final CraftingTileEntity cp = this.getTileEntity(worldIn, pos);
         if (cp != null) {
             cp.updateMultiBlock(fromPos);
         }
@@ -69,7 +69,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
             return; // Just a block state change
         }
 
-        final CraftingBlockEntity cp = this.getBlockEntity(w, pos);
+        final CraftingTileEntity cp = this.getTileEntity(w, pos);
         if (cp != null) {
             cp.breakCluster();
         }
@@ -79,7 +79,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockRayTraceResult hit) {
-        final CraftingBlockEntity tg = this.getBlockEntity(w, pos);
+        final CraftingTileEntity tg = this.getTileEntity(w, pos);
 
         if (tg != null && !p.isCrouching() && tg.isFormed() && tg.isActive()) {
             if (!w.isRemote()) {

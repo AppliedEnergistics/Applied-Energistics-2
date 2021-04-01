@@ -34,10 +34,10 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.tile.misc.PaintSplotchesBlockEntity;
+import appeng.tile.misc.PaintSplotchesTileEntity;
 import appeng.util.Platform;
 
-public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEntity> {
+public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntity> {
     public PaintSplotchesBlock() {
         super(defaultProps(Material.WATER, MaterialColor.AIR).notSolid().setAir());
     }
@@ -54,7 +54,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEnti
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final PaintSplotchesBlockEntity tp = this.getBlockEntity(world, pos);
+        final PaintSplotchesTileEntity tp = this.getTileEntity(world, pos);
 
         if (tp != null) {
             tp.neighborUpdate();
@@ -71,7 +71,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEnti
 // FIXME FABRIC currently no equivalent
 // FIXME FABRIC   @Override
 // FIXME FABRIC   public int getLightValue(final BlockState state, final BlockView w, final BlockPos pos) {
-// FIXME FABRIC       final PaintSplotchesBlockEntity tp = this.getBlockEntity(w, pos);
+// FIXME FABRIC       final PaintSplotchesTileEntity tp = this.getBlockEntity(w, pos);
 
 // FIXME FABRIC       if (tp != null) {
 // FIXME FABRIC           return tp.getLightLevel();

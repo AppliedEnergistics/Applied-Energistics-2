@@ -82,12 +82,12 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     protected InventoryAdaptor getHandler() {
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = this.getBlockEntity(self, self.getPos().offset(this.getSide().getFacing()));
+        final TileEntity target = this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
 
         return InventoryAdaptor.getAdaptor(target, this.getSide().getFacing().getOpposite());
     }
 
-    private TileEntity getBlockEntity(final TileEntity self, final BlockPos pos) {
+    private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {
         final World w = self.getWorld();
 
         if (w.getChunkProvider().canTick(pos)) {

@@ -85,8 +85,8 @@ import appeng.helpers.CraftingPatternDetails;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
-import appeng.tile.crafting.CraftingBlockEntity;
-import appeng.tile.crafting.CraftingStorageBlockEntity;
+import appeng.tile.crafting.CraftingTileEntity;
+import appeng.tile.crafting.CraftingStorageTileEntity;
 
 public class CraftingGridCache
         implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEItemStack> {
@@ -169,7 +169,7 @@ public class CraftingGridCache
             }
         }
 
-        if (machine instanceof CraftingBlockEntity) {
+        if (machine instanceof CraftingTileEntity) {
             this.updateList = true;
         }
 
@@ -196,7 +196,7 @@ public class CraftingGridCache
             }
         }
 
-        if (machine instanceof CraftingBlockEntity) {
+        if (machine instanceof CraftingTileEntity) {
             this.updateList = true;
         }
 
@@ -270,8 +270,8 @@ public class CraftingGridCache
     private void updateCPUClusters() {
         this.craftingCPUClusters.clear();
 
-        for (final IGridNode cst : this.grid.getMachines(CraftingStorageBlockEntity.class)) {
-            final CraftingStorageBlockEntity tile = (CraftingStorageBlockEntity) cst.getMachine();
+        for (final IGridNode cst : this.grid.getMachines(CraftingStorageTileEntity.class)) {
+            final CraftingStorageTileEntity tile = (CraftingStorageTileEntity) cst.getMachine();
             final CraftingCPUCluster cluster = (CraftingCPUCluster) tile.getCluster();
             if (cluster != null) {
                 this.craftingCPUClusters.add(cluster);

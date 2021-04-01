@@ -26,14 +26,14 @@ import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.tile.qnb.QuantumBridgeTileEntity;
 
 public class QNBContainer extends AEBaseContainer {
 
     public static ContainerType<QNBContainer> TYPE;
 
-    private static final ContainerHelper<QNBContainer, QuantumBridgeBlockEntity> helper = new ContainerHelper<>(
-            QNBContainer::new, QuantumBridgeBlockEntity.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<QNBContainer, QuantumBridgeTileEntity> helper = new ContainerHelper<>(
+            QNBContainer::new, QuantumBridgeTileEntity.class, SecurityPermissions.BUILD);
 
     public static QNBContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
@@ -43,7 +43,7 @@ public class QNBContainer extends AEBaseContainer {
         return helper.open(player, locator);
     }
 
-    public QNBContainer(int id, final PlayerInventory ip, final QuantumBridgeBlockEntity quantumBridge) {
+    public QNBContainer(int id, final PlayerInventory ip, final QuantumBridgeTileEntity quantumBridge) {
         super(TYPE, id, ip, quantumBridge, null);
 
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,

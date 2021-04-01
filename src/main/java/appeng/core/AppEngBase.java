@@ -125,7 +125,7 @@ import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.recipes.handlers.QuartzKnifeRecipeSerializer;
 import appeng.server.AECommand;
-import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.AEBaseTileEntity;
 
 public abstract class AppEngBase implements AppEng {
 
@@ -350,7 +350,7 @@ public abstract class AppEngBase implements AppEng {
         /*
          * Whitelist AE2
          */
-        mr.whiteListBlockEntity(AEBaseBlockEntity.class);
+        mr.whiteListBlockEntity(AEBaseTileEntity.class);
 
     }
 

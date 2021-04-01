@@ -109,7 +109,7 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
     }
 
     protected void onContentsChanged(int slot, ItemStack previous, ItemStack current) {
-        if (this.getBlockEntity() != null && this.eventsEnabled() && !this.dirtyFlag) {
+        if (this.getTileEntity() != null && this.eventsEnabled() && !this.dirtyFlag) {
             this.dirtyFlag = true;
             ItemStack newStack = current.copy();
             ItemStack oldStack = previous;
@@ -127,8 +127,8 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
                 }
             }
 
-            this.getBlockEntity().onChangeInventory(this, slot, op, oldStack, newStack);
-            this.getBlockEntity().saveChanges();
+            this.getTileEntity().onChangeInventory(this, slot, op, oldStack, newStack);
+            this.getTileEntity().saveChanges();
             this.dirtyFlag = false;
         }
     }
@@ -208,7 +208,7 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
         this.enableClientEvents = enableClientEvents;
     }
 
-    private IAEAppEngInventory getBlockEntity() {
+    private IAEAppEngInventory getTileEntity() {
         return this.te;
     }
 

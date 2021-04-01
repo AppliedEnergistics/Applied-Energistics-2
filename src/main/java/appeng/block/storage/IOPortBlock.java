@@ -35,10 +35,10 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.IOPortContainer;
-import appeng.tile.storage.IOPortBlockEntity;
+import appeng.tile.storage.IOPortTileEntity;
 import appeng.util.Platform;
 
-public class IOPortBlock extends AEBaseTileBlock<IOPortBlockEntity> {
+public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
 
     public IOPortBlock() {
         super(defaultProps(Material.IRON));
@@ -47,7 +47,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortBlockEntity> {
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final IOPortBlockEntity te = this.getBlockEntity(world, pos);
+        final IOPortTileEntity te = this.getTileEntity(world, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
@@ -60,7 +60,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortBlockEntity> {
             return ActionResultType.field_5811;
         }
 
-        final IOPortBlockEntity tg = this.getBlockEntity(w, pos);
+        final IOPortTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(IOPortContainer.TYPE, p,

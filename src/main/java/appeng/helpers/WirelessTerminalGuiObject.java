@@ -45,7 +45,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.Api;
-import appeng.tile.networking.WirelessBlockEntity;
+import appeng.tile.networking.WirelessTileEntity;
 
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
 
@@ -244,7 +244,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                 return false;
             }
 
-            final IMachineSet tw = this.targetGrid.getMachines(WirelessBlockEntity.class);
+            final IMachineSet tw = this.targetGrid.getMachines(WirelessTileEntity.class);
 
             this.myWap = null;
 

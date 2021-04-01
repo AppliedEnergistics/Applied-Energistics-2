@@ -21,6 +21,7 @@ package appeng.hooks.ticking;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import appeng.tile.AEBaseTileEntity;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
@@ -46,7 +47,6 @@ import appeng.core.AELog;
 import appeng.crafting.CraftingJob;
 import appeng.items.misc.PaintBallItem;
 import appeng.me.Grid;
-import appeng.tile.AEBaseBlockEntity;
 import appeng.util.IWorldCallable;
 
 public class TickHandler {
@@ -115,13 +115,13 @@ public class TickHandler {
     }
 
     /**
-     * Add an {@link AEBaseBlockEntity} to be initialized with the next update.
+     * Add an {@link AEBaseTileEntity} to be initialized with the next update.
      *
      * Must be called on the server.
      *
      * @param tile to be added, must be not null
      */
-    public void addInit(final AEBaseBlockEntity tile) {
+    public void addInit(final AEBaseTileEntity tile) {
         // this is called client-side too during block entity initialization
         if (!tile.isClient()) {
             this.tiles.addTile(tile);
@@ -279,7 +279,7 @@ public class TickHandler {
      * Ready the tiles in this world.
      */
     private void readyTiles(World world) {
-        final Long2ObjectMap<Queue<AEBaseBlockEntity>> worldQueue = tiles.getTiles(world);
+        final Long2ObjectMap<Queue<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
 
         // Make a copy (hopefully stack-allocated) because this set may be modified
         // when new chunks are loaded by an onReady call below
@@ -297,12 +297,12 @@ public class TickHandler {
             // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
             // will be readied.
             if (world.chunkExists(pos.x, pos.z) && chunkManager.canTick(testBlockPos)) {
-                Queue<AEBaseBlockEntity> chunkQueue = worldQueue.remove(chunkPos);
+                Queue<AEBaseTileEntity> chunkQueue = worldQueue.remove(chunkPos);
                 if (chunkQueue == null) {
                     continue; // This should never happen, chunk unloaded under our noses
                 }
 
-                for (AEBaseBlockEntity bt : chunkQueue) {
+                for (AEBaseTileEntity bt : chunkQueue) {
                     // Only ready tile entities which weren't destroyed in the meantime.
                     if (!bt.isRemoved()) {
                         // Note that this can load more chunks, but they'll at the earliest

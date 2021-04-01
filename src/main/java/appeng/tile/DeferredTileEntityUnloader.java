@@ -36,13 +36,13 @@ class DeferredTileEntityUnloader implements IWorldCallable<Void> {
 
     public static void register() {
         ServerChunkEvents.CHUNK_UNLOAD.register((serverWorld, worldChunk) -> {
-            List<AEBaseBlockEntity> entitiesToRemove = null;
+            List<AEBaseTileEntity> entitiesToRemove = null;
             for (TileEntity value : worldChunk.getTileEntityMap().values()) {
-                if (value instanceof AEBaseBlockEntity) {
+                if (value instanceof AEBaseTileEntity) {
                     if (entitiesToRemove == null) {
                         entitiesToRemove = new ArrayList<>();
                     }
-                    entitiesToRemove.add((AEBaseBlockEntity) value);
+                    entitiesToRemove.add((AEBaseTileEntity) value);
                 }
             }
             if (entitiesToRemove != null) {
@@ -51,15 +51,15 @@ class DeferredTileEntityUnloader implements IWorldCallable<Void> {
         });
     }
 
-    private final List<AEBaseBlockEntity> entitiesToRemove;
+    private final List<AEBaseTileEntity> entitiesToRemove;
 
-    public DeferredTileEntityUnloader(List<AEBaseBlockEntity> entitiesToRemove) {
+    public DeferredTileEntityUnloader(List<AEBaseTileEntity> entitiesToRemove) {
         this.entitiesToRemove = entitiesToRemove;
     }
 
     @Override
     public Void call(World world) {
-        for (AEBaseBlockEntity blockEntity : entitiesToRemove) {
+        for (AEBaseTileEntity blockEntity : entitiesToRemove) {
             blockEntity.onChunkUnloaded();
         }
         return null;

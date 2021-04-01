@@ -155,7 +155,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public TileEntity getBlockEntity() {
+    public TileEntity getTileEntity() {
         return super.getHost().getTile();
     }
 

@@ -35,10 +35,10 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialIOPortContainer;
-import appeng.tile.spatial.SpatialIOPortBlockEntity;
+import appeng.tile.spatial.SpatialIOPortTileEntity;
 import appeng.util.Platform;
 
-public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortBlockEntity> {
+public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity> {
 
     public SpatialIOPortBlock() {
         super(defaultProps(Material.IRON));
@@ -47,7 +47,7 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortBlockEntity
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialIOPortBlockEntity te = this.getBlockEntity(world, pos);
+        final SpatialIOPortTileEntity te = this.getTileEntity(world, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
@@ -60,7 +60,7 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortBlockEntity
             return ActionResultType.field_5811;
         }
 
-        final SpatialIOPortBlockEntity tg = this.getBlockEntity(w, pos);
+        final SpatialIOPortTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(SpatialIOPortContainer.TYPE, p,

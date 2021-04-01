@@ -20,6 +20,7 @@ package appeng.block.misc;
 
 import java.util.Random;
 
+import appeng.tile.misc.QuartzGrowthAcceleratorTileEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
@@ -38,10 +39,9 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.tile.misc.QuartzGrowthAcceleratorBlockEntity;
 import appeng.util.Platform;
 
-public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAcceleratorBlockEntity>
+public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAcceleratorTileEntity>
         implements IOrientableBlock {
 
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
@@ -53,7 +53,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
 
     @Override
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState,
-            QuartzGrowthAcceleratorBlockEntity te) {
+            QuartzGrowthAcceleratorTileEntity te) {
         return currentState.with(POWERED, te.isPowered());
     }
 
@@ -70,7 +70,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
             return;
         }
 
-        final QuartzGrowthAcceleratorBlockEntity cga = this.getBlockEntity(w, pos);
+        final QuartzGrowthAcceleratorTileEntity cga = this.getTileEntity(w, pos);
 
         if (cga != null && cga.isPowered() && AppEng.instance().shouldAddParticles(r)) {
             final double d0 = r.nextFloat() - 0.5F;

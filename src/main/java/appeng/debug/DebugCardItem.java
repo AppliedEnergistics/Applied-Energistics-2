@@ -50,7 +50,7 @@ import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.cache.TickManagerCache;
 import appeng.parts.p2p.P2PTunnelPart;
-import appeng.tile.networking.ControllerBlockEntity;
+import appeng.tile.networking.ControllerTileEntity;
 
 public class DebugCardItem extends AEBaseItem implements AEToolItem {
 
@@ -109,7 +109,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
                             next = new HashSet<>();
 
                             for (final IGridNode n : current) {
-                                if (n.getMachine() instanceof ControllerBlockEntity) {
+                                if (n.getMachine() instanceof ControllerTileEntity) {
                                     break outer;
                                 }
 

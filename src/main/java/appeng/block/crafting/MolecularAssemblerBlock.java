@@ -33,9 +33,9 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.MolecularAssemblerContainer;
-import appeng.tile.crafting.MolecularAssemblerBlockEntity;
+import appeng.tile.crafting.MolecularAssemblerTileEntity;
 
-public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerBlockEntity> {
+public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerTileEntity> {
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -51,13 +51,13 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerB
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, MolecularAssemblerBlockEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, MolecularAssemblerTileEntity te) {
         return currentState.with(POWERED, te.isPowered());
     }
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockRayTraceResult hit) {
-        final MolecularAssemblerBlockEntity tg = this.getBlockEntity(w, pos);
+        final MolecularAssemblerTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !p.isCrouching()) {
             if (!tg.isClient()) {
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,

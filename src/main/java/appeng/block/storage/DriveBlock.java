@@ -32,10 +32,10 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.DriveContainer;
-import appeng.tile.storage.DriveBlockEntity;
+import appeng.tile.storage.DriveTileEntity;
 import appeng.util.Platform;
 
-public class DriveBlock extends AEBaseTileBlock<DriveBlockEntity> {
+public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
 
     public DriveBlock() {
         super(defaultProps(Material.IRON));
@@ -48,7 +48,7 @@ public class DriveBlock extends AEBaseTileBlock<DriveBlockEntity> {
             return ActionResultType.field_5811;
         }
 
-        final DriveBlockEntity tg = this.getBlockEntity(w, pos);
+        final DriveTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forTileEntity(tg));

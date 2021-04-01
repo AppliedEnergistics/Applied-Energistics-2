@@ -27,14 +27,14 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.misc.VibrationChamberBlockEntity;
+import appeng.tile.misc.VibrationChamberTileEntity;
 
 public class VibrationChamberContainer extends AEBaseContainer implements IProgressProvider {
 
     public static ContainerType<VibrationChamberContainer> TYPE;
 
-    private static final ContainerHelper<VibrationChamberContainer, VibrationChamberBlockEntity> helper = new ContainerHelper<>(
-            VibrationChamberContainer::new, VibrationChamberBlockEntity.class);
+    private static final ContainerHelper<VibrationChamberContainer, VibrationChamberTileEntity> helper = new ContainerHelper<>(
+            VibrationChamberContainer::new, VibrationChamberTileEntity.class);
 
     public static VibrationChamberContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
@@ -44,14 +44,14 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
         return helper.open(player, locator);
     }
 
-    private final VibrationChamberBlockEntity vibrationChamber;
+    private final VibrationChamberTileEntity vibrationChamber;
     @GuiSync(0)
     public int burnSpeed = 0;
     @GuiSync(1)
     public int remainingBurnTime = 0;
 
     public VibrationChamberContainer(int id, final PlayerInventory ip,
-            final VibrationChamberBlockEntity vibrationChamber) {
+            final VibrationChamberTileEntity vibrationChamber) {
         super(TYPE, id, ip, vibrationChamber, null);
         this.vibrationChamber = vibrationChamber;
 
@@ -83,6 +83,6 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
 
     @Override
     public int getMaxProgress() {
-        return VibrationChamberBlockEntity.MAX_BURN_SPEED;
+        return VibrationChamberTileEntity.MAX_BURN_SPEED;
     }
 }

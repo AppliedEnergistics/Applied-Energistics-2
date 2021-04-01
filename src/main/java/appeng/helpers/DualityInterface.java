@@ -397,7 +397,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             }
         }
 
-        final TileEntity te = this.iHost.getBlockEntity();
+        final TileEntity te = this.iHost.getTileEntity();
         if (te != null && te.getWorld() != null) {
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
         }
@@ -405,7 +405,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
     private void addToCraftingList(final ItemStack is) {
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(is,
-                this.iHost.getBlockEntity().getWorld());
+                this.iHost.getTileEntity().getWorld());
 
         if (details != null) {
             if (this.craftingList == null) {
@@ -462,7 +462,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this.iHost.getBlockEntity());
+        return new DimensionalCoord(this.iHost.getTileEntity());
     }
 
     public FixedItemInv getInternalInventory() {
@@ -495,7 +495,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             return;
         }
 
-        final TileEntity tile = this.iHost.getBlockEntity();
+        final TileEntity tile = this.iHost.getTileEntity();
         final World w = tile.getWorld();
 
         final Iterator<ItemStack> i = this.waitingToSend.iterator();
@@ -628,7 +628,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         try {
             if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
                 return this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d,
-                        this.iHost.getBlockEntity().getWorld(), this.gridProxy.getGrid(), this.gridProxy.getCrafting(),
+                        this.iHost.getTileEntity().getWorld(), this.gridProxy.getGrid(), this.gridProxy.getCrafting(),
                         this.mySource);
             }
         } catch (final GridAccessException e) {
@@ -741,7 +741,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             return false;
         }
 
-        final TileEntity tile = this.iHost.getBlockEntity();
+        final TileEntity tile = this.iHost.getTileEntity();
         final World w = tile.getWorld();
 
         final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
@@ -802,7 +802,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
         if (this.isBlocking()) {
             final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
-            final TileEntity tile = this.iHost.getBlockEntity();
+            final TileEntity tile = this.iHost.getTileEntity();
             final World w = tile.getWorld();
 
             boolean allAreBusy = true;
@@ -928,7 +928,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     public ITextComponent getTermName() {
-        final TileEntity hostTile = this.iHost.getBlockEntity();
+        final TileEntity hostTile = this.iHost.getTileEntity();
         final World hostWorld = hostTile.getWorld();
 
         if (((ICustomNameObject) this.iHost).hasCustomInventoryName()) {
@@ -1002,7 +1002,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     public long getSortValue() {
-        final TileEntity te = this.iHost.getBlockEntity();
+        final TileEntity te = this.iHost.getTileEntity();
         return (te.getPos().getZ() << 24) ^ (te.getPos().getX() << 8) ^ te.getPos().getY();
     }
 

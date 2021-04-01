@@ -25,6 +25,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import appeng.tile.networking.CableBusTileEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
@@ -81,10 +82,9 @@ import appeng.helpers.AEMaterials;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
-import appeng.tile.networking.CableBusBlockEntity;
 import appeng.util.Platform;
 
-public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implements IAEFacade {
+public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade {
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
@@ -170,8 +170,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         LootContext lootContext = builder.withParameter(LootParameters.BLOCK_STATE, state)
                 .build(LootParameterSets.BLOCK);
         TileEntity be = lootContext.get(LootParameters.BLOCK_ENTITY);
-        if (be instanceof CableBusBlockEntity) {
-            CableBusBlockEntity bus = (CableBusBlockEntity) be;
+        if (be instanceof CableBusTileEntity) {
+            CableBusTileEntity bus = (CableBusTileEntity) be;
             List<ItemStack> drops = new ArrayList<>();
             bus.getCableBus().appendPartStacks(drops);
             return drops;
@@ -309,8 +309,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         final TileEntity te = w.getTileEntity(pos);
         ICableBusContainer out = null;
 
-        if (te instanceof CableBusBlockEntity) {
-            out = ((CableBusBlockEntity) te).getCableBus();
+        if (te instanceof CableBusTileEntity) {
+            out = ((CableBusTileEntity) te).getCableBus();
         }
 
         return out == null ? NULL_CABLE_BUS : out;
@@ -321,8 +321,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         final TileEntity te = w.getTileEntity(pos);
         IFacadeContainer out = null;
 
-        if (te instanceof CableBusBlockEntity) {
-            out = ((CableBusBlockEntity) te).getCableBus().getFacadeContainer();
+        if (te instanceof CableBusTileEntity) {
+            out = ((CableBusTileEntity) te).getCableBus().getFacadeContainer();
         }
 
         return out;
@@ -390,7 +390,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
-        CableBusBlockEntity te = getBlockEntity(w, pos);
+        CableBusTileEntity te = getTileEntity(w, pos);
         if (te == null) {
             return VoxelShapes.empty();
         } else {
@@ -400,7 +400,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
-        CableBusBlockEntity te = getBlockEntity(w, pos);
+        CableBusTileEntity te = getTileEntity(w, pos);
         if (te == null) {
             return VoxelShapes.empty();
         } else {
@@ -412,7 +412,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, CableBusBlockEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, CableBusTileEntity te) {
         if (currentState.getBlock() != this) {
             return currentState;
         }

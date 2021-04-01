@@ -31,9 +31,9 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.tile.qnb.QuantumBridgeTileEntity;
 
-public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeBlockEntity> {
+public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTileEntity> {
 
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
 
@@ -61,14 +61,14 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeBloc
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeBlockEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeTileEntity te) {
         return currentState.with(FORMED, te.isFormed());
     }
 
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(world, pos);
+        final QuantumBridgeTileEntity bridge = this.getTileEntity(world, pos);
         if (bridge != null) {
             bridge.neighborUpdate(fromPos);
         }
@@ -80,7 +80,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeBloc
             return; // Just a block state change
         }
 
-        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
+        final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
         if (bridge != null) {
             bridge.breakCluster();
         }

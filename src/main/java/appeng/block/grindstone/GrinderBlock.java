@@ -33,9 +33,9 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.GrinderContainer;
-import appeng.tile.grindstone.GrinderBlockEntity;
+import appeng.tile.grindstone.GrinderTileEntity;
 
-public class GrinderBlock extends AEBaseTileBlock<GrinderBlockEntity> {
+public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
 
     public GrinderBlock(Properties props) {
         super(props);
@@ -44,7 +44,7 @@ public class GrinderBlock extends AEBaseTileBlock<GrinderBlockEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        final GrinderBlockEntity tg = this.getBlockEntity(w, pos);
+        final GrinderTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !p.isCrouching()) {
             if (p instanceof ServerPlayerEntity) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,

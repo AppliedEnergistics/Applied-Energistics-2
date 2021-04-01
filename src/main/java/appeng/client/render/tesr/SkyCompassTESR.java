@@ -18,6 +18,7 @@
 
 package appeng.client.render.tesr;
 
+import appeng.tile.misc.SkyCompassTileEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -34,12 +35,11 @@ import net.minecraft.util.math.vector.Quaternion;
 import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.SkyCompassBakedModel;
-import appeng.tile.misc.SkyCompassBlockEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 @Environment(EnvType.CLIENT)
-public class SkyCompassTESR extends TileEntityRenderer<SkyCompassBlockEntity> {
+public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
 
     private static BlockRendererDispatcher blockRenderer;
 
@@ -48,8 +48,8 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassBlockEntity> {
     }
 
     @Override
-    public void render(SkyCompassBlockEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(SkyCompassTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
         if (blockRenderer == null) {
             blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
         }
@@ -91,7 +91,7 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassBlockEntity> {
     }
 
     // FIXME FABRIC This needs to go to the tile entity (?)
-    private static float getRotation(SkyCompassBlockEntity skyCompass) {
+    private static float getRotation(SkyCompassTileEntity skyCompass) {
         float rotation = 0;
 
         if (skyCompass.getForward() == Direction.field_11036 || skyCompass.getForward() == Direction.field_11033) {

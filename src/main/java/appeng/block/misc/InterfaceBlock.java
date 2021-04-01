@@ -39,10 +39,10 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InterfaceContainer;
-import appeng.tile.misc.InterfaceBlockEntity;
+import appeng.tile.misc.InterfaceTileEntity;
 import appeng.util.Platform;
 
-public class InterfaceBlock extends AEBaseTileBlock<InterfaceBlockEntity> {
+public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
 
     private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
@@ -57,7 +57,7 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceBlockEntity> {
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, InterfaceBlockEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, InterfaceTileEntity te) {
         return currentState.with(OMNIDIRECTIONAL, te.isOmniDirectional());
     }
 
@@ -68,7 +68,7 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceBlockEntity> {
             return ActionResultType.field_5811;
         }
 
-        final InterfaceBlockEntity tg = this.getBlockEntity(w, pos);
+        final InterfaceTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(InterfaceContainer.TYPE, p,
@@ -86,8 +86,8 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceBlockEntity> {
 
     @Override
     protected void customRotateBlock(final IOrientable rotatable, final Direction axis) {
-        if (rotatable instanceof InterfaceBlockEntity) {
-            ((InterfaceBlockEntity) rotatable).setSide(axis);
+        if (rotatable instanceof InterfaceTileEntity) {
+            ((InterfaceTileEntity) rotatable).setSide(axis);
         }
     }
 }

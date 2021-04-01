@@ -34,7 +34,7 @@ import mcp.mobius.waila.api.IPluginConfig;
 
 import appeng.core.localization.WailaText;
 import appeng.integration.modules.waila.BaseWailaDataProvider;
-import appeng.tile.misc.ChargerBlockEntity;
+import appeng.tile.misc.ChargerTileEntity;
 
 /**
  * Charger provider for WAILA
@@ -50,8 +50,8 @@ public final class ChargerWailaDataProvider extends BaseWailaDataProvider {
     public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
 
         final TileEntity te = accessor.getBlockEntity();
-        if (te instanceof ChargerBlockEntity) {
-            final ChargerBlockEntity charger = (ChargerBlockEntity) te;
+        if (te instanceof ChargerTileEntity) {
+            final ChargerTileEntity charger = (ChargerTileEntity) te;
             final FixedItemInvView chargerInventory = charger.getInternalInventory();
             final ItemStack chargingItem = chargerInventory.getInvStack(0);
 

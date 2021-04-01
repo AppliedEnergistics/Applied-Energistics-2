@@ -20,6 +20,13 @@ package appeng.core.api.definitions;
 
 import static appeng.block.AEBaseBlock.defaultProps;
 
+import appeng.debug.*;
+import appeng.fluids.tile.FluidInterfaceTileEntity;
+import appeng.tile.grindstone.CrankTileEntity;
+import appeng.tile.grindstone.GrinderTileEntity;
+import appeng.tile.misc.*;
+import appeng.tile.networking.*;
+import appeng.tile.storage.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -102,14 +109,7 @@ import appeng.client.render.tesr.ChestTileEntityRenderer;
 import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.DriveLedTileEntityRenderer;
 import appeng.client.render.tesr.SkyChestTESR;
-import appeng.debug.ChunkLoaderBlock;
-import appeng.debug.ChunkLoaderBlockEntity;
-import appeng.debug.CubeGeneratorBlock;
-import appeng.debug.CubeGeneratorBlockEntity;
-import appeng.debug.ItemGenBlock;
-import appeng.debug.ItemGenBlockEntity;
-import appeng.debug.PhantomNodeBlock;
-import appeng.debug.PhantomNodeBlockEntity;
+import appeng.debug.ItemGenTileEntity;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.AEStairsBlock;
 import appeng.decorative.solid.ChargedQuartzOreBlock;
@@ -121,41 +121,19 @@ import appeng.decorative.solid.SkyStoneBlock;
 import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
 import appeng.entity.TinyTNTPrimedEntity;
 import appeng.fluids.block.FluidInterfaceBlock;
-import appeng.fluids.tile.FluidInterfaceBlockEntity;
 import appeng.hooks.TinyTNTDispenseItemBehavior;
-import appeng.tile.crafting.CraftingBlockEntity;
-import appeng.tile.crafting.CraftingMonitorBlockEntity;
-import appeng.tile.crafting.CraftingStorageBlockEntity;
-import appeng.tile.crafting.MolecularAssemblerBlockEntity;
+import appeng.tile.crafting.CraftingTileEntity;
+import appeng.tile.crafting.CraftingMonitorTileEntity;
+import appeng.tile.crafting.CraftingStorageTileEntity;
+import appeng.tile.crafting.MolecularAssemblerTileEntity;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
-import appeng.tile.grindstone.CrankBlockEntity;
-import appeng.tile.grindstone.GrinderBlockEntity;
-import appeng.tile.misc.CellWorkbenchBlockEntity;
-import appeng.tile.misc.ChargerBlockEntity;
-import appeng.tile.misc.CondenserBlockEntity;
-import appeng.tile.misc.InscriberBlockEntity;
-import appeng.tile.misc.InterfaceBlockEntity;
-import appeng.tile.misc.LightDetectorBlockEntity;
-import appeng.tile.misc.PaintSplotchesBlockEntity;
-import appeng.tile.misc.QuartzGrowthAcceleratorBlockEntity;
-import appeng.tile.misc.SecurityStationBlockEntity;
-import appeng.tile.misc.SkyCompassBlockEntity;
-import appeng.tile.misc.VibrationChamberBlockEntity;
-import appeng.tile.networking.CableBusBlockEntity;
-import appeng.tile.networking.CableBusTESR;
-import appeng.tile.networking.ControllerBlockEntity;
-import appeng.tile.networking.CreativeEnergyCellBlockEntity;
-import appeng.tile.networking.DenseEnergyCellBlockEntity;
-import appeng.tile.networking.EnergyAcceptorBlockEntity;
-import appeng.tile.networking.EnergyCellBlockEntity;
-import appeng.tile.networking.WirelessBlockEntity;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
-import appeng.tile.spatial.SpatialIOPortBlockEntity;
-import appeng.tile.spatial.SpatialPylonBlockEntity;
-import appeng.tile.storage.ChestBlockEntity;
-import appeng.tile.storage.DriveBlockEntity;
-import appeng.tile.storage.IOPortBlockEntity;
-import appeng.tile.storage.SkyChestBlockEntity;
+import appeng.tile.misc.SecurityStationTileEntity;
+import appeng.tile.networking.CreativeEnergyCellTileEntity;
+import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.tile.spatial.SpatialIOPortTileEntity;
+import appeng.tile.spatial.SpatialPylonTileEntity;
+import appeng.tile.storage.ChestTileEntity;
+import appeng.tile.storage.SkyChestTileEntity;
 
 /**
  * Internal implementation for the API blocks
@@ -320,11 +298,11 @@ public final class ApiBlocks implements IBlocks {
         AbstractBlock.Properties skyStoneChestProps = defaultProps(Material.ROCK).hardnessAndResistance(50, 150).notSolid();
 
         TileEntityDefinition skyChestTile = registry
-                .tileEntity("sky_chest", SkyChestBlockEntity.class, SkyChestBlockEntity::new)
-                .rendering(new TileEntityRenderingCustomizer<SkyChestBlockEntity>() {
+                .tileEntity("sky_chest", SkyChestTileEntity.class, SkyChestTileEntity::new)
+                .rendering(new TileEntityRenderingCustomizer<SkyChestTileEntity>() {
                     @Override
                     @Environment(EnvType.CLIENT)
-                    public void customize(TileEntityRendering<SkyChestBlockEntity> rendering) {
+                    public void customize(TileEntityRendering<SkyChestTileEntity> rendering) {
                         rendering.tileEntityRenderer(SkyChestTESR::new);
                     }
                 }).build();
@@ -338,46 +316,46 @@ public final class ApiBlocks implements IBlocks {
 
         this.skyCompass = registry.block("sky_compass", () -> new SkyCompassBlock(defaultProps(Material.MISCELLANEOUS)))
                 .features(AEFeature.METEORITE_COMPASS)
-                .tileEntity(registry.tileEntity("sky_compass", SkyCompassBlockEntity.class, SkyCompassBlockEntity::new)
+                .tileEntity(registry.tileEntity("sky_compass", SkyCompassTileEntity.class, SkyCompassTileEntity::new)
                         .rendering(new SkyCompassRendering()).build())
                 .build();
         this.grindstone = registry
                 .block("grindstone", () -> new GrinderBlock(defaultProps(Material.ROCK).hardnessAndResistance(3.2f)))
                 .features(AEFeature.GRIND_STONE)
                 .tileEntity(
-                        registry.tileEntity("grindstone", GrinderBlockEntity.class, GrinderBlockEntity::new).build())
+                        registry.tileEntity("grindstone", GrinderTileEntity.class, GrinderTileEntity::new).build())
                 .build();
         this.crank = registry
                 .block("crank",
                         () -> new CrankBlock(
                                 defaultProps(Material.WOOD).breakByTool(FabricToolTags.AXES, 0).notSolid()))
                 .features(AEFeature.GRIND_STONE)
-                .tileEntity(registry.tileEntity("crank", CrankBlockEntity.class, CrankBlockEntity::new)
-                        .rendering(new TileEntityRenderingCustomizer<CrankBlockEntity>() {
+                .tileEntity(registry.tileEntity("crank", CrankTileEntity.class, CrankTileEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<CrankTileEntity>() {
                             @Override
                             @Environment(EnvType.CLIENT)
-                            public void customize(TileEntityRendering<CrankBlockEntity> rendering) {
+                            public void customize(TileEntityRendering<CrankTileEntity> rendering) {
                                 rendering.tileEntityRenderer(CrankTESR::new);
                             }
                         }).build())
                 .build();
         this.inscriber = registry.block("inscriber", () -> new InscriberBlock(defaultProps(Material.IRON).notSolid()))
                 .features(AEFeature.INSCRIBER)
-                .tileEntity(registry.tileEntity("inscriber", InscriberBlockEntity.class, InscriberBlockEntity::new)
+                .tileEntity(registry.tileEntity("inscriber", InscriberTileEntity.class, InscriberTileEntity::new)
                         .rendering(new InscriberRendering()).build())
                 .build();
         this.wirelessAccessPoint = registry.block("wireless_access_point", WirelessBlock::new)
                 .features(AEFeature.WIRELESS_ACCESS_TERMINAL)
                 .tileEntity(registry
-                        .tileEntity("wireless_access_point", WirelessBlockEntity.class, WirelessBlockEntity::new)
+                        .tileEntity("wireless_access_point", WirelessTileEntity.class, WirelessTileEntity::new)
                         .build())
                 .rendering(new WirelessRendering()).build();
         this.charger = registry.block("charger", ChargerBlock::new).features(AEFeature.CHARGER)
-                .tileEntity(registry.tileEntity("charger", ChargerBlockEntity.class, ChargerBlockEntity::new)
-                        .rendering(new TileEntityRenderingCustomizer<ChargerBlockEntity>() {
+                .tileEntity(registry.tileEntity("charger", ChargerTileEntity.class, ChargerTileEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<ChargerTileEntity>() {
                             @Override
                             @Environment(EnvType.CLIENT)
-                            public void customize(TileEntityRendering<ChargerBlockEntity> rendering) {
+                            public void customize(TileEntityRendering<ChargerTileEntity> rendering) {
                                 rendering.tileEntityRenderer(ChargerTESR.FACTORY);
                             }
                         }).build())
@@ -397,11 +375,11 @@ public final class ApiBlocks implements IBlocks {
                 .build();
         this.securityStation = registry.block("security_station", SecurityStationBlock::new)
                 .features(AEFeature.SECURITY).tileEntity(registry.tileEntity("security_station",
-                        SecurityStationBlockEntity.class, SecurityStationBlockEntity::new).build())
+                        SecurityStationTileEntity.class, SecurityStationTileEntity::new).build())
                 .rendering(new SecurityStationRendering()).build();
 
         TileEntityDefinition quantumRingTile = registry
-                .tileEntity("quantum_ring", QuantumBridgeBlockEntity.class, QuantumBridgeBlockEntity::new).build();
+                .tileEntity("quantum_ring", QuantumBridgeTileEntity.class, QuantumBridgeTileEntity::new).build();
         this.quantumRing = registry.block("quantum_ring", QuantumRingBlock::new)
                 .features(AEFeature.QUANTUM_NETWORK_BRIDGE).tileEntity(quantumRingTile)
                 .rendering(new QuantumBridgeRendering()).build();
@@ -410,90 +388,90 @@ public final class ApiBlocks implements IBlocks {
                 .rendering(new QuantumBridgeRendering()).build();
         this.spatialPylon = registry.block("spatial_pylon", SpatialPylonBlock::new).features(AEFeature.SPATIAL_IO)
                 .tileEntity(registry
-                        .tileEntity("spatial_pylon", SpatialPylonBlockEntity.class, SpatialPylonBlockEntity::new)
+                        .tileEntity("spatial_pylon", SpatialPylonTileEntity.class, SpatialPylonTileEntity::new)
                         .build())
                 .rendering(new SpatialPylonRendering()).build();
         this.spatialIOPort = registry.block("spatial_io_port", SpatialIOPortBlock::new).features(AEFeature.SPATIAL_IO)
                 .tileEntity(registry
-                        .tileEntity("spatial_io_port", SpatialIOPortBlockEntity.class, SpatialIOPortBlockEntity::new)
+                        .tileEntity("spatial_io_port", SpatialIOPortTileEntity.class, SpatialIOPortTileEntity::new)
                         .build())
                 .build();
         this.controller = registry
                 .block("controller", ControllerBlock::new).features(AEFeature.CHANNELS).tileEntity(registry
-                        .tileEntity("controller", ControllerBlockEntity.class, ControllerBlockEntity::new).build())
+                        .tileEntity("controller", ControllerTileEntity.class, ControllerTileEntity::new).build())
                 .rendering(new ControllerRendering()).build();
         this.drive = registry.block("drive", DriveBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.ME_DRIVE)
-                .tileEntity(registry.tileEntity("drive", DriveBlockEntity.class, DriveBlockEntity::new)
-                        .rendering(new TileEntityRenderingCustomizer<DriveBlockEntity>() {
+                .tileEntity(registry.tileEntity("drive", DriveTileEntity.class, DriveTileEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<DriveTileEntity>() {
                             @Override
                             @Environment(EnvType.CLIENT)
-                            public void customize(TileEntityRendering<DriveBlockEntity> rendering) {
+                            public void customize(TileEntityRendering<DriveTileEntity> rendering) {
                                 rendering.tileEntityRenderer(DriveLedTileEntityRenderer::new);
                             }
                         }).build())
                 .rendering(new DriveRendering()).build();
         this.chest = registry.block("chest", ChestBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.ME_CHEST)
-                .tileEntity(registry.tileEntity("chest", ChestBlockEntity.class, ChestBlockEntity::new)
-                        .rendering(new TileEntityRenderingCustomizer<ChestBlockEntity>() {
+                .tileEntity(registry.tileEntity("chest", ChestTileEntity.class, ChestTileEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<ChestTileEntity>() {
                             @Override
                             @Environment(EnvType.CLIENT)
-                            public void customize(TileEntityRendering<ChestBlockEntity> rendering) {
+                            public void customize(TileEntityRendering<ChestTileEntity> rendering) {
                                 rendering.tileEntityRenderer(ChestTileEntityRenderer::new);
                             }
                         }).build())
                 .rendering(new ChestRendering()).build();
         this.iface = registry.block("interface", InterfaceBlock::new).features(AEFeature.INTERFACE)
                 .tileEntity(
-                        registry.tileEntity("interface", InterfaceBlockEntity.class, InterfaceBlockEntity::new).build())
+                        registry.tileEntity("interface", InterfaceTileEntity.class, InterfaceTileEntity::new).build())
                 .build();
         this.fluidIface = registry.block("fluid_interface", FluidInterfaceBlock::new)
                 .features(AEFeature.FLUID_INTERFACE)
                 .tileEntity(registry
-                        .tileEntity("fluid_interface", FluidInterfaceBlockEntity.class, FluidInterfaceBlockEntity::new)
+                        .tileEntity("fluid_interface", FluidInterfaceTileEntity.class, FluidInterfaceTileEntity::new)
                         .build())
                 .build();
         this.cellWorkbench = registry.block("cell_workbench", CellWorkbenchBlock::new).features(AEFeature.STORAGE_CELLS)
                 .tileEntity(registry
-                        .tileEntity("cell_workbench", CellWorkbenchBlockEntity.class, CellWorkbenchBlockEntity::new)
+                        .tileEntity("cell_workbench", CellWorkbenchTileEntity.class, CellWorkbenchTileEntity::new)
                         .build())
                 .build();
         this.iOPort = registry.block("io_port", IOPortBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.IO_PORT)
-                .tileEntity(registry.tileEntity("io_port", IOPortBlockEntity.class, IOPortBlockEntity::new).build())
+                .tileEntity(registry.tileEntity("io_port", IOPortTileEntity.class, IOPortTileEntity::new).build())
                 .build();
         this.condenser = registry.block("condenser", CondenserBlock::new).features(AEFeature.CONDENSER)
                 .tileEntity(
-                        registry.tileEntity("condenser", CondenserBlockEntity.class, CondenserBlockEntity::new).build())
+                        registry.tileEntity("condenser", CondenserTileEntity.class, CondenserTileEntity::new).build())
                 .build();
         this.energyAcceptor = registry.block("energy_acceptor", EnergyAcceptorBlock::new)
                 .features(AEFeature.ENERGY_ACCEPTOR)
                 .tileEntity(registry
-                        .tileEntity("energy_acceptor", EnergyAcceptorBlockEntity.class, EnergyAcceptorBlockEntity::new)
+                        .tileEntity("energy_acceptor", EnergyAcceptorTileEntity.class, EnergyAcceptorTileEntity::new)
                         .build())
                 .build();
         this.vibrationChamber = registry.block("vibration_chamber", VibrationChamberBlock::new)
                 .features(AEFeature.POWER_GEN).tileEntity(registry.tileEntity("vibration_chamber",
-                        VibrationChamberBlockEntity.class, VibrationChamberBlockEntity::new).build())
+                        VibrationChamberTileEntity.class, VibrationChamberTileEntity::new).build())
                 .build();
         this.quartzGrowthAccelerator = registry.block("quartz_growth_accelerator", QuartzGrowthAcceleratorBlock::new)
-                .tileEntity(registry.tileEntity("quartz_growth_accelerator", QuartzGrowthAcceleratorBlockEntity.class,
-                        QuartzGrowthAcceleratorBlockEntity::new).build())
+                .tileEntity(registry.tileEntity("quartz_growth_accelerator", QuartzGrowthAcceleratorTileEntity.class,
+                        QuartzGrowthAcceleratorTileEntity::new).build())
                 .features(AEFeature.CRYSTAL_GROWTH_ACCELERATOR).build();
         this.energyCell = registry.block("energy_cell", EnergyCellBlock::new).features(AEFeature.ENERGY_CELLS)
                 .item(AEBaseBlockItemChargeable::new).tileEntity(registry
-                        .tileEntity("energy_cell", EnergyCellBlockEntity.class, EnergyCellBlockEntity::new).build())
+                        .tileEntity("energy_cell", EnergyCellTileEntity.class, EnergyCellTileEntity::new).build())
                 .build();
         this.energyCellDense = registry.block("dense_energy_cell", DenseEnergyCellBlock::new)
                 .features(AEFeature.ENERGY_CELLS, AEFeature.DENSE_ENERGY_CELLS).item(AEBaseBlockItemChargeable::new)
-                .tileEntity(registry.tileEntity("dense_energy_cell", DenseEnergyCellBlockEntity.class,
-                        DenseEnergyCellBlockEntity::new).build())
+                .tileEntity(registry.tileEntity("dense_energy_cell", DenseEnergyCellTileEntity.class,
+                        DenseEnergyCellTileEntity::new).build())
                 .build();
         this.energyCellCreative = registry.block("creative_energy_cell", CreativeEnergyCellBlock::new)
                 .features(AEFeature.CREATIVE).tileEntity(registry.tileEntity("creative_energy_cell",
-                        CreativeEnergyCellBlockEntity.class, CreativeEnergyCellBlockEntity::new).build())
+                        CreativeEnergyCellTileEntity.class, CreativeEnergyCellTileEntity::new).build())
                 .build();
 
         TileEntityDefinition craftingUnit = registry
-                .tileEntity("crafting_unit", CraftingBlockEntity.class, CraftingBlockEntity::new).build();
+                .tileEntity("crafting_unit", CraftingTileEntity.class, CraftingTileEntity::new).build();
 
         FeatureFactory crafting = registry.features(AEFeature.CRAFTING_CPU);
         AbstractBlock.Properties craftingBlockProps = defaultProps(Material.IRON);
@@ -506,7 +484,7 @@ public final class ApiBlocks implements IBlocks {
                 .rendering(new CraftingCubeRendering()).tileEntity(craftingUnit).build();
 
         TileEntityDefinition craftingStorage = registry
-                .tileEntity("crafting_storage", CraftingStorageBlockEntity.class, CraftingStorageBlockEntity::new)
+                .tileEntity("crafting_storage", CraftingStorageTileEntity.class, CraftingStorageTileEntity::new)
                 .build();
         this.craftingStorage1k = crafting
                 .block("1k_crafting_storage",
@@ -530,12 +508,12 @@ public final class ApiBlocks implements IBlocks {
                 .build();
         this.craftingMonitor = crafting.block("crafting_monitor", () -> new CraftingMonitorBlock(craftingBlockProps))
                 .tileEntity(registry
-                        .tileEntity("crafting_monitor", CraftingMonitorBlockEntity.class,
-                                CraftingMonitorBlockEntity::new)
-                        .rendering(new TileEntityRenderingCustomizer<CraftingMonitorBlockEntity>() {
+                        .tileEntity("crafting_monitor", CraftingMonitorTileEntity.class,
+                                CraftingMonitorTileEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<CraftingMonitorTileEntity>() {
                             @Environment(EnvType.CLIENT)
                             @Override
-                            public void customize(TileEntityRendering<CraftingMonitorBlockEntity> rendering) {
+                            public void customize(TileEntityRendering<CraftingMonitorTileEntity> rendering) {
                                 rendering.tileEntityRenderer(CraftingMonitorTESR::new);
                             }
                         }).build())
@@ -552,12 +530,12 @@ public final class ApiBlocks implements IBlocks {
                     }
                 })
                 .tileEntity(registry
-                        .tileEntity("molecular_assembler", MolecularAssemblerBlockEntity.class,
-                                MolecularAssemblerBlockEntity::new)
-                        .rendering(new TileEntityRenderingCustomizer<MolecularAssemblerBlockEntity>() {
+                        .tileEntity("molecular_assembler", MolecularAssemblerTileEntity.class,
+                                MolecularAssemblerTileEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<MolecularAssemblerTileEntity>() {
                             @Override
                             @Environment(EnvType.CLIENT)
-                            public void customize(TileEntityRendering<MolecularAssemblerBlockEntity> rendering) {
+                            public void customize(TileEntityRendering<MolecularAssemblerTileEntity> rendering) {
                                 rendering.tileEntityRenderer(MolecularAssemblerRenderer::new);
                             }
                         }).build())
@@ -566,7 +544,7 @@ public final class ApiBlocks implements IBlocks {
         this.lightDetector = registry.block("light_detector", LightDetectorBlock::new)
                 .features(AEFeature.LIGHT_DETECTOR)
                 .tileEntity(registry
-                        .tileEntity("light_detector", LightDetectorBlockEntity.class, LightDetectorBlockEntity::new)
+                        .tileEntity("light_detector", LightDetectorTileEntity.class, LightDetectorTileEntity::new)
                         .build())
                 .rendering(new BlockRenderingCustomizer() {
                     @Override
@@ -577,7 +555,7 @@ public final class ApiBlocks implements IBlocks {
                 }).build();
         this.paint = registry.block("paint", PaintSplotchesBlock::new).features(AEFeature.PAINT_BALLS)
                 .tileEntity(registry
-                        .tileEntity("paint", PaintSplotchesBlockEntity.class, PaintSplotchesBlockEntity::new).build())
+                        .tileEntity("paint", PaintSplotchesTileEntity.class, PaintSplotchesTileEntity::new).build())
                 .rendering(new PaintSplotchesRendering()).build();
 
         this.skyStoneStairs = deco
@@ -612,11 +590,11 @@ public final class ApiBlocks implements IBlocks {
                 .addFeatures(AEFeature.CERTUS).build();
 
         this.multiPart = registry.block("cable_bus", CableBusBlock::new).rendering(new CableBusRendering())
-                .tileEntity(registry.tileEntity("cable_bus", CableBusBlockEntity.class, CableBusBlockEntity::new)
-                        .rendering(new TileEntityRenderingCustomizer<CableBusBlockEntity>() {
+                .tileEntity(registry.tileEntity("cable_bus", CableBusTileEntity.class, CableBusTileEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<CableBusTileEntity>() {
                             @Override
                             @Environment(EnvType.CLIENT)
-                            public void customize(TileEntityRendering<CableBusBlockEntity> rendering) {
+                            public void customize(TileEntityRendering<CableBusTileEntity> rendering) {
                                 rendering.tileEntityRenderer(CableBusTESR::new);
                             }
                         }).build())
@@ -642,24 +620,24 @@ public final class ApiBlocks implements IBlocks {
 
         this.itemGen = registry.block("debug_item_gen", ItemGenBlock::new)
                 .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE).tileEntity(registry
-                        .tileEntity("debug_item_gen", ItemGenBlockEntity.class, ItemGenBlockEntity::new).build())
+                        .tileEntity("debug_item_gen", ItemGenTileEntity.class, ItemGenTileEntity::new).build())
                 .build();
         this.chunkLoader = registry.block("debug_chunk_loader", ChunkLoaderBlock::new)
                 .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
                 .tileEntity(registry
-                        .tileEntity("debug_chunk_loader", ChunkLoaderBlockEntity.class, ChunkLoaderBlockEntity::new)
+                        .tileEntity("debug_chunk_loader", ChunkLoaderTileEntity.class, ChunkLoaderTileEntity::new)
                         .build())
                 .build();
         this.phantomNode = registry.block("debug_phantom_node", PhantomNodeBlock::new)
                 .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
                 .tileEntity(registry
-                        .tileEntity("debug_phantom_node", PhantomNodeBlockEntity.class, PhantomNodeBlockEntity::new)
+                        .tileEntity("debug_phantom_node", PhantomNodeTileEntity.class, PhantomNodeTileEntity::new)
                         .build())
                 .build();
         this.cubeGenerator = registry.block("debug_cube_gen", CubeGeneratorBlock::new)
                 .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
                 .tileEntity(registry
-                        .tileEntity("debug_cube_gen", CubeGeneratorBlockEntity.class, CubeGeneratorBlockEntity::new)
+                        .tileEntity("debug_cube_gen", CubeGeneratorTileEntity.class, CubeGeneratorTileEntity::new)
                         .build())
                 .build();
 // FIXME FABRIC        this.energyGenerator = registry.block("debug_energy_gen", EnergyGeneratorBlock::new)

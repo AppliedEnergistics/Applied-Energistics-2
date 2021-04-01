@@ -21,7 +21,7 @@ package appeng.debug;
 import appeng.block.AEBaseTileBlock;
 import net.minecraft.block.material.Material;
 
-public class ItemGenBlock extends AEBaseTileBlock<ItemGenBlockEntity> {
+public class ItemGenBlock extends AEBaseTileBlock<ItemGenTileEntity> {
 
     public ItemGenBlock() {
         super(defaultProps(Material.IRON));

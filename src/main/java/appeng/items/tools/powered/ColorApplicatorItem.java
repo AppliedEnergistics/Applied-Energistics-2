@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import appeng.tile.misc.PaintSplotchesTileEntity;
 import com.google.common.collect.ImmutableMap;
 
 import net.fabricmc.api.EnvType;
@@ -76,7 +77,6 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
-import appeng.tile.misc.PaintSplotchesBlockEntity;
 import appeng.util.FakePlayer;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -154,10 +154,10 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 final Block testBlk = w.getBlockState(pos.offset(side)).getBlock();
                 final TileEntity painted = w.getTileEntity(pos.offset(side));
                 if (this.getAECurrentPower(is) > powerPerUse && testBlk instanceof PaintSplotchesBlock
-                        && painted instanceof PaintSplotchesBlockEntity) {
+                        && painted instanceof PaintSplotchesTileEntity) {
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                    ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
+                    ((PaintSplotchesTileEntity) painted).cleanSide(side.getOpposite());
                     return ActionResultType.field_5812;
                 }
             } else if (!paintBall.isEmpty()) {

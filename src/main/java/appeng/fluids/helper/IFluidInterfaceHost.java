@@ -30,7 +30,7 @@ public interface IFluidInterfaceHost extends IActionHost, IGridProxyable, IUpgra
 
     EnumSet<Direction> getTargets();
 
-    TileEntity getBlockEntity();
+    TileEntity getTileEntity();
 
     void saveChanges();
 }

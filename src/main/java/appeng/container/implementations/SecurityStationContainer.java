@@ -37,7 +37,7 @@ import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.misc.SecurityStationBlockEntity;
+import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
@@ -55,14 +55,14 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
     private final RestrictedInputSlot wirelessIn;
     private final OutputSlot wirelessOut;
 
-    private final SecurityStationBlockEntity securityBox;
+    private final SecurityStationTileEntity securityBox;
     @GuiSync(0)
     public int permissionMode = 0;
 
     public SecurityStationContainer(int id, final PlayerInventory ip, final ITerminalHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
 
-        this.securityBox = (SecurityStationBlockEntity) monitorable;
+        this.securityBox = (SecurityStationTileEntity) monitorable;
 
         this.addSlot(this.configSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BIOMETRIC_CARD,
                 this.securityBox.getConfigSlot(), 0, 37, -33, ip));

@@ -42,10 +42,10 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.core.AEConfig;
-import appeng.tile.misc.VibrationChamberBlockEntity;
+import appeng.tile.misc.VibrationChamberTileEntity;
 import appeng.util.Platform;
 
-public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChamberBlockEntity> {
+public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChamberTileEntity> {
 
     // Indicates that the vibration chamber is currently working
     private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
@@ -56,7 +56,7 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, VibrationChamberBlockEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, VibrationChamberTileEntity te) {
         return currentState.with(ACTIVE, te.isOn);
     }
 
@@ -74,7 +74,7 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
         }
 
         if (Platform.isServer()) {
-            final VibrationChamberBlockEntity tc = this.getBlockEntity(w, pos);
+            final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null && !player.isCrouching()) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getFace()));
@@ -91,7 +91,7 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             return;
         }
 
-        final VibrationChamberBlockEntity tile = this.getBlockEntity(w, pos);
+        final VibrationChamberTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null && tile.isOn) {
             double f1 = pos.getX() + 0.5F;
             double f2 = pos.getY() + 0.5F;

@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import appeng.tile.storage.SkyChestTileEntity;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,10 +44,9 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SkyChestContainer;
-import appeng.tile.storage.SkyChestBlockEntity;
 import appeng.util.Platform;
 
-public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
+public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> {
 
     private static final double AABB_OFFSET_BOTTOM = 0.00;
     private static final double AABB_OFFSET_SIDES = 0.06;
@@ -90,7 +90,7 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (Platform.isServer()) {
-            SkyChestBlockEntity tile = getBlockEntity(w, pos);
+            SkyChestTileEntity tile = getTileEntity(w, pos);
             if (tile == null) {
                 return ActionResultType.field_5811;
             }
@@ -103,7 +103,7 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        final SkyChestBlockEntity sk = this.getBlockEntity(worldIn, pos);
+        final SkyChestTileEntity sk = this.getTileEntity(worldIn, pos);
         Direction up = sk != null ? sk.getUp() : Direction.field_11036;
         return SHAPES.get(up);
     }

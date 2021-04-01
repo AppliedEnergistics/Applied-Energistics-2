@@ -29,10 +29,10 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
-import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.AEBaseTileEntity;
 
 @Environment(EnvType.CLIENT)
-public class ModularTESR<T extends AEBaseBlockEntity> extends TileEntityRenderer<T> {
+public class ModularTESR<T extends AEBaseTileEntity> extends TileEntityRenderer<T> {
 
     private final List<Renderable<? super T>> renderables;
 

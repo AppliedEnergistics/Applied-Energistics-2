@@ -39,7 +39,7 @@ import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.SkyCompassBlock;
 import appeng.block.networking.WirelessBlock;
 import appeng.me.helpers.IGridProxyable;
-import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.AEBaseTileEntity;
 
 public class AEBaseBlockItem extends BlockItem {
 
@@ -128,7 +128,7 @@ public class AEBaseBlockItem extends BlockItem {
         }
 
         if (this.blockType instanceof AEBaseTileBlock && !(this.blockType instanceof LightDetectorBlock)) {
-            final AEBaseBlockEntity tile = ((AEBaseTileBlock<?>) this.blockType).getBlockEntity(context.getWorld(),
+            final AEBaseTileEntity tile = ((AEBaseTileBlock<?>) this.blockType).getTileEntity(context.getWorld(),
                     context.getPos());
             ori = tile;
 

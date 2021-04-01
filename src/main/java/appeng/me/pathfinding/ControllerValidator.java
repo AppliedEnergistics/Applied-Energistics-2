@@ -18,12 +18,12 @@
 
 package appeng.me.pathfinding;
 
+import appeng.tile.networking.ControllerTileEntity;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
-import appeng.tile.networking.ControllerBlockEntity;
 
 public class ControllerValidator implements IGridVisitor {
 
@@ -48,8 +48,8 @@ public class ControllerValidator implements IGridVisitor {
     @Override
     public boolean visitNode(final IGridNode n) {
         final IGridHost host = n.getMachine();
-        if (this.isValid() && host instanceof ControllerBlockEntity) {
-            final ControllerBlockEntity c = (ControllerBlockEntity) host;
+        if (this.isValid() && host instanceof ControllerTileEntity) {
+            final ControllerTileEntity c = (ControllerTileEntity) host;
 
             final BlockPos pos = c.getPos();
 

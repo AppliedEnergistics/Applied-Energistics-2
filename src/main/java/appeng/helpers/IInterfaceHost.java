@@ -31,7 +31,7 @@ public interface IInterfaceHost extends ICraftingProvider, IUpgradeableHost, ICr
 
     EnumSet<Direction> getTargets();
 
-    TileEntity getBlockEntity();
+    TileEntity getTileEntity();
 
     void saveChanges();
 }

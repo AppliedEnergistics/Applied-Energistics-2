@@ -26,22 +26,22 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.TesrRenderHelper;
-import appeng.tile.crafting.CraftingMonitorBlockEntity;
+import appeng.tile.crafting.CraftingMonitorTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * Renders the item currently being crafted
  */
 @Environment(EnvType.CLIENT)
-public class CraftingMonitorTESR extends TileEntityRenderer<CraftingMonitorBlockEntity> {
+public class CraftingMonitorTESR extends TileEntityRenderer<CraftingMonitorTileEntity> {
 
     public CraftingMonitorTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(CraftingMonitorBlockEntity te, float partialTicks, MatrixStack matrixStack,
-            IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
+    public void render(CraftingMonitorTileEntity te, float partialTicks, MatrixStack matrixStack,
+                       IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
 
         Direction facing = te.getForward();
 

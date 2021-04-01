@@ -65,7 +65,7 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.abstraction.ReiFacade;
 import appeng.mixins.SlotMixin;
 import appeng.parts.reporting.AbstractTerminalPart;
-import appeng.tile.misc.SecurityStationBlockEntity;
+import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -122,7 +122,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
         this.viewCell = te instanceof IViewCellStorage;
 
-        if (te instanceof SecurityStationBlockEntity) {
+        if (te instanceof SecurityStationTileEntity) {
             this.myName = GuiText.Security;
         } else if (te instanceof WirelessTerminalGuiObject) {
             this.myName = GuiText.WirelessTerminal;

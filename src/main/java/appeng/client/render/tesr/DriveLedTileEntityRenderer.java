@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.math.vector.Vector3f;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
-import appeng.tile.storage.DriveBlockEntity;
+import appeng.tile.storage.DriveTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
@@ -16,15 +16,15 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
  * Renders the drive cell status indicators.
  */
 @Environment(EnvType.CLIENT)
-public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveBlockEntity> {
+public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEntity> {
 
     public DriveLedTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
         super(renderDispatcher);
     }
 
     @Override
-    public void render(DriveBlockEntity drive, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(DriveTileEntity drive, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
 
         if (drive.getCellCount() != 10) {
             throw new IllegalStateException("Expected drive to have 10 slots");

@@ -32,10 +32,10 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CondenserContainer;
-import appeng.tile.misc.CondenserBlockEntity;
+import appeng.tile.misc.CondenserTileEntity;
 import appeng.util.Platform;
 
-public class CondenserBlock extends AEBaseTileBlock<CondenserBlockEntity> {
+public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
 
     public CondenserBlock() {
         super(defaultProps(Material.IRON));
@@ -49,7 +49,7 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserBlockEntity> {
         }
 
         if (Platform.isServer()) {
-            final CondenserBlockEntity tc = this.getBlockEntity(w, pos);
+            final CondenserTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null && !player.isCrouching()) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getFace()));

@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.tile.storage.ChestTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -26,16 +27,15 @@ import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.storage.ChestBlockEntity;
 
 public class ChestContainer extends AEBaseContainer {
 
     public static ContainerType<ChestContainer> TYPE;
 
-    private static final ContainerHelper<ChestContainer, ChestBlockEntity> helper = new ContainerHelper<>(
-            ChestContainer::new, ChestBlockEntity.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<ChestContainer, ChestTileEntity> helper = new ContainerHelper<>(
+            ChestContainer::new, ChestTileEntity.class, SecurityPermissions.BUILD);
 
-    public ChestContainer(int id, final PlayerInventory ip, final ChestBlockEntity chest) {
+    public ChestContainer(int id, final PlayerInventory ip, final ChestTileEntity chest) {
         super(TYPE, id, ip, chest, null);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,

@@ -31,7 +31,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.tile.crafting.AssemblerAnimationStatus;
-import appeng.tile.crafting.MolecularAssemblerBlockEntity;
+import appeng.tile.crafting.MolecularAssemblerTileEntity;
 import appeng.util.item.AEItemStack;
 
 public class AssemblerAnimationPacket extends BasePacket {
@@ -64,8 +64,8 @@ public class AssemblerAnimationPacket extends BasePacket {
     @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         TileEntity te = player.getEntityWorld().getTileEntity(pos);
-        if (te instanceof MolecularAssemblerBlockEntity) {
-            MolecularAssemblerBlockEntity ma = (MolecularAssemblerBlockEntity) te;
+        if (te instanceof MolecularAssemblerTileEntity) {
+            MolecularAssemblerTileEntity ma = (MolecularAssemblerTileEntity) te;
             ma.setAnimationStatus(new AssemblerAnimationStatus(rate, is.asItemStackRepresentation()));
         }
     }

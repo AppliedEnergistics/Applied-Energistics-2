@@ -19,6 +19,8 @@
 package appeng.fluids.block;
 
 import javax.annotation.Nullable;
+
+import appeng.fluids.tile.FluidInterfaceTileEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -33,10 +35,9 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.fluids.container.FluidInterfaceContainer;
-import appeng.fluids.tile.FluidInterfaceBlockEntity;
 import appeng.util.Platform;
 
-public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceBlockEntity> {
+public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntity> {
     public FluidInterfaceBlock() {
         super(defaultProps(Material.IRON));
     }
@@ -48,7 +49,7 @@ public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceBlockEnti
             return ActionResultType.field_5811;
         }
 
-        final TileEntity tg = this.getBlockEntity(w, pos);
+        final TileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p,

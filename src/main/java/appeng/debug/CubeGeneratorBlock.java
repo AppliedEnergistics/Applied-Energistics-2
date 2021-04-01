@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 
-public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorBlockEntity> {
+public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity> {
 
     public CubeGeneratorBlock() {
         super(defaultProps(Material.IRON));
@@ -39,7 +39,7 @@ public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorBlockEntity
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        final CubeGeneratorBlockEntity tcg = this.getBlockEntity(w, pos);
+        final CubeGeneratorTileEntity tcg = this.getTileEntity(w, pos);
         if (tcg != null) {
             tcg.click(player);
         }

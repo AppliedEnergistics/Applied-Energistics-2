@@ -21,6 +21,7 @@ package appeng.me.helpers;
 import java.util.Collections;
 import java.util.EnumSet;
 
+import appeng.tile.AEBaseTileEntity;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,7 +50,6 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.parts.networking.CablePart;
-import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;
 
 public class AENetworkProxy implements IGridBlock {
@@ -94,8 +94,8 @@ public class AENetworkProxy implements IGridBlock {
     }
 
     public void validate() {
-        if (this.gp instanceof AEBaseBlockEntity) {
-            TickHandler.instance().addInit((AEBaseBlockEntity) this.gp);
+        if (this.gp instanceof AEBaseTileEntity) {
+            TickHandler.instance().addInit((AEBaseTileEntity) this.gp);
         }
     }
 

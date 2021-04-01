@@ -46,7 +46,7 @@ import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.core.Api;
-import appeng.tile.storage.ChestBlockEntity;
+import appeng.tile.storage.ChestTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
@@ -54,7 +54,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
  * The tile entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
  * LED.
  */
-public class ChestTileEntityRenderer extends TileEntityRenderer<ChestBlockEntity> {
+public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity> {
 
     private final ModelManager modelManager;
 
@@ -68,8 +68,8 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestBlockEntity
     }
 
     @Override
-    public void render(ChestBlockEntity chest, float partialTicks, MatrixStack matrices, IRenderTypeBuffer buffers,
-            int combinedLight, int combinedOverlay) {
+    public void render(ChestTileEntity chest, float partialTicks, MatrixStack matrices, IRenderTypeBuffer buffers,
+                       int combinedLight, int combinedOverlay) {
 
         World world = chest.getWorld();
         if (world == null) {

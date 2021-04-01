@@ -21,6 +21,7 @@ package appeng.worldgen.meteorite;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.tile.storage.SkyChestTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -39,7 +40,6 @@ import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
-import appeng.tile.storage.SkyChestBlockEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorFixedInv;
@@ -203,7 +203,7 @@ public final class MeteoritePlacer {
         if (AEConfig.instance().isFeatureEnabled(AEFeature.SPAWN_PRESSES_IN_METEORITES)) {
             this.putter.put(world, pos, this.skyChestDefinition.block().getDefaultState());
 
-            final SkyChestBlockEntity te = (SkyChestBlockEntity) world.getTileEntity(pos);
+            final SkyChestTileEntity te = (SkyChestTileEntity) world.getTileEntity(pos);
             InventoryAdaptor ap = null;
             if (te != null) {
                 ap = new AdaptorFixedInv(te.getInternalInventory());

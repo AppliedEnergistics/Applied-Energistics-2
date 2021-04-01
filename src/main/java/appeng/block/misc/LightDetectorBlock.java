@@ -39,9 +39,9 @@ import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.MetaRotation;
-import appeng.tile.misc.LightDetectorBlockEntity;
+import appeng.tile.misc.LightDetectorTileEntity;
 
-public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity> implements IOrientableBlock {
+public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity> implements IOrientableBlock {
 
     // Used to alternate between two variants of the fixture on adjacent blocks
     public static final BooleanProperty ODD = BooleanProperty.create("odd");
@@ -61,7 +61,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
     @Override
     public int getWeakPower(final BlockState state, final IBlockReader w, final BlockPos pos,
             final Direction side) {
-        if (w instanceof World && this.getBlockEntity(w, pos).isReady()) {
+        if (w instanceof World && this.getTileEntity(w, pos).isReady()) {
             // FIXME: This is ... uhm... fishy
             return ((World) w).getLight(pos) - 6;
         }
@@ -82,7 +82,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
             return Blocks.AIR.getDefaultState();
         }
 
-        final LightDetectorBlockEntity tld = this.getBlockEntity(world, pos);
+        final LightDetectorTileEntity tld = this.getTileEntity(world, pos);
         if (tld != null) {
             tld.updateLight();
         }

@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
+import appeng.tile.misc.CellWorkbenchTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -47,7 +48,6 @@ import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalRestrictedInputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
-import appeng.tile.misc.CellWorkbenchBlockEntity;
 import appeng.util.EnumCycler;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperSupplierItemHandler;
@@ -57,16 +57,16 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
 
     public static ContainerType<CellWorkbenchContainer> TYPE;
 
-    private static final ContainerHelper<CellWorkbenchContainer, CellWorkbenchBlockEntity> helper = new ContainerHelper<>(
-            CellWorkbenchContainer::new, CellWorkbenchBlockEntity.class);
+    private static final ContainerHelper<CellWorkbenchContainer, CellWorkbenchTileEntity> helper = new ContainerHelper<>(
+            CellWorkbenchContainer::new, CellWorkbenchTileEntity.class);
 
-    private final CellWorkbenchBlockEntity workBench;
+    private final CellWorkbenchTileEntity workBench;
     @GuiSync(2)
     public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
     private ItemStack prevStack = ItemStack.EMPTY;
     private int lastUpgrades = 0;
 
-    public CellWorkbenchContainer(int id, final PlayerInventory ip, final CellWorkbenchBlockEntity te) {
+    public CellWorkbenchContainer(int id, final PlayerInventory ip, final CellWorkbenchTileEntity te) {
         super(TYPE, id, ip, te);
         this.workBench = te;
     }

@@ -236,7 +236,7 @@ public abstract class AEBaseContainer extends Container {
         return this.getPlayerInventory();
     }
 
-    public TileEntity getBlockEntity() {
+    public TileEntity getTileEntity() {
         return this.tileEntity;
     }
 

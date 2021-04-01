@@ -20,6 +20,7 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
+import appeng.tile.misc.InscriberTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -34,9 +35,8 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InscriberContainer;
-import appeng.tile.misc.InscriberBlockEntity;
 
-public class InscriberBlock extends AEBaseTileBlock<InscriberBlockEntity> {
+public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
 
     public InscriberBlock(Properties props) {
         super(props);
@@ -52,7 +52,7 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberBlockEntity> {
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (!p.isCrouching()) {
-            final InscriberBlockEntity tg = this.getBlockEntity(w, pos);
+            final InscriberTileEntity tg = this.getTileEntity(w, pos);
             if (tg != null) {
                 if (!tg.isClient()) {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,

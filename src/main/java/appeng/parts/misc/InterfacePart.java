@@ -204,7 +204,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public TileEntity getBlockEntity() {
+    public TileEntity getTileEntity() {
         return super.getHost().getTile();
     }
 

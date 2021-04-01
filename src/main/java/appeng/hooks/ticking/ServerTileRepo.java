@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.Queue;
 
+import appeng.tile.AEBaseTileEntity;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
@@ -11,14 +12,12 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import appeng.tile.AEBaseBlockEntity;
-
 /**
  * A class to hold data related to ticking tiles.
  */
 class ServerTileRepo {
 
-    private final Map<World, Long2ObjectMap<Queue<AEBaseBlockEntity>>> tiles = new Object2ObjectOpenHashMap<>();
+    private final Map<World, Long2ObjectMap<Queue<AEBaseTileEntity>>> tiles = new Object2ObjectOpenHashMap<>();
 
     /**
      * Resets all internal data
@@ -31,15 +30,15 @@ class ServerTileRepo {
     /**
      * Add a new tile to be initializes in a later tick.
      */
-    synchronized void addTile(AEBaseBlockEntity tile) {
+    synchronized void addTile(AEBaseTileEntity tile) {
         final World world = tile.getWorld();
         final int x = tile.getPos().getX() >> 4;
         final int z = tile.getPos().getZ() >> 4;
         final long chunkPos = ChunkPos.asLong(x, z);
 
-        Long2ObjectMap<Queue<AEBaseBlockEntity>> worldQueue = this.tiles.get(world);
+        Long2ObjectMap<Queue<AEBaseTileEntity>> worldQueue = this.tiles.get(world);
 
-        Queue<AEBaseBlockEntity> queue = worldQueue.computeIfAbsent(chunkPos, key -> {
+        Queue<AEBaseTileEntity> queue = worldQueue.computeIfAbsent(chunkPos, key -> {
             return new ArrayDeque<>();
         });
 
@@ -69,7 +68,7 @@ class ServerTileRepo {
      * save memory.
      */
     synchronized void removeWorldChunk(World world, long chunkPos) {
-        Map<Long, Queue<AEBaseBlockEntity>> queue = this.tiles.get(world);
+        Map<Long, Queue<AEBaseTileEntity>> queue = this.tiles.get(world);
         if (queue != null) {
             queue.remove(chunkPos);
         }
@@ -78,7 +77,7 @@ class ServerTileRepo {
     /**
      * Get the tiles needing to be initialized in this specific {@link World}.
      */
-    public Long2ObjectMap<Queue<AEBaseBlockEntity>> getTiles(World world) {
+    public Long2ObjectMap<Queue<AEBaseTileEntity>> getTiles(World world) {
         return tiles.get(world);
     }
 

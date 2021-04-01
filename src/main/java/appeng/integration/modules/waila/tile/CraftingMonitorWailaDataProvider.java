@@ -26,7 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.localization.WailaText;
 import appeng.integration.modules.waila.BaseWailaDataProvider;
-import appeng.tile.crafting.CraftingMonitorBlockEntity;
+import appeng.tile.crafting.CraftingMonitorTileEntity;
 
 /**
  * Crafting-monitor provider for WAILA
@@ -40,8 +40,8 @@ public final class CraftingMonitorWailaDataProvider extends BaseWailaDataProvide
     @Override
     public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
         final TileEntity te = accessor.getBlockEntity();
-        if (te instanceof CraftingMonitorBlockEntity) {
-            final CraftingMonitorBlockEntity monitor = (CraftingMonitorBlockEntity) te;
+        if (te instanceof CraftingMonitorTileEntity) {
+            final CraftingMonitorTileEntity monitor = (CraftingMonitorTileEntity) te;
             final IAEItemStack displayStack = monitor.getJobProgress();
 
             if (displayStack != null) {

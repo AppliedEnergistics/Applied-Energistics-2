@@ -41,7 +41,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.ModelOverrideComponent;
-import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
 
 public class FeatureFactory {
@@ -84,9 +84,9 @@ public class FeatureFactory {
         return new EntityBuilder<T>(this, id, factory, classification).features(this.defaultFeatures);
     }
 
-    public <T extends AEBaseBlockEntity> BlockEntityBuilder<T> tileEntity(String id, Class<T> teClass,
-            Function<TileEntityType<T>, T> factory) {
-        return new BlockEntityBuilder<>(this, id, teClass, factory).features(this.defaultFeatures);
+    public <T extends AEBaseTileEntity> TileEntityBuilder<T> tileEntity(String id, Class<T> teClass,
+                                                                        Function<TileEntityType<T>, T> factory) {
+        return new TileEntityBuilder<>(this, id, teClass, factory).features(this.defaultFeatures);
     }
 
     public FeatureFactory features(AEFeature... features) {

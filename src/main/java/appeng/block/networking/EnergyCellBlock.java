@@ -28,9 +28,9 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.NonNullList;
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEMaterials;
-import appeng.tile.networking.EnergyCellBlockEntity;
+import appeng.tile.networking.EnergyCellTileEntity;
 
-public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellBlockEntity> {
+public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
 
     public static final int MAX_FULLNESS = 4;
 

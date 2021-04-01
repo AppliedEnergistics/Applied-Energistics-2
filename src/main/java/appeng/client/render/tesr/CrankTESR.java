@@ -18,6 +18,7 @@
 
 package appeng.client.render.tesr;
 
+import appeng.tile.grindstone.CrankTileEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -30,7 +31,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.math.vector.Quaternion;
 import appeng.client.render.FacingToRotation;
-import appeng.tile.grindstone.CrankBlockEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
@@ -39,15 +39,15 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
  * normal model.
  */
 @Environment(EnvType.CLIENT)
-public class CrankTESR extends TileEntityRenderer<CrankBlockEntity> {
+public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
 
     public CrankTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(CrankBlockEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(CrankTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
 
         // Apply GL transformations relative to the center of the block: 1) TE rotation
         // and 2) crank rotation

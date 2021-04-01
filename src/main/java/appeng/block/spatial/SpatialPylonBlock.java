@@ -18,6 +18,7 @@
 
 package appeng.block.spatial;
 
+import appeng.tile.spatial.SpatialPylonTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -25,9 +26,8 @@ import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEMaterials;
-import appeng.tile.spatial.SpatialPylonBlockEntity;
 
-public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonBlockEntity> {
+public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
 
     public SpatialPylonBlock() {
         super(defaultProps(AEMaterials.GLASS));
@@ -36,7 +36,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonBlockEntity> 
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialPylonBlockEntity tsp = this.getBlockEntity(world, pos);
+        final SpatialPylonTileEntity tsp = this.getTileEntity(world, pos);
         if (tsp != null) {
             tsp.neighborUpdate(fromPos);
         }
@@ -45,7 +45,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonBlockEntity> 
 // FIXME FABRIC  Must use block states for dynamic lighting
 // FIXME FABRIC    @Override
 // FIXME FABRIC    public int getLightValue(final BlockState state, final BlockView w, final BlockPos pos) {
-// FIXME FABRIC        final SpatialPylonBlockEntity tsp = this.getBlockEntity(w, pos);
+// FIXME FABRIC        final SpatialPylonTileEntity tsp = this.getBlockEntity(w, pos);
 // FIXME FABRIC        if (tsp != null) {
 // FIXME FABRIC            return tsp.getLightValue();
 // FIXME FABRIC        }

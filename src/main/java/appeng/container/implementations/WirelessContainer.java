@@ -28,14 +28,14 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AEConfig;
-import appeng.tile.networking.WirelessBlockEntity;
+import appeng.tile.networking.WirelessTileEntity;
 
 public class WirelessContainer extends AEBaseContainer {
 
     public static ContainerType<WirelessContainer> TYPE;
 
-    private static final ContainerHelper<WirelessContainer, WirelessBlockEntity> helper = new ContainerHelper<>(
-            WirelessContainer::new, WirelessBlockEntity.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<WirelessContainer, WirelessTileEntity> helper = new ContainerHelper<>(
+            WirelessContainer::new, WirelessTileEntity.class, SecurityPermissions.BUILD);
 
     public static WirelessContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
@@ -51,7 +51,7 @@ public class WirelessContainer extends AEBaseContainer {
     @GuiSync(2)
     public long drain = 0;
 
-    public WirelessContainer(int id, final PlayerInventory ip, final WirelessBlockEntity te) {
+    public WirelessContainer(int id, final PlayerInventory ip, final WirelessTileEntity te) {
         super(TYPE, id, ip, te, null);
 
         this.addSlot(this.boosterSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.RANGE_BOOSTER,

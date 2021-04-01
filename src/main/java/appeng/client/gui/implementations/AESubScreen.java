@@ -3,6 +3,8 @@ package appeng.client.gui.implementations;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
+
+import appeng.tile.storage.ChestTileEntity;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -24,7 +26,6 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.TerminalPart;
-import appeng.tile.storage.ChestBlockEntity;
 
 /**
  * Utility class for sub-screens of other containers that allow returning to the primary container UI.
@@ -45,7 +46,7 @@ final class AESubScreen {
         final IDefinitions definitions = Api.instance().definitions();
         final IParts parts = definitions.parts();
 
-        if (containerTarget instanceof ChestBlockEntity) {
+        if (containerTarget instanceof ChestTileEntity) {
             // A chest is also a priority host, but the priority _interface_ can only be
             // opened from the
             // chest ui that doesn't actually show the contents of the inserted cell.

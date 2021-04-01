@@ -45,14 +45,14 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.tile.crafting.CraftingTileEntity;
 
 public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
     public static ContainerType<CraftingCPUContainer> TYPE;
 
-    private static final ContainerHelper<CraftingCPUContainer, CraftingBlockEntity> helper = new ContainerHelper<>(
-            CraftingCPUContainer::new, CraftingBlockEntity.class, SecurityPermissions.CRAFT)
+    private static final ContainerHelper<CraftingCPUContainer, CraftingTileEntity> helper = new ContainerHelper<>(
+            CraftingCPUContainer::new, CraftingTileEntity.class, SecurityPermissions.CRAFT)
                     .withContainerTitle(craftingTileEntity -> {
                         // Use the cluster's custom name instead of the right-clicked block entities one
                         CraftingCPUCluster cluster = craftingTileEntity.getCluster();
@@ -70,7 +70,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     @GuiSync(0)
     public long eta = -1;
 
-    private CraftingCPUContainer(int id, final PlayerInventory ip, final CraftingBlockEntity te) {
+    private CraftingCPUContainer(int id, final PlayerInventory ip, final CraftingTileEntity te) {
         this(TYPE, id, ip, te);
     }
 
@@ -84,8 +84,8 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
             this.network = null;
         }
 
-        if (te instanceof CraftingBlockEntity) {
-            this.setCPU(((CraftingBlockEntity) te).getCluster());
+        if (te instanceof CraftingTileEntity) {
+            this.setCPU(((CraftingTileEntity) te).getCluster());
         }
 
         if (this.getNetwork() == null && isServer()) {

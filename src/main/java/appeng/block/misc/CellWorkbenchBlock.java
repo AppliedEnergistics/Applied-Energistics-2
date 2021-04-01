@@ -19,6 +19,8 @@
 package appeng.block.misc;
 
 import javax.annotation.Nullable;
+
+import appeng.tile.misc.CellWorkbenchTileEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -31,10 +33,9 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.tile.misc.CellWorkbenchBlockEntity;
 import appeng.util.Platform;
 
-public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchBlockEntity> {
+public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity> {
 
     public CellWorkbenchBlock() {
         super(defaultProps(Material.IRON));
@@ -47,7 +48,7 @@ public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchBlockEntity
             return ActionResultType.field_5811;
         }
 
-        final CellWorkbenchBlockEntity tg = this.getBlockEntity(w, pos);
+        final CellWorkbenchTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 CellWorkbenchContainer.open(p, ContainerLocator.forTileEntity(tg));

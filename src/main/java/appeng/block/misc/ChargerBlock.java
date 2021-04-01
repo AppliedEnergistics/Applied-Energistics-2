@@ -47,10 +47,10 @@ import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.tile.misc.ChargerBlockEntity;
+import appeng.tile.misc.ChargerTileEntity;
 import appeng.util.Platform;
 
-public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
+public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
     public ChargerBlock() {
         super(defaultProps(Material.IRON).notSolid());
@@ -69,7 +69,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
         }
 
         if (Platform.isServer()) {
-            final ChargerBlockEntity tc = this.getBlockEntity(w, pos);
+            final ChargerTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null) {
                 tc.activate(player);
             }
@@ -89,7 +89,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
             return;
         }
 
-        final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
+        final ChargerTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
             if (Api.instance().definitions().materials().certusQuartzCrystalCharged()
                     .isSameAs(tile.getInternalInventory().getInvStack(0))) {
@@ -111,7 +111,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
 
-        final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
+        final ChargerTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
             final double twoPixels = 2.0 / 16.0;
             final Direction up = tile.getUp();

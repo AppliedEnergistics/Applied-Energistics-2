@@ -21,7 +21,7 @@ package appeng.debug;
 import appeng.block.AEBaseTileBlock;
 import net.minecraft.block.material.Material;
 
-public class ChunkLoaderBlock extends AEBaseTileBlock<ChunkLoaderBlockEntity> {
+public class ChunkLoaderBlock extends AEBaseTileBlock<ChunkLoaderTileEntity> {
 
     public ChunkLoaderBlock() {
         super(defaultProps(Material.IRON));

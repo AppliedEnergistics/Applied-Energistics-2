@@ -13,7 +13,7 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.core.Api;
-import appeng.tile.misc.CondenserBlockEntity;
+import appeng.tile.misc.CondenserTileEntity;
 
 public class CondenserOutputDisplay implements RecipeDisplay {
 
@@ -72,7 +72,7 @@ public class CondenserOutputDisplay implements RecipeDisplay {
     private void addViableComponent(CondenserOutput condenserOutput, List<EntryStack> viableComponents,
             ItemStack itemStack) {
         IStorageComponent comp = (IStorageComponent) itemStack.getItem();
-        int storage = comp.getBytes(itemStack) * CondenserBlockEntity.BYTE_MULTIPLIER;
+        int storage = comp.getBytes(itemStack) * CondenserTileEntity.BYTE_MULTIPLIER;
         if (storage >= condenserOutput.requiredPower) {
             viableComponents.add(EntryStack.create(itemStack));
         }

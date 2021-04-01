@@ -20,9 +20,9 @@ package appeng.block.networking;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEMaterials;
-import appeng.tile.networking.CreativeEnergyCellBlockEntity;
+import appeng.tile.networking.CreativeEnergyCellTileEntity;
 
-public class CreativeEnergyCellBlock extends AEBaseTileBlock<CreativeEnergyCellBlockEntity> {
+public class CreativeEnergyCellBlock extends AEBaseTileBlock<CreativeEnergyCellTileEntity> {
 
     public CreativeEnergyCellBlock() {
         super(defaultProps(AEMaterials.GLASS));

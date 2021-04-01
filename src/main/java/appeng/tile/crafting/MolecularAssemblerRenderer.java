@@ -50,7 +50,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
 @Environment(EnvType.CLIENT)
-public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAssemblerBlockEntity> {
+public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAssemblerTileEntity> {
 
     public static final ModelResourceLocation LIGHTS_MODEL = new ModelResourceLocation(
             AppEng.makeId("block/molecular_assembler_lights"), "");
@@ -64,8 +64,8 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
     }
 
     @Override
-    public void render(MolecularAssemblerBlockEntity molecularAssembler, float partialTicks, MatrixStack ms,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, MatrixStack ms,
+                       IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
@@ -102,8 +102,8 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
                 combinedLightIn, combinedOverlayIn);
     }
 
-    private void renderStatus(MolecularAssemblerBlockEntity molecularAssembler, MatrixStack ms,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
+    private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, MatrixStack ms,
+                              IRenderTypeBuffer bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getPos().getX() + 0.5f;
         double centerY = molecularAssembler.getPos().getY() + 0.5f;
         double centerZ = molecularAssembler.getPos().getZ() + 0.5f;

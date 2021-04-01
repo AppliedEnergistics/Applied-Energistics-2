@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.tile.misc.CondenserTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -32,16 +33,15 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.misc.CondenserBlockEntity;
 
 public class CondenserContainer extends AEBaseContainer implements IProgressProvider {
 
     public static ContainerType<CondenserContainer> TYPE;
 
-    private static final ContainerHelper<CondenserContainer, CondenserBlockEntity> helper = new ContainerHelper<>(
-            CondenserContainer::new, CondenserBlockEntity.class);
+    private static final ContainerHelper<CondenserContainer, CondenserTileEntity> helper = new ContainerHelper<>(
+            CondenserContainer::new, CondenserTileEntity.class);
 
-    private final CondenserBlockEntity condenser;
+    private final CondenserTileEntity condenser;
     @GuiSync(0)
     public long requiredEnergy = 0;
     @GuiSync(1)
@@ -49,7 +49,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
     @GuiSync(2)
     public CondenserOutput output = CondenserOutput.TRASH;
 
-    public CondenserContainer(int id, final PlayerInventory ip, final CondenserBlockEntity condenser) {
+    public CondenserContainer(int id, final PlayerInventory ip, final CondenserTileEntity condenser) {
         super(TYPE, id, ip, condenser, null);
         this.condenser = condenser;
 

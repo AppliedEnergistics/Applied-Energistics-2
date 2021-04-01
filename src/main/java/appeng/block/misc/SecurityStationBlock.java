@@ -37,9 +37,9 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SecurityStationContainer;
-import appeng.tile.misc.SecurityStationBlockEntity;
+import appeng.tile.misc.SecurityStationTileEntity;
 
-public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationBlockEntity> {
+public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEntity> {
 
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -56,7 +56,7 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationBlockEn
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationBlockEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationTileEntity te) {
         return currentState.with(POWERED, te.isActive());
     }
 
@@ -67,7 +67,7 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationBlockEn
             return ActionResultType.field_5811;
         }
 
-        final SecurityStationBlockEntity tg = this.getBlockEntity(w, pos);
+        final SecurityStationTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (w.isRemote()) {
                 return ActionResultType.field_5812;

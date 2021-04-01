@@ -28,11 +28,11 @@ import appeng.api.definitions.IBlocks;
 import appeng.core.Api;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.tile.qnb.QuantumBridgeTileEntity;
 
-public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, QuantumCluster> {
+public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, QuantumCluster> {
 
-    public QuantumCalculator(final QuantumBridgeBlockEntity t) {
+    public QuantumCalculator(final QuantumBridgeTileEntity t) {
         super(t);
     }
 
@@ -88,7 +88,7 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
         byte ringNum = 0;
 
         for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
-            final QuantumBridgeBlockEntity te = (QuantumBridgeBlockEntity) w.getTileEntity(p);
+            final QuantumBridgeTileEntity te = (QuantumBridgeTileEntity) w.getTileEntity(p);
 
             num++;
             final byte flags;
@@ -111,7 +111,7 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
 
     @Override
     public boolean isValidTile(final TileEntity te) {
-        return te instanceof QuantumBridgeBlockEntity;
+        return te instanceof QuantumBridgeTileEntity;
     }
 
     private boolean isBlockAtLocation(final IBlockReader w, final BlockPos pos, final IBlockDefinition def) {

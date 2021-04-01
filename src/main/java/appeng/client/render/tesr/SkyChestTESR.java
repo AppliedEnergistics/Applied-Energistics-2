@@ -18,6 +18,7 @@
 
 package appeng.client.render.tesr;
 
+import appeng.tile.storage.SkyChestTileEntity;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -36,11 +37,10 @@ import net.minecraft.util.math.vector.Vector3f;
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
 import appeng.core.AppEng;
-import appeng.tile.storage.SkyChestBlockEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @Environment(EnvType.CLIENT)
-public class SkyChestTESR extends TileEntityRenderer<SkyChestBlockEntity> {
+public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
 
     public static final RenderMaterial TEXTURE_STONE = new RenderMaterial(Atlases.CHEST_ATLAS,
             new ResourceLocation(AppEng.MOD_ID, "models/skychest"));
@@ -68,8 +68,8 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestBlockEntity> {
     }
 
     @Override
-    public void render(SkyChestBlockEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(SkyChestTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
+                       IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.push();
         float f = tileEntityIn.getForward().getHorizontalAngle();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
@@ -97,7 +97,7 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestBlockEntity> {
         chestBottom.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    protected RenderMaterial getMaterial(SkyChestBlockEntity tileEntity) {
+    protected RenderMaterial getMaterial(SkyChestTileEntity tileEntity) {
         SkyChestType type = SkyChestType.BLOCK;
         if (tileEntity.getWorld() != null) {
             Block blockType = tileEntity.getBlockState().getBlock();

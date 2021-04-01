@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 
-public class PhantomNodeBlock extends AEBaseTileBlock<PhantomNodeBlockEntity> {
+public class PhantomNodeBlock extends AEBaseTileBlock<PhantomNodeTileEntity> {
 
     public PhantomNodeBlock() {
         super(defaultProps(Material.IRON));
@@ -39,7 +39,7 @@ public class PhantomNodeBlock extends AEBaseTileBlock<PhantomNodeBlockEntity> {
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        final PhantomNodeBlockEntity tpn = this.getBlockEntity(w, pos);
+        final PhantomNodeTileEntity tpn = this.getTileEntity(w, pos);
         tpn.triggerCrashMode();
         return ActionResultType.field_5812;
     }

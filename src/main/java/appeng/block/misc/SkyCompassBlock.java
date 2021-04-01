@@ -32,9 +32,9 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
-import appeng.tile.misc.SkyCompassBlockEntity;
+import appeng.tile.misc.SkyCompassTileEntity;
 
-public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
+public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
 
     public SkyCompassBlock(Properties props) {
         super(props);
@@ -43,7 +43,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
     @Override
     public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward,
             final Direction up) {
-        final SkyCompassBlockEntity sc = this.getBlockEntity(w, pos);
+        final SkyCompassTileEntity sc = this.getTileEntity(w, pos);
         if (sc != null) {
             return false;
         }
@@ -59,7 +59,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SkyCompassBlockEntity sc = this.getBlockEntity(world, pos);
+        final SkyCompassTileEntity sc = this.getTileEntity(world, pos);
         final Direction forward = sc.getForward();
         if (!this.canPlaceAt(world, pos, forward.getOpposite())) {
             this.dropTorch(world, pos);
@@ -87,7 +87,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
 
         // TODO: This definitely needs to be memoized
 
-        final SkyCompassBlockEntity tile = this.getBlockEntity(w, pos);
+        final SkyCompassTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
 

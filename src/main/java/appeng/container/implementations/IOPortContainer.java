@@ -33,14 +33,14 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.storage.IOPortBlockEntity;
+import appeng.tile.storage.IOPortTileEntity;
 
 public class IOPortContainer extends UpgradeableContainer {
 
     public static ContainerType<IOPortContainer> TYPE;
 
-    private static final ContainerHelper<IOPortContainer, IOPortBlockEntity> helper = new ContainerHelper<>(
-            IOPortContainer::new, IOPortBlockEntity.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<IOPortContainer, IOPortTileEntity> helper = new ContainerHelper<>(
+            IOPortContainer::new, IOPortTileEntity.class, SecurityPermissions.BUILD);
 
     public static IOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
@@ -55,7 +55,7 @@ public class IOPortContainer extends UpgradeableContainer {
     @GuiSync(3)
     public OperationMode opMode = OperationMode.EMPTY;
 
-    public IOPortContainer(int id, final PlayerInventory ip, final IOPortBlockEntity te) {
+    public IOPortContainer(int id, final PlayerInventory ip, final IOPortTileEntity te) {
         super(TYPE, id, ip, te);
     }
 

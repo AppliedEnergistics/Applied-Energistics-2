@@ -42,7 +42,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.QNBContainer;
 import appeng.core.AppEng;
 import appeng.helpers.AEMaterials;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.util.Platform;
 
 public class QuantumLinkChamberBlock extends QuantumBaseBlock {
@@ -61,7 +61,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
     @Override
     public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
-        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
+        final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
         if (bridge != null) {
             if (bridge.hasQES()) {
                 if (AppEng.instance().shouldAddParticles(rand)) {
@@ -79,7 +79,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
             return ActionResultType.field_5811;
         }
 
-        final QuantumBridgeBlockEntity tg = this.getBlockEntity(w, pos);
+        final QuantumBridgeTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
