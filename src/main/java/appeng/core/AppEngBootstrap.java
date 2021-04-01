@@ -88,7 +88,7 @@ public final class AppEngBootstrap {
         // There's a bidirectional map in the Structure class itself primarily for the
         // purposes of NBT serialization
         StructureFeatureAccessor.register(MeteoriteStructure.ID.toString(), MeteoriteStructure.INSTANCE,
-                GenerationStage.Decoration.field_13179);
+                GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
 
         ConfiguredStructureFeaturesAccessor.register(MeteoriteStructure.ID.toString(),
                 MeteoriteStructure.CONFIGURED_INSTANCE);
@@ -132,16 +132,16 @@ public final class AppEngBootstrap {
         }
 
         BiomeModifier modifier = new BiomeModifier(b);
-        modifier.addFeature(GenerationStage.Decoration.field_13176, quartzOre);
+        modifier.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, quartzOre);
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
-            modifier.addFeature(GenerationStage.Decoration.field_13177, chargedQuartz);
+            modifier.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION, chargedQuartz);
         }
     }
 
     private static boolean isBlacklistedBiomeCategory(Biome.Category category) {
-        return category == Biome.Category.field_9360 || category == Biome.Category.field_9366
-                || category == Biome.Category.field_9371;
+        return category == Biome.Category.THEEND || category == Biome.Category.NETHER
+                || category == Biome.Category.NONE;
     }
 
     private static ConfiguredFeature<?, ?> registerQuartzOreFeature() {
@@ -152,7 +152,7 @@ public final class AppEngBootstrap {
                         .withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
                                 AEConfig.instance().getQuartzOresPerCluster()))
                         .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(12, 12, 72))).square()
-                        .method_30375(AEConfig.instance().getQuartzOresClusterAmount()));
+                        .func_242731_b(AEConfig.instance().getQuartzOresClusterAmount()));
     }
 
     private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {
