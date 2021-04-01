@@ -61,7 +61,7 @@ public class ToggleButton extends Button implements ITooltip {
             final int iconIndex = this.getIconIndex();
 
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            Minecraft.getInstance().textureManager.bindTexture(TEXTURE_STATES);
+            Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE_STATES);
 
             final int uv_y = iconIndex / 16;
             final int uv_x = iconIndex - uv_y * 16;

@@ -64,10 +64,8 @@ public class OptionalFluidSlotWidget extends FluidSlotWidget {
         } else {
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.4F);
         }
-        int oldZOffset = getBlitOffset();
-        setBlitOffset(currentZIndex);
-        blit(matrices, guileft + this.getTooltipAreaX() - 1, guitop + this.getTooltipAreaY() - 1, this.srcX - 1,
-                this.srcY - 1, this.getTooltipAreaWidth() + 2, this.getTooltipAreaHeight() + 2);
-        setBlitOffset(oldZOffset);
+        blit(matrices, guileft + this.getTooltipAreaX() - 1, guitop + this.getTooltipAreaY() - 1, currentZIndex,
+                this.srcX - 1,
+                this.srcY - 1, this.getTooltipAreaWidth() + 2, this.getTooltipAreaHeight() + 2, 256, 256);
     }
 }

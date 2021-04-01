@@ -67,7 +67,7 @@ public class TabButton extends Button implements ITooltip {
 
         if (this.visible) {
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            minecraft.textureManager.bindTexture(TEXTURE_STATES);
+            minecraft.getTextureManager().bindTexture(TEXTURE_STATES);
 
             RenderSystem.enableAlphaTest();
 
