@@ -18,16 +18,18 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.container.implementations.CraftAmountContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.CraftRequestPacket;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     private final AESubScreen subGui;
@@ -52,8 +54,8 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         this.amountToCraft.setHideValidationIcon(true);
         this.amountToCraft.addButtons(children::add, this::addButton);
 
-        this.next = this
-                .addButton(new Button(this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.text(), this::confirm));
+        this.next = this.addButton(
+                new Button(this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.text(), this::confirm));
         this.amountToCraft.setOnConfirm(() -> this.confirm(this.next));
 
         subGui.addBackButton(this::addButton, 154, 0);
@@ -70,8 +72,9 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.method_30883(matrices, GuiText.SelectAmount.text(), 8, 6, 4210752);
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrices, GuiText.SelectAmount.text().getString(), 8, 6, 4210752);
     }
 
     @Override

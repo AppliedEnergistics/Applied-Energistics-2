@@ -20,8 +20,10 @@ package appeng.client.gui.widgets;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.config.ActionItems;
 import appeng.core.localization.ButtonToolTips;
 

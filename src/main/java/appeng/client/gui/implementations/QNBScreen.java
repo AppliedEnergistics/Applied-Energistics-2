@@ -18,12 +18,14 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.container.implementations.QNBContainer;
 import appeng.core.localization.GuiText;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class QNBScreen extends AEBaseScreen<QNBContainer> {
 
@@ -33,9 +35,11 @@ public class QNBScreen extends AEBaseScreen<QNBContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.QuantumLinkChamber.text()), 8, 6, 4210752);
-        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.QuantumLinkChamber.text()).getString(), 8, 6,
+                4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override

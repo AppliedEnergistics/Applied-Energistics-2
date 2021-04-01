@@ -19,7 +19,9 @@
 package appeng.client.me;
 
 import javax.annotation.Nonnull;
+
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.tile.inventory.AppEngInternalInventory;
 
 public class ClientDCInternalInv implements Comparable<ClientDCInternalInv> {

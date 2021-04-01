@@ -18,6 +18,8 @@
 
 package appeng.fluids.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import appeng.client.gui.implementations.UpgradeableScreen;
@@ -31,10 +33,10 @@ import appeng.fluids.client.gui.widgets.FluidTankWidget;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.util.IAEFluidTank;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContainer> {
-    public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 231;
     }
@@ -47,13 +49,13 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
         final IAEFluidTank fluidTank = this.container.getTanks();
 
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
-            final FluidTankWidget guiTank = new FluidTankWidget(fluidTank, i, this.getX() + 35 + 18 * i,
-                    this.getY() + 53, 16, 68);
+            final FluidTankWidget guiTank = new FluidTankWidget(fluidTank, i, this.getGuiLeft() + 35 + 18 * i,
+                    this.getGuiTop() + 53, 16, 68);
             this.addButton(guiTank);
             this.guiSlots.add(new FluidSlotWidget(configFluids, i, i, 35 + 18 * i, 35));
         }
 
-        this.addButton(new TabButton(this.getX() + 154, this.getY(), 2 + 4 * 16, GuiText.Priority.text(),
+        this.addButton(new TabButton(this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
     }
 
@@ -62,11 +64,12 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.FluidInterface.text()), 8, 6, 4210752);
-        this.font.method_30883(matrices, GuiText.Config.text(), 35, 6 + 11 + 7, 4210752);
-        this.font.method_30883(matrices, GuiText.StoredFluids.text(), 35, 6 + 112 + 7, 4210752);
-        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.FluidInterface.text()).getString(), 8, 6,
+                4210752);
+        this.font.drawString(matrixStack, GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
+        this.font.drawString(matrixStack, GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override

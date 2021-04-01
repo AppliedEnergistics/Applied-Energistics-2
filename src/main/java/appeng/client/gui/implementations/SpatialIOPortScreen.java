@@ -18,18 +18,21 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.container.implementations.SpatialIOPortContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
-    public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 199;
     }
@@ -41,28 +44,29 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.method_30883(matrices,
-                GuiText.StoredPower.withSuffix(": " + Platform.formatPowerLong(this.container.getCurrentPower(), false)),
-                13, 21, 4210752);
-        this.font.method_30883(matrices,
-                GuiText.MaxPower.withSuffix(": " + Platform.formatPowerLong(this.container.getMaxPower(), false)), 13, 31,
-                4210752);
-        this.font.method_30883(matrices, GuiText.RequiredPower
-                .withSuffix(": " + Platform.formatPowerLong(this.container.getRequiredPower(), false)), 13, 73, 4210752);
-        this.font.method_30883(matrices,
-                GuiText.Efficiency.withSuffix(": " + (((float) this.container.getEfficency()) / 100) + '%'), 13, 83,
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, GuiText.StoredPower.getLocal() + ": "
+                + Platform.formatPowerLong(this.container.getCurrentPower(), false), 13, 21, 4210752);
+        this.font.drawString(matrixStack,
+                GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong(this.container.getMaxPower(), false), 13,
+                31, 4210752);
+        this.font.drawString(matrixStack, GuiText.RequiredPower.getLocal() + ": "
+                + Platform.formatPowerLong(this.container.getRequiredPower(), false), 13, 73, 4210752);
+        this.font.drawString(matrixStack,
+                GuiText.Efficiency.getLocal() + ": " + (((float) this.container.getEfficency()) / 100) + '%', 13, 83,
                 4210752);
 
-        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.SpatialIOPort.text()), 8, 6, 4210752);
-        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialIOPort.text()).getString(), 8, 6,
+                4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96, 4210752);
 
         if (this.container.xSize != 0 && this.container.ySize != 0 && this.container.zSize != 0) {
-            final ITextComponent text = GuiText.SCSSize
-                    .withSuffix(": " + this.container.xSize + "x" + this.container.ySize + "x" + this.container.zSize);
-            this.font.method_30883(matrices, text, 13, 93, 4210752);
+            final String text = GuiText.SCSSize.getLocal() + ": " + this.container.xSize + "x" + this.container.ySize
+                    + "x" + this.container.zSize;
+            this.font.drawString(matrixStack, text, 13, 93, 4210752);
         } else {
-            this.font.method_30883(matrices, GuiText.SCSSize.withSuffix(": ").append(GuiText.SCSInvalid.text()), 13, 93,
+            this.font.drawString(matrixStack, GuiText.SCSSize.getLocal() + ": " + GuiText.SCSInvalid.getLocal(), 13, 93,
                     4210752);
         }
 

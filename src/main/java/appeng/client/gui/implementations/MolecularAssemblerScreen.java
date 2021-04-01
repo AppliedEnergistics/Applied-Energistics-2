@@ -18,9 +18,12 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.widgets.ProgressBar;
@@ -28,7 +31,6 @@ import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.container.implementations.MolecularAssemblerContainer;
 import appeng.core.localization.GuiText;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssemblerContainer> {
 
@@ -51,23 +53,24 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
 
     @Override
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED,
-                RedstoneMode.IGNORE);
+        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8,
+                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addButton(this.redstoneMode);
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
         this.pb.setFullMsg(new StringTextComponent(this.container.getCurrentProgress() + "%"));
-        super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.pb.x = 148 + this.guiLeft;
         this.pb.y = 48 + this.guiTop;
-        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
+        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
     }
 
     @Override

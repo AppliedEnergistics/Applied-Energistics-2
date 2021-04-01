@@ -18,7 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-import java.util.List;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import me.shedaniel.math.Rectangle;
@@ -37,7 +38,8 @@ import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.localization.GuiText;
 import appeng.parts.automation.ExportBusPart;
 import appeng.parts.automation.ImportBusPart;
-import com.mojang.blaze3d.matrix.MatrixStack;
+
+import java.util.List;
 
 public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
 
@@ -69,23 +71,25 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     }
 
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED,
-                RedstoneMode.IGNORE);
+        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8,
+                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addButton(this.redstoneMode);
         this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
         addButton(this.fuzzyMode);
-        this.craftMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY, YesNo.NO);
+        this.craftMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY,
+                YesNo.NO);
         addButton(this.craftMode);
-        this.schedulingMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68, Settings.SCHEDULING_MODE,
-                SchedulingMode.DEFAULT);
+        this.schedulingMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
+                Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
         addButton(this.schedulingMode);
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.method_30883(matrices, this.getGuiDisplayName(this.getName().text()), 8, 6, 4210752);
-        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(this.getName().text()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
         if (this.redstoneMode != null) {
             this.redstoneMode.set(this.cvb.getRedStoneMode());

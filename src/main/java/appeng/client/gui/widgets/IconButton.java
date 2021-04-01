@@ -20,6 +20,7 @@ package appeng.client.gui.widgets;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.widget.button.Button;
@@ -29,7 +30,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 public abstract class IconButton extends Button implements ITooltip {
-    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2", "textures/guis/states.png");
+    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
+            "textures/guis/states.png");
 
     private boolean halfSize = false;
 
@@ -47,14 +49,14 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void playDownSound(SoundHandler soundManager) {
+    public void playDownSound(SoundHandler soundHandler) {
         if (!disableClickSound) {
-            super.playDownSound(soundManager);
+            super.playDownSound(soundHandler);
         }
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, final int mouseX, final int mouseY, float partial) {
+    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, float partial) {
 
         Minecraft minecraft = Minecraft.getInstance();
 
@@ -84,9 +86,9 @@ public abstract class IconButton extends Button implements ITooltip {
                 final int uv_x = iconIndex - uv_y * 16;
 
                 if (!disableBackground) {
-                    blit(matrices, 0, 0, 256 - 16, 256 - 16, 16, 16);
+                    blit(matrixStack, 0, 0, 256 - 16, 256 - 16, 16, 16);
                 }
-                blit(matrices, 0, 0, uv_x * 16, uv_y * 16, 16, 16);
+                blit(matrixStack, 0, 0, uv_x * 16, uv_y * 16, 16, 16);
                 RenderSystem.popMatrix();
             } else {
                 if (this.active) {
@@ -99,15 +101,15 @@ public abstract class IconButton extends Button implements ITooltip {
                 final int uv_x = iconIndex - uv_y * 16;
 
                 if (!disableBackground) {
-                    blit(matrices, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
+                    blit(matrixStack, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
                 }
-                blit(matrices, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
+                blit(matrixStack, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
             }
             RenderSystem.enableDepthTest();
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
 
             if (isHovered()) {
-                renderToolTip(matrices, mouseX, mouseY);
+                renderToolTip(matrixStack, mouseX, mouseY);
             }
         }
     }

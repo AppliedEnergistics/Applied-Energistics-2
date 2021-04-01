@@ -20,12 +20,14 @@ package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.container.implementations.MEPortableCellContainer;
 
 // FIXME: Extended from GuiPortableCell before... Why?
 public class WirelessTermScreen extends MEMonitorableScreen<MEPortableCellContainer> {
 
-    public WirelessTermScreen(MEPortableCellContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public WirelessTermScreen(MEPortableCellContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
     }
 

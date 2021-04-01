@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.gui.implementations;
 
 import java.util.ArrayList;
@@ -5,6 +23,9 @@ import java.util.List;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -12,12 +33,12 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.widgets.ConfirmableTextField;
 import appeng.client.gui.widgets.ValidationIcon;
 import appeng.core.AEConfig;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
@@ -25,10 +46,11 @@ import com.mojang.blaze3d.matrix.MatrixStack;
  */
 public class NumberEntryWidget extends AbstractGui {
 
-    private static final ITextComponent INVALID_NUMBER = new TranslationTextComponent("gui.appliedenergistics2.validation.InvalidNumber");
+    private static final ITextComponent INVALID_NUMBER = new TranslationTextComponent(
+            "gui.appliedenergistics2.validation.InvalidNumber");
     private static final String NUMBER_LESS_THAN_MIN_VALUE = "gui.appliedenergistics2.validation.NumberLessThanMinValue";
-    private static final ITextComponent PLUS = ITextComponent.getTextComponentOrEmpty("+");
-    private static final ITextComponent MINUS = ITextComponent.getTextComponentOrEmpty("-");
+    private static final ITextComponent PLUS = new StringTextComponent("+");
+    private static final ITextComponent MINUS = new StringTextComponent("-");
     private static final int TEXT_COLOR_ERROR = 0xFF1900;
     private static final int TEXT_COLOR_NORMAL = 0xFFFFFF;
 
@@ -58,9 +80,10 @@ public class NumberEntryWidget extends AbstractGui {
         this.type = type;
 
         FontRenderer font = parent.getMinecraft().fontRenderer;
-        int inputX = parent.getX() + x;
-        int inputY = parent.getY() + y;
-        this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.FONT_HEIGHT, StringTextComponent.EMPTY);
+        int inputX = parent.getGuiLeft() + x;
+        int inputY = parent.getGuiTop() + y;
+        this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.FONT_HEIGHT,
+                StringTextComponent.EMPTY);
         this.textField.setEnableBackgroundDrawing(false);
         this.textField.setMaxStringLength(16);
         this.textField.setTextColor(TEXT_COLOR_NORMAL);
@@ -91,13 +114,13 @@ public class NumberEntryWidget extends AbstractGui {
     }
 
     public void setActive(boolean active) {
-        this.textField.active = active;
+        this.textField.setEnabled(active);
         this.buttons.forEach(b -> b.active = active);
     }
 
     public void setTextFieldBounds(int x, int y, int width) {
-        this.textField.x = parent.getX() + x;
-        this.textField.y = parent.getY() + y;
+        this.textField.x = parent.getGuiLeft() + x;
+        this.textField.y = parent.getGuiTop() + y;
         this.textField.setWidth(width);
     }
 
@@ -113,8 +136,8 @@ public class NumberEntryWidget extends AbstractGui {
         int c = steps[2];
         int d = steps[3];
 
-        int left = parent.getX() + x;
-        int top = parent.getY() + y;
+        int left = parent.getGuiLeft() + x;
+        int top = parent.getGuiTop() + y;
 
         List<Button> buttons = new ArrayList<>(9);
 
@@ -187,7 +210,7 @@ public class NumberEntryWidget extends AbstractGui {
     public void setValue(long value) {
         this.textField.setText(String.valueOf(Math.max(minValue, value)));
         this.textField.setCursorPositionEnd();
-        this.textField.clampCursorPosition(0);
+        this.textField.setSelectionPos(0);
         validate();
     }
 

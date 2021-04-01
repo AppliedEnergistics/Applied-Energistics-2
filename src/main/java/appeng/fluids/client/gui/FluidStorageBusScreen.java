@@ -18,8 +18,11 @@
 
 package appeng.fluids.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.FuzzyMode;
@@ -39,7 +42,6 @@ import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.fluids.util.IAEFluidTank;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * @author BrockWS
@@ -50,7 +52,8 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     private SettingToggleButton<AccessRestriction> rwMode;
     private SettingToggleButton<StorageFilter> storageFilter;
 
-    public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 251;
     }
@@ -82,8 +85,8 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
         addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, btn -> partition()));
         this.rwMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68, Settings.STORAGE_FILTER,
-                StorageFilter.EXTRACTABLE_ONLY);
+        this.storageFilter = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
+                Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
         this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
@@ -96,9 +99,10 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.method_30883(matrices, this.getGuiDisplayName(this.getName().text()), 8, 6, 4210752);
-        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(this.getName().text()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
 
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.cvb.getFuzzyMode());

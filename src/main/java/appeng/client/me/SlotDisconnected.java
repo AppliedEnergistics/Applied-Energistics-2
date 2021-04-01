@@ -18,7 +18,6 @@
 
 package appeng.client.me;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
@@ -52,11 +51,11 @@ public class SlotDisconnected extends AppEngSlot {
 
     @Override
     public ItemStack getDisplayStack() {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             final ItemStack is = super.getStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
-                final ItemStack out = iep.getOutput(Minecraft.getInstance().world, is);
+                final ItemStack out = iep.getOutput(is);
                 if (!out.isEmpty()) {
                     return out;
                 }

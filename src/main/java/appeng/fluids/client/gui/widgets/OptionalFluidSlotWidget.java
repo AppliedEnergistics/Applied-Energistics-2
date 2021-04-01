@@ -1,7 +1,26 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.fluids.client.gui.widgets;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.fluids.util.IAEFluidTank;
@@ -45,10 +64,8 @@ public class OptionalFluidSlotWidget extends FluidSlotWidget {
         } else {
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.4F);
         }
-        int oldZOffset = getBlitOffset();
-        setBlitOffset(currentZIndex);
-        blit(matrices, guileft + this.getTooltipAreaX() - 1, guitop + this.getTooltipAreaY() - 1, this.srcX - 1,
-                this.srcY - 1, this.getTooltipAreaWidth() + 2, this.getTooltipAreaHeight() + 2);
-        setBlitOffset(oldZOffset);
+        blit(matrices, guileft + this.getTooltipAreaX() - 1, guitop + this.getTooltipAreaY() - 1, currentZIndex,
+                this.srcX - 1,
+                this.srcY - 1, this.getTooltipAreaWidth() + 2, this.getTooltipAreaHeight() + 2, 256, 256);
     }
 }

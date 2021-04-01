@@ -20,12 +20,15 @@ package appeng.client.gui.implementations;
 
 import java.util.List;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import me.shedaniel.math.Rectangle;
 
 import appeng.api.config.SearchBoxMode;
@@ -68,7 +71,6 @@ import appeng.parts.reporting.AbstractTerminalPart;
 import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBaseMEScreen<T>
         implements ISortSource, IConfigManagerHost {
@@ -207,13 +209,13 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         }
 
         if (this.viewCell || this instanceof WirelessTermScreen) {
-            this.viewModeToggle = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.VIEW_MODE,
-                    getSortDisplay(), this::toggleServerSetting));
+            this.viewModeToggle = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset,
+                    Settings.VIEW_MODE, getSortDisplay(), this::toggleServerSetting));
             offset += 20;
         }
 
-        this.addButton(this.sortDirToggle = new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_DIRECTION,
-                getSortDir(), this::toggleServerSetting));
+        this.addButton(this.sortDirToggle = new SettingToggleButton<>(this.guiLeft - 18, offset,
+                Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
         offset += 20;
 
         SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
@@ -227,7 +229,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
                     this::toggleTerminalStyle));
         }
 
-        this.searchField = new AETextField(this.font, this.guiLeft + Math.max(80, this.offsetX), this.guiTop + 4, 90, 12);
+        this.searchField = new AETextField(this.font, this.guiLeft + Math.max(80, this.offsetX), this.guiTop + 4, 90,
+                12);
         this.searchField.setEnableBackgroundDrawing(false);
         this.searchField.setMaxStringLength(25);
         this.searchField.setTextColor(0xFFFFFF);
@@ -248,7 +251,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchMode
                 || SearchBoxMode.JEI_MANUAL_SEARCH == searchMode;
 
-        this.searchField.setFocused(this.isAutoFocus);
+        this.searchField.setFocused2(this.isAutoFocus);
 
         if (isJEIEnabled) {
             memoryText = ReiFacade.instance().getSearchText();
@@ -288,9 +291,10 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.method_30883(matrices, this.getGuiDisplayName(this.myName.text()), 8, 6, 4210752);
-        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(this.myName.text()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
 
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
@@ -302,7 +306,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
             int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
             int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeightRealms() - 16) / 2;
             StackSizeRenderer.renderSizeLabel(font, x - this.guiLeft, y - this.guiTop,
-                    new StringTextComponent(String.valueOf(container.activeCraftingJobs)));
+                    String.valueOf(container.activeCraftingJobs));
         }
     }
 
@@ -332,23 +336,23 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
 
         this.bindTexture(this.getBackground());
         final int x_width = 197;
-        blit(matrices, offsetX, offsetY, 0, 0, x_width, 18);
+        blit(matrixStack, offsetX, offsetY, 0, 0, x_width, 18);
 
         if (this.viewCell || (this instanceof SecurityStationScreen)) {
-            blit(matrices, offsetX + x_width, offsetY, x_width, 0, 46, 128);
+            blit(matrixStack, offsetX + x_width, offsetY, x_width, 0, 46, 128);
         }
 
         for (int x = 0; x < this.rows; x++) {
-            blit(matrices, offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18);
+            blit(matrixStack, offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18);
         }
 
-        blit(matrices, offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18,
-                x_width, 99 + this.reservedSpace - this.lowerTextureOffset);
+        blit(matrixStack, offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
+                99 + this.reservedSpace - this.lowerTextureOffset);
 
         if (this.viewCell) {
             boolean update = false;
@@ -366,7 +370,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         }
 
         if (this.searchField != null) {
-            this.searchField.render(matrices, mouseX, mouseY, partialTicks);
+            this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
         }
 
     }
@@ -395,7 +399,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         }
 
         if (this.isAutoFocus && !this.searchField.isFocused() && isHovered()) {
-            this.searchField.setFocused(true);
+            this.searchField.setFocused2(true);
         }
 
         if (this.searchField.isFocused() && this.searchField.charTyped(character, p_charTyped_2_)) {
@@ -411,18 +415,20 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(keyCode, scanCode)) {
+        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+
+        if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
             if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, keyCode, scanCode)) {
-                this.searchField.setFocused(!this.searchField.isFocused());
+                this.searchField.setFocused2(!this.searchField.isFocused());
                 return true;
             }
             if (!this.searchField.isFocused() && this.isAutoFocus && isHovered()) {
-                this.searchField.setFocused(true);
+                this.searchField.setFocused2(true);
             }
 
             if (this.searchField.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.searchField.setFocused(false);
+                    this.searchField.setFocused2(false);
                     return true;
                 }
 

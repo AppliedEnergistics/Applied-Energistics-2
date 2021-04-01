@@ -18,8 +18,11 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.client.gui.widgets.ToggleButton;
@@ -27,7 +30,6 @@ import appeng.container.implementations.SecurityStationContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationContainer> {
 
@@ -37,7 +39,8 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
     private ToggleButton build;
     private ToggleButton security;
 
-    public SecurityStationScreen(SecurityStationContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public SecurityStationScreen(SecurityStationContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.setCustomSortOrder(false);
         this.setReservedSpace(33);
@@ -57,31 +60,32 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
         super.init();
 
         final int top = this.guiTop + this.ySize - 116;
-        this.inject = this
-                .addButton(new ToggleButton(this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT.nameText(),
-                        SecurityPermissions.INJECT.tooltipText(), btn -> toggleOption(SecurityPermissions.INJECT)));
+        this.inject = this.addButton(new ToggleButton(this.guiLeft + 56, top, 11 * 16, 12 * 16,
+                SecurityPermissions.INJECT.getTranslatedName(), SecurityPermissions.INJECT.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.INJECT)));
 
         this.extract = this.addButton(new ToggleButton(this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1,
-                SecurityPermissions.EXTRACT.nameText(), SecurityPermissions.EXTRACT.tooltipText(),
+                SecurityPermissions.EXTRACT.getTranslatedName(), SecurityPermissions.EXTRACT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.EXTRACT)));
 
         this.craft = this.addButton(new ToggleButton(this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2,
-                SecurityPermissions.CRAFT.nameText(), SecurityPermissions.CRAFT.tooltipText(),
+                SecurityPermissions.CRAFT.getTranslatedName(), SecurityPermissions.CRAFT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.CRAFT)));
 
         this.build = this.addButton(new ToggleButton(this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3,
-                SecurityPermissions.BUILD.nameText(), SecurityPermissions.BUILD.tooltipText(),
+                SecurityPermissions.BUILD.getTranslatedName(), SecurityPermissions.BUILD.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.BUILD)));
 
         this.security = this.addButton(new ToggleButton(this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4,
-                SecurityPermissions.SECURITY.nameText(), SecurityPermissions.SECURITY.tooltipText(),
+                SecurityPermissions.SECURITY.getTranslatedName(), SecurityPermissions.SECURITY.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.SECURITY)));
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
-        this.font.method_30883(matrices, GuiText.SecurityCardEditor.text(), 8,
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
+        this.font.drawString(matrixStack, GuiText.SecurityCardEditor.getLocal(), 8,
                 this.ySize - 96 + 1 - this.getReservedSpace(), 4210752);
     }
 

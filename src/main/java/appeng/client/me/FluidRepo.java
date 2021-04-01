@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
+
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;

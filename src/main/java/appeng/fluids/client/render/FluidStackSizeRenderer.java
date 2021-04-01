@@ -21,9 +21,9 @@ package appeng.fluids.client.render;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.render.StackSizeRenderer;
 import appeng.core.AEConfig;
@@ -47,12 +47,12 @@ public class FluidStackSizeRenderer {
 
     public void renderStackSize(FontRenderer fontRenderer, IAEFluidStack aeStack, int xPos, int yPos) {
         if (aeStack != null && aeStack.getStackSize() > 0) {
-            final ITextComponent stackSize = this.getToBeRenderedStackSize(aeStack.getStackSize());
+            final String stackSize = this.getToBeRenderedStackSize(aeStack.getStackSize());
             StackSizeRenderer.renderSizeLabel(fontRenderer, xPos, yPos, stackSize);
         }
     }
 
-    private ITextComponent getToBeRenderedStackSize(final long originalSize) {
+    private String getToBeRenderedStackSize(final long originalSize) {
         // Handle any value below 100 (large font) or 1000 (small font) Buckets with a
         // custom formatter,
         // otherwise pass it to the normal number converter
@@ -63,25 +63,25 @@ public class FluidStackSizeRenderer {
         }
 
         if (AEConfig.instance().isUseLargeFonts()) {
-            return new StringTextComponent(SLIM_CONVERTER.toSlimReadableForm(originalSize / 1000));
+            return SLIM_CONVERTER.toSlimReadableForm(originalSize / 1000);
         } else {
-            return new StringTextComponent(WIDE_CONVERTER.toWideReadableForm(originalSize / 1000));
+            return WIDE_CONVERTER.toWideReadableForm(originalSize / 1000);
         }
     }
 
-    private ITextComponent getSlimRenderedStacksize(final long originalSize) {
+    private String getSlimRenderedStacksize(final long originalSize) {
         final int log = 1 + (int) Math.floor(Math.log10(originalSize)) / 2;
 
         return this.getRenderedFluidStackSize(originalSize, log);
     }
 
-    private ITextComponent getWideRenderedStacksize(final long originalSize) {
+    private String getWideRenderedStacksize(final long originalSize) {
         final int log = (int) Math.floor(Math.log10(originalSize)) / 2;
 
         return this.getRenderedFluidStackSize(originalSize, log);
     }
 
-    private ITextComponent getRenderedFluidStackSize(final long originalSize, final int log) {
+    private String getRenderedFluidStackSize(final long originalSize, final int log) {
         final int index = Math.max(0, Math.min(3, log));
 
         final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
@@ -90,7 +90,7 @@ public class FluidStackSizeRenderer {
         format.setDecimalFormatSymbols(symbols);
         format.setRoundingMode(RoundingMode.DOWN);
 
-        return new StringTextComponent(format.format(originalSize / 1000d));
+        return format.format(originalSize / 1000d);
     }
 
 }

@@ -19,6 +19,7 @@
 package appeng.client.gui.widgets;
 
 import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.text.ITextComponent;

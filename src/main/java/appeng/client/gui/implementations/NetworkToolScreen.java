@@ -18,15 +18,17 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.implementations.NetworkToolContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
 
@@ -41,8 +43,9 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
     public void init() {
         super.init();
 
-        this.tFacades = new ToggleButton(this.guiLeft - 18, this.guiTop + 8, 23, 22, GuiText.TransparentFacades.text(),
-                GuiText.TransparentFacadesHint.text(), btn -> toggleFacades());
+        this.tFacades = new ToggleButton(this.guiLeft - 18, this.guiTop + 8, 23, 22,
+                GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal(),
+                btn -> toggleFacades());
 
         this.addButton(this.tFacades);
     }
@@ -52,13 +55,15 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
         if (this.tFacades != null) {
             this.tFacades.setState(container.isFacadeMode());
         }
 
-        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.NetworkTool.text()), 8, 6, 4210752);
-        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.NetworkTool.text()).getString(), 8, 6,
+                4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override

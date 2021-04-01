@@ -23,11 +23,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.FullnessMode;
@@ -222,6 +224,11 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.SchedulingModeRoundRobin);
             registerApp(16 * 15 + 2, Settings.SCHEDULING_MODE, SchedulingMode.RANDOM, ButtonToolTips.SchedulingMode,
                     ButtonToolTips.SchedulingModeRandom);
+
+            registerApp(16 * 15 + 3, Settings.OVERLAY_MODE, YesNo.NO, ButtonToolTips.OverlayMode,
+                    ButtonToolTips.OverlayModeNo);
+            registerApp(16 * 15 + 4, Settings.OVERLAY_MODE, YesNo.YES, ButtonToolTips.OverlayMode,
+                    ButtonToolTips.OverlayModeYes);
         }
     }
 

@@ -18,15 +18,17 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.InscriberContainer;
 import appeng.core.localization.GuiText;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
 
@@ -51,12 +53,13 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.pb.setFullMsg(
-                new StringTextComponent(this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%"));
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.pb.setFullMsg(new StringTextComponent(
+                this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%"));
 
-        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.Inscriber.text()), 8, 6, 4210752);
-        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Inscriber.text()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override

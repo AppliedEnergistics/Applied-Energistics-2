@@ -25,6 +25,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.fluids.container.slots.IMEFluidSlot;
 
@@ -48,7 +49,7 @@ public class SlotFluidME extends Slot implements IMEFluidSlot {
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
+    public boolean isItemValid(final ItemStack stack) {
         return false;
     }
 

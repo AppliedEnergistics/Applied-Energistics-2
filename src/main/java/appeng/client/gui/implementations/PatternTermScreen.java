@@ -18,10 +18,14 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.mixins.SlotMixin;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.ActionItems;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
@@ -30,8 +34,6 @@ import appeng.container.slot.AppEngSlot;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.mixins.SlotMixin;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer> {
 
@@ -105,7 +107,8 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
         if (this.container.isCraftingMode()) {
             this.tabCraftButton.visible = true;
             this.tabProcessButton.visible = false;
@@ -124,8 +127,8 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
             this.substitutionsDisabledBtn.visible = false;
         }
 
-        super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
-        this.font.method_30883(matrices, GuiText.PatternTerminal.text(), 8,
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
+        this.font.drawString(matrixStack, GuiText.PatternTerminal.getLocal(), 8,
                 this.ySize - 96 + 2 - this.getReservedSpace(), 4210752);
     }
 

@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;

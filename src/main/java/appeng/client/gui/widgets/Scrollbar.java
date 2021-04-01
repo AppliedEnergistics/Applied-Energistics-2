@@ -19,13 +19,15 @@
 package appeng.client.gui.widgets;
 
 import java.time.Duration;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 import appeng.client.gui.AEBaseScreen;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * Implements a vertical scrollbar using Vanilla's scrollbar handle texture from the creative tab.

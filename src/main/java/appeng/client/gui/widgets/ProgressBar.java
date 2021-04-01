@@ -18,14 +18,16 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.container.interfaces.IProgressProvider;
-import appeng.core.localization.GuiText;
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+
+import appeng.container.interfaces.IProgressProvider;
+import appeng.core.localization.GuiText;
 
 public class ProgressBar extends Widget implements ITooltip {
 
@@ -43,7 +45,8 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     public ProgressBar(final IProgressProvider source, final String texture, final int posX, final int posY,
-            final int u, final int y, final int width, final int height, final Direction dir, final ITextComponent title) {
+            final int u, final int y, final int width, final int height, final Direction dir,
+            final ITextComponent title) {
         super(posX, posY, width, height, StringTextComponent.EMPTY);
         this.source = source;
         this.texture = new ResourceLocation("appliedenergistics2", "textures/" + texture);
@@ -54,7 +57,7 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             Minecraft.getInstance().getTextureManager().bindTexture(this.texture);
             final int max = this.source.getMaxProgress();
@@ -80,10 +83,10 @@ public class ProgressBar extends Widget implements ITooltip {
         if (this.fullMsg != null) {
             return this.fullMsg;
         }
+        ITextComponent result = this.titleName != null ? this.titleName : StringTextComponent.EMPTY;
 
-        ITextComponent text = this.titleName != null ? this.titleName : StringTextComponent.EMPTY;
-        return text.copyRaw().appendString("\n" + this.source.getCurrentProgress() + " ").append(GuiText.Of.text())
-                .appendString(" " + this.source.getMaxProgress());
+        return result.deepCopy().appendString("\n").appendString(this.source.getCurrentProgress() + " ")
+                .append(GuiText.Of.text().deepCopy().appendString(" " + this.source.getMaxProgress()));
     }
 
     @Override

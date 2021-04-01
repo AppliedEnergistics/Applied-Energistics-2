@@ -18,8 +18,11 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.ChestContainer;
@@ -27,7 +30,6 @@ import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class ChestScreen extends AEBaseScreen<ChestContainer> {
 
@@ -40,8 +42,8 @@ public class ChestScreen extends AEBaseScreen<ChestContainer> {
     public void init() {
         super.init();
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(), this.itemRenderer,
-                btn -> openPriority()));
+        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
+                this.itemRenderer, btn -> openPriority()));
     }
 
     private void openPriority() {
@@ -49,9 +51,10 @@ public class ChestScreen extends AEBaseScreen<ChestContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.Chest.text()), 8, 6, 4210752);
-        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Chest.text()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override

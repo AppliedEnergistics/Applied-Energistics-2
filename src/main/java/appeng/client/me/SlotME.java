@@ -23,6 +23,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+
 import appeng.api.storage.data.IAEItemStack;
 
 public class SlotME extends Slot {
@@ -44,7 +45,7 @@ public class SlotME extends Slot {
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
+    public boolean isItemValid(final ItemStack par1ItemStack) {
         return false;
     }
 
@@ -65,7 +66,8 @@ public class SlotME extends Slot {
     }
 
     @Override
-    public void putStack(ItemStack stack) {
+    public void putStack(final ItemStack par1ItemStack) {
+
     }
 
     @Override

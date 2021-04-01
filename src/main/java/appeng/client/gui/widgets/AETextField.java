@@ -21,6 +21,7 @@ package appeng.client.gui.widgets;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -31,7 +32,7 @@ import net.minecraft.util.text.StringTextComponent;
 /**
  * A modified version of the Minecraft text field. You can initialize it over the full element span. The mouse click
  * area is increased to the full element subtracted with the defined padding.
- * <p>
+ *
  * The rendering does pay attention to the size of the '_' caret.
  */
 public class AETextField extends TextFieldWidget {
@@ -51,29 +52,16 @@ public class AETextField extends TextFieldWidget {
      */
     public AETextField(final FontRenderer fontRenderer, final int xPos, final int yPos, final int width,
             final int height) {
-        super(fontRenderer, xPos + PADDING, yPos + PADDING, width - 2 * PADDING - (int) fontRenderer.getStringWidth("_"),
-                height - 2 * PADDING, StringTextComponent.EMPTY);
+        super(fontRenderer, xPos + PADDING, yPos + PADDING,
+                width - 2 * PADDING - fontRenderer.getStringWidth("_"), height - 2 * PADDING,
+                StringTextComponent.EMPTY);
 
-        this._fontPad = (int) fontRenderer.getStringWidth("_");
-    }
-
-    @Override
-    public boolean mouseClicked(final double xPos, final double yPos, final int button) {
-        if (!super.mouseClicked(xPos, yPos, button)) {
-            return false;
-        }
-
-        final boolean requiresFocus = this.isMouseOver(xPos, yPos);
-        if (!this.isFocused()) {
-            this.setFocused(requiresFocus);
-        }
-
-        return true;
+        this._fontPad = fontRenderer.getStringWidth("_");
     }
 
     public void selectAll() {
         this.setCursorPosition(0);
-        this.setSelectionPos(getText().length());
+        this.setSelectionPos(this.getMaxStringLength());
     }
 
     public void setSelectionColor(int color) {
@@ -81,18 +69,18 @@ public class AETextField extends TextFieldWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partial) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         if (this.getVisible()) {
             if (this.isFocused()) {
-                fill(matrices, this.x - PADDING + 1, this.y - PADDING + 1,
+                fill(matrixStack, this.x - PADDING + 1, this.y - PADDING + 1,
                         this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
                         0xFF606060);
             } else {
-                fill(matrices, this.x - PADDING + 1, this.y - PADDING + 1,
+                fill(matrixStack, this.x - PADDING + 1, this.y - PADDING + 1,
                         this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
                         0xFFA8A8A8);
             }
-            super.renderButton(matrices, mouseX, mouseY, partial);
+            super.renderButton(matrixStack, mouseX, mouseY, partial);
         }
     }
 
@@ -138,7 +126,7 @@ public class AETextField extends TextFieldWidget {
         RenderSystem.color4f(red, green, blue, alpha);
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
-        RenderSystem.logicOp(GlStateManager.LogicOp.field_5110);
+        RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
         bufferbuilder.pos(startX, endY, 0.0D).endVertex();
         bufferbuilder.pos(endX, endY, 0.0D).endVertex();
@@ -148,11 +136,6 @@ public class AETextField extends TextFieldWidget {
         RenderSystem.disableColorLogicOp();
         RenderSystem.enableTexture();
         RenderSystem.color4f(1, 1, 1, 1);
-    }
-
-    @Override
-    public void setFocused(boolean focused) {
-        super.setFocused(focused);
     }
 
 }

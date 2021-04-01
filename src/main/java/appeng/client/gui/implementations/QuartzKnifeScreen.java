@@ -18,12 +18,16 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.container.implementations.QuartzKnifeContainer;
@@ -31,7 +35,6 @@ import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
@@ -56,9 +59,11 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()), 8, 6, 4210752);
-        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()).getString(), 8, 6,
+                4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override
@@ -84,7 +89,9 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(keyCode, scanCode)) {
+        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+
+        if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
             if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, keyCode, scanCode)) {
                 this.name.setFocused2(!this.name.isFocused());
                 return true;

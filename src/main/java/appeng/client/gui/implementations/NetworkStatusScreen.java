@@ -18,14 +18,17 @@
 
 package appeng.client.gui.implementations;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -46,7 +49,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     private final int rows = 4;
     private int tooltip = -1;
 
-    public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         final Scrollbar scrollbar = new Scrollbar();
 
@@ -65,7 +69,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     }
 
     @Override
-    public void render(MatrixStack matrices, final int mouseX, final int mouseY, final float btn) {
+    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
 
         final int gx = (this.width - this.xSize) / 2;
         final int gy = (this.height - this.ySize) / 2;
@@ -93,26 +97,26 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
             }
         }
 
-        super.render(matrices, mouseX, mouseY, btn);
+        super.render(matrixStack, mouseX, mouseY, btn);
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.method_30883(matrices, GuiText.NetworkDetails.text(), 8, 6, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, GuiText.NetworkDetails.getLocal(), 8, 6, 4210752);
 
-        this.font.method_30883(matrices,
-                GuiText.StoredPower.withSuffix(": " + Platform.formatPowerLong(container.getCurrentPower(), false)), 13,
-                16, 4210752);
-        this.font.method_30883(matrices,
-                GuiText.MaxPower.withSuffix(": " + Platform.formatPowerLong(container.getMaxPower(), false)), 13, 26,
+        this.font.drawString(matrixStack,
+                GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong(container.getCurrentPower(), false),
+                13, 16, 4210752);
+        this.font.drawString(matrixStack,
+                GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong(container.getMaxPower(), false), 13, 26,
                 4210752);
 
-        this.font.method_30883(matrices,
-                GuiText.PowerInputRate.withSuffix(": " + Platform.formatPowerLong(container.getAverageAddition(), true)),
-                13, 143 - 10, 4210752);
-        this.font.method_30883(matrices,
-                GuiText.PowerUsageRate.withSuffix(": " + Platform.formatPowerLong(container.getPowerUsage(), true)), 13,
-                143 - 20, 4210752);
+        this.font.drawString(matrixStack, GuiText.PowerInputRate.getLocal() + ": "
+                + Platform.formatPowerLong(container.getAverageAddition(), true), 13, 143 - 10, 4210752);
+        this.font.drawString(matrixStack,
+                GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong(container.getPowerUsage(), true),
+                13, 143 - 20, 4210752);
 
         final int sectionLength = 30;
 
@@ -120,10 +124,10 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
         int y = 0;
         final int xo = 12;
         final int yo = 42;
-        final int viewStart = 0;
+        final int viewStart = 0;// myScrollBar.getCurrentScroll() * 5;
         final int viewEnd = viewStart + 5 * 4;
 
-        List<ITextComponent> toolTip = new ArrayList<>();
+        String toolTip = "";
         int toolPosX = 0;
         int toolPosY = 0;
 
@@ -139,7 +143,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                 }
 
                 final int w = this.font.getStringWidth(str);
-                this.font.drawString(matrices, str,
+                this.font.drawString(matrixStack, str,
                         (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * 18 + yo + 6) * 2,
                         4210752);
 
@@ -148,12 +152,12 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                 final int posY = y * 18 + yo;
 
                 if (this.tooltip == z - viewStart) {
-                    toolTip.add(Platform.getItemDisplayName(refStack));
+                    toolTip = Platform.getItemDisplayName(refStack).getString();
 
-                    toolTip.add(GuiText.Installed.withSuffix(": " + (refStack.getStackSize())));
+                    toolTip += ('\n' + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
                     if (refStack.getCountRequestable() > 0) {
-                        toolTip.add(GuiText.EnergyDrain
-                                .withSuffix(": " + Platform.formatPowerLong(refStack.getCountRequestable(), true)));
+                        toolTip += ('\n' + GuiText.EnergyDrain.getLocal() + ": "
+                                + Platform.formatPowerLong(refStack.getCountRequestable(), true));
                     }
 
                     toolPosX = x * sectionLength + xo + sectionLength - 8;
@@ -171,8 +175,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
             }
         }
 
-        if (this.tooltip >= 0 && toolTip.isEmpty()) {
-            this.drawTooltip(matrices, toolPosX, toolPosY + 10, toolTip);
+        if (this.tooltip >= 0 && toolTip.length() > 0) {
+            this.drawTooltip(matrixStack, toolPosX, toolPosY + 10, new StringTextComponent(toolTip));
         }
     }
 
@@ -201,7 +205,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     }
 
     @Override
-    protected void renderTooltip(MatrixStack matrices, final ItemStack stack, final int x, final int y) {
+    protected void renderTooltip(MatrixStack matrixStack, final ItemStack stack, final int x, final int y) {
         final Slot s = this.getSlot(x, y);
 
         if (s instanceof SlotME && !stack.isEmpty()) {
@@ -220,15 +224,15 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                     currentToolTip.remove(1);
                 }
 
-                currentToolTip.add(GuiText.Installed.withSuffix(": " + myStack.getStackSize()));
+                currentToolTip.add(GuiText.Installed.withSuffix(": " + (myStack.getStackSize())));
                 currentToolTip.add(GuiText.EnergyDrain
                         .withSuffix(": " + Platform.formatPowerLong(myStack.getCountRequestable(), true)));
 
-                this.drawTooltip(matrices, x, y, currentToolTip);
+                this.drawTooltip(matrixStack, x, y, currentToolTip);
             }
         }
 
-        super.renderTooltip(matrices, stack, x, y);
+        super.renderTooltip(matrixStack, stack, x, y);
     }
 
     @Override

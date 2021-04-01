@@ -19,27 +19,31 @@
 package appeng.client.gui.widgets;
 
 import java.util.regex.Pattern;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+
 public class ToggleButton extends Button implements ITooltip {
-    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2", "textures/guis/states.png");
+    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
+            "textures/guis/states.png");
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
     private final int iconIdxOn;
     private final int iconIdxOff;
 
-    private final ITextComponent displayName;
-    private final ITextComponent displayHint;
+    private final String displayName;
+    private final String displayHint;
 
     private boolean isActive;
 
-    public ToggleButton(final int x, final int y, final int on, final int off, final ITextComponent displayName,
-            final ITextComponent displayHint, IPressable onPress) {
+    public ToggleButton(final int x, final int y, final int on, final int off, final String displayName,
+            final String displayHint, IPressable onPress) {
         super(x, y, 16, 16, StringTextComponent.EMPTY, onPress);
         this.iconIdxOn = on;
         this.iconIdxOff = off;
@@ -52,7 +56,7 @@ public class ToggleButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, final int mouseX, final int mouseY, final float partial) {
+    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
         if (this.visible) {
             final int iconIndex = this.getIconIndex();
 
@@ -62,8 +66,8 @@ public class ToggleButton extends Button implements ITooltip {
             final int uv_y = iconIndex / 16;
             final int uv_x = iconIndex - uv_y * 16;
 
-            blit(matrices, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
-            blit(matrices, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
+            blit(matrixStack, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
+            blit(matrixStack, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
         }
     }
 
@@ -74,8 +78,15 @@ public class ToggleButton extends Button implements ITooltip {
     @Override
     public ITextComponent getTooltipMessage() {
         if (this.displayName != null) {
-            String name = this.displayName.getString();
-            String value = this.displayHint.getString();
+            String name = I18n.format(this.displayName);
+            String value = I18n.format(this.displayHint);
+
+            if (name == null || name.isEmpty()) {
+                name = this.displayName;
+            }
+            if (value == null || value.isEmpty()) {
+                value = this.displayHint;
+            }
 
             value = PATTERN_NEW_LINE.matcher(value).replaceAll("\n");
             final StringBuilder sb = new StringBuilder(value);

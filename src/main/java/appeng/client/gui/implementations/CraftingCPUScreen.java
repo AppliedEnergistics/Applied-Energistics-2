@@ -22,14 +22,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import com.google.common.base.Joiner;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
+
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -123,7 +128,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     }
 
     @Override
-    public void render(MatrixStack matrices, final int mouseX, final int mouseY, final float btn) {
+    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
         this.cancel.active = !this.visual.isEmpty();
 
         final int gx = (this.width - this.xSize) / 2;
@@ -153,30 +158,31 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
             }
         }
 
-        super.render(matrices, mouseX, mouseY, btn);
+        super.render(matrixStack, mouseX, mouseY, btn);
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        ITextComponent title = this.getGuiDisplayName(GuiText.CraftingStatus.text());
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        String title = this.getGuiDisplayName(GuiText.CraftingStatus.text()).getString();
 
         if (this.container.getEstimatedTime() > 0 && !this.visual.isEmpty()) {
             final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(this.container.getEstimatedTime(),
                     TimeUnit.NANOSECONDS);
             final String etaTimeText = DurationFormatUtils.formatDuration(etaInMilliseconds,
-                    GuiText.ETAFormat.text().getString());
-            title = title.copyRaw().appendString(" - " + etaTimeText);
+                    GuiText.ETAFormat.getLocal());
+            title += " - " + etaTimeText;
         }
 
-        this.font.method_30883(matrices, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR);
+        this.font.drawString(matrixStack, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR);
 
         int x = 0;
         int y = 0;
         final int viewStart = this.getScrollBar().getCurrentScroll() * 3;
         final int viewEnd = viewStart + 3 * 6;
 
-        List<ITextComponent> dspToolTip = new ArrayList<>();
-        final List<ITextComponent> lineList = new ArrayList<>();
+        String dspToolTip = "";
+        final List<String> lineList = new ArrayList<>();
         int toolPosX = 0;
         int toolPosY = 0;
 
@@ -214,7 +220,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                             | BACKGROUND_ALPHA;
                     final int startX = (x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET) * 2;
                     final int startY = ((y * offY + ITEMSTACK_TOP_OFFSET) - 3) * 2;
-                    fill(matrices, startX, startY, startX + (SECTION_LENGTH * 2), startY + (offY * 2) - 2, bgColor);
+                    fill(matrixStack, startX, startY, startX + (SECTION_LENGTH * 2), startY + (offY * 2) - 2, bgColor);
                 }
 
                 final int negY = ((lines - 1) * 5) / 2;
@@ -224,13 +230,13 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                     final String str = GuiText.Stored.getLocal() + ": "
                             + converter.toWideReadableForm(stored.getStackSize());
                     final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(matrices, str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
                                     * 2),
                             (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
 
                     if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.Stored.withSuffix(": " + stored.getStackSize()));
+                        lineList.add(GuiText.Stored.getLocal() + ": " + Long.toString(stored.getStackSize()));
                     }
 
                     downY += 5;
@@ -241,13 +247,13 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                             + converter.toWideReadableForm(activeStack.getStackSize());
                     final int w = 4 + this.font.getStringWidth(str);
 
-                    this.font.drawString(matrices, str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
                                     * 2),
                             (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
 
                     if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.Crafting.withSuffix(": " + activeStack.getStackSize()));
+                        lineList.add(GuiText.Crafting.getLocal() + ": " + Long.toString(activeStack.getStackSize()));
                     }
 
                     downY += 5;
@@ -258,13 +264,13 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                             + converter.toWideReadableForm(pendingStack.getStackSize());
                     final int w = 4 + this.font.getStringWidth(str);
 
-                    this.font.drawString(matrices, str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
                                     * 2),
                             (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
 
                     if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.Scheduled.withSuffix(": " + pendingStack.getStackSize()));
+                        lineList.add(GuiText.Scheduled.getLocal() + ": " + Long.toString(pendingStack.getStackSize()));
                     }
                 }
 
@@ -275,10 +281,10 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 final ItemStack is = refStack.asItemStackRepresentation();
 
                 if (this.tooltip == z - viewStart) {
-                    dspToolTip.add(Platform.getItemDisplayName(refStack));
+                    dspToolTip = Platform.getItemDisplayName(refStack).getString();
 
                     if (lineList.size() > 0) {
-                        dspToolTip.addAll(lineList);
+                        dspToolTip = dspToolTip + '\n' + Joiner.on("\n").join(lineList);
                     }
 
                     toolPosX = x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 8;
@@ -297,13 +303,13 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
         }
 
         if (this.tooltip >= 0 && !dspToolTip.isEmpty()) {
-            this.drawTooltip(matrices, toolPosX, toolPosY + 10, dspToolTip);
+            this.drawTooltip(matrixStack, toolPosX, toolPosY + 10, new StringTextComponent(dspToolTip));
         }
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.bindTexture("guis/craftingcpu.png");
         blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }

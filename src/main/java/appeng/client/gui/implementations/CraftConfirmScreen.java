@@ -22,15 +22,20 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.google.common.base.Joiner;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -93,7 +98,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     @Override
-    public void render(MatrixStack matrices, final int mouseX, final int mouseY, final float btn) {
+    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
         this.updateCPUButtonText();
 
         this.start.active = !(this.container.hasNoCPU() || this.isSimulation());
@@ -126,7 +131,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
             }
         }
 
-        super.render(matrices, mouseX, mouseY, btn);
+        super.render(matrixStack, mouseX, mouseY, btn);
     }
 
     private void updateCPUButtonText() {
@@ -153,26 +158,27 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
         final long BytesUsed = this.container.getUsedBytes();
         final String byteUsed = NumberFormat.getInstance().format(BytesUsed);
-        final ITextComponent Add = BytesUsed > 0 ? new StringTextComponent(byteUsed + " ").append(GuiText.BytesUsed.text())
-                : GuiText.CalculatingWait.text();
-        this.font.method_30883(matrices, GuiText.CraftingPlan.withSuffix(" - ").append(Add), 8, 7, 4210752);
+        final String Add = BytesUsed > 0 ? (byteUsed + ' ' + GuiText.BytesUsed.getLocal())
+                : GuiText.CalculatingWait.getLocal();
+        this.font.drawString(matrixStack, GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752);
 
-        ITextComponent dsp;
+        String dsp = null;
 
         if (this.isSimulation()) {
-            dsp = GuiText.Simulation.text();
+            dsp = GuiText.Simulation.getLocal();
         } else {
             dsp = this.container.getCpuAvailableBytes() > 0
-                    ? (GuiText.Bytes.withSuffix(": " + this.container.getCpuAvailableBytes() + " : ")
-                            .append(GuiText.CoProcessors.text()).appendString(": " + this.container.getCpuCoProcessors()))
-                    : GuiText.Bytes.withSuffix(": N/A : ").append(GuiText.CoProcessors.text()).appendString(": N/A");
+                    ? (GuiText.Bytes.getLocal() + ": " + this.container.getCpuAvailableBytes() + " : "
+                            + GuiText.CoProcessors.getLocal() + ": " + this.container.getCpuCoProcessors())
+                    : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
         }
 
-        final int offset = (219 - this.font.getStringPropertyWidth(dsp)) / 2;
-        this.font.method_30883(matrices, dsp, offset, 165, 4210752);
+        final int offset = (219 - this.font.getStringWidth(dsp)) / 2;
+        this.font.drawString(matrixStack, dsp, offset, 165, 4210752);
 
         final int sectionLength = 67;
 
@@ -183,8 +189,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         final int viewStart = this.getScrollBar().getCurrentScroll() * 3;
         final int viewEnd = viewStart + 3 * this.rows;
 
-        List<ITextComponent> dspToolTip = new ArrayList<>();
-        final List<ITextComponent> lineList = new ArrayList<>();
+        String dspToolTip = "";
+        final List<String> lineList = new ArrayList<>();
         int toolPosX = 0;
         int toolPosY = 0;
 
@@ -226,12 +232,12 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
                     str = GuiText.FromStorage.getLocal() + ": " + str;
                     final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(matrices, str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
                     if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.FromStorage.withSuffix(": " + stored.getStackSize()));
+                        lineList.add(GuiText.FromStorage.getLocal() + ": " + Long.toString(stored.getStackSize()));
                     }
 
                     downY += 5;
@@ -247,14 +253,14 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                         str = Long.toString(missingStack.getStackSize() / 1000000) + 'm';
                     }
 
-                    str = GuiText.Missing.getLocal() + ": " + str;
+                    str = GuiText.Missing.text().getString() + ": " + str;
                     final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(matrices, str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
                     if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.Missing.withSuffix(": " + missingStack.getStackSize()));
+                        lineList.add(GuiText.Missing.getLocal() + ": " + Long.toString(missingStack.getStackSize()));
                     }
 
                     red = true;
@@ -272,12 +278,12 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
                     str = GuiText.ToCraft.getLocal() + ": " + str;
                     final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(matrices, str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
                     if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.ToCraft.withSuffix(": " + pendingStack.getStackSize()));
+                        lineList.add(GuiText.ToCraft.getLocal() + ": " + Long.toString(pendingStack.getStackSize()));
                     }
                 }
 
@@ -288,10 +294,10 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                 final ItemStack is = refStack.asItemStackRepresentation();
 
                 if (this.tooltip == z - viewStart) {
-                    dspToolTip.add(Platform.getItemDisplayName(refStack));
+                    dspToolTip = Platform.getItemDisplayName(refStack).getString();
 
                     if (lineList.size() > 0) {
-                        dspToolTip.addAll(lineList);
+                        dspToolTip = dspToolTip + '\n' + Joiner.on("\n").join(lineList);
                     }
 
                     toolPosX = x * (1 + sectionLength) + xo + sectionLength - 8;
@@ -303,7 +309,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                 if (red) {
                     final int startX = x * (1 + sectionLength) + xo;
                     final int startY = posY - 4;
-                    fill(matrices, startX, startY, startX + sectionLength, startY + offY, 0x1AFF0000);
+                    fill(matrixStack, startX, startY, startX + sectionLength, startY + offY, 0x1AFF0000);
                 }
 
                 x++;
@@ -316,13 +322,13 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         }
 
         if (this.tooltip >= 0 && !dspToolTip.isEmpty()) {
-            this.drawTooltip(matrices, toolPosX, toolPosY + 10, dspToolTip);
+            this.drawTooltip(matrixStack, toolPosX, toolPosY + 10, new StringTextComponent(dspToolTip));
         }
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.setScrollBar();
         this.bindTexture("guis/craftingreport.png");
         blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
@@ -436,7 +442,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(keyCode, scanCode)) {
+        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
             if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
                 this.start();
                 return true;

@@ -3,6 +3,8 @@ package appeng.fluids.client.gui.widgets;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Set;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -31,7 +33,8 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public void drawContent(final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks) {
+    public void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
+            final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
             // The tooltip area coincides with the area of the slot

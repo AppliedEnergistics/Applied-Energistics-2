@@ -21,17 +21,21 @@ package appeng.client.gui;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotME;
 import appeng.container.AEBaseContainer;
 import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseScreen<T> {
 
@@ -40,7 +44,7 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
     }
 
     @Override
-    protected void renderTooltip(MatrixStack matrices, final ItemStack stack, final int x, final int y) {
+    protected void renderTooltip(MatrixStack matrixStack, final ItemStack stack, final int x, final int y) {
         final Slot s = this.getSlot(x, y);
 
         if (s instanceof SlotME && !stack.isEmpty()) {
@@ -59,7 +63,8 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
                 if (myStack.getStackSize() > bigNumber || (myStack.getStackSize() > 1 && stack.isDamaged())) {
                     final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                             .format(myStack.getStackSize());
-                    currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.field_1080));
+                    currentToolTip
+                            .add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
                 }
 
                 if (myStack.getCountRequestable() > 0) {
@@ -68,19 +73,21 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
                     currentToolTip.add(ButtonToolTips.ItemsRequestable.text(formattedAmount));
                 }
 
-                this.method_30901(matrices, currentToolTip, x, y);
+                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,
+                        this.font);
 
                 return;
             } else if (stack.getCount() > bigNumber) {
                 final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(stack.getCount());
-                currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.field_1080));
+                currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
 
-                this.method_30901(matrices, currentToolTip, x, y);
+                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,
+                        this.font);
 
                 return;
             }
         }
 
-        super.renderTooltip(matrices, stack, x, y);
+        super.renderTooltip(matrixStack, stack, x, y);
     }
 }
