@@ -51,7 +51,7 @@ class CondenserCategory implements RecipeCategory<CondenserOutputDisplay> {
     private final EntryStack icon;
 
     public CondenserCategory() {
-        this.localizedName = LanguageMap.getInstance().method_4679("gui.appliedenergistics2.Condenser");
+        this.localizedName = LanguageMap.getInstance().func_230503_a_("gui.appliedenergistics2.Condenser");
         this.icon = EntryStack.create(Api.INSTANCE.definitions().blocks().condenser().stack(1));
     }
 

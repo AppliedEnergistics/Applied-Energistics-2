@@ -70,10 +70,10 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider {
 
                     switch (state) {
                         case STATE_UNLINKED:
-                            tooltip.add(WailaText.P2PUnlinked.text());
+                            tooltip.add(WailaText.P2PUnlinked.textComponent());
                             break;
                         case STATE_OUTPUT:
-                            tooltip.add(WailaText.P2POutput.text());
+                            tooltip.add(WailaText.P2POutput.textComponent());
                             break;
                         case STATE_INPUT:
                             tooltip.add(getOutputText(outputs));
@@ -135,9 +135,9 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider {
 
     private static ITextComponent getOutputText(int outputs) {
         if (outputs <= 1) {
-            return WailaText.P2PInputOneOutput.text();
+            return WailaText.P2PInputOneOutput.textComponent();
         } else {
-            return WailaText.P2PInputManyOutputs.text(outputs);
+            return WailaText.P2PInputManyOutputs.textComponent(outputs);
         }
     }
 

@@ -29,6 +29,7 @@ import com.google.common.math.StatsAccumulator;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -40,6 +41,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -67,8 +69,7 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSource> ctx,
-            final CommandSource sender) {
+    public void call(final MinecraftServer srv, final CommandContext<CommandSource> ctx, final CommandSource sender) {
         test(srv, sender, false);
     }
 
@@ -86,7 +87,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             world = player.getServerWorld();
             centerBlock = new BlockPos(player.getPosX(), 0, player.getPosZ());
         } else {
-            world = srv.method_30002();
+            world = srv.getWorld(World.OVERWORLD);
             centerBlock = world.getSpawnPoint();
         }
 
@@ -102,7 +103,7 @@ public class TestMeteoritesCommand implements ISubCommand {
                 chunksChecked++;
                 ChunkPos cp = new ChunkPos(cx, cz);
                 BlockPos p = new BlockPos(cp.getXStart(), 0, cp.getZStart());
-                BlockPos nearest = generator.method_12103(world, MeteoriteStructure.INSTANCE, p, 0, false);
+                BlockPos nearest = generator.func_235956_a_(world, MeteoriteStructure.INSTANCE, p, 0, false);
                 if (nearest != null) {
                     IChunk chunk = world.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
                     // The actual relevant information is in the structure piece
@@ -171,8 +172,9 @@ public class TestMeteoritesCommand implements ISubCommand {
             msg.append(getClickablePosition(world, settings, pos)).append(restOfLine);
 
             // Add a tooltip
-            String biomeId = world.method_31081(pos).map(bk -> bk.getLocation().toString()).orElse("unknown");
-            IFormattableTextComponent tooltip = new StringTextComponent(settings.toString() + "\nBiome: ").appendString(biomeId);
+            String biomeId = world.func_242406_i(pos).map(bk -> bk.getLocation().toString()).orElse("unknown");
+            ITextComponent tooltip = new StringTextComponent(settings.toString() + "\nBiome: ").deepCopy()
+                    .appendString(biomeId);
             msg.modifyStyle(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
             sender.sendFeedback(msg, true);
@@ -180,9 +182,10 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     // Add a clickable link to teleport the user to the Meteorite
-    private static ITextComponent getClickablePosition(ServerWorld world, PlacedMeteoriteSettings settings, BlockPos pos) {
+    private static ITextComponent getClickablePosition(ServerWorld world, PlacedMeteoriteSettings settings,
+            BlockPos pos) {
         BlockPos tpPos = pos.up((int) Math.ceil(settings.getMeteoriteRadius()));
-        int surfaceY = world.getHeight(Heightmap.Type.field_13202, tpPos.getX(), tpPos.getZ());
+        int surfaceY = world.getHeight(Heightmap.Type.WORLD_SURFACE, tpPos).getY();
         if (surfaceY > tpPos.getY()) {
             tpPos = new BlockPos(tpPos.getX(), surfaceY, tpPos.getZ());
         }
@@ -190,12 +193,12 @@ public class TestMeteoritesCommand implements ISubCommand {
         String displayText = String.format(Locale.ROOT, "pos=%d,%d,%d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
-        return new StringTextComponent(displayText).mergeStyle(TextFormatting.field_1073)
-                .modifyStyle(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.field_11750, tpCommand)));
+        return new StringTextComponent(displayText).mergeStyle(TextFormatting.UNDERLINE)
+                .modifyStyle(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
     }
 
     private static MeteoriteStructurePiece getMeteoritePieceFromChunk(IChunk chunk) {
-        StructureStart<?> start = chunk.method_12181(MeteoriteStructure.INSTANCE);
+        StructureStart<?> start = chunk.func_230342_a_(MeteoriteStructure.INSTANCE);
 
         if (start != null && start.getComponents().size() > 0
                 && start.getComponents().get(0) instanceof MeteoriteStructurePiece) {

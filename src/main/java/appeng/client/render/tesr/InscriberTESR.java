@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.tesr;
 
 import java.util.List;
@@ -7,6 +25,7 @@ import appeng.tile.misc.InscriberTileEntity;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -19,6 +38,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +57,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final RenderMaterial TEXTURE_INSIDE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_INSIDE = new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
 
     public static final ImmutableList<RenderMaterial> SPRITES = ImmutableList.of(TEXTURE_INSIDE);
@@ -48,7 +68,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
 
     @Override
     public void render(InscriberTileEntity tile, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-                       int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
 
         // render inscriber
 
@@ -175,8 +195,8 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
         ms.pop();
     }
 
-    private static void addVertex(IVertexBuilder vb, MatrixStack ms, TextureAtlasSprite sprite, float x, float y, float z,
-            double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
+    private static void addVertex(IVertexBuilder vb, MatrixStack ms, TextureAtlasSprite sprite, float x, float y,
+            float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
         vb.pos(ms.getLast().getMatrix(), x, y, z);
         vb.color(1.0f, 1.0f, 1.0f, 1.0f);
         vb.tex(sprite.getInterpolatedU(texU), sprite.getInterpolatedV(texV));
@@ -209,7 +229,8 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
-            itemRenderer.renderItem(stack, ItemCameraTransforms.TransformType.field_4319, combinedLight, combinedOverlay, ms, buffers);
+            itemRenderer.renderItem(stack, ItemCameraTransforms.TransformType.FIXED, combinedLight, combinedOverlay, ms,
+                    buffers);
             ms.pop();
         }
     }

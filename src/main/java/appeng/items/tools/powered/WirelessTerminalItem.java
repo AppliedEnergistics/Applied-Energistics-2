@@ -55,7 +55,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
         Api.instance().registries().wireless().openWirelessTerminalGui(player.getHeldItem(hand), w, player, hand);
-        return new ActionResult<>(ActionResultType.field_5812, player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
     }
 
     @Override

@@ -71,7 +71,7 @@ public final class FacadeRecipe extends SpecialRecipe {
     }
 
     @Override
-    public ItemStack craft(@Nonnull final CraftingInventory inv) {
+    public ItemStack getCraftingResult(@Nonnull final CraftingInventory inv) {
         return this.getOutput(inv, true);
     }
 

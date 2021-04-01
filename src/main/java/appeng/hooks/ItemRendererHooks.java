@@ -36,7 +36,7 @@ public final class ItemRendererHooks {
             ClientWorld world = Minecraft.getInstance().world;
             if (shiftHeld && world != null) {
                 EncodedPatternItem iep = (EncodedPatternItem) stack.getItem();
-                ItemStack output = iep.getOutput(world, stack);
+                ItemStack output = iep.getOutput(stack);
                 if (!output.isEmpty()) {
                     IBakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(output);
                     renderInstead(renderer, stack, x, y, realModel);

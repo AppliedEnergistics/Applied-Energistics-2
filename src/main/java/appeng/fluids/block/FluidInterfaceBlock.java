@@ -20,7 +20,6 @@ package appeng.fluids.block;
 
 import javax.annotation.Nullable;
 
-import appeng.fluids.tile.FluidInterfaceTileEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,7 +34,8 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.fluids.container.FluidInterfaceContainer;
-import appeng.util.Platform;
+import appeng.fluids.tile.FluidInterfaceTileEntity;
+import appeng.util.InteractionUtil;
 
 public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntity> {
     public FluidInterfaceBlock() {
@@ -45,17 +45,17 @@ public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntit
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             return ActionResultType.PASS;
         }
 
         final TileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
         return ActionResultType.PASS;
     }

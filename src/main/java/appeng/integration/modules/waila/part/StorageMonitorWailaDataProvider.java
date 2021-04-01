@@ -58,13 +58,13 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
             if (displayed instanceof IAEItemStack) {
                 final IAEItemStack ais = (IAEItemStack) displayed;
                 tooltip.add(
-                        WailaText.Showing.text().copyRaw().appendString(": ").appendString(ais.asItemStackRepresentation().getName()));
+                        WailaText.Showing.textComponent().copyRaw().appendString(": ").append(ais.asItemStackRepresentation().getDisplayName()));
             } else if (displayed instanceof IAEFluidStack) {
                 final IAEFluidStack ais = (IAEFluidStack) displayed;
-                tooltip.add(WailaText.Showing.text().copyRaw().appendString(": ").appendString(ais.getFluidStack().getName()));
+                tooltip.add(WailaText.Showing.textComponent().copyRaw().appendString(": ").append(ais.getFluidStack().getName()));
             }
 
-            tooltip.add((isLocked) ? WailaText.Locked.text() : WailaText.Unlocked.text());
+            tooltip.add((isLocked) ? WailaText.Locked.textComponent() : WailaText.Unlocked.textComponent());
         }
     }
 }

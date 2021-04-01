@@ -71,7 +71,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
     }
 
     @Override
-    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (this.isOutput()) {
             final FluidP2PTunnelPart in = this.getInput();
             if (in != null) {

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -176,7 +178,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
@@ -209,22 +211,17 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         final TileEntity te = this.getHost().getTile();
         final World w = te.getWorld();
-        if (!(w instanceof ServerWorld)) {
-            return input;
-        }
-        ServerWorld serverWorld = (ServerWorld) w;
-
         final AEPartLocation side = this.getSide();
 
         final BlockPos placePos = te.getPos().offset(side.getFacing());
 
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES) {
-                final PlayerEntity player = FakePlayer.getOrCreate(serverWorld);
+                final PlayerEntity player = FakePlayer.getOrCreate((ServerWorld) w);
                 Platform.configurePlayer(player, side, this.getTile());
                 // Seems to work without...
                 // Hand hand = player.getActiveHand();
-                // player.setStackInHand(hand, is);
+                // player.setHeldItem(hand, is);
 
                 maxStorage = is.getCount();
                 worked = true;
@@ -243,7 +240,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 }
 
                 // Seems to work without... Safe keeping
-                // player.setStackInHand(hand, ItemStack.EMPTY);
+                // player.setHeldItem(hand, ItemStack.EMPTY);
             } else {
                 final int sum = this.countEntitesAround(w, placePos);
 
@@ -253,7 +250,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
                     if (type == Actionable.MODULATE) {
                         is.setCount((int) maxStorage);
-                        if (!spawnItemEntity(serverWorld, te, side, is)) {
+                        if (!spawnItemEntity((ServerWorld) w, te, side, is)) {
                             // revert in case something prevents spawning.
                             worked = false;
                         }
@@ -366,7 +363,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     private int countEntitesAround(World world, BlockPos pos) {
         final AxisAlignedBB t = new AxisAlignedBB(pos).grow(8);
-        final List<Entity> list = world.getEntitiesWithinAABB(Entity.class, t, null);
+        final List<Entity> list = world.getEntitiesWithinAABB(Entity.class, t);
 
         return list.size();
     }
@@ -382,19 +379,19 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         public PlaneDirectionalPlaceContext(World world, PlayerEntity player, BlockPos pos, Direction lookDirection,
                 ItemStack itemStack, Direction facing) {
-            super(world, player, Hand.field_5808, itemStack,
+            super(world, player, Hand.MAIN_HAND, itemStack,
                     new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), facing, pos, false));
             this.lookDirection = lookDirection;
         }
 
         @Override
         public BlockPos getPos() {
-            return this.method_30344().getPos();
+            return this.func_242401_i().getPos();
         }
 
         @Override
         public boolean canPlace() {
-            return this.getWorld().getBlockState(this.method_30344().getPos()).isReplaceable(this);
+            return getWorld().getBlockState(this.getPos()).isReplaceable(this);
         }
 
         @Override
@@ -429,7 +426,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         @Override
         public Direction getPlacementHorizontalFacing() {
-            return this.lookDirection.getAxis() == Direction.Axis.Y ? Direction.NORTH : this.lookDirection;
+            return this.lookDirection.getAxis() == Axis.Y ? Direction.NORTH : this.lookDirection;
         }
 
         @Override
@@ -439,7 +436,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         @Override
         public float getPlacementYaw() {
-            return (float) (this.lookDirection.getHorizontalIndex() * 90);
+            return this.lookDirection.getHorizontalIndex() * 90;
         }
     }
 }

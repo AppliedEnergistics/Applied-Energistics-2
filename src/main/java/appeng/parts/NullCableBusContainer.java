@@ -62,7 +62,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public void onneighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
 
     }
 

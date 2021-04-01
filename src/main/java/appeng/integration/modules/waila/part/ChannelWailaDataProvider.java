@@ -78,7 +78,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
             if (usedChannels >= 0) {
                 final byte maxChannels = (byte) ((part instanceof SmartDenseCablePart) ? 32 : 8);
 
-                final ITextComponent formattedToolTip = WailaText.Channels.text(usedChannels, maxChannels);
+                final ITextComponent formattedToolTip = WailaText.Channels.textComponent(usedChannels, maxChannels);
                 tooltip.add(formattedToolTip);
             }
         }

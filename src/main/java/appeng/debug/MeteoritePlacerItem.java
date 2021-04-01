@@ -132,6 +132,6 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
             player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
         });
 
-        return ActionResultType.field_5812;
+        return ActionResultType.SUCCESS;
     }
 }

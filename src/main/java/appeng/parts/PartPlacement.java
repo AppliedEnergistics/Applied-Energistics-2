@@ -18,9 +18,11 @@
 
 package appeng.parts;
 
+import appeng.util.InteractionUtil;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -32,6 +34,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
@@ -73,9 +76,9 @@ public class PartPlacement {
         }
 
         // FIXME: This was changed alot.
-        final LookDirection dir = Platform.getPlayerRay(player);
-        RayTraceContext rtc = new RayTraceContext(dir.getA(), dir.getB(), RayTraceContext.BlockMode.field_17559,
-                RayTraceContext.FluidMode.field_1348, player);
+        final LookDirection dir = InteractionUtil.getPlayerRay(player);
+        RayTraceContext rtc = new RayTraceContext(dir.getA(), dir.getB(), RayTraceContext.BlockMode.OUTLINE,
+                RayTraceContext.FluidMode.NONE, player);
         final BlockRayTraceResult mop = world.rayTraceBlocks(rtc);
         BlockItemUseContext useContext = new BlockItemUseContext(new ItemUseContext(player, hand, mop));
 
@@ -102,17 +105,18 @@ public class PartPlacement {
                                 if (!player.isCreative()) {
                                     held.grow(-1);
                                     if (held.getCount() == 0) {
-                                        player.inventory.mainInventory.set(player.inventory.currentItem, ItemStack.EMPTY);
+                                        player.inventory.mainInventory.set(player.inventory.currentItem,
+                                                ItemStack.EMPTY);
                                     }
                                 }
-                                return ActionResultType.field_21466;
+                                return ActionResultType.CONSUME;
                             }
                         }
                     } else {
                         player.swingArm(hand);
                         NetworkHandler.instance()
                                 .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                        return ActionResultType.field_5812;
+                        return ActionResultType.func_233537_a_(world.isRemote());
                     }
                 }
                 return ActionResultType.FAIL;
@@ -120,18 +124,18 @@ public class PartPlacement {
         }
 
         if (held.isEmpty()) {
-            if (host != null && player.isCrouching() && world.isAirBlock(pos)) {
+            if (host != null && InteractionUtil.isInAlternateUseMode(player) && world.isAirBlock(pos)) {
                 if (mop.getType() == RayTraceResult.Type.BLOCK) {
-                    // FIXME FABRIC: This looks wrong
-                    Vector3d hitVec = mop.getHitVec().add(-mop.getHitVec().getX(), -mop.getHitVec().getY(), -mop.getHitVec().getZ());
+                    Vector3d hitVec = mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(),
+                            -mop.getPos().getZ());
                     final SelectedPart sPart = selectPart(player, host, hitVec);
                     if (sPart != null && sPart.part != null) {
                         if (sPart.part.onShiftActivate(player, hand, hitVec)) {
-                            if (world.isRemote) {
+                            if (world.isRemote()) {
                                 NetworkHandler.instance()
                                         .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                             }
-                            return ActionResultType.field_5812;
+                            return ActionResultType.func_233537_a_(world.isRemote());
                         }
                     }
                 }
@@ -153,7 +157,7 @@ public class PartPlacement {
             // an item use context
             if (!blockState.isAir() && !blockState.isReplaceable(useContext)) {
                 offset = side;
-                if (Platform.isServer()) {
+                if (!world.isRemote()) {
                     side = side.getOpposite();
                 }
             }
@@ -179,7 +183,8 @@ public class PartPlacement {
 
             // FIXME: This is super-fishy and all needs to be re-checked. what does this
             // even do???
-            if (hostIsNotPresent && canMultiPartBePlaced && multiPartBlockItem.tryPlace(mpUseCtx).isSuccessOrConsume()) {
+            if (hostIsNotPresent && canMultiPartBePlaced
+                    && multiPartBlockItem.tryPlace(mpUseCtx).isSuccessOrConsume()) {
                 if (!world.isRemote) {
                     tile = world.getTileEntity(te_pos);
 
@@ -192,7 +197,7 @@ public class PartPlacement {
                     player.swingArm(hand);
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                    return ActionResultType.field_5812;
+                    return ActionResultType.func_233537_a_(world.isRemote());
                 }
             } else if (host != null && !host.canAddPart(held, AEPartLocation.fromFacing(side))) {
                 return ActionResultType.FAIL;
@@ -221,12 +226,13 @@ public class PartPlacement {
         }
 
         if (!world.isRemote) {
-            if (mop.getType() != RayTraceResult.Type.field_1333) {
+            if (mop.getType() != RayTraceResult.Type.MISS) {
                 final SelectedPart sp = selectPart(player, host,
-                        mop.getHitVec().add(-mop.getHitVec().getX(), -mop.getHitVec().getY(), -mop.getHitVec().getZ()));
+                        mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
 
                 if (sp.part != null) {
-                    if (!player.isCrouching() && sp.part.onActivate(player, hand, mop.getHitVec())) {
+                    if (!InteractionUtil.isInAlternateUseMode(player)
+                            && sp.part.onActivate(player, hand, mop.getHitVec())) {
                         return ActionResultType.FAIL;
                     }
                 }
@@ -241,7 +247,7 @@ public class PartPlacement {
             if (mySide != null) {
                 multiPart.maybeBlock().ifPresent(multiPartBlock -> {
                     BlockState blockState = world.getBlockState(pos);
-                    final BlockSoundGroup ss = multiPartBlock.getSoundGroup(blockState);
+                    final SoundType ss = multiPartBlock.getSoundType(blockState);
 
                     world.playSound(null, pos, ss.getPlaceSound(), SoundCategory.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
                             ss.getPitch() * 0.8F);
@@ -257,12 +263,12 @@ public class PartPlacement {
         } else {
             player.swingArm(hand);
         }
-        return ActionResultType.field_5812;
+        return ActionResultType.func_233537_a_(world.isRemote());
     }
 
     private static float getEyeOffset(final PlayerEntity p) {
         if (p.world.isRemote) {
-            return Platform.getEyeOffset(p);
+            return InteractionUtil.getEyeOffset(p);
         }
 
         return getEyeHeight();
@@ -303,8 +309,8 @@ public class PartPlacement {
 
         final ItemStack held = player.getHeldItem(hand);
         if (place(held, hit.getPos(), hit.getFace(), player, hand, player.world, PlaceType.INTERACT_FIRST_PASS,
-                0) == ActionResultType.field_5812) {
-            return ActionResultType.field_5812;
+                0) == ActionResultType.SUCCESS) {
+            return ActionResultType.SUCCESS;
         }
 
         placing.set(null);

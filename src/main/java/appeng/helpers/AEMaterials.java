@@ -25,6 +25,6 @@ import net.minecraft.block.material.PushReaction;
 public class AEMaterials {
 
     public static final Material GLASS = new Material(MaterialColor.AIR, false, false, true, false, false, false,
-            PushReaction.field_15974);
+            PushReaction.NORMAL);
 
 }

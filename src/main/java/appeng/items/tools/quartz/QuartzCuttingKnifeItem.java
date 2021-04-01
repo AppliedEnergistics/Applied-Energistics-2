@@ -18,6 +18,7 @@
 
 package appeng.items.tools.quartz;
 
+import appeng.mixins.RemainderSetter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
-import appeng.mixins.RemainderSetter;
 import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
@@ -50,11 +50,11 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        if (Platform.isServer()) {
+        if (!w.isRemote()) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
         p.swingArm(hand);
-        return new ActionResult<>(ActionResultType.field_5812, p.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), p.getHeldItem(hand));
     }
 
     @Override

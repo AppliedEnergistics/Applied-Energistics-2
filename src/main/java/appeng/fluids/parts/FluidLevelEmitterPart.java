@@ -1,6 +1,26 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.fluids.parts;
 
 import java.util.Random;
+
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -38,6 +58,7 @@ import appeng.container.ContainerOpener;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.fluids.container.FluidLevelEmitterContainer;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
@@ -49,15 +70,20 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 public class FluidLevelEmitterPart extends UpgradeablePart
-        implements IStackWatcherHost, IConfigManagerHost, IAEFluidInventory, IMEMonitorHandlerReceiver<IAEFluidStack> {
+        implements IStackWatcherHost, IConfigManagerHost, IAEFluidInventory, IMEMonitorHandlerReceiver<IAEFluidStack>,
+        IConfigurableFluidInventory {
     @PartModels
-    public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID, "part/level_emitter_base_off");
+    public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_base_off");
     @PartModels
-    public static final ResourceLocation MODEL_BASE_ON = new ResourceLocation(AppEng.MOD_ID, "part/level_emitter_base_on");
+    public static final ResourceLocation MODEL_BASE_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_base_on");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID, "part/level_emitter_status_off");
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_status_off");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID, "part/level_emitter_status_on");
+    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_status_on");
     @PartModels
     public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/level_emitter_status_has_channel");
@@ -227,7 +253,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     private boolean isLevelEmitterOn() {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return (this.getClientFlags() & FLAG_ON) == FLAG_ON;
         }
 
@@ -261,7 +287,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     @Override
-    public void randomDisplayTick(final World world, final BlockPos pos, final Random r) {
+    public void animateTick(final World world, final BlockPos pos, final Random r) {
         if (this.isLevelEmitterOn()) {
             final AEPartLocation d = this.getSide();
 
@@ -276,7 +302,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FluidLevelEmitterContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
@@ -295,6 +321,14 @@ public class FluidLevelEmitterPart extends UpgradeablePart
 
     public IAEFluidTank getConfig() {
         return this.config;
+    }
+
+    @Override
+    public FixedFluidInv getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
     }
 
     @Override

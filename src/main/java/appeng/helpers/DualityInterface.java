@@ -196,6 +196,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         }
     }
 
+    @Override
+    public boolean isRemote() {
+        World world = this.iHost.getTileEntity().getWorld();
+        return world == null || world.isRemote();
+    }
+
     public void writeToNBT(final CompoundNBT data) {
         this.config.writeToNBT(data, "config");
         this.patterns.writeToNBT(data, "patterns");
@@ -968,9 +974,10 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                             hostTile.getPos().getZ() + 0.5);
                     from = from.add(direction.getXOffset() * 0.501, direction.getYOffset() * 0.501,
                             direction.getZOffset() * 0.501);
-                    final Vector3d to = from.add(direction.getXOffset(), direction.getYOffset(), direction.getZOffset());
+                    final Vector3d to = from.add(direction.getXOffset(), direction.getYOffset(),
+                            direction.getZOffset());
                     final BlockRayTraceResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
-                    // https://github.com/MinecraftForge/MinecraftForge/pull/6708
+                                                         // https://github.com/MinecraftForge/MinecraftForge/pull/6708
                     if (hit != null && !BAD_BLOCKS.contains(directedBlock)) {
                         if (hit.getPos().equals(directedTile.getPos())) {
                             // FIXME FABRIC: Either add "getName" to the interface adaptor, or special-case

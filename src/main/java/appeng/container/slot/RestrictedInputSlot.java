@@ -218,7 +218,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             final ItemStack is = super.getStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
-                final ItemStack out = iep.getOutput(p.player.world, is);
+                final ItemStack out = iep.getOutput(is);
                 if (!out.isEmpty()) {
                     return out;
                 }

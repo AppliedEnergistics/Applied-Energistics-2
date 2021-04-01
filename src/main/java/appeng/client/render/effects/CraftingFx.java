@@ -42,8 +42,9 @@ public class CraftingFx extends SpriteTexturedParticle {
     private final float offsetY;
     private final float offsetZ;
 
-    public CraftingFx(ClientWorld world, final double x, final double y, final double z, final IAnimatedSprite sprite) {
-        super(world, x, y, z);
+    public CraftingFx(final ClientWorld par1World, final double x, final double y, final double z,
+            final IAnimatedSprite sprite) {
+        super(par1World, x, y, z);
 
         // Pick a random normal, offset it by 0.35 and use that as the particle origin
         Vector3f off = new Vector3f(rand.nextFloat() - 0.5f, rand.nextFloat() - 0.5f, rand.nextFloat() - 0.5f);
@@ -63,7 +64,7 @@ public class CraftingFx extends SpriteTexturedParticle {
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo camera, float partialTicks) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
 
         float f = (this.age + partialTicks) / this.maxAge;
 
@@ -76,17 +77,17 @@ public class CraftingFx extends SpriteTexturedParticle {
         // I believe this particle is same as breaking particle, but should not exit the
         // original block it was
         // spawned in (which is encased in glass)
-        Vector3d vec3d = camera.getProjectedView();
-        offX -= vec3d.x;
-        offY -= vec3d.y;
-        offZ -= vec3d.z;
+        Vector3d Vector3d = renderInfo.getProjectedView();
+        offX -= Vector3d.x;
+        offY -= Vector3d.y;
+        offZ -= Vector3d.z;
 
         Vector3f[] avector3f = new Vector3f[] { new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F),
                 new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F) };
 
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
-            vector3f.transform(camera.getRotation());
+            vector3f.transform(renderInfo.getRotation());
             vector3f.mul(scale);
             vector3f.add(offX, offY, offZ);
         }
@@ -127,14 +128,14 @@ public class CraftingFx extends SpriteTexturedParticle {
     public static class Factory implements IParticleFactory<BasicParticleType> {
         private final IAnimatedSprite spriteSet;
 
-        public Factory(IAnimatedSprite p_i50477_1_) {
-            this.spriteSet = p_i50477_1_;
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(BasicParticleType effect, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(BasicParticleType data, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            return new CraftingFx(world, x, y, z, spriteSet);
+            return new CraftingFx(worldIn, x, y, z, spriteSet);
         }
     }
 

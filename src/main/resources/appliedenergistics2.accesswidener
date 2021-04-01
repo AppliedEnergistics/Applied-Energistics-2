@@ -27,3 +27,7 @@ mutable field net/minecraft/inventory/container/Slot xPos I
 mutable field net/minecraft/inventory/container/Slot yPos I
 
 accessible method  net/minecraft/block/TNTBlock explode (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/LivingEntity;)V
+
+accessible method net/minecraft/client/gui/widget/TextFieldWidget getMaxStringLength ()I
+
+extendable method net/minecraft/entity/item/ItemEntity applyFloatMotion ()V

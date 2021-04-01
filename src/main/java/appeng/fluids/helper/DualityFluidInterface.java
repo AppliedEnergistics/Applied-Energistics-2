@@ -20,6 +20,8 @@ package appeng.fluids.helper;
 
 import java.math.RoundingMode;
 import java.util.Optional;
+
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import alexiil.mc.lib.attributes.AttributeList;
@@ -66,9 +68,11 @@ import appeng.me.storage.NullInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraft.world.World;
 
 public class DualityFluidInterface
-        implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost {
+        implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost,
+        IConfigurableFluidInventory {
     public static final int NUMBER_OF_TANKS = 6;
     public static final int TANK_CAPACITY = 1000 * 4;
 
@@ -386,6 +390,12 @@ public class DualityFluidInterface
         this.priority = newValue;
     }
 
+    @Override
+    public boolean isRemote() {
+        World world = this.iHost.getTileEntity().getWorld();
+        return world == null || world.isRemote();
+    }
+
     public void writeToNBT(final CompoundNBT data) {
         data.putInt("priority", this.priority);
         this.tanks.writeToNBT(data, "storage");
@@ -476,6 +486,14 @@ public class DualityFluidInterface
 
     @Override
     public FixedItemInv getInventoryByName(String name) {
+        return null;
+    }
+
+    @Override
+    public FixedFluidInv getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
         return null;
     }
 

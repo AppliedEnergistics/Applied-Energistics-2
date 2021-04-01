@@ -37,9 +37,9 @@ public class EnergyFx extends SpriteTexturedParticle {
     private final int startBlkY;
     private final int startBlkZ;
 
-    public EnergyFx(ClientWorld world, final double par2, final double par4, final double par6,
+    public EnergyFx(final ClientWorld par1World, final double par2, final double par4, final double par6,
             final IAnimatedSprite sprite) {
-        super(world, par2, par4, par6);
+        super(par1World, par2, par4, par6);
         this.particleGravity = 0;
         this.particleBlue = 1;
         this.particleGreen = 1;
@@ -59,12 +59,12 @@ public class EnergyFx extends SpriteTexturedParticle {
     }
 
     @Override
-    public float getScale(float tickDelta) {
+    public float getScale(float scaleFactor) {
         return 0.1f * this.particleScale;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo camera, float partialTicks) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         float x = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTicks);
         float y = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTicks);
         float z = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks);
@@ -74,7 +74,7 @@ public class EnergyFx extends SpriteTexturedParticle {
         final int blkZ = MathHelper.floor(z);
 
         if (blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ) {
-            super.renderParticle(buffer, camera, partialTicks);
+            super.renderParticle(buffer, renderInfo, partialTicks);
         }
     }
 
@@ -87,16 +87,16 @@ public class EnergyFx extends SpriteTexturedParticle {
         this.particleAlpha *= 0.89f;
     }
 
-    public void setVelocityX(float velocityX) {
-        this.motionX = velocityX;
+    public void setMotionX(float motionX) {
+        this.motionX = motionX;
     }
 
-    public void setVelocityY(float velocityY) {
-        this.motionY = velocityY;
+    public void setMotionY(float motionY) {
+        this.motionY = motionY;
     }
 
-    public void setVelocityZ(float velocityZ) {
-        this.motionZ = velocityZ;
+    public void setMotionZ(float motionZ) {
+        this.motionZ = motionZ;
     }
 
     @Environment(EnvType.CLIENT)
@@ -108,16 +108,16 @@ public class EnergyFx extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle createParticle(EnergyParticleData effect, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(EnergyParticleData data, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            EnergyFx result = new EnergyFx(world, x, y, z, spriteSet);
-            result.setVelocityX((float) xSpeed);
-            result.setVelocityY((float) ySpeed);
-            result.setVelocityZ((float) zSpeed);
-            if (effect.forItem) {
-                result.posX += -0.2 * effect.direction.xOffset;
-                result.posY += -0.2 * effect.direction.yOffset;
-                result.posZ += -0.2 * effect.direction.zOffset;
+            EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);
+            result.setMotionX((float) xSpeed);
+            result.setMotionY((float) ySpeed);
+            result.setMotionZ((float) zSpeed);
+            if (data.forItem) {
+                result.posX += -0.2 * data.direction.xOffset;
+                result.posY += -0.2 * data.direction.yOffset;
+                result.posZ += -0.2 * data.direction.zOffset;
                 result.particleScale *= 0.8f;
             }
             return result;

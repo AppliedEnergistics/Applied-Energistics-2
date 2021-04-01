@@ -44,7 +44,7 @@ class GrinderRecipeCategory implements RecipeCategory<GrinderRecipeWrapper> {
     private final EntryStack icon;
 
     public GrinderRecipeCategory() {
-        this.localizedName = LanguageMap.getInstance().method_4679("block.appliedenergistics2.grindstone");
+        this.localizedName = LanguageMap.getInstance().func_230503_a_("block.appliedenergistics2.grindstone");
         this.icon = EntryStack.create(Api.INSTANCE.definitions().blocks().grindstone().stack(1));
     }
 

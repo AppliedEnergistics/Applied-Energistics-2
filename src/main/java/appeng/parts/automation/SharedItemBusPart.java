@@ -70,7 +70,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     @Override
-    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         this.updateState();
         if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;
@@ -119,7 +119,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     /**
      * Checks if the bus can actually do something.
-     * <p>
+     *
      * Currently this tests if the chunk for the target is actually loaded.
      *
      * @return true, if the the bus should do its work.

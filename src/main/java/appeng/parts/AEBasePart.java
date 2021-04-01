@@ -25,6 +25,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
+import appeng.fluids.helper.IConfigurableFluidInventory;
+import appeng.fluids.parts.FluidLevelEmitterPart;
+import appeng.fluids.util.AEFluidInventory;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
@@ -338,6 +342,22 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
                 partLevelEmitter.setReportingValue(compound.getLong("reportingValue"));
             }
         }
+
+        if (this instanceof IConfigurableFluidInventory) {
+            final FixedFluidInv tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+            if (tank instanceof AEFluidInventory) {
+                final AEFluidInventory target = (AEFluidInventory) tank;
+                final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
+                tmp.readFromNBT(compound, "config");
+                for (int x = 0; x < tmp.getSlots(); x++) {
+                    target.setFluidInSlot(x, tmp.getFluidInSlot(x));
+                }
+            }
+            if (this instanceof FluidLevelEmitterPart) {
+                final FluidLevelEmitterPart fluidLevelEmitterPart = (FluidLevelEmitterPart) this;
+                fluidLevelEmitterPart.setReportingValue(compound.getLong("reportingValue"));
+            }
+        }
     }
 
     /**
@@ -369,6 +389,14 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             }
         }
 
+        if (this instanceof IConfigurableFluidInventory) {
+            final FixedFluidInv tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+            ((AEFluidInventory) tank).writeToNBT(output, "config");
+            if (this instanceof FluidLevelEmitterPart) {
+                final FluidLevelEmitterPart fluidLevelEmitterPart = (FluidLevelEmitterPart) this;
+                output.putLong("reportingValue", fluidLevelEmitterPart.getReportingValue());
+            }
+        }
         return output.isEmpty() ? null : output;
     }
 

@@ -145,7 +145,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                             inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                     new BaseActionSource());
                             this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                            return ActionResultType.field_5812;
+                            return ActionResultType.SUCCESS;
                         }
                     }
                 }
@@ -158,7 +158,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                     ((PaintSplotchesTileEntity) painted).cleanSide(side.getOpposite());
-                    return ActionResultType.field_5812;
+                    return ActionResultType.SUCCESS;
                 }
             } else if (!paintBall.isEmpty()) {
                 final AEColor color = this.getColorFromItem(paintBall);
@@ -168,7 +168,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                         inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                 new BaseActionSource());
                         this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                        return ActionResultType.field_5812;
+                        return ActionResultType.SUCCESS;
                     }
                 }
             }

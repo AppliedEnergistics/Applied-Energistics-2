@@ -22,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.PickaxeItem;
+
 import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
@@ -29,7 +30,7 @@ public class QuartzPickaxeItem extends PickaxeItem {
     private final AEFeature type;
 
     public QuartzPickaxeItem(Item.Properties props, final AEFeature type) {
-        super(ItemTier.field_8923, 1, -2.8F, props);
+        super(ItemTier.IRON, 1, -2.8F, props);
         this.type = type;
     }
 

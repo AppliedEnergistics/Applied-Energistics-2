@@ -47,11 +47,11 @@ public final class PowerStateWailaDataProvider extends BaseWailaDataProvider {
             final boolean isPowered = state.isPowered();
 
             if (isActive && isPowered) {
-                tooltip.add(WailaText.DeviceOnline.text());
+                tooltip.add(WailaText.DeviceOnline.textComponent());
             } else if (isPowered) {
-                tooltip.add(WailaText.DeviceMissingChannel.text());
+                tooltip.add(WailaText.DeviceMissingChannel.textComponent());
             } else {
-                tooltip.add(WailaText.DeviceOffline.text());
+                tooltip.add(WailaText.DeviceOffline.textComponent());
             }
         }
 

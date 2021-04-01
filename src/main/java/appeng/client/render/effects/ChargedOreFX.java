@@ -33,9 +33,9 @@ public class ChargedOreFX extends RedstoneParticle {
 
     private static final RedstoneParticleData PARTICLE_DATA = new RedstoneParticleData(0.21f, 0.61f, 1.0f, 1.0f);
 
-    private ChargedOreFX(ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
+    private ChargedOreFX(ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
             IAnimatedSprite spriteSet) {
-        super(world, x, y, z, xSpeed, ySpeed, zSpeed, PARTICLE_DATA, spriteSet);
+        super(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, PARTICLE_DATA, spriteSet);
     }
 
     @Override
@@ -53,14 +53,14 @@ public class ChargedOreFX extends RedstoneParticle {
     public static class Factory implements IParticleFactory<BasicParticleType> {
         private final IAnimatedSprite spriteSet;
 
-        public Factory(IAnimatedSprite p_i50477_1_) {
-            this.spriteSet = p_i50477_1_;
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(BasicParticleType effect, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            return new ChargedOreFX(world, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
+            return new ChargedOreFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }
 }

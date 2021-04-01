@@ -40,6 +40,7 @@ import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerTickList;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.ServerWorldLightManager;
+
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.util.AEPartLocation;
@@ -161,8 +162,8 @@ public class CachedPlane {
                         final BlockPos tePOS = entry.position;
                         if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
                                 && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
-                            this.ticks.add(new NextTickListEntry<>(tePOS, entry.getTarget(), entry.field_9321 - gameTime,
-                                    entry.priority));
+                            this.ticks.add(new NextTickListEntry<>(tePOS, entry.getTarget(),
+                                    entry.field_235017_b_ - gameTime, entry.priority));
                         }
                     }
                 }
@@ -266,7 +267,8 @@ public class CachedPlane {
 
     private void addTick(final int x, final int y, final int z, final NextTickListEntry<Block> entry) {
         BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
-        this.world.getPendingBlockTicks().scheduleTick(where, entry.getTarget(), (int) entry.field_9321, entry.priority);
+        this.world.getPendingBlockTicks().scheduleTick(where, entry.getTarget(), (int) entry.field_235017_b_,
+                entry.priority);
     }
 
     private void addTile(final int x, final int y, final int z, final TileEntity te,
@@ -352,10 +354,10 @@ public class CachedPlane {
     private class Column {
         private final int x;
         private final int z;
-        private final IChunk c;
+        private final Chunk c;
         private List<Integer> skipThese = null;
 
-        public Column(final IChunk chunk, final int x, final int z, final int chunkY, final int chunkHeight) {
+        public Column(final Chunk chunk, final int x, final int z, final int chunkY, final int chunkHeight) {
             this.x = x;
             this.z = z;
             this.c = chunk;

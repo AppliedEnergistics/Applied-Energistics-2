@@ -22,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.SwordItem;
+
 import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
@@ -29,7 +30,7 @@ public class QuartzSwordItem extends SwordItem {
     private final AEFeature type;
 
     public QuartzSwordItem(Item.Properties props, AEFeature type) {
-        super(ItemTier.field_8923, 3, -2.4F, props);
+        super(ItemTier.IRON, 3, -2.4F, props);
         this.type = type;
     }
 

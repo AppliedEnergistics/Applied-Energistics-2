@@ -158,7 +158,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @Override
     public ItemStack createItemStack() {
-        return Platform.copyStackWithSize(this.getDefinition(), (int) Math.min(Integer.MAX_VALUE, this.getStackSize()));
+        int size = (int) Math.min(Integer.MAX_VALUE, this.getStackSize());
+        if (size != 0) {
+            ItemStack result = this.getDefinition().copy();
+            result.setCount(size);
+            return result;
+        } else {
+            return ItemStack.EMPTY;
+        }
     }
 
     @Override
@@ -210,6 +217,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         return false;
     }
 
+    @Override
     public boolean equals(final ItemStack is) {
         return this.isSameType(is);
     }

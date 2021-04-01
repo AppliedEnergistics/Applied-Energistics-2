@@ -19,6 +19,7 @@
 package appeng.parts.reporting;
 
 import java.io.IOException;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -42,14 +43,14 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 /**
  * The most basic class for any part reporting information, like terminals or monitors. This can also include basic
  * panels which just provide light.
- * <p>
+ *
  * It deals with the most basic functionalities like network data, grid registration or the rotation of the actual part.
- * <p>
+ *
  * The direct abstract subclasses are usually a better entry point for adding new concrete ones. But this might be an
  * ideal starting point to completely new type, which does not resemble any existing one.
  *
@@ -102,7 +103,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
@@ -171,27 +172,9 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         final TileEntity te = this.getTile();
 
-        if (Platform.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
-            if (Platform.isServer()) {
-                if (this.getSpin() > 3) {
-                    this.spin = 0;
-                }
-
-                switch (this.getSpin()) {
-                    case 0:
-                        this.spin = 1;
-                        break;
-                    case 1:
-                        this.spin = 3;
-                        break;
-                    case 2:
-                        this.spin = 0;
-                        break;
-                    case 3:
-                        this.spin = 2;
-                        break;
-                }
-
+        if (InteractionUtil.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
+            if (!isRemote()) {
+                this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
                 this.saveChanges();
             }
@@ -214,7 +197,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         }
     }
 
-    private final int blockLight(final int emit) {
+    private int blockLight(final int emit) {
         if (this.opacity < 0) {
             final TileEntity te = this.getTile();
             World world = te.getWorld();
@@ -228,7 +211,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     @Override
     public final boolean isPowered() {
         try {
-            if (Platform.isServer()) {
+            if (!isRemote()) {
                 return this.getProxy().getEnergy().isNetworkPowered();
             } else {
                 return ((this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG);

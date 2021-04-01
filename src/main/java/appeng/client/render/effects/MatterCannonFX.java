@@ -31,8 +31,9 @@ import appeng.api.util.AEPartLocation;
 
 public class MatterCannonFX extends SpriteTexturedParticle {
 
-    public MatterCannonFX(ClientWorld world, final double x, final double y, final double z, IAnimatedSprite sprite) {
-        super(world, x, y, z);
+    public MatterCannonFX(final ClientWorld par1World, final double x, final double y, final double z,
+            IAnimatedSprite sprite) {
+        super(par1World, x, y, z);
         this.particleGravity = 0;
         this.particleBlue = 1;
         this.particleGreen = 1;
@@ -83,7 +84,7 @@ public class MatterCannonFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle createParticle(BasicParticleType effect, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(BasicParticleType data, ClientWorld world, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             return new MatterCannonFX(world, x, y, z, spriteSet);
         }

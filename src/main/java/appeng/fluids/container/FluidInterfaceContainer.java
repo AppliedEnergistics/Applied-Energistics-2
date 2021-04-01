@@ -26,6 +26,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
@@ -80,7 +81,7 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            this.tankSync.sendDiff(this.getListeners());
+            this.tankSync.sendDiff(this.listeners);
         }
 
         super.detectAndSendChanges();

@@ -19,6 +19,7 @@
 package appeng.fluids.parts;
 
 import java.util.EnumSet;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -53,6 +54,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;

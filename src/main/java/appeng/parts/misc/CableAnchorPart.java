@@ -116,7 +116,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -192,7 +192,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void randomDisplayTick(final World world, final BlockPos pos, final Random r) {
+    public void animateTick(final World world, final BlockPos pos, final Random r) {
 
     }
 

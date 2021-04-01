@@ -44,7 +44,7 @@ public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity>
             tcg.click(player);
         }
 
-        return ActionResultType.field_5812;
+        return ActionResultType.SUCCESS;
     }
 
 }

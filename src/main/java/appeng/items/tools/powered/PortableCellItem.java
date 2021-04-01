@@ -65,7 +65,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
         ContainerOpener.openContainer(MEPortableCellContainer.TYPE, player, ContainerLocator.forHand(player, hand));
-        return new ActionResult<>(ActionResultType.field_5812, player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
     }
 
     @Override

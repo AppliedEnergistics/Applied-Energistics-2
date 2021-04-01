@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.fluids.container;
 
 import java.math.RoundingMode;
@@ -24,8 +42,7 @@ import appeng.fluids.util.IAEFluidTank;
 public abstract class FluidConfigurableContainer extends UpgradeableContainer implements IFluidSyncContainer {
     private FluidSyncHelper sync = null;
 
-    public FluidConfigurableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
-            IUpgradeableHost te) {
+    public FluidConfigurableContainer(ContainerType<?> containerType, int id, PlayerInventory ip, IUpgradeableHost te) {
         super(containerType, id, ip, te);
     }
 
@@ -75,7 +92,7 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
     @Override
     protected void standardDetectAndSendChanges() {
         if (isServer()) {
-            this.getSyncHelper().sendDiff(this.getListeners());
+            this.getSyncHelper().sendDiff(this.listeners);
 
             // clear out config items that are no longer valid (eg capacity upgrade removed)
             final IAEFluidTank t = this.getFluidConfigInventory();

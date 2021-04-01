@@ -72,8 +72,8 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return Api.instance().partHelper().placeBus(stack, context.getPos(), context.getFace(),
-                context.getPlayer(), context.getHand(), context.getWorld());
+        return Api.instance().partHelper().placeBus(stack, context.getPos(), context.getFace(), context.getPlayer(),
+                context.getHand(), context.getWorld());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         try {
             final ItemStack in = this.getTextureItem(is);
             if (!in.isEmpty()) {
-                return super.getDisplayName(is).copyRaw().appendString(" - ").append(in.getDisplayName());
+                return super.getDisplayName(is).deepCopy().appendString(" - ").append(in.getDisplayName());
             }
         } catch (final Throwable ignored) {
 
@@ -110,11 +110,11 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
         final boolean areTileEntitiesEnabled = AEConfig.instance().isFeatureEnabled(AEFeature.TILE_ENTITY_FACADES);
         final boolean isWhiteListed = BLOCK_WHITELIST.contains(block);
-        final boolean isModel = blockState.getRenderType() == BlockRenderType.field_11458;
+        final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 
         final BlockState defaultState = block.getDefaultState();
         final boolean isTileEntity = block.isTileEntityProvider();
-        final boolean isFullCube = defaultState.isOpaqueCube(EmptyBlockReader.field_12294, BlockPos.ZERO);
+        final boolean isFullCube = defaultState.isNormalCube(EmptyBlockReader.INSTANCE, BlockPos.ZERO);
 
         final boolean isTileEntityAllowed = !isTileEntity || (areTileEntitiesEnabled && isWhiteListed);
         final boolean isBlockAllowed = isFullCube || isWhiteListed;
@@ -158,7 +158,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
             return ItemStack.EMPTY;
         }
 
-        return new ItemStack(baseItem);
+        return new ItemStack(baseItem, 1);
     }
 
     @Override

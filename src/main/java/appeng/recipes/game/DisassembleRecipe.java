@@ -145,7 +145,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
 
     @Nonnull
     @Override
-    public ItemStack craft(@Nonnull final CraftingInventory inv) {
+    public ItemStack getCraftingResult(@Nonnull final CraftingInventory inv) {
         return this.getOutput(inv);
     }
 

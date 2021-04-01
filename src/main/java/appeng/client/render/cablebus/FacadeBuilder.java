@@ -101,7 +101,7 @@ public class FacadeBuilder {
 
         List<IBakedModel> cableAnchorParts = new ArrayList<>();
         for (ResourceLocation model : CableAnchorPart.FACADE_MODELS.getModels()) {
-            IBakedModel cableAnchor = modelLoader.bake(model, ModelRotation.field_5350);
+            IBakedModel cableAnchor = modelLoader.bake(model, ModelRotation.X0_Y0);
             cableAnchorParts.add(cableAnchor);
         }
 

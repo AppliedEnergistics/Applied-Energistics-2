@@ -80,6 +80,7 @@ import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
@@ -117,8 +118,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
 
             final ICellInventoryHandler<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(
-                    p.getHeldItem(hand), null,
-                    Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    p.getHeldItem(hand), null, Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             if (inv != null) {
                 final IItemList<IAEItemStack> itemList = inv.getAvailableItems(
                         Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
@@ -129,22 +129,25 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         IAEItemStack aeAmmo = req.copy();
                         this.extractAEPower(p.getHeldItem(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
 
-                        if (Platform.isClient()) {
-                            return new ActionResult<>(ActionResultType.field_5812, p.getHeldItem(hand));
+                        if (w.isRemote()) {
+                            return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()),
+                                    p.getHeldItem(hand));
                         }
 
                         aeAmmo.setStackSize(1);
                         final ItemStack ammo = aeAmmo.createItemStack();
                         if (ammo.isEmpty()) {
-                            return new ActionResult<>(ActionResultType.field_5812, p.getHeldItem(hand));
+                            return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()),
+                                    p.getHeldItem(hand));
                         }
 
                         aeAmmo = inv.extractItems(aeAmmo, Actionable.MODULATE, new PlayerSource(p, null));
                         if (aeAmmo == null) {
-                            return new ActionResult<>(ActionResultType.field_5812, p.getHeldItem(hand));
+                            return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()),
+                                    p.getHeldItem(hand));
                         }
 
-                        final LookDirection dir = Platform.getPlayerRay(p, 32);
+                        final LookDirection dir = InteractionUtil.getPlayerRay(p, 32);
 
                         final Vector3d rayFrom = dir.getA();
                         final Vector3d rayTo = dir.getB();
@@ -161,31 +164,33 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                             if (type.getItem() instanceof PaintBallItem) {
                                 this.shootPaintBalls(type, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                             }
-                            return new ActionResult<>(ActionResultType.field_5812, p.getHeldItem(hand));
+                            return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()),
+                                    p.getHeldItem(hand));
                         } else {
                             this.standardAmmo(penetration, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                         }
                     }
                 } else {
-                    if (Platform.isServer()) {
+                    if (!w.isRemote()) {
                         p.sendMessage(PlayerMessages.AmmoDepleted.get(), Util.DUMMY_UUID);
                     }
-                    return new ActionResult<>(ActionResultType.field_5812, p.getHeldItem(hand));
+                    return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), p.getHeldItem(hand));
                 }
             }
         }
         return new ActionResult<>(ActionResultType.FAIL, p.getHeldItem(hand));
     }
 
-    private void shootPaintBalls(final ItemStack type, final World w, final PlayerEntity p, final Vector3d Vec3d,
-            final Vector3d Vec3d1, final Vector3d direction, final double d0, final double d1, final double d2) {
-        final AxisAlignedBB bb = new AxisAlignedBB(Math.min(Vec3d.x, Vec3d1.x), Math.min(Vec3d.y, Vec3d1.y), Math.min(Vec3d.z, Vec3d1.z),
-                Math.max(Vec3d.x, Vec3d1.x), Math.max(Vec3d.y, Vec3d1.y), Math.max(Vec3d.z, Vec3d1.z)).grow(16, 16,
-                        16);
+    private void shootPaintBalls(final ItemStack type, final World w, final PlayerEntity p, final Vector3d Vector3d,
+            final Vector3d Vector3d1, final Vector3d direction, final double d0, final double d1, final double d2) {
+        final AxisAlignedBB bb = new AxisAlignedBB(Math.min(Vector3d.x, Vector3d1.x), Math.min(Vector3d.y, Vector3d1.y),
+                Math.min(Vector3d.z, Vector3d1.z), Math.max(Vector3d.x, Vector3d1.x), Math.max(Vector3d.y, Vector3d1.y),
+                Math.max(Vector3d.z, Vector3d1.z)).grow(16, 16, 16);
 
         Entity entity = null;
         Vector3d entityIntersection = null;
-        final List<Entity> list = w.getEntitiesInAABBexcluding(p, bb, e -> !(e instanceof ItemEntity) && e.isAlive());
+        final List<Entity> list = w.getEntitiesInAABBexcluding(p, bb,
+                e -> !(e instanceof ItemEntity) && e.isAlive());
         double closest = 9999999.0D;
 
         for (Entity entity1 : list) {
@@ -196,10 +201,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             final float f1 = 0.3F;
 
             final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
-            final Vector3d intersection = boundingBox.rayTrace(Vec3d, Vec3d1).orElse(null);
+            final Vector3d intersection = boundingBox.rayTrace(Vector3d, Vector3d1).orElse(null);
 
             if (intersection != null) {
-                final double nd = Vec3d.squareDistanceTo(intersection);
+                final double nd = Vector3d.squareDistanceTo(intersection);
 
                 if (nd < closest) {
                     entity = entity1;
@@ -209,26 +214,28 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
         }
 
-        RayTraceContext rayTraceContext = new RayTraceContext(Vec3d, Vec3d1, RayTraceContext.BlockMode.field_17558,
-                RayTraceContext.FluidMode.field_1348, p);
+        RayTraceContext rayTraceContext = new RayTraceContext(Vector3d, Vector3d1, RayTraceContext.BlockMode.COLLIDER,
+                RayTraceContext.FluidMode.NONE, p);
         RayTraceResult pos = w.rayTraceBlocks(rayTraceContext);
 
         final Vector3d vec = new Vector3d(d0, d1, d2);
-        if (entity != null && pos.getType() != RayTraceResult.Type.field_1333 && pos.getHitVec().squareDistanceTo(vec) > closest) {
+        if (entity != null && pos.getType() != RayTraceResult.Type.MISS
+                && pos.getHitVec().squareDistanceTo(vec) > closest) {
             pos = new EntityRayTraceResult(entity, entityIntersection);
-        } else if (entity != null && pos.getType() == RayTraceResult.Type.field_1333) {
+        } else if (entity != null && pos.getType() == RayTraceResult.Type.MISS) {
             pos = new EntityRayTraceResult(entity, entityIntersection);
         }
 
         try {
-            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w, new MatterCannonPacket(d0, d1, d2,
-                    (float) direction.x, (float) direction.y, (float) direction.z,
-                    (byte) (pos.getType() == RayTraceResult.Type.field_1333 ? 32 : pos.getHitVec().squareDistanceTo(vec) + 1)));
+            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
+                    new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
+                            (byte) (pos.getType() == RayTraceResult.Type.MISS ? 32
+                                    : pos.getHitVec().squareDistanceTo(vec) + 1)));
         } catch (final Exception err) {
             AELog.debug(err);
         }
 
-        if (pos.getType() != RayTraceResult.Type.field_1333 && type != null && type.getItem() instanceof PaintBallItem) {
+        if (pos.getType() != RayTraceResult.Type.MISS && type != null && type.getItem() instanceof PaintBallItem) {
             final PaintBallItem ipb = (PaintBallItem) type.getItem();
 
             final AEColor col = ipb.getColor();
@@ -274,20 +281,21 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         }
     }
 
-    private void standardAmmo(float penetration, final World w, final PlayerEntity p, final Vector3d Vec3d,
-            final Vector3d Vec3d1, final Vector3d direction, final double d0, final double d1, final double d2) {
+    private void standardAmmo(float penetration, final World w, final PlayerEntity p, final Vector3d Vector3d,
+            final Vector3d Vector3d1, final Vector3d direction, final double d0, final double d1, final double d2) {
         boolean hasDestroyed = true;
         while (penetration > 0 && hasDestroyed) {
             hasDestroyed = false;
 
-            final AxisAlignedBB bb = new AxisAlignedBB(Math.min(Vec3d.x, Vec3d1.x), Math.min(Vec3d.y, Vec3d1.y),
-                    Math.min(Vec3d.z, Vec3d1.z), Math.max(Vec3d.x, Vec3d1.x), Math.max(Vec3d.y, Vec3d1.y),
-                    Math.max(Vec3d.z, Vec3d1.z)).grow(16, 16, 16);
+            final AxisAlignedBB bb = new AxisAlignedBB(Math.min(Vector3d.x, Vector3d1.x),
+                    Math.min(Vector3d.y, Vector3d1.y), Math.min(Vector3d.z, Vector3d1.z),
+                    Math.max(Vector3d.x, Vector3d1.x), Math.max(Vector3d.y, Vector3d1.y),
+                    Math.max(Vector3d.z, Vector3d1.z)).grow(16, 16, 16);
 
             Entity entity = null;
-
             Vector3d entityIntersection = null;
-            final List<Entity> list = w.getEntitiesInAABBexcluding(p, bb, e -> !(e instanceof ItemEntity) && e.isAlive());
+            final List<Entity> list = w.getEntitiesInAABBexcluding(p, bb,
+                    e -> !(e instanceof ItemEntity) && e.isAlive());
             double closest = 9999999.0D;
 
             for (Entity entity1 : list) {
@@ -298,10 +306,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 final float f1 = 0.3F;
 
                 final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
-                final Vector3d intersection = boundingBox.rayTrace(Vec3d, Vec3d1).orElse(null);
+                final Vector3d intersection = boundingBox.rayTrace(Vector3d, Vector3d1).orElse(null);
 
                 if (intersection != null) {
-                    final double nd = Vec3d.squareDistanceTo(intersection);
+                    final double nd = Vector3d.squareDistanceTo(intersection);
 
                     if (nd < closest) {
                         entity = entity1;
@@ -311,26 +319,27 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 }
             }
 
-            RayTraceContext rayTraceContext = new RayTraceContext(Vec3d, Vec3d1, RayTraceContext.BlockMode.field_17558,
-                    RayTraceContext.FluidMode.field_1348, p);
+            RayTraceContext rayTraceContext = new RayTraceContext(Vector3d, Vector3d1,
+                    RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, p);
             final Vector3d vec = new Vector3d(d0, d1, d2);
             RayTraceResult pos = w.rayTraceBlocks(rayTraceContext);
-            if (entity != null && pos.getType() != RayTraceResult.Type.field_1333
+            if (entity != null && pos.getType() != RayTraceResult.Type.MISS
                     && pos.getHitVec().squareDistanceTo(vec) > closest) {
                 pos = new EntityRayTraceResult(entity, entityIntersection);
-            } else if (entity != null && pos.getType() == RayTraceResult.Type.field_1333) {
+            } else if (entity != null && pos.getType() == RayTraceResult.Type.MISS) {
                 pos = new EntityRayTraceResult(entity, entityIntersection);
             }
 
             try {
-                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w, new MatterCannonPacket(d0, d1, d2,
-                        (float) direction.x, (float) direction.y, (float) direction.z,
-                        (byte) (pos.getType() == RayTraceResult.Type.field_1333 ? 32 : pos.getHitVec().squareDistanceTo(vec) + 1)));
+                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
+                        new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
+                                (float) direction.z, (byte) (pos.getType() == RayTraceResult.Type.MISS ? 32
+                                        : pos.getHitVec().squareDistanceTo(vec) + 1)));
             } catch (final Exception err) {
                 AELog.debug(err);
             }
 
-            if (pos.getType() != RayTraceResult.Type.field_1333) {
+            if (pos.getType() != RayTraceResult.Type.MISS) {
                 final DamageSource dmgSrc = new EntityDamageSource("matter_cannon", p);
 
                 if (pos instanceof EntityRayTraceResult) {
@@ -342,6 +351,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         final LivingEntity el = (LivingEntity) entityHit;
                         penetration -= dmg;
                         el.applyKnockback(0, -direction.x, -direction.z);
+                        // el.knockBack( p, 0, Vector3d.x,
+                        // Vector3d.z );
                         el.attackEntityFrom(dmgSrc, dmg);
                         if (!el.isAlive()) {
                             hasDestroyed = true;

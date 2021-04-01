@@ -22,6 +22,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -41,12 +43,13 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
     @Override
     public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, MatrixStack mStack,
             IRenderTypeBuffer buffers, int packedLight) {
+        final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
         mStack.push();
         mStack.translate(0, 0.25F, 0);
         float f2;
 
-        if (tnt.getFuseDataManager() - partialTicks + 1.0F < 10.0F) {
-            f2 = 1.0F - (tnt.getFuseDataManager() - partialTicks + 1.0F) / 10.0F;
+        if (tnt.getFuse() - partialTicks + 1.0F < 10.0F) {
+            f2 = 1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 10.0F;
 
             if (f2 < 0.0F) {
                 f2 = 0.0F;
@@ -63,17 +66,18 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         }
 
         mStack.scale(0.5f, 0.5f, 0.5f);
+        f2 = (1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
         mStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
         mStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
         TNTMinecartRenderer.renderTntFlash(Blocks.TNT.getDefaultState(), mStack, buffers, packedLight,
-                tnt.getFuseDataManager() / 5 % 2 == 0);
+                tnt.getFuse() / 5 % 2 == 0);
         mStack.pop();
         super.render(tnt, entityYaw, partialTicks, mStack, buffers, packedLight);
     }
 
     @Override
-    public ResourceLocation getTexture(final TinyTNTPrimedEntity entity) {
+    public ResourceLocation getEntityTexture(final TinyTNTPrimedEntity entity) {
         return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     }
 }

@@ -142,7 +142,7 @@ public final class MaterialItem extends AEBaseItem
 
                     final InventoryAdaptor ad = new AdaptorFixedInv(upgrades);
                     player.setHeldItem(hand, ad.addItems(player.getHeldItem(hand)));
-                    return ActionResultType.field_5812;
+                    return ActionResultType.SUCCESS;
                 }
             }
         }

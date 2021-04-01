@@ -41,6 +41,7 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
+
 import appeng.core.Api;
 
 /**
@@ -55,7 +56,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
      * If it was not the same object, then the Object->ID lookup would fail since it uses an identity hashmap
      * internally.
      */
-    public static final Codec<SpatialStorageChunkGenerator> CODEC = RegistryLookupCodec.getLookUpCodec(Registry.BIOME_KEY)
+    public static final Codec<SpatialStorageChunkGenerator> CODEC = RegistryLookupCodec
+            .getLookUpCodec(Registry.BIOME_KEY)
             .xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();
 
     private final Registry<Biome> biomeRegistry;
@@ -77,8 +79,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    protected Codec<? extends ChunkGenerator> method_28506() {
-        return field_24746;
+    protected Codec<? extends ChunkGenerator> func_230347_a_() {
+        return CODEC;
     }
 
     private static SingleBiomeProvider createBiomeSource(Registry<Biome> biomeRegistry) {
@@ -121,16 +123,16 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public ChunkGenerator method_27997(long seed) {
+    public ChunkGenerator func_230349_a_(long p_230349_1_) {
         return this;
     }
 
     @Override
-    public void method_12088(IWorld world, StructureManager accessor, IChunk chunk) {
+    public void func_230352_b_(IWorld world, StructureManager accessor, IChunk chunk) {
     }
 
     @Override
-    public IBlockReader method_26261(int x, int z) {
+    public IBlockReader func_230348_a_(int x, int z) {
         return columnSample;
     }
 
@@ -140,11 +142,11 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void method_12102(WorldGenRegion region, StructureManager accessor) {
+    public void func_230351_a_(WorldGenRegion region, StructureManager accessor) {
     }
 
     @Override
-    public void method_12108(long seed, BiomeManager access, IChunk chunk, GenerationStage.Carving carver) {
+    public void func_230350_a_(long seed, BiomeManager access, IChunk chunk, GenerationStage.Carving carver) {
     }
 
 }

@@ -18,6 +18,7 @@
 package appeng.worldgen.meteorite;
 
 import java.util.Random;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -28,12 +29,14 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+
 import appeng.core.worlddata.WorldData;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructurePiece extends StructurePiece {
 
-    public static final IStructurePieceType TYPE = IStructurePieceType.register(MeteoriteStructurePiece::new, "ae2mtrt");
+    public static final IStructurePieceType TYPE = IStructurePieceType.register(MeteoriteStructurePiece::new,
+            "ae2mtrt");
 
     public static void register() {
         // THIS MUST BE CALLED otherwise the static initializer above will not run,
@@ -41,7 +44,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
         // be loaded without this being registered as a structure piece!
     }
 
-    private final PlacedMeteoriteSettings settings;
+    private PlacedMeteoriteSettings settings;
 
     protected MeteoriteStructurePiece(BlockPos center, float coreRadius, CraterType craterType, FalloutMode fallout,
             boolean pureCrater, boolean craterLake) {
@@ -53,8 +56,8 @@ public class MeteoriteStructurePiece extends StructurePiece {
         int range = 4 * 16;
 
         ChunkPos chunkPos = new ChunkPos(center);
-        this.boundingBox = new MutableBoundingBox(chunkPos.getXStart() - range, center.getY(), chunkPos.getZStart() - range,
-                chunkPos.getXEnd() + range, center.getY(), chunkPos.getZEnd() + range);
+        this.boundingBox = new MutableBoundingBox(chunkPos.getXStart() - range, center.getY(),
+                chunkPos.getZStart() - range, chunkPos.getXEnd() + range, center.getY(), chunkPos.getZEnd() + range);
     }
 
     public MeteoriteStructurePiece(TemplateManager templateManager, CompoundNBT tag) {
@@ -89,14 +92,13 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean method_14931(ISeedReader world, StructureManager structureAccessor,
-            ChunkGenerator chunkGenerator, Random random, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
+    public boolean func_230383_a_(ISeedReader world, StructureManager p_230383_2_, ChunkGenerator chunkGeneratorIn,
+            Random rand, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();
 
         WorldData.instance().compassData().service().tryUpdateArea(world, chunkPos); // FIXME: We know the y-range
-        // here...
+                                                                                     // here...
         return true;
     }
-
 }

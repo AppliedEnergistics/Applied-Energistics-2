@@ -25,6 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
@@ -96,7 +97,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (int x = 0; x < this.facades; x++) {
             if (this.storage.getFacade(x) != null) {
                 final CompoundNBT data = new CompoundNBT();
-                this.storage.getFacade(x).getItemStack().toTag(data);
+                this.storage.getFacade(x).getItemStack().write(data);
                 c.put("facade:" + x, data);
             }
         }
@@ -165,7 +166,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (int x = 0; x < this.facades; x++) {
             final IFacadePart part = this.getFacade(AEPartLocation.fromOrdinal(x));
             if (part != null) {
-                final int itemID = Item.getIdFromItem(part.getItem());
+                final int itemID = net.minecraft.item.Item.getIdFromItem(part.getItem());
                 out.writeInt(itemID * (part.notAEFacade() ? -1 : 1));
             }
         }

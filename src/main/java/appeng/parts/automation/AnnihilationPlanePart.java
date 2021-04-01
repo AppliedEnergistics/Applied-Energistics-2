@@ -75,7 +75,8 @@ import appeng.util.item.AEItemStack;
 
 public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable, IWorldCallable<TickRateModulation> {
 
-    public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID, "blacklisted/annihilation_plane");
+    public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
+            "blacklisted/annihilation_plane");
 
     private static final ITag.INamedTag<Block> BLOCK_BLACKLIST = BlockTagsAccessor.register(TAG_BLACKLIST.toString());
 
@@ -127,7 +128,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     @Override
-    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.refresh();
         } else {
@@ -137,7 +138,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     @Override
     public void onEntityCollision(final Entity entity) {
-        if (this.isAccepting && entity instanceof ItemEntity && entity.isAlive() && Platform.isServer()
+        if (this.isAccepting && entity instanceof ItemEntity && entity.isAlive() && !isRemote()
                 && this.getProxy().isActive()) {
 
             ItemEntity itemEntity = (ItemEntity) entity;
@@ -223,6 +224,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * Stores an {@link ItemStack} inside the network.
      *
      * @param item {@link ItemStack} to store
+     *
      * @return the leftover items, which could not be stored inside the network
      */
     private IAEItemStack storeItemStack(final ItemStack item) {
@@ -250,6 +252,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      *
      * @param entityItem the entity to update or destroy
      * @param overflow   the leftover {@link IAEItemStack}
+     *
      * @return true, if the entity was changed otherwise false.
      */
     private boolean handleOverflow(final ItemEntity entityItem, final IAEItemStack overflow) {
@@ -420,10 +423,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     /**
      * Checks if the network can store the possible drops.
-     * <p>
+     *
      * It also sets isAccepting to false, if the item can not be stored.
      *
      * @param itemStacks an array of {@link ItemStack} to test
+     *
      * @return true, if the network can store at least a single item of all drops or no drops are reported
      */
     private boolean canStoreItemStacks(final List<ItemStack> itemStacks) {
@@ -460,7 +464,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         // breaking
         // i.e. our cable-buses do this (bad practice, really)
         final AxisAlignedBB box = new AxisAlignedBB(pos).grow(0.2);
-        for (final Object ei : w.getEntitiesWithinAABB(ItemEntity.class, box, null)) {
+        for (final Object ei : w.getEntitiesWithinAABB(ItemEntity.class, box)) {
             if (ei instanceof ItemEntity) {
                 final ItemEntity entityItem = (ItemEntity) ei;
                 this.storeEntityItem(entityItem);

@@ -102,7 +102,7 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
 
         AELog.info("Delete " + blocks + " blocks");
 
-        return ActionResultType.field_5812;
+        return ActionResultType.SUCCESS;
     }
 
     private boolean isInsideBox(BlockPos pos, BlockPos origin) {

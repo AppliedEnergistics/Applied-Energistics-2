@@ -136,7 +136,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World world, final PlayerEntity player, final Hand hand) {
         this.disassembleDrive(player.getHeldItem(hand), world, player);
-        return new ActionResult<>(ActionResultType.field_5812, player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
     }
 
     private boolean disassembleDrive(final ItemStack stack, final World world, final PlayerEntity player) {
@@ -188,7 +188,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return this.disassembleDrive(stack, context.getWorld(), context.getPlayer()) ? ActionResultType.field_5812
+        return this.disassembleDrive(stack, context.getWorld(), context.getPlayer()) ? ActionResultType.SUCCESS
                 : ActionResultType.PASS;
     }
 

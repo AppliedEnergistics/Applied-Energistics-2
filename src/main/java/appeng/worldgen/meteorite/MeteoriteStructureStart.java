@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.worldgen.meteorite;
 
 import java.util.Set;
@@ -22,6 +40,7 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
@@ -36,9 +55,8 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
     }
 
     @Override
-    public void init(DynamicRegistries dynamicRegistryManager, ChunkGenerator generator,
-            TemplateManager structureManager, int chunkX, int chunkZ, Biome biome,
-            NoFeatureConfig featureConfig) {
+    public void func_230364_a_(DynamicRegistries dynamicRegistryManager, ChunkGenerator generator,
+            TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
         final int centerX = chunkX * 16 + this.rand.nextInt(16);
         final int centerZ = chunkZ * 16 + this.rand.nextInt(16);
         final float meteoriteRadius = (this.rand.nextFloat() * 6.0f) + 2;
@@ -47,8 +65,8 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
         final Set<Biome> t2 = generator.getBiomeProvider().getBiomes(centerX, 0, centerZ, 0);
         final Biome spawnBiome = t2.stream().findFirst().orElse(biome);
 
-        final boolean isOcean = spawnBiome.getCategory() == Category.field_9367;
-        final Type heightmapType = isOcean ? Heightmap.Type.field_13195 : Heightmap.Type.field_13194;
+        final boolean isOcean = spawnBiome.getCategory() == Category.OCEAN;
+        final Type heightmapType = isOcean ? Heightmap.Type.OCEAN_FLOOR_WG : Heightmap.Type.WORLD_SURFACE_WG;
 
         // Accumulate stats about the surrounding heightmap
         StatsAccumulator stats = new StatsAccumulator();
@@ -108,7 +126,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
                 final double distanceFrom = dx * dx + dz * dz;
 
                 if (maxY > h + distanceFrom * 0.0175 && maxY < h + distanceFrom * 0.02) {
-                    int heigth = generator.getHeight(blockPos.getX(), blockPos.getZ(), Heightmap.Type.field_13200);
+                    int heigth = generator.getHeight(blockPos.getX(), blockPos.getZ(), Heightmap.Type.OCEAN_FLOOR);
                     if (heigth < seaLevel) {
                         return true;
                     }
@@ -126,7 +144,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
         final Category category = biome.getCategory();
 
         // No craters in oceans
-        if (category == Category.field_9367) {
+        if (category == Category.OCEAN) {
             return CraterType.NONE;
         }
 
@@ -146,11 +164,11 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
 
             switch (biome.getPrecipitation()) {
                 // No rainfall, only lava
-                case field_9384:
+                case NONE:
                     return lava ? CraterType.LAVA : CraterType.NORMAL;
 
                 // 25% chance to convert a lava to obsidian
-                case field_9382:
+                case RAIN:
                     final boolean obsidian = rand.nextFloat() > .75f;
                     final CraterType alternativObsidian = obsidian ? CraterType.OBSIDIAN : CraterType.LAVA;
                     return lava ? alternativObsidian : CraterType.NORMAL;
@@ -170,16 +188,16 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
 
             switch (biome.getPrecipitation()) {
                 // No rainfall, water how?
-                case field_9384:
+                case NONE:
                     return lava ? CraterType.LAVA : CraterType.NORMAL;
                 // Rainfall, can also turn lava to obsidian
-                case field_9382:
+                case RAIN:
                     final boolean obsidian = rand.nextFloat() > .75f;
                     final CraterType alternativObsidian = obsidian ? CraterType.OBSIDIAN : CraterType.LAVA;
                     final CraterType craterLake = lake ? CraterType.WATER : CraterType.NORMAL;
                     return lava ? alternativObsidian : craterLake;
                 // No lava, but snow
-                case field_9383:
+                case SNOW:
                     final boolean snow = rand.nextFloat() > .75f;
                     final CraterType water = lake ? CraterType.WATER : CraterType.NORMAL;
                     return snow ? CraterType.SNOW : water;
@@ -198,13 +216,13 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
 
             switch (biome.getPrecipitation()) {
                 // No rainfall, water how?
-                case field_9384:
+                case NONE:
                     return lava ? CraterType.LAVA : CraterType.NORMAL;
-                case field_9382:
+                case RAIN:
                     final CraterType frozenLake = frozen ? CraterType.ICE : CraterType.WATER;
                     final CraterType craterLake = lake ? frozenLake : CraterType.NORMAL;
                     return lava ? CraterType.LAVA : craterLake;
-                case field_9383:
+                case SNOW:
                     final CraterType snowCovered = lake ? CraterType.SNOW : CraterType.NORMAL;
                     return lava ? CraterType.LAVA : snowCovered;
             }

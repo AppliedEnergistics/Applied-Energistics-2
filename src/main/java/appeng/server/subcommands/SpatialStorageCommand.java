@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.server.subcommands;
 
 import static net.minecraft.command.Commands.literal;
@@ -57,12 +75,11 @@ public class SpatialStorageCommand implements ISubCommand {
         })));
 
         // Teleport into the plot
-        builder.then(
-                literal("tp").then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
-                    int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
-                    teleportToPlot(ctx.getSource(), plotId);
-                    return 1;
-                })));
+        builder.then(literal("tp").then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+            int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
+            teleportToPlot(ctx.getSource(), plotId);
+            return 1;
+        })));
 
         // Teleport from the current plot back to the source of its content, or do the
         // same for a given plot id
@@ -76,8 +93,8 @@ public class SpatialStorageCommand implements ISubCommand {
         })));
 
         // Creates a storage cell for the given plot id and gives it to the player
-        builder.then(literal("givecell")
-                .then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+        builder.then(
+                literal("givecell").then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
                     int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
                     giveCell(ctx.getSource(), plotId);
                     return 1;
@@ -166,8 +183,8 @@ public class SpatialStorageCommand implements ISubCommand {
         // clickable link to the source)
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition != null) {
-            source.sendFeedback(new StringTextComponent("Last Transition:").mergeStyle(TextFormatting.field_1073, TextFormatting.field_1067),
-                    true);
+            source.sendFeedback(new StringTextComponent("Last Transition:").mergeStyle(TextFormatting.UNDERLINE,
+                    TextFormatting.BOLD), true);
 
             String sourceWorldId = lastTransition.getWorldId().toString();
             IFormattableTextComponent sourceLink = new StringTextComponent(
@@ -187,7 +204,8 @@ public class SpatialStorageCommand implements ISubCommand {
     private static void teleportToPlot(CommandSource source, int plotId) {
         SpatialStoragePlot plot = getPlot(plotId);
 
-        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.getLocation(), plot.getOrigin());
+        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.getLocation(),
+                plot.getOrigin());
 
         runCommandFor(source, teleportCommand);
     }
@@ -248,7 +266,8 @@ public class SpatialStorageCommand implements ISubCommand {
             ITextComponent tpLink = new StringTextComponent("Origin: " + origin)
                     .modifyStyle(makeCommandLink("/ae2 spatial tp " + plot.getId(), "Click to teleport into plot"));
 
-            ITextComponent message = new StringTextComponent("").append(infoLink).appendString(" Size: " + size + " ").append(tpLink);
+            IFormattableTextComponent message = new StringTextComponent("").append(infoLink)
+                    .appendString(" Size: " + size + " ").append(tpLink);
 
             sender.sendFeedback(message, true);
         }
@@ -261,8 +280,8 @@ public class SpatialStorageCommand implements ISubCommand {
 
     private static UnaryOperator<Style> makeCommandLink(String command, String tooltip) {
 
-        return style -> style.applyFormatting(TextFormatting.field_1073)
-                .setClickEvent(new ClickEvent(ClickEvent.Action.field_11750, command))
+        return style -> style.applyFormatting(TextFormatting.UNDERLINE)
+                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(tooltip)));
 
     }
@@ -286,7 +305,8 @@ public class SpatialStorageCommand implements ISubCommand {
 
     private static void sendKeyValuePair(CommandSource source, String label, ITextComponent value) {
         source.sendFeedback(
-                new StringTextComponent("").append(new StringTextComponent(label + ": ").mergeStyle(TextFormatting.field_1067)).append(value),
+                new StringTextComponent("")
+                        .append(new StringTextComponent(label + ": ").mergeStyle(TextFormatting.BOLD)).append(value),
                 true);
     }
 

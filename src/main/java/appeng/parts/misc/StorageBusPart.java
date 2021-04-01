@@ -21,6 +21,7 @@ package appeng.parts.misc;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -202,8 +203,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     private void resetCache(final boolean fullReset) {
-        if (this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null
-                || this.getHost().getTile().getWorld().isClient) {
+        if (isRemote()) {
             return;
         }
 
@@ -251,7 +251,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             final TileEntity te = w.getTileEntity(neighbor);
 
@@ -272,7 +272,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(StorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
@@ -493,10 +493,10 @@ public class StorageBusPart extends UpgradeablePart
         }
 
         if (achievement != null && achievement.getActionableNode() != null) {
-            // Platform.increaseStat( achievement.getActionableNode().getPlayerID(),
+            // Platform.addStat( achievement.getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement()
             // );
-            // Platform.increaseStat( getActionableNode().getPlayerID(),
+            // Platform.addStat( getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement() );
         }
     }

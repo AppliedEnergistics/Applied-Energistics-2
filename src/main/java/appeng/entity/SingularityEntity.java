@@ -26,6 +26,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.DamageSource;
@@ -37,7 +38,6 @@ import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.util.Platform;
 
 public final class SingularityEntity extends AEBaseItemEntity {
 
@@ -66,7 +66,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
     }
 
     private void doExplosion() {
-        if (Platform.isClient()) {
+        if (world.isRemote()) {
             return;
         }
 
@@ -79,8 +79,8 @@ public final class SingularityEntity extends AEBaseItemEntity {
         final IMaterials materials = Api.instance().definitions().materials();
 
         if (materials.singularity().isSameAs(item)) {
-            final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4, this.getPosX() + 4,
-                    this.getPosY() + 4, this.getPosZ() + 4);
+            final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4,
+                    this.getPosX() + 4, this.getPosY() + 4, this.getPosZ() + 4);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             for (final Entity e : l) {
@@ -104,20 +104,20 @@ public final class SingularityEntity extends AEBaseItemEntity {
                         if (matches) {
                             while (item.getCount() > 0 && other.getCount() > 0) {
                                 other.grow(-1);
-                                ;
+
                                 if (other.getCount() == 0) {
                                     e.remove();
                                 }
 
                                 materials.qESingularity().maybeStack(2).ifPresent(singularityStack -> {
-                                    final CompoundTag cmp = singularityStack.getOrCreateTag();
+                                    final CompoundNBT cmp = singularityStack.getOrCreateTag();
                                     cmp.putLong("freq", (new Date()).getTime() * 100 + (randTickSeed) % 100);
                                     randTickSeed++;
-                                    item.increment(-1);
+                                    item.grow(-1);
 
-                                    final SingularityEntity entity = new SingularityEntity(this.world, this.getX(),
-                                            this.getY(), this.getZ(), singularityStack);
-                                    this.world.spawnEntity(entity);
+                                    final SingularityEntity entity = new SingularityEntity(this.world, this.getPosX(),
+                                            this.getPosY(), this.getPosZ(), singularityStack);
+                                    this.world.addEntity(entity);
                                 });
                             }
 

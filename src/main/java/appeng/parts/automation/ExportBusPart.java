@@ -27,6 +27,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
@@ -194,7 +195,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(UpgradeableContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;

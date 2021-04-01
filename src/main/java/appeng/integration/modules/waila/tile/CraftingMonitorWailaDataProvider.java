@@ -45,9 +45,9 @@ public final class CraftingMonitorWailaDataProvider extends BaseWailaDataProvide
             final IAEItemStack displayStack = monitor.getJobProgress();
 
             if (displayStack != null) {
-                final ITextComponent currentCrafting = displayStack.asItemStackRepresentation().getName();
+                final ITextComponent currentCrafting = displayStack.asItemStackRepresentation().getDisplayName();
 
-                tooltip.add(WailaText.Crafting.text().copyRaw().appendString(": ").append(currentCrafting));
+                tooltip.add(WailaText.Crafting.textComponent().copyRaw().appendString(": ").append(currentCrafting));
             }
         }
     }

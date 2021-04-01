@@ -20,6 +20,7 @@ package appeng.parts.automation;
 
 import java.util.Collection;
 import java.util.Random;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -85,13 +86,17 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider {
 
     @PartModels
-    public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID, "part/level_emitter_base_off");
+    public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_base_off");
     @PartModels
-    public static final ResourceLocation MODEL_BASE_ON = new ResourceLocation(AppEng.MOD_ID, "part/level_emitter_base_on");
+    public static final ResourceLocation MODEL_BASE_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_base_on");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID, "part/level_emitter_status_off");
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_status_off");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID, "part/level_emitter_status_on");
+    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_status_on");
     @PartModels
     public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/level_emitter_status_has_channel");
@@ -159,7 +164,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     // TODO: Make private again
     public boolean isLevelEmitterOn() {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return (this.getClientFlags() & FLAG_ON) == FLAG_ON;
         }
 
@@ -379,7 +384,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void randomDisplayTick(final World world, final BlockPos pos, final Random r) {
+    public void animateTick(final World world, final BlockPos pos, final Random r) {
         if (this.isLevelEmitterOn()) {
             final AEPartLocation d = this.getSide();
 
@@ -399,7 +404,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(LevelEmitterContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;

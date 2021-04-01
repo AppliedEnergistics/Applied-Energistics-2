@@ -83,7 +83,7 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolIte
 
                     PartHostWrenching.wrenchPart(world, pos, host, sp);
                 }
-                return ActionResultType.field_5812;
+                return ActionResultType.SUCCESS;
             }
 
             // Pass the use onto the block...
@@ -98,7 +98,7 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolIte
                     player.swingArm(context.getHand());
                 }
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
     }

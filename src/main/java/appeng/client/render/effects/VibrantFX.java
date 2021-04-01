@@ -31,9 +31,9 @@ import net.minecraft.particles.BasicParticleType;
 @Environment(EnvType.CLIENT)
 public class VibrantFX extends SpriteTexturedParticle {
 
-    public VibrantFX(ClientWorld world, final double x, final double y, final double z, final double par8,
+    public VibrantFX(final ClientWorld par1World, final double x, final double y, final double z, final double par8,
             final double par10, final double par12, IAnimatedSprite sprite) {
-        super(world, x, y, z, par8, par10, par12);
+        super(par1World, x, y, z, par8, par10, par12);
         final float f = this.rand.nextFloat() * 0.1F + 0.8F;
         this.particleRed = f * 0.7f;
         this.particleGreen = f * 0.89f;
@@ -70,7 +70,7 @@ public class VibrantFX extends SpriteTexturedParticle {
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
-        // this.moveEntity(this.velocityX, this.velocityY, this.velocityZ);
+        // this.moveEntity(this.motionX, this.motionY, this.motionZ);
         this.particleScale *= 0.95;
 
         if (this.maxAge <= 0 || this.particleScale < 0.1) {
@@ -88,9 +88,9 @@ public class VibrantFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle createParticle(BasicParticleType effect, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            return new VibrantFX(world, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
+            return new VibrantFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }
 

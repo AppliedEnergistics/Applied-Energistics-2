@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.waila.part;
 
+import appeng.util.InteractionUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -46,7 +47,7 @@ public final class Tracer {
     public RayTraceResult retraceBlock(final World world, final PlayerEntity player, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
 
-        LookDirection playerRay = Platform.getPlayerRay(player);
+        LookDirection playerRay = InteractionUtil.getPlayerRay(player);
         return blockState.getCollisionShape(world, pos).rayTrace(playerRay.getA(), playerRay.getB(), pos);
     }
 }

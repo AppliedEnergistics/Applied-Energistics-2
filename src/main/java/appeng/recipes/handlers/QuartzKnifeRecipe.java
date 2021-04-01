@@ -25,7 +25,7 @@ public class QuartzKnifeRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingStacks(CraftingInventory inventory) {
+    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inventory) {
         NonNullList<ItemStack> defaultedList = NonNullList.withSize(inventory.getSizeInventory(), ItemStack.EMPTY);
 
         for (int i = 0; i < defaultedList.size(); ++i) {

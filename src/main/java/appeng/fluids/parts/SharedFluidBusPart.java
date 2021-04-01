@@ -63,7 +63,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     @Override
-    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         this.updateState();
         if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;

@@ -35,10 +35,12 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
     private final AppEngInternalInventory inv;
     private final ItemStack is;
     private final IGridHost gh;
+    private final boolean remote;
 
-    public NetworkToolViewer(final ItemStack is, final IGridHost gHost) {
+    public NetworkToolViewer(final ItemStack is, final IGridHost gHost, boolean remote) {
         this.is = is;
         this.gh = gHost;
+        this.remote = remote;
         this.inv = new AppEngInternalInventory(this, 9);
         this.inv.setFilter(new NetworkToolInventoryFilter());
         if (is.hasTag()) // prevent crash when opening network status screen.
@@ -55,6 +57,11 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
     @Override
     public void onChangeInventory(FixedItemInv inv, int slot, InvOperation mc, ItemStack removedStack,
             ItemStack newStack) {
+    }
+
+    @Override
+    public boolean isRemote() {
+        return this.remote;
     }
 
     @Override

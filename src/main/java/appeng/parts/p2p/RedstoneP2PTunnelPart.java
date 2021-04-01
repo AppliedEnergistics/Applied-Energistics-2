@@ -129,7 +129,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     @Override
-    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (!this.isOutput()) {
             final BlockPos target = this.getTile().getPos().offset(this.getSide().getFacing());
 

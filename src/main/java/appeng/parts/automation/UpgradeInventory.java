@@ -27,7 +27,6 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -48,6 +47,11 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
         this.setTileEntity(this);
         this.parent = parent;
         this.setFilter(new UpgradeInvFilter());
+    }
+
+    @Override
+    public boolean isRemote() {
+        return this.parent == null || this.parent.isRemote();
     }
 
     @Override
@@ -139,7 +143,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
         this.cached = false;
-        if (this.parent != null && Platform.isServer()) {
+        if (!isRemote()) {
             this.parent.onChangeInventory(inv, slot, mc, removedStack, newStack);
         }
     }

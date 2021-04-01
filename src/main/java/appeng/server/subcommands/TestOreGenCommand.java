@@ -35,9 +35,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ServerWorld;
+
 import appeng.core.Api;
 import appeng.server.ISubCommand;
 
@@ -55,8 +57,7 @@ public class TestOreGenCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSource> data,
-            final CommandSource sender) {
+    public void call(final MinecraftServer srv, final CommandContext<CommandSource> data, final CommandSource sender) {
 
         int radius = 1000;
 
@@ -67,7 +68,7 @@ public class TestOreGenCommand implements ISubCommand {
             world = player.getServerWorld();
             center = new BlockPos(player.getPosX(), 0, player.getPosZ());
         } catch (CommandSyntaxException e) {
-            world = srv.method_30002();
+            world = srv.getWorld(World.OVERWORLD);
             center = world.getSpawnPoint();
         }
 
@@ -111,7 +112,7 @@ public class TestOreGenCommand implements ISubCommand {
             blockPos.setX(x);
             for (int z = cp.getZStart(); z <= cp.getZEnd(); z++) {
                 blockPos.setZ(z);
-                for (int y = 0; y < world.getHeight(); y++) {
+                for (int y = 0; y < world.func_234938_ad_(); y++) {
                     blockPos.setY(y);
                     BlockState state = chunk.getBlockState(blockPos);
                     if (state == quartzOre || state == chargedQuartzOre) {

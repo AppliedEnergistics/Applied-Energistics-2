@@ -37,9 +37,9 @@ public class LightningArcFX extends LightningFX {
     private final double ry;
     private final double rz;
 
-    public LightningArcFX(ClientWorld world, final double x, final double y, final double z, final double ex,
+    public LightningArcFX(final ClientWorld w, final double x, final double y, final double z, final double ex,
             final double ey, final double ez, final double r, final double g, final double b) {
-        super(world, x, y, z, r, g, b, 6);
+        super(w, x, y, z, r, g, b, 6);
 
         this.rx = ex - x;
         this.ry = ey - y;
@@ -75,10 +75,10 @@ public class LightningArcFX extends LightningFX {
         }
 
         @Override
-        public Particle createParticle(LightningArcParticleData effect, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(LightningArcParticleData data, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            SpriteTexturedParticle lightningFX = new LightningArcFX(world, x, y, z, effect.target.x, effect.target.y,
-                    effect.target.z, 0, 0, 0);
+            SpriteTexturedParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
+                    data.target.z, 0, 0, 0);
             lightningFX.selectSpriteRandomly(this.spriteSet);
             return lightningFX;
         }

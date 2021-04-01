@@ -24,11 +24,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import appeng.core.AppEng;
+import appeng.util.InteractionUtil;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -74,17 +77,19 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
         this.clearPattern(player.getHeldItem(hand), player);
 
-        return new ActionResult<>(ActionResultType.field_5812, player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), player.getHeldItem(hand));
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return this.clearPattern(stack, context.getPlayer()) ? ActionResultType.field_5812 : ActionResultType.PASS;
+        return this.clearPattern(stack, context.getPlayer())
+                ? ActionResultType.func_233537_a_(context.getWorld().isRemote())
+                : ActionResultType.PASS;
     }
 
     private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {
-        if (player.isCrouching()) {
-            if (Platform.isClient()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
+            if (player.getEntityWorld().isRemote()) {
                 return false;
             }
 
@@ -120,9 +125,10 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-            final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text()).deepCopy()
-                    .appendString(": ");
-            final ITextComponent and = new StringTextComponent(" ").deepCopy().append(GuiText.And.text()).deepCopy().appendString(" ");
+            final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text())
+                    .deepCopy().appendString(": ");
+            final ITextComponent and = new StringTextComponent(" ").deepCopy().append(GuiText.And.text()).deepCopy()
+                    .appendString(" ");
             final ITextComponent with = GuiText.With.text().deepCopy().appendString(": ");
 
             boolean first = true;
@@ -157,7 +163,8 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final Collection<IAEItemStack> in = details.getInputs();
         final Collection<IAEItemStack> out = details.getOutputs();
 
-        final ITextComponent label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).deepCopy().appendString(": ");
+        final ITextComponent label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).deepCopy()
+                .appendString(": ");
         final ITextComponent and = new StringTextComponent(" ").deepCopy().append(GuiText.And.text()).appendString(" ");
         final ITextComponent with = GuiText.With.text().deepCopy().appendString(": ");
 
@@ -191,11 +198,16 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         }
     }
 
-    public ItemStack getOutput(World w, final ItemStack item) {
+    public ItemStack getOutput(final ItemStack item) {
         ItemStack out = SIMPLE_CACHE.get(item);
 
         if (out != null) {
             return out;
+        }
+
+        final World w = Minecraft.getInstance().world;
+        if (w == null) {
+            return ItemStack.EMPTY;
         }
 
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(item, w);
@@ -218,7 +230,9 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final CompoundNBT tag = itemStack.getTag();
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return tag.contains(NBT_RECIPE_ID, NbtType.STRING) ? new ResourceLocation(tag.getString(NBT_RECIPE_ID)) : null;
+        return tag.contains(NBT_RECIPE_ID, NbtType.STRING)
+                ? new ResourceLocation(tag.getString(NBT_RECIPE_ID))
+                : null;
     }
 
     public List<IAEItemStack> getIngredients(ItemStack itemStack) {
@@ -277,8 +291,8 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
     /**
      * Use the public API instead {@link appeng.core.api.ApiCrafting}
      */
-    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out, ResourceLocation recipeId,
-            boolean allowSubstitutes) {
+    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out,
+            ResourceLocation recipeId, boolean allowSubstitutes) {
         CompoundNBT encodedValue = encodeInputsAndOutputs(in, out);
         encodedValue.putString(EncodedPatternItem.NBT_RECIPE_ID, recipeId.toString());
         encodedValue.putBoolean(EncodedPatternItem.NBT_SUBSITUTE, allowSubstitutes);

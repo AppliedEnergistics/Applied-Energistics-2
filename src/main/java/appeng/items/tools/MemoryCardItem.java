@@ -20,9 +20,11 @@ package appeng.items.tools;
 
 import java.util.List;
 
+import appeng.util.InteractionUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -34,7 +36,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -75,7 +76,7 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
 
         if (data.contains("freq")) {
             final short freq = data.getShort("freq");
-            final String freqTooltip = TextFormatting.field_1067 + Platform.p2p().toHexString(freq);
+            final String freqTooltip = TextFormatting.BOLD + Platform.p2p().toHexString(freq);
 
             lines.add(new TranslationTextComponent("gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip));
         }
@@ -85,11 +86,12 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
      * Find the localized string...
      *
      * @param name possible names for the localized string
+     *
      * @return localized name
      */
     private String getFirstValidTranslationKey(final String... name) {
         for (final String n : name) {
-            if (LanguageMap.getInstance().method_4678(n)) {
+            if (I18n.hasKey(n)) {
                 return n;
             }
         }
@@ -140,7 +142,7 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
 
     @Override
     public void notifyUser(final PlayerEntity player, final MemoryCardMessages msg) {
-        if (Platform.isClient()) {
+        if (player.getEntityWorld().isRemote()) {
             return;
         }
 
@@ -166,9 +168,9 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getPlayer().isCrouching()) {
-            // Bypass the memory card's own use handler and go straight to the block
-            if (!context.getPlayer().world.isRemote) {
+        if (InteractionUtil.isInAlternateUseMode(context.getPlayer())) {
+            World w = context.getWorld();
+            if (!w.isRemote()) {
                 BlockState state = context.getWorld().getBlockState(context.getPos());
                 ActionResultType useResult = state.onBlockActivated(context.getWorld(), context.getPlayer(), context.getHand(),
                         new BlockRayTraceResult(context.getHitVec(), context.getFace(), context.getPos(),
@@ -177,7 +179,7 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
                     clearCard(context.getPlayer(), context.getWorld(), context.getHand());
                 }
             }
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         return ActionResultType.PASS;
@@ -185,7 +187,7 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World w, PlayerEntity player, Hand hand) {
-        if (player.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             if (!w.isRemote) {
                 this.clearCard(player, w, hand);
             }
@@ -199,5 +201,4 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
         mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
         player.getHeldItem(hand).setTag(null);
     }
-
 }

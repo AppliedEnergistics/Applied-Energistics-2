@@ -174,7 +174,7 @@ public class FluidTerminalContainer extends AEBaseContainer
 
     @Override
     public void onListUpdate() {
-        for (final IContainerListener c : this.getListeners()) {
+        for (final IContainerListener c : this.listeners) {
             this.queueInventory(c);
         }
     }
@@ -262,7 +262,7 @@ public class FluidTerminalContainer extends AEBaseContainer
 
                 if (sideLocal != sideRemote) {
                     this.clientCM.putSetting(set, sideLocal);
-                    for (final IContainerListener crafter : this.getListeners()) {
+                    for (final IContainerListener crafter : this.listeners) {
                         if (crafter instanceof ServerPlayerEntity) {
                             NetworkHandler.instance().sendTo(new ConfigValuePacket(set.name(), sideLocal.name()),
                                     (ServerPlayerEntity) crafter);
@@ -290,7 +290,7 @@ public class FluidTerminalContainer extends AEBaseContainer
                     if (!piu.isEmpty()) {
                         this.fluids.resetStatus();
 
-                        for (final Object c : this.getListeners()) {
+                        for (final Object c : this.listeners) {
                             if (c instanceof PlayerEntity) {
                                 NetworkHandler.instance().sendTo(piu, (ServerPlayerEntity) c);
                             }

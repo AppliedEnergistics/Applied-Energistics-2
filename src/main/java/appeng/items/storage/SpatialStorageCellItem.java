@@ -64,7 +64,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
             final ITooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
-            lines.add(GuiText.Unformatted.text().copyRaw().mergeStyle(TextFormatting.field_1056));
+            lines.add(GuiText.Unformatted.text().deepCopy().mergeStyle(TextFormatting.ITALIC));
             lines.add(GuiText.SpatialCapacity.text(maxRegion, maxRegion, maxRegion));
             return;
         }
@@ -141,8 +141,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
 
         // Store some information about this transition in the plot
-        TransitionInfo info = new TransitionInfo(w.getDimensionKey().getLocation(), min.getBlockPos(), max.getBlockPos(),
-                Instant.now());
+        TransitionInfo info = new TransitionInfo(w.getDimensionKey().getLocation(), min.getBlockPos(),
+                max.getBlockPos(), Instant.now());
         manager.setLastTransition(plot.getId(), info);
 
         try {

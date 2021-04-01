@@ -114,7 +114,7 @@ public final class PartWailaDataProvider implements IComponentProvider, IServerD
             final IPart part = maybePart.get();
 
             currentToolTip.clear();
-            currentToolTip.add(part.getItemStack(PartItemStack.PICK).getName());
+            currentToolTip.add(part.getItemStack(PartItemStack.PICK).getDisplayName());
 
             for (final IPartWailaDataProvider provider : this.providers) {
                 provider.appendHead(part, currentToolTip, accessor, config);

@@ -134,7 +134,7 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
     }
 
     protected boolean eventsEnabled() {
-        return Platform.isServer() || this.isEnableClientEvents();
+        return this.te != null && !this.te.isRemote() || this.isEnableClientEvents();
     }
 
     public void setMaxStackSize(final int slot, final int size) {

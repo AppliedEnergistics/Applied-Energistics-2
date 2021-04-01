@@ -22,6 +22,7 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
+
 import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
@@ -29,7 +30,7 @@ public class QuartzAxeItem extends AxeItem {
     private final AEFeature type;
 
     public QuartzAxeItem(Item.Properties props, final AEFeature type) {
-        super(ItemTier.field_8923, 6.0F, -3.1F, props);
+        super(ItemTier.IRON, 6.0F, -3.1F, props);
         this.type = type;
     }
 

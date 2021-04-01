@@ -61,11 +61,11 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
      */
     private ITextComponent getToolTip(final boolean isActive, final boolean isPowered) {
         if (isActive && isPowered) {
-            return WailaText.DeviceOnline.text();
+            return WailaText.DeviceOnline.textComponent();
         } else if (isPowered) {
-            return WailaText.DeviceMissingChannel.text();
+            return WailaText.DeviceMissingChannel.textComponent();
         } else {
-            return WailaText.DeviceOffline.text();
+            return WailaText.DeviceOffline.textComponent();
         }
     }
 }

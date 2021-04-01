@@ -72,7 +72,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
             }
             this.encode(stack, (PlayerEntity) target);
             user.swingArm(hand);
-            return ActionResultType.field_5812;
+            return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
     }

@@ -18,8 +18,9 @@
 
 package appeng.client.render.effects;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.Random;
+
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -48,15 +49,15 @@ public class LightningFX extends SpriteTexturedParticle {
     private final double[] verticesWithUV = new double[3];
     private boolean hasData = false;
 
-    private LightningFX(ClientWorld world, final double x, final double y, final double z, final double r,
+    private LightningFX(final ClientWorld w, final double x, final double y, final double z, final double r,
             final double g, final double b) {
-        this(world, x, y, z, r, g, b, 6);
+        this(w, x, y, z, r, g, b, 6);
         this.regen();
     }
 
-    protected LightningFX(ClientWorld world, final double x, final double y, final double z, final double r,
+    protected LightningFX(final ClientWorld w, final double x, final double y, final double z, final double r,
             final double g, final double b, final int maxAge) {
-        super(world, x, y, z, r, g, b);
+        super(w, x, y, z, r, g, b);
         this.precomputedSteps = new double[LightningFX.STEPS][3];
         this.motionX = 0;
         this.motionY = 0;
@@ -106,11 +107,11 @@ public class LightningFX extends SpriteTexturedParticle {
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo camera, float partialTicks) {
-        Vector3d vec3d = camera.getProjectedView();
-        float centerX = (float) (MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - vec3d.getX());
-        float centerY = (float) (MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - vec3d.getY());
-        float centerZ = (float) (MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - vec3d.getZ());
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+        Vector3d Vector3d = renderInfo.getProjectedView();
+        float centerX = (float) (MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - Vector3d.getX());
+        float centerY = (float) (MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - Vector3d.getY());
+        float centerZ = (float) (MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - Vector3d.getZ());
 
         final float j = 1.0f;
         float red = this.particleRed * j * 0.9f;
@@ -125,7 +126,7 @@ public class LightningFX extends SpriteTexturedParticle {
         float u = this.getMinU() + (this.getMaxU() - this.getMinU()) / 2;
         float v = this.getMinV() + (this.getMaxV() - this.getMinV()) / 2;
 
-        double scale = 0.02;// 0.02F * this.scale;
+        double scale = 0.02;// 0.02F * this.particleScale;
 
         final double[] a = new double[3];
         final double[] b = new double[3];
@@ -143,16 +144,16 @@ public class LightningFX extends SpriteTexturedParticle {
         for (int layer = 0; layer < 2; layer++) {
             if (layer == 0) {
                 scale = 0.04;
-//				FIXME offX *= 0.001;
-//				FIXME offY *= 0.001;
-//				FIXME offZ *= 0.001;
+                // FIXME offX *= 0.001;
+                // FIXME offY *= 0.001;
+                // FIXME offZ *= 0.001;
                 red = this.particleRed * j * 0.4f;
                 green = this.particleGreen * j * 0.25f;
                 blue = this.particleBlue * j * 0.45f;
             } else {
-//				FIXME offX = 0;
-//				FIXME offY = 0;
-//				FIXME offZ = 0;
+                // FIXME offX = 0;
+                // FIXME offY = 0;
+                // FIXME offZ = 0;
                 scale = 0.02;
                 red = this.particleRed * j * 0.9f;
                 green = this.particleGreen * j * 0.65f;
@@ -252,9 +253,9 @@ public class LightningFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle createParticle(BasicParticleType type, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            LightningFX lightningFX = new LightningFX(world, x, y, z, xSpeed, ySpeed, zSpeed);
+            LightningFX lightningFX = new LightningFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
             lightningFX.selectSpriteRandomly(this.spriteSet);
             return lightningFX;
         }

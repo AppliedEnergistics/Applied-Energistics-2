@@ -183,7 +183,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
                 }
             }
         }
-        return ActionResultType.field_5812;
+        return ActionResultType.SUCCESS;
     }
 
     private void outputMsg(final Entity player, final String string) {

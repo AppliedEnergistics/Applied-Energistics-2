@@ -93,23 +93,10 @@ public final class PlaneConnections {
                 + (down ? BITMASK_DOWN : 0);
     }
 
-    // Returns a suffix that expresses the connection states as a string
-    public String getFilenameSuffix() {
-        String suffix = Integer.toBinaryString(this.getIndex());
-        return Strings.padStart(suffix, 4, '0');
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || this.getClass() != o.getClass()) {
-            return false;
-        }
-
-        PlaneConnections that = (PlaneConnections) o;
-        return this.up == that.up && this.right == that.right && this.down == that.down && this.left == that.left;
+        // This class is final/has a private constructor, and is interned
+        return this == o;
     }
 
     @Override
