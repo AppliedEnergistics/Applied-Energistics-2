@@ -49,9 +49,9 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
     private final ITag<Block> terracottaTag = BlockTags.getCollection()
             .getTagByID(new ResourceLocation("forge:terracotta"));
 
-    public MeteoriteStructureStart(Structure<NoFeatureConfig> p_i225815_1_, int p_i225815_2_, int p_i225815_3_,
-            MutableBoundingBox p_i225815_4_, int p_i225815_5_, long p_i225815_6_) {
-        super(p_i225815_1_, p_i225815_2_, p_i225815_3_, p_i225815_4_, p_i225815_5_, p_i225815_6_);
+    public MeteoriteStructureStart(Structure<NoFeatureConfig> feature, int chunkX, int chunkZ, MutableBoundingBox box,
+            int references, long seed) {
+        super(feature, chunkX, chunkZ, box, references, seed);
     }
 
     @Override
