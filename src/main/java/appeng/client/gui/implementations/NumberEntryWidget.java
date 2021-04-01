@@ -57,7 +57,7 @@ public class NumberEntryWidget extends AbstractGui {
         this.y = y;
         this.type = type;
 
-        FontRenderer font = parent.getClient().fontRenderer;
+        FontRenderer font = parent.getMinecraft().fontRenderer;
         int inputX = parent.getX() + x;
         int inputY = parent.getY() + y;
         this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.FONT_HEIGHT, StringTextComponent.EMPTY);

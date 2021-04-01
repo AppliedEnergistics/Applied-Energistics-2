@@ -158,7 +158,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
     @Override
     public void init() {
-        getClient().keyboardListener.enableRepeatEvents(true);
+        getMinecraft().keyboardListener.enableRepeatEvents(true);
 
         this.maxRows = this.getMaxRows();
         TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
@@ -327,7 +327,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     @Override
     public void onClose() {
         super.onClose();
-        getClient().keyboardListener.enableRepeatEvents(false);
+        getMinecraft().keyboardListener.enableRepeatEvents(false);
         memoryText = this.searchField.getText();
     }
 

@@ -111,10 +111,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         super(container, playerInventory, title);
     }
 
-    public Minecraft getClient() {
-        return Preconditions.checkNotNull(minecraft);
-    }
-
     public int getX() {
         return guiLeft;
     }
@@ -174,7 +170,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             final int right = left + slot.getTooltipAreaWidth();
             final int bottom = top + slot.getTooltipAreaHeight();
 
-            slot.drawContent(getClient(), mouseX, mouseY, partialTicks);
+            slot.drawContent(getMinecraft(), mouseX, mouseY, partialTicks);
 
             if (this.isPointInRegion(left, top, slot.getTooltipAreaWidth(), slot.getTooltipAreaHeight(), mouseX,
                     mouseY) && slot.canClick(getPlayer())) {
@@ -535,7 +531,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     protected ClientPlayerEntity getPlayer() {
         // Our UIs are usually not opened when not in-game, so this should not be a
         // problem
-        return Preconditions.checkNotNull(getClient().player);
+        return Preconditions.checkNotNull(getMinecraft().player);
     }
 
     protected int getSlotIndex(Slot slot) {
@@ -547,7 +543,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
         if (getPlayer().inventory.getItemStack().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
-                if (getClient().gameSettings.keyBindsHotbar[j].matchesKey(keyCode, scanCode)) {
+                if (getMinecraft().gameSettings.keyBindsHotbar[j].matchesKey(keyCode, scanCode)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
                         if (getSlotIndex(s) == j && s.inventory == this.container.getPlayerInv()) {
@@ -630,7 +626,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public void bindTexture(final String base, final String file) {
         final ResourceLocation loc = new ResourceLocation(base, "textures/" + file);
-        getClient().getTextureManager().bindTexture(loc);
+        getMinecraft().getTextureManager().bindTexture(loc);
     }
 
     protected void drawItem(final int x, final int y, final ItemStack is) {
@@ -746,7 +742,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                                 || s instanceof RestrictedInputSlot || s instanceof SlotDisconnected;
                         if (isValid && s instanceof RestrictedInputSlot) {
                             try {
-                                isValid = ((RestrictedInputSlot) s).isValid(is, getClient().world);
+                                isValid = ((RestrictedInputSlot) s).isValid(is, getMinecraft().world);
                             } catch (final Exception err) {
                                 AELog.debug(err);
                             }
@@ -787,11 +783,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public void bindTexture(final String file) {
         final ResourceLocation loc = new ResourceLocation(AppEng.MOD_ID, "textures/" + file);
-        getClient().getTextureManager().bindTexture(loc);
+        getMinecraft().getTextureManager().bindTexture(loc);
     }
 
     public void bindTexture(final ResourceLocation loc) {
-        getClient().getTextureManager().bindTexture(loc);
+        getMinecraft().getTextureManager().bindTexture(loc);
     }
 
     protected Scrollbar getScrollBar() {
@@ -830,4 +826,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     public List<Rectangle> getExclusionZones() {
         return Lists.newArrayList(new Rectangle(guiLeft, guiTop, xSize, ySize));
     }
+
+    public Minecraft getMinecraft() {
+        return Preconditions.checkNotNull(minecraft);
+    }
+
 }

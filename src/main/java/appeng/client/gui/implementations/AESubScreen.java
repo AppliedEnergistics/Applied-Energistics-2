@@ -84,7 +84,7 @@ final class AESubScreen {
             if (label == null) {
                 label = previousContainerIcon.getDisplayName();
             }
-            ItemRenderer itemRenderer = gui.getClient().getItemRenderer();
+            ItemRenderer itemRenderer = gui.getMinecraft().getItemRenderer();
             TabButton button = new TabButton(gui.getX() + x, gui.getY() + y, previousContainerIcon, label, itemRenderer,
                     btn -> goBack());
             buttonAdder.accept(button);
