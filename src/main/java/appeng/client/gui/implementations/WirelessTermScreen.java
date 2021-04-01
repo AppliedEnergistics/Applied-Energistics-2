@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+import appeng.client.gui.me.items.MEMonitorableScreen;
 import appeng.container.implementations.MEPortableCellContainer;
 
 // FIXME: Extended from GuiPortableCell before... Why?

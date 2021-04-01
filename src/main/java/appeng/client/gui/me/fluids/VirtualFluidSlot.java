@@ -16,42 +16,42 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.me;
+package appeng.client.gui.me.fluids;
+
+import javax.annotation.Nonnull;
+
+import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.gui.me.common.ReadOnlySlot;
 
-/**
- * @author BrockWS
- * @version rv6 - 22/05/2018
- * @since rv6 22/05/2018
- */
-public class InternalFluidSlotME {
+class VirtualFluidSlot extends ReadOnlySlot {
 
-    private final int offset;
-    private final int xPos;
-    private final int yPos;
     private final FluidRepo repo;
+    private final int offset;
 
-    public InternalFluidSlotME(final FluidRepo def, final int offset, final int displayX, final int displayY) {
-        this.repo = def;
+    public VirtualFluidSlot(FluidRepo repo, int offset, int displayX, int displayY) {
+        super(displayX, displayY);
+        this.repo = repo;
         this.offset = offset;
-        this.xPos = displayX;
-        this.yPos = displayY;
     }
 
-    IAEFluidStack getAEStack() {
-        return this.repo.getReferenceFluid(this.offset);
+    public IAEFluidStack getAEFluidStack() {
+        if (this.repo.hasPower()) {
+            return this.repo.get(this.offset);
+        }
+        return null;
     }
 
-    boolean hasPower() {
-        return this.repo.hasPower();
+    @Nonnull
+    @Override
+    public ItemStack getStack() {
+        return ItemStack.EMPTY;
     }
 
-    int getxPosition() {
-        return this.xPos;
+    @Override
+    public boolean getHasStack() {
+        return this.getAEFluidStack() != null;
     }
 
-    int getyPosition() {
-        return this.yPos;
-    }
 }

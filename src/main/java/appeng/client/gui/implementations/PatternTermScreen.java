@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
+import appeng.client.gui.me.items.MEMonitorableScreen;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.PatternTermContainer;

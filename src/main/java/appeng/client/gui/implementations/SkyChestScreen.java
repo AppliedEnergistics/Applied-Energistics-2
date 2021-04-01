@@ -52,9 +52,4 @@ public class SkyChestScreen extends AEBaseScreen<SkyChestContainer> {
         blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 
-    @Override
-    protected boolean enableSpaceClicking() {
-        // NOTE: previously checked for inventory tweaks mod (which no longer exists)
-        return true;
-    }
 }

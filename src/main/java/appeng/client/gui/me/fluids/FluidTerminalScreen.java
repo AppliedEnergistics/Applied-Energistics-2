@@ -16,24 +16,29 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.fluids.client.gui;
+package appeng.client.gui.me.fluids;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.config.Settings;
@@ -48,17 +53,14 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.client.me.FluidRepo;
-import appeng.client.me.InternalFluidSlotME;
-import appeng.client.me.SlotFluidME;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.fluids.client.render.FluidStackSizeRenderer;
 import appeng.fluids.container.FluidTerminalContainer;
-import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
@@ -70,7 +72,6 @@ import appeng.util.Platform;
  */
 public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
         implements ISortSource, IConfigManagerHost {
-    private final List<SlotFluidME> meFluidSlots = new LinkedList<>();
     private final FluidRepo repo;
     private final IConfigManager configSrc;
 
@@ -78,6 +79,8 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     private static final int GRID_OFFSET_Y = 18;
     private static final int ROWS = 6;
     private static final int COLS = 9;
+
+    private final FluidStackSizeRenderer fluidStackSizeRenderer = new FluidStackSizeRenderer();
 
     private AETextField searchField;
     private SettingToggleButton<SortOrder> sortByBox;
@@ -118,9 +121,8 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLS; x++) {
-                SlotFluidME slot = new SlotFluidME(new InternalFluidSlotME(this.repo, x + y * COLS,
-                        GRID_OFFSET_X + x * 18, GRID_OFFSET_Y + y * 18));
-                this.getMeFluidSlots().add(slot);
+                VirtualFluidSlot slot = new VirtualFluidSlot(this.repo, x + y * COLS,
+                        GRID_OFFSET_X + x * 18, GRID_OFFSET_Y + y * 18);
                 this.container.inventorySlots.add(slot);
             }
         }
@@ -157,13 +159,54 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     }
 
     @Override
+    protected void moveItems(MatrixStack matrices, Slot s) {
+        if (s instanceof VirtualFluidSlot) {
+            final VirtualFluidSlot slot = (VirtualFluidSlot) s;
+            final IAEFluidStack fs = slot.getAEFluidStack();
+
+            if (fs != null && this.isPowered()) {
+                RenderSystem.disableBlend();
+                final Fluid fluid = fs.getFluid();
+                FluidAttributes fluidAttributes = fluid.getAttributes();
+                bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                ResourceLocation fluidStillTexture = fluidAttributes.getStillTexture(fs.getFluidStack());
+                final TextureAtlasSprite sprite = getMinecraft()
+                        .getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluidStillTexture);
+
+                // Set color for dynamic fluids
+                // Convert int color to RGB
+                float red = (fluidAttributes.getColor() >> 16 & 255) / 255.0F;
+                float green = (fluidAttributes.getColor() >> 8 & 255) / 255.0F;
+                float blue = (fluidAttributes.getColor() & 255) / 255.0F;
+                RenderSystem.color3f(red, green, blue);
+
+                blit(matrices, s.xPos, s.yPos, 0 /* FIXME: Validate this was previous the controls zindex */, 16, 16,
+                        sprite);
+                RenderSystem.enableBlend();
+
+                this.fluidStackSizeRenderer.renderStackSize(this.font, fs, s.xPos, s.yPos);
+            } else if (!this.isPowered()) {
+                fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+            }
+
+            return;
+        }
+
+        super.moveItems(matrices, s);
+    }
+
+    // We use renderHoveredTooltip because we'll also show the tooltip even if the player
+    // currently is holding an item in hand (vanilla will not do that), because the player
+    // will usually hover over a fluid with a bucket or other container in hand and might
+    // still want to see which fluid it is.
+    @Override
     protected void renderHoveredTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
         final Slot slot = this.getSlot(mouseX, mouseY);
 
-        if (slot instanceof IMEFluidSlot && slot.isEnabled()) {
-            final IMEFluidSlot fluidSlot = (IMEFluidSlot) slot;
+        if (slot instanceof VirtualFluidSlot && slot.isEnabled()) {
+            final VirtualFluidSlot fluidSlot = (VirtualFluidSlot) slot;
 
-            if (fluidSlot.getAEFluidStack() != null && fluidSlot.shouldRenderAsFluid()) {
+            if (fluidSlot.getAEFluidStack() != null) {
                 final IAEFluidStack fluidStack = fluidSlot.getAEFluidStack();
                 final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                         .format(fluidStack.getStackSize() / 1000.0) + " B";
@@ -191,8 +234,8 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
     @Override
     protected void handleMouseClick(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
-        if (slot instanceof SlotFluidME) {
-            final SlotFluidME meSlot = (SlotFluidME) slot;
+        if (slot instanceof VirtualFluidSlot) {
+            final VirtualFluidSlot meSlot = (VirtualFluidSlot) slot;
 
             if (clickType == ClickType.PICKUP) {
                 // TODO: Allow more options
@@ -322,10 +365,6 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
         }
 
         this.repo.updateView();
-    }
-
-    protected List<SlotFluidME> getMeFluidSlots() {
-        return this.meFluidSlots;
     }
 
     @Override

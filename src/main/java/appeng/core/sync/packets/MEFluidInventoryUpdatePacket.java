@@ -37,9 +37,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.gui.me.fluids.FluidTerminalScreen;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.fluids.client.gui.FluidTerminalScreen;
 import appeng.fluids.util.AEFluidStack;
 
 /**

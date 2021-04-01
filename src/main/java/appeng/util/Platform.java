@@ -384,23 +384,12 @@ public class Platform {
         }
     }
 
-    public static ITextComponent getFluidDisplayName(Object o) {
+    public static ITextComponent getFluidDisplayName(IAEFluidStack o) {
         if (o == null) {
             return new StringTextComponent("** Null");
         }
-        FluidStack fluidStack = null;
-        if (o instanceof AEFluidStack) {
-            fluidStack = ((AEFluidStack) o).getFluidStack();
-        } else if (o instanceof FluidStack) {
-            fluidStack = (FluidStack) o;
-        } else {
-            return new StringTextComponent("**Invalid Object");
-        }
-        ITextComponent n = fluidStack.getDisplayName();
-        if (n == null) {
-            n = new TranslationTextComponent(fluidStack.getTranslationKey());
-        }
-        return n;
+        FluidStack fluidStack = o.getFluidStack();
+        return fluidStack.getDisplayName();
     }
 
     public static boolean isChargeable(final ItemStack i) {

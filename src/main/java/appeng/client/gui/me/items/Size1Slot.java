@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui;
+package appeng.client.gui.me.items;
 
 import javax.annotation.Nonnull;
 
