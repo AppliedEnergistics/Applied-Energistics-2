@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IItemProvider;
+
 import appeng.api.features.AEFeature;
 
 public interface IItemDefinition extends IComparableDefinition, IItemProvider {

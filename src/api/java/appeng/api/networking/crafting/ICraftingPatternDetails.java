@@ -47,6 +47,7 @@ public interface ICraftingPatternDetails {
      * @param slotIndex specific slot index
      * @param itemStack item in slot
      * @param world     crafting world
+     *
      * @return if an item can be used in the specific slot for this pattern.
      */
     boolean isValidItemForSlot(int slotIndex, ItemStack itemStack, World world);
@@ -65,7 +66,7 @@ public interface ICraftingPatternDetails {
      * <p>
      * The list will be sorted in descending order by stack size. However there is no guarantee about maintaining the
      * placement order of the inputs in case of equal values.
-     *
+     * 
      * @return an immutable list of inputs without nulls
      */
     List<IAEItemStack> getInputs();
@@ -76,10 +77,10 @@ public interface ICraftingPatternDetails {
      * <p>
      * This should be the preferred way to deal with the list of outputs.
      * <p>
-     * <p>
+     * 
      * The list will be sorted in descending order by stack size. However there is no guarantee about maintaining the
      * placement order of the outputs in case of equal values.
-     *
+     * 
      * @return an immutable list of outputs without nulls
      */
     List<IAEItemStack> getOutputs();
@@ -92,7 +93,7 @@ public interface ICraftingPatternDetails {
      * This will contain exactly 9 entries.
      * <p>
      * This can return a copy from the internal structure, so there are no guarantees about modifications.
-     *
+     * 
      * @return a list of the inputs, will include nulls.
      */
     IAEItemStack[] getSparseInputs();
@@ -105,7 +106,7 @@ public interface ICraftingPatternDetails {
      * This will either contain 1 entry for crafting patterns or 3 for processing.
      * <p>
      * This can return a copy from the internal structure, so there are no guarantees about modifications.
-     *
+     * 
      * @return a list of the outputs, will include nulls.
      */
     IAEItemStack[] getSparseOutputs();
@@ -127,6 +128,7 @@ public interface ICraftingPatternDetails {
      *
      * @param craftingInv inventory
      * @param world       crafting world
+     *
      * @return the crafted ( work bench ) item.
      */
     ItemStack getOutput(CraftingInventory craftingInv, World world);

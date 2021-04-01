@@ -27,7 +27,7 @@ import appeng.api.networking.IGrid;
 
 /**
  * Part of AE's Event Bus.
- * <p>
+ *
  * Posted via {@link IGrid}.postEvent or {@link IGrid}.postEventTo
  */
 public class MENetworkEvent {

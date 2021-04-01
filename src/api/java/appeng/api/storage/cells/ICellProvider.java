@@ -36,7 +36,7 @@ public interface ICellProvider {
 
     /**
      * Inventory of the tile for use with ME, should always return an valid list, never NULL.
-     * <p>
+     *
      * You must return the correct Handler for the correct channel, if your handler returns a IAEItemStack handler, for
      * a Fluid Channel stuffs going to explode, same with the reverse.
      *
@@ -46,7 +46,7 @@ public interface ICellProvider {
 
     /**
      * the storage's priority.
-     * <p>
+     *
      * Positive and negative are supported
      */
     int getPriority();

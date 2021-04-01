@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -37,7 +38,7 @@ public interface IPartModel {
     /**
      * A solid {@link IPartModel} indicates that the rendering requires a cable connection, which will also result in
      * creating an intersection for the cable.
-     * <p>
+     *
      * This should be true for pretty much all parts.
      *
      * @return true for a solid part.

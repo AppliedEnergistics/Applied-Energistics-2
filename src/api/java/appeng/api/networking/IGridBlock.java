@@ -30,20 +30,21 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 
 /**
  * An Implementation is required to create your node for IGridHost
- * <p>
+ *
  * Implement for use with IGridHost
  */
 public interface IGridBlock {
 
     /**
      * how much power to drain per tick as part of idle network usage.
-     * <p>
+     *
      * if the value of this changes, you must post a MENetworkPowerIdleChange
      *
      * @return ae/t to use.

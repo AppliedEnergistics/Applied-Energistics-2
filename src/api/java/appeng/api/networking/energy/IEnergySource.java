@@ -36,6 +36,7 @@ public interface IEnergySource {
      *
      * @param amt  extracted power
      * @param mode should the action be simulated or performed?
+     *
      * @return returns extracted power.
      */
     @Nonnegative

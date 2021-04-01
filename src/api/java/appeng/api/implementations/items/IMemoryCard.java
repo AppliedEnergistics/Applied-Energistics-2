@@ -26,27 +26,28 @@ package appeng.api.implementations.items;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+
 import appeng.api.util.AEColor;
 
 /**
  * Memory Card API
- * <p>
+ *
  * AE's Memory Card Item Class implements this interface.
  */
 public interface IMemoryCard {
 
     /**
      * Configures the data stored on the memory card, the SettingsName, will be localized when displayed.
-     * <p>
+     *
      * The data can contain an optional string with the key "tooltip", which will be used as unlocalized string to
      * display it after the settings name.
-     * <p>
+     *
      * The data can contain an optional intArray using "colorCode" to be displayed on the model itself. It needs to have
      * exactly 8 elements representing the ordinal of the matching {@link AEColor}. The first 4 values represent the top
      * row, left to right. The second 4 the bottom row.
      *
      * @param is           item
-     * @param settingsName unlocalized string that represents the block entity.
+     * @param settingsName unlocalized string that represents the tile entity.
      * @param data         the NBT tag, refer to the normal comment for special keys.
      */
     void setMemoryCardContents(ItemStack is, String settingsName, CompoundNBT data);
@@ -56,22 +57,25 @@ public interface IMemoryCard {
      * there was no previous call to setMemoryCardContents.
      *
      * @param is item
+     *
      * @return setting name
      */
     String getSettingsName(ItemStack is);
 
     /**
      * @param is item
+     *
      * @return the NBT Data previously saved by setMemoryCardContents, or an empty NBTCompound
      */
     CompoundNBT getData(ItemStack is);
 
     /**
      * This represent as 4x2 grid of {@link AEColor} without transparent/fluix color.
-     * <p>
+     *
      * First 4 colors are used for the top row, second for the bottom one.
      *
      * @param is item
+     *
      * @return a hash representation of the memory card content
      */
     AEColor[] getColorCode(ItemStack is);

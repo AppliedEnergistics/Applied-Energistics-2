@@ -119,7 +119,7 @@ public enum Upgrades {
                 if (namesAdded.add(name)) {
                     // append the supported count only if its > 1
                     if (supported.maxCount > 1) {
-                        name = name.copyRaw().appendString(" (" + supported.maxCount + ")");
+                        name = name.deepCopy().appendString(" (" + supported.maxCount + ")");
                     }
                     supportedTooltipLines.add(name);
                 }
@@ -143,8 +143,8 @@ public enum Upgrades {
 
         public Supported(Item item, int maxCount, @Nullable String tooltipGroup) {
             this.item = item;
-            if (item instanceof BlockItem) {
-                this.block = ((BlockItem) item).getBlock();
+            if (item.asItem() instanceof BlockItem) {
+                this.block = ((BlockItem) item.asItem()).getBlock();
             } else {
                 this.block = null;
             }

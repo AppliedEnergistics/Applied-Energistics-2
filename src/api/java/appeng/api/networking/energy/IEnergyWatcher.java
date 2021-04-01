@@ -27,13 +27,13 @@ import javax.annotation.Nonnegative;
 
 /**
  * DO NOT IMPLEMENT.
- * <p>
+ *
  * Will be injected when adding an {@link IEnergyWatcherHost} to a grid.
  */
 public interface IEnergyWatcher {
     /**
      * Add a specific threshold to watch.
-     * <p>
+     *
      * Supports multiple values, duplicate ones will not be added.
      *
      * @param amount
