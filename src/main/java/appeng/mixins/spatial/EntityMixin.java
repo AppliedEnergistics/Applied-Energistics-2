@@ -16,7 +16,7 @@ import appeng.spatial.SpatialStorageHelper;
 @Mixin(Entity.class)
 public class EntityMixin {
 
-    @Inject(method = "getTeleportTarget", at = @At("HEAD"), cancellable = true, allow = 1)
+    @Inject(method = "func_241829_a", at = @At("HEAD"), cancellable = true, allow = 1)
     public void getTeleportTarget(ServerWorld destination, CallbackInfoReturnable<PortalInfo> cri) {
         // Check if a destination has been set for the entity currently being teleported
         if (destination.getDimensionKey() == SpatialStorageDimensionIds.WORLD_ID) {

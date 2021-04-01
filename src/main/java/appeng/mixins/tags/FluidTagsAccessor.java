@@ -12,12 +12,12 @@ import net.minecraft.tags.TagRegistry;
 @Mixin(FluidTags.class)
 public interface FluidTagsAccessor {
 
-    @Invoker("register")
+    @Invoker("makeWrapperTag")
     static ITag.INamedTag<Fluid> register(String id) {
         throw new AssertionError();
     }
 
-    @Accessor("REQUIRED_TAGS")
+    @Accessor("collection")
     static TagRegistry<Fluid> getRequiredTags() {
         throw new AssertionError();
     }

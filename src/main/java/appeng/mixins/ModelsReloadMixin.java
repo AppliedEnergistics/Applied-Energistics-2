@@ -13,7 +13,7 @@ import appeng.bootstrap.ModelsReloadCallback;
 @Mixin(ModelBakery.class)
 public class ModelsReloadMixin {
 
-    @Inject(method = "getBakedModelMap", at = @At("RETURN"))
+    @Inject(method = "getTopBakedModels", at = @At("RETURN"))
     public void onGetBakedModelMap(CallbackInfoReturnable<Map<ResourceLocation, IBakedModel>> ci) {
         ModelsReloadCallback.EVENT.invoker().onModelsReloaded(ci.getReturnValue());
     }

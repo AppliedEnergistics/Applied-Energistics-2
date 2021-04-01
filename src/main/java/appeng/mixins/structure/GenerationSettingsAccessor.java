@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+
 import net.minecraft.world.biome.BiomeGenerationSettings;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -15,16 +16,16 @@ import net.minecraft.world.gen.feature.StructureFeature;
 @Mixin(BiomeGenerationSettings.class)
 public interface GenerationSettingsAccessor {
 
-    @Accessor
+    @Accessor("features")
     List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures();
 
-    @Accessor
+    @Accessor("features")
     void setFeatures(List<List<Supplier<ConfiguredFeature<?, ?>>>> features);
 
-    @Accessor
+    @Accessor("structures")
     List<Supplier<StructureFeature<?, ?>>> getStructureFeatures();
 
-    @Accessor
+    @Accessor("structures")
     void setStructureFeatures(List<Supplier<StructureFeature<?, ?>>> structureFeatures);
 
 }

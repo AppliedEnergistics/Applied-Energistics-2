@@ -19,7 +19,7 @@ import appeng.hooks.AECustomEntityItem;
 public class ServerWorldCustomItemEntityMixin {
 
     @SuppressWarnings("ConstantConditions")
-    @ModifyVariable(method = { "spawnEntity" }, at = @At("HEAD"), argsOnly = true)
+    @ModifyVariable(method = { "addEntity" }, at = @At("HEAD"), argsOnly = true)
     public Entity onSpawnEntity(Entity entity) {
         if (entity instanceof ItemEntity) {
             ItemEntity itemEntity = (ItemEntity) entity;

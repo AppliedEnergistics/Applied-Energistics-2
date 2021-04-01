@@ -1,5 +1,25 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.hooks;
 
+import appeng.core.AppEng;
+import appeng.mixins.unlitquad.BakedQuadAccessor;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.LightTexture;
@@ -13,19 +33,12 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import appeng.core.AppEng;
-import appeng.mixins.unlitquad.BakedQuadAccessor;
 
 /**
  * Implementation details of allowing quads to be defined as "unlit" in JSON models by specifying an "unlit" boolean
  * property on the face.
  */
 public class UnlitQuadHooks {
-
-    /**
-     * Vertex format used for blocks.
-     */
-    private static final VertexFormat VERTEX_FORMAT = DefaultVertexFormats.BLOCK;
 
     /**
      * Offset into the vertex data (which is represented as integers).
@@ -67,7 +80,7 @@ public class UnlitQuadHooks {
     public static BlockPartFace enhanceModelElementFace(BlockPartFace modelElement, JsonElement jsonElement) {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         if (JSONUtils.getBoolean(jsonObject, "unlit", false)) {
-            return new UnlitModelElementFace(modelElement.cullFace, modelElement.tintIndex, modelElement.texture,
+            return new UnlitBlockPartFace(modelElement.cullFace, modelElement.tintIndex, modelElement.texture,
                     modelElement.blockFaceUV);
         }
         return modelElement;
@@ -80,7 +93,7 @@ public class UnlitQuadHooks {
      */
     public static BakedQuad makeUnlit(BakedQuad quad) {
         int[] vertexData = quad.getVertexData().clone();
-        int stride = VERTEX_FORMAT.getIntegerSize();
+        int stride = DefaultVertexFormats.BLOCK.getIntegerSize();
         // Set the pre-baked texture coords for the lightmap.
         // Vanilla will not overwrite them if they are non-zero
         for (int i = 0; i < 4; i++) {
@@ -95,9 +108,8 @@ public class UnlitQuadHooks {
      * This subclass is used as a marker to indicate this face deserialized from JSON is supposed to be unlit, which
      * translates to processing by {@link #makeUnlit(BakedQuad)}.
      */
-    public static class UnlitModelElementFace extends BlockPartFace {
-        public UnlitModelElementFace(Direction cullFaceIn, int tintIndexIn, String textureIn,
-                BlockFaceUV blockFaceUVIn) {
+    public static class UnlitBlockPartFace extends BlockPartFace {
+        public UnlitBlockPartFace(Direction cullFaceIn, int tintIndexIn, String textureIn, BlockFaceUV blockFaceUVIn) {
             super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
         }
     }
@@ -107,11 +119,12 @@ public class UnlitQuadHooks {
      * vertex format.
      */
     private static int getLightOffset() {
+        VertexFormat format = DefaultVertexFormats.BLOCK;
         int offset = 0;
-        for (VertexFormatElement element : VERTEX_FORMAT.getElements()) {
-            // LIGHT_ELEMENT is the lightmap vertex element
+        for (VertexFormatElement element : format.getElements()) {
+            // TEX_2SB is the lightmap vertex element
             if (element == DefaultVertexFormats.TEX_2SB) {
-                if (element.getType() != VertexFormatElement.Type.field_1625) {
+                if (element.getType() != VertexFormatElement.Type.SHORT) {
                     throw new UnsupportedOperationException("Expected light map format to be of type SHORT");
                 }
                 if (offset % 4 != 0) {

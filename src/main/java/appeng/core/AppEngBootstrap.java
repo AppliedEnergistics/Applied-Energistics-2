@@ -147,12 +147,13 @@ public final class AppEngBootstrap {
     private static ConfiguredFeature<?, ?> registerQuartzOreFeature() {
         // Tell Minecraft about our configured quartz ore feature
         BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
-        return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(),
-                Feature.ORE
-                        .withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
+        return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(), Feature.ORE
+                .withConfiguration(
+                        new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
                                 AEConfig.instance().getQuartzOresPerCluster()))
-                        .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(12, 12, 72))).square()
-                        .func_242731_b(AEConfig.instance().getQuartzOresClusterAmount()));
+                .withPlacement(Placement.RANGE/* RANGE */.configure(new TopSolidRangeConfig(12, 12, 72)))
+                .square/* spreadHorizontally */()
+                .func_242731_b/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
     }
 
     private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {

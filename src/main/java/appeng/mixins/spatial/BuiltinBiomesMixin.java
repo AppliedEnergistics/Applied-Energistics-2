@@ -28,14 +28,14 @@ public class BuiltinBiomesMixin {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Shadow
-    private static Int2ObjectMap<RegistryKey<Biome>> BY_RAW_ID;
+    private static Int2ObjectMap<RegistryKey<Biome>> idToKeyMap;
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void registerBiomes(CallbackInfo ci) {
         WorldGenRegistries.register(WorldGenRegistries.BIOME, SpatialStorageDimensionIds.BIOME_KEY.getLocation(),
                 SpatialStorageBiome.INSTANCE);
         int rawId = WorldGenRegistries.BIOME.getId(SpatialStorageBiome.INSTANCE);
-        RegistryKey<Biome> prev = BY_RAW_ID.put(rawId, SpatialStorageDimensionIds.BIOME_KEY);
+        RegistryKey<Biome> prev = idToKeyMap.put(rawId, SpatialStorageDimensionIds.BIOME_KEY);
         if (prev != null) {
             LOGGER.warn("Biome with raw-id {} was already registered: {}", rawId, prev);
         }

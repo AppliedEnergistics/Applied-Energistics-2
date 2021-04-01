@@ -20,9 +20,9 @@ import net.minecraft.world.lighting.WorldLightManager;
  * See: https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/4891
  */
 @Mixin(WorldLightManager.class)
-public class LightingProviderMixin {
-    @Inject(method = "addLightSource", at = @At("HEAD"), cancellable = true)
-    public void addLightSource(BlockPos blockPos, int lightLevel, CallbackInfo ci) {
+public class WorldLightManagerMixin {
+    @Inject(method = "onBlockEmissionIncrease", at = @At("HEAD"), cancellable = true)
+    public void onBlockEmissionIncrease(BlockPos blockPos, int lightLevel, CallbackInfo ci) {
         if (lightLevel == 0) {
             ci.cancel();
         }

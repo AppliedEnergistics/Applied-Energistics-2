@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 @Mixin(ItemRenderer.class)
 public interface ItemRendererAccessor {
 
-    @Invoker
+    @Invoker("renderItemModelIntoGUI")
     void callRenderGuiItemModel(ItemStack stack, int x, int y, IBakedModel model);
 
 }

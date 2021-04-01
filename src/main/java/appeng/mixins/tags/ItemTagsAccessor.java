@@ -10,7 +10,7 @@ import net.minecraft.tags.ItemTags;
 @Mixin(ItemTags.class)
 public interface ItemTagsAccessor {
 
-    @Invoker("register")
+    @Invoker("makeWrapperTag")
     static ITag.INamedTag<Item> register(String id) {
         throw new AssertionError();
     }

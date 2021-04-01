@@ -17,7 +17,7 @@ import appeng.hooks.ItemRendererHooks;
 @Mixin(ItemRenderer.class)
 public abstract class RenderEncodedPatternMixin {
 
-    @Inject(method = "renderGuiItemModel", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderItemModelIntoGUI", at = @At("HEAD"), cancellable = true)
     protected void renderGuiItemModel(ItemStack stack, int x, int y, IBakedModel model, CallbackInfo ci) {
         if (ItemRendererHooks.onRenderGuiItemModel((ItemRenderer) (Object) this, stack, x, y, model)) {
             ci.cancel();

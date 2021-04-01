@@ -45,7 +45,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
         super(props);
         this.type = type;
         // See below for reasoning
-        ((RemainderSetter) this).setRecipeRemainder(this);
+        ((RemainderSetter) this).setContainerItem(this);
     }
 
     @Override

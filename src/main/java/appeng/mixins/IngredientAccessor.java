@@ -11,7 +11,7 @@ import net.minecraft.item.crafting.Ingredient;
 public interface IngredientAccessor {
 
     // Temporary fix for https://github.com/SpongePowered/Mixin/issues/430
-    @Invoker("cacheMatchingStacks")
+    @Invoker("determineMatchingStacks")
     void appeng_cacheMatchingStacks();
 
     @Accessor
