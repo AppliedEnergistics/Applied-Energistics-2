@@ -137,7 +137,7 @@ public final class MaterialItem extends AEBaseItem
 
                 if (u != null) {
                     if (player.world.isRemote) {
-                        return ActionResultType.field_5811;
+                        return ActionResultType.PASS;
                     }
 
                     final InventoryAdaptor ad = new AdaptorFixedInv(upgrades);
@@ -147,7 +147,7 @@ public final class MaterialItem extends AEBaseItem
             }
         }
 
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 
     @Override

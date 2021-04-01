@@ -189,7 +189,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         return this.disassembleDrive(stack, context.getWorld(), context.getPlayer()) ? ActionResultType.field_5812
-                : ActionResultType.field_5811;
+                : ActionResultType.PASS;
     }
 
 // FIXME FABRIC: Handle this in the disassemble recipe

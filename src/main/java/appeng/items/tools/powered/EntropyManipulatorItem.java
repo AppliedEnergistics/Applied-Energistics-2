@@ -220,7 +220,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
         final BlockRayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.field_1347);
 
-        if (target.getType() != RayTraceResult.Type.field_1332) {
+        if (target.getType() != RayTraceResult.Type.BLOCK) {
             BlockPos pos = target.getPos();
             final BlockState state = w.getBlockState(pos);
             if (state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER) {
@@ -231,7 +231,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        return new ActionResult<>(ActionResultType.field_5812, p.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), p.getHeldItem(hand));
     }
 
     @Override
@@ -244,7 +244,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         boolean tryBoth = false;
         if (p == null) {
             if (w.isRemote) {
-                return ActionResultType.field_5814;
+                return ActionResultType.FAIL;
             }
             p = FakePlayer.getOrCreate((ServerWorld) w);
             // Fake players cannot crouch and we cannot communicate whether they want to
@@ -254,7 +254,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         if (this.getAECurrentPower(item) > 1600) {
             if (!p.canPlayerEdit(pos, side, item)) {
-                return ActionResultType.field_5814;
+                return ActionResultType.FAIL;
             }
 
             final Block block = w.getBlockState(pos).getBlock();
@@ -336,7 +336,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                     final BlockPos offsetPos = pos.offset(side);
 
                     if (!p.canPlayerEdit(offsetPos, side, item)) {
-                        return ActionResultType.field_5814;
+                        return ActionResultType.FAIL;
                     }
 
                     if (w.isAirBlock(offsetPos)) {
@@ -352,6 +352,6 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 }

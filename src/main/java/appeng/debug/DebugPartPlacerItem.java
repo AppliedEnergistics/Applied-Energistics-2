@@ -38,31 +38,31 @@ public class DebugPartPlacerItem extends AEBaseItem implements AEToolItem {
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         World world = context.getWorld();
         if (world.isRemote()) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
         BlockPos pos = context.getPos();
 
         if (player == null) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         if (!player.isCreative()) {
             player.sendMessage(new StringTextComponent("Only usable in creative mode"), Util.DUMMY_UUID);
-            return ActionResultType.field_5814;
+            return ActionResultType.FAIL;
         }
 
         TileEntity te = world.getTileEntity(pos);
         if (!(te instanceof IPartHost)) {
             player.sendMessage(new StringTextComponent("Right-click something that will accept parts"), Util.DUMMY_UUID);
-            return ActionResultType.field_5814;
+            return ActionResultType.FAIL;
         }
         IPartHost center = (IPartHost) te;
         IPart cable = center.getPart(AEPartLocation.INTERNAL);
         if (cable == null) {
             player.sendMessage(new StringTextComponent("Clicked part host must have an INSIDE part"), Util.DUMMY_UUID);
-            return ActionResultType.field_5814;
+            return ActionResultType.FAIL;
         }
 
         Direction face = context.getFace();
@@ -101,7 +101,7 @@ public class DebugPartPlacerItem extends AEBaseItem implements AEToolItem {
             }
         }
 
-        return ActionResultType.field_5812;
+        return ActionResultType.func_233537_a_(world.isRemote());
     }
 
 }

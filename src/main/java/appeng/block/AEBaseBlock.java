@@ -50,15 +50,15 @@ public abstract class AEBaseBlock extends Block {
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static AbstractBlock.Properties defaultProps(Material material) {
+    public static FabricBlockSettings defaultProps(Material material) {
         return defaultProps(material, material.getColor());
     }
 
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static AbstractBlock.Properties defaultProps(Material material, MaterialColor color) {
-        return FabricBlockSettings.of(material, color)
+    public static FabricBlockSettings defaultProps(Material material, MaterialColor color) {
+        return (FabricBlockSettings) FabricBlockSettings.of(material, color)
                 // These values previousls were encoded in AEBaseBlock
                 .breakByTool(FabricToolTags.PICKAXES, 0)
                 .hardnessAndResistance(2.2f, 11.f)

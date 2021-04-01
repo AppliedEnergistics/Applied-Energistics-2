@@ -79,7 +79,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return this.clearPattern(stack, context.getPlayer()) ? ActionResultType.field_5812 : ActionResultType.field_5811;
+        return this.clearPattern(stack, context.getPlayer()) ? ActionResultType.field_5812 : ActionResultType.PASS;
     }
 
     private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {

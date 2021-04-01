@@ -89,7 +89,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
         Hand hand = context.getHand();
 
         if (player == null) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         int x = pos.getX();

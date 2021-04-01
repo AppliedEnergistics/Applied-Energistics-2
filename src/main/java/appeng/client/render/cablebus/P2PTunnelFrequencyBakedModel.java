@@ -54,7 +54,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
     }
 
     @Override
-    public ItemCameraTransforms getTransformation() {
+    public ItemCameraTransforms getItemCameraTransforms() {
         return ItemCameraTransforms.DEFAULT;
     }
 
@@ -72,7 +72,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
         for (int i = 0; i < 4; ++i) {
             final int[] offs = QUAD_OFFSETS[i];
             for (int j = 0; j < 4; ++j) {
-                final float[] cv = colors[j].dye.getColorComponents();
+                final float[] cv = colors[j].dye.getColorComponentValues();
                 if (active) {
                     cb.setColorRGB(cv[0], cv[1], cv[2]);
                 } else {
@@ -107,27 +107,27 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
     public boolean isSideLit() {
-        return false;
+        return false;// TODO
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return true;
     }
 
     @Override
-    public TextureAtlasSprite getSprite() {
+    public TextureAtlasSprite getParticleTexture() {
         return this.texture;
     }
 

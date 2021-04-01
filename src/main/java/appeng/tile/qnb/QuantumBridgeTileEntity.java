@@ -129,7 +129,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
 
     private boolean isCenter() {
         return Api.instance().definitions().blocks().quantumLink().maybeBlock()
-                .map(link -> getCachedState().getBlock() == link).orElse(false);
+                .map(link -> getBlockState().getBlock() == link).orElse(false);
     }
 
     @MENetworkEventSubscribe

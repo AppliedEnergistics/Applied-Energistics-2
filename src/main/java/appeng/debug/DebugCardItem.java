@@ -61,7 +61,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         if (context.getWorld().isRemote()) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
@@ -70,7 +70,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
         Direction side = context.getFace();
 
         if (player == null) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         if (player.isCrouching()) {

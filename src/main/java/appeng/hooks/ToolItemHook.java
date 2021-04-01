@@ -24,7 +24,7 @@ public class ToolItemHook {
             BlockRayTraceResult blockHitResult) {
 
         if (playerEntity.isSpectator()) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         ItemStack itemStack = playerEntity.getHeldItem(hand);
@@ -35,7 +35,7 @@ public class ToolItemHook {
             return toolItem.onItemUseFirst(itemStack, context);
         }
 
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 
 }

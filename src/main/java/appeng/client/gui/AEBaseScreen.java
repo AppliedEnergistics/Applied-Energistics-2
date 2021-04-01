@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -511,7 +512,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 final List<Slot> slots = this.getInventorySlots();
                 for (final Slot inventorySlot : slots) {
                     if (inventorySlot != null && inventorySlot.canTakeStack(getPlayer()) && inventorySlot.getHasStack()
-                            && inventorySlot.isSameInventory(slot)
+                            && inventorySlot.inventory == slot.inventory
                             && Container.canAddItemToSlot(inventorySlot, this.dbl_whichItem, true)) {
                         this.handleMouseClick(inventorySlot, inventorySlot.slotNumber, 0, ClickType.QUICK_MOVE);
                     }
@@ -545,10 +546,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
         if (getPlayer().inventory.getItemStack().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
-                if (getMinecraft().gameSettings.keyBindsHotbar[j].isActiveAndMatches(input)) {
+                if (isActiveAndMatches(getMinecraft().gameSettings.keyBindsHotbar[j], input)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
-                        if (s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) this.container).getPlayerInv()) {
+                        if (getSlotIndex(s) == j && s.inventory == ((AEBaseContainer) this.container).getPlayerInv()) {
                             if (!s.canTakeStack(((AEBaseContainer) this.container).getPlayerInv().player)) {
                                 return false;
                             }
@@ -560,7 +561,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                         return true;
                     } else {
                         for (final Slot s : slots) {
-                            if (s.getSlotIndex() == j
+                            if (getSlotIndex(s) == j
                                     && s.inventory == ((AEBaseContainer) this.container).getPlayerInv()) {
                                 NetworkHandler.instance()
                                         .sendToServer(new SwapSlotsPacket(s.slotNumber, theSlot.slotNumber));
@@ -573,6 +574,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
 
         return false;
+    }
+
+    private boolean isActiveAndMatches(KeyBinding keyBinding, InputMappings.Input input) {
+        return !keyBinding.isInvalid()  && keyBinding.matchesKey(input.getKeyCode(), -1);
     }
 
     protected Slot getSlot(final int mouseX, final int mouseY) {
@@ -833,6 +838,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     public Minecraft getMinecraft() {
         return Preconditions.checkNotNull(minecraft);
     }
+    @javax.annotation.Nullable
+    public Slot getSlotUnderMouse() { return this.hoveredSlot; }
     public int getGuiLeft() {
         return guiLeft;
     }

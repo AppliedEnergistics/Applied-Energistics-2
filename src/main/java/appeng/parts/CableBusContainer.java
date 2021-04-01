@@ -31,6 +31,7 @@ import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -73,6 +74,7 @@ import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
 import appeng.parts.networking.CablePart;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class CableBusContainer extends CableBusStorage implements AEMultiTile, ICableBusContainer {
@@ -654,7 +656,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         if (p != null && p.part != null) {
             // forge sends activate even when sneaking in some cases (eg emtpy hand)
             // if sneaking try shift activate first.
-            if (player.isCrouching() && p.part.onShiftActivate(player, hand, pos)) {
+            if (InteractionUtil.isInAlternateUseMode(player) && p.part.onShiftActivate(player, hand, pos)) {
                 return true;
             }
             return p.part.onActivate(player, hand, pos);
@@ -666,7 +668,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     public boolean clicked(PlayerEntity player, Hand hand, Vector3d hitVec) {
         final SelectedPart p = this.selectPart(hitVec);
         if (p != null && p.part != null) {
-            if (player.isCrouching()) {
+            if (InteractionUtil.isInAlternateUseMode(player)) {
                 return p.part.onShiftClicked(player, hand, hitVec);
             } else {
                 return p.part.onClicked(player, hand, hitVec);
@@ -676,13 +678,13 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public void onneighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         this.hasRedstone = YesNo.UNDECIDED;
 
         for (final AEPartLocation s : AEPartLocation.values()) {
             final IPart part = this.getPart(s);
             if (part != null) {
-                part.onNeighborUpdate(w, pos, neighbor);
+                part.onNeighborChanged(w, pos, neighbor);
             }
         }
 
@@ -709,7 +711,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         for (final AEPartLocation side : AEPartLocation.values()) {
             final IPart p = this.getPart(side);
             if (p != null) {
-                p.randomDisplayTick(world, pos, r);
+                p.animateTick(world, pos, r);
             }
         }
     }
@@ -805,7 +807,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             final IPart part = this.getPart(s);
             if (part != null) {
                 final CompoundNBT def = new CompoundNBT();
-                part.getItemStack(PartItemStack.WORLD).toTag(def);
+                part.getItemStack(PartItemStack.WORLD).write(def);
 
                 final CompoundNBT extra = new CompoundNBT();
                 part.writeToNBT(extra);
@@ -874,27 +876,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         this.getFacadeContainer().readFromNBT(data);
     }
 
-    /**
-     * Append the contents of the parts to the drop list, e.g. crafting patterns but not the parts or facades
-     * themselves.
-     */
-    public void appendPartContentDrops(final List<ItemStack> drops) {
-        for (final AEPartLocation s : AEPartLocation.values()) {
-            final IPart part = this.getPart(s);
-            if (part != null) {
-                part.getDrops(drops, false);
-            }
-        }
-    }
-
-    /**
-     * Append the parts and facades to the drop list, but not their contents.
-     */
-    public void appendPartStacks(final List<ItemStack> drops) {
+    public List<ItemStack> getDrops(final List<ItemStack> drops) {
         for (final AEPartLocation s : AEPartLocation.values()) {
             final IPart part = this.getPart(s);
             if (part != null) {
                 drops.add(part.getItemStack(PartItemStack.BREAK));
+                part.getDrops(drops, false);
             }
 
             if (s != AEPartLocation.INTERNAL) {
@@ -904,6 +891,19 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 }
             }
         }
+
+        return drops;
+    }
+
+    public List<ItemStack> getNoDrops(final List<ItemStack> drops) {
+        for (final AEPartLocation s : AEPartLocation.values()) {
+            final IPart part = this.getPart(s);
+            if (part != null) {
+                part.getDrops(drops, false);
+            }
+        }
+
+        return drops;
     }
 
     @Override
@@ -1035,7 +1035,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             World world = getTile().getWorld();
             if (blockState != null && textureItem != null && world != null) {
                 return new FacadeRenderState(blockState,
-                        !facade.getBlockState().isOpaqueFullCube(world, getTile().getPos()));
+                        !facade.getBlockState().isOpaqueCube(world, getTile().getPos()));
             }
         }
 
@@ -1058,9 +1058,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
      */
     public VoxelShape getCollisionShape(Entity entity) {
         // This is a hack for facades
-        boolean livingEntity = entity instanceof LivingEntity;
+        boolean itemEntity = entity instanceof ItemEntity;
 
-        if (livingEntity) {
+        if (itemEntity) {
             if (cachedCollisionShapeLiving == null) {
                 cachedCollisionShapeLiving = createShape(true, true);
             }
@@ -1073,7 +1073,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         }
     }
 
-    private VoxelShape createShape(boolean forCollision, boolean forLivingEntity) {
+    private VoxelShape createShape(boolean forCollision, boolean forItemEntity) {
         final List<AxisAlignedBB> boxes = new ArrayList<>();
 
         final IFacadeContainer fc = this.getFacadeContainer();
@@ -1089,7 +1089,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 if (s != AEPartLocation.INTERNAL) {
                     final IFacadePart fp = fc.getFacade(s);
                     if (fp != null) {
-                        fp.getBoxes(bch, forLivingEntity);
+                        fp.getBoxes(bch, forItemEntity);
                     }
                 }
             }

@@ -63,8 +63,8 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.getCableBus().readFromNBT(data);
     }
 
@@ -163,14 +163,13 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
-        // the parts and facades are handled by CableBusBlock#getDroppedStacks
-        this.getCableBus().appendPartContentDrops(drops);
+    public void getDrops(final World w, final BlockPos pos, final List drops) {
+        this.getCableBus().getDrops(drops);
     }
 
     @Override
     public void getNoDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
-        this.getCableBus().appendPartContentDrops(drops);
+        this.getCableBus().getNoDrops(drops);
     }
 
     @Override

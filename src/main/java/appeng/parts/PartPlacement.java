@@ -69,7 +69,7 @@ public class PartPlacement {
     public static ActionResultType place(final ItemStack held, final BlockPos pos, Direction side,
             final PlayerEntity player, final Hand hand, final World world, PlaceType pass, final int depth) {
         if (depth > 3) {
-            return ActionResultType.field_5814;
+            return ActionResultType.FAIL;
         }
 
         // FIXME: This was changed alot.
@@ -92,7 +92,7 @@ public class PartPlacement {
                 if (host != null) {
                     if (!world.isRemote) {
                         if (host.getPart(AEPartLocation.INTERNAL) == null) {
-                            return ActionResultType.field_5814;
+                            return ActionResultType.FAIL;
                         }
 
                         if (host.canAddPart(held, AEPartLocation.fromFacing(side))) {
@@ -115,13 +115,13 @@ public class PartPlacement {
                         return ActionResultType.field_5812;
                     }
                 }
-                return ActionResultType.field_5814;
+                return ActionResultType.FAIL;
             }
         }
 
         if (held.isEmpty()) {
             if (host != null && player.isCrouching() && world.isAirBlock(pos)) {
-                if (mop.getType() == RayTraceResult.Type.field_1332) {
+                if (mop.getType() == RayTraceResult.Type.BLOCK) {
                     // FIXME FABRIC: This looks wrong
                     Vector3d hitVec = mop.getHitVec().add(-mop.getHitVec().getX(), -mop.getHitVec().getY(), -mop.getHitVec().getZ());
                     final SelectedPart sPart = selectPart(player, host, hitVec);
@@ -139,7 +139,7 @@ public class PartPlacement {
         }
 
         if (held.isEmpty() || !(held.getItem() instanceof IPartItem)) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         BlockPos te_pos = pos;
@@ -195,12 +195,12 @@ public class PartPlacement {
                     return ActionResultType.field_5812;
                 }
             } else if (host != null && !host.canAddPart(held, AEPartLocation.fromFacing(side))) {
-                return ActionResultType.field_5814;
+                return ActionResultType.FAIL;
             }
         }
 
         if (host == null) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         if (!host.canAddPart(held, AEPartLocation.fromFacing(side))) {
@@ -217,7 +217,7 @@ public class PartPlacement {
                             depth + 1);
                 }
             }
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         if (!world.isRemote) {
@@ -227,14 +227,14 @@ public class PartPlacement {
 
                 if (sp.part != null) {
                     if (!player.isCrouching() && sp.part.onActivate(player, hand, mop.getHitVec())) {
-                        return ActionResultType.field_5814;
+                        return ActionResultType.FAIL;
                     }
                 }
             }
 
             final DimensionalCoord dc = host.getLocation();
             if (!Platform.hasPermissions(dc, player)) {
-                return ActionResultType.field_5814;
+                return ActionResultType.FAIL;
             }
 
             final AEPartLocation mySide = host.addPart(held, AEPartLocation.fromFacing(side), player, hand);
@@ -292,11 +292,11 @@ public class PartPlacement {
     private static ActionResultType onPlayerUseBlock(PlayerEntity player, World world, Hand hand, BlockRayTraceResult hit) {
 
         if (world.isRemote || player.isSpectator()) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         if (placing.get() != null) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         placing.set(true);
@@ -308,7 +308,7 @@ public class PartPlacement {
         }
 
         placing.set(null);
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 
 // FIXME FABRIC    public static void playerInteract(final PlayerInteractEvent event) {

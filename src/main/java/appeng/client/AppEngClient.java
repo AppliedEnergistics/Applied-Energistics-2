@@ -241,11 +241,11 @@ public final class AppEngClient extends AppEngBase {
     public boolean shouldAddParticles(Random r) {
         switch (client.gameSettings.particles) {
             default:
-            case field_18197:
+            case ALL:
                 return true;
-            case field_18198:
+            case DECREASED:
                 return r.nextBoolean();
-            case field_18199:
+            case MINIMAL:
                 return false;
         }
     }

@@ -336,7 +336,7 @@ public final class ApiItems implements IItems {
                 .bootstrap(CrystalSeedRendering::new).features(AEFeature.CRYSTAL_SEEDS).build();
 
         GrowingCrystalEntity.TYPE = registry
-                .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, EntityClassification.field_17715)
+                .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, EntityClassification.MISC)
                 .customize(builder -> builder.dimensions(EntitySize.fixed(0.25F, 0.4F))).build();
 
         // rv1

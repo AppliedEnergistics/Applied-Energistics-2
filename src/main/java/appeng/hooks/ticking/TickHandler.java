@@ -48,7 +48,6 @@ import net.minecraft.world.chunk.AbstractChunkProvider;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.parts.CableRenderMode;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.crafting.CraftingJob;
@@ -350,7 +349,7 @@ public class TickHandler {
     /**
      * Tick all currently players having a color applied by a {@link PaintBallItem}.
      */
-    private void tickColors(final Map<Integer, PlayerColor> playerSet) {
+    protected void tickColors(final Map<Integer, PlayerColor> playerSet) {
         final Iterator<PlayerColor> i = playerSet.values().iterator();
 
         while (i.hasNext()) {

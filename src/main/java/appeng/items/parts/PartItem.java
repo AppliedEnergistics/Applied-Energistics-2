@@ -43,7 +43,7 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
         PlayerEntity player = context.getPlayer();
         ItemStack held = player.getHeldItem(context.getHand());
         if (held.getItem() != this) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         return Api.instance().partHelper().placeBus(held, context.getPos(), context.getFace(), player,

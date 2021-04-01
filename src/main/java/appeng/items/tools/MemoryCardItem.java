@@ -180,7 +180,7 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
             return ActionResultType.field_5812;
         }
 
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 
     @Override

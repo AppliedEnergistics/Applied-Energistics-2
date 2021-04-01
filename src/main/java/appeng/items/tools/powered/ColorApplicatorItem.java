@@ -131,7 +131,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             }
 
             if (p != null && !Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
-                return ActionResultType.field_5814;
+                return ActionResultType.FAIL;
             }
 
             final double powerPerUse = 100;
@@ -178,7 +178,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             this.cycleColors(is, paintBall, 1);
         }
 
-        return ActionResultType.field_5814;
+        return ActionResultType.FAIL;
     }
 
     @Override

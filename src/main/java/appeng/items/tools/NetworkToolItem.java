@@ -100,14 +100,14 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench, 
 
             if (part.part != null || part.facade != null) {
                 if (part.part instanceof INetworkToolAgent && !((INetworkToolAgent) part.part).showNetworkInfo(mop)) {
-                    return ActionResultType.field_5814;
+                    return ActionResultType.FAIL;
                 } else if (context.getPlayer().isCrouching()) {
                     PartHostWrenching.wrenchPart(context.getWorld(), context.getPos(), host, part);
                     return ActionResultType.field_5812;
                 }
             }
         } else if (te instanceof INetworkToolAgent && !((INetworkToolAgent) te).showNetworkInfo(mop)) {
-            return ActionResultType.field_5814;
+            return ActionResultType.FAIL;
         }
 
         if (Platform.isClient()) {

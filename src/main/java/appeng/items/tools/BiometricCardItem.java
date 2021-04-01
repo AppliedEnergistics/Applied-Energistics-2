@@ -74,7 +74,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
             user.swingArm(hand);
             return ActionResultType.field_5812;
         }
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 
     @Override

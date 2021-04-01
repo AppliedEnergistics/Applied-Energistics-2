@@ -52,14 +52,14 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolIte
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (player == null) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         boolean isHoldingShift = player.isCrouching();
         World world = context.getWorld();
         BlockPos pos = context.getPos();
         if (!Platform.hasPermissions(new DimensionalCoord(world, pos), player)) {
-            return ActionResultType.field_5814;
+            return ActionResultType.FAIL;
         }
 
         BlockState blockState = world.getBlockState(pos);
@@ -100,7 +100,7 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolIte
             }
             return ActionResultType.field_5812;
         }
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 
     @Override

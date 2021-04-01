@@ -81,7 +81,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         if (context.getWorld().isRemote()) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         ServerPlayerEntity player = (ServerPlayerEntity) context.getPlayer();
@@ -89,7 +89,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         BlockPos pos = context.getPos();
 
         if (player == null) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         CompoundNBT tag = stack.getOrCreateTag();
@@ -108,7 +108,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
 
         if (spawned == null) {
             player.sendStatusMessage(new StringTextComponent("Un-suitable Location."), false);
-            return ActionResultType.field_5814;
+            return ActionResultType.FAIL;
         }
 
         // Since we don't know yet if the meteorite will be underground or not,

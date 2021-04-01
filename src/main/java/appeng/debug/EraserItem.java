@@ -50,7 +50,7 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         if (context.getWorld().isRemote()) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         final PlayerEntity player = context.getPlayer();
@@ -58,7 +58,7 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
         final BlockPos pos = context.getPos();
 
         if (player == null) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         final Block state = world.getBlockState(pos).getBlock();

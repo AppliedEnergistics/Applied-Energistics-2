@@ -174,7 +174,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 }
             }
         }
-        return new ActionResult<>(ActionResultType.field_5814, p.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.FAIL, p.getHeldItem(hand));
     }
 
     private void shootPaintBalls(final ItemStack type, final World w, final PlayerEntity p, final Vector3d Vec3d,

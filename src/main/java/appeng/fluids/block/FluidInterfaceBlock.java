@@ -46,7 +46,7 @@ public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntit
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (p.isCrouching()) {
-            return ActionResultType.field_5811;
+            return ActionResultType.PASS;
         }
 
         final TileEntity tg = this.getTileEntity(w, pos);
@@ -57,6 +57,6 @@ public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntit
             }
             return ActionResultType.field_5812;
         }
-        return ActionResultType.field_5811;
+        return ActionResultType.PASS;
     }
 }

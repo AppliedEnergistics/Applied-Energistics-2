@@ -181,7 +181,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         if (be instanceof CableBusTileEntity) {
             CableBusTileEntity bus = (CableBusTileEntity) be;
             List<ItemStack> drops = new ArrayList<>();
-            bus.getCableBus().appendPartStacks(drops);
+            bus.getCableBus().getDrops(drops);
             return drops;
         } else {
             AELog.debug("The block entity was either null or of the wrong type! Skipped cable bus drops!");
@@ -312,7 +312,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         if (!world.isRemote()) {
-            this.cb(world, pos).onneighborUpdate(world, pos, fromPos);
+            this.cb(world, pos).onNeighborChanged(world, pos, fromPos);
         }
     }
 

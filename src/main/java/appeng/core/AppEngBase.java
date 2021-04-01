@@ -327,30 +327,30 @@ public abstract class AppEngBase implements AppEng {
         /*
          * White List Vanilla...
          */
-        mr.whiteListBlockEntity(BannerTileEntity.class);
-        mr.whiteListBlockEntity(BeaconTileEntity.class);
-        mr.whiteListBlockEntity(BrewingStandTileEntity.class);
-        mr.whiteListBlockEntity(ChestTileEntity.class);
-        mr.whiteListBlockEntity(CommandBlockTileEntity.class);
-        mr.whiteListBlockEntity(ComparatorTileEntity.class);
-        mr.whiteListBlockEntity(DaylightDetectorTileEntity.class);
-        mr.whiteListBlockEntity(DispenserTileEntity.class);
-        mr.whiteListBlockEntity(DropperTileEntity.class);
-        mr.whiteListBlockEntity(EnchantingTableTileEntity.class);
-        mr.whiteListBlockEntity(EnderChestTileEntity.class);
-        mr.whiteListBlockEntity(EndPortalTileEntity.class);
-        mr.whiteListBlockEntity(FurnaceTileEntity.class);
-        mr.whiteListBlockEntity(HopperTileEntity.class);
-        mr.whiteListBlockEntity(MobSpawnerTileEntity.class);
-        mr.whiteListBlockEntity(PistonTileEntity.class);
-        mr.whiteListBlockEntity(ShulkerBoxTileEntity.class);
-        mr.whiteListBlockEntity(SignTileEntity.class);
-        mr.whiteListBlockEntity(SkullTileEntity.class);
+        mr.whiteListTileEntity(BannerTileEntity.class);
+        mr.whiteListTileEntity(BeaconTileEntity.class);
+        mr.whiteListTileEntity(BrewingStandTileEntity.class);
+        mr.whiteListTileEntity(ChestTileEntity.class);
+        mr.whiteListTileEntity(CommandBlockTileEntity.class);
+        mr.whiteListTileEntity(ComparatorTileEntity.class);
+        mr.whiteListTileEntity(DaylightDetectorTileEntity.class);
+        mr.whiteListTileEntity(DispenserTileEntity.class);
+        mr.whiteListTileEntity(DropperTileEntity.class);
+        mr.whiteListTileEntity(EnchantingTableTileEntity.class);
+        mr.whiteListTileEntity(EnderChestTileEntity.class);
+        mr.whiteListTileEntity(EndPortalTileEntity.class);
+        mr.whiteListTileEntity(FurnaceTileEntity.class);
+        mr.whiteListTileEntity(HopperTileEntity.class);
+        mr.whiteListTileEntity(MobSpawnerTileEntity.class);
+        mr.whiteListTileEntity(PistonTileEntity.class);
+        mr.whiteListTileEntity(ShulkerBoxTileEntity.class);
+        mr.whiteListTileEntity(SignTileEntity.class);
+        mr.whiteListTileEntity(SkullTileEntity.class);
 
         /*
          * Whitelist AE2
          */
-        mr.whiteListBlockEntity(AEBaseTileEntity.class);
+        mr.whiteListTileEntity(AEBaseTileEntity.class);
 
     }
 

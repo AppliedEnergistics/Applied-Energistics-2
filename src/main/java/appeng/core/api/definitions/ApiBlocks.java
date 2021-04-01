@@ -26,6 +26,7 @@ import appeng.tile.grindstone.CrankTileEntity;
 import appeng.tile.grindstone.GrinderTileEntity;
 import appeng.tile.misc.*;
 import appeng.tile.networking.*;
+import appeng.tile.spatial.SpatialAnchorTileEntity;
 import appeng.tile.storage.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -167,6 +168,7 @@ public final class ApiBlocks implements IBlocks {
     private final ITileDefinition quantumLink;
     private final ITileDefinition spatialPylon;
     private final ITileDefinition spatialIOPort;
+    private final ITileDefinition spatialAnchor;
     private final ITileDefinition multiPart;
     private final ITileDefinition controller;
     private final ITileDefinition drive;
@@ -216,12 +218,12 @@ public final class ApiBlocks implements IBlocks {
     private IBlockDefinition cubeGenerator;
     private IBlockDefinition energyGenerator;
 
-    private static final FabricBlockSettings QUARTZ_PROPERTIES = defaultProps(Material.ROCK).hardnessAndResistance(3, 5);
+    private static final FabricBlockSettings QUARTZ_PROPERTIES = (FabricBlockSettings) defaultProps(Material.ROCK).hardnessAndResistance(3, 5);
 
-    private static final FabricBlockSettings SKYSTONE_PROPERTIES = defaultProps(Material.ROCK).hardnessAndResistance(50, 150);
+    private static final FabricBlockSettings SKYSTONE_PROPERTIES = (FabricBlockSettings) defaultProps(Material.ROCK).hardnessAndResistance(50, 150);
 
     private static FabricBlockSettings glassProps() {
-        return defaultProps(Material.GLASS).sound(SoundType.GLASS).notSolid()
+        return (FabricBlockSettings) defaultProps(Material.GLASS).sound(SoundType.GLASS).notSolid()
                 .setAllowsSpawn((state, world, pos, type) -> false).notSolid().setSuffocates((state, world, pos) -> false)
                 .setBlocksVision((state, world, pos) -> false);
     }
@@ -279,10 +281,11 @@ public final class ApiBlocks implements IBlocks {
         this.fluixBlock = registry.features(AEFeature.FLUIX)
                 .block("fluix_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES)).build();
 
-        this.skyStoneBlock = registry.features(AEFeature.SKY_STONE)
-                .block("sky_stone_block",
-                        () -> new SkyStoneBlock(SkystoneType.STONE,
-                                defaultProps(Material.STONE).strength(50, 150).breakByTool(FabricToolTags.PICKAXES, 3)))
+        this.skyStoneBlock = registry
+                .features(
+                        AEFeature.SKY_STONE)
+                .block("sky_stone_block", () -> new SkyStoneBlock(SkystoneType.STONE,
+                                defaultProps(Material.ROCK).strength(50, 150).breakByTool(FabricToolTags.PICKAXES, 3)))
                 .build();
 
         this.smoothSkyStoneBlock = registry.features(AEFeature.SKY_STONE)
@@ -295,7 +298,8 @@ public final class ApiBlocks implements IBlocks {
                 .block("sky_stone_small_brick", () -> new SkyStoneBlock(SkystoneType.SMALL_BRICK, SKYSTONE_PROPERTIES))
                 .addFeatures(AEFeature.SKY_STONE).build();
 
-        AbstractBlock.Properties skyStoneChestProps = defaultProps(Material.ROCK).hardnessAndResistance(50, 150).notSolid();
+        AbstractBlock.Properties skyStoneChestProps = defaultProps(Material.ROCK).hardnessAndResistance(50, 150)
+                .notSolid();
 
         TileEntityDefinition skyChestTile = registry
                 .tileEntity("sky_chest", SkyChestTileEntity.class, SkyChestTileEntity::new)
@@ -322,8 +326,7 @@ public final class ApiBlocks implements IBlocks {
         this.grindstone = registry
                 .block("grindstone", () -> new GrinderBlock(defaultProps(Material.ROCK).hardnessAndResistance(3.2f)))
                 .features(AEFeature.GRIND_STONE)
-                .tileEntity(
-                        registry.tileEntity("grindstone", GrinderTileEntity.class, GrinderTileEntity::new).build())
+                .tileEntity(registry.tileEntity("grindstone", GrinderTileEntity.class, GrinderTileEntity::new).build())
                 .build();
         this.crank = registry
                 .block("crank",
@@ -347,8 +350,7 @@ public final class ApiBlocks implements IBlocks {
         this.wirelessAccessPoint = registry.block("wireless_access_point", WirelessBlock::new)
                 .features(AEFeature.WIRELESS_ACCESS_TERMINAL)
                 .tileEntity(registry
-                        .tileEntity("wireless_access_point", WirelessTileEntity.class, WirelessTileEntity::new)
-                        .build())
+                        .tileEntity("wireless_access_point", WirelessTileEntity.class, WirelessTileEntity::new).build())
                 .rendering(new WirelessRendering()).build();
         this.charger = registry.block("charger", ChargerBlock::new).features(AEFeature.CHARGER)
                 .tileEntity(registry.tileEntity("charger", ChargerTileEntity.class, ChargerTileEntity::new)
@@ -362,7 +364,7 @@ public final class ApiBlocks implements IBlocks {
                 .build();
 
         TinyTNTPrimedEntity.TYPE = registry
-                .<TinyTNTPrimedEntity>entity("tiny_tnt_primed", TinyTNTPrimedEntity::new, EntityClassification.field_17715)
+                .<TinyTNTPrimedEntity>entity("tiny_tnt_primed", TinyTNTPrimedEntity::new, EntityClassification.MISC)
                 // Entity properties are a copy of the standard TNT entity
                 .customize(p -> p.trackable(10, 10, true).dimensions(EntitySize.fixed(0.98f, 0.98f))).build();
 
@@ -371,11 +373,13 @@ public final class ApiBlocks implements IBlocks {
                         () -> new TinyTNTBlock(
                                 defaultProps(Material.TNT).sound(SoundType.PLANT).zeroHardnessAndResistance()))
                 .features(AEFeature.TINY_TNT).bootstrap((block, item) -> (IInitComponent) () -> DispenserBlock
-                        .registerBehavior(item, new TinyTNTDispenseItemBehavior()))
+                        .registerDispenseBehavior(item, new TinyTNTDispenseItemBehavior()))
                 .build();
         this.securityStation = registry.block("security_station", SecurityStationBlock::new)
-                .features(AEFeature.SECURITY).tileEntity(registry.tileEntity("security_station",
-                        SecurityStationTileEntity.class, SecurityStationTileEntity::new).build())
+                .features(AEFeature.SECURITY)
+                .tileEntity(registry
+                        .tileEntity("security_station", SecurityStationTileEntity.class, SecurityStationTileEntity::new)
+                        .build())
                 .rendering(new SecurityStationRendering()).build();
 
         TileEntityDefinition quantumRingTile = registry
@@ -388,8 +392,7 @@ public final class ApiBlocks implements IBlocks {
                 .rendering(new QuantumBridgeRendering()).build();
         this.spatialPylon = registry.block("spatial_pylon", SpatialPylonBlock::new).features(AEFeature.SPATIAL_IO)
                 .tileEntity(registry
-                        .tileEntity("spatial_pylon", SpatialPylonTileEntity.class, SpatialPylonTileEntity::new)
-                        .build())
+                        .tileEntity("spatial_pylon", SpatialPylonTileEntity.class, SpatialPylonTileEntity::new).build())
                 .rendering(new SpatialPylonRendering()).build();
         this.spatialIOPort = registry.block("spatial_io_port", SpatialIOPortBlock::new).features(AEFeature.SPATIAL_IO)
                 .tileEntity(registry
@@ -508,8 +511,7 @@ public final class ApiBlocks implements IBlocks {
                 .build();
         this.craftingMonitor = crafting.block("crafting_monitor", () -> new CraftingMonitorBlock(craftingBlockProps))
                 .tileEntity(registry
-                        .tileEntity("crafting_monitor", CraftingMonitorTileEntity.class,
-                                CraftingMonitorTileEntity::new)
+                        .tileEntity("crafting_monitor", CraftingMonitorTileEntity.class, CraftingMonitorTileEntity::new)
                         .rendering(new TileEntityRenderingCustomizer<CraftingMonitorTileEntity>() {
                             @Environment(EnvType.CLIENT)
                             @Override
@@ -520,8 +522,7 @@ public final class ApiBlocks implements IBlocks {
                 .rendering(new CraftingMonitorBlockRendering()).build();
 
         this.molecularAssembler = registry
-                .block("molecular_assembler",
-                        () -> new MolecularAssemblerBlock(defaultProps(Material.IRON).notSolid()))
+                .block("molecular_assembler", () -> new MolecularAssemblerBlock(defaultProps(Material.IRON).notSolid()))
                 .features(AEFeature.MOLECULAR_ASSEMBLER).rendering(new BlockRenderingCustomizer() {
                     @Environment(EnvType.CLIENT)
                     @Override
@@ -553,8 +554,8 @@ public final class ApiBlocks implements IBlocks {
                         rendering.renderType(RenderType.getCutout());
                     }
                 }).build();
-        this.paint = registry.block("paint", PaintSplotchesBlock::new).features(AEFeature.PAINT_BALLS)
-                .tileEntity(registry
+        this.paint = registry
+                .block("paint", PaintSplotchesBlock::new).features(AEFeature.PAINT_BALLS).tileEntity(registry
                         .tileEntity("paint", PaintSplotchesTileEntity.class, PaintSplotchesTileEntity::new).build())
                 .rendering(new PaintSplotchesRendering()).build();
 
@@ -618,9 +619,18 @@ public final class ApiBlocks implements IBlocks {
         this.quartzPillarSlab = deco.block("quartz_pillar_slab", () -> new SlabBlock(QUARTZ_PROPERTIES))
                 .addFeatures(AEFeature.CERTUS).build();
 
+        this.spatialAnchor = registry.block("spatial_anchor", SpatialAnchorBlock::new)
+                .features(AEFeature.SPATIAL_IO)
+                .tileEntity(registry
+                        .tileEntity("spatial_anchor", SpatialAnchorTileEntity.class, SpatialAnchorTileEntity::new)
+                        .build())
+                .build();
+
+        // Debug blocks
         this.itemGen = registry.block("debug_item_gen", ItemGenBlock::new)
-                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE).tileEntity(registry
-                        .tileEntity("debug_item_gen", ItemGenTileEntity.class, ItemGenTileEntity::new).build())
+                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
+                .tileEntity(
+                        registry.tileEntity("debug_item_gen", ItemGenTileEntity.class, ItemGenTileEntity::new).build())
                 .build();
         this.chunkLoader = registry.block("debug_chunk_loader", ChunkLoaderBlock::new)
                 .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
@@ -866,6 +876,11 @@ public final class ApiBlocks implements IBlocks {
     @Override
     public ITileDefinition spatialIOPort() {
         return this.spatialIOPort;
+    }
+
+    @Override
+    public ITileDefinition spatialAnchor() {
+        return this.spatialAnchor;
     }
 
     @Override
