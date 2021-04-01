@@ -24,7 +24,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ProgressBar;
@@ -52,11 +51,11 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.VibrationChamber.text()).getString(), 8, 6,
+        this.font.drawString(matrices, this.getGuiDisplayName(GuiText.VibrationChamber.text()).getString(), 8, 6,
                 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrices, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
         this.pb.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
                 * this.container.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
@@ -67,16 +66,16 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
             RenderSystem.color3f(1, 1, 1);
             final int l = -15;
             final int k = 25;
-            GuiUtils.drawTexturedModalRect(k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2, getBlitOffset());
+            blit(matrices, k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2);
         }
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.bindTexture("guis/vibchamber.png");
         this.pb.x = 99 + this.guiLeft;
         this.pb.y = 36 + this.guiTop;
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 }

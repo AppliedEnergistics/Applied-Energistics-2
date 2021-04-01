@@ -52,7 +52,7 @@ public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
     public abstract void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
             final float partialTicks);
 
-    public void drawBackground(int guileft, int guitop, int currentZIndex) {
+    public void drawBackground(MatrixStack matrices, int guileft, int guitop, int currentZIndex) {
     }
 
     @Override

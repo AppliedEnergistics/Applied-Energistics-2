@@ -75,9 +75,9 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         this.bindTexture("guis/interfacefluid.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME ZINDEX */ );
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 
     private void openPriorityGui() {

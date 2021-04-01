@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public abstract class IconButton extends Button implements ITooltip {
     public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
@@ -68,7 +67,7 @@ public abstract class IconButton extends Button implements ITooltip {
             textureManager.bindTexture(TEXTURE_STATES);
             RenderSystem.disableDepthTest();
             RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
-                                        // it :|
+            // it :|
             if (this.halfSize) {
                 this.width = 8;
                 this.height = 8;
@@ -87,9 +86,9 @@ public abstract class IconButton extends Button implements ITooltip {
                 final int uv_x = iconIndex - uv_y * 16;
 
                 if (!disableBackground) {
-                    GuiUtils.drawTexturedModalRect(0, 0, 256 - 16, 256 - 16, 16, 16, 0);
+                    blit(matrixStack, 0, 0, 256 - 16, 256 - 16, 16, 16);
                 }
-                GuiUtils.drawTexturedModalRect(0, 0, uv_x * 16, uv_y * 16, 16, 16, 0);
+                blit(matrixStack, 0, 0, uv_x * 16, uv_y * 16, 16, 16);
                 RenderSystem.popMatrix();
             } else {
                 if (this.active) {
@@ -102,9 +101,9 @@ public abstract class IconButton extends Button implements ITooltip {
                 final int uv_x = iconIndex - uv_y * 16;
 
                 if (!disableBackground) {
-                    GuiUtils.drawTexturedModalRect(this.x, this.y, 256 - 16, 256 - 16, 16, 16, 0);
+                    blit(matrixStack, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
                 }
-                GuiUtils.drawTexturedModalRect(this.x, this.y, uv_x * 16, uv_y * 16, 16, 16, 0);
+                blit(matrixStack, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
             }
             RenderSystem.enableDepthTest();
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);

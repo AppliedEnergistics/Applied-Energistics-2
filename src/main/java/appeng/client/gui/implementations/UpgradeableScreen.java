@@ -22,7 +22,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -107,19 +106,18 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.handleButtonVisibility();
 
         this.bindTexture(this.getBackground());
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, 211 - 34, this.ySize, getBlitOffset());
+        blit(matrices, offsetX, offsetY, 0, 0, 211 - 34, this.ySize);
         if (this.drawUpgrades()) {
-            GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18,
-                    getBlitOffset());
+            blit(matrices, offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18);
         }
         if (this.hasToolbox()) {
-            GuiUtils.drawTexturedModalRect(offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68,
-                    getBlitOffset());
+            blit(matrices, offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90,
+                    68, 68);
         }
     }
 

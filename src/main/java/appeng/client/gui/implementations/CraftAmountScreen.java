@@ -23,7 +23,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
@@ -73,22 +72,22 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, GuiText.SelectAmount.text().getString(), 8, 6, 4210752);
+        this.font.drawString(matrices, GuiText.SelectAmount.text().getString(), 8, 6, 4210752);
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
 
         this.bindTexture("guis/craft_amt.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
 
         this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;
 
-        this.amountToCraft.render(matrixStack, offsetX, offsetY, partialTicks);
+        this.amountToCraft.render(matrices, offsetX, offsetY, partialTicks);
     }
 
 }

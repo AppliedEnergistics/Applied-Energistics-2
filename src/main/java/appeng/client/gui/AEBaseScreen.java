@@ -59,7 +59,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
@@ -253,13 +252,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 if (optionalSlot.isRenderDisabled()) {
                     final AppEngSlot aeSlot = (AppEngSlot) slot;
                     if (aeSlot.isSlotEnabled()) {
-                        GuiUtils.drawTexturedModalRect(ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1,
-                                optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18, 18, getBlitOffset());
+                        blit(matrixStack, ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1,
+                                optionalSlot.getSourceY() - 1, 18, 18);
                     } else {
                         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.4F);
                         RenderSystem.enableBlend();
-                        GuiUtils.drawTexturedModalRect(ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1,
-                                optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18, 18, getBlitOffset());
+                        blit(matrixStack, ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1,
+                                optionalSlot.getSourceY() - 1, 18, 18);
                         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                     }
                 }
@@ -267,7 +266,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
 
         for (final CustomSlotWidget slot : this.guiSlots) {
-            slot.drawBackground(ox, oy, getBlitOffset());
+            slot.drawBackground(matrixStack, ox, oy, getBlitOffset());
         }
 
     }
