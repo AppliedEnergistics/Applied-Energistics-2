@@ -26,7 +26,7 @@ import net.minecraft.world.server.ServerWorld;
 import appeng.core.AppEng;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
 
-public class ChunkLoadingService /*implements LoadingValidationCallback*/ {
+public class ChunkLoadingService /* implements LoadingValidationCallback */ {
 
     private static final ChunkLoadingService INSTANCE = new ChunkLoadingService();
 
@@ -38,11 +38,11 @@ public class ChunkLoadingService /*implements LoadingValidationCallback*/ {
     }
 
     // FIXME FABRIC public void onServerAboutToStart(FMLServerAboutToStartEvent evt) {
-    // FIXME FABRIC     this.running = true;
+    // FIXME FABRIC this.running = true;
     // FIXME FABRIC }
 
     // FIXME FABRIC public void onServerStopping(FMLServerStoppingEvent event) {
-    // FIXME FABRIC     this.running = false;
+    // FIXME FABRIC this.running = false;
     // FIXME FABRIC }
 
     public static ChunkLoadingService getInstance() {
@@ -70,7 +70,8 @@ public class ChunkLoadingService /*implements LoadingValidationCallback*/ {
 
     public boolean forceChunk(ServerWorld world, BlockPos owner, ChunkPos position, boolean ticking) {
         if (running) {
-            // FIXME FABRIC  return ForgeChunkManager.forceChunk(world, AppEng.MOD_ID, owner, position.x, position.z, true, true);
+            // FIXME FABRIC return ForgeChunkManager.forceChunk(world, AppEng.MOD_ID, owner, position.x, position.z,
+            // true, true);
         }
 
         return false;
@@ -78,7 +79,8 @@ public class ChunkLoadingService /*implements LoadingValidationCallback*/ {
 
     public boolean releaseChunk(ServerWorld world, BlockPos owner, ChunkPos position, boolean ticking) {
         if (running) {
-            // FIXME FABRIC return ForgeChunkManager.forceChunk(world, AppEng.MOD_ID, owner, position.x, position.z, false, true);
+            // FIXME FABRIC return ForgeChunkManager.forceChunk(world, AppEng.MOD_ID, owner, position.x, position.z,
+            // false, true);
         }
 
         return false;

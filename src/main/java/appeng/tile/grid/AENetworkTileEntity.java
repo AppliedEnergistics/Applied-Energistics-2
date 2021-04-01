@@ -18,10 +18,10 @@
 
 package appeng.tile.grid;
 
-import appeng.tile.AEBaseTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AECableType;
@@ -29,6 +29,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
+import appeng.tile.AEBaseTileEntity;
 
 public class AENetworkTileEntity extends AEBaseTileEntity implements IActionHost, IGridProxyable {
 

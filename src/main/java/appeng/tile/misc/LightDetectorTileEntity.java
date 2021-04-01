@@ -18,10 +18,11 @@
 
 package appeng.tile.misc;
 
-import appeng.tile.AEBaseTileEntity;
-import appeng.util.Platform;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
+
+import appeng.tile.AEBaseTileEntity;
+import appeng.util.Platform;
 
 public class LightDetectorTileEntity extends AEBaseTileEntity implements ITickableTileEntity {
 

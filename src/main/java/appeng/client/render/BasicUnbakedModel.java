@@ -6,10 +6,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.util.ResourceLocation;
-import com.mojang.datafixers.util.Pair;
 
 /**
  * An unbaked model that has standard models as a dependency and produces a custom baked model as a result.

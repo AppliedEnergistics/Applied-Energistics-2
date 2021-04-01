@@ -19,8 +19,10 @@
 package appeng.helpers;
 
 import java.util.EnumSet;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingRequester;

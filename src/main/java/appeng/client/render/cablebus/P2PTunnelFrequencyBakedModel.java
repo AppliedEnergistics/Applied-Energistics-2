@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
+
 import appeng.api.parts.IDynamicPartBakedModel;
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
@@ -40,7 +41,8 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
     }
 
     @Override
-    public void emitQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier,
+    public void emitQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier,
             RenderContext context, Direction partSide, @Nullable Object modelData) {
         if (!(modelData instanceof Long)) {
             return;

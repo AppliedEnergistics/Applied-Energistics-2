@@ -21,7 +21,6 @@ package appeng.util.helpers;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import P2PHelper;
 import org.junit.Test;
 
 import appeng.api.util.AEColor;

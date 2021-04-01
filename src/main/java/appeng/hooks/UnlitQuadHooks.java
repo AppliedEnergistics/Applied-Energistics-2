@@ -18,10 +18,9 @@
 
 package appeng.hooks;
 
-import appeng.core.AppEng;
-import appeng.mixins.unlitquad.BakedQuadAccessor;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.BlockFaceUV;
@@ -33,6 +32,9 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+
+import appeng.core.AppEng;
+import appeng.mixins.unlitquad.BakedQuadAccessor;
 
 /**
  * Implementation details of allowing quads to be defined as "unlit" in JSON models by specifying an "unlit" boolean

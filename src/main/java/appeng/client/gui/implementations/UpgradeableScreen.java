@@ -18,10 +18,13 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
 import me.shedaniel.math.Rectangle;
 
 import appeng.api.config.FuzzyMode;
@@ -38,8 +41,6 @@ import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.localization.GuiText;
 import appeng.parts.automation.ExportBusPart;
 import appeng.parts.automation.ImportBusPart;
-
-import java.util.List;
 
 public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
 

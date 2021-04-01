@@ -65,7 +65,8 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     // FIXME FABRIC: Validate that this actually works about as well as the forge
     // hook does
     @Override
-    public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity user, LivingEntity target, Hand hand) {
+    public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity user, LivingEntity target,
+            Hand hand) {
         if (target instanceof PlayerEntity && !user.isCrouching()) {
             if (user.isCreative()) {
                 stack = user.getHeldItem(hand);
@@ -80,7 +81,8 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     @Override
     public ITextComponent getDisplayName(final ItemStack is) {
         final GameProfile username = this.getProfile(is);
-        return username != null ? super.getDisplayName(is).copyRaw().appendString(" - " + username.getName()) : super.getDisplayName(is);
+        return username != null ? super.getDisplayName(is).copyRaw().appendString(" - " + username.getName())
+                : super.getDisplayName(is);
     }
 
     private void encode(final ItemStack is, final PlayerEntity p) {

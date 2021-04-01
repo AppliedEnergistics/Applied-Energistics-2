@@ -22,6 +22,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.PriorityContainer;

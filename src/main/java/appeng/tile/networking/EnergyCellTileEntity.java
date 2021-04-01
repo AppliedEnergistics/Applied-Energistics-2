@@ -18,7 +18,6 @@
 
 package appeng.tile.networking;
 
-import appeng.tile.grid.AENetworkTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -34,6 +33,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.me.GridAccessException;
+import appeng.tile.grid.AENetworkTileEntity;
 import appeng.util.SettingsFrom;
 
 public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowerStorage {

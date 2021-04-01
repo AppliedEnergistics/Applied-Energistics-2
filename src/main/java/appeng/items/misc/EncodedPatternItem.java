@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import appeng.core.AppEng;
-import appeng.util.InteractionUtil;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
@@ -53,10 +51,12 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class EncodedPatternItem extends AEBaseItem implements AEToolItem {

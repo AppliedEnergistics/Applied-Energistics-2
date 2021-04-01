@@ -20,9 +20,11 @@ package appeng.server.subcommands;
 
 import com.google.common.base.Joiner;
 import com.mojang.brigadier.context.CommandContext;
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.StringTextComponent;
+
 import appeng.server.ISubCommand;
 
 public class Supporters implements ISubCommand {

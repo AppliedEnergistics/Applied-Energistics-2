@@ -47,6 +47,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.worlddata.WorldData;

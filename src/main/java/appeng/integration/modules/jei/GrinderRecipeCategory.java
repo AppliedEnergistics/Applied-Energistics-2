@@ -22,6 +22,11 @@ import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.LanguageMap;
+import net.minecraft.util.text.StringTextComponent;
+
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.EntryStack;
@@ -29,9 +34,7 @@ import me.shedaniel.rei.api.RecipeCategory;
 import me.shedaniel.rei.api.widgets.Slot;
 import me.shedaniel.rei.api.widgets.Widgets;
 import me.shedaniel.rei.gui.widget.Widget;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.StringTextComponent;
+
 import appeng.core.Api;
 import appeng.core.AppEng;
 

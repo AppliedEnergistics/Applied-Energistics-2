@@ -28,6 +28,7 @@ import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+
 import appeng.util.Platform;
 
 public class InvalidPatternHelper {

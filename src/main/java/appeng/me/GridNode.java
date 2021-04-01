@@ -25,12 +25,14 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;

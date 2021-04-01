@@ -27,6 +27,7 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ModelBakery;
@@ -35,6 +36,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.client.ICellModelRegistry;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.Api;
@@ -42,7 +44,8 @@ import appeng.core.api.client.ApiCellModelRegistry;
 
 public class DriveModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation("appliedenergistics2:block/drive/drive_base");
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
+            "appliedenergistics2:block/drive/drive_base");
     private static final ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_cell_empty");
 
@@ -69,7 +72,8 @@ public class DriveModel implements BasicUnbakedModel {
     @Override
     public Collection<ResourceLocation> getDependencies() {
         ICellModelRegistry cells = Api.instance().client().cells();
-        return ImmutableSet.<ResourceLocation>builder().add(cells.getDefaultModel()).addAll(ApiCellModelRegistry.getModels())
+        return ImmutableSet.<ResourceLocation>builder().add(cells.getDefaultModel())
+                .addAll(ApiCellModelRegistry.getModels())
                 .addAll(cells.models().values()).build();
     }
 

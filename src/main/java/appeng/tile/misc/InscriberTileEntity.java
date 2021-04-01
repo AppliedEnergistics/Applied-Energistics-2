@@ -25,7 +25,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.tile.grid.AENetworkPowerTileEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
@@ -63,6 +62,7 @@ import appeng.me.GridAccessException;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.tile.grid.AENetworkPowerTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;

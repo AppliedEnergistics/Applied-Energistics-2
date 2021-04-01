@@ -1,9 +1,10 @@
 package appeng.mixins;
 
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.ICriterionTrigger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
+
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.ICriterionTrigger;
 
 @Mixin(CriteriaTriggers.class)
 public interface CriteriaRegisterMixin {

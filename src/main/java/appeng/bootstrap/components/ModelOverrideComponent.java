@@ -22,10 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+
+import com.google.common.collect.Sets;
+
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.util.ResourceLocation;
-import com.google.common.collect.Sets;
+
 import appeng.core.AppEng;
 
 public class ModelOverrideComponent implements IModelBakeComponent {

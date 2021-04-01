@@ -19,19 +19,21 @@
 package appeng.parts;
 
 import java.util.List;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+
 /**
  * While creation of a {@link net.minecraft.util.math.shapes.VoxelShape} with
  * {@link net.minecraft.util.math.shapes.VoxelShapes#create(AxisAlignedBB)} is fast enough, combining voxel shapes with
- * {@link net.minecraft.util.math.shapes.VoxelShapes#or(VoxelShape, VoxelShape)} or any other combination method, as well
- * as {@link VoxelShape#simplify()} are <b>extremely slow</b>. For example: Creating a VoxelShape for a list of 5
+ * {@link net.minecraft.util.math.shapes.VoxelShapes#or(VoxelShape, VoxelShape)} or any other combination method, as
+ * well as {@link VoxelShape#simplify()} are <b>extremely slow</b>. For example: Creating a VoxelShape for a list of 5
  * bounding boxes 10,000 times takes about 1.7 seconds.
  *
  * <p>

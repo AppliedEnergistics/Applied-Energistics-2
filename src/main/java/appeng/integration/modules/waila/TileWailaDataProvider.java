@@ -21,6 +21,7 @@ package appeng.integration.modules.waila;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -69,21 +70,24 @@ public final class TileWailaDataProvider implements IComponentProvider, IServerD
     }
 
     @Override
-    public void appendHead(List<ITextComponent> currentToolTip, final IDataAccessor accessor, final IPluginConfig config) {
+    public void appendHead(List<ITextComponent> currentToolTip, final IDataAccessor accessor,
+            final IPluginConfig config) {
         for (final BaseWailaDataProvider provider : this.providers) {
             provider.appendHead(currentToolTip, accessor, config);
         }
     }
 
     @Override
-    public void appendBody(List<ITextComponent> currentToolTip, final IDataAccessor accessor, final IPluginConfig config) {
+    public void appendBody(List<ITextComponent> currentToolTip, final IDataAccessor accessor,
+            final IPluginConfig config) {
         for (final BaseWailaDataProvider provider : this.providers) {
             provider.appendBody(currentToolTip, accessor, config);
         }
     }
 
     @Override
-    public void appendTail(List<ITextComponent> currentToolTip, final IDataAccessor accessor, final IPluginConfig config) {
+    public void appendTail(List<ITextComponent> currentToolTip, final IDataAccessor accessor,
+            final IPluginConfig config) {
         for (final BaseWailaDataProvider provider : this.providers) {
             provider.appendTail(currentToolTip, accessor, config);
         }

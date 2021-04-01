@@ -25,6 +25,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+
 import appeng.api.config.FuzzyMode;
 
 final class AESharedItemStack implements Comparable<AESharedItemStack> {

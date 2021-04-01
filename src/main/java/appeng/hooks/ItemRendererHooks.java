@@ -26,7 +26,8 @@ public final class ItemRendererHooks {
      * This hook will exchange the rendered item model for encoded patterns to the item being crafted by them if shift
      * is held.
      */
-    public static boolean onRenderGuiItemModel(ItemRenderer renderer, ItemStack stack, int x, int y, IBakedModel model) {
+    public static boolean onRenderGuiItemModel(ItemRenderer renderer, ItemStack stack, int x, int y,
+            IBakedModel model) {
         if (OVERRIDING_FOR.get() == stack) {
             return false; // Don't allow recursive model replacements
         }
@@ -38,7 +39,8 @@ public final class ItemRendererHooks {
                 EncodedPatternItem iep = (EncodedPatternItem) stack.getItem();
                 ItemStack output = iep.getOutput(stack);
                 if (!output.isEmpty()) {
-                    IBakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(output);
+                    IBakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelMesher()
+                            .getItemModel(output);
                     renderInstead(renderer, stack, x, y, realModel);
                     return true;
                 }

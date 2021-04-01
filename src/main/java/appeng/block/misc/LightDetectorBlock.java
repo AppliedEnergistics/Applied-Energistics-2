@@ -35,6 +35,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
@@ -112,11 +113,13 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
         final double xOff = -0.3 * up.getXOffset();
         final double yOff = -0.3 * up.getYOffset();
         final double zOff = -0.3 * up.getZOffset();
-        return VoxelShapes.create(new AxisAlignedBB(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
+        return VoxelShapes
+                .create(new AxisAlignedBB(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
+            ISelectionContext context) {
         return VoxelShapes.empty();
     }
 

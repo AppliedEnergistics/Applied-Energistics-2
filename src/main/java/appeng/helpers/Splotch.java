@@ -18,10 +18,11 @@
 
 package appeng.helpers;
 
-import appeng.api.util.AEColor;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.vector.Vector3d;
+
+import appeng.api.util.AEColor;
 
 public class Splotch {
 

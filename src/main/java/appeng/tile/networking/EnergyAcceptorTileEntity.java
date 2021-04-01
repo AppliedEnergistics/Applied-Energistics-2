@@ -18,9 +18,9 @@
 
 package appeng.tile.networking;
 
-import appeng.tile.grid.AENetworkPowerTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
@@ -29,6 +29,7 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
+import appeng.tile.grid.AENetworkPowerTileEntity;
 import appeng.util.inv.InvOperation;
 
 public class EnergyAcceptorTileEntity extends AENetworkPowerTileEntity {

@@ -19,8 +19,11 @@
 package appeng.parts;
 
 import java.util.List;
-import net.minecraft.util.ResourceLocation;
+
 import com.google.common.collect.ImmutableList;
+
+import net.minecraft.util.ResourceLocation;
+
 import appeng.api.parts.IPartModel;
 
 public class PartModel implements IPartModel {

@@ -22,6 +22,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySize;
+
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;

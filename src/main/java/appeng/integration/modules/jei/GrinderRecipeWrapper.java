@@ -23,12 +23,15 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
+
+import net.minecraft.inventory.container.Container;
+import net.minecraft.util.ResourceLocation;
+
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.TransferRecipeDisplay;
 import me.shedaniel.rei.server.ContainerInfo;
 import me.shedaniel.rei.utils.CollectionUtils;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.ResourceLocation;
+
 import appeng.recipes.handlers.GrinderOptionalResult;
 import appeng.recipes.handlers.GrinderRecipe;
 

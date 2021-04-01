@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 

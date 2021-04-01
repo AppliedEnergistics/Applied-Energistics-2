@@ -39,6 +39,7 @@ import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;

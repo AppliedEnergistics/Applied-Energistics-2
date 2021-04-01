@@ -1,9 +1,10 @@
 package appeng.mixins.structure;
 
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.structure.Structure;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
+
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.structure.Structure;
 
 @Mixin(Structure.class)
 public interface StructureFeatureAccessor {

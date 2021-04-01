@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.features.IMatterCannonAmmoRegistry;
 
 public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {

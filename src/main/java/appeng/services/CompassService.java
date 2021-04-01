@@ -34,6 +34,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ServerWorld;
+
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
 import appeng.services.compass.CompassReader;

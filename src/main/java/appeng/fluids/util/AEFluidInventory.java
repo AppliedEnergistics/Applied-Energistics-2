@@ -2,7 +2,9 @@ package appeng.fluids.util;
 
 import java.math.RoundingMode;
 import java.util.Objects;
+
 import net.minecraft.nbt.CompoundNBT;
+
 import alexiil.mc.lib.attributes.ListenerRemovalToken;
 import alexiil.mc.lib.attributes.ListenerToken;
 import alexiil.mc.lib.attributes.Simulation;

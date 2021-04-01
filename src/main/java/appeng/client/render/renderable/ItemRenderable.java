@@ -21,6 +21,7 @@ package appeng.client.render.renderable;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.tuple.Pair;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -45,7 +46,8 @@ public class ItemRenderable<T extends TileEntity> implements Renderable<T> {
             if (pair.getRight() != null) {
                 pair.getRight().apply(false, matrixStack); // FIXME: check left handed
             }
-            Minecraft.getInstance().getItemRenderer().renderItem(pair.getLeft(), ItemCameraTransforms.TransformType.GROUND,
+            Minecraft.getInstance().getItemRenderer().renderItem(pair.getLeft(),
+                    ItemCameraTransforms.TransformType.GROUND,
                     combinedLight, combinedOverlay, matrixStack, buffers);
             matrixStack.pop();
         }

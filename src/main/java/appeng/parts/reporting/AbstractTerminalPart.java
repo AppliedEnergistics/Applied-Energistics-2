@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.vector.Vector3d;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Settings;

@@ -47,6 +47,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
@@ -82,7 +83,8 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
         this.grownItem = Preconditions.checkNotNull(grownItem);
 
         String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
-        this.improvedFluidTag = improvedFluidTagName != null ? TagRegistry.fluid(new ResourceLocation(improvedFluidTagName))
+        this.improvedFluidTag = improvedFluidTagName != null
+                ? TagRegistry.fluid(new ResourceLocation(improvedFluidTagName))
                 : null;
     }
 

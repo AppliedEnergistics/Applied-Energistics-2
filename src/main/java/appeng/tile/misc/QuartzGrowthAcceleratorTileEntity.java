@@ -20,9 +20,11 @@ package appeng.tile.misc;
 
 import java.io.IOException;
 import java.util.EnumSet;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.api.networking.events.MENetworkEventSubscribe;

@@ -20,11 +20,12 @@ package appeng.bootstrap;
 
 import java.util.function.Function;
 
-import appeng.tile.AEBaseTileEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+
+import appeng.tile.AEBaseTileEntity;
 
 public class TileEntityRendering<T extends AEBaseTileEntity> {
 

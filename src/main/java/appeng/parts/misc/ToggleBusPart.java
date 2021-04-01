@@ -19,6 +19,7 @@
 package appeng.parts.misc;
 
 import java.util.EnumSet;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -27,6 +28,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
@@ -48,9 +50,11 @@ public class ToggleBusPart extends BasicStatePart {
     @PartModels
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_base");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_status_off");
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/toggle_bus_status_off");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_status_on");
+    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/toggle_bus_status_on");
     @PartModels
     public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/toggle_bus_status_has_channel");

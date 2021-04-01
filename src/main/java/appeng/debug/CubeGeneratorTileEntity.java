@@ -18,7 +18,6 @@
 
 package appeng.debug;
 
-import appeng.tile.AEBaseTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.Item;
@@ -30,7 +29,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
+
 import appeng.core.AppEng;
+import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
 
 public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickableTileEntity {

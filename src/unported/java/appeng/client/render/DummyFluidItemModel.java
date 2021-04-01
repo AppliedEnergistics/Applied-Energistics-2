@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -43,7 +44,8 @@ import appeng.core.AppEng;
  */
 public class DummyFluidItemModel implements BasicUnbakedModel {
     // We use this to get the default item transforms and make our lives easier
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/dummy_fluid_item_base");
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
+            "item/dummy_fluid_item_base");
 
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
+
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -104,7 +105,8 @@ public final class PartWailaDataProvider implements IComponentProvider, IServerD
     }
 
     @Override
-    public void appendHead(List<ITextComponent> currentToolTip, final IDataAccessor accessor, final IPluginConfig config) {
+    public void appendHead(List<ITextComponent> currentToolTip, final IDataAccessor accessor,
+            final IPluginConfig config) {
         final TileEntity te = accessor.getBlockEntity();
         final RayTraceResult mop = accessor.getHitResult();
 

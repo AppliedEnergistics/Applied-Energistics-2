@@ -46,6 +46,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
@@ -79,7 +80,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     public static final BooleanProperty ODD = BooleanProperty.create("odd");
 
     public QuartzFixtureBlock() {
-        super(defaultProps(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0).setLightLevel((b) -> 14).sound(SoundType.GLASS));
+        super(defaultProps(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0)
+                .setLightLevel((b) -> 14).sound(SoundType.GLASS));
 
         this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false));
     }

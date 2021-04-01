@@ -61,9 +61,12 @@ import appeng.util.Platform;
  */
 public class RestrictedInputSlot extends AppEngSlot {
 
-    private static final List<ResourceLocation> METAL_INGOT_TAGS = ImmutableList.of(new ResourceLocation("c:copper_ingots"),
-            new ResourceLocation("c:tin_ingots"), new ResourceLocation("c:iron_ingots"), new ResourceLocation("c:gold_ingots"),
-            new ResourceLocation("c:lead_ingots"), new ResourceLocation("c:bronze_ingots"), new ResourceLocation("c:brass_ingots"),
+    private static final List<ResourceLocation> METAL_INGOT_TAGS = ImmutableList.of(
+            new ResourceLocation("c:copper_ingots"),
+            new ResourceLocation("c:tin_ingots"), new ResourceLocation("c:iron_ingots"),
+            new ResourceLocation("c:gold_ingots"),
+            new ResourceLocation("c:lead_ingots"), new ResourceLocation("c:bronze_ingots"),
+            new ResourceLocation("c:brass_ingots"),
             new ResourceLocation("c:nickel_ingots"), new ResourceLocation("c:aluminium_ingots"));
 
     private final PlacableItemType which;

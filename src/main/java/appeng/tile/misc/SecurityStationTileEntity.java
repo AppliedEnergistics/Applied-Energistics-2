@@ -23,7 +23,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
-import appeng.tile.grid.AENetworkTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -72,6 +71,7 @@ import appeng.helpers.PlayerSecurityWrapper;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.SecurityStationInventory;
+import appeng.tile.grid.AENetworkTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;

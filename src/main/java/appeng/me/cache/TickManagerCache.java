@@ -20,10 +20,13 @@ package appeng.me.cache;
 
 import java.util.HashMap;
 import java.util.PriorityQueue;
+
+import com.google.common.base.Preconditions;
+
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.crash.ReportedException;
-import com.google.common.base.Preconditions;
+
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;

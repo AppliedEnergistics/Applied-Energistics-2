@@ -11,6 +11,7 @@ import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.features.InscriberProcessType;
 import appeng.core.sync.BasePacket;
 

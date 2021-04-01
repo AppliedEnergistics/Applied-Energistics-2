@@ -20,6 +20,7 @@ package appeng.parts.reporting;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 
@@ -42,9 +43,11 @@ public abstract class AbstractDisplayPart extends AbstractReportingPart {
 
     // Models that contain the status indicator light
     @PartModels
-    protected static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID, "part/display_status_off");
+    protected static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/display_status_off");
     @PartModels
-    protected static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID, "part/display_status_on");
+    protected static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/display_status_on");
     @PartModels
     protected static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/display_status_has_channel");

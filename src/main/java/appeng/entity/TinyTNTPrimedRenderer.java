@@ -19,6 +19,7 @@
 package appeng.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Blocks;

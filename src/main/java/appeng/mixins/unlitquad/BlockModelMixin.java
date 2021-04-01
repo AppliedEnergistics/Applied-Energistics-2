@@ -18,7 +18,11 @@
 
 package appeng.mixins.unlitquad;
 
-import appeng.hooks.UnlitQuadHooks;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.BlockModel;
 import net.minecraft.client.renderer.model.BlockPart;
@@ -27,10 +31,8 @@ import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import appeng.hooks.UnlitQuadHooks;
 
 /**
  * This mixin hooks into conversion from {@link BlockPartFace} to {@link BakedQuad} to apply our unlit extensions if the

@@ -21,7 +21,6 @@ package appeng.client.render.tesr;
 import java.util.List;
 import java.util.Random;
 
-import appeng.tile.misc.InscriberTileEntity;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -43,12 +42,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.tile.misc.InscriberTileEntity;
 
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)

@@ -19,10 +19,13 @@
 package appeng.integration.modules.waila.tile;
 
 import java.util.List;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
+
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.localization.WailaText;
 import appeng.integration.modules.waila.BaseWailaDataProvider;

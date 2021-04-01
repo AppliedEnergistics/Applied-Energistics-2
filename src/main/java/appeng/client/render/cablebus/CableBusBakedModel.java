@@ -55,6 +55,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
+
 import appeng.api.parts.IDynamicPartBakedModel;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
@@ -81,7 +82,8 @@ public class CableBusBakedModel implements IBakedModel, FabricBakedModel {
 
     private final TextureAtlasSprite particleTexture;
 
-    CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels,
+    CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
+            Map<ResourceLocation, IBakedModel> partModels,
             TextureAtlasSprite particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;

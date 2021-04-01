@@ -7,6 +7,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
+
 import appeng.api.parts.CableRenderMode;
 import appeng.client.AppEngClient;
 import appeng.core.Api;

@@ -1,6 +1,7 @@
 package appeng.debug;
 
 import java.util.Arrays;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -55,7 +56,8 @@ public class DebugPartPlacerItem extends AEBaseItem implements AEToolItem {
 
         TileEntity te = world.getTileEntity(pos);
         if (!(te instanceof IPartHost)) {
-            player.sendMessage(new StringTextComponent("Right-click something that will accept parts"), Util.DUMMY_UUID);
+            player.sendMessage(new StringTextComponent("Right-click something that will accept parts"),
+                    Util.DUMMY_UUID);
             return ActionResultType.FAIL;
         }
         IPartHost center = (IPartHost) te;

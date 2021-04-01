@@ -20,6 +20,9 @@ package appeng.tile.crafting;
 
 import java.util.Random;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fabricmc.api.EnvType;
@@ -43,8 +46,6 @@ import net.minecraft.item.ItemStack;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
 import appeng.mixins.RenderPhaseMixin;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 /**
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
@@ -65,7 +66,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
     @Override
     public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, MatrixStack ms,
-                       IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
@@ -98,12 +99,13 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
         IBakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
         IVertexBuilder buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
 
-        minecraft.getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(ms.getLast(), buffer, null, lightsModel, 1, 1, 1,
+        minecraft.getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(ms.getLast(), buffer,
+                null, lightsModel, 1, 1, 1,
                 combinedLightIn, combinedOverlayIn);
     }
 
     private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, MatrixStack ms,
-                              IRenderTypeBuffer bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
+            IRenderTypeBuffer bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getPos().getX() + 0.5f;
         double centerY = molecularAssembler.getPos().getY() + 0.5f;
         double centerZ = molecularAssembler.getPos().getZ() + 0.5f;
@@ -139,18 +141,20 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
     /**
      * See above for when this can be removed. It creates a RenderType that is equivalent to
-     * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of
-     * the rendered block model from occluding our particles.
+     * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of the
+     * rendered block model from occluding our particles.
      */
     private static RenderType createRenderType() {
-        RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+        RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
+                AtlasTexture.LOCATION_BLOCKS_TEXTURE,
                 false, true);
         RenderState.LightmapState disableLightmap = new RenderState.LightmapState(false);
         RenderType.State glState = RenderType.State.getBuilder()
                 .texture(mipmapBlockAtlasTexture).transparency(RenderPhaseMixin.getTranslucentTransparency())
                 .alpha(new RenderState.AlphaState(0.05F)).lightmap(disableLightmap).build(true);
 
-        return RenderType.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS,
+        return RenderType.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
+                GL11.GL_QUADS,
                 256, glState);
     }
 

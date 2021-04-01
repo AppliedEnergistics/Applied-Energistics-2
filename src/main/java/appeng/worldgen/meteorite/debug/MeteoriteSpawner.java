@@ -23,6 +23,7 @@ import net.minecraft.block.Block;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
+
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 

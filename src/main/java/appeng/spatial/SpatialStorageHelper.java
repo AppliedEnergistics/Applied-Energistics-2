@@ -34,6 +34,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.server.ServerWorld;
+
 import appeng.api.util.WorldCoord;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -110,7 +111,8 @@ public class SpatialStorageHelper {
 
         // Store in a threadlocal so that EntityMixin can return it for the Vanilla
         // logic to use
-        teleportTarget.set(new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.rotationYaw, entity.rotationPitch));
+        teleportTarget.set(new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.rotationYaw,
+                entity.rotationPitch));
         try {
             entity = entity.changeDimension(link.dim);
         } finally {
@@ -158,9 +160,11 @@ public class SpatialStorageHelper {
                         dstY + scaleY + 1, dstZ + scaleZ + 1,
                         new WrapInMatrixFrame(matrixFrameBlock.getDefaultState(), dstWorld)));
 
-        final AxisAlignedBB srcBox = new AxisAlignedBB(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1);
+        final AxisAlignedBB srcBox = new AxisAlignedBB(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1,
+                srcZ + scaleZ + 1);
 
-        final AxisAlignedBB dstBox = new AxisAlignedBB(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1);
+        final AxisAlignedBB dstBox = new AxisAlignedBB(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1,
+                dstZ + scaleZ + 1);
 
         final CachedPlane cDst = new CachedPlane(dstWorld, dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY,
                 dstZ + scaleZ);
@@ -174,13 +178,15 @@ public class SpatialStorageHelper {
         final List<Entity> dstE = dstWorld.getLoadedEntitiesWithinAABB(Entity.class, dstBox);
 
         for (final Entity e : dstE) {
-            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getPosX(), e.getPosY(), e.getPosZ(), -dstX + srcX,
-                    -dstY + srcY, -dstZ + srcZ));
+            this.teleportEntity(e,
+                    new TelDestination(srcWorld, srcBox, e.getPosX(), e.getPosY(), e.getPosZ(), -dstX + srcX,
+                            -dstY + srcY, -dstZ + srcZ));
         }
 
         for (final Entity e : srcE) {
-            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getPosX(), e.getPosY(), e.getPosZ(), -srcX + dstX,
-                    -srcY + dstY, -srcZ + dstZ));
+            this.teleportEntity(e,
+                    new TelDestination(dstWorld, dstBox, e.getPosX(), e.getPosY(), e.getPosZ(), -srcX + dstX,
+                            -srcY + dstY, -srcZ + dstZ));
         }
 
         for (final WorldCoord wc : cDst.getUpdates()) {
@@ -240,7 +246,8 @@ public class SpatialStorageHelper {
         private final double y;
         private final double z;
 
-        TelDestination(final ServerWorld dimension, final AxisAlignedBB srcBox, final double x, final double y, final double z,
+        TelDestination(final ServerWorld dimension, final AxisAlignedBB srcBox, final double x, final double y,
+                final double z,
                 final int tileX, final int tileY, final int tileZ) {
             this.dim = dimension;
             this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));

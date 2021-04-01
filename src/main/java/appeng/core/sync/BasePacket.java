@@ -25,6 +25,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.AELog;

@@ -20,7 +20,9 @@ package appeng.me;
 
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
+
 import net.minecraft.nbt.CompoundNBT;
+
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridStorage;
 import appeng.core.worlddata.WorldData;

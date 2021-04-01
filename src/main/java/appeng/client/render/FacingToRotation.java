@@ -18,8 +18,10 @@
 
 package appeng.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Locale;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.vector.Matrix4f;

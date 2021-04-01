@@ -39,6 +39,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
@@ -193,7 +194,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
                 if (changed) {
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
-                            this.getTile().getWorld(), new ItemTransitionEffectPacket(entity.getPosX(), entity.getPosY(),
+                            this.getTile().getWorld(),
+                            new ItemTransitionEffectPacket(entity.getPosX(), entity.getPosY(),
                                     entity.getPosZ(), this.getSide().getOpposite()));
                 }
             }

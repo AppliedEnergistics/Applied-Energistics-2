@@ -18,7 +18,9 @@
 
 package appeng.client.render.tesr;
 
-import appeng.tile.misc.SkyCompassTileEntity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -32,11 +34,11 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.vector.Quaternion;
+
 import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.SkyCompassBakedModel;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import appeng.tile.misc.SkyCompassTileEntity;
 
 @Environment(EnvType.CLIENT)
 public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
@@ -49,7 +51,7 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
 
     @Override
     public void render(SkyCompassTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
         if (blockRenderer == null) {
             blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
         }
@@ -85,7 +87,8 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
         ms.rotate(new Quaternion(0, rotation, 0, false));
         ms.translate(-0.5D, -0.5D, -0.5D);
 
-        modelRenderer.renderModelBrightnessColor(ms.getLast(), buffer, null, pointerModel, 1, 1, 1, combinedLightIn, combinedOverlayIn);
+        modelRenderer.renderModelBrightnessColor(ms.getLast(), buffer, null, pointerModel, 1, 1, 1, combinedLightIn,
+                combinedOverlayIn);
         ms.pop();
 
     }

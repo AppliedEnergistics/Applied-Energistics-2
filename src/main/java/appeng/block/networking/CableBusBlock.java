@@ -25,7 +25,6 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import appeng.core.AELog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
@@ -82,6 +81,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.helpers.AEMaterials;

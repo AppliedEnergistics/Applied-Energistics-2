@@ -155,7 +155,8 @@ public class CubeBuilder {
         this.vertexIndex = 0;
     }
 
-    private UvVector getDefaultUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2,
+    private UvVector getDefaultUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
+            float y2,
             float z2) {
 
         UvVector uv = new UvVector();
@@ -202,7 +203,8 @@ public class CubeBuilder {
         return uv;
     }
 
-    private UvVector getStandardUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2,
+    private UvVector getStandardUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
+            float y2,
             float z2) {
         UvVector uv = new UvVector();
         switch (face) {
@@ -376,7 +378,8 @@ public class CubeBuilder {
         }
     }
 
-    public void setTextures(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west) {
+    public void setTextures(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north,
+            TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west) {
         this.textures.put(Direction.UP, up);
         this.textures.put(Direction.DOWN, down);
         this.textures.put(Direction.NORTH, north);

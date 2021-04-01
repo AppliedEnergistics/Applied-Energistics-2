@@ -20,6 +20,7 @@ package appeng.me.storage;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FuzzyMode;

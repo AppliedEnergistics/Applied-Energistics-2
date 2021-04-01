@@ -20,7 +20,6 @@ package appeng.block.misc;
 
 import java.util.Random;
 
-import appeng.tile.misc.QuartzGrowthAcceleratorTileEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
@@ -39,6 +38,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.tile.misc.QuartzGrowthAcceleratorTileEntity;
 import appeng.util.Platform;
 
 public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAcceleratorTileEntity>

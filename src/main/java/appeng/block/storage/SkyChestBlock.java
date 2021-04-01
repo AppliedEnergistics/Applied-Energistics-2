@@ -23,7 +23,6 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import appeng.tile.storage.SkyChestTileEntity;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,6 +43,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SkyChestContainer;
+import appeng.tile.storage.SkyChestTileEntity;
 import appeng.util.Platform;
 
 public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> {

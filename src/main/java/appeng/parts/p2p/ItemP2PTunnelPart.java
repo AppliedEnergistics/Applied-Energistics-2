@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.CacheInfo;
 import alexiil.mc.lib.attributes.item.FixedItemInv;

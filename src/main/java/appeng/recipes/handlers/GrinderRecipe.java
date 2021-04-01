@@ -3,6 +3,7 @@ package appeng.recipes.handlers;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -29,7 +30,8 @@ public class GrinderRecipe implements IRecipe<IInventory> {
     private final List<GrinderOptionalResult> optionalResults;
     private final int turns;
 
-    public GrinderRecipe(ResourceLocation id, String group, Ingredient ingredient, int ingredientCount, ItemStack result,
+    public GrinderRecipe(ResourceLocation id, String group, Ingredient ingredient, int ingredientCount,
+            ItemStack result,
             int turns, List<GrinderOptionalResult> optionalResults) {
         this.id = id;
         this.group = group;

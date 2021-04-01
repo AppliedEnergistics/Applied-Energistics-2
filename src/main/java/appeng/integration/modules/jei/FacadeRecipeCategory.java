@@ -1,8 +1,10 @@
 package appeng.integration.modules.jei;
 
+import net.minecraft.util.ResourceLocation;
+
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.plugin.crafting.DefaultCraftingCategory;
-import net.minecraft.util.ResourceLocation;
+
 import appeng.core.AppEng;
 import appeng.core.FacadeCreativeTab;
 

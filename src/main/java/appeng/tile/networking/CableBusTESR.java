@@ -18,12 +18,14 @@
 
 package appeng.tile.networking;
 
-import appeng.api.parts.IPart;
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
+
+import appeng.api.parts.IPart;
 
 public class CableBusTESR extends TileEntityRenderer<CableBusTileEntity> {
 
@@ -33,7 +35,7 @@ public class CableBusTESR extends TileEntityRenderer<CableBusTileEntity> {
 
     @Override
     public void render(CableBusTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
         if (!te.getCableBus().isRequiresDynamicRender()) {
             return;
         }

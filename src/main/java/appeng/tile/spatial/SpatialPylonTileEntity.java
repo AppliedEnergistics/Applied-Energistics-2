@@ -21,11 +21,11 @@ package appeng.tile.spatial;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import appeng.tile.grid.AENetworkTileEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -36,6 +36,7 @@ import appeng.me.cluster.implementations.SpatialPylonCalculator;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
+import appeng.tile.grid.AENetworkTileEntity;
 
 public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMultiBlock<SpatialPylonCluster> {
 

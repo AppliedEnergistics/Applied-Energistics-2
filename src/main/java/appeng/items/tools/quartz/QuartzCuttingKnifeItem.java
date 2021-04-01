@@ -18,7 +18,6 @@
 
 package appeng.items.tools.quartz;
 
-import appeng.mixins.RemainderSetter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -36,6 +35,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
+import appeng.mixins.RemainderSetter;
 import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {

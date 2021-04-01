@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
+
 import appeng.mixins.BakedQuadAccessor;
 
 /**
@@ -28,7 +29,8 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
 
     private final List<BakedQuad> generalQuads;
 
-    ColorApplicatorBakedModel(IBakedModel baseModel, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
+    ColorApplicatorBakedModel(IBakedModel baseModel, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
+            TextureAtlasSprite texBright) {
         this.wrapped = baseModel;
 
         // Put the tint indices in... Since this is an item model, we are ignoring rand
@@ -43,7 +45,8 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
         return ((BakedQuadAccessor) quad).getSprite();
     }
 
-    private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
+    private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
+            TextureAtlasSprite texBright) {
         List<BakedQuad> quads = this.wrapped.getQuads(null, facing, new Random(0));
         List<BakedQuad> result = new ArrayList<>(quads.size());
         for (BakedQuad quad : quads) {

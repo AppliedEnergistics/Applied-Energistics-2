@@ -21,7 +21,6 @@ package appeng.debug;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import appeng.tile.AEBaseTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,6 +36,8 @@ import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemExtractable;
 import alexiil.mc.lib.attributes.item.filter.ExactItemStackFilter;
+
+import appeng.tile.AEBaseTileEntity;
 
 public class ItemGenTileEntity extends AEBaseTileEntity {
 

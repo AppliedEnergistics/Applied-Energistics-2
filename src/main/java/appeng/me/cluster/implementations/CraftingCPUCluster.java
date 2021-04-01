@@ -71,8 +71,8 @@ import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
-import appeng.tile.crafting.CraftingTileEntity;
 import appeng.tile.crafting.CraftingMonitorTileEntity;
+import appeng.tile.crafting.CraftingTileEntity;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 

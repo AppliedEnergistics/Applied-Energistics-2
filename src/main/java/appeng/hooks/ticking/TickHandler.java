@@ -44,6 +44,8 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.AbstractChunkProvider;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.server.ServerWorld;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
@@ -56,8 +58,6 @@ import appeng.me.Grid;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.server.ServerWorld;
 
 public class TickHandler {
 

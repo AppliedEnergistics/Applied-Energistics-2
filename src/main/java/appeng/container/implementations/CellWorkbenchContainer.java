@@ -20,7 +20,6 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import appeng.tile.misc.CellWorkbenchTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -29,6 +28,7 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
@@ -48,6 +48,7 @@ import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalRestrictedInputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
+import appeng.tile.misc.CellWorkbenchTileEntity;
 import appeng.util.EnumCycler;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperSupplierItemHandler;

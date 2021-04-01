@@ -21,6 +21,7 @@ package appeng.client.render.crafting;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
+
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.crafting.CraftingCubeModelData;
 
@@ -31,7 +32,8 @@ class UnitBakedModel extends CraftingCubeBakedModel {
 
     private final TextureAtlasSprite unitTexture;
 
-    UnitBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer, TextureAtlasSprite unitTexture) {
+    UnitBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
+            TextureAtlasSprite unitTexture) {
         super(ringCorner, ringHor, ringVer);
         this.unitTexture = unitTexture;
     }

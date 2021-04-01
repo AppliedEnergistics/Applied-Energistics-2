@@ -19,7 +19,9 @@
 package appeng.me.cache.helpers;
 
 import javax.annotation.Nonnull;
+
 import net.minecraft.crash.CrashReportCategory;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickingRequest;

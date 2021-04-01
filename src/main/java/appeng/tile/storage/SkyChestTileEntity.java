@@ -20,7 +20,6 @@ package appeng.tile.storage;
 
 import java.io.IOException;
 
-import appeng.tile.AEBaseInvTileEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.EnvironmentInterface;
 import net.minecraft.block.Block;
@@ -37,6 +36,7 @@ import net.minecraft.util.math.MathHelper;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.block.storage.SkyChestBlock;
+import appeng.tile.AEBaseInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 

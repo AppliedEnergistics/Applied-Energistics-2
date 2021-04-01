@@ -39,6 +39,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.ModelOverrideComponent;
 import appeng.tile.AEBaseTileEntity;

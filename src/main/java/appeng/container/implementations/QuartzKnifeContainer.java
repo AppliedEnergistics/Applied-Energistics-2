@@ -26,6 +26,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.container.AEBaseContainer;
@@ -81,7 +82,8 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
                 if (ItemStack.areItemsEqualIgnoreDurability(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.toolInv.getItemStack());
+                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem,
+                            this.toolInv.getItemStack());
                 } else {
                     this.setValidContainer(false);
                 }
@@ -148,7 +150,8 @@ public class QuartzKnifeContainer extends AEBaseContainer {
                     // remainder concerns
                     item.damageItem(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
                         QuartzKnifeContainer.this.getPlayerInv()
-                                .setInventorySlotContents(QuartzKnifeContainer.this.getPlayerInv().currentItem, ItemStack.EMPTY);
+                                .setInventorySlotContents(QuartzKnifeContainer.this.getPlayerInv().currentItem,
+                                        ItemStack.EMPTY);
                         // FIXME FABRIC equivalent??
                         // FIXME FABRIC MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(
                         // FIXME FABRIC QuartzKnifeContainer.this.getPlayerInv().player, before, null));

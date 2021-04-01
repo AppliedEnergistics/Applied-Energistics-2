@@ -25,6 +25,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.features.AEFeature;
 import appeng.core.AppEng;
 import appeng.entity.ChargedQuartzEntity;

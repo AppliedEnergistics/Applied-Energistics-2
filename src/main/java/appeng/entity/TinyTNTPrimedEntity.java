@@ -42,6 +42,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.Api;
@@ -179,7 +180,8 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements ICustomEntit
             }
         }
 
-        this.world.addParticle(ParticleTypes.EXPLOSION, this.getPosX(), this.getPosY(), this.getPosZ(), 1.0D, 0.0D, 0.0D);
+        this.world.addParticle(ParticleTypes.EXPLOSION, this.getPosX(), this.getPosY(), this.getPosZ(), 1.0D, 0.0D,
+                0.0D);
     }
 
     @Override

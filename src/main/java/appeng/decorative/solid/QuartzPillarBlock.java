@@ -26,6 +26,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.decorative.AEDecorativeBlock;

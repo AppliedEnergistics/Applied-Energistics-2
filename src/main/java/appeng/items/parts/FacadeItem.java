@@ -42,6 +42,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.EmptyBlockReader;
+
 import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.features.AEFeature;
 import appeng.api.parts.IAlphaPassItem;

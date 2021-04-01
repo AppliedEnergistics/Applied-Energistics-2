@@ -28,6 +28,7 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Rarity;
+
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.features.AEFeature;
@@ -251,7 +252,8 @@ public final class ApiItems implements IItems {
                     }
                 }).rendering(new ColorApplicatorItemRendering()).build();
 
-        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new).props(props -> props.maxStackSize(1))
+        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new)
+                .props(props -> props.maxStackSize(1))
                 .features(AEFeature.SECURITY).build();
         this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.MEMORY_CARD).build();

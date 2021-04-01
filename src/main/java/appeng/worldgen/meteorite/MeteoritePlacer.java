@@ -21,7 +21,6 @@ package appeng.worldgen.meteorite;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.tile.storage.SkyChestTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -33,6 +32,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IMaterials;
@@ -40,6 +40,7 @@ import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
+import appeng.tile.storage.SkyChestTileEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorFixedInv;

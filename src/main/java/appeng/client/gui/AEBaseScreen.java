@@ -32,7 +32,6 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -44,6 +43,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -56,6 +56,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+
 import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
 import alexiil.mc.lib.attributes.fluid.render.FluidVolumeRenderer;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
@@ -576,7 +577,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     private boolean isActiveAndMatches(KeyBinding keyBinding, InputMappings.Input input) {
-        return !keyBinding.isInvalid()  && keyBinding.matchesKey(input.getKeyCode(), -1);
+        return !keyBinding.isInvalid() && keyBinding.matchesKey(input.getKeyCode(), -1);
     }
 
     protected Slot getSlot(final int mouseX, final int mouseY) {
@@ -837,15 +838,26 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     public Minecraft getMinecraft() {
         return Preconditions.checkNotNull(minecraft);
     }
+
     @javax.annotation.Nullable
-    public Slot getSlotUnderMouse() { return this.hoveredSlot; }
+    public Slot getSlotUnderMouse() {
+        return this.hoveredSlot;
+    }
+
     public int getGuiLeft() {
         return guiLeft;
     }
+
     public int getGuiTop() {
         return guiTop;
     }
-    public int getXSize() { return xSize; }
-    public int getYSize() { return ySize; }
+
+    public int getXSize() {
+        return xSize;
+    }
+
+    public int getYSize() {
+        return ySize;
+    }
 
 }

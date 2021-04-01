@@ -21,7 +21,9 @@ package appeng.util;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
+
 import net.minecraft.nbt.CompoundNBT;
+
 import appeng.api.config.LevelEmitterMode;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;

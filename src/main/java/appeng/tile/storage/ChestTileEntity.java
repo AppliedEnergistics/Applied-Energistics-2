@@ -26,7 +26,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.tile.grid.AENetworkPowerTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
@@ -105,6 +104,7 @@ import appeng.me.GridAccessException;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEInventoryHandler;
+import appeng.tile.grid.AENetworkPowerTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;

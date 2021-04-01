@@ -18,8 +18,9 @@
 
 package appeng.debug;
 
-import appeng.block.AEBaseTileBlock;
 import net.minecraft.block.material.Material;
+
+import appeng.block.AEBaseTileBlock;
 
 public class EnergyGeneratorBlock extends AEBaseTileBlock<EnergyGeneratorBlockEntity> {
 

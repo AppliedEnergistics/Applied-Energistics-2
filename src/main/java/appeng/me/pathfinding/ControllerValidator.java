@@ -18,12 +18,12 @@
 
 package appeng.me.pathfinding;
 
-import appeng.tile.networking.ControllerTileEntity;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
+import appeng.tile.networking.ControllerTileEntity;
 
 public class ControllerValidator implements IGridVisitor {
 

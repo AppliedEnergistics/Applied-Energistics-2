@@ -19,9 +19,12 @@
 package appeng.integration.modules.waila.part;
 
 import java.util.List;
+
+import net.minecraft.util.text.ITextComponent;
+
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
-import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.parts.IPart;
 import appeng.core.localization.WailaText;

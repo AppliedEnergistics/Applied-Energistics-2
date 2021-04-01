@@ -19,6 +19,7 @@
 package appeng.integration.modules.waila.tile;
 
 import java.util.List;
+
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -90,8 +91,8 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
     /**
      * Called on server to transfer information from server to client.
      * <p/>
-     * If the {@link net.minecraft.tileentity.TileEntity} is a {@link IAEPowerStorage}, it writes the power
-     * information to the {@code #tag} using the {@code #ID_CURRENT_POWER} key.
+     * If the {@link net.minecraft.tileentity.TileEntity} is a {@link IAEPowerStorage}, it writes the power information
+     * to the {@code #tag} using the {@code #ID_CURRENT_POWER} key.
      *
      * @param serverPlayerEntity player looking at the power storage
      * @param te                 power storage

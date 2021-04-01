@@ -1,13 +1,16 @@
 package appeng.client.render.tesr;
 
 import java.util.EnumMap;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.vector.Vector3f;
+
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.block.storage.DriveSlotState;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 /**
  * Utility class to render LEDs for storage cells from a Tile Entity Renderer.
@@ -50,7 +53,8 @@ class CellLedRenderer {
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
-    public static final RenderType RENDER_LAYER = RenderType.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7,
+    public static final RenderType RENDER_LAYER = RenderType.makeType("ae_drive_leds",
+            DefaultVertexFormats.POSITION_COLOR, 7,
             32565, false, true, RenderType.State.getBuilder().build(false));
 
     public static void renderLed(IChestOrDrive drive, int slot, IVertexBuilder buffer, MatrixStack ms,
@@ -65,7 +69,8 @@ class CellLedRenderer {
             float x = LED_QUADS[i];
             float y = LED_QUADS[i + 1];
             float z = LED_QUADS[i + 2];
-            buffer.pos(ms.getLast().getMatrix(), x, y, z).color(color.getX(), color.getY(), color.getZ(), 1.f).endVertex();
+            buffer.pos(ms.getLast().getMatrix(), x, y, z).color(color.getX(), color.getY(), color.getZ(), 1.f)
+                    .endVertex();
         }
     }
 

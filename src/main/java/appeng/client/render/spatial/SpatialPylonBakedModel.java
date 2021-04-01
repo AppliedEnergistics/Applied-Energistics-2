@@ -27,7 +27,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.tile.spatial.SpatialPylonTileEntity;
 import com.google.common.collect.ImmutableMap;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -43,7 +42,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
+
 import appeng.client.render.cablebus.CubeBuilder;
+import appeng.tile.spatial.SpatialPylonTileEntity;
 
 /**
  * The baked model that will be used for rendering the spatial pylon.

@@ -15,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.guiobjects.IGuiItem;

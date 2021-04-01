@@ -20,7 +20,6 @@ package appeng.block.grindstone;
 
 import javax.annotation.Nullable;
 
-import appeng.util.InteractionUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,6 +34,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.GrinderContainer;
 import appeng.tile.grindstone.GrinderTileEntity;
+import appeng.util.InteractionUtil;
 
 public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
 

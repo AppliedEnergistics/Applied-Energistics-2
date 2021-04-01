@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.server.ServerWorld;
+
 import appeng.block.AEBaseBlock;
 
 public class QuartzOreBlock extends AEBaseBlock {

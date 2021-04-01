@@ -21,6 +21,7 @@ package appeng.integration.modules.waila.part;
 import java.util.List;
 
 import com.google.common.collect.Iterators;
+
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;

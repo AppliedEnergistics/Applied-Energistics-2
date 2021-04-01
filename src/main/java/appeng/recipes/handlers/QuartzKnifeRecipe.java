@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
+
 import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
 import appeng.mixins.ShapelessRecipeMixin;
 

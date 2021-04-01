@@ -20,10 +20,10 @@ package appeng.client.render.tesr;
 
 import java.util.function.Function;
 
-import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;

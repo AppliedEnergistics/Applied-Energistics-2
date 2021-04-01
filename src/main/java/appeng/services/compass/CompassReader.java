@@ -20,8 +20,10 @@ package appeng.services.compass;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.world.server.ServerWorld;
+
 import com.google.common.base.Preconditions;
+
+import net.minecraft.world.server.ServerWorld;
 
 public final class CompassReader {
     private final Map<Long, CompassRegion> regions = new HashMap<>(100);

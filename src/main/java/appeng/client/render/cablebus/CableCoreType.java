@@ -21,10 +21,13 @@ package appeng.client.render.cablebus;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
-import com.google.common.collect.ImmutableMap;
+
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;

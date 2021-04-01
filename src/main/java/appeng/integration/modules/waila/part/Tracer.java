@@ -18,13 +18,13 @@
 
 package appeng.integration.modules.waila.part;
 
-import appeng.util.InteractionUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 

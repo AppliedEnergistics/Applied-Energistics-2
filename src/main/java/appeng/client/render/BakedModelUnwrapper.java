@@ -1,7 +1,8 @@
 package appeng.client.render;
 
-import appeng.client.render.model.AutoRotatingBakedModel;
 import net.minecraft.client.renderer.model.IBakedModel;
+
+import appeng.client.render.model.AutoRotatingBakedModel;
 
 public final class BakedModelUnwrapper {
 

@@ -19,6 +19,7 @@ import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.gen.placement.TopSolidRangeConfig;
+
 import appeng.api.features.AEFeature;
 import appeng.mixins.feature.ConfiguredFeaturesAccessor;
 import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;

@@ -18,10 +18,11 @@
 
 package appeng.integration.modules.waila;
 
-import appeng.tile.AEBaseTileEntity;
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
+
+import appeng.tile.AEBaseTileEntity;
 
 public class WailaModule implements IWailaPlugin {
 

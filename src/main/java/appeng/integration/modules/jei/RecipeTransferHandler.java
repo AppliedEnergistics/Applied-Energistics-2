@@ -20,12 +20,14 @@ package appeng.integration.modules.jei;
 
 import java.util.List;
 import java.util.stream.Stream;
+
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+
 import me.shedaniel.rei.api.AutoTransferHandler;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;

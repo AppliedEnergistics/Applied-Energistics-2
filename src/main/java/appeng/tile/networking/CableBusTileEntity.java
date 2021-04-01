@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import appeng.tile.AEBaseTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -50,6 +49,7 @@ import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.helpers.AEMultiTile;
 import appeng.hooks.ticking.TickHandler;
 import appeng.parts.CableBusContainer;
+import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
 
 public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile {

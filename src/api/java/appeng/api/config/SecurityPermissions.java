@@ -24,6 +24,7 @@
 package appeng.api.config;
 
 import java.util.Locale;
+
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 

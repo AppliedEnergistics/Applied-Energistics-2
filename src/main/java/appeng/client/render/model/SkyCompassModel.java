@@ -22,13 +22,16 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import com.google.common.collect.ImmutableSet;
+
 import appeng.client.render.BasicUnbakedModel;
 
 /**
@@ -36,9 +39,11 @@ import appeng.client.render.BasicUnbakedModel;
  */
 public class SkyCompassModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation("appliedenergistics2:block/sky_compass_base");
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
+            "appliedenergistics2:block/sky_compass_base");
 
-    private static final ResourceLocation MODEL_POINTER = new ResourceLocation("appliedenergistics2:block/sky_compass_pointer");
+    private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
+            "appliedenergistics2:block/sky_compass_pointer");
 
     @Nullable
     @Override

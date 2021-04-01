@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.registry.Bootstrap;
+
 import appeng.data.providers.loot.BlockDropProvider;
 import appeng.data.providers.recipes.SlabStairRecipes;
 import appeng.data.providers.tags.ConventionTagProvider;

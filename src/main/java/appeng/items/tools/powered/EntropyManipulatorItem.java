@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import appeng.util.FakePlayer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -65,6 +64,7 @@ import appeng.hooks.IBlockTool;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
+import appeng.util.FakePlayer;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 

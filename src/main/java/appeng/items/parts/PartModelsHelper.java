@@ -7,7 +7,9 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.parts.IPartModel;
 import appeng.core.AELog;
 
@@ -66,7 +68,8 @@ public class PartModelsHelper {
 
             // Make sure we can handle the return type
             Class<?> returnType = method.getReturnType();
-            if (!ResourceLocation.class.isAssignableFrom(returnType) && !Collection.class.isAssignableFrom(returnType)) {
+            if (!ResourceLocation.class.isAssignableFrom(returnType)
+                    && !Collection.class.isAssignableFrom(returnType)) {
                 AELog.error(
                         "The @PartModels annotation can only be used on static methods that return a ResourceLocation or Collection of "
                                 + "ResourceLocations. Was seen on: " + method);

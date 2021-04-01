@@ -22,6 +22,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -32,6 +33,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 

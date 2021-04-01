@@ -1,13 +1,16 @@
 package appeng.mixins;
 
 import java.util.Map;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.util.ResourceLocation;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.util.ResourceLocation;
+
 import appeng.bootstrap.ModelsReloadCallback;
 
 @Mixin(ModelBakery.class)

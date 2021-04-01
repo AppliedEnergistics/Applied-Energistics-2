@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.core.AppEng;
 import appeng.core.features.registries.PartModels;
 

@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.RenderTypeComponent;
 import appeng.client.render.model.AutoRotatingBakedModel;

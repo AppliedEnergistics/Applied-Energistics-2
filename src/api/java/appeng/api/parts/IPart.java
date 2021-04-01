@@ -30,6 +30,8 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -53,7 +55,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 public interface IPart extends ICustomCableConnection {
 

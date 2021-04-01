@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-import appeng.util.InteractionUtil;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -54,6 +53,7 @@ import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.facade.IFacadeItem;
+import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
@@ -295,7 +295,8 @@ public class PartPlacement {
         wasCanceled = false;
     }
 
-    private static ActionResultType onPlayerUseBlock(PlayerEntity player, World world, Hand hand, BlockRayTraceResult hit) {
+    private static ActionResultType onPlayerUseBlock(PlayerEntity player, World world, Hand hand,
+            BlockRayTraceResult hit) {
 
         if (world.isRemote || player.isSpectator()) {
             return ActionResultType.PASS;

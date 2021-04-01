@@ -18,7 +18,9 @@
 
 package appeng.client.render.tesr;
 
-import appeng.tile.grindstone.CrankTileEntity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -30,9 +32,9 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.math.vector.Quaternion;
+
 import appeng.client.render.FacingToRotation;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import appeng.tile.grindstone.CrankTileEntity;
 
 /**
  * This FastTESR only handles the animated model of the turning crank. When the crank is at rest, it is rendered using a
@@ -47,7 +49,7 @@ public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
 
     @Override
     public void render(CrankTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
 
         // Apply GL transformations relative to the center of the block: 1) TE rotation
         // and 2) crank rotation
@@ -61,7 +63,8 @@ public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
         BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
         IBakedModel model = dispatcher.getModelForState(blockState);
         IVertexBuilder buffer = buffers.getBuffer(Atlases.getTranslucentCullBlockType());
-        dispatcher.getBlockModelRenderer().renderModelBrightnessColor(ms.getLast(), buffer, null, model, 1, 1, 1, combinedLightIn,
+        dispatcher.getBlockModelRenderer().renderModelBrightnessColor(ms.getLast(), buffer, null, model, 1, 1, 1,
+                combinedLightIn,
                 combinedOverlayIn);
         ms.pop();
 

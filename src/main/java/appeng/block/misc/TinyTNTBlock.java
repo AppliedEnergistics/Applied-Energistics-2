@@ -39,6 +39,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+
 import appeng.block.AEBaseBlock;
 import appeng.entity.TinyTNTPrimedEntity;
 

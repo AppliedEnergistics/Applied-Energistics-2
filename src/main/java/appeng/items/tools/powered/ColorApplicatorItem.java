@@ -25,7 +25,6 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import appeng.tile.misc.PaintSplotchesTileEntity;
 import com.google.common.collect.ImmutableMap;
 
 import net.fabricmc.api.EnvType;
@@ -51,6 +50,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;
@@ -77,6 +77,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
+import appeng.tile.misc.PaintSplotchesTileEntity;
 import appeng.util.FakePlayer;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -85,15 +86,22 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         implements IStorageCell<IAEItemStack>, IBlockTool, IMouseWheelItem {
 
     private static final Map<ResourceLocation, AEColor> TAG_TO_COLOR = ImmutableMap.<ResourceLocation, AEColor>builder()
-            .put(new ResourceLocation("c:black_dyes"), AEColor.BLACK).put(new ResourceLocation("c:blue_dyes"), AEColor.BLUE)
-            .put(new ResourceLocation("c:brown_dyes"), AEColor.BROWN).put(new ResourceLocation("c:cyan_dyes"), AEColor.CYAN)
-            .put(new ResourceLocation("c:gray_dyes"), AEColor.GRAY).put(new ResourceLocation("c:green_dyes"), AEColor.GREEN)
+            .put(new ResourceLocation("c:black_dyes"), AEColor.BLACK)
+            .put(new ResourceLocation("c:blue_dyes"), AEColor.BLUE)
+            .put(new ResourceLocation("c:brown_dyes"), AEColor.BROWN)
+            .put(new ResourceLocation("c:cyan_dyes"), AEColor.CYAN)
+            .put(new ResourceLocation("c:gray_dyes"), AEColor.GRAY)
+            .put(new ResourceLocation("c:green_dyes"), AEColor.GREEN)
             .put(new ResourceLocation("c:light_blue_dyes"), AEColor.LIGHT_BLUE)
             .put(new ResourceLocation("c:light_gray_dyes"), AEColor.LIGHT_GRAY)
-            .put(new ResourceLocation("c:lime_dyes"), AEColor.LIME).put(new ResourceLocation("c:magenta_dyes"), AEColor.MAGENTA)
-            .put(new ResourceLocation("c:orange_dyes"), AEColor.ORANGE).put(new ResourceLocation("c:pink_dyes"), AEColor.PINK)
-            .put(new ResourceLocation("c:purple_dyes"), AEColor.PURPLE).put(new ResourceLocation("c:red_dyes"), AEColor.RED)
-            .put(new ResourceLocation("c:white_dyes"), AEColor.WHITE).put(new ResourceLocation("c:yellow_dyes"), AEColor.YELLOW)
+            .put(new ResourceLocation("c:lime_dyes"), AEColor.LIME)
+            .put(new ResourceLocation("c:magenta_dyes"), AEColor.MAGENTA)
+            .put(new ResourceLocation("c:orange_dyes"), AEColor.ORANGE)
+            .put(new ResourceLocation("c:pink_dyes"), AEColor.PINK)
+            .put(new ResourceLocation("c:purple_dyes"), AEColor.PURPLE)
+            .put(new ResourceLocation("c:red_dyes"), AEColor.RED)
+            .put(new ResourceLocation("c:white_dyes"), AEColor.WHITE)
+            .put(new ResourceLocation("c:yellow_dyes"), AEColor.YELLOW)
             .build();
 
     private static final String TAG_COLOR = "color";

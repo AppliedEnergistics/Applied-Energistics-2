@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
+
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.core.Api;

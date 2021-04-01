@@ -30,6 +30,7 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
+
 import appeng.core.AppEng;
 
 public class MeteoriteStructure extends Structure<NoFeatureConfig> {

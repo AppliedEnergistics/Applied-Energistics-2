@@ -35,6 +35,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
+
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
@@ -115,7 +116,8 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         // we have to assume maximum size
         int range = (int) Math.ceil((coreRadius * 2 + 5) * 5f);
 
-        MutableBoundingBox boundingBox = new MutableBoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range, pos.getX() + range,
+        MutableBoundingBox boundingBox = new MutableBoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
+                pos.getX() + range,
                 pos.getY(), pos.getZ() + range);
 
         final MeteoritePlacer placer = new MeteoritePlacer(world, spawned, boundingBox);

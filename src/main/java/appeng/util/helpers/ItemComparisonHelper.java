@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+
 import appeng.api.config.FuzzyMode;
 
 /**

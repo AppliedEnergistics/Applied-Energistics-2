@@ -4,8 +4,6 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
-import appeng.recipes.entropy.EntropyRecipe;
-import appeng.recipes.entropy.EntropyRecipeSerializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -119,6 +117,8 @@ import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.mixins.CriteriaRegisterMixin;
+import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.entropy.EntropyRecipeSerializer;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.handlers.GrinderRecipe;

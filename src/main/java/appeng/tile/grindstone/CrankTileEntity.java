@@ -20,14 +20,15 @@ package appeng.tile.grindstone;
 
 import java.io.IOException;
 
-import appeng.tile.AEBaseTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+
 import appeng.api.implementations.tiles.ICrankable;
+import appeng.tile.AEBaseTileEntity;
 
 public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEntity {
 

@@ -14,6 +14,7 @@ import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.SingleItemRecipeBuilder;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.definitions.IBlockDefinition;
 import appeng.core.AppEng;
 import appeng.data.providers.IAE2DataProvider;

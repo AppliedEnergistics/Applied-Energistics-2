@@ -23,6 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
+
 import appeng.api.movable.IMovableHandler;
 
 public class DefaultSpatialHandler implements IMovableHandler {

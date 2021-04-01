@@ -37,6 +37,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Upgrades;

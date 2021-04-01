@@ -24,6 +24,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.definitions.IItemDefinition;

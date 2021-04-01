@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
+
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ModelBakery;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
@@ -22,7 +24,8 @@ import appeng.core.AppEng;
  */
 public class ColorApplicatorModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_colored");
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
+            "item/color_applicator_colored");
 
     private static final RenderMaterial TEXTURE_DARK = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_dark"));

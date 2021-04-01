@@ -18,9 +18,10 @@
 
 package appeng.tile.misc;
 
+import net.minecraft.tileentity.TileEntityType;
+
 import appeng.client.render.model.AEModelData;
 import appeng.tile.AEBaseTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 
 public class SkyCompassTileEntity extends AEBaseTileEntity {
 

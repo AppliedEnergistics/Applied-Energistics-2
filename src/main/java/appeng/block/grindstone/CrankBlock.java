@@ -20,8 +20,6 @@ package appeng.block.grindstone;
 
 import javax.annotation.Nullable;
 
-import appeng.tile.AEBaseTileEntity;
-import appeng.tile.grindstone.CrankTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -42,9 +40,12 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.stats.AeStats;
+import appeng.tile.AEBaseTileEntity;
+import appeng.tile.grindstone.CrankTileEntity;
 import appeng.util.FakePlayer;
 
 public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {

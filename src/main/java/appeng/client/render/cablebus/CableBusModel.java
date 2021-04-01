@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.util.AEColor;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AELog;

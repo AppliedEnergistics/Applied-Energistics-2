@@ -1,6 +1,7 @@
 package appeng.recipes.handlers;
 
 import com.google.gson.JsonObject;
+
 import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;

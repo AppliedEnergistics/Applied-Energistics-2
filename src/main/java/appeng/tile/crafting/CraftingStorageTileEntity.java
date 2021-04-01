@@ -19,8 +19,10 @@
 package appeng.tile.crafting;
 
 import java.util.Optional;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
+
 import appeng.api.definitions.IBlocks;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.core.Api;

@@ -84,7 +84,8 @@ public class SpawnEntityPacket extends BasePacket {
     }
 
     public SpawnEntityPacket(Entity entity, Consumer<PacketBuffer> extraSpawnData) {
-        this(entity.getEntityId(), entity.getUniqueID(), entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.rotationPitch,
+        this(entity.getEntityId(), entity.getUniqueID(), entity.getPosX(), entity.getPosY(), entity.getPosZ(),
+                entity.rotationPitch,
                 entity.rotationYaw, entity.getType(), entity.getMotion(), extraSpawnData);
     }
 

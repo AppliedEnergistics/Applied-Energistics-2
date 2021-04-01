@@ -7,6 +7,7 @@ import net.minecraft.world.Dimension;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+
 import appeng.core.AppEng;
 
 /**
@@ -19,7 +20,8 @@ public final class SpatialStorageDimensionIds {
      * <p>
      * This is defined in {@link appeng.mixins.spatial.DimensionTypeMixin}.
      */
-    public static final RegistryKey<DimensionType> DIMENSION_TYPE_ID = RegistryKey.getOrCreateKey(Registry.DIMENSION_TYPE_KEY,
+    public static final RegistryKey<DimensionType> DIMENSION_TYPE_ID = RegistryKey.getOrCreateKey(
+            Registry.DIMENSION_TYPE_KEY,
             AppEng.makeId("spatial_storage"));
 
     /**

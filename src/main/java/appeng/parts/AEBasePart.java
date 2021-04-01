@@ -25,10 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
-import appeng.fluids.helper.IConfigurableFluidInventory;
-import appeng.fluids.parts.FluidLevelEmitterPart;
-import appeng.fluids.util.AEFluidInventory;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
@@ -49,6 +45,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Upgrades;
@@ -69,6 +66,9 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
+import appeng.fluids.helper.IConfigurableFluidInventory;
+import appeng.fluids.parts.FluidLevelEmitterPart;
+import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;

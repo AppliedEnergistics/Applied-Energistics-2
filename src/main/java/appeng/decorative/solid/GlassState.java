@@ -19,6 +19,7 @@
 package appeng.decorative.solid;
 
 import java.util.EnumSet;
+
 import net.minecraft.util.Direction;
 
 /**

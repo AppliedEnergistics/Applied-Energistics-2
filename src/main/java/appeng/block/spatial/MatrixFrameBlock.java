@@ -34,6 +34,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+
 import appeng.block.AEBaseBlock;
 
 /**

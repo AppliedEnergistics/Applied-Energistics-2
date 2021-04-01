@@ -22,13 +22,16 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import com.google.common.collect.ImmutableSet;
+
 import appeng.client.render.BasicUnbakedModel;
 
 /**

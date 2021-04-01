@@ -85,8 +85,8 @@ import appeng.helpers.CraftingPatternDetails;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
-import appeng.tile.crafting.CraftingTileEntity;
 import appeng.tile.crafting.CraftingStorageTileEntity;
+import appeng.tile.crafting.CraftingTileEntity;
 
 public class CraftingGridCache
         implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEItemStack> {

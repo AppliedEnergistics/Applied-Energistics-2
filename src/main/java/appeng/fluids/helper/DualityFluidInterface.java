@@ -21,10 +21,12 @@ package appeng.fluids.helper;
 import java.math.RoundingMode;
 import java.util.Optional;
 
-import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -68,7 +70,6 @@ import appeng.me.storage.NullInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-import net.minecraft.world.World;
 
 public class DualityFluidInterface
         implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost,

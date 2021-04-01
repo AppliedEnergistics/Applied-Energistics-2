@@ -24,6 +24,7 @@ import net.minecraft.loot.functions.SetCount;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+
 import appeng.core.AppEng;
 import appeng.data.providers.IAE2DataProvider;
 
@@ -36,10 +37,11 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
     private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
             .put(BLOCKS.matrixFrame().block(), $ -> LootTable.builder())
             .put(BLOCKS.quartzOre().block(),
-                    b -> droppingWithSilkTouch(BLOCKS.quartzOre().block(), withExplosionDecay(BLOCKS.quartzOre().block(),
-                            ItemLootEntry.builder(MATERIALS.certusQuartzCrystal().item())
-                                    .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
-                                    .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
+                    b -> droppingWithSilkTouch(BLOCKS.quartzOre().block(),
+                            withExplosionDecay(BLOCKS.quartzOre().block(),
+                                    ItemLootEntry.builder(MATERIALS.certusQuartzCrystal().item())
+                                            .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
+                                            .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
             .put(BLOCKS.quartzOreCharged().block(), b -> droppingWithSilkTouch(BLOCKS.quartzOreCharged().block(),
                     withExplosionDecay(BLOCKS.quartzOreCharged().block(),
                             ItemLootEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())

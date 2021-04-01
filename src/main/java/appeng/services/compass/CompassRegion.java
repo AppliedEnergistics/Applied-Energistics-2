@@ -19,6 +19,7 @@
 package appeng.services.compass;
 
 import com.google.common.base.Preconditions;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;

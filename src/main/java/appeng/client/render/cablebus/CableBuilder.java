@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;

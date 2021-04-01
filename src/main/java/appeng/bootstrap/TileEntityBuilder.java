@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import appeng.tile.AEBaseTileEntity;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
@@ -19,12 +18,13 @@ import net.minecraft.util.registry.Registry;
 
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseTileBlock;
-import appeng.bootstrap.components.TileEntityRendererComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
+import appeng.bootstrap.components.TileEntityRendererComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AppEng;
 import appeng.core.features.ActivityState;
 import appeng.core.features.BlockStackSrc;
+import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
 
 /**
@@ -53,7 +53,7 @@ public class TileEntityBuilder<T extends AEBaseTileEntity> {
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
     public TileEntityBuilder(FeatureFactory factory, String id, Class<T> tileClass,
-                             Function<TileEntityType<T>, T> supplier) {
+            Function<TileEntityType<T>, T> supplier) {
         this.factory = factory;
         this.id = AppEng.makeId(id);
         this.tileClass = tileClass;

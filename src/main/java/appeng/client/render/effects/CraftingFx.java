@@ -19,6 +19,7 @@
 package appeng.client.render.effects;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.IAnimatedSprite;

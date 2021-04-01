@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;

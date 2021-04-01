@@ -20,6 +20,7 @@ package appeng.parts.networking;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;

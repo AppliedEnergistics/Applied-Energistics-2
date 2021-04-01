@@ -29,6 +29,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+
 import appeng.client.gui.implementations.InterfaceTerminalScreen;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;

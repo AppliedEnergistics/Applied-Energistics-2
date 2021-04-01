@@ -24,6 +24,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Splitter;
+
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.LanguageMap;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.EntryStack;
@@ -32,10 +38,7 @@ import me.shedaniel.rei.api.widgets.Slot;
 import me.shedaniel.rei.api.widgets.Tooltip;
 import me.shedaniel.rei.api.widgets.Widgets;
 import me.shedaniel.rei.gui.widget.Widget;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+
 import appeng.api.config.CondenserOutput;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -101,7 +104,8 @@ class CondenserCategory implements RecipeCategory<CondenserOutputDisplay> {
             Rectangle rect = new Rectangle(origin.x + 78, origin.y + 28, 16, 16);
             if (rect.contains(mouseX, mouseY)) {
                 Tooltip.create(
-                        getTooltip(recipeDisplay.getType()).stream().map(StringTextComponent::new).collect(Collectors.toList()))
+                        getTooltip(recipeDisplay.getType()).stream().map(StringTextComponent::new)
+                                .collect(Collectors.toList()))
                         .queue();
             }
         }));

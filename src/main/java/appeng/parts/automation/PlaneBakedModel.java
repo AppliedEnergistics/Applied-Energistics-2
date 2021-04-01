@@ -41,6 +41,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
+
 import appeng.api.parts.IDynamicPartBakedModel;
 import appeng.client.render.cablebus.CubeBuilder;
 
@@ -85,7 +86,8 @@ public class PlaneBakedModel implements IBakedModel, IDynamicPartBakedModel {
     }
 
     @Override
-    public void emitQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier,
+    public void emitQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier,
             RenderContext context, Direction partSide, @Nullable Object modelData) {
         PlaneConnections connections = DEFAULT_PERMUTATION;
 

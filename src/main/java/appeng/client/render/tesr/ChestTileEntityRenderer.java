@@ -25,6 +25,9 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -47,8 +50,6 @@ import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.core.Api;
 import appeng.tile.storage.ChestTileEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 /**
  * The tile entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
@@ -69,7 +70,7 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
 
     @Override
     public void render(ChestTileEntity chest, float partialTicks, MatrixStack matrices, IRenderTypeBuffer buffers,
-                       int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
 
         World world = chest.getWorld();
         if (world == null) {

@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
@@ -115,7 +116,8 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
             ItemStack oldStack = previous;
             InvOperation op = InvOperation.SET;
 
-            if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.areItemsEqualIgnoreDurability(newStack, oldStack)) {
+            if (newStack.isEmpty() || oldStack.isEmpty()
+                    || ItemStack.areItemsEqualIgnoreDurability(newStack, oldStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
                     newStack.shrink(oldStack.getCount());
                     oldStack = ItemStack.EMPTY;

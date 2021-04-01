@@ -54,6 +54,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
+
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.core.Api;
 import appeng.mixins.MinecraftClientAccessor;
@@ -76,14 +77,20 @@ public class FacadeBuilder {
     public static final double THICK_THICKNESS = 2D / 16D;
     public static final double THIN_THICKNESS = 1D / 16D;
 
-    public static final AxisAlignedBB[] THICK_FACADE_BOXES = new AxisAlignedBB[] { new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
-            new AxisAlignedBB(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0), new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),
-            new AxisAlignedBB(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0), new AxisAlignedBB(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),
+    public static final AxisAlignedBB[] THICK_FACADE_BOXES = new AxisAlignedBB[] {
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
+            new AxisAlignedBB(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0),
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),
+            new AxisAlignedBB(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0),
+            new AxisAlignedBB(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),
             new AxisAlignedBB(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
-    public static final AxisAlignedBB[] THIN_FACADE_BOXES = new AxisAlignedBB[] { new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
-            new AxisAlignedBB(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0), new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),
-            new AxisAlignedBB(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0), new AxisAlignedBB(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
+    public static final AxisAlignedBB[] THIN_FACADE_BOXES = new AxisAlignedBB[] {
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
+            new AxisAlignedBB(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0),
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),
+            new AxisAlignedBB(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0),
+            new AxisAlignedBB(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
             new AxisAlignedBB(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
     private final Map<Direction, Mesh> cableAnchorStilts;
@@ -308,7 +315,8 @@ public class FacadeBuilder {
         MeshBuilder meshBuilder = renderer.meshBuilder();
         QuadEmitter emitter = meshBuilder.getEmitter();
 
-        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(textureItem, null, null);
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(textureItem, null,
+                null);
         List<BakedQuad> modelQuads = model.getQuads(null, null, new Random());
 
         // FIXME BakedPipeline pipeline = this.pipelines.get();

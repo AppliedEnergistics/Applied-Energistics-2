@@ -18,7 +18,6 @@
 
 package appeng.debug;
 
-import appeng.hooks.AEToolItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ITileEntityProvider;
@@ -47,6 +46,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 

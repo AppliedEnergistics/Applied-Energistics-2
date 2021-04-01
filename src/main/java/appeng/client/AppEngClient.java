@@ -285,7 +285,8 @@ public final class AppEngClient extends AppEngBase {
 
         final int range = 16 * 16;
 
-        client.worldRenderer.markBlockRangeForRenderUpdate(x - range, y - range, z - range, x + range, y + range, z + range);
+        client.worldRenderer.markBlockRangeForRenderUpdate(x - range, y - range, z - range, x + range, y + range,
+                z + range);
     }
 
     @Override

@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import alexiil.mc.lib.attributes.Simulation;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -43,6 +42,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+
+import alexiil.mc.lib.attributes.Simulation;
 
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;

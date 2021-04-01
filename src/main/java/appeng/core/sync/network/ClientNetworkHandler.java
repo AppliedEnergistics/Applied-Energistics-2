@@ -22,6 +22,7 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
+
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;

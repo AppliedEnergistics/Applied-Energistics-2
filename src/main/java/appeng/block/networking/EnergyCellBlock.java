@@ -26,6 +26,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.NonNullList;
+
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEMaterials;
 import appeng.tile.networking.EnergyCellTileEntity;

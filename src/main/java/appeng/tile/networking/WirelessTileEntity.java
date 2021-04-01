@@ -20,10 +20,12 @@ package appeng.tile.networking;
 
 import java.io.IOException;
 import java.util.EnumSet;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.implementations.IPowerChannelState;

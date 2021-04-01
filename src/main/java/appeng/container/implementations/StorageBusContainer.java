@@ -25,6 +25,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.AccessRestriction;

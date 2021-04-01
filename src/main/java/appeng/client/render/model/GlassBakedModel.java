@@ -52,6 +52,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
+
 import appeng.decorative.solid.GlassState;
 import appeng.decorative.solid.QuartzGlassBlock;
 
@@ -60,13 +61,17 @@ class GlassBakedModel implements IBakedModel, FabricBakedModel {
     private static final byte[][][] OFFSETS = generateOffsets();
 
     // Alternating textures based on position
-    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_A = new net.minecraft.client.renderer.model.RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_A = new net.minecraft.client.renderer.model.RenderMaterial(
+            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_a"));
-    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_B = new net.minecraft.client.renderer.model.RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_B = new net.minecraft.client.renderer.model.RenderMaterial(
+            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_b"));
-    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_C = new net.minecraft.client.renderer.model.RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_C = new net.minecraft.client.renderer.model.RenderMaterial(
+            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_c"));
-    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_D = new net.minecraft.client.renderer.model.RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_D = new net.minecraft.client.renderer.model.RenderMaterial(
+            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_d"));
 
     // Frame texture
@@ -79,7 +84,8 @@ class GlassBakedModel implements IBakedModel, FabricBakedModel {
     private static net.minecraft.client.renderer.model.RenderMaterial[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
                 .map(s -> new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new net.minecraft.client.renderer.model.RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, rl))
+                .map(rl -> new net.minecraft.client.renderer.model.RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+                        rl))
                 .toArray(net.minecraft.client.renderer.model.RenderMaterial[]::new);
     }
 
@@ -87,8 +93,10 @@ class GlassBakedModel implements IBakedModel, FabricBakedModel {
 
     private final TextureAtlasSprite[] frameTextures;
 
-    public GlassBakedModel(Function<net.minecraft.client.renderer.model.RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
-        this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_A), bakedTextureGetter.apply(TEXTURE_B),
+    public GlassBakedModel(
+            Function<net.minecraft.client.renderer.model.RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
+        this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_A),
+                bakedTextureGetter.apply(TEXTURE_B),
                 bakedTextureGetter.apply(TEXTURE_C), bakedTextureGetter.apply(TEXTURE_D) };
 
         // The first frame texture would be empty, so we simply leave it set to null
@@ -212,7 +220,8 @@ class GlassBakedModel implements IBakedModel, FabricBakedModel {
         return bitmask;
     }
 
-    private void emitQuad(QuadEmitter emitter, Direction side, List<Vector3f> corners, TextureAtlasSprite sprite, float uOffset,
+    private void emitQuad(QuadEmitter emitter, Direction side, List<Vector3f> corners, TextureAtlasSprite sprite,
+            float uOffset,
             float vOffset) {
         this.emitQuad(emitter, side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);

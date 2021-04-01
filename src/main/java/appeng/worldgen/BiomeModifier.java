@@ -13,6 +13,7 @@ import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
+
 import appeng.mixins.structure.GenerationSettingsAccessor;
 
 public final class BiomeModifier {

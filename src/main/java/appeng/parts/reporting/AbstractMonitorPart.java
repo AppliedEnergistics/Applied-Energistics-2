@@ -20,6 +20,8 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -32,6 +34,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+
 import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
@@ -51,7 +54,6 @@ import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
 import appeng.util.item.AEItemStack;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * A basic subclass for any item monitor like display with an item icon and an amount.

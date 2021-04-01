@@ -18,15 +18,16 @@
 
 package appeng.tile.grid;
 
-import appeng.tile.AEBaseInvTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AEPartLocation;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
+import appeng.tile.AEBaseInvTileEntity;
 
 public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity implements IActionHost, IGridProxyable {
 

@@ -20,15 +20,6 @@ package appeng.core.api.definitions;
 
 import static appeng.block.AEBaseBlock.defaultProps;
 
-import appeng.block.spatial.SpatialAnchorBlock;
-import appeng.debug.*;
-import appeng.fluids.tile.FluidInterfaceTileEntity;
-import appeng.tile.grindstone.CrankTileEntity;
-import appeng.tile.grindstone.GrinderTileEntity;
-import appeng.tile.misc.*;
-import appeng.tile.networking.*;
-import appeng.tile.spatial.SpatialAnchorTileEntity;
-import appeng.tile.storage.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -42,6 +33,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
+
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
@@ -87,6 +79,7 @@ import appeng.block.qnb.QuantumBridgeRendering;
 import appeng.block.qnb.QuantumLinkChamberBlock;
 import appeng.block.qnb.QuantumRingBlock;
 import appeng.block.spatial.MatrixFrameBlock;
+import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.spatial.SpatialPylonBlock;
 import appeng.block.storage.ChestBlock;
@@ -111,6 +104,7 @@ import appeng.client.render.tesr.ChestTileEntityRenderer;
 import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.DriveLedTileEntityRenderer;
 import appeng.client.render.tesr.SkyChestTESR;
+import appeng.debug.*;
 import appeng.debug.ItemGenTileEntity;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.AEStairsBlock;
@@ -123,17 +117,24 @@ import appeng.decorative.solid.SkyStoneBlock;
 import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
 import appeng.entity.TinyTNTPrimedEntity;
 import appeng.fluids.block.FluidInterfaceBlock;
+import appeng.fluids.tile.FluidInterfaceTileEntity;
 import appeng.hooks.TinyTNTDispenseItemBehavior;
-import appeng.tile.crafting.CraftingTileEntity;
 import appeng.tile.crafting.CraftingMonitorTileEntity;
 import appeng.tile.crafting.CraftingStorageTileEntity;
-import appeng.tile.crafting.MolecularAssemblerTileEntity;
+import appeng.tile.crafting.CraftingTileEntity;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
+import appeng.tile.crafting.MolecularAssemblerTileEntity;
+import appeng.tile.grindstone.CrankTileEntity;
+import appeng.tile.grindstone.GrinderTileEntity;
+import appeng.tile.misc.*;
 import appeng.tile.misc.SecurityStationTileEntity;
+import appeng.tile.networking.*;
 import appeng.tile.networking.CreativeEnergyCellTileEntity;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.tile.spatial.SpatialAnchorTileEntity;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
 import appeng.tile.spatial.SpatialPylonTileEntity;
+import appeng.tile.storage.*;
 import appeng.tile.storage.ChestTileEntity;
 import appeng.tile.storage.SkyChestTileEntity;
 
@@ -219,13 +220,16 @@ public final class ApiBlocks implements IBlocks {
     private IBlockDefinition cubeGenerator;
     private IBlockDefinition energyGenerator;
 
-    private static final FabricBlockSettings QUARTZ_PROPERTIES = (FabricBlockSettings) defaultProps(Material.ROCK).hardnessAndResistance(3, 5);
+    private static final FabricBlockSettings QUARTZ_PROPERTIES = (FabricBlockSettings) defaultProps(Material.ROCK)
+            .hardnessAndResistance(3, 5);
 
-    private static final FabricBlockSettings SKYSTONE_PROPERTIES = (FabricBlockSettings) defaultProps(Material.ROCK).hardnessAndResistance(50, 150);
+    private static final FabricBlockSettings SKYSTONE_PROPERTIES = (FabricBlockSettings) defaultProps(Material.ROCK)
+            .hardnessAndResistance(50, 150);
 
     private static FabricBlockSettings glassProps() {
         return (FabricBlockSettings) defaultProps(Material.GLASS).sound(SoundType.GLASS).notSolid()
-                .setAllowsSpawn((state, world, pos, type) -> false).notSolid().setSuffocates((state, world, pos) -> false)
+                .setAllowsSpawn((state, world, pos, type) -> false).notSolid()
+                .setSuffocates((state, world, pos) -> false)
                 .setBlocksVision((state, world, pos) -> false);
     }
 
@@ -286,7 +290,7 @@ public final class ApiBlocks implements IBlocks {
                 .features(
                         AEFeature.SKY_STONE)
                 .block("sky_stone_block", () -> new SkyStoneBlock(SkystoneType.STONE,
-                                defaultProps(Material.ROCK).strength(50, 150).breakByTool(FabricToolTags.PICKAXES, 3)))
+                        defaultProps(Material.ROCK).strength(50, 150).breakByTool(FabricToolTags.PICKAXES, 3)))
                 .build();
 
         this.smoothSkyStoneBlock = registry.features(AEFeature.SKY_STONE)

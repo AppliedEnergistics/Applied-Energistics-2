@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IParts;
 import appeng.api.implementations.parts.ICablePart;

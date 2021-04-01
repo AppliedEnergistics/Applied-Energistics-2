@@ -20,7 +20,6 @@ package appeng.items.tools;
 
 import java.util.List;
 
-import appeng.util.InteractionUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -47,6 +46,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCard {
@@ -172,7 +172,8 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
             World w = context.getWorld();
             if (!w.isRemote()) {
                 BlockState state = context.getWorld().getBlockState(context.getPos());
-                ActionResultType useResult = state.onBlockActivated(context.getWorld(), context.getPlayer(), context.getHand(),
+                ActionResultType useResult = state.onBlockActivated(context.getWorld(), context.getPlayer(),
+                        context.getHand(),
                         new BlockRayTraceResult(context.getHitVec(), context.getFace(), context.getPos(),
                                 context.isInside()));
                 if (!useResult.isSuccessOrConsume()) {
