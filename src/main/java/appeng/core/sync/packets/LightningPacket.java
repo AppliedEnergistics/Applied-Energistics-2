@@ -63,9 +63,9 @@ public class LightningPacket extends BasePacket {
     @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
-            if (Platform.isClient() && AEConfig.instance().isEnableEffects()) {
-                Minecraft.getInstance().world.addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f,
-                        0.0f, 0.0f);
+            if (AEConfig.instance().isEnableEffects()) {
+                player.getEntityWorld().addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f, 0.0f,
+                        0.0f);
             }
         } catch (final Exception ignored) {
         }

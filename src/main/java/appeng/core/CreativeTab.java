@@ -49,7 +49,7 @@ public final class CreativeTab {
 
     private static void fill(List<ItemStack> items) {
         for (IItemDefinition itemDef : itemDefs) {
-            itemDef.item().appendStacks(INSTANCE, new ListWrapper(items));
+            itemDef.item().fillItemGroup(INSTANCE, new ListWrapper(items));
         }
     }
 
