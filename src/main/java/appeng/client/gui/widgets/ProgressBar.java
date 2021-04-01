@@ -57,7 +57,7 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, final int par2, final int par3, final float partial) {
+    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             Minecraft.getInstance().getTextureManager().bindTexture(this.texture);
             final int max = this.source.getMaxProgress();
