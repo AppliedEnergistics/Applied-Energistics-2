@@ -705,7 +705,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public void randomDisplayTick(final World world, final BlockPos pos, final Random r) {
+    public void animateTick(final World world, final BlockPos pos, final Random r) {
         for (final AEPartLocation side : AEPartLocation.values()) {
             final IPart p = this.getPart(side);
             if (p != null) {
@@ -1045,7 +1045,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     /**
      * See {@link net.minecraft.block.Block#getShape}
      */
-    public VoxelShape getOutlineShape() {
+    public VoxelShape getShape() {
         if (cachedShape == null) {
             cachedShape = createShape(false, false);
         }

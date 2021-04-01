@@ -18,7 +18,6 @@
 
 package appeng.container.implementations;
 
-import appeng.tile.misc.InscriberTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -35,6 +34,7 @@ import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.tile.misc.InscriberRecipes;
+import appeng.tile.misc.InscriberTileEntity;
 
 /**
  * @author AlgorithmX2

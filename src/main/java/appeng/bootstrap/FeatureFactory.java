@@ -85,7 +85,7 @@ public class FeatureFactory {
     }
 
     public <T extends AEBaseTileEntity> TileEntityBuilder<T> tileEntity(String id, Class<T> teClass,
-                                                                        Function<TileEntityType<T>, T> factory) {
+            Function<TileEntityType<T>, T> factory) {
         return new TileEntityBuilder<>(this, id, teClass, factory).features(this.defaultFeatures);
     }
 

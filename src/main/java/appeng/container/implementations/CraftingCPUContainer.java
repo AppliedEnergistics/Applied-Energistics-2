@@ -26,6 +26,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CraftingItemList;
@@ -59,7 +61,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
                         if (cluster != null && cluster.getName() != null) {
                             return cluster.getName();
                         }
-                        return LiteralText.EMPTY;
+                        return StringTextComponent.EMPTY;
                     });
 
     private final IItemList<IAEItemStack> list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)

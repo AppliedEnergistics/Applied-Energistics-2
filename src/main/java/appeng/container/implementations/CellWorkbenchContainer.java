@@ -145,11 +145,10 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
             for (final IContainerListener listener : this.getListeners()) {
                 if (this.prevStack != is) {
                     // if the bars changed an item was probably made, so just send shit!
-                    for (int i = 0; i < this.inventorySlots.size(); i++) {
-                        Slot s = this.inventorySlots.get(i);
+                    for (final Slot s : this.inventorySlots) {
                         if (s instanceof OptionalRestrictedInputSlot) {
                             final OptionalRestrictedInputSlot sri = (OptionalRestrictedInputSlot) s;
-                            listener.sendSlotContents(this, i, sri.getStack());
+                            listener.sendSlotContents(this, sri.slotNumber, sri.getStack());
                         }
                     }
 

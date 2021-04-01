@@ -26,6 +26,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
@@ -131,7 +132,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
                     }
                 }
 
-                for (final Object c : this.getListeners()) {
+                for (final Object c : this.listeners) {
                     if (c instanceof PlayerEntity) {
                         NetworkHandler.instance().sendTo(piu, (ServerPlayerEntity) c);
                     }

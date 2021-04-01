@@ -305,10 +305,6 @@ public abstract class AEBaseContainer extends Container {
         }
     }
 
-    public List<IContainerListener> getListeners() {
-        return ((ScreenHandlerListeners) this).ae2_getListeners();
-    }
-
     @Override
     public void detectAndSendChanges() {
         if (isServer()) {

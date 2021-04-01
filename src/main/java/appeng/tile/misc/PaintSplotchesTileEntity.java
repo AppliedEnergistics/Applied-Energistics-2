@@ -138,7 +138,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         return true;
     }
 
-    public void neighborUpdate() {
+    public void neighborChanged() {
         if (this.dots == null) {
             return;
         }

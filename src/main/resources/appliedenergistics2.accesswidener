@@ -21,3 +21,4 @@ accessible method net/minecraft/world/DimensionType <init> (Ljava/util/OptionalL
 
 accessible method net/minecraft/item/crafting/RecipeManager getRecipes (Lnet/minecraft/item/crafting/IRecipeType;)Ljava/util/Map;
 
+accessible field net/minecraft/inventory/container/Container listeners (Ljava/util/List;

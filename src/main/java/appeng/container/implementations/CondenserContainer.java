@@ -18,7 +18,6 @@
 
 package appeng.container.implementations;
 
-import appeng.tile.misc.CondenserTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -33,6 +32,7 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
+import appeng.tile.misc.CondenserTileEntity;
 
 public class CondenserContainer extends AEBaseContainer implements IProgressProvider {
 

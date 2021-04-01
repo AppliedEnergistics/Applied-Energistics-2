@@ -38,16 +38,16 @@ public class ModelOverrideComponent implements IModelBakeComponent {
     }
 
     @Override
-    public void onModelsReloaded(final Map<ResourceLocation, IBakedModel> loadedModels) {
-        Set<ResourceLocation> keys = Sets.newHashSet(loadedModels.keySet());
-        IBakedModel missingModel = loadedModels.get(ModelBakery.MODEL_MISSING);
+    public void onModelsReloaded(final Map<ResourceLocation, IBakedModel> modelRegistry) {
+        Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
+        IBakedModel missingModel = modelRegistry.get(ModelBakery.MODEL_MISSING);
 
         for (ResourceLocation location : keys) {
             if (!location.getNamespace().equals(AppEng.MOD_ID)) {
                 continue;
             }
 
-            IBakedModel orgModel = loadedModels.get(location);
+            IBakedModel orgModel = modelRegistry.get(location);
 
             // Don't customize the missing model. This causes Forge to swallow exceptions
             if (orgModel == missingModel) {
@@ -59,7 +59,7 @@ public class ModelOverrideComponent implements IModelBakeComponent {
                 IBakedModel newModel = customizer.apply(location, orgModel);
 
                 if (newModel != orgModel) {
-                    loadedModels.put(location, newModel);
+                    modelRegistry.put(location, newModel);
                 }
             }
         }

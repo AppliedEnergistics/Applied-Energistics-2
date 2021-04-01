@@ -57,7 +57,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     /**
      * Specifies a custom strategy for obtaining a custom container name.
-     * <p>
+     *
      * The stratgy should return {@link StringTextComponent#EMPTY} if there's no custom name.
      */
     public ContainerHelper<C, I> withContainerTitle(Function<I, ITextComponent> containerTitleStrategy) {
@@ -66,7 +66,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
     }
 
     /**
-     * Opens a container that is based around a single block entity. The tile entity's position is encoded in the packet
+     * Opens a container that is based around a single tile entity. The tile entity's position is encoded in the packet
      * buffer.
      */
     public C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf) {
@@ -169,7 +169,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
         TileEntity tileEntity = player.world.getTileEntity(locator.getBlockPos());
 
-        // The block entity itself can host a terminal (i.e. Chest!)
+        // The tile entity itself can host a terminal (i.e. Chest!)
         if (interfaceClass.isInstance(tileEntity)) {
             return interfaceClass.cast(tileEntity);
         }
@@ -179,7 +179,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         }
 
         if (tileEntity instanceof IPartHost) {
-            // But it could also be a part attached to the block entity
+            // But it could also be a part attached to the tile entity
             IPartHost partHost = (IPartHost) tileEntity;
             IPart part = partHost.getPart(locator.getSide());
             if (part == null) {

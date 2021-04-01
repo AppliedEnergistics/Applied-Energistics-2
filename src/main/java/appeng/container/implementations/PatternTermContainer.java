@@ -140,6 +140,7 @@ public class PatternTermContainer extends MEMonitorableContainer
         this.updateOrderOfOutputSlots();
     }
 
+    // FIXME FABRIC MCP - remove mixin and use AW instead?
     private void setSlotX(Slot s, int x) {
         ((SlotMixin) s).setX(x);
     }

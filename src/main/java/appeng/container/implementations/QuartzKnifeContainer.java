@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -111,7 +112,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
             if (RestrictedInputSlot.isMetalIngot(input)) {
                 if (QuartzKnifeContainer.this.myName.length() > 0) {
                     return Api.instance().definitions().materials().namePress().maybeStack(1).map(namePressStack -> {
-                        final CompoundTag compound = namePressStack.getOrCreateTag();
+                        final CompoundNBT compound = namePressStack.getOrCreateTag();
                         compound.putString(MaterialItem.TAG_INSCRIBE_NAME, QuartzKnifeContainer.this.myName);
 
                         return namePressStack;
@@ -132,7 +133,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         }
 
         @Override
-        public void putStack(ItemStack stack) {
+        public void putStack(final ItemStack stack) {
             if (stack.isEmpty()) {
                 this.makePlate();
             }

@@ -22,9 +22,11 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.Objects;
+
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
@@ -90,7 +92,7 @@ public class SyncData {
             return;
         }
 
-        // Types other than Text must be non-null
+        // Types other than ITextComponent must be non-null
         if (val == null) {
             return;
         }
