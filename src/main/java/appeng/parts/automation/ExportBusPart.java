@@ -59,7 +59,6 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -90,7 +89,6 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     private boolean didSomething = false;
     private int nextSlot = 0;
 
-    @Reflected
     public ExportBusPart(final ItemStack is) {
         super(is);
 

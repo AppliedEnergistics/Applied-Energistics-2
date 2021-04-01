@@ -59,11 +59,9 @@ import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
-import appeng.util.Platform;
 
 public class FluidInterfacePart extends BasicStatePart
         implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
@@ -83,7 +81,6 @@ public class FluidInterfacePart extends BasicStatePart
 
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
 
-    @Reflected
     public FluidInterfacePart(final ItemStack is) {
         super(is);
     }

@@ -37,7 +37,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.PlayerSource;
@@ -68,7 +67,6 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
             MODEL_STATUS_HAS_CHANNEL);
 
-    @Reflected
     public ConversionMonitorPart(final ItemStack is) {
         super(is);
     }

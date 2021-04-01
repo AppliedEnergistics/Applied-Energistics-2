@@ -23,7 +23,6 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
@@ -36,7 +35,6 @@ public class InvertedToggleBusPart extends ToggleBusPart {
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
 
-    @Reflected
     public InvertedToggleBusPart(final ItemStack is) {
         super(is);
         this.getProxy().setIdlePowerUsage(0.0);

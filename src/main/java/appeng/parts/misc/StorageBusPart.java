@@ -80,7 +80,6 @@ import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -122,7 +121,6 @@ public class StorageBusPart extends UpgradeablePart
     private boolean wasActive = false;
     private byte resetCacheLogic = 0;
 
-    @Reflected
     public StorageBusPart(final ItemStack is) {
         super(is);
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);

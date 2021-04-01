@@ -23,7 +23,6 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
@@ -55,7 +54,6 @@ public class StorageMonitorPart extends AbstractMonitorPart {
     public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
             MODEL_STATUS_HAS_CHANNEL);
 
-    @Reflected
     public StorageMonitorPart(final ItemStack is) {
         super(is);
     }

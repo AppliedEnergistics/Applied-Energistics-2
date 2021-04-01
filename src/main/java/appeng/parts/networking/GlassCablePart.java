@@ -20,10 +20,7 @@ package appeng.parts.networking;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.helpers.Reflected;
-
 public class GlassCablePart extends CablePart {
-    @Reflected
     public GlassCablePart(final ItemStack is) {
         super(is);
     }

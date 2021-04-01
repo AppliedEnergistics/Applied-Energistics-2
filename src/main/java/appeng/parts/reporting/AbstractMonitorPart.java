@@ -49,7 +49,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.render.TesrRenderHelper;
 import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
-import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
@@ -75,7 +74,6 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     private boolean isLocked;
     private IStackWatcher myWatcher;
 
-    @Reflected
     public AbstractMonitorPart(final ItemStack is) {
         super(is);
     }
