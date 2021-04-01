@@ -34,11 +34,11 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.me.items.ItemRepo;
+import appeng.client.gui.me.items.VirtualItemSlot;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
-import appeng.client.me.ItemRepo;
-import appeng.client.me.SlotME;
 import appeng.container.implementations.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
@@ -132,7 +132,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
         int toolPosY = 0;
 
         for (int z = viewStart; z < Math.min(viewEnd, this.repo.size()); z++) {
-            final IAEItemStack refStack = this.repo.getReferenceItem(z);
+            final IAEItemStack refStack = this.repo.get(z);
             if (refStack != null) {
                 RenderSystem.pushMatrix();
                 RenderSystem.scalef(0.5f, 0.5f, 0.5f);
@@ -208,11 +208,11 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     protected void renderTooltip(MatrixStack matrixStack, final ItemStack stack, final int x, final int y) {
         final Slot s = this.getSlot(x, y);
 
-        if (s instanceof SlotME && !stack.isEmpty()) {
+        if (s instanceof VirtualItemSlot && !stack.isEmpty()) {
             IAEItemStack myStack = null;
 
             try {
-                final SlotME theSlotField = (SlotME) s;
+                final VirtualItemSlot theSlotField = (VirtualItemSlot) s;
                 myStack = theSlotField.getAEStack();
             } catch (final Throwable ignore) {
             }

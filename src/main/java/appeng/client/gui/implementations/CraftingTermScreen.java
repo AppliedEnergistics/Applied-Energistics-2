@@ -25,6 +25,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
+import appeng.client.gui.me.items.MEMonitorableScreen;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.container.implementations.CraftingTermContainer;
 import appeng.container.slot.CraftingMatrixSlot;

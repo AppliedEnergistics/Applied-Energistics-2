@@ -16,19 +16,25 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.client.gui.me.items;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
@@ -44,13 +50,14 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseMEScreen;
+import appeng.client.gui.implementations.MEPortableCellScreen;
+import appeng.client.gui.implementations.SecurityStationScreen;
+import appeng.client.gui.implementations.WirelessTermScreen;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
-import appeng.client.me.InternalSlotME;
-import appeng.client.me.ItemRepo;
 import appeng.client.render.StackSizeRenderer;
 import appeng.container.implementations.CraftingStatusContainer;
 import appeng.container.implementations.MEMonitorableContainer;
@@ -58,11 +65,15 @@ import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.CraftingMatrixSlot;
 import appeng.container.slot.FakeCraftingMatrixSlot;
 import appeng.core.AEConfig;
+import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
+import appeng.helpers.InventoryAction;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.parts.reporting.AbstractTerminalPart;
@@ -83,6 +94,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     private final IConfigManager configSrc;
     private final boolean viewCell;
     private final ItemStack[] myCurrentViewCells = new ItemStack[5];
+    private final StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();
     private TabButton craftingStatusBtn;
     private AETextField searchField;
     private GuiText myName;
@@ -185,11 +197,15 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         // Size the container according to the number of rows we decided to have
         this.ySize = magicNumber + this.rows * 18 + this.reservedSpace;
 
-        this.getMeSlots().clear();
+        // Re-create the ME slots since the number of rows could have changed
+        List<Slot> slots = this.container.inventorySlots;
+        slots.removeIf(slot -> slot instanceof VirtualItemSlot);
+
         for (int y = 0; y < this.rows; y++) {
             for (int x = 0; x < this.perRow; x++) {
-                this.getMeSlots()
-                        .add(new InternalSlotME(this.repo, x + y * this.perRow, this.offsetX + x * 18, 18 + y * 18));
+                VirtualItemSlot slot = new VirtualItemSlot(this.repo, x + y * this.perRow, this.offsetX + x * 18,
+                        18 + y * 18);
+                slots.add(slot);
             }
         }
 
@@ -327,6 +343,89 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     @Override
+    public boolean mouseScrolled(double x, double y, double wheelDelta) {
+        if (wheelDelta != 0 && hasShiftDown()) {
+            final Slot slot = this.getSlot((int) x, (int) y);
+            if (slot instanceof VirtualItemSlot) {
+                final IAEItemStack item = ((VirtualItemSlot) slot).getAEStack();
+                if (item != null) {
+                    this.container.setTargetStack(item);
+                    final InventoryAction direction = wheelDelta > 0 ? InventoryAction.ROLL_DOWN
+                            : InventoryAction.ROLL_UP;
+                    final int times = (int) Math.abs(wheelDelta);
+                    final int inventorySize = this.container.inventorySlots.size();
+                    for (int h = 0; h < times; h++) {
+                        final InventoryActionPacket p = new InventoryActionPacket(direction, inventorySize, 0);
+                        NetworkHandler.instance().sendToServer(p);
+                    }
+
+                    return true;
+                }
+            }
+        }
+        return super.mouseScrolled(x, y, wheelDelta);
+    }
+
+    @Override
+    protected void handleMouseClick(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+        if (slot instanceof VirtualItemSlot) {
+            VirtualItemSlot virtualItemSlot = (VirtualItemSlot) slot;
+
+            IAEItemStack stack = virtualItemSlot.getAEStack();
+
+            // Move as many items of a single type as possible
+            if (InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
+
+                this.container.setTargetStack(stack);
+                final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, -1, 0);
+                NetworkHandler.instance().sendToServer(p);
+                return;
+            } else {
+                InventoryAction action = null;
+
+                switch (clickType) {
+                    case PICKUP: // pickup / set-down.
+                        action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+                                : InventoryAction.PICKUP_OR_SET_DOWN;
+
+                        if (stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0
+                                && playerInventory.getItemStack().isEmpty()) {
+                            action = InventoryAction.AUTO_CRAFT;
+                        }
+
+                        break;
+                    case QUICK_MOVE:
+                        action = (mouseButton == 1) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+                        break;
+
+                    case CLONE: // creative dupe:
+                        if (stack != null && stack.isCraftable()) {
+                            action = InventoryAction.AUTO_CRAFT;
+                        } else if (playerInventory.player.abilities.isCreativeMode) {
+                            final IAEItemStack slotItem = ((VirtualItemSlot) slot).getAEStack();
+                            if (slotItem != null) {
+                                action = InventoryAction.CREATIVE_DUPLICATE;
+                            }
+                        }
+                        break;
+
+                    default:
+                    case THROW: // drop item:
+                }
+
+                if (action != null) {
+                    this.container.setTargetStack(stack);
+                    final InventoryActionPacket p = new InventoryActionPacket(action, -1, 0);
+                    NetworkHandler.instance().sendToServer(p);
+                }
+                return;
+            }
+        }
+
+        super.handleMouseClick(slot, slotIdx, mouseButton, clickType);
+    }
+
+    @Override
     public void onClose() {
         super.onClose();
         getMinecraft().keyboardListener.enableRepeatEvents(false);
@@ -373,6 +472,79 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
     }
 
+    // TODO This is incorrectly named in MCP, it's renderSlot, essentially
+    @Override
+    protected void moveItems(MatrixStack matrices, Slot s) {
+        if (s instanceof VirtualItemSlot) {
+
+            try {
+                if (!this.isPowered()) {
+                    fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+                }
+
+                // Annoying but easier than trying to splice into render item
+                super.moveItems(matrices, new Size1Slot(s));
+
+                this.stackSizeRenderer.renderStackSize(this.font, ((VirtualItemSlot) s).getAEStack(), s.xPos, s.yPos);
+
+            } catch (final Exception err) {
+                AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err.toString());
+            }
+
+            return;
+        }
+
+        super.moveItems(matrices, s);
+    }
+
+    @Override
+    protected void renderTooltip(MatrixStack matrixStack, final ItemStack stack, final int x, final int y) {
+        final Slot s = this.getSlot(x, y);
+
+        if (s instanceof VirtualItemSlot && !stack.isEmpty()) {
+            final int bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
+
+            IAEItemStack myStack = null;
+            final List<ITextComponent> currentToolTip = this.getTooltipFromItem(stack);
+
+            try {
+                final VirtualItemSlot theSlotField = (VirtualItemSlot) s;
+                myStack = theSlotField.getAEStack();
+            } catch (final Throwable ignore) {
+            }
+
+            if (myStack != null) {
+                if (myStack.getStackSize() > bigNumber || (myStack.getStackSize() > 1 && stack.isDamaged())) {
+                    final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
+                            .format(myStack.getStackSize());
+                    currentToolTip
+                            .add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
+                }
+
+                if (myStack.getCountRequestable() > 0) {
+                    final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
+                            .format(myStack.getCountRequestable());
+                    currentToolTip.add(ButtonToolTips.ItemsRequestable.text(formattedAmount));
+                }
+
+                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,
+                        this.font);
+
+                return;
+            } else if (stack.getCount() > bigNumber) {
+                final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(stack.getCount());
+                currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
+
+                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,
+                        this.font);
+
+                return;
+            }
+        }
+
+        super.renderTooltip(matrixStack, stack, x, y);
+    }
+
     protected String getBackground() {
         return "guis/terminal.png";
     }
@@ -382,7 +554,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         return this.repo.hasPower();
     }
 
-    int getMaxRows() {
+    protected int getMaxRows() {
         return AEConfig.instance().getTerminalStyle() == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
     }
 
@@ -488,11 +660,11 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         this.repo.updateView();
     }
 
-    int getReservedSpace() {
+    protected int getReservedSpace() {
         return this.reservedSpace;
     }
 
-    void setReservedSpace(final int reservedSpace) {
+    protected void setReservedSpace(final int reservedSpace) {
         this.reservedSpace = reservedSpace;
     }
 
@@ -500,7 +672,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         return this.customSortOrder;
     }
 
-    void setCustomSortOrder(final boolean customSortOrder) {
+    protected void setCustomSortOrder(final boolean customSortOrder) {
         this.customSortOrder = customSortOrder;
     }
 
@@ -508,7 +680,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         return this.standardSize;
     }
 
-    void setStandardSize(final int standardSize) {
+    protected void setStandardSize(final int standardSize) {
         this.standardSize = standardSize;
     }
 

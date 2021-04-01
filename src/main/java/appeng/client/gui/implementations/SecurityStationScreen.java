@@ -25,6 +25,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
+import appeng.client.gui.me.items.MEMonitorableScreen;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.core.localization.GuiText;

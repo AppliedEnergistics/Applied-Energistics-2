@@ -51,7 +51,7 @@ import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.me.SlotME;
+import appeng.client.gui.me.items.VirtualItemSlot;
 import appeng.container.guisync.GuiSync;
 import appeng.container.guisync.SyncData;
 import appeng.container.slot.AppEngSlot;
@@ -392,7 +392,7 @@ public abstract class AEBaseContainer extends Container {
             if (!tis.isEmpty()) {
                 // find partials..
                 for (final Slot d : selectedSlots) {
-                    if (d instanceof DisabledSlot || d instanceof SlotME) {
+                    if (d instanceof DisabledSlot || d instanceof VirtualItemSlot) {
                         continue;
                     }
 
@@ -436,7 +436,7 @@ public abstract class AEBaseContainer extends Container {
                 // FIXME figure out whats the difference between this and the one above ?!
                 // any match..
                 for (final Slot d : selectedSlots) {
-                    if (d instanceof DisabledSlot || d instanceof SlotME) {
+                    if (d instanceof DisabledSlot || d instanceof VirtualItemSlot) {
                         continue;
                     }
 

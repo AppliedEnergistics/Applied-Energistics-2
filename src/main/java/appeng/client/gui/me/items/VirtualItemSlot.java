@@ -16,72 +16,49 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.me;
+package appeng.client.gui.me.items;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
+import appeng.client.gui.me.common.ReadOnlySlot;
 
-public class SlotME extends Slot {
+/**
+ * This is a virtual slot that has no corresponding slot on the server-side. It displays an item stack from the
+ * client-side {@link ItemRepo}.
+ */
+public class VirtualItemSlot extends ReadOnlySlot {
 
-    private static final IInventory EMPTY_INVENTORY = new Inventory(0);
+    private final ItemRepo repo;
+    private final int offset;
 
-    private final InternalSlotME slot;
-
-    public SlotME(final InternalSlotME slot) {
-        super(EMPTY_INVENTORY, 0, slot.getxPosition(), slot.getyPosition());
-        this.slot = slot;
+    public VirtualItemSlot(ItemRepo repo, int offset, int displayX, int displayY) {
+        super(displayX, displayY);
+        this.repo = repo;
+        this.offset = offset;
     }
 
     public IAEItemStack getAEStack() {
-        if (this.slot.hasPower()) {
-            return this.slot.getAEStack();
+        if (this.repo.hasPower()) {
+            return this.repo.get(this.offset);
         }
         return null;
     }
 
     @Override
-    public boolean isItemValid(final ItemStack par1ItemStack) {
-        return false;
-    }
-
-    @Override
     public ItemStack getStack() {
-        if (this.slot.hasPower()) {
-            return this.slot.getStack();
+        IAEItemStack aeStack = this.getAEStack();
+        if (aeStack != null) {
+            return aeStack.asItemStackRepresentation();
         }
         return ItemStack.EMPTY;
     }
 
     @Override
     public boolean getHasStack() {
-        if (this.slot.hasPower()) {
-            return !this.getStack().isEmpty();
-        }
-        return false;
+        return getAEStack() != null;
     }
 
-    @Override
-    public void putStack(final ItemStack par1ItemStack) {
-
-    }
-
-    @Override
-    public int getSlotStackLimit() {
-        return 0;
-    }
-
-    @Override
-    public ItemStack decrStackSize(final int par1) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean canTakeStack(final PlayerEntity par1PlayerEntity) {
-        return false;
-    }
 }

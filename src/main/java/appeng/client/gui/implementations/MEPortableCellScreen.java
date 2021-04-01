@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+import appeng.client.gui.me.items.MEMonitorableScreen;
 import appeng.container.implementations.MEPortableCellContainer;
 
 public class MEPortableCellScreen extends MEMonitorableScreen<MEPortableCellContainer> {
@@ -31,7 +32,7 @@ public class MEPortableCellScreen extends MEMonitorableScreen<MEPortableCellCont
     }
 
     @Override
-    int getMaxRows() {
+    protected int getMaxRows() {
         return 3;
     }
 }
