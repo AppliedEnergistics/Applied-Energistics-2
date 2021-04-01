@@ -26,8 +26,9 @@ package appeng.api;
 /**
  * Every AE2 addon requiring access to {@link IAppEngApi}, needs to provide at least one class implementing this
  * interface.
- * <p>
+ *
  * Further it requires the class to be annotated with {@link AEAddon}.
+ *
  */
 public interface IAEAddon {
 

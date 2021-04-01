@@ -25,14 +25,16 @@ package appeng.api.networking;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import net.minecraft.tileentity.TileEntity;
+
 import appeng.api.parts.IPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 
 /**
- * Implement to create a networked {@link TileEntity} or {@link IPart} must be implemented for a part, or block entity
- * to become part of a grid.
+ * Implement to create a networked {@link TileEntity} or {@link IPart} must be implemented for a part, or tile entity to
+ * become part of a grid.
  */
 public interface IGridHost {
 
@@ -41,6 +43,7 @@ public interface IGridHost {
      * calling updateState, you can join the Grid when your block is ready.
      *
      * @param dir feel free to ignore this, most blocks will use the same node for every side.
+     *
      * @return a new IGridNode, create these with AEApi.INSTANCE().createGridNode( MyIGridBlock )
      */
     @Nullable

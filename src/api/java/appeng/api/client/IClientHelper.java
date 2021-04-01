@@ -24,7 +24,9 @@
 package appeng.api.client;
 
 import java.util.List;
+
 import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 
@@ -39,7 +41,7 @@ public interface IClientHelper {
 
     /**
      * A helper to work with clientside related tasks for cells.
-     *
+     * 
      * @return
      */
     ICellModelRegistry cells();

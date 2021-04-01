@@ -32,6 +32,7 @@ public interface ILocatableRegistry {
      * Gets the {@link ILocatable} with the registered serial, if available
      *
      * @param serial serial
+     *
      * @return requestedObject, or null, if the object does not exist anymore
      */
     ILocatable getLocatableBy(long serial);

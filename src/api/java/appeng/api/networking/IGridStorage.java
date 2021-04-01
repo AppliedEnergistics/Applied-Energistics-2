@@ -24,12 +24,13 @@
 package appeng.api.networking;
 
 import javax.annotation.Nonnull;
+
 import net.minecraft.nbt.CompoundNBT;
 
 public interface IGridStorage {
 
     /**
-     * @return an CompoundTag that can be read, and written too.
+     * @return an CompoundNBT that can be read, and written too.
      */
     @Nonnull
     CompoundNBT dataObject();

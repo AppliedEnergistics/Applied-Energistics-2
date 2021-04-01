@@ -39,6 +39,7 @@ public interface ICellHandler {
      * request a handler )
      *
      * @param is to be checked item
+     *
      * @return return true, if getCellHandler will not return null.
      */
     boolean isCell(ItemStack is);
@@ -51,6 +52,7 @@ public interface ICellHandler {
      *                note, this value can be null. If provided, the host is responsible for persisting the cell
      *                content.
      * @param channel the storage channel requested.
+     *
      * @return a new IMEHandler for the provided item
      */
     <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(ItemStack is, ISaveProvider host,
@@ -58,15 +60,16 @@ public interface ICellHandler {
 
     /**
      * 0 - cell is missing.
-     * <p>
+     *
      * 1 - green, ( usually means available room for types or items. )
-     * <p>
+     *
      * 2 - orange, ( usually means available room for items, but not types. )
-     * <p>
+     *
      * 3 - red, ( usually means the cell is 100% full )
      *
      * @param is      the cell item. ( use the handler for any details you can )
      * @param handler the handler for the cell is provides for reference, you can cast this to your handler.
+     *
      * @return get the status of the cell based on its contents.
      */
     default <T extends IAEStack<T>> CellState getStatusForCell(ItemStack is, ICellInventoryHandler<T> handler) {

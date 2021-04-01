@@ -27,7 +27,7 @@ import appeng.api.networking.IGridNode;
 
 /**
  * Exception occurred because of an already existing connection between the two {@link IGridNode}s
- * <p>
+ *
  * Intended to signal an internal exception and not intended to be thrown by any 3rd party module.
  *
  * @author yueh

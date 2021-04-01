@@ -27,9 +27,9 @@ import appeng.api.networking.IGridNode;
 
 /**
  * Exception indicating a failed connection between two {@link IGridNode}s.
- * <p>
+ *
  * Intended to signal an internal exception and not intended to be thrown by any 3rd party module.
- * <p>
+ *
  * See any subclass for a more specific reason.
  *
  * @author AlgorithmX2

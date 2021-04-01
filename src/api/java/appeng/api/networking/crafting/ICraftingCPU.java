@@ -23,10 +23,11 @@
 
 package appeng.api.networking.crafting;
 
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.data.IAEItemStack;
-import net.minecraft.util.text.ITextComponent;
 
 public interface ICraftingCPU extends IBaseMonitor<IAEItemStack> {
 

@@ -64,8 +64,8 @@ public enum AEPartLocation {
     public final int yOffset;
     public final int zOffset;
 
-    private static final Direction[] facings = { Direction.field_11033, Direction.field_11036, Direction.field_11043, Direction.field_11035,
-            Direction.field_11039, Direction.field_11034, null };
+    private static final Direction[] facings = { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH,
+            Direction.WEST, Direction.EAST, null };
     private static final int[] OPPOSITES = { 1, 0, 3, 2, 5, 4, 6 };
 
     public static final AEPartLocation[] SIDE_LOCATIONS = { DOWN, UP, NORTH, SOUTH, WEST, EAST };
