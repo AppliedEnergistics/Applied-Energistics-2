@@ -18,8 +18,8 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import static net.minecraft.util.Direction.AxisDirection.field_11060;
-import static net.minecraft.util.Direction.AxisDirection.field_11056;
+import static net.minecraft.util.Direction.AxisDirection.NEGATIVE;
+import static net.minecraft.util.Direction.AxisDirection.POSITIVE;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -130,11 +130,11 @@ public class QuadCornerKicker implements RenderContext.QuadTransform {
 
     public enum Corner {
 
-        MIN_X_MIN_Y_MIN_Z(field_11060, field_11060, field_11060), MIN_X_MIN_Y_MAX_Z(field_11060, field_11060, field_11056),
-        MIN_X_MAX_Y_MIN_Z(field_11060, field_11056, field_11060), MIN_X_MAX_Y_MAX_Z(field_11060, field_11056, field_11056),
+        MIN_X_MIN_Y_MIN_Z(NEGATIVE, NEGATIVE, NEGATIVE), MIN_X_MIN_Y_MAX_Z(NEGATIVE, NEGATIVE, POSITIVE),
+        MIN_X_MAX_Y_MIN_Z(NEGATIVE, POSITIVE, NEGATIVE), MIN_X_MAX_Y_MAX_Z(NEGATIVE, POSITIVE, POSITIVE),
 
-        MAX_X_MIN_Y_MIN_Z(field_11056, field_11060, field_11060), MAX_X_MIN_Y_MAX_Z(field_11056, field_11060, field_11056),
-        MAX_X_MAX_Y_MIN_Z(field_11056, field_11056, field_11060), MAX_X_MAX_Y_MAX_Z(field_11056, field_11056, field_11056);
+        MAX_X_MIN_Y_MIN_Z(POSITIVE, NEGATIVE, NEGATIVE), MAX_X_MIN_Y_MAX_Z(POSITIVE, NEGATIVE, POSITIVE),
+        MAX_X_MAX_Y_MIN_Z(POSITIVE, POSITIVE, NEGATIVE), MAX_X_MAX_Y_MAX_Z(POSITIVE, POSITIVE, POSITIVE);
 
         private AxisDirection xAxis;
         private AxisDirection yAxis;
@@ -164,15 +164,15 @@ public class QuadCornerKicker implements RenderContext.QuadTransform {
         }
 
         public float pX(AxisAlignedBB box) {
-            return (float) (this.xAxis == field_11060 ? box.minX : box.maxX);
+            return (float) (this.xAxis == NEGATIVE ? box.minX : box.maxX);
         }
 
         public float pY(AxisAlignedBB box) {
-            return (float) (this.yAxis == field_11060 ? box.minY : box.maxY);
+            return (float) (this.yAxis == NEGATIVE ? box.minY : box.maxY);
         }
 
         public float pZ(AxisAlignedBB box) {
-            return (float) (this.zAxis == field_11060 ? box.minZ : box.maxZ);
+            return (float) (this.zAxis == NEGATIVE ? box.minZ : box.maxZ);
         }
     }
 

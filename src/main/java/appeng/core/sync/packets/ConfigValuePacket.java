@@ -80,15 +80,15 @@ public class ConfigValuePacket extends BasePacket {
         final Container c = player.openContainer;
         if (this.Name.equals("Item") && ((!player.getHeldItem(Hand.field_5808).isEmpty()
                 && player.getHeldItem(Hand.field_5808).getItem() instanceof IMouseWheelItem)
-                || (!player.getHeldItem(Hand.field_5810).isEmpty()
-                        && player.getHeldItem(Hand.field_5810).getItem() instanceof IMouseWheelItem))) {
+                || (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
+                        && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem))) {
             final Hand hand;
             if (!player.getHeldItem(Hand.field_5808).isEmpty()
                     && player.getHeldItem(Hand.field_5808).getItem() instanceof IMouseWheelItem) {
                 hand = Hand.field_5808;
-            } else if (!player.getHeldItem(Hand.field_5810).isEmpty()
-                    && player.getHeldItem(Hand.field_5810).getItem() instanceof IMouseWheelItem) {
-                hand = Hand.field_5810;
+            } else if (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
+                    && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
+                hand = Hand.OFF_HAND;
             } else {
                 return;
             }

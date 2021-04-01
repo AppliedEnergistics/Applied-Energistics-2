@@ -28,18 +28,18 @@ public class ServerNetworkHandler implements NetworkHandler {
 
     public void sendToAll(final BasePacket message) {
         MinecraftServer server = AppEng.instance().getServer();
-        IPacket<?> packet = message.toPacket(PacketDirection.field_11942);
+        IPacket<?> packet = message.toPacket(PacketDirection.CLIENTBOUND);
 
         PlayerStream.all(server).forEach(player -> registry.sendToPlayer(player, packet));
     }
 
     public void sendTo(final BasePacket message, final ServerPlayerEntity player) {
-        IPacket<?> packet = message.toPacket(PacketDirection.field_11942);
+        IPacket<?> packet = message.toPacket(PacketDirection.CLIENTBOUND);
         registry.sendToPlayer(player, packet);
     }
 
     public void sendToAllAround(final BasePacket message, final TargetPoint point) {
-        IPacket<?> packet = message.toPacket(PacketDirection.field_11942);
+        IPacket<?> packet = message.toPacket(PacketDirection.CLIENTBOUND);
         PlayerStream.around(point.world, new Vector3d(point.x, point.y, point.z), point.radius).forEach(player -> {
             if (player != point.excluded) {
                 ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet);
@@ -48,7 +48,7 @@ public class ServerNetworkHandler implements NetworkHandler {
     }
 
     public void sendToDimension(final BasePacket message, final World world) {
-        IPacket<?> packet = message.toPacket(PacketDirection.field_11942);
+        IPacket<?> packet = message.toPacket(PacketDirection.CLIENTBOUND);
         PlayerStream.world(world).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet));
     }
 

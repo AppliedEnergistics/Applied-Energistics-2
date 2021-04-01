@@ -18,7 +18,7 @@ public class ClientNetworkHandler extends ServerNetworkHandler {
 
     @Override
     public void sendToServer(BasePacket message) {
-        registry.sendToServer(message.toPacket(PacketDirection.field_11941));
+        registry.sendToServer(message.toPacket(PacketDirection.SERVERBOUND));
     }
 
     private void handlePacketFromServer(PacketContext packetContext, PacketBuffer payload) {

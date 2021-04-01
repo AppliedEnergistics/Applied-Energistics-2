@@ -65,8 +65,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
-import appeng.fluids.parts.FluidLevelEmitterPart;
-import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
@@ -74,6 +72,7 @@ import appeng.me.helpers.IGridProxyable;
 import appeng.parts.automation.LevelEmitterPart;
 import appeng.parts.networking.CablePart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -91,6 +90,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         this.is = is;
         this.proxy = new AENetworkProxy(this, "part", is, this instanceof CablePart);
         this.proxy.setValidSides(EnumSet.noneOf(Direction.class));
+    }
+
+    public final boolean isRemote() {
+        return this.tile == null
+                || this.tile.getWorld() == null
+                || this.tile.getWorld().isRemote();
     }
 
     public IPartHost getHost() {
@@ -160,6 +165,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         return this.proxy.getNode();
     }
 
+    @Override
     public void saveChanges() {
         this.host.markForSave();
     }
@@ -175,8 +181,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void addEntityCrashInfo(final CrashReportCategory section) {
-        section.addDetail("Part Side", this.getSide());
+    public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
+        crashreportcategory.addDetail("Part Side", this.getSide());
     }
 
     @Override
@@ -195,7 +201,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -268,7 +274,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void randomDisplayTick(final World world, final BlockPos pos, final Random r) {
+    public void animateTick(final World world, final BlockPos pos, final Random r) {
 
     }
 
@@ -338,6 +344,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * null means nothing to store...
      *
      * @param from source of settings
+     *
      * @return compound of source
      */
     private CompoundNBT downloadSettings(final SettingsFrom from) {
@@ -388,7 +395,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
             final String name = is.getTranslationKey();
 
-            if (player.isCrouching()) {
+            if (InteractionUtil.isInAlternateUseMode(player)) {
                 final CompoundNBT data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
                 if (data != null) {
                     memoryCard.setMemoryCardContents(memCardIS, name, data);
@@ -462,5 +469,4 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     public ItemStack getItemStack() {
         return this.is;
     }
-
 }

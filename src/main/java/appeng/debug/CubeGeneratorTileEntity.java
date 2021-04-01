@@ -64,7 +64,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
         this.world.removeBlock(this.pos, false);
 
         final Item i = this.is.getItem();
-        final Direction side = Direction.field_11036;
+        final Direction side = Direction.UP;
 
         final int half = (int) Math.floor(this.size / 2);
 

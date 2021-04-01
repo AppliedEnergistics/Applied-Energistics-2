@@ -122,7 +122,7 @@ public class SpawnEntityPacket extends BasePacket {
         @SuppressWarnings("UnnecessaryLocalVariable")
         ICustomEntity customEntity = entity;
         SpawnEntityPacket packet = new SpawnEntityPacket(entity, customEntity::writeAdditionalSpawnData);
-        return packet.toPacket(PacketDirection.field_11942);
+        return packet.toPacket(PacketDirection.CLIENTBOUND);
     }
 
 }

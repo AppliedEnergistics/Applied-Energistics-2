@@ -25,11 +25,9 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.tile.AEBaseInvTileEntity;
-import appeng.tile.AEBaseTileEntity;
-import appeng.tile.storage.SkyChestTileEntity;
 import com.google.common.collect.Lists;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ITileEntityProvider;
@@ -56,7 +54,11 @@ import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.util.IOrientable;
 import appeng.block.networking.CableBusBlock;
+import appeng.tile.AEBaseInvTileEntity;
+import appeng.tile.AEBaseTileEntity;
 import appeng.tile.networking.CableBusTileEntity;
+import appeng.tile.storage.SkyChestTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 

@@ -22,8 +22,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+
 import net.minecraft.item.BlockItem;
 import net.minecraft.tileentity.TileEntity;
+
 import appeng.api.definitions.ITileDefinition;
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseTileBlock;

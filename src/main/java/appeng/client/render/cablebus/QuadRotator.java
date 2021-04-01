@@ -107,10 +107,10 @@ public class QuadRotator implements RenderContext.QuadTransform {
     private static FacingToRotation getRotation(Direction forward, Direction up) {
         // Sanitize forward/up
         if (forward.getAxis() == up.getAxis()) {
-            if (up.getAxis() == Direction.Axis.field_11052) {
-                up = Direction.field_11043;
+            if (up.getAxis() == Direction.Axis.Y) {
+                up = Direction.NORTH;
             } else {
-                up = Direction.field_11036;
+                up = Direction.UP;
             }
         }
 

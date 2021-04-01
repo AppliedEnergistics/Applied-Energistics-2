@@ -49,40 +49,40 @@ public class BusCollisionHelper implements IPartCollisionHelper {
 
         switch (s) {
             case DOWN:
-                this.x = Direction.field_11034;
-                this.y = Direction.field_11043;
-                this.z = Direction.field_11033;
+                this.x = Direction.EAST;
+                this.y = Direction.NORTH;
+                this.z = Direction.DOWN;
                 break;
             case UP:
-                this.x = Direction.field_11034;
-                this.y = Direction.field_11035;
-                this.z = Direction.field_11036;
+                this.x = Direction.EAST;
+                this.y = Direction.SOUTH;
+                this.z = Direction.UP;
                 break;
             case EAST:
-                this.x = Direction.field_11035;
-                this.y = Direction.field_11036;
-                this.z = Direction.field_11034;
+                this.x = Direction.SOUTH;
+                this.y = Direction.UP;
+                this.z = Direction.EAST;
                 break;
             case WEST:
-                this.x = Direction.field_11043;
-                this.y = Direction.field_11036;
-                this.z = Direction.field_11039;
+                this.x = Direction.NORTH;
+                this.y = Direction.UP;
+                this.z = Direction.WEST;
                 break;
             case NORTH:
-                this.x = Direction.field_11039;
-                this.y = Direction.field_11036;
-                this.z = Direction.field_11043;
+                this.x = Direction.WEST;
+                this.y = Direction.UP;
+                this.z = Direction.NORTH;
                 break;
             case SOUTH:
-                this.x = Direction.field_11034;
-                this.y = Direction.field_11036;
-                this.z = Direction.field_11035;
+                this.x = Direction.EAST;
+                this.y = Direction.UP;
+                this.z = Direction.SOUTH;
                 break;
             case INTERNAL:
             default:
-                this.x = Direction.field_11034;
-                this.y = Direction.field_11036;
-                this.z = Direction.field_11035;
+                this.x = Direction.EAST;
+                this.y = Direction.UP;
+                this.z = Direction.SOUTH;
                 break;
         }
     }

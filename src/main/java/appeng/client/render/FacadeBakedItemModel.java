@@ -68,7 +68,7 @@ public class FacadeBakedItemModel extends ForwardingBakedModel {
         int hash = Objects.hash(itemId, textureItem.getTag());
         Mesh mesh = this.cache.get(hash);
         if (mesh == null) {
-            mesh = this.facadeBuilder.buildFacadeItemQuads(textureItem, Direction.field_11043);
+            mesh = this.facadeBuilder.buildFacadeItemQuads(textureItem, Direction.NORTH);
             this.cache.put(hash, mesh);
         }
 

@@ -430,7 +430,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
                 this.pushOut(output.copy());
 
                 for (int x = 0; x < this.craftingInv.getSizeInventory(); x++) {
-                    this.gridInv.setInvStack(x, Platform.getRecipeRemainder(this.craftingInv.getStackInSlot(x)),
+                    this.gridInv.setInvStack(x, Platform.getContainerItem(this.craftingInv.getStackInSlot(x)),
                             Simulation.ACTION);
                 }
 

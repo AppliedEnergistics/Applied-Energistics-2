@@ -180,7 +180,7 @@ public class CraftingTreeProcess {
 
             for (int x = 0; x < ic.getSizeInventory(); x++) {
                 ItemStack is = ic.getStackInSlot(x);
-                is = Platform.getRecipeRemainder(is);
+                is = Platform.getContainerItem(is);
 
                 final IAEItemStack o = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                         .createStack(is);
@@ -196,7 +196,7 @@ public class CraftingTreeProcess {
                 final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize() * i, src);
 
                 if (this.containerItems) {
-                    final ItemStack is = Platform.getRecipeRemainder(stack.createItemStack());
+                    final ItemStack is = Platform.getContainerItem(stack.createItemStack());
                     final IAEItemStack o = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                             .createStack(is);
                     if (o != null) {

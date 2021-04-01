@@ -106,37 +106,37 @@ public class CubeBuilder {
         }
 
         switch (face) {
-            case field_11033:
+            case DOWN:
                 this.putVertexTR(face, x2, y1, z1, uv);
                 this.putVertexBR(face, x2, y1, z2, uv);
                 this.putVertexBL(face, x1, y1, z2, uv);
                 this.putVertexTL(face, x1, y1, z1, uv);
                 break;
-            case field_11036:
+            case UP:
                 this.putVertexTL(face, x1, y2, z1, uv);
                 this.putVertexBL(face, x1, y2, z2, uv);
                 this.putVertexBR(face, x2, y2, z2, uv);
                 this.putVertexTR(face, x2, y2, z1, uv);
                 break;
-            case field_11043:
+            case NORTH:
                 this.putVertexBR(face, x2, y2, z1, uv);
                 this.putVertexTR(face, x2, y1, z1, uv);
                 this.putVertexTL(face, x1, y1, z1, uv);
                 this.putVertexBL(face, x1, y2, z1, uv);
                 break;
-            case field_11035:
+            case SOUTH:
                 this.putVertexBL(face, x1, y2, z2, uv);
                 this.putVertexTL(face, x1, y1, z2, uv);
                 this.putVertexTR(face, x2, y1, z2, uv);
                 this.putVertexBR(face, x2, y2, z2, uv);
                 break;
-            case field_11039:
+            case WEST:
                 this.putVertexTL(face, x1, y1, z1, uv);
                 this.putVertexTR(face, x1, y1, z2, uv);
                 this.putVertexBR(face, x1, y2, z2, uv);
                 this.putVertexBL(face, x1, y2, z1, uv);
                 break;
-            case field_11034:
+            case EAST:
                 this.putVertexBR(face, x2, y2, z1, uv);
                 this.putVertexBL(face, x2, y2, z2, uv);
                 this.putVertexTL(face, x2, y1, z2, uv);
@@ -161,37 +161,37 @@ public class CubeBuilder {
         UvVector uv = new UvVector();
 
         switch (face) {
-            case field_11033:
+            case DOWN:
                 uv.u1 = texture.getInterpolatedU(x1 * 16);
                 uv.v1 = texture.getInterpolatedV(z1 * 16);
                 uv.u2 = texture.getInterpolatedU(x2 * 16);
                 uv.v2 = texture.getInterpolatedV(z2 * 16);
                 break;
-            case field_11036:
+            case UP:
                 uv.u1 = texture.getInterpolatedU(x1 * 16);
                 uv.v1 = texture.getInterpolatedV(z1 * 16);
                 uv.u2 = texture.getInterpolatedU(x2 * 16);
                 uv.v2 = texture.getInterpolatedV(z2 * 16);
                 break;
-            case field_11043:
+            case NORTH:
                 uv.u1 = texture.getInterpolatedU(x1 * 16);
                 uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
                 uv.u2 = texture.getInterpolatedU(x2 * 16);
                 uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case field_11035:
+            case SOUTH:
                 uv.u1 = texture.getInterpolatedU(x1 * 16);
                 uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
                 uv.u2 = texture.getInterpolatedU(x2 * 16);
                 uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case field_11039:
+            case WEST:
                 uv.u1 = texture.getInterpolatedU(z1 * 16);
                 uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
                 uv.u2 = texture.getInterpolatedU(z2 * 16);
                 uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case field_11034:
+            case EAST:
                 uv.u1 = texture.getInterpolatedU(z2 * 16);
                 uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
                 uv.u2 = texture.getInterpolatedU(z1 * 16);
@@ -206,37 +206,37 @@ public class CubeBuilder {
             float z2) {
         UvVector uv = new UvVector();
         switch (face) {
-            case field_11033:
+            case DOWN:
                 uv.u1 = texture.getInterpolatedU(x1 * 16);
                 uv.v1 = texture.getInterpolatedV(16 - z1 * 16);
                 uv.u2 = texture.getInterpolatedU(x2 * 16);
                 uv.v2 = texture.getInterpolatedV(16 - z2 * 16);
                 break;
-            case field_11036:
+            case UP:
                 uv.u1 = texture.getInterpolatedU(x1 * 16);
                 uv.v1 = texture.getInterpolatedV(z1 * 16);
                 uv.u2 = texture.getInterpolatedU(x2 * 16);
                 uv.v2 = texture.getInterpolatedV(z2 * 16);
                 break;
-            case field_11043:
+            case NORTH:
                 uv.u1 = texture.getInterpolatedU(16 - x1 * 16);
                 uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
                 uv.u2 = texture.getInterpolatedU(16 - x2 * 16);
                 uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case field_11035:
+            case SOUTH:
                 uv.u1 = texture.getInterpolatedU(x1 * 16);
                 uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
                 uv.u2 = texture.getInterpolatedU(x2 * 16);
                 uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case field_11039:
+            case WEST:
                 uv.u1 = texture.getInterpolatedU(z1 * 16);
                 uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
                 uv.u2 = texture.getInterpolatedU(z2 * 16);
                 uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case field_11034:
+            case EAST:
                 uv.u1 = texture.getInterpolatedU(16 - z2 * 16);
                 uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
                 uv.u2 = texture.getInterpolatedU(16 - z1 * 16);
@@ -377,12 +377,12 @@ public class CubeBuilder {
     }
 
     public void setTextures(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west) {
-        this.textures.put(Direction.field_11036, up);
-        this.textures.put(Direction.field_11033, down);
-        this.textures.put(Direction.field_11043, north);
-        this.textures.put(Direction.field_11035, south);
-        this.textures.put(Direction.field_11034, east);
-        this.textures.put(Direction.field_11039, west);
+        this.textures.put(Direction.UP, up);
+        this.textures.put(Direction.DOWN, down);
+        this.textures.put(Direction.NORTH, north);
+        this.textures.put(Direction.SOUTH, south);
+        this.textures.put(Direction.EAST, east);
+        this.textures.put(Direction.WEST, west);
     }
 
     public void setTexture(Direction facing, TextureAtlasSprite sprite) {

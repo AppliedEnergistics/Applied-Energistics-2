@@ -70,8 +70,8 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
         // This ensures the needle isn't flipped by the model rotator. Since the model
         // is symmetrical, this should
         // not affect the appearance
-        if (forward == Direction.field_11036 || forward == Direction.field_11033) {
-            up = Direction.field_11043;
+        if (forward == Direction.UP || forward == Direction.DOWN) {
+            up = Direction.NORTH;
         }
         ms.push();
 
@@ -94,13 +94,13 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
     private static float getRotation(SkyCompassTileEntity skyCompass) {
         float rotation = 0;
 
-        if (skyCompass.getForward() == Direction.field_11036 || skyCompass.getForward() == Direction.field_11033) {
+        if (skyCompass.getForward() == Direction.UP || skyCompass.getForward() == Direction.DOWN) {
             rotation = SkyCompassBakedModel.getAnimatedRotation(skyCompass.getPos(), false);
         } else {
             rotation = SkyCompassBakedModel.getAnimatedRotation(null, false);
         }
 
-        if (skyCompass.getForward() == Direction.field_11033) {
+        if (skyCompass.getForward() == Direction.DOWN) {
             rotation = flipidiy(rotation);
         }
 

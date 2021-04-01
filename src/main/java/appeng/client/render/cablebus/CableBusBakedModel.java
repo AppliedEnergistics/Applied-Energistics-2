@@ -146,7 +146,7 @@ public class CableBusBakedModel implements IBakedModel, FabricBakedModel {
                     throw new IllegalStateException("Trying to use an unregistered part model: " + model);
                 }
 
-                context.pushTransform(QuadRotator.get(facing, Direction.field_11036));
+                context.pushTransform(QuadRotator.get(facing, Direction.UP));
                 if (bakedModel instanceof IDynamicPartBakedModel) {
                     ((IDynamicPartBakedModel) bakedModel).emitQuads(blockView, state, pos, randomSupplier, context,
                             facing, partModelData);

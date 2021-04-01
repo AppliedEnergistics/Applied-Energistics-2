@@ -62,7 +62,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
     }
 
     private ICrankable getGrinder() {
-        if (isClient()) {
+        if (isRemote()) {
             return null;
         }
 
@@ -98,7 +98,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
      * return true if this should count towards stats.
      */
     public boolean power() {
-        if (isClient()) {
+        if (isRemote()) {
             return false;
         }
 

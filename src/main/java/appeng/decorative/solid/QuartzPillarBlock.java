@@ -38,7 +38,7 @@ public class QuartzPillarBlock extends AEDecorativeBlock implements IOrientableB
         super(props);
 
         // The upwards facing pillar is the default (i.e. for the item model)
-        this.setDefaultState(this.getDefaultState().with(AXIS, Direction.Axis.field_11052));
+        this.setDefaultState(this.getDefaultState().with(AXIS, Direction.Axis.Y));
     }
 
     @Override

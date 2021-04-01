@@ -89,7 +89,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     public void setSide(final Direction facing) {
-        if (isClient()) {
+        if (isRemote()) {
             return;
         }
 
@@ -108,11 +108,11 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
         }
 
         if (this.omniDirectional) {
-            this.setOrientation(Direction.field_11043, Direction.field_11036);
+            this.setOrientation(Direction.NORTH, Direction.UP);
         } else {
-            Direction newUp = Direction.field_11036;
-            if (newForward == Direction.field_11036 || newForward == Direction.field_11033) {
-                newUp = Direction.field_11043;
+            Direction newUp = Direction.UP;
+            if (newForward == Direction.UP || newForward == Direction.DOWN) {
+                newUp = Direction.NORTH;
             }
             this.setOrientation(newForward, newUp);
         }

@@ -49,9 +49,9 @@ public class MetaRotation implements IOrientable {
     @Override
     public Direction getForward() {
         if (this.getUp().getYOffset() == 0) {
-            return Direction.field_11036;
+            return Direction.UP;
         }
-        return Direction.field_11035;
+        return Direction.SOUTH;
     }
 
     @Override
@@ -66,17 +66,17 @@ public class MetaRotation implements IOrientable {
         if (state.hasProperty(QuartzPillarBlock.AXIS)) {
             Axis a = state.get(QuartzPillarBlock.AXIS);
             switch (a) {
-                case field_11048:
-                    return Direction.field_11034;
-                case field_11051:
-                    return Direction.field_11035;
+                case X:
+                    return Direction.EAST;
+                case Z:
+                    return Direction.SOUTH;
                 default:
-                case field_11052:
-                    return Direction.field_11036;
+                case Y:
+                    return Direction.UP;
             }
         }
 
-        return Direction.field_11036;
+        return Direction.UP;
     }
 
     @Override

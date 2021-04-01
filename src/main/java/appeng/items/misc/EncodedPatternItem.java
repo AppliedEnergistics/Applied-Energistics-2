@@ -116,7 +116,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
                 return;
             }
 
-            stack.setDisplayName(GuiText.InvalidPattern.text().deepCopy().mergeStyle(TextFormatting.field_1061));
+            stack.setDisplayName(GuiText.InvalidPattern.text().deepCopy().mergeStyle(TextFormatting.RED));
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 

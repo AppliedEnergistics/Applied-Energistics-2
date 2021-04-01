@@ -45,25 +45,25 @@ final class RenderHelper {
         for (Direction facing : Direction.values()) {
             List<Vector3f> corners;
 
-            float offset = (facing.getAxisDirection() == Direction.AxisDirection.field_11060) ? 0 : 1;
+            float offset = (facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) ? 0 : 1;
 
             switch (facing.getAxis()) {
                 default:
-                case field_11048:
+                case X:
                     corners = Lists.newArrayList(new Vector3f(offset, 1, 1), new Vector3f(offset, 0, 1),
                             new Vector3f(offset, 0, 0), new Vector3f(offset, 1, 0));
                     break;
-                case field_11052:
+                case Y:
                     corners = Lists.newArrayList(new Vector3f(1, offset, 1), new Vector3f(1, offset, 0),
                             new Vector3f(0, offset, 0), new Vector3f(0, offset, 1));
                     break;
-                case field_11051:
+                case Z:
                     corners = Lists.newArrayList(new Vector3f(0, 1, offset), new Vector3f(0, 0, offset),
                             new Vector3f(1, 0, offset), new Vector3f(1, 1, offset));
                     break;
             }
 
-            if (facing.getAxisDirection() == Direction.AxisDirection.field_11060) {
+            if (facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
                 corners = Lists.reverse(corners);
             }
 
@@ -76,11 +76,11 @@ final class RenderHelper {
     private static Vector3d adjust(Vector3d vec, Direction.Axis axis, double delta) {
         switch (axis) {
             default:
-            case field_11048:
+            case X:
                 return new Vector3d(vec.x + delta, vec.y, vec.z);
-            case field_11052:
+            case Y:
                 return new Vector3d(vec.x, vec.y + delta, vec.z);
-            case field_11051:
+            case Z:
                 return new Vector3d(vec.x, vec.y, vec.z + delta);
         }
     }

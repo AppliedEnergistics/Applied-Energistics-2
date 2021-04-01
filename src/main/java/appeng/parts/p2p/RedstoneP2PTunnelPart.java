@@ -138,7 +138,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
             if (b != null && !this.isOutput()) {
                 Direction srcSide = this.getSide().getFacing();
                 if (b instanceof RedstoneWireBlock) {
-                    srcSide = Direction.field_11036;
+                    srcSide = Direction.UP;
                 }
 
                 this.power = b.getWeakPower(state, this.getTile().getWorld(), target, srcSide);

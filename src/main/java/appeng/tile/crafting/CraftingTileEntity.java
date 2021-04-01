@@ -165,7 +165,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     public boolean isFormed() {
-        if (isClient()) {
+        if (isRemote()) {
             return this.world.getBlockState(this.pos).get(AbstractCraftingUnitBlock.FORMED);
         }
         return this.cluster != null;
@@ -294,7 +294,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
     @Override
     public boolean isPowered() {
-        if (isClient()) {
+        if (isRemote()) {
             return this.world.getBlockState(this.pos).get(AbstractCraftingUnitBlock.POWERED);
         }
         return this.getProxy().isActive();

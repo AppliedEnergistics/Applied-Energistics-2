@@ -737,7 +737,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                                 // FIXME FABRIC details.getOutput(ic, this.getWorld()), ic);
 
                                 for (int x = 0; x < ic.getSizeInventory(); x++) {
-                                    final ItemStack output = Platform.getRecipeRemainder(ic.getStackInSlot(x));
+                                    final ItemStack output = Platform.getContainerItem(ic.getStackInSlot(x));
                                     if (!output.isEmpty()) {
                                         final IAEItemStack cItem = AEItemStack.fromItemStack(output);
                                         this.postChange(cItem, this.machineSrc);

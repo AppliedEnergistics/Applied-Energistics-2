@@ -240,7 +240,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     }
 
     public boolean isPowered() {
-        if (isClient()) {
+        if (isRemote()) {
             return (this.constructed & this.powered) == this.powered && this.constructed != -1;
         }
 

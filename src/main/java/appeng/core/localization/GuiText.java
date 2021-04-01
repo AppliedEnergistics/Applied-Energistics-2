@@ -27,7 +27,7 @@ public enum GuiText {
 
     Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, SkyChest,
 
-    VibrationChamber, SpatialIOPort, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
+    VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
 
     Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ImportBusFluids, ExportBus,
     ExportBusFluids,
@@ -46,6 +46,11 @@ public enum GuiText {
 
     // spatial
     SpatialCapacity, StoredSize, Unformatted, SerialNumber,
+
+    // spatial anchor
+
+    SpatialAnchorUsedPower, SpatialAnchorLoadedChunks,
+    SpatialAnchorStatistics, SpatialAnchorAll, SpatialAnchorAllLoaded,
 
     CopyMode, CopyModeDesc, PatternTerminal, FluidTerminal,
 
@@ -111,11 +116,11 @@ public enum GuiText {
     }
 
     public IFormattableTextComponent withSuffix(String text) {
-        return text().copyRaw().appendString(text);
+        return text().deepCopy().appendString(text);
     }
 
     public IFormattableTextComponent withSuffix(ITextComponent text) {
-        return text().copyRaw().append(text);
+        return text().deepCopy().append(text);
     }
 
     public IFormattableTextComponent text(Object... args) {

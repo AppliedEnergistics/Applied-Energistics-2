@@ -128,7 +128,7 @@ public class InvalidPatternHelper {
             IFormattableTextComponent result = new StringTextComponent(this.getCount() + " ").append(this.getName());
 
             if (!this.isValid()) {
-                result.mergeStyle(TextFormatting.field_1061);
+                result.mergeStyle(TextFormatting.RED);
             }
 
             return result;

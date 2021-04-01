@@ -107,7 +107,7 @@ public class FacadeBuilder {
 
         // Create pre-rotated variants of the cable anchor stems
         for (Direction side : Direction.values()) {
-            RenderContext.QuadTransform rotator = QuadRotator.get(side, Direction.field_11036);
+            RenderContext.QuadTransform rotator = QuadRotator.get(side, Direction.UP);
 
             MeshBuilder meshBuilder = renderer.meshBuilder();
             QuadEmitter emitter = meshBuilder.getEmitter();
@@ -184,22 +184,22 @@ public class FacadeBuilder {
                                 tmpBB = AEAxisAlignedBB.fromBounds(facadeBox);
                             }
                             switch (face) {
-                                case field_11033:
+                                case DOWN:
                                     tmpBB.minY += offset;
                                     break;
-                                case field_11036:
+                                case UP:
                                     tmpBB.maxY -= offset;
                                     break;
-                                case field_11043:
+                                case NORTH:
                                     tmpBB.minZ += offset;
                                     break;
-                                case field_11035:
+                                case SOUTH:
                                     tmpBB.maxZ -= offset;
                                     break;
-                                case field_11039:
+                                case WEST:
                                     tmpBB.minX += offset;
                                     break;
-                                case field_11034:
+                                case EAST:
                                     tmpBB.maxX -= offset;
                                     break;
                                 default:
@@ -428,7 +428,7 @@ public class FacadeBuilder {
         }
         List<AxisAlignedBB> boxes = new ArrayList<>();
         switch (axis) {
-            case field_11052:
+            case Y:
                 boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, hole.minX, fb.maxY, fb.maxZ));
                 boxes.add(new AxisAlignedBB(hole.maxX, fb.minY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
@@ -436,7 +436,7 @@ public class FacadeBuilder {
                 boxes.add(new AxisAlignedBB(hole.minX, fb.minY, hole.maxZ, hole.maxX, fb.maxY, fb.maxZ));
 
                 break;
-            case field_11051:
+            case Z:
                 boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
                 boxes.add(new AxisAlignedBB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
@@ -444,7 +444,7 @@ public class FacadeBuilder {
                 boxes.add(new AxisAlignedBB(hole.maxX, hole.minY, fb.minZ, fb.maxX, hole.maxY, fb.maxZ));
 
                 break;
-            case field_11048:
+            case X:
                 boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
                 boxes.add(new AxisAlignedBB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 

@@ -20,8 +20,10 @@
 package appeng.core.api;
 
 import java.util.List;
+
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.client.ICellModelRegistry;
 import appeng.api.client.IClientHelper;
 import appeng.api.config.IncludeExclude;
@@ -41,7 +43,8 @@ public class ApiClientHelper implements IClientHelper {
     }
 
     @Override
-    public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler, List<ITextComponent> lines) {
+    public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler,
+            List<ITextComponent> lines) {
         if (handler == null) {
             return;
         }
@@ -61,9 +64,9 @@ public class ApiClientHelper implements IClientHelper {
                     : GuiText.Excluded).getLocal();
 
             if (handler.isFuzzy()) {
-                lines.add(GuiText.Partitioned.text().copyRaw().appendString(" - " + list + " ").append(GuiText.Fuzzy.text()));
+                lines.add(GuiText.Partitioned.withSuffix(" - " + list + " ").append(GuiText.Fuzzy.text()));
             } else {
-                lines.add(GuiText.Partitioned.text().copyRaw().appendString(" - " + list + " ").append(GuiText.Precise.text()));
+                lines.add(GuiText.Partitioned.withSuffix(" - " + list + " ").append(GuiText.Precise.text()));
             }
         }
 

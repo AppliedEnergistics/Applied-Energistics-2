@@ -48,7 +48,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
 
     public LightDetectorBlock() {
         super(defaultProps(Material.MISCELLANEOUS));
-        this.setDefaultState(this.getDefaultState().with(BlockStateProperties.FACING, Direction.field_11036).with(ODD, false));
+        this.setDefaultState(this.getDefaultState().with(BlockStateProperties.FACING, Direction.UP).with(ODD, false));
     }
 
     @Override

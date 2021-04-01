@@ -18,7 +18,7 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import static net.minecraft.util.Direction.AxisDirection.field_11056;
+import static net.minecraft.util.Direction.AxisDirection.POSITIVE;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -74,24 +74,24 @@ public class QuadFaceStripper implements RenderContext.QuadTransform {
         if ((this.mask & (1 << face.ordinal())) != 0) {
             AxisDirection dir = face.getAxisDirection();
             switch (face.getAxis()) {
-                case field_11048: {
-                    float bound = (float) (dir == field_11056 ? this.bounds.maxX : this.bounds.minX);
+                case X: {
+                    float bound = (float) (dir == POSITIVE ? this.bounds.maxX : this.bounds.minX);
                     float x1 = quad.posByIndex(0, 0);
                     float x2 = quad.posByIndex(1, 0);
                     float x3 = quad.posByIndex(2, 0);
                     float x4 = quad.posByIndex(3, 0);
                     return x1 != x2 || x2 != x3 || x3 != x4 || x4 != bound;
                 }
-                case field_11052: {
-                    float bound = (float) (dir == field_11056 ? this.bounds.maxY : this.bounds.minY);
+                case Y: {
+                    float bound = (float) (dir == POSITIVE ? this.bounds.maxY : this.bounds.minY);
                     float y1 = quad.posByIndex(0, 1);
                     float y2 = quad.posByIndex(1, 1);
                     float y3 = quad.posByIndex(2, 1);
                     float y4 = quad.posByIndex(3, 1);
                     return y1 != y2 || y2 != y3 || y3 != y4 || y4 != bound;
                 }
-                case field_11051: {
-                    float bound = (float) (dir == field_11056 ? this.bounds.maxZ : this.bounds.minZ);
+                case Z: {
+                    float bound = (float) (dir == POSITIVE ? this.bounds.maxZ : this.bounds.minZ);
                     float z1 = quad.posByIndex(0, 2);
                     float z2 = quad.posByIndex(1, 2);
                     float z3 = quad.posByIndex(2, 2);

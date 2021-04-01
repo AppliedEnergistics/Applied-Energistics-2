@@ -37,10 +37,10 @@ public class Splotch {
         final double x;
         final double y;
 
-        if (side == Direction.field_11035 || side == Direction.field_11043) {
+        if (side == Direction.SOUTH || side == Direction.NORTH) {
             x = position.x;
             y = position.y;
-        } else if (side == Direction.field_11036 || side == Direction.field_11033) {
+        } else if (side == Direction.UP || side == Direction.DOWN) {
             x = position.x;
             y = position.z;
         } else {

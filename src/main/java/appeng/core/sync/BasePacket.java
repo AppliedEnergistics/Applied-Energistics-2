@@ -74,7 +74,7 @@ public abstract class BasePacket {
             AELog.info(this.getClass().getName() + " : " + p.readableBytes());
         }
 
-        if (direction == PacketDirection.field_11941) {
+        if (direction == PacketDirection.SERVERBOUND) {
             return ClientSidePacketRegistry.INSTANCE.toPacket(CHANNEL, this.p);
         } else {
             return ServerSidePacketRegistry.INSTANCE.toPacket(CHANNEL, this.p);

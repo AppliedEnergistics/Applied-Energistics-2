@@ -283,7 +283,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
     @Override
     public CellState getCellStatus(final int slot) {
-        if (isClient()) {
+        if (isRemote()) {
             return CellState.values()[(this.state >> (slot * BIT_CELL_STATE_BITS)) & BIT_CELL_STATE_MASK];
         }
 
@@ -315,7 +315,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
     @Override
     public boolean isPowered() {
-        if (isClient()) {
+        if (isRemote()) {
             return (this.state & BIT_POWER_MASK) == BIT_POWER_MASK;
         }
 

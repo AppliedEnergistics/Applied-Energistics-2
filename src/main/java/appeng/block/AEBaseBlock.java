@@ -147,24 +147,24 @@ public abstract class AEBaseBlock extends Block {
         }
 
         if (dir == forward) {
-            return Direction.field_11035;
+            return Direction.SOUTH;
         }
         if (dir == forward.getOpposite()) {
-            return Direction.field_11043;
+            return Direction.NORTH;
         }
 
         if (dir == up) {
-            return Direction.field_11036;
+            return Direction.UP;
         }
         if (dir == up.getOpposite()) {
-            return Direction.field_11033;
+            return Direction.DOWN;
         }
 
         if (dir == west) {
-            return Direction.field_11039;
+            return Direction.WEST;
         }
         if (dir == west.getOpposite()) {
-            return Direction.field_11034;
+            return Direction.EAST;
         }
 
         return null;

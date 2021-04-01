@@ -176,18 +176,18 @@ class GlassBakedModel implements IBakedModel, FabricBakedModel {
      */
     private static int makeBitmask(GlassState state, Direction side) {
         switch (side) {
-            case field_11033:
-                return makeBitmask(state, Direction.field_11035, Direction.field_11034, Direction.field_11043, Direction.field_11039);
-            case field_11036:
-                return makeBitmask(state, Direction.field_11035, Direction.field_11039, Direction.field_11043, Direction.field_11034);
-            case field_11043:
-                return makeBitmask(state, Direction.field_11036, Direction.field_11039, Direction.field_11033, Direction.field_11034);
-            case field_11035:
-                return makeBitmask(state, Direction.field_11036, Direction.field_11034, Direction.field_11033, Direction.field_11039);
-            case field_11039:
-                return makeBitmask(state, Direction.field_11036, Direction.field_11035, Direction.field_11033, Direction.field_11043);
-            case field_11034:
-                return makeBitmask(state, Direction.field_11036, Direction.field_11043, Direction.field_11033, Direction.field_11035);
+            case DOWN:
+                return makeBitmask(state, Direction.SOUTH, Direction.EAST, Direction.NORTH, Direction.WEST);
+            case UP:
+                return makeBitmask(state, Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST);
+            case NORTH:
+                return makeBitmask(state, Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST);
+            case SOUTH:
+                return makeBitmask(state, Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST);
+            case WEST:
+                return makeBitmask(state, Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH);
+            case EAST:
+                return makeBitmask(state, Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH);
             default:
                 throw new IllegalArgumentException("Unsupported side!");
         }

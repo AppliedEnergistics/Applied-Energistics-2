@@ -81,7 +81,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
 
     @Override
     public boolean canTurn() {
-        if (isClient()) {
+        if (isRemote()) {
             return false;
         }
 
@@ -115,7 +115,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
 
     @Override
     public void applyTurn() {
-        if (isClient()) {
+        if (isRemote()) {
             return;
         }
 

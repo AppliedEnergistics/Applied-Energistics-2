@@ -40,7 +40,7 @@ public class MeteoriteSpawner {
         int minY = 10 + stepSize;
         BlockPos.Mutable mutablePos = startPos.toMutable();
 
-        mutablePos.move(Direction.field_11033, stepSize);
+        mutablePos.move(Direction.DOWN, stepSize);
 
         while (mutablePos.getY() > minY) {
             PlacedMeteoriteSettings spawned = trySpawnMeteorite(world, mutablePos, coreRadius, craterType, pureCrater);

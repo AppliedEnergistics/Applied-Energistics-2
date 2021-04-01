@@ -240,7 +240,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
     @Override
     public boolean isPowered() {
-        if (isClient()) {
+        if (isRemote()) {
             return (this.state & BIT_POWER_MASK) == BIT_POWER_MASK;
         }
 

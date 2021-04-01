@@ -18,19 +18,17 @@
 
 package appeng.block.networking;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import appeng.tile.networking.CableBusTileEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
@@ -38,16 +36,18 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootParameters;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -62,6 +62,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import appeng.api.parts.IFacadeContainer;
@@ -74,26 +76,27 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.helpers.AEMaterials;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
+import appeng.tile.AEBaseTileEntity;
+import appeng.tile.networking.CableBusTileEntity;
 import appeng.util.Platform;
 
-public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade {
+public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade, IWaterLoggable {
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
     private static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
+    private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public CableBusBlock() {
         super(defaultProps(AEMaterials.GLASS).notSolid().noDrops().variableOpacity()
                 .setLightLevel(state -> state.get(LIGHT_LEVEL)));
-        setDefaultState(getDefaultState().with(LIGHT_LEVEL, 0));
+        setDefaultState(getDefaultState().with(LIGHT_LEVEL, 0).with(WATERLOGGED, false));
     }
 
     static {
@@ -118,12 +121,11 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     @Environment(EnvType.CLIENT)
     public void animateTick(final BlockState state, final World worldIn, final BlockPos pos, final Random rand) {
-        this.cb(worldIn, pos).randomDisplayTick(worldIn, pos, rand);
+        this.cb(worldIn, pos).animateTick(worldIn, pos, rand);
     }
 
     @Override
-    public int getWeakPower(final BlockState state, final IBlockReader w, final BlockPos pos,
-            final Direction side) {
+    public int getWeakPower(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
         return this.cb(w, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
@@ -140,8 +142,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public int getStrongPower(BlockState state, IBlockReader world, BlockPos pos, Direction direction) {
-        return this.cb(world, pos).isProvidingStrongPower(direction.getOpposite()); // TODO:
+    public int getStrongPower(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
+        return this.cb(w, pos).isProvidingStrongPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
     }
@@ -149,7 +151,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
-        builder.add(LIGHT_LEVEL);
+        builder.add(LIGHT_LEVEL, WATERLOGGED);
     }
 
     // FIXME: Must hook isClimbing ourselves
@@ -159,9 +161,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 // FIXME FABRIC }
 
     @Override
-    public boolean isReplaceable(BlockState state, BlockItemUseContext context) {
+    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
         // FIXME: Potentially check the fluid one too
-        return super.isReplaceable(state, context) && this.cb(context.getWorld(), context.getPos()).isEmpty();
+        return super.isReplaceable(state, useContext) && this.cb(useContext.getWorld(), useContext.getPos()).isEmpty();
     }
 
     // We drop the parts and the facades here, and the contents of the parts are handled by the block entity.
@@ -304,7 +306,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         if (!world.isRemote()) {
-            this.cb(world, pos).onNeighborChanged(world, pos, fromPos);
+            this.cb(world, pos).onneighborUpdate(world, pos, fromPos);
         }
     }
 
@@ -335,7 +337,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
         if (worldIn.isRemote()) {
-            final RayTraceResult rtr = AppEng.instance().getRTR();
+            final RayTraceResult rtr = Minecraft.getInstance().objectMouseOver;
             if (rtr instanceof BlockRayTraceResult) {
                 BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
                 if (brtr.getPos().equals(pos)) {
@@ -423,6 +425,35 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         }
         int lightLevel = te.getCableBus().getLightValue();
         return super.updateBlockStateFromTileEntity(currentState, te).with(LIGHT_LEVEL, lightLevel);
+    }
+
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        BlockPos pos = context.getPos();
+        FluidState fluidState = context.getWorld().getFluidState(pos);
+        BlockState blockState = this.getDefaultState()
+                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+
+        return blockState;
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState blockState) {
+        return blockState.get(WATERLOGGED).booleanValue()
+                ? Fluids.WATER.getStillFluidState(false)
+                : super.getFluidState(blockState);
+    }
+
+    @Override
+    public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
+            BlockPos currentPos, BlockPos facingPos) {
+        if (blockState.get(WATERLOGGED)) {
+            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickRate(world));
+        }
+
+        return super.updatePostPlacement(blockState, facing, facingState, world, currentPos, facingPos);
     }
 
 }

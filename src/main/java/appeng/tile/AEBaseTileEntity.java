@@ -232,6 +232,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         } else {
             // TODO: Optimize Network Load
             if (this.world != null && !this.isRemoved() && !notLoaded()) {
+
                 boolean alreadyUpdated = false;
                 // Let the block update it's own state with our internal state changes
                 BlockState currentState = getBlockState();
@@ -321,11 +322,11 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * returns the contents of the block entity, into the world, defaults to dropping everything in the inventory.
+     * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
      *
      * @param w     world
      * @param pos   block position
-     * @param drops drops of block entity
+     * @param drops drops of tile entity
      */
     @Override
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
@@ -340,6 +341,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * null means nothing to store...
      *
      * @param from source of settings
+     *
      * @return compound of source
      */
     public CompoundNBT downloadSettings(final SettingsFrom from) {
@@ -375,7 +377,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
 
     @Override
     public ITextComponent getCustomInventoryName() {
-        return new StringTextComponent(this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
+        return new StringTextComponent(
+                this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
     }
 
     @Override
@@ -389,9 +392,9 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * Checks if this block entity is remote (we are running on the logical client side).
+     * Checks if this tile entity is remote (we are running on the logical client side).
      */
-    public boolean isClient() {
+    public boolean isRemote() {
         World world = getWorld();
         return world == null || world.isRemote();
     }
@@ -401,7 +404,16 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     public void saveChanges() {
-        if (this.world != null) {
+        if (this.world == null) {
+            return;
+        }
+
+        // Clientside is marked immediately as dirty as there is no queue processing
+        // Serverside is only queued once per tick to avoid costly operations
+        // TODO: Evaluate if this is still necessary
+        if (this.world.isRemote) {
+            this.markDirty();
+        } else {
             this.world.markChunkDirty(this.pos, this);
             if (!this.markDirtyQueued) {
                 TickHandler.instance().addCallable(null, this::markDirtyAtEndOfTick);

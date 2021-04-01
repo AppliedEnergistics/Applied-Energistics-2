@@ -72,56 +72,56 @@ class SpatialPylonBakedModel implements IBakedModel, FabricBakedModel {
             Direction ori = null;
             int displayAxis = flags & SpatialPylonTileEntity.DISPLAY_Z;
             if (displayAxis == SpatialPylonTileEntity.DISPLAY_X) {
-                ori = Direction.field_11034;
+                ori = Direction.EAST;
 
                 if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
-                    builder.setUvRotation(Direction.field_11035, 1);
-                    builder.setUvRotation(Direction.field_11043, 1);
-                    builder.setUvRotation(Direction.field_11036, 2);
-                    builder.setUvRotation(Direction.field_11033, 2);
+                    builder.setUvRotation(Direction.SOUTH, 1);
+                    builder.setUvRotation(Direction.NORTH, 1);
+                    builder.setUvRotation(Direction.UP, 2);
+                    builder.setUvRotation(Direction.DOWN, 2);
                 } else if ((flags
                         & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN) {
-                    builder.setUvRotation(Direction.field_11035, 2);
-                    builder.setUvRotation(Direction.field_11043, 2);
-                    builder.setUvRotation(Direction.field_11036, 1);
-                    builder.setUvRotation(Direction.field_11033, 1);
+                    builder.setUvRotation(Direction.SOUTH, 2);
+                    builder.setUvRotation(Direction.NORTH, 2);
+                    builder.setUvRotation(Direction.UP, 1);
+                    builder.setUvRotation(Direction.DOWN, 1);
                 } else {
-                    builder.setUvRotation(Direction.field_11035, 1);
-                    builder.setUvRotation(Direction.field_11043, 1);
-                    builder.setUvRotation(Direction.field_11036, 1);
-                    builder.setUvRotation(Direction.field_11033, 1);
+                    builder.setUvRotation(Direction.SOUTH, 1);
+                    builder.setUvRotation(Direction.NORTH, 1);
+                    builder.setUvRotation(Direction.UP, 1);
+                    builder.setUvRotation(Direction.DOWN, 1);
                 }
             } else if (displayAxis == SpatialPylonTileEntity.DISPLAY_Y) {
-                ori = Direction.field_11036;
+                ori = Direction.UP;
                 if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
-                    builder.setUvRotation(Direction.field_11043, 3);
-                    builder.setUvRotation(Direction.field_11035, 3);
-                    builder.setUvRotation(Direction.field_11034, 3);
-                    builder.setUvRotation(Direction.field_11039, 3);
+                    builder.setUvRotation(Direction.NORTH, 3);
+                    builder.setUvRotation(Direction.SOUTH, 3);
+                    builder.setUvRotation(Direction.EAST, 3);
+                    builder.setUvRotation(Direction.WEST, 3);
                 }
             } else if (displayAxis == SpatialPylonTileEntity.DISPLAY_Z) {
-                ori = Direction.field_11043;
+                ori = Direction.NORTH;
                 if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
-                    builder.setUvRotation(Direction.field_11034, 2);
-                    builder.setUvRotation(Direction.field_11039, 1);
+                    builder.setUvRotation(Direction.EAST, 2);
+                    builder.setUvRotation(Direction.WEST, 1);
                 } else if ((flags
                         & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN) {
-                    builder.setUvRotation(Direction.field_11034, 1);
-                    builder.setUvRotation(Direction.field_11039, 2);
-                    builder.setUvRotation(Direction.field_11036, 3);
-                    builder.setUvRotation(Direction.field_11033, 3);
+                    builder.setUvRotation(Direction.EAST, 1);
+                    builder.setUvRotation(Direction.WEST, 2);
+                    builder.setUvRotation(Direction.UP, 3);
+                    builder.setUvRotation(Direction.DOWN, 3);
                 } else {
-                    builder.setUvRotation(Direction.field_11034, 1);
-                    builder.setUvRotation(Direction.field_11039, 2);
+                    builder.setUvRotation(Direction.EAST, 1);
+                    builder.setUvRotation(Direction.WEST, 2);
                 }
             }
 
-            builder.setTextures(this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11036)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11033)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11043)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11035)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11034)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11039)));
+            builder.setTextures(this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.UP)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.DOWN)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.NORTH)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.SOUTH)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.EAST)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.WEST)));
             builder.addCube(0, 0, 0, 16, 16, 16);
 
             if ((flags
@@ -129,12 +129,12 @@ class SpatialPylonBakedModel implements IBakedModel, FabricBakedModel {
                 builder.setEmissiveMaterial(true);
             }
 
-            builder.setTextures(this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11036)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11033)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11043)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11035)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11034)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11039)));
+            builder.setTextures(this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.UP)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.DOWN)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.NORTH)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.SOUTH)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.EAST)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.WEST)));
             builder.addCube(0, 0, 0, 16, 16, 16);
         } else {
             builder.setTexture(this.textures.get(SpatialPylonTextureType.BASE));

@@ -164,7 +164,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             return true;
         }
 
-        if (hand == Hand.field_5810) {
+        if (hand == Hand.OFF_HAND) {
             return false;
         }
 

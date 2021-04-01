@@ -156,7 +156,7 @@ public class ClientHelper extends ServerHelper {
         final PlayerEntity player = mc.player;
         if (player.isCrouching()) {
             final boolean mainHand = player.getHeldItem(Hand.field_5808).getItem() instanceof IMouseWheelItem;
-            final boolean offHand = player.getHeldItem(Hand.field_5810).getItem() instanceof IMouseWheelItem;
+            final boolean offHand = player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
                 NetworkHandler.instance()
