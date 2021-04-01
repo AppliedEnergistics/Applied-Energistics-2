@@ -48,7 +48,10 @@ repositories {
         name = "shedaniel"
         url = "https://maven.shedaniel.me"
         content {
+            includeGroup "me.sargunvohra.mcmods"
             includeGroup "me.shedaniel"
+            includeGroup "me.shedaniel.cloth"
+            includeGroup "me.shedaniel.cloth.api"
         }
     }
 }
