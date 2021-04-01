@@ -21,19 +21,18 @@ package appeng.parts.misc;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
-
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
@@ -53,11 +52,11 @@ public class CableAnchorPart implements IPart {
 
     @PartModels
     public static final PartModel DEFAULT_MODELS = new PartModel(false,
-            new Identifier(AppEng.MOD_ID, "part/cable_anchor"));
+            new ResourceLocation(AppEng.MOD_ID, "part/cable_anchor"));
 
     @PartModels
     public static final PartModel FACADE_MODELS = new PartModel(false,
-            new Identifier(AppEng.MOD_ID, "part/cable_anchor_short"));
+            new ResourceLocation(AppEng.MOD_ID, "part/cable_anchor_short"));
 
     private ItemStack is = ItemStack.EMPTY;
     private IPartHost host = null;
@@ -97,12 +96,12 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
 
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
 
     }
 
@@ -113,11 +112,11 @@ public class CableAnchorPart implements IPart {
 
     @Override
     public boolean isLadder(final LivingEntity entity) {
-        return this.mySide.yOffset == 0 && (entity.horizontalCollision || !entity.isOnGround());
+        return this.mySide.yOffset == 0 && (entity.collidedHorizontally || !entity.isOnGround());
     }
 
     @Override
-    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -132,12 +131,12 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void writeToStream(final PacketByteBuf data) throws IOException {
+    public void writeToStream(final PacketBuffer data) throws IOException {
 
     }
 
     @Override
-    public boolean readFromStream(final PacketByteBuf data) throws IOException {
+    public boolean readFromStream(final PacketBuffer data) throws IOException {
         return false;
     }
 
@@ -167,18 +166,18 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
         this.host = host;
         this.mySide = side;
     }
 
     @Override
-    public boolean onActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         return false;
     }
 
     @Override
-    public boolean onShiftActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         return false;
     }
 

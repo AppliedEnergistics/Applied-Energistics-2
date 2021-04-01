@@ -5,8 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.util.ResourceLocation;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
 
@@ -41,7 +40,7 @@ public class CondenserOutputDisplay implements RecipeDisplay {
     }
 
     @Override
-    public Identifier getRecipeCategory() {
+    public ResourceLocation getRecipeCategory() {
         return CondenserCategory.UID;
     }
 

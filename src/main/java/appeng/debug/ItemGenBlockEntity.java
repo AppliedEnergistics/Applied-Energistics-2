@@ -22,11 +22,11 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -45,7 +45,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
 
     private final QueuedItemHandler handler = new QueuedItemHandler();
 
-    public ItemGenBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public ItemGenBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         if (POSSIBLE_ITEMS.isEmpty()) {
             for (final Item mi : Registry.ITEM) {
@@ -63,8 +63,8 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
                             continue;
                         }
 
-                        final DefaultedList<ItemStack> list = DefaultedList.of();
-                        mi.appendStacks(mi.getGroup(), list);
+                        final NonNullList<ItemStack> list = NonNullList.create();
+                        mi.fillItemGroup(mi.getGroup(), list);
                         POSSIBLE_ITEMS.addAll(list);
                     }
                 }

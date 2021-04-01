@@ -19,11 +19,10 @@
 package appeng.spatial;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-
+import net.minecraft.world.chunk.IChunk;
 import appeng.api.movable.IMovableHandler;
 
 public class DefaultSpatialHandler implements IMovableHandler {
@@ -35,21 +34,21 @@ public class DefaultSpatialHandler implements IMovableHandler {
      * @return true
      */
     @Override
-    public boolean canHandle(final Class<? extends BlockEntity> myClass, final BlockEntity tile) {
+    public boolean canHandle(final Class<? extends TileEntity> myClass, final TileEntity tile) {
         return true;
     }
 
     @Override
-    public void moveTile(final BlockEntity te, final World w, final BlockPos newPosition) {
-        te.setLocation(w, newPosition);
+    public void moveTile(final TileEntity te, final World w, final BlockPos newPosition) {
+        te.setWorldAndPos(w, newPosition);
 
-        final Chunk c = w.getChunk(newPosition);
-        c.setBlockEntity(newPosition, te);
+        final IChunk c = w.getChunk(newPosition);
+        c.addTileEntity(newPosition, te);
 
-        if (w.getChunkManager().shouldTickBlock(newPosition)) {
+        if (w.getChunkProvider().canTick(newPosition)) {
             final BlockState state = w.getBlockState(newPosition);
-            w.addBlockEntity(te);
-            w.updateListeners(newPosition, state, state, 1);
+            w.addTileEntity(te);
+            w.notifyBlockUpdate(newPosition, state, state, 1);
         }
     }
 }

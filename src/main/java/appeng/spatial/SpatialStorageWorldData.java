@@ -5,12 +5,11 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.PersistentState;
-
+import net.minecraft.world.storage.WorldSavedData;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import appeng.core.AELog;
@@ -18,7 +17,7 @@ import appeng.core.AELog;
 /**
  * Extra data attached to the spatial storage world.
  */
-public class SpatialStorageWorldData extends PersistentState {
+public class SpatialStorageWorldData extends WorldSavedData {
 
     /**
      * ID of this data when it is attached to a world.
@@ -75,7 +74,7 @@ public class SpatialStorageWorldData extends PersistentState {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void read(CompoundNBT tag) {
         int version = tag.getInt(TAG_FORMAT);
         if (version != CURRENT_FORMAT) {
             // Currently no new format has been defined, as such anything but the current
@@ -83,9 +82,9 @@ public class SpatialStorageWorldData extends PersistentState {
             throw new IllegalStateException("Invalid AE2 spatial info version: " + version);
         }
 
-        ListTag plotsTag = tag.getList(TAG_PLOTS, NbtType.COMPOUND);
-        for (Tag plotTag : plotsTag) {
-            SpatialStoragePlot plot = SpatialStoragePlot.fromTag((CompoundTag) plotTag);
+        ListNBT plotsTag = tag.getList(TAG_PLOTS, NbtType.COMPOUND);
+        for (INBT plotTag : plotsTag) {
+            SpatialStoragePlot plot = SpatialStoragePlot.fromTag((CompoundNBT) plotTag);
 
             if (plots.containsKey(plot.getId())) {
                 AELog.warn("Overwriting duplicate plot id %s", plot.getId());
@@ -95,10 +94,10 @@ public class SpatialStorageWorldData extends PersistentState {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundNBT write(CompoundNBT tag) {
         tag.putInt(TAG_FORMAT, CURRENT_FORMAT);
 
-        ListTag plotTags = new ListTag();
+        ListNBT plotTags = new ListNBT();
         for (SpatialStoragePlot plot : plots.values()) {
             plotTags.add(plot.toTag());
         }

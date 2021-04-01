@@ -25,8 +25,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.util.ResourceLocation;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
@@ -64,16 +63,16 @@ import appeng.parts.PartModel;
  * @since rv6 30/04/2018
  */
 public class FluidImportBusPart extends SharedFluidBusPart {
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/fluid_import_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/fluid_import_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/fluid_import_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/fluid_import_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_has_channel"));
 
     private final IActionSource source;
 

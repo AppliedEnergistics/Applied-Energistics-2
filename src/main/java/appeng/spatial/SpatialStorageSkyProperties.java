@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.SkyProperties;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.world.DimensionRenderInfo;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Defines properties for how the sky in the spatial storage world is rendered.
@@ -14,21 +14,21 @@ import net.minecraft.util.math.Vec3d;
 public class SpatialStorageSkyProperties {
 
     // See the fabric version of this to get any idea what its doing
-    public static final SkyProperties INSTANCE = new SkyProperties(Float.NaN /* disables clouds */, false,
-            SkyProperties.SkyType.NONE /* we use a custom render mixin */, true, false) {
+    public static final DimensionRenderInfo INSTANCE = new DimensionRenderInfo(Float.NaN /* disables clouds */, false,
+            DimensionRenderInfo.FogType.field_25639 /* we use a custom render mixin */, true, false) {
         @Override
-        public Vec3d adjustFogColor(Vec3d color, float sunHeight) {
-            return Vec3d.ZERO;
+        public Vector3d method_28112(Vector3d color, float sunHeight) {
+            return Vector3d.ZERO;
         }
 
         @Override
-        public boolean useThickFog(int camX, int camY) {
+        public boolean method_28110(int camX, int camY) {
             return false;
         }
 
         @Nullable
         @Override
-        public float[] getFogColorOverride(float skyAngle, float tickDelta) {
+        public float[] method_28109(float skyAngle, float tickDelta) {
             return null;
         }
     };

@@ -4,13 +4,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.world.gen.feature.FeatureConfig;
+import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 /**
  * Extends a {@link OreFeatureConfig} with a chance.
  */
-public class ChargedQuartzOreConfig implements FeatureConfig {
+public class ChargedQuartzOreConfig implements IFeatureConfig {
 
     public static final Codec<ChargedQuartzOreConfig> CODEC = RecordCodecBuilder.create((instance) -> instance
             .group(BlockState.CODEC.fieldOf("target").forGetter((config) -> config.target),

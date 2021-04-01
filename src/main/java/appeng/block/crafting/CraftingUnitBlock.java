@@ -22,7 +22,7 @@ import appeng.tile.crafting.CraftingBlockEntity;
 
 public class CraftingUnitBlock extends AbstractCraftingUnitBlock<CraftingBlockEntity> {
 
-    public CraftingUnitBlock(Settings props, CraftingUnitType type) {
+    public CraftingUnitBlock(Properties props, CraftingUnitType type) {
         super(props, type);
     }
 

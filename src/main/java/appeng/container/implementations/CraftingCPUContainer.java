@@ -22,12 +22,10 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
-
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.network.PacketBuffer;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CraftingItemList;
@@ -51,7 +49,7 @@ import appeng.tile.crafting.CraftingBlockEntity;
 
 public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
-    public static ScreenHandlerType<CraftingCPUContainer> TYPE;
+    public static ContainerType<CraftingCPUContainer> TYPE;
 
     private static final ContainerHelper<CraftingCPUContainer, CraftingBlockEntity> helper = new ContainerHelper<>(
             CraftingCPUContainer::new, CraftingBlockEntity.class, SecurityPermissions.CRAFT)
@@ -76,7 +74,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
         this(TYPE, id, ip, te);
     }
 
-    public CraftingCPUContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip, final Object te) {
+    public CraftingCPUContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final Object te) {
         super(containerType, id, ip, te);
         final IActionHost host = (IActionHost) (te instanceof IActionHost ? te : null);
 
@@ -95,7 +93,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
         }
     }
 
-    public static CraftingCPUContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static CraftingCPUContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -139,7 +137,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     }
 
     @Override
-    public void removeListener(final ScreenHandlerListener c) {
+    public void removeListener(final IContainerListener c) {
         super.removeListener(c);
 
         if (this.getListeners().isEmpty() && this.getMonitor() != null) {
@@ -148,15 +146,15 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     }
 
     @Override
-    public void close(final PlayerEntity player) {
-        super.close(player);
+    public void onContainerClosed(final PlayerEntity player) {
+        super.onContainerClosed(player);
         if (this.getMonitor() != null) {
             this.getMonitor().removeListener(this);
         }
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         if (isServer() && this.getMonitor() != null && !this.list.isEmpty()) {
             try {
                 if (this.getEstimatedTime() >= 0) {
@@ -199,7 +197,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
                 // :P
             }
         }
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     @Override

@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
 import appeng.core.AELog;
 
 /**
@@ -16,13 +15,13 @@ public final class ContainerOpener {
     private ContainerOpener() {
     }
 
-    private static final Map<ScreenHandlerType<? extends AEBaseContainer>, Opener<?>> registry = new HashMap<>();
+    private static final Map<ContainerType<? extends AEBaseContainer>, Opener<?>> registry = new HashMap<>();
 
-    public static <T extends AEBaseContainer> void addOpener(ScreenHandlerType<T> type, Opener<T> opener) {
+    public static <T extends AEBaseContainer> void addOpener(ContainerType<T> type, Opener<T> opener) {
         registry.put(type, opener);
     }
 
-    public static boolean openContainer(ScreenHandlerType<?> type, PlayerEntity player, ContainerLocator locator) {
+    public static boolean openContainer(ContainerType<?> type, PlayerEntity player, ContainerLocator locator) {
         Opener<?> opener = registry.get(type);
         if (opener == null) {
             AELog.warn("Trying to open container for unknown container type {}", type);

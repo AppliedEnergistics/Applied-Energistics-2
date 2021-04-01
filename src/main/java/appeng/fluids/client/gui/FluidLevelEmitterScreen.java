@@ -1,9 +1,7 @@
 package appeng.fluids.client.gui;
 
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.NumberEntryType;
@@ -13,12 +11,13 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.core.localization.GuiText;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.FluidLevelEmitterContainer;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitterContainer> {
 
     private NumberEntryWidget level;
 
-    public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory, Text title) {
+    public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
     }
 
@@ -29,24 +28,24 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
         this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_FLUID_VOLUME);
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.addButtons(children::add, this::addButton);
-        this.level.setValue(handler.getReportingValue());
+        this.level.setValue(container.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
-        this.level.setOnConfirm(this::onClose);
+        this.level.setOnConfirm(this::closeScreen);
 
         this.changeFocus(true);
 
         final int y = 40;
         final int x = 80 + 57;
-        this.guiSlots.add(new FluidSlotWidget(this.handler.getFluidConfigInventory(), 0, 0, x, y));
+        this.guiSlots.add(new FluidSlotWidget(this.container.getFluidConfigInventory(), 0, 0, x, y));
     }
 
     private void saveReportingValue() {
-        this.level.getLongValue().ifPresent(handler::setReportingValue);
+        this.level.getLongValue().ifPresent(container::setReportingValue);
     }
 
     @Override
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.REDSTONE_EMITTER,
+        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_EMITTER,
                 RedstoneMode.LOW_SIGNAL);
         this.addButton(this.redstoneMode);
     }
@@ -62,7 +61,7 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     public void drawFG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY) {
         super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
 
-        this.textRenderer.draw(matrices, GuiText.FluidLevelEmitterUnit.text(), 110, 44, COLOR_DARK_GRAY);
+        this.font.method_30883(matrices, GuiText.FluidLevelEmitterUnit.text(), 110, 44, COLOR_DARK_GRAY);
     }
 
     @Override

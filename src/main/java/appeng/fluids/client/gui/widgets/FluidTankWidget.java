@@ -20,11 +20,9 @@ package appeng.fluids.client.gui.widgets;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
@@ -32,14 +30,15 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AEColor;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.fluids.util.IAEFluidTank;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 @Environment(EnvType.CLIENT)
-public class FluidTankWidget extends AbstractButtonWidget implements ITooltip {
+public class FluidTankWidget extends Widget implements ITooltip {
     private final IAEFluidTank tank;
     private final int slot;
 
     public FluidTankWidget(IAEFluidTank tank, int slot, int x, int y, int w, int h) {
-        super(x, y, w, h, LiteralText.EMPTY);
+        super(x, y, w, h, StringTextComponent.EMPTY);
         this.tank = tank;
         this.slot = slot;
     }
@@ -83,15 +82,15 @@ public class FluidTankWidget extends AbstractButtonWidget implements ITooltip {
     }
 
     @Override
-    public Text getTooltipMessage() {
+    public ITextComponent getTooltipMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
-            Text desc = fluid.getFluidStack().getName();
+            ITextComponent desc = fluid.getFluidStack().getName();
             String amountToText = fluid.getStackSize() + "mB";
 
-            return desc.copy().append("\n").append(amountToText);
+            return desc.copyRaw().appendString("\n").appendString(amountToText);
         }
-        return LiteralText.EMPTY;
+        return StringTextComponent.EMPTY;
     }
 
     @Override

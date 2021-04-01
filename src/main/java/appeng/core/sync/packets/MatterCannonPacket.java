@@ -22,10 +22,9 @@ import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-
+import net.minecraft.network.PacketBuffer;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -40,7 +39,7 @@ public class MatterCannonPacket extends BasePacket {
     private final double dz;
     private final byte len;
 
-    public MatterCannonPacket(final PacketByteBuf stream) {
+    public MatterCannonPacket(final PacketBuffer stream) {
         this.x = stream.readFloat();
         this.y = stream.readFloat();
         this.z = stream.readFloat();
@@ -64,7 +63,7 @@ public class MatterCannonPacket extends BasePacket {
         this.dz = dz / dlz;
         this.len = len;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeFloat((float) x);
@@ -83,7 +82,7 @@ public class MatterCannonPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
             for (int a = 1; a < this.len; a++) {
-                MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.MATTER_CANNON,
+                Minecraft.getInstance().particles.addParticle(ParticleTypes.MATTER_CANNON,
                         this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, 0, 0, 0);
             }
         } catch (final Exception ignored) {

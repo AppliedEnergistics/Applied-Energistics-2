@@ -1,10 +1,8 @@
 package appeng.integration.modules.jei;
 
-import net.minecraft.util.Identifier;
-
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.plugin.crafting.DefaultCraftingCategory;
-
+import net.minecraft.util.ResourceLocation;
 import appeng.core.AppEng;
 import appeng.core.FacadeCreativeTab;
 
@@ -13,10 +11,10 @@ import appeng.core.FacadeCreativeTab;
  */
 public class FacadeRecipeCategory extends DefaultCraftingCategory {
 
-    public static final Identifier ID = AppEng.makeId("facades");
+    public static final ResourceLocation ID = AppEng.makeId("facades");
 
     @Override
-    public Identifier getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return ID;
     }
 
@@ -27,7 +25,7 @@ public class FacadeRecipeCategory extends DefaultCraftingCategory {
 
     @Override
     public String getCategoryName() {
-        return FacadeCreativeTab.getGroup().getTranslationKey().getString();
+        return FacadeCreativeTab.getGroup().getGroupName().getString();
     }
 
 }

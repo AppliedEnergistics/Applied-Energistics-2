@@ -23,17 +23,17 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.client.EffectType;
@@ -52,7 +52,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     static {
         final double onePixel = 2.0 / 16.0;
         SHAPE = VoxelShapes
-                .cuboid(new Box(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+                .create(new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 
     public QuantumLinkChamberBlock() {
@@ -60,7 +60,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
+    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
         if (bridge != null) {
             if (bridge.hasQES()) {
@@ -73,10 +73,10 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (p.isInSneakingPose()) {
-            return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (p.isCrouching()) {
+            return ActionResultType.field_5811;
         }
 
         final QuantumBridgeBlockEntity tg = this.getBlockEntity(w, pos);
@@ -84,13 +84,13 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.field_5812;
         }
-        return ActionResult.PASS;
+        return ActionResultType.field_5811;
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return SHAPE;
     }
 

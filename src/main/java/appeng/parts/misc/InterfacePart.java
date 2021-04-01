@@ -22,18 +22,16 @@ import java.util.EnumSet;
 import java.util.List;
 
 import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -77,19 +75,19 @@ import appeng.util.inv.InvOperation;
 public class InterfacePart extends BasicStatePart implements IGridTickable, IStorageMonitorable, IInventoryDestination,
         IInterfaceHost, IAEAppEngInventory, IPriorityHost {
 
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/interface_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/interface_base");
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/interface_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/interface_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/interface_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
 
     private final DualityInterface duality = new DualityInterface(this.getProxy(), this);
 
@@ -124,13 +122,13 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.duality.readFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         this.duality.writeToNBT(data);
     }
@@ -162,7 +160,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity p, final Hand hand, final Vec3d pos) {
+    public boolean onPartActivate(final PlayerEntity p, final Hand hand, final Vector3d pos) {
         if (Platform.isServer()) {
             ContainerOpener.openContainer(InterfaceContainer.TYPE, p, ContainerLocator.forPart(this));
         }
@@ -206,7 +204,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public BlockEntity getBlockEntity() {
+    public TileEntity getBlockEntity() {
         return super.getHost().getTile();
     }
 
@@ -272,7 +270,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType() {
+    public ContainerType<?> getContainerType() {
         return InterfaceContainer.TYPE;
     }
 }

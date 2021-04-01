@@ -19,9 +19,7 @@
 package appeng.client.me;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.tile.inventory.AppEngInternalInventory;
 
 public class ClientDCInternalInv implements Comparable<ClientDCInternalInv> {
@@ -33,7 +31,7 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv> {
     private final long id;
     private final long sortBy;
 
-    public ClientDCInternalInv(final int size, final long id, final long sortBy, final Text name) {
+    public ClientDCInternalInv(final int size, final long id, final long sortBy, final ITextComponent name) {
         this.inventory = new AppEngInternalInventory(null, size);
         this.searchName = name.getString().toLowerCase();
         this.formattedName = name.getString(); // FIXME FABRIC no longer formatted!

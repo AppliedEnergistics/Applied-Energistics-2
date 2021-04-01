@@ -23,11 +23,11 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
@@ -40,19 +40,19 @@ import appeng.util.inv.InvOperation;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements IAEAppEngInventory {
 
-    public AEBaseInvBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public AEBaseInvBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         final FixedItemInv inv = this.getInternalInventory();
         if (inv != EmptyFixedItemInv.INSTANCE) {
-            final CompoundTag opt = data.getCompound("inv");
+            final CompoundNBT opt = data.getCompound("inv");
             for (int x = 0; x < inv.getSlotCount(); x++) {
-                final CompoundTag item = opt.getCompound("item" + x);
-                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.fromTag(item));
+                final CompoundNBT item = opt.getCompound("item" + x);
+                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.read(item));
             }
         }
     }
@@ -67,16 +67,16 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         final FixedItemInv inv = this.getInternalInventory();
         if (inv != EmptyFixedItemInv.INSTANCE) {
-            final CompoundTag opt = new CompoundTag();
+            final CompoundNBT opt = new CompoundNBT();
             for (int x = 0; x < inv.getSlotCount(); x++) {
-                final CompoundTag item = new CompoundTag();
+                final CompoundNBT item = new CompoundNBT();
                 final ItemStack is = inv.getInvStack(x);
                 if (!is.isEmpty()) {
-                    is.toTag(item);
+                    is.write(item);
                 }
                 opt.put("item" + x, item);
             }

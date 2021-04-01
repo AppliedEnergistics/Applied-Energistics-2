@@ -3,13 +3,11 @@ package appeng.fluids.client.gui.widgets;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Set;
-
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.GroupedFluidInvView;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
@@ -33,7 +31,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public void drawContent(final MinecraftClient mc, final int mouseX, final int mouseY, final float partialTicks) {
+    public void drawContent(final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
             // The tooltip area coincides with the area of the slot
@@ -47,7 +45,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
 
     @Override
     public boolean canClick(final PlayerEntity player) {
-        final ItemStack mouseStack = player.inventory.getCursorStack();
+        final ItemStack mouseStack = player.inventory.getItemStack();
         return mouseStack.isEmpty() || FluidAttributes.EXTRACTABLE.getFirstOrNull(mouseStack) != null;
     }
 
@@ -67,12 +65,12 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public Text getTooltipMessage() {
+    public ITextComponent getTooltipMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
             return fluid.getFluidStack().getName();
         }
-        return LiteralText.EMPTY;
+        return StringTextComponent.EMPTY;
     }
 
     @Override

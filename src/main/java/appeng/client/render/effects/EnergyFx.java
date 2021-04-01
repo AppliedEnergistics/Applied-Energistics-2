@@ -18,63 +18,63 @@
 
 package appeng.client.render.effects;
 
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.client.particle.SpriteBillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class EnergyFx extends SpriteBillboardParticle {
+public class EnergyFx extends SpriteTexturedParticle {
 
     private final int startBlkX;
     private final int startBlkY;
     private final int startBlkZ;
 
     public EnergyFx(ClientWorld world, final double par2, final double par4, final double par6,
-            final SpriteProvider sprite) {
+            final IAnimatedSprite sprite) {
         super(world, par2, par4, par6);
-        this.gravityStrength = 0;
-        this.colorBlue = 1;
-        this.colorGreen = 1;
-        this.colorRed = 1;
-        this.colorAlpha = 1.4f;
-        this.scale = 3.5f;
-        this.setSprite(sprite);
+        this.particleGravity = 0;
+        this.particleBlue = 1;
+        this.particleGreen = 1;
+        this.particleRed = 1;
+        this.particleAlpha = 1.4f;
+        this.particleScale = 3.5f;
+        this.selectSpriteRandomly(sprite);
 
-        this.startBlkX = MathHelper.floor(this.x);
-        this.startBlkY = MathHelper.floor(this.y);
-        this.startBlkZ = MathHelper.floor(this.z);
+        this.startBlkX = MathHelper.floor(this.posX);
+        this.startBlkY = MathHelper.floor(this.posY);
+        this.startBlkZ = MathHelper.floor(this.posZ);
     }
 
     @Override
-    public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
-    public float getSize(float tickDelta) {
-        return 0.1f * this.scale;
+    public float getScale(float tickDelta) {
+        return 0.1f * this.particleScale;
     }
 
     @Override
-    public void buildGeometry(VertexConsumer buffer, Camera camera, float partialTicks) {
-        float x = (float) (this.prevPosX + (this.x - this.prevPosX) * partialTicks);
-        float y = (float) (this.prevPosY + (this.y - this.prevPosY) * partialTicks);
-        float z = (float) (this.prevPosZ + (this.z - this.prevPosZ) * partialTicks);
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo camera, float partialTicks) {
+        float x = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTicks);
+        float y = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTicks);
+        float z = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks);
 
         final int blkX = MathHelper.floor(x);
         final int blkY = MathHelper.floor(y);
         final int blkZ = MathHelper.floor(z);
 
         if (blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ) {
-            super.buildGeometry(buffer, camera, partialTicks);
+            super.renderParticle(buffer, camera, partialTicks);
         }
     }
 
@@ -83,27 +83,27 @@ public class EnergyFx extends SpriteBillboardParticle {
         super.tick();
         this.onGround = false;
 
-        this.scale *= 0.89f;
-        this.colorAlpha *= 0.89f;
+        this.particleScale *= 0.89f;
+        this.particleAlpha *= 0.89f;
     }
 
     public void setVelocityX(float velocityX) {
-        this.velocityX = velocityX;
+        this.motionX = velocityX;
     }
 
     public void setVelocityY(float velocityY) {
-        this.velocityY = velocityY;
+        this.motionY = velocityY;
     }
 
     public void setVelocityZ(float velocityZ) {
-        this.velocityZ = velocityZ;
+        this.motionZ = velocityZ;
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<EnergyParticleData> {
-        private final SpriteProvider spriteSet;
+    public static class Factory implements IParticleFactory<EnergyParticleData> {
+        private final IAnimatedSprite spriteSet;
 
-        public Factory(SpriteProvider spriteSet) {
+        public Factory(IAnimatedSprite spriteSet) {
             this.spriteSet = spriteSet;
         }
 
@@ -115,10 +115,10 @@ public class EnergyFx extends SpriteBillboardParticle {
             result.setVelocityY((float) ySpeed);
             result.setVelocityZ((float) zSpeed);
             if (effect.forItem) {
-                result.x += -0.2 * effect.direction.xOffset;
-                result.y += -0.2 * effect.direction.yOffset;
-                result.z += -0.2 * effect.direction.zOffset;
-                result.scale *= 0.8f;
+                result.posX += -0.2 * effect.direction.xOffset;
+                result.posY += -0.2 * effect.direction.yOffset;
+                result.posZ += -0.2 * effect.direction.zOffset;
+                result.particleScale *= 0.8f;
             }
             return result;
         }

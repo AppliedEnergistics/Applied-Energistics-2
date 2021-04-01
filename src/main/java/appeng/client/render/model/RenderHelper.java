@@ -20,13 +20,11 @@ package appeng.client.render.model;
 
 import java.util.EnumMap;
 import java.util.List;
-
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 
 // TODO: Investigate use of CubeBuilder instead
 final class RenderHelper {
@@ -47,25 +45,25 @@ final class RenderHelper {
         for (Direction facing : Direction.values()) {
             List<Vector3f> corners;
 
-            float offset = (facing.getDirection() == Direction.AxisDirection.NEGATIVE) ? 0 : 1;
+            float offset = (facing.getAxisDirection() == Direction.AxisDirection.field_11060) ? 0 : 1;
 
             switch (facing.getAxis()) {
                 default:
-                case X:
+                case field_11048:
                     corners = Lists.newArrayList(new Vector3f(offset, 1, 1), new Vector3f(offset, 0, 1),
                             new Vector3f(offset, 0, 0), new Vector3f(offset, 1, 0));
                     break;
-                case Y:
+                case field_11052:
                     corners = Lists.newArrayList(new Vector3f(1, offset, 1), new Vector3f(1, offset, 0),
                             new Vector3f(0, offset, 0), new Vector3f(0, offset, 1));
                     break;
-                case Z:
+                case field_11051:
                     corners = Lists.newArrayList(new Vector3f(0, 1, offset), new Vector3f(0, 0, offset),
                             new Vector3f(1, 0, offset), new Vector3f(1, 1, offset));
                     break;
             }
 
-            if (facing.getDirection() == Direction.AxisDirection.NEGATIVE) {
+            if (facing.getAxisDirection() == Direction.AxisDirection.field_11060) {
                 corners = Lists.reverse(corners);
             }
 
@@ -75,15 +73,15 @@ final class RenderHelper {
         return result;
     }
 
-    private static Vec3d adjust(Vec3d vec, Direction.Axis axis, double delta) {
+    private static Vector3d adjust(Vector3d vec, Direction.Axis axis, double delta) {
         switch (axis) {
             default:
-            case X:
-                return new Vec3d(vec.x + delta, vec.y, vec.z);
-            case Y:
-                return new Vec3d(vec.x, vec.y + delta, vec.z);
-            case Z:
-                return new Vec3d(vec.x, vec.y, vec.z + delta);
+            case field_11048:
+                return new Vector3d(vec.x + delta, vec.y, vec.z);
+            case field_11052:
+                return new Vector3d(vec.x, vec.y + delta, vec.z);
+            case field_11051:
+                return new Vector3d(vec.x, vec.y, vec.z + delta);
         }
     }
 }

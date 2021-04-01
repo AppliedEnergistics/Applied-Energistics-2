@@ -28,9 +28,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-
+import net.minecraft.world.server.ServerWorld;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 
@@ -63,7 +62,7 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
 
         // For silk touch purposes, enchant the fake tool
         if (harvestTool != null) {
-            EnchantmentHelper.set(ImmutableMap.of(Enchantments.SILK_TOUCH, 1), harvestTool);
+            EnchantmentHelper.setEnchantments(ImmutableMap.of(Enchantments.SILK_TOUCH, 1), harvestTool);
         }
 
         return harvestTool;

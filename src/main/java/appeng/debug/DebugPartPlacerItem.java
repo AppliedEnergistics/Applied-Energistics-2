@@ -1,19 +1,18 @@
 package appeng.debug;
 
 import java.util.Arrays;
-
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.ActionResult;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.parts.IPart;
@@ -31,43 +30,43 @@ import appeng.items.parts.PartItem;
  */
 public class DebugPartPlacerItem extends AEBaseItem implements AEToolItem {
 
-    public DebugPartPlacerItem(Settings properties) {
+    public DebugPartPlacerItem(Properties properties) {
         super(properties);
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         World world = context.getWorld();
-        if (world.isClient()) {
-            return ActionResult.PASS;
+        if (world.isRemote()) {
+            return ActionResultType.field_5811;
         }
 
         PlayerEntity player = context.getPlayer();
-        BlockPos pos = context.getBlockPos();
+        BlockPos pos = context.getPos();
 
         if (player == null) {
-            return ActionResult.PASS;
+            return ActionResultType.field_5811;
         }
 
         if (!player.isCreative()) {
-            player.sendSystemMessage(new LiteralText("Only usable in creative mode"), Util.NIL_UUID);
-            return ActionResult.FAIL;
+            player.sendMessage(new StringTextComponent("Only usable in creative mode"), Util.DUMMY_UUID);
+            return ActionResultType.field_5814;
         }
 
-        BlockEntity te = world.getBlockEntity(pos);
+        TileEntity te = world.getTileEntity(pos);
         if (!(te instanceof IPartHost)) {
-            player.sendSystemMessage(new LiteralText("Right-click something that will accept parts"), Util.NIL_UUID);
-            return ActionResult.FAIL;
+            player.sendMessage(new StringTextComponent("Right-click something that will accept parts"), Util.DUMMY_UUID);
+            return ActionResultType.field_5814;
         }
         IPartHost center = (IPartHost) te;
         IPart cable = center.getPart(AEPartLocation.INTERNAL);
         if (cable == null) {
-            player.sendSystemMessage(new LiteralText("Clicked part host must have an INSIDE part"), Util.NIL_UUID);
-            return ActionResult.FAIL;
+            player.sendMessage(new StringTextComponent("Clicked part host must have an INSIDE part"), Util.DUMMY_UUID);
+            return ActionResultType.field_5814;
         }
 
-        Direction face = context.getSide();
-        Vec3i offset = face.getVector();
+        Direction face = context.getFace();
+        Vector3i offset = face.getDirectionVec();
         Direction[] perpendicularFaces = Arrays.stream(Direction.values()).filter(d -> d.getAxis() != face.getAxis())
                 .toArray(Direction[]::new);
 
@@ -82,11 +81,11 @@ public class DebugPartPlacerItem extends AEBaseItem implements AEToolItem {
             }
 
             nextPos = nextPos.add(offset);
-            if (!world.setBlockState(nextPos, te.getCachedState())) {
+            if (!world.setBlockState(nextPos, te.getBlockState())) {
                 continue;
             }
 
-            BlockEntity t = world.getBlockEntity(nextPos);
+            TileEntity t = world.getTileEntity(nextPos);
             if (!(t instanceof IPartHost)) {
                 continue;
             }
@@ -102,7 +101,7 @@ public class DebugPartPlacerItem extends AEBaseItem implements AEToolItem {
             }
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResultType.field_5812;
     }
 
 }

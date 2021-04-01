@@ -19,14 +19,13 @@
 package appeng.block.misc;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -39,25 +38,25 @@ import appeng.util.Platform;
 public class CondenserBlock extends AEBaseTileBlock<CondenserBlockEntity> {
 
     public CondenserBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.IRON));
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (player.isInSneakingPose()) {
-            return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (player.isCrouching()) {
+            return ActionResultType.field_5811;
         }
 
         if (Platform.isServer()) {
             final CondenserBlockEntity tc = this.getBlockEntity(w, pos);
-            if (tc != null && !player.isInSneakingPose()) {
+            if (tc != null && !player.isCrouching()) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tc, hit.getSide()));
-                return ActionResult.SUCCESS;
+                        ContainerLocator.forTileEntitySide(tc, hit.getFace()));
+                return ActionResultType.field_5812;
             }
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResultType.field_5812;
     }
 }

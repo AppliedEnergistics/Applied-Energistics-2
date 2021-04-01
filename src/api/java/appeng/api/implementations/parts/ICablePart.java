@@ -26,8 +26,7 @@ package appeng.api.implementations.parts;
 import java.util.EnumSet;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.util.Direction;
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;

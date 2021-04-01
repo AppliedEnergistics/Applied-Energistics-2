@@ -18,19 +18,18 @@
 
 package appeng.client.render;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Vector3f;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * Helper methods for rendering TESRs.
@@ -45,29 +44,29 @@ public class TesrRenderHelper {
      */
     public static void rotateToFace(MatrixStack mStack, Direction face, byte spin) {
         switch (face) {
-            case UP:
-                mStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(270));
-                mStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(-spin * 90.0F));
+            case field_11036:
+                mStack.rotate(Vector3f.XP.rotationDegrees(270));
+                mStack.rotate(Vector3f.ZP.rotationDegrees(-spin * 90.0F));
                 break;
 
-            case DOWN:
-                mStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90.0F));
-                mStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(spin * -90.0F));
+            case field_11033:
+                mStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
+                mStack.rotate(Vector3f.ZP.rotationDegrees(spin * -90.0F));
                 break;
 
-            case EAST:
-                mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90.0F));
+            case field_11034:
+                mStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
                 break;
 
-            case WEST:
-                mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
+            case field_11039:
+                mStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
                 break;
 
-            case NORTH:
-                mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
+            case field_11043:
+                mStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
                 break;
 
-            case SOUTH:
+            case field_11035:
                 break;
 
             default:
@@ -81,7 +80,7 @@ public class TesrRenderHelper {
     /**
      * Render an item in 2D.
      */
-    public static void renderItem2d(MatrixStack matrixStack, VertexConsumerProvider buffers, ItemStack itemStack,
+    public static void renderItem2d(MatrixStack matrixStack, IRenderTypeBuffer buffers, ItemStack itemStack,
             float scale, int combinedLightIn, int combinedOverlayIn) {
         if (!itemStack.isEmpty()) {
             matrixStack.push();
@@ -92,8 +91,8 @@ public class TesrRenderHelper {
             // effect at least from head-on
             matrixStack.scale(scale, scale, 0.0002f);
 
-            MinecraftClient.getInstance().getItemRenderer().renderItem(itemStack, ModelTransformation.Mode.GUI,
-                    combinedLightIn, OverlayTexture.DEFAULT_UV, matrixStack, buffers);
+            Minecraft.getInstance().getItemRenderer().renderItem(itemStack, ItemCameraTransforms.TransformType.field_4317,
+                    combinedLightIn, OverlayTexture.NO_OVERLAY, matrixStack, buffers);
 
             matrixStack.pop();
 
@@ -109,7 +108,7 @@ public class TesrRenderHelper {
      * @param combinedLightIn
      * @param combinedOverlayIn
      */
-    public static void renderItem2dWithAmount(MatrixStack matrixStack, VertexConsumerProvider buffers,
+    public static void renderItem2dWithAmount(MatrixStack matrixStack, IRenderTypeBuffer buffers,
             IAEItemStack itemStack, float itemScale, float spacing, int combinedLightIn, int combinedOverlayIn) {
         final ItemStack renderStack = itemStack.asItemStackRepresentation();
 
@@ -119,14 +118,14 @@ public class TesrRenderHelper {
         final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm(stackSize);
 
         // Render the item count
-        final TextRenderer fr = MinecraftClient.getInstance().textRenderer;
-        final int width = fr.getWidth(renderedStackSize);
+        final FontRenderer fr = Minecraft.getInstance().fontRenderer;
+        final int width = fr.getStringWidth(renderedStackSize);
         matrixStack.push();
         matrixStack.translate(0.0f, spacing, 0.02f);
         matrixStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
         matrixStack.scale(0.5f, 0.5f, 0);
         matrixStack.translate(-0.5f * width, 0.0f, 0.5f);
-        fr.draw(renderedStackSize, 0, 0, -1, false, matrixStack.peek().getModel(), buffers, false, 0, 15728880);
+        fr.renderString(renderedStackSize, 0, 0, -1, false, matrixStack.getLast().getMatrix(), buffers, false, 0, 15728880);
         matrixStack.pop();
 
     }

@@ -23,7 +23,7 @@
 
 package appeng.api.util;
 
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.Direction;
 
 /**
  * Nearly all of AE's Tile Entities implement IOrientable.

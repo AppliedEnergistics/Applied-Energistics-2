@@ -22,15 +22,15 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -57,22 +57,22 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
 
     private final StorageTier tier;
 
-    public PortableCellItem(StorageTier tier, Item.Settings props) {
+    public PortableCellItem(StorageTier tier, Item.Properties props) {
         super(AEConfig.instance().getPortableCellBattery(), props);
         this.tier = tier;
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(final World w, final PlayerEntity player, final Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
         ContainerOpener.openContainer(MEPortableCellContainer.TYPE, player, ContainerLocator.forHand(player, hand));
-        return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
+        return new ActionResult<>(ActionResultType.field_5812, player.getHeldItem(hand));
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
-            final TooltipContext advancedTooltips) {
-        super.appendTooltip(stack, world, lines, advancedTooltips);
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        super.addInformation(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));

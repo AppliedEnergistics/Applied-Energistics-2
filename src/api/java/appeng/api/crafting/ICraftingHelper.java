@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.world.World;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -69,7 +69,7 @@ public interface ICraftingHelper {
      *                         recipe.
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
      */
-    ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in, ItemStack out,
+    ItemStack encodeCraftingPattern(@Nullable ItemStack stack, ICraftingRecipe recipe, ItemStack[] in, ItemStack out,
             boolean allowSubstitutes);
 
     /**
@@ -86,7 +86,7 @@ public interface ICraftingHelper {
      * The item backing the {@link ItemStack} needs to be an item returned by the encode methods of this class.
      *
      * @param itemStack    pattern
-     * @param world        world used to access the {@link net.minecraft.recipe.RecipeManager}.
+     * @param world        world used to access the {@link net.minecraft.item.crafting.RecipeManager}.
      * @param autoRecovery If true, the method will try to recover from changed recipe ids by searching the entire
      *                     recipe manager for a recipe matching the inputs. If this is successful, the given item stack
      *                     will be changed to reflect the new recipe id.

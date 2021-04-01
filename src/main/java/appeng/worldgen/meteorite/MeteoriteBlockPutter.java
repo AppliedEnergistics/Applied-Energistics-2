@@ -21,10 +21,10 @@ package appeng.worldgen.meteorite;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.IWorld;
 
 public class MeteoriteBlockPutter {
-    public boolean put(final WorldAccess w, BlockPos pos, final BlockState blk) {
+    public boolean put(final IWorld w, BlockPos pos, final BlockState blk) {
         final BlockState original = w.getBlockState(pos);
 
         if (original.getBlock() == Blocks.BEDROCK || original == blk) {

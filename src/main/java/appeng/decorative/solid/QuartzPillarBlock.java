@@ -20,36 +20,35 @@ package appeng.decorative.solid;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.Properties;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-
+import net.minecraft.world.IBlockReader;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.helpers.MetaRotation;
 
 public class QuartzPillarBlock extends AEDecorativeBlock implements IOrientableBlock {
-    public static final EnumProperty<Direction.Axis> AXIS = Properties.AXIS;
+    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
 
-    public QuartzPillarBlock(Settings props) {
+    public QuartzPillarBlock(Properties props) {
         super(props);
 
         // The upwards facing pillar is the default (i.e. for the item model)
-        this.setDefaultState(this.getDefaultState().with(AXIS, Direction.Axis.Y));
+        this.setDefaultState(this.getDefaultState().with(AXIS, Direction.Axis.field_11052));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(AXIS);
     }
 
     @Override
-    public IOrientable getOrientable(final BlockView w, final BlockPos pos) {
+    public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
         return new MetaRotation(w, pos, null);
     }
 

@@ -23,11 +23,10 @@
 
 package appeng.api.networking.crafting;
 
-import net.minecraft.text.Text;
-
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.data.IAEItemStack;
+import net.minecraft.util.text.ITextComponent;
 
 public interface ICraftingCPU extends IBaseMonitor<IAEItemStack> {
 
@@ -54,5 +53,5 @@ public interface ICraftingCPU extends IBaseMonitor<IAEItemStack> {
     /**
      * @return a null or the name of the cpu.
      */
-    Text getName();
+    ITextComponent getName();
 }

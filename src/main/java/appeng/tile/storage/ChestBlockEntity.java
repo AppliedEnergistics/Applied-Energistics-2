@@ -27,17 +27,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Tickable;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
@@ -115,7 +115,7 @@ import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.item.AEItemStack;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
-        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, Tickable {
+        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ITickableTileEntity {
 
     private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
     private static final int BIT_STATE_MASK = 0b111;
@@ -145,7 +145,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     // cell's inventory when a chest comes into view.
     private Item cellItem = Items.AIR;
 
-    public ChestBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public ChestBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -306,7 +306,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             return null;
         }
         // Client-side we'll need to actually use the synced state
-        if (world == null || world.isClient) {
+        if (world == null || world.isRemote) {
             return cellItem;
         }
         ItemStack cell = getCell();
@@ -356,7 +356,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public void tick() {
-        if (this.world.isClient) {
+        if (this.world.isRemote) {
             return;
         }
 
@@ -383,7 +383,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
 
         this.state = 0;
@@ -405,11 +405,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         // when it changes from
         // empty->non-empty, so when the cell is changed, it should re-send the state
         // because of that
-        data.writeVarInt(Item.getRawId(getCell().getItem()));
+        data.writeVarInt(Item.getIdFromItem(getCell().getItem()));
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
 
         final int oldState = this.state;
@@ -417,16 +417,16 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.state = data.readByte();
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
-        this.cellItem = Item.byRawId(data.readVarInt());
+        this.cellItem = Item.getItemById(data.readVarInt());
 
-        this.lastStateChange = this.world.getTime();
+        this.lastStateChange = this.world.getGameTime();
 
         return oldPaintedColor != this.paintedColor || (this.state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || c;
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.config.readFromNBT(data);
         this.priority = data.getInt("priority");
         if (data.contains("paintedColor")) {
@@ -435,8 +435,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         this.config.writeToNBT(data);
         data.putInt("priority", this.priority);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
@@ -554,7 +554,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public void blinkCell(final int slot) {
-        final long now = this.world.getTime();
+        final long now = this.world.getGameTime();
         if (now - this.lastStateChange > 8) {
             this.state = 0;
         }
@@ -616,7 +616,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (cellInventory != null) {
             cellInventory.persist();
         }
-        this.world.markDirty(this.pos, this);
+        this.world.markChunkDirty(this.pos, this);
     }
 
     private class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T> {
@@ -789,7 +789,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType() {
+    public ContainerType<?> getContainerType() {
         this.updateHandler();
         if (this.cellHandler != null) {
             if (this.cellHandler.getChannel() == Api.instance().storage()

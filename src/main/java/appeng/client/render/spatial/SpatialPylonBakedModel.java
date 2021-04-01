@@ -33,27 +33,26 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
-
+import net.minecraft.world.IBlockDisplayReader;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.spatial.SpatialPylonBlockEntity;
 
 /**
  * The baked model that will be used for rendering the spatial pylon.
  */
-class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
+class SpatialPylonBakedModel implements IBakedModel, FabricBakedModel {
 
-    private final Map<SpatialPylonTextureType, Sprite> textures;
+    private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
 
-    SpatialPylonBakedModel(Map<SpatialPylonTextureType, Sprite> textures) {
+    SpatialPylonBakedModel(Map<SpatialPylonTextureType, TextureAtlasSprite> textures) {
         this.textures = ImmutableMap.copyOf(textures);
     }
 
@@ -63,7 +62,7 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
         int flags = getFlags(blockView, pos);
 
@@ -73,56 +72,56 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
             Direction ori = null;
             int displayAxis = flags & SpatialPylonBlockEntity.DISPLAY_Z;
             if (displayAxis == SpatialPylonBlockEntity.DISPLAY_X) {
-                ori = Direction.EAST;
+                ori = Direction.field_11034;
 
                 if ((flags & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MAX) {
-                    builder.setUvRotation(Direction.SOUTH, 1);
-                    builder.setUvRotation(Direction.NORTH, 1);
-                    builder.setUvRotation(Direction.UP, 2);
-                    builder.setUvRotation(Direction.DOWN, 2);
+                    builder.setUvRotation(Direction.field_11035, 1);
+                    builder.setUvRotation(Direction.field_11043, 1);
+                    builder.setUvRotation(Direction.field_11036, 2);
+                    builder.setUvRotation(Direction.field_11033, 2);
                 } else if ((flags
                         & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MIN) {
-                    builder.setUvRotation(Direction.SOUTH, 2);
-                    builder.setUvRotation(Direction.NORTH, 2);
-                    builder.setUvRotation(Direction.UP, 1);
-                    builder.setUvRotation(Direction.DOWN, 1);
+                    builder.setUvRotation(Direction.field_11035, 2);
+                    builder.setUvRotation(Direction.field_11043, 2);
+                    builder.setUvRotation(Direction.field_11036, 1);
+                    builder.setUvRotation(Direction.field_11033, 1);
                 } else {
-                    builder.setUvRotation(Direction.SOUTH, 1);
-                    builder.setUvRotation(Direction.NORTH, 1);
-                    builder.setUvRotation(Direction.UP, 1);
-                    builder.setUvRotation(Direction.DOWN, 1);
+                    builder.setUvRotation(Direction.field_11035, 1);
+                    builder.setUvRotation(Direction.field_11043, 1);
+                    builder.setUvRotation(Direction.field_11036, 1);
+                    builder.setUvRotation(Direction.field_11033, 1);
                 }
             } else if (displayAxis == SpatialPylonBlockEntity.DISPLAY_Y) {
-                ori = Direction.UP;
+                ori = Direction.field_11036;
                 if ((flags & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MAX) {
-                    builder.setUvRotation(Direction.NORTH, 3);
-                    builder.setUvRotation(Direction.SOUTH, 3);
-                    builder.setUvRotation(Direction.EAST, 3);
-                    builder.setUvRotation(Direction.WEST, 3);
+                    builder.setUvRotation(Direction.field_11043, 3);
+                    builder.setUvRotation(Direction.field_11035, 3);
+                    builder.setUvRotation(Direction.field_11034, 3);
+                    builder.setUvRotation(Direction.field_11039, 3);
                 }
             } else if (displayAxis == SpatialPylonBlockEntity.DISPLAY_Z) {
-                ori = Direction.NORTH;
+                ori = Direction.field_11043;
                 if ((flags & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MAX) {
-                    builder.setUvRotation(Direction.EAST, 2);
-                    builder.setUvRotation(Direction.WEST, 1);
+                    builder.setUvRotation(Direction.field_11034, 2);
+                    builder.setUvRotation(Direction.field_11039, 1);
                 } else if ((flags
                         & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MIN) {
-                    builder.setUvRotation(Direction.EAST, 1);
-                    builder.setUvRotation(Direction.WEST, 2);
-                    builder.setUvRotation(Direction.UP, 3);
-                    builder.setUvRotation(Direction.DOWN, 3);
+                    builder.setUvRotation(Direction.field_11034, 1);
+                    builder.setUvRotation(Direction.field_11039, 2);
+                    builder.setUvRotation(Direction.field_11036, 3);
+                    builder.setUvRotation(Direction.field_11033, 3);
                 } else {
-                    builder.setUvRotation(Direction.EAST, 1);
-                    builder.setUvRotation(Direction.WEST, 2);
+                    builder.setUvRotation(Direction.field_11034, 1);
+                    builder.setUvRotation(Direction.field_11039, 2);
                 }
             }
 
-            builder.setTextures(this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.UP)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.DOWN)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.NORTH)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.SOUTH)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.EAST)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.WEST)));
+            builder.setTextures(this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11036)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11033)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11043)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11035)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11034)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.field_11039)));
             builder.addCube(0, 0, 0, 16, 16, 16);
 
             if ((flags
@@ -130,12 +129,12 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
                 builder.setEmissiveMaterial(true);
             }
 
-            builder.setTextures(this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.UP)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.DOWN)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.NORTH)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.SOUTH)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.EAST)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.WEST)));
+            builder.setTextures(this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11036)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11033)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11043)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11035)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11034)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.field_11039)));
             builder.addCube(0, 0, 0, 16, 16, 16);
         } else {
             builder.setTexture(this.textures.get(SpatialPylonTextureType.BASE));
@@ -161,7 +160,7 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
         return Collections.emptyList();
     }
 
-    private int getFlags(BlockRenderView blockRenderView, BlockPos pos) {
+    private int getFlags(IBlockDisplayReader blockRenderView, BlockPos pos) {
         if (!(blockRenderView instanceof RenderAttachedBlockView)) {
             return 0;
         }
@@ -215,32 +214,32 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getSprite() {
+    public TextureAtlasSprite getParticleTexture() {
         return this.textures.get(SpatialPylonTextureType.DIM);
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return ModelTransformation.NONE;
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return ItemCameraTransforms.DEFAULT;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 }

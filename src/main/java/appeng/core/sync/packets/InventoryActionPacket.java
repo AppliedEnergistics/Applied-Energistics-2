@@ -21,10 +21,9 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.network.PacketBuffer;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -43,7 +42,7 @@ public class InventoryActionPacket extends BasePacket {
     private final long id;
     private final IAEItemStack slotItem;
 
-    public InventoryActionPacket(final PacketByteBuf stream) {
+    public InventoryActionPacket(final PacketBuffer stream) {
         this.action = InventoryAction.values()[stream.readInt()];
         this.slot = stream.readInt();
         this.id = stream.readLong();
@@ -67,7 +66,7 @@ public class InventoryActionPacket extends BasePacket {
         this.id = 0;
         this.slotItem = slotItem;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(action.ordinal());
@@ -91,7 +90,7 @@ public class InventoryActionPacket extends BasePacket {
         this.id = id;
         this.slotItem = null;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(action.ordinal());
@@ -105,23 +104,23 @@ public class InventoryActionPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
-        if (sender.currentScreenHandler instanceof AEBaseContainer) {
-            final AEBaseContainer baseContainer = (AEBaseContainer) sender.currentScreenHandler;
+        if (sender.openContainer instanceof AEBaseContainer) {
+            final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
             if (this.action == InventoryAction.AUTO_CRAFT) {
                 final ContainerLocator locator = baseContainer.getLocator();
                 if (locator != null) {
                     ContainerOpener.openContainer(CraftAmountContainer.TYPE, player, locator);
 
-                    if (sender.currentScreenHandler instanceof CraftAmountContainer) {
-                        final CraftAmountContainer cca = (CraftAmountContainer) sender.currentScreenHandler;
+                    if (sender.openContainer instanceof CraftAmountContainer) {
+                        final CraftAmountContainer cca = (CraftAmountContainer) sender.openContainer;
 
                         if (baseContainer.getTargetStack() != null) {
-                            cca.getCraftingItem().setStack(baseContainer.getTargetStack().asItemStackRepresentation());
+                            cca.getCraftingItem().putStack(baseContainer.getTargetStack().asItemStackRepresentation());
                             // This is the *actual* item that matters, not the display item above
                             cca.setItemToCraft(baseContainer.getTargetStack());
                         }
 
-                        cca.sendContentUpdates();
+                        cca.detectAndSendChanges();
                     }
                 }
             } else {
@@ -134,9 +133,9 @@ public class InventoryActionPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         if (this.action == InventoryAction.UPDATE_HAND) {
             if (this.slotItem != null) {
-                player.inventory.setCursorStack(this.slotItem.createItemStack());
+                player.inventory.setItemStack(this.slotItem.createItemStack());
             } else {
-                player.inventory.setCursorStack(ItemStack.EMPTY);
+                player.inventory.setItemStack(ItemStack.EMPTY);
             }
         }
     }

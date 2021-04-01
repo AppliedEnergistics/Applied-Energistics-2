@@ -22,16 +22,16 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.util.ActionResult;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
@@ -44,15 +44,15 @@ import appeng.util.Platform;
 
 public class InterfaceBlock extends AEBaseTileBlock<InterfaceBlockEntity> {
 
-    private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.of("omnidirectional");
+    private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
     public InterfaceBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.IRON));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(OMNIDIRECTIONAL);
     }
 
@@ -62,21 +62,21 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceBlockEntity> {
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (p.isInSneakingPose()) {
-            return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (p.isCrouching()) {
+            return ActionResultType.field_5811;
         }
 
         final InterfaceBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(InterfaceContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.field_5812;
         }
-        return ActionResult.PASS;
+        return ActionResultType.field_5811;
     }
 
     @Override

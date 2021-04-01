@@ -19,10 +19,9 @@
 package appeng.fluids.parts;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.util.ResourceLocation;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.fluids.container.FluidTerminalContainer;
@@ -38,9 +37,9 @@ import appeng.parts.reporting.AbstractTerminalPart;
 public class FluidTerminalPart extends AbstractTerminalPart {
 
     @PartModels
-    public static final Identifier MODEL_OFF = new Identifier(AppEng.MOD_ID, "part/fluid_terminal_off");
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/fluid_terminal_off");
     @PartModels
-    public static final Identifier MODEL_ON = new Identifier(AppEng.MOD_ID, "part/fluid_terminal_on");
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/fluid_terminal_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
@@ -51,7 +50,7 @@ public class FluidTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType(PlayerEntity player) {
+    public ContainerType<?> getContainerType(PlayerEntity player) {
         return FluidTerminalContainer.TYPE;
     }
 

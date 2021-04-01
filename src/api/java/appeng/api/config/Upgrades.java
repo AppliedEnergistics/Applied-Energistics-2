@@ -38,9 +38,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum Upgrades {
     /**
@@ -55,7 +55,7 @@ public enum Upgrades {
 
     private final int tier;
     private final List<Supported> supported = new ArrayList<>();
-    private List<Text> supportedTooltipLines;
+    private List<ITextComponent> supportedTooltipLines;
 
     Upgrades(final int tier) {
         this.tier = tier;
@@ -68,7 +68,7 @@ public enum Upgrades {
         return this.supported;
     }
 
-    public void registerItem(final ItemConvertible item, final int maxSupported) {
+    public void registerItem(final IItemProvider item, final int maxSupported) {
         this.registerItem(item, maxSupported, null);
     }
 
@@ -80,24 +80,24 @@ public enum Upgrades {
      * @param tooltipGroup If more than one item of the same group are supported, the tooltip will show this translation
      *                     key instead. If the items have different maxSupported values, the highest will be shown.
      */
-    public void registerItem(final ItemConvertible item, final int maxSupported, @Nullable String tooltipGroup) {
+    public void registerItem(final IItemProvider item, final int maxSupported, @Nullable String tooltipGroup) {
         Preconditions.checkNotNull(item);
         this.supported.add(new Supported(item.asItem(), maxSupported, tooltipGroup));
         supportedTooltipLines = null; // Reset tooltip
     }
 
     @Environment(EnvType.CLIENT)
-    public List<Text> getTooltipLines() {
+    public List<ITextComponent> getTooltipLines() {
         if (supportedTooltipLines == null) {
             supported.sort(Comparator.comparingInt(o -> o.maxCount));
             supportedTooltipLines = new ArrayList<>(supported.size());
 
             // Use a separate set because the final text will include numbers
-            Set<Text> namesAdded = new HashSet<>();
+            Set<ITextComponent> namesAdded = new HashSet<>();
 
             for (int i = 0; i < supported.size(); i++) {
                 Supported supported = this.supported.get(i);
-                Text name = supported.item.getName();
+                ITextComponent name = supported.item.getName();
 
                 // If the group was already added by a previous item, skip this
                 if (supported.getTooltipGroup() != null && namesAdded.contains(supported.getTooltipGroup())) {
@@ -108,7 +108,7 @@ public enum Upgrades {
                 // instead
                 if (supported.getTooltipGroup() != null) {
                     for (int j = i + 1; j < this.supported.size(); j++) {
-                        Text otherGroup = this.supported.get(j).getTooltipGroup();
+                        ITextComponent otherGroup = this.supported.get(j).getTooltipGroup();
                         if (supported.getTooltipGroup().equals(otherGroup)) {
                             name = supported.getTooltipGroup();
                             break;
@@ -119,7 +119,7 @@ public enum Upgrades {
                 if (namesAdded.add(name)) {
                     // append the supported count only if its > 1
                     if (supported.maxCount > 1) {
-                        name = name.copy().append(" (" + supported.maxCount + ")");
+                        name = name.copyRaw().appendString(" (" + supported.maxCount + ")");
                     }
                     supportedTooltipLines.add(name);
                 }
@@ -164,8 +164,8 @@ public enum Upgrades {
             return item != null && this.item == item;
         }
 
-        public Text getTooltipGroup() {
-            return this.tooltipGroup != null ? new TranslatableText(this.tooltipGroup) : null;
+        public ITextComponent getTooltipGroup() {
+            return this.tooltipGroup != null ? new TranslationTextComponent(this.tooltipGroup) : null;
         }
 
     }

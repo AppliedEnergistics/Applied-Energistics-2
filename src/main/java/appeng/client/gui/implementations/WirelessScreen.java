@@ -18,45 +18,44 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.container.implementations.WirelessContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
 
-    public WirelessScreen(WirelessContainer container, PlayerInventory playerInventory, Text title) {
+    public WirelessScreen(WirelessContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.backgroundHeight = 166;
+        this.ySize = 166;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.addButton(CommonButtons.togglePowerUnit(this.x - 18, this.y + 8));
+        this.addButton(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
     }
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.Wireless.text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.Wireless.text()), 8, 6, 4210752);
+        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
 
-        if (handler.getRange() > 0) {
-            final Text firstMessage = GuiText.Range.withSuffix(": " + (handler.getRange() / 10.0) + " m");
-            final Text secondMessage = GuiText.PowerUsageRate
-                    .withSuffix(": " + Platform.formatPowerLong(handler.getDrain(), true));
+        if (container.getRange() > 0) {
+            final ITextComponent firstMessage = GuiText.Range.withSuffix(": " + (container.getRange() / 10.0) + " m");
+            final ITextComponent secondMessage = GuiText.PowerUsageRate
+                    .withSuffix(": " + Platform.formatPowerLong(container.getDrain(), true));
 
-            final int strWidth = Math.max(this.textRenderer.getWidth(firstMessage),
-                    this.textRenderer.getWidth(secondMessage));
-            final int cOffset = (this.backgroundWidth / 2) - (strWidth / 2);
-            this.textRenderer.draw(matrices, firstMessage, cOffset, 20, 4210752);
-            this.textRenderer.draw(matrices, secondMessage, cOffset, 20 + 12, 4210752);
+            final int strWidth = Math.max(this.font.getStringPropertyWidth(firstMessage),
+                    this.font.getStringPropertyWidth(secondMessage));
+            final int cOffset = (this.xSize / 2) - (strWidth / 2);
+            this.font.method_30883(matrices, firstMessage, cOffset, 20, 4210752);
+            this.font.method_30883(matrices, secondMessage, cOffset, 20 + 12, 4210752);
         }
     }
 
@@ -64,6 +63,6 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
         this.bindTexture("guis/wireless.png");
-        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 }

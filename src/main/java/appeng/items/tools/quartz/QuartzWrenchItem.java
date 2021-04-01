@@ -20,15 +20,15 @@ package appeng.items.tools.quartz;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IAEWrench;
@@ -44,22 +44,22 @@ import appeng.util.Platform;
 
 public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolItem {
 
-    public QuartzWrenchItem(Item.Settings props) {
+    public QuartzWrenchItem(Item.Properties props) {
         super(props);
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (player == null) {
-            return ActionResult.PASS;
+            return ActionResultType.field_5811;
         }
 
-        boolean isHoldingShift = player.isInSneakingPose();
+        boolean isHoldingShift = player.isCrouching();
         World world = context.getWorld();
-        BlockPos pos = context.getBlockPos();
+        BlockPos pos = context.getPos();
         if (!Platform.hasPermissions(new DimensionalCoord(world, pos), player)) {
-            return ActionResult.FAIL;
+            return ActionResultType.field_5814;
         }
 
         BlockState blockState = world.getBlockState(pos);
@@ -68,39 +68,39 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolIte
         if (isHoldingShift) {
 
             // Wrenching parts of cable buses or other part hosts
-            BlockEntity tile = world.getBlockEntity(pos);
+            TileEntity tile = world.getTileEntity(pos);
             IPartHost host = null;
             if (tile instanceof IPartHost) {
                 host = (IPartHost) tile;
             }
 
             if (host != null) {
-                if (!world.isClient) {
+                if (!world.isRemote) {
                     // Build the relative position within the part
-                    Vec3d relPos = context.getHitPos().subtract(pos.getX(), pos.getY(), pos.getZ());
+                    Vector3d relPos = context.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ());
 
                     final SelectedPart sp = PartPlacement.selectPart(player, host, relPos);
 
                     PartHostWrenching.wrenchPart(world, pos, host, sp);
                 }
-                return ActionResult.SUCCESS;
+                return ActionResultType.field_5812;
             }
 
             // Pass the use onto the block...
-            return block.onUse(blockState, world, pos, player, context.getHand(),
-                    new BlockHitResult(context.getHitPos(), context.getSide(), pos, context.hitsInsideBlock()));
+            return block.onBlockActivated(blockState, world, pos, player, context.getHand(),
+                    new BlockRayTraceResult(context.getHitVec(), context.getFace(), pos, context.isInside()));
         }
 
         if (block instanceof AEBaseBlock) {
-            if (!world.isClient) {
+            if (!world.isRemote) {
                 AEBaseBlock aeBlock = (AEBaseBlock) block;
-                if (aeBlock.rotateAroundFaceAxis(world, pos, context.getSide())) {
-                    player.swingHand(context.getHand());
+                if (aeBlock.rotateAroundFaceAxis(world, pos, context.getFace())) {
+                    player.swingArm(context.getHand());
                 }
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.field_5812;
         }
-        return ActionResult.PASS;
+        return ActionResultType.field_5811;
     }
 
     @Override

@@ -25,16 +25,16 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.block.SoundType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.FluidTags;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.api.util.AEPartLocation;
@@ -67,11 +67,11 @@ public class BlockTransitionEffectPacket extends BasePacket {
         this.direction = direction;
         this.soundMode = soundMode;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeBlockPos(pos);
-        int blockStateId = Block.getRawIdFromState(blockState);
+        int blockStateId = Block.getStateId(blockState);
         if (blockStateId == -1) {
             AELog.warn("Failed to find numeric id for block state %s", blockState);
         }
@@ -81,11 +81,11 @@ public class BlockTransitionEffectPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    public BlockTransitionEffectPacket(final PacketByteBuf stream) {
+    public BlockTransitionEffectPacket(final PacketBuffer stream) {
 
         this.pos = stream.readBlockPos();
         int blockStateId = stream.readInt();
-        BlockState blockState = Block.getStateFromRawId(blockStateId);
+        BlockState blockState = Block.getStateById(blockStateId);
         if (blockState == null) {
             AELog.warn("Received invalid blockstate id %d from server", blockStateId);
             blockState = Blocks.AIR.getDefaultState();
@@ -117,7 +117,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
                 double speedY = 0.1f * this.direction.yOffset;
                 double speedZ = 0.1f * this.direction.zOffset;
 
-                MinecraftClient.getInstance().particleManager.addParticle(data, x, y, z, speedX, speedY, speedZ);
+                Minecraft.getInstance().particles.addParticle(data, x, y, z, speedX, speedY, speedZ);
             }
         }
     }
@@ -139,7 +139,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
             volume = 1;
             pitch = 1;
         } else if (soundMode == SoundMode.BLOCK) {
-            BlockSoundGroup soundType = blockState.getSoundGroup();
+            SoundType soundType = blockState.getSoundType();
             soundEvent = soundType.getBreakSound();
             volume = soundType.volume;
             pitch = soundType.pitch;
@@ -147,9 +147,9 @@ public class BlockTransitionEffectPacket extends BasePacket {
             return;
         }
 
-        PositionedSoundInstance sound = new PositionedSoundInstance(soundEvent, SoundCategory.BLOCKS,
+        SimpleSound sound = new SimpleSound(soundEvent, SoundCategory.field_15245,
                 (volume + 1.0F) / 2.0F, pitch * 0.8F, pos);
-        MinecraftClient.getInstance().getSoundManager().play(sound);
+        Minecraft.getInstance().getSoundHandler().play(sound);
     }
 
 }

@@ -22,14 +22,12 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -58,14 +56,14 @@ public class ClientHelper extends ServerHelper {
     }
 
     @Override
-    public void bindTileEntitySpecialRenderer(final Class<? extends BlockEntity> tile, final AEBaseBlock blk) {
+    public void bindTileEntitySpecialRenderer(final Class<? extends TileEntity> tile, final AEBaseBlock blk) {
 
     }
 
     @Override
     public List<? extends PlayerEntity> getPlayers() {
         if (Platform.isClient()) {
-            return Collections.singletonList(MinecraftClient.getInstance().player);
+            return Collections.singletonList(Minecraft.getInstance().player);
         } else {
             return super.getPlayers();
         }
@@ -85,7 +83,7 @@ public class ClientHelper extends ServerHelper {
                     this.spawnEnergy(world, posX, posY, posZ);
                     return;
                 case LightningArc:
-                    this.spawnLightningArc(world, posX, posY, posZ, (Vec3d) o);
+                    this.spawnLightningArc(world, posX, posY, posZ, (Vector3d) o);
                     return;
                 default:
             }
@@ -94,13 +92,13 @@ public class ClientHelper extends ServerHelper {
 
     @Override
     public boolean shouldAddParticles(final Random r) {
-        switch (MinecraftClient.getInstance().options.particles) {
+        switch (Minecraft.getInstance().gameSettings.particles) {
             default:
-            case ALL:
+            case field_18197:
                 return true;
-            case DECREASED:
+            case field_18198:
                 return r.nextBoolean();
-            case MINIMAL:
+            case field_18199:
                 return false;
         }
     }
@@ -128,7 +126,7 @@ public class ClientHelper extends ServerHelper {
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
 
-            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2,
+            Minecraft.getInstance().particles.addParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2,
                     0.0D, 0.0D, 0.0D);
         }
     }
@@ -138,15 +136,15 @@ public class ClientHelper extends ServerHelper {
         final float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
         final float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
 
-        MinecraftClient.getInstance().particleManager.addParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y,
+        Minecraft.getInstance().particles.addParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y,
                 posZ + z, -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
     private void spawnLightningArc(final World world, final double posX, final double posY, final double posZ,
-            final Vec3d second) {
+            final Vector3d second) {
         final LightningFX fx = new LightningArcFX(world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f,
                 0.0f);
-        MinecraftClient.getInstance().particleManager.addParticle(fx);
+        Minecraft.getInstance().particles.addEffect(fx);
     }
 
     private void wheelEvent(final InputEvent.MouseScrollEvent me) {
@@ -154,11 +152,11 @@ public class ClientHelper extends ServerHelper {
             return;
         }
 
-        final MinecraftClient mc = MinecraftClient.getInstance();
+        final Minecraft mc = Minecraft.getInstance();
         final PlayerEntity player = mc.player;
-        if (player.isInSneakingPose()) {
-            final boolean mainHand = player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
-            final boolean offHand = player.getStackInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem;
+        if (player.isCrouching()) {
+            final boolean mainHand = player.getHeldItem(Hand.field_5808).getItem() instanceof IMouseWheelItem;
+            final boolean offHand = player.getHeldItem(Hand.field_5810).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
                 NetworkHandler.instance()

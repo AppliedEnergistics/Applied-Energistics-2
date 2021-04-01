@@ -25,8 +25,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
-import net.minecraft.world.BlockView;
-
+import net.minecraft.world.IBlockReader;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
@@ -72,34 +71,34 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
     }
 
     @Override
-    public void openWirelessTerminalGui(ItemStack item, BlockView world, PlayerEntity player, Hand hand) {
+    public void openWirelessTerminalGui(ItemStack item, IBlockReader world, PlayerEntity player, Hand hand) {
         if (Platform.isClient()) {
             return;
         }
 
         if (!this.isWirelessTerminal(item)) {
-            player.sendSystemMessage(PlayerMessages.DeviceNotWirelessTerminal.get(), Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.DeviceNotWirelessTerminal.get(), Util.DUMMY_UUID);
             return;
         }
 
         final IWirelessTermHandler handler = this.getWirelessTerminalHandler(item);
         final String unparsedKey = handler.getEncryptionKey(item);
         if (unparsedKey.isEmpty()) {
-            player.sendSystemMessage(PlayerMessages.DeviceNotLinked.get(), Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.DeviceNotLinked.get(), Util.DUMMY_UUID);
             return;
         }
 
         final long parsedKey = Long.parseLong(unparsedKey);
         final ILocatable securityStation = Api.instance().registries().locatable().getLocatableBy(parsedKey);
         if (securityStation == null) {
-            player.sendSystemMessage(PlayerMessages.StationCanNotBeLocated.get(), Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.StationCanNotBeLocated.get(), Util.DUMMY_UUID);
             return;
         }
 
         if (handler.hasPower(player, 0.5, item)) {
             ContainerOpener.openContainer(WirelessTermContainer.TYPE, player, ContainerLocator.forHand(player, hand));
         } else {
-            player.sendSystemMessage(PlayerMessages.DeviceNotPowered.get(), Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.DeviceNotPowered.get(), Util.DUMMY_UUID);
         }
     }
 }

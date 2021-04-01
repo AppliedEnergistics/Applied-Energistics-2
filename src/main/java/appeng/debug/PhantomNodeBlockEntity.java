@@ -19,10 +19,8 @@
 package appeng.debug;
 
 import java.util.EnumSet;
-
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
 import appeng.me.helpers.AENetworkProxy;
@@ -33,7 +31,7 @@ public class PhantomNodeBlockEntity extends AENetworkBlockEntity {
     private AENetworkProxy proxy = null;
     private boolean crashMode = false;
 
-    public PhantomNodeBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public PhantomNodeBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

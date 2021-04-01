@@ -22,8 +22,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.nbt.CompoundNBT;
 import appeng.api.config.FuzzyMode;
 
 /**
@@ -54,7 +53,7 @@ public class ItemComparisonHelper {
      * @return true, if both are identical.
      */
     public boolean isSameItem(@Nonnull final ItemStack is, @Nonnull final ItemStack filter) {
-        return ItemStack.areItemsEqual(is, filter) && this.isNbtTagEqual(is.getTag(), filter.getTag());
+        return ItemStack.areItemsEqualIgnoreDurability(is, filter) && this.isNbtTagEqual(is.getTag(), filter.getTag());
     }
 
     /**
@@ -95,7 +94,7 @@ public class ItemComparisonHelper {
 //			return true;
 //		}
 
-        return a.isItemEqual(b);
+        return a.isItemEqualIgnoreDurability(b);
     }
 
     /**
@@ -103,7 +102,7 @@ public class ItemComparisonHelper {
      * then the vanilla version which likes to fail when NBT Compound data changes order, it is pretty expensive
      * performance wise, so try an use shared tag compounds as long as the system remains in AE.
      */
-    public boolean isNbtTagEqual(final CompoundTag left, final CompoundTag right) {
+    public boolean isNbtTagEqual(final CompoundNBT left, final CompoundNBT right) {
         if (left == right) {
             return true;
         }

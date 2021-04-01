@@ -26,15 +26,13 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
@@ -42,9 +40,9 @@ public class SpatialPylonModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
-        Map<SpatialPylonTextureType, Sprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
+    public IBakedModel bakeModel(ModelBakery loader, Function<RenderMaterial, TextureAtlasSprite> textureGetter,
+            IModelTransform rotationContainer, ResourceLocation modelId) {
+        Map<SpatialPylonTextureType, TextureAtlasSprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
 
         for (SpatialPylonTextureType type : SpatialPylonTextureType.values()) {
             textures.put(type, textureGetter.apply(getTexturePath(type)));
@@ -54,13 +52,13 @@ public class SpatialPylonModel implements BasicUnbakedModel {
     }
 
     @Override
-    public Stream<SpriteIdentifier> getAdditionalTextures() {
+    public Stream<RenderMaterial> getAdditionalTextures() {
         return Arrays.stream(SpatialPylonTextureType.values()).map(SpatialPylonModel::getTexturePath);
     }
 
-    private static SpriteIdentifier getTexturePath(SpatialPylonTextureType type) {
-        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-                new Identifier(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
+    private static RenderMaterial getTexturePath(SpatialPylonTextureType type) {
+        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+                new ResourceLocation(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
     }
 
 }

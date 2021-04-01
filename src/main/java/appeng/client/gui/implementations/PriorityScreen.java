@@ -19,15 +19,13 @@
 package appeng.client.gui.implementations;
 
 import java.util.OptionalInt;
-
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
@@ -35,13 +33,13 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
     private NumberEntryWidget priority;
 
-    public PriorityScreen(PriorityContainer container, PlayerInventory playerInventory, Text title) {
+    public PriorityScreen(PriorityContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.subGui = new AESubScreen(this, container.getPriorityHost());
 
         // This is the effective size of the background image
-        backgroundWidth = 175;
-        backgroundHeight = 128;
+        xSize = 175;
+        ySize = 128;
     }
 
     @Override
@@ -51,7 +49,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
         this.priority = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.PRIORITY);
         this.priority.setTextFieldBounds(62, 57, 50);
         this.priority.setMinValue(Integer.MIN_VALUE);
-        this.priority.setValue(this.handler.getPriorityValue());
+        this.priority.setValue(this.container.getPriorityValue());
         this.priority.addButtons(children::add, this::addButton);
 
         this.subGui.addBackButton(this::addButton, 154, 0);
@@ -68,20 +66,20 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     private void savePriority() {
         OptionalInt priority = this.priority.getIntValue();
         if (priority.isPresent()) {
-            handler.setPriority(priority.getAsInt());
+            container.setPriority(priority.getAsInt());
         }
     }
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, GuiText.Priority.text(), 8, 6, 4210752);
+        this.font.method_30883(matrices, GuiText.Priority.text(), 8, 6, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
         this.bindTexture("guis/priority.png");
-        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
 
         this.priority.render(matrices, mouseX, mouseY, partialTicks);
     }

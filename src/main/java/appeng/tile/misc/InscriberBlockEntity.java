@@ -28,12 +28,12 @@ import javax.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Simulation;
@@ -103,7 +103,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
 
     private final FixedItemInv externalInv;
 
-    public InscriberBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public InscriberBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
@@ -152,22 +152,22 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         this.upgrades.writeToNBT(data, "upgrades");
         this.settings.writeToNBT(data);
         return data;
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.upgrades.readFromNBT(data, "upgrades");
         this.settings.readFromNBT(data);
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int slot = data.readByte();
 
@@ -192,7 +192,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         int slot = this.isSmash() ? 64 : 0;
 
@@ -303,7 +303,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
             if (this.finalStep == 8) {
                 final InscriberRecipe out = this.getTask();
                 if (out != null) {
-                    final ItemStack outputCopy = out.getOutput().copy();
+                    final ItemStack outputCopy = out.getRecipeOutput().copy();
 
                     if (this.sideItemHandler.getSlot(1).insert(outputCopy).isEmpty()) {
                         this.setProcessingTime(0);
@@ -353,7 +353,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 this.setProcessingTime(this.getMaxProcessingTime());
                 final InscriberRecipe out = this.getTask();
                 if (out != null) {
-                    final ItemStack outputCopy = out.getOutput().copy();
+                    final ItemStack outputCopy = out.getRecipeOutput().copy();
                     if (this.sideItemHandler.getSlot(1).wouldAccept(outputCopy)) {
                         this.setSmash(true);
                         this.finalStep = 0;

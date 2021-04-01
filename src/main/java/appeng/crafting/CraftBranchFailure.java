@@ -29,7 +29,7 @@ public class CraftBranchFailure extends Exception {
     private final IAEItemStack missing;
 
     public CraftBranchFailure(final IAEItemStack what, final long howMany) {
-        super("Failed: " + Registry.ITEM.getId(what.getItem()) + " x " + howMany);
+        super("Failed: " + Registry.ITEM.getKey(what.getItem()) + " x " + howMany);
         this.missing = what.copy();
         this.missing.setStackSize(howMany);
     }

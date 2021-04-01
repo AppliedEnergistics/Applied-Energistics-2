@@ -27,16 +27,14 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.util.ResourceLocation;
 import appeng.api.client.ICellModelRegistry;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.Api;
@@ -44,34 +42,34 @@ import appeng.core.api.client.ApiCellModelRegistry;
 
 public class DriveModel implements BasicUnbakedModel {
 
-    private static final Identifier MODEL_BASE = new Identifier("appliedenergistics2:block/drive/drive_base");
-    private static final Identifier MODEL_CELL_EMPTY = new Identifier(
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation("appliedenergistics2:block/drive/drive_base");
+    private static final ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_cell_empty");
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
+    public IBakedModel bakeModel(ModelBakery loader, Function<RenderMaterial, TextureAtlasSprite> textureGetter,
+            IModelTransform rotationContainer, ResourceLocation modelId) {
         final ICellModelRegistry cellRegistry = Api.instance().client().cells();
-        final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
+        final Map<Item, IBakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.
-        for (Entry<Item, Identifier> entry : cellRegistry.models().entrySet()) {
-            BakedModel cellModel = loader.bake(entry.getValue(), rotationContainer);
+        for (Entry<Item, ResourceLocation> entry : cellRegistry.models().entrySet()) {
+            IBakedModel cellModel = loader.bake(entry.getValue(), rotationContainer);
             cellModels.put(entry.getKey(), cellModel);
         }
 
-        final BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
-        final BakedModel defaultCell = loader.bake(cellRegistry.getDefaultModel(), rotationContainer);
+        final IBakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
+        final IBakedModel defaultCell = loader.bake(cellRegistry.getDefaultModel(), rotationContainer);
         cellModels.put(Items.AIR, loader.bake(MODEL_CELL_EMPTY, rotationContainer));
 
         return new DriveBakedModel(baseModel, cellModels, defaultCell);
     }
 
     @Override
-    public Collection<Identifier> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         ICellModelRegistry cells = Api.instance().client().cells();
-        return ImmutableSet.<Identifier>builder().add(cells.getDefaultModel()).addAll(ApiCellModelRegistry.getModels())
+        return ImmutableSet.<ResourceLocation>builder().add(cells.getDefaultModel()).addAll(ApiCellModelRegistry.getModels())
                 .addAll(cells.models().values()).build();
     }
 

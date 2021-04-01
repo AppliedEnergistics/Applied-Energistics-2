@@ -22,15 +22,15 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.text.Text;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -61,7 +61,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     protected final MaterialType component;
     protected final int totalBytes;
 
-    public AbstractStorageCell(Settings properties, final MaterialType whichCell, final int kilobytes) {
+    public AbstractStorageCell(Properties properties, final MaterialType whichCell, final int kilobytes) {
         super(properties);
         this.totalBytes = kilobytes * 1024;
         this.component = whichCell;
@@ -69,8 +69,8 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
-            final TooltipContext advancedTooltips) {
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
         Api.instance().client().addCellInformation(
                 Api.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
     }
@@ -134,13 +134,13 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(final World world, final PlayerEntity player, final Hand hand) {
-        this.disassembleDrive(player.getStackInHand(hand), world, player);
-        return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
+    public ActionResult<ItemStack> onItemRightClick(final World world, final PlayerEntity player, final Hand hand) {
+        this.disassembleDrive(player.getHeldItem(hand), world, player);
+        return new ActionResult<>(ActionResultType.field_5812, player.getHeldItem(hand));
     }
 
     private boolean disassembleDrive(final ItemStack stack, final World world, final PlayerEntity player) {
-        if (player.isInSneakingPose()) {
+        if (player.isCrouching()) {
             if (Platform.isClient()) {
                 return false;
             }
@@ -148,11 +148,11 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
             final PlayerInventory playerInventory = player.inventory;
             final IMEInventoryHandler inv = Api.instance().registries().cell().getCellInventory(stack, null,
                     this.getChannel());
-            if (inv != null && playerInventory.getMainHandStack() == stack) {
+            if (inv != null && playerInventory.getCurrentItem() == stack) {
                 final InventoryAdaptor ia = InventoryAdaptor.getAdaptor(player);
                 final IItemList<IAEItemStack> list = inv.getAvailableItems(this.getChannel().createList());
                 if (list.isEmpty() && ia != null) {
-                    playerInventory.setStack(playerInventory.selectedSlot, ItemStack.EMPTY);
+                    playerInventory.setInventorySlotContents(playerInventory.currentItem, ItemStack.EMPTY);
 
                     // drop core
                     final ItemStack extraB = ia.addItems(this.component.stack(1));
@@ -173,8 +173,8 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                     // drop empty storage cell case
                     this.dropEmptyStorageCellCase(ia, player);
 
-                    if (player.currentScreenHandler != null) {
-                        player.currentScreenHandler.sendContentUpdates();
+                    if (player.openContainer != null) {
+                        player.openContainer.detectAndSendChanges();
                     }
 
                     return true;
@@ -187,9 +187,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     protected abstract void dropEmptyStorageCellCase(final InventoryAdaptor ia, final PlayerEntity player);
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
-        return this.disassembleDrive(stack, context.getWorld(), context.getPlayer()) ? ActionResult.SUCCESS
-                : ActionResult.PASS;
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        return this.disassembleDrive(stack, context.getWorld(), context.getPlayer()) ? ActionResultType.field_5812
+                : ActionResultType.field_5811;
     }
 
 // FIXME FABRIC: Handle this in the disassemble recipe

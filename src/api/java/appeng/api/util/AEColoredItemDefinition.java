@@ -24,9 +24,9 @@
 package appeng.api.util;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 public interface AEColoredItemDefinition {
 
@@ -41,9 +41,9 @@ public interface AEColoredItemDefinition {
     Item item(AEColor color);
 
     /**
-     * @return the {@link BlockEntity} Class if applicable.
+     * @return the {@link TileEntity} Class if applicable.
      */
-    Class<? extends BlockEntity> entity(AEColor color);
+    Class<? extends TileEntity> entity(AEColor color);
 
     /**
      * @return an {@link ItemStack} with specified quantity of this item.

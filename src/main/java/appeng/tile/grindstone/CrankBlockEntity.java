@@ -21,16 +21,15 @@ package appeng.tile.grindstone;
 import java.io.IOException;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Tickable;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.tile.AEBaseBlockEntity;
 
-public class CrankBlockEntity extends AEBaseBlockEntity implements Tickable {
+public class CrankBlockEntity extends AEBaseBlockEntity implements ITickableTileEntity {
 
     private final int ticksPerRotation = 18;
 
@@ -41,7 +40,7 @@ public class CrankBlockEntity extends AEBaseBlockEntity implements Tickable {
     private int hits = 0;
     private int rotation = 0;
 
-    public CrankBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public CrankBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -68,7 +67,7 @@ public class CrankBlockEntity extends AEBaseBlockEntity implements Tickable {
         }
 
         final Direction grinder = this.getUp().getOpposite();
-        final BlockEntity te = this.world.getBlockEntity(this.pos.offset(grinder));
+        final TileEntity te = this.world.getTileEntity(this.pos.offset(grinder));
         if (te instanceof ICrankable) {
             return (ICrankable) te;
         }
@@ -76,14 +75,14 @@ public class CrankBlockEntity extends AEBaseBlockEntity implements Tickable {
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         this.rotation = data.readInt();
         return c;
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         data.writeInt(this.rotation);
     }
@@ -92,7 +91,7 @@ public class CrankBlockEntity extends AEBaseBlockEntity implements Tickable {
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
         final BlockState state = this.world.getBlockState(this.pos);
-        state.getBlock().neighborUpdate(state, this.world, this.pos, state.getBlock(), this.pos, false);
+        state.getBlock().neighborChanged(state, this.world, this.pos, state.getBlock(), this.pos, false);
     }
 
     /**
@@ -114,7 +113,7 @@ public class CrankBlockEntity extends AEBaseBlockEntity implements Tickable {
                 } else {
                     this.hits++;
                     if (this.hits > 10) {
-                        this.world.breakBlock(this.pos, false);
+                        this.world.destroyBlock(this.pos, false);
                     }
                 }
             }

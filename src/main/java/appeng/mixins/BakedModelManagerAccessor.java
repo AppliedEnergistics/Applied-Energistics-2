@@ -1,18 +1,16 @@
 package appeng.mixins;
 
 import java.util.Map;
-
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelManager;
+import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.util.Identifier;
-
-@Mixin(BakedModelManager.class)
+@Mixin(ModelManager.class)
 public interface BakedModelManagerAccessor {
 
     @Accessor
-    Map<Identifier, BakedModel> getModels();
+    Map<ResourceLocation, IBakedModel> getModels();
 
 }

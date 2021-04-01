@@ -19,9 +19,8 @@
 package appeng.client.render.crafting;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.crafting.CraftingCubeModelData;
 
@@ -30,9 +29,9 @@ import appeng.tile.crafting.CraftingCubeModelData;
  */
 class UnitBakedModel extends CraftingCubeBakedModel {
 
-    private final Sprite unitTexture;
+    private final TextureAtlasSprite unitTexture;
 
-    UnitBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer, Sprite unitTexture) {
+    UnitBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer, TextureAtlasSprite unitTexture) {
         super(ringCorner, ringHor, ringVer);
         this.unitTexture = unitTexture;
     }

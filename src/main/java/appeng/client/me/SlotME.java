@@ -19,16 +19,15 @@
 package appeng.client.me;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-
 import appeng.api.storage.data.IAEItemStack;
 
 public class SlotME extends Slot {
 
-    private static final Inventory EMPTY_INVENTORY = new SimpleInventory(0);
+    private static final IInventory EMPTY_INVENTORY = new Inventory(0);
 
     private final InternalSlotME slot;
 
@@ -45,7 +44,7 @@ public class SlotME extends Slot {
     }
 
     @Override
-    public boolean canInsert(ItemStack stack) {
+    public boolean isItemValid(ItemStack stack) {
         return false;
     }
 
@@ -58,7 +57,7 @@ public class SlotME extends Slot {
     }
 
     @Override
-    public boolean hasStack() {
+    public boolean getHasStack() {
         if (this.slot.hasPower()) {
             return !this.getStack().isEmpty();
         }
@@ -66,21 +65,21 @@ public class SlotME extends Slot {
     }
 
     @Override
-    public void setStack(ItemStack stack) {
+    public void putStack(ItemStack stack) {
     }
 
     @Override
-    public int getMaxItemCount() {
+    public int getSlotStackLimit() {
         return 0;
     }
 
     @Override
-    public ItemStack takeStack(final int par1) {
+    public ItemStack decrStackSize(final int par1) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity par1PlayerEntity) {
+    public boolean canTakeStack(final PlayerEntity par1PlayerEntity) {
         return false;
     }
 }

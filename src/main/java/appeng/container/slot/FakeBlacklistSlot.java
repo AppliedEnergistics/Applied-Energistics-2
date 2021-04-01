@@ -38,7 +38,7 @@ public class FakeBlacklistSlot extends FakeTypeOnlySlot {
 
     @Override
     public int getIcon() {
-        if (this.hasStack()) {
+        if (this.getHasStack()) {
             return this.getStack().getCount() > 0 ? 16 + 14 : 14;
         }
         return -1;

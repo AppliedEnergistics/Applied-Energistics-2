@@ -29,8 +29,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.util.Direction;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;

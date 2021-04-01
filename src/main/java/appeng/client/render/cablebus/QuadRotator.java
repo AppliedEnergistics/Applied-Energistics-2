@@ -24,10 +24,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Quaternion;
-
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 import appeng.client.render.FacingToRotation;
 
 /**
@@ -80,14 +79,14 @@ public class QuadRotator implements RenderContext.QuadTransform {
             // Transform the position (center of rotation is 0.5, 0.5, 0.5)
             quad.copyPos(i, tmp);
             tmp.add(-0.5f, -0.5f, -0.5f);
-            tmp.rotate(quaternion);
+            tmp.transform(quaternion);
             tmp.add(0.5f, 0.5f, 0.5f);
             quad.pos(i, tmp);
 
             // Transform the normal
             if (quad.hasNormal(i)) {
                 quad.copyNormal(i, tmp);
-                tmp.rotate(quaternion);
+                tmp.transform(quaternion);
                 quad.normal(i, tmp);
             }
         }
@@ -108,10 +107,10 @@ public class QuadRotator implements RenderContext.QuadTransform {
     private static FacingToRotation getRotation(Direction forward, Direction up) {
         // Sanitize forward/up
         if (forward.getAxis() == up.getAxis()) {
-            if (up.getAxis() == Direction.Axis.Y) {
-                up = Direction.NORTH;
+            if (up.getAxis() == Direction.Axis.field_11052) {
+                up = Direction.field_11043;
             } else {
-                up = Direction.UP;
+                up = Direction.field_11036;
             }
         }
 

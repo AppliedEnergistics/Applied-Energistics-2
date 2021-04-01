@@ -22,19 +22,18 @@ import java.util.function.Function;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import appeng.tile.AEBaseBlockEntity;
 
 public class TileEntityRendering<T extends AEBaseBlockEntity> {
 
     @Environment(EnvType.CLIENT)
-    Function<BlockEntityRenderDispatcher, BlockEntityRenderer<T>> tileEntityRenderer;
+    Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> tileEntityRenderer;
 
     @Environment(EnvType.CLIENT)
     public TileEntityRendering<T> tileEntityRenderer(
-            Function<BlockEntityRenderDispatcher, BlockEntityRenderer<T>> tileEntityRenderer) {
+            Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> tileEntityRenderer) {
         this.tileEntityRenderer = tileEntityRenderer;
         return this;
     }

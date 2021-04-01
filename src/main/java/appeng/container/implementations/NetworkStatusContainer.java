@@ -22,11 +22,10 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.network.PacketBuffer;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
@@ -47,12 +46,12 @@ import appeng.util.item.AEItemStack;
 
 public class NetworkStatusContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<NetworkStatusContainer> TYPE;
+    public static ContainerType<NetworkStatusContainer> TYPE;
 
     private static final ContainerHelper<NetworkStatusContainer, INetworkTool> helper = new ContainerHelper<>(
             NetworkStatusContainer::new, INetworkTool.class);
 
-    public static NetworkStatusContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static NetworkStatusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -97,7 +96,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.delay++;
         if (isServer() && this.delay > 15 && this.network != null) {
             this.delay = 0;
@@ -141,7 +140,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
                 // :P
             }
         }
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     public long getCurrentPower() {

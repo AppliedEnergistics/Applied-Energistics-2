@@ -23,11 +23,10 @@
 
 package appeng.api.implementations;
 
-import net.minecraft.block.entity.BlockEntity;
-
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.IConfigurableObject;
+import net.minecraft.tileentity.TileEntity;
 
 public interface IUpgradeableHost extends IConfigurableObject, ISegmentedInventory {
 
@@ -41,5 +40,5 @@ public interface IUpgradeableHost extends IConfigurableObject, ISegmentedInvento
      *
      * @return block entity
      */
-    BlockEntity getTile();
+    TileEntity getTile();
 }

@@ -24,9 +24,7 @@
 package appeng.api.util;
 
 import java.util.Set;
-
-import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.nbt.CompoundNBT;
 import appeng.api.config.Settings;
 
 /**
@@ -73,12 +71,12 @@ public interface IConfigManager {
      *
      * @param destination to be written nbt tag
      */
-    void writeToNBT(CompoundTag destination);
+    void writeToNBT(CompoundNBT destination);
 
     /**
      * Only works after settings have been registered
      *
      * @param src to be read nbt tag
      */
-    void readFromNBT(CompoundTag src);
+    void readFromNBT(CompoundNBT src);
 }

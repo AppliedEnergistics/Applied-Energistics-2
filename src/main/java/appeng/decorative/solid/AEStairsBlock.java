@@ -5,7 +5,7 @@ import net.minecraft.block.StairsBlock;
 
 public class AEStairsBlock extends StairsBlock {
 
-    public AEStairsBlock(BlockState baseBlockState, Settings settings) {
+    public AEStairsBlock(BlockState baseBlockState, Properties settings) {
         super(baseBlockState, settings);
     }
 

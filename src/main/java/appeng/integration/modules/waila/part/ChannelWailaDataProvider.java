@@ -19,12 +19,11 @@
 package appeng.integration.modules.waila.part;
 
 import java.util.List;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
@@ -46,7 +45,7 @@ import appeng.parts.networking.SmartDenseCablePart;
  */
 public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
     /**
-     * Channel key used for the transferred {@link net.minecraft.nbt.CompoundTag}
+     * Channel key used for the transferred {@link net.minecraft.nbt.CompoundNBT}
      */
     private static final String ID_USED_CHANNELS = "usedChannels";
 
@@ -69,17 +68,17 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
      * @param config   config to react to various settings
      */
     @Override
-    public void appendBody(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
+    public void appendBody(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
             final IPluginConfig config) {
         if (part instanceof SmartCablePart || part instanceof SmartDenseCablePart) {
-            final CompoundTag tag = accessor.getServerData();
+            final CompoundNBT tag = accessor.getServerData();
 
             final byte usedChannels = this.getUsedChannels(part, tag, this.cache);
 
             if (usedChannels >= 0) {
                 final byte maxChannels = (byte) ((part instanceof SmartDenseCablePart) ? 32 : 8);
 
-                final Text formattedToolTip = WailaText.Channels.text(usedChannels, maxChannels);
+                final ITextComponent formattedToolTip = WailaText.Channels.text(usedChannels, maxChannels);
                 tooltip.add(formattedToolTip);
             }
         }
@@ -96,7 +95,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
      * @param cache cache with previous knowledge
      * @return used channels on the cable
      */
-    private byte getUsedChannels(final IPart part, final CompoundTag tag, final Object2ByteMap<IPart> cache) {
+    private byte getUsedChannels(final IPart part, final CompoundNBT tag, final Object2ByteMap<IPart> cache) {
         final byte usedChannels;
 
         if (tag.contains(ID_USED_CHANNELS)) {
@@ -125,10 +124,10 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
      * @param pos    pos of the part
      */
     @Override
-    public void appendServerData(ServerPlayerEntity player, IPart part, BlockEntity te, CompoundTag tag, World world,
+    public void appendServerData(ServerPlayerEntity player, IPart part, TileEntity te, CompoundNBT tag, World world,
             BlockPos pos) {
         if (part instanceof SmartCablePart || part instanceof SmartDenseCablePart) {
-            final CompoundTag tempTag = new CompoundTag();
+            final CompoundNBT tempTag = new CompoundNBT();
 
             part.writeToNBT(tempTag);
 

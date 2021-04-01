@@ -1,9 +1,8 @@
 package appeng.core.features.registries.cell;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-
+import net.minecraft.tileentity.TileEntity;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
@@ -26,6 +25,6 @@ public class BasicItemCellGuiHandler implements ICellGuiHandler {
     public void openChestGui(final PlayerEntity player, final IChestOrDrive chest, final ICellHandler cellHandler,
             final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan) {
         ContainerOpener.openContainer(MEMonitorableContainer.TYPE, player,
-                ContainerLocator.forTileEntitySide((BlockEntity) chest, chest.getUp()));
+                ContainerLocator.forTileEntitySide((TileEntity) chest, chest.getUp()));
     }
 }

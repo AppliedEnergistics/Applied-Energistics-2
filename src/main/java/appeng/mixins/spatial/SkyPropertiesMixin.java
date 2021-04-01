@@ -5,20 +5,17 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.render.SkyProperties;
-import net.minecraft.util.Identifier;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-
+import net.minecraft.client.world.DimensionRenderInfo;
+import net.minecraft.util.ResourceLocation;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageSkyProperties;
 
-@Mixin(SkyProperties.class)
+@Mixin(DimensionRenderInfo.class)
 public class SkyPropertiesMixin {
 
     @Shadow
-    private static Object2ObjectMap<Identifier, SkyProperties> BY_IDENTIFIER;
+    private static Object2ObjectMap<ResourceLocation, DimensionRenderInfo> BY_IDENTIFIER;
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void init(CallbackInfo ci) {

@@ -22,10 +22,10 @@ import java.util.function.BiFunction;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.color.block.BlockColorProvider;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Allows for client-side rendering to be customized in the context of block/item registration.
@@ -33,12 +33,12 @@ import net.minecraft.util.Identifier;
 public interface IBlockRendering {
 
     @Environment(EnvType.CLIENT)
-    IBlockRendering modelCustomizer(BiFunction<Identifier, BakedModel, BakedModel> customizer);
+    IBlockRendering modelCustomizer(BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer);
 
     @Environment(EnvType.CLIENT)
-    IBlockRendering blockColor(BlockColorProvider blockColor);
+    IBlockRendering blockColor(IBlockColor blockColor);
 
     @Environment(EnvType.CLIENT)
-    IBlockRendering renderType(RenderLayer type);
+    IBlockRendering renderType(RenderType type);
 
 }

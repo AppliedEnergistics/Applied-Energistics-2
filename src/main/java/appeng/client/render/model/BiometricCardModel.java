@@ -6,15 +6,13 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
@@ -24,27 +22,27 @@ import appeng.core.AppEng;
  */
 public class BiometricCardModel implements BasicUnbakedModel {
 
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "item/biometric_card_base");
-    private static final SpriteIdentifier TEXTURE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "item/biometric_card_hash"));
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/biometric_card_base");
+    private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "item/biometric_card_hash"));
 
     @Override
-    public Collection<Identifier> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return Collections.singleton(MODEL_BASE);
     }
 
     @Override
-    public Stream<SpriteIdentifier> getAdditionalTextures() {
+    public Stream<RenderMaterial> getAdditionalTextures() {
         return Stream.of(TEXTURE);
     }
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
-        Sprite texture = textureGetter.apply(TEXTURE);
+    public IBakedModel bakeModel(ModelBakery loader, Function<RenderMaterial, TextureAtlasSprite> textureGetter,
+            IModelTransform rotationContainer, ResourceLocation modelId) {
+        TextureAtlasSprite texture = textureGetter.apply(TEXTURE);
 
-        BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
+        IBakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
 
         return new BiometricCardBakedModel(baseModel, texture);
     }

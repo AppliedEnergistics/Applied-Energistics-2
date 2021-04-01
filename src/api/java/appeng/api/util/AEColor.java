@@ -25,9 +25,8 @@ package appeng.api.util;
 
 import java.util.Arrays;
 import java.util.List;
-
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.util.DyeColor;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.item.DyeColor;
 
 /**
  * List of all colors supported by AE, their names, and various colors for display.
@@ -36,37 +35,37 @@ import net.minecraft.util.DyeColor;
  */
 public enum AEColor {
 
-    WHITE("gui.appliedenergistics2.White", "white", DyeColor.WHITE, 0xBEBEBE, 0xDBDBDB, 0xFAFAFA),
+    WHITE("gui.appliedenergistics2.White", "white", DyeColor.field_7952, 0xBEBEBE, 0xDBDBDB, 0xFAFAFA),
 
-    ORANGE("gui.appliedenergistics2.Orange", "orange", DyeColor.ORANGE, 0xF99739, 0xFAAE44, 0xF4DEC3),
+    ORANGE("gui.appliedenergistics2.Orange", "orange", DyeColor.field_7946, 0xF99739, 0xFAAE44, 0xF4DEC3),
 
-    MAGENTA("gui.appliedenergistics2.Magenta", "magenta", DyeColor.MAGENTA, 0x821E82, 0xB82AB8, 0xC598C8),
+    MAGENTA("gui.appliedenergistics2.Magenta", "magenta", DyeColor.field_7958, 0x821E82, 0xB82AB8, 0xC598C8),
 
-    LIGHT_BLUE("gui.appliedenergistics2.LightBlue", "light_blue", DyeColor.LIGHT_BLUE, 0x628DCB, 0x82ACE7, 0xD8F6FF),
+    LIGHT_BLUE("gui.appliedenergistics2.LightBlue", "light_blue", DyeColor.field_7951, 0x628DCB, 0x82ACE7, 0xD8F6FF),
 
-    YELLOW("gui.appliedenergistics2.Yellow", "yellow", DyeColor.YELLOW, 0xFFF7AA, 0xF8FF4A, 0xFFFFE8),
+    YELLOW("gui.appliedenergistics2.Yellow", "yellow", DyeColor.field_7947, 0xFFF7AA, 0xF8FF4A, 0xFFFFE8),
 
-    LIME("gui.appliedenergistics2.Lime", "lime", DyeColor.LIME, 0x7CFF4A, 0xBBFF51, 0xE7F7D7),
+    LIME("gui.appliedenergistics2.Lime", "lime", DyeColor.field_7961, 0x7CFF4A, 0xBBFF51, 0xE7F7D7),
 
-    PINK("gui.appliedenergistics2.Pink", "pink", DyeColor.PINK, 0xDC8DB5, 0xF8B5D7, 0xF7DEEB),
+    PINK("gui.appliedenergistics2.Pink", "pink", DyeColor.field_7954, 0xDC8DB5, 0xF8B5D7, 0xF7DEEB),
 
-    GRAY("gui.appliedenergistics2.Gray", "gray", DyeColor.GRAY, 0x7C7C7C, 0xA0A0A0, 0xC9C9C9),
+    GRAY("gui.appliedenergistics2.Gray", "gray", DyeColor.field_7944, 0x7C7C7C, 0xA0A0A0, 0xC9C9C9),
 
-    LIGHT_GRAY("gui.appliedenergistics2.LightGray", "light_gray", DyeColor.LIGHT_GRAY, 0x9D9D9D, 0xCDCDCD, 0xEFEFEF),
+    LIGHT_GRAY("gui.appliedenergistics2.LightGray", "light_gray", DyeColor.field_7967, 0x9D9D9D, 0xCDCDCD, 0xEFEFEF),
 
-    CYAN("gui.appliedenergistics2.Cyan", "cyan", DyeColor.CYAN, 0x2F9BA5, 0x51AAC6, 0xAEDDF4),
+    CYAN("gui.appliedenergistics2.Cyan", "cyan", DyeColor.field_7955, 0x2F9BA5, 0x51AAC6, 0xAEDDF4),
 
-    PURPLE("gui.appliedenergistics2.Purple", "purple", DyeColor.PURPLE, 0x8230B2, 0xA453CE, 0xC7A3CC),
+    PURPLE("gui.appliedenergistics2.Purple", "purple", DyeColor.field_7945, 0x8230B2, 0xA453CE, 0xC7A3CC),
 
-    BLUE("gui.appliedenergistics2.Blue", "blue", DyeColor.BLUE, 0x2D29A0, 0x514AFF, 0xDDE6FF),
+    BLUE("gui.appliedenergistics2.Blue", "blue", DyeColor.field_7966, 0x2D29A0, 0x514AFF, 0xDDE6FF),
 
-    BROWN("gui.appliedenergistics2.Brown", "brown", DyeColor.BROWN, 0x724E35, 0xB7967F, 0xE0D2C8),
+    BROWN("gui.appliedenergistics2.Brown", "brown", DyeColor.field_7957, 0x724E35, 0xB7967F, 0xE0D2C8),
 
-    GREEN("gui.appliedenergistics2.Green", "green", DyeColor.GREEN, 0x45A021, 0x60E32E, 0xE3F2E3),
+    GREEN("gui.appliedenergistics2.Green", "green", DyeColor.field_7942, 0x45A021, 0x60E32E, 0xE3F2E3),
 
-    RED("gui.appliedenergistics2.Red", "red", DyeColor.RED, 0xA50029, 0xFF003C, 0xFFE6ED),
+    RED("gui.appliedenergistics2.Red", "red", DyeColor.field_7964, 0xA50029, 0xFF003C, 0xFFE6ED),
 
-    BLACK("gui.appliedenergistics2.Black", "black", DyeColor.BLACK, 0x2B2B2B, 0x565656, 0x848484),
+    BLACK("gui.appliedenergistics2.Black", "black", DyeColor.field_7963, 0x2B2B2B, 0x565656, 0x848484),
 
     TRANSPARENT("gui.appliedenergistics2.Fluix", "fluix", null, 0x1B2344, 0x895CA8, 0xD7BBEC);
 
@@ -74,25 +73,25 @@ public enum AEColor {
             PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK);
 
     /**
-     * The {@link BakedQuad#getColorIndex() tint index} that can normally be used to get the {@link #blackVariant dark
+     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #blackVariant dark
      * variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_DARK = 1;
 
     /**
-     * The {@link BakedQuad#getColorIndex() tint index} that can normally be used to get the {@link #mediumVariant
+     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #mediumVariant
      * medium variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_MEDIUM = 2;
 
     /**
-     * The {@link BakedQuad#getColorIndex() tint index} that can normally be used to get the {@link #whiteVariant bright
+     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #whiteVariant bright
      * variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_BRIGHT = 3;
 
     /**
-     * The {@link BakedQuad#getColorIndex() tint index} that can normally be used to get a color between the
+     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get a color between the
      * {@link #mediumVariant medium} and {@link #whiteVariant bright variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_MEDIUM_BRIGHT = 4;
@@ -140,7 +139,7 @@ public enum AEColor {
     /**
      * Will return a variant of this color based on the given tint index.
      *
-     * @param tintIndex A tint index as it can be used for {@link BakedQuad#getColorIndex()}.
+     * @param tintIndex A tint index as it can be used for {@link BakedQuad#getTintIndex()}.
      * @return The appropriate color variant, or -1.
      */
     public int getVariantByTintIndex(int tintIndex) {

@@ -22,15 +22,13 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 import appeng.client.render.BasicUnbakedModel;
 
 /**
@@ -38,29 +36,29 @@ import appeng.client.render.BasicUnbakedModel;
  */
 public class PlaneModel implements BasicUnbakedModel {
 
-    private final SpriteIdentifier frontTexture;
-    private final SpriteIdentifier sidesTexture;
-    private final SpriteIdentifier backTexture;
+    private final RenderMaterial frontTexture;
+    private final RenderMaterial sidesTexture;
+    private final RenderMaterial backTexture;
 
-    public PlaneModel(Identifier frontTexture, Identifier sidesTexture, Identifier backTexture) {
-        this.frontTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, frontTexture);
-        this.sidesTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, sidesTexture);
-        this.backTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, backTexture);
+    public PlaneModel(ResourceLocation frontTexture, ResourceLocation sidesTexture, ResourceLocation backTexture) {
+        this.frontTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, frontTexture);
+        this.sidesTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, sidesTexture);
+        this.backTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, backTexture);
     }
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
-        Sprite frontSprite = textureGetter.apply(this.frontTexture);
-        Sprite sidesSprite = textureGetter.apply(this.sidesTexture);
-        Sprite backSprite = textureGetter.apply(this.backTexture);
+    public IBakedModel bakeModel(ModelBakery loader, Function<RenderMaterial, TextureAtlasSprite> textureGetter,
+            IModelTransform rotationContainer, ResourceLocation modelId) {
+        TextureAtlasSprite frontSprite = textureGetter.apply(this.frontTexture);
+        TextureAtlasSprite sidesSprite = textureGetter.apply(this.sidesTexture);
+        TextureAtlasSprite backSprite = textureGetter.apply(this.backTexture);
 
         return new PlaneBakedModel(frontSprite, sidesSprite, backSprite);
     }
 
     @Override
-    public Stream<SpriteIdentifier> getAdditionalTextures() {
+    public Stream<RenderMaterial> getAdditionalTextures() {
         return Stream.of(frontTexture, sidesTexture, backTexture);
     }
 

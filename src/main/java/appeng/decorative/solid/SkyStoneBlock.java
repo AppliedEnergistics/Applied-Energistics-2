@@ -23,12 +23,11 @@ import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-
+import net.minecraft.world.server.ServerWorld;
 import appeng.block.AEBaseBlock;
 import appeng.core.worlddata.WorldData;
 
@@ -37,7 +36,7 @@ public class SkyStoneBlock extends AEBaseBlock {
     private static final double BREAK_SPEAK_THRESHOLD = 7.0;
     private final SkystoneType type;
 
-    public SkyStoneBlock(SkystoneType type, Settings props) {
+    public SkyStoneBlock(SkystoneType type, Properties props) {
         super(props);
         this.type = type;
     }
@@ -60,20 +59,20 @@ public class SkyStoneBlock extends AEBaseBlock {
 //    }
 
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState stateIn, Direction facing, BlockState facingState,
-            WorldAccess worldIn, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState,
+            IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (worldIn instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) worldIn;
             WorldData.instance().compassData().service().notifyBlockChange(serverWorld, currentPos);
         }
 
-        return super.getStateForNeighborUpdate(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
 
     @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
             ItemStack itemStack) {
-        super.onPlaced(world, pos, state, placer, itemStack);
+        super.onBlockPlacedBy(world, pos, state, placer, itemStack);
 
         if (world instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) world;
@@ -82,12 +81,12 @@ public class SkyStoneBlock extends AEBaseBlock {
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        super.onStateReplaced(state, w, pos, newState, isMoving);
+        super.onReplaced(state, w, pos, newState, isMoving);
 
         if (w instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) w;

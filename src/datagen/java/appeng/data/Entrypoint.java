@@ -8,9 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.minecraft.Bootstrap;
 import net.minecraft.data.DataGenerator;
-
+import net.minecraft.util.registry.Bootstrap;
 import appeng.data.providers.loot.BlockDropProvider;
 import appeng.data.providers.recipes.SlabStairRecipes;
 import appeng.data.providers.tags.ConventionTagProvider;
@@ -26,10 +25,10 @@ public class Entrypoint implements PreLaunchEntrypoint {
         LOGGER.info("Writing generated resources to {}", output.toAbsolutePath());
 
         DataGenerator generator = new DataGenerator(output, Collections.emptyList());
-        generator.install(new BlockDropProvider(output));
-        generator.install(new SlabStairRecipes(output));
-        generator.install(new ConventionTagProvider(output));
-        generator.install(new ToolTagProviders(output));
+        generator.addProvider(new BlockDropProvider(output));
+        generator.addProvider(new SlabStairRecipes(output));
+        generator.addProvider(new ConventionTagProvider(output));
+        generator.addProvider(new ToolTagProviders(output));
         generator.run();
     }
 
@@ -40,7 +39,7 @@ public class Entrypoint implements PreLaunchEntrypoint {
             return;
         }
 
-        Bootstrap.initialize();
+        Bootstrap.register();
 
         try {
             dump();

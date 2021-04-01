@@ -1,10 +1,9 @@
 package appeng.spatial;
 
 import java.time.Instant;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -17,7 +16,7 @@ public final class TransitionInfo {
     public static final String TAG_MAX = "max";
     public static final String TAG_TIMESTAMP = "timestamp";
 
-    private final Identifier worldId;
+    private final ResourceLocation worldId;
 
     private final BlockPos min;
 
@@ -25,14 +24,14 @@ public final class TransitionInfo {
 
     private final Instant timestamp;
 
-    public TransitionInfo(Identifier worldId, BlockPos min, BlockPos max, Instant timestamp) {
+    public TransitionInfo(ResourceLocation worldId, BlockPos min, BlockPos max, Instant timestamp) {
         this.worldId = worldId;
         this.min = min.toImmutable();
         this.max = max.toImmutable();
         this.timestamp = timestamp;
     }
 
-    public Identifier getWorldId() {
+    public ResourceLocation getWorldId() {
         return worldId;
     }
 
@@ -48,19 +47,19 @@ public final class TransitionInfo {
         return timestamp;
     }
 
-    public CompoundTag toTag() {
-        CompoundTag tag = new CompoundTag();
+    public CompoundNBT toTag() {
+        CompoundNBT tag = new CompoundNBT();
         tag.putString(TAG_WORLD_ID, worldId.toString());
-        tag.put(TAG_MIN, NbtHelper.fromBlockPos(min));
-        tag.put(TAG_MAX, NbtHelper.fromBlockPos(max));
+        tag.put(TAG_MIN, NBTUtil.writeBlockPos(min));
+        tag.put(TAG_MAX, NBTUtil.writeBlockPos(max));
         tag.putLong(TAG_TIMESTAMP, timestamp.toEpochMilli());
         return tag;
     }
 
-    public static TransitionInfo fromTag(CompoundTag tag) {
-        Identifier worldId = new Identifier(tag.getString(TAG_WORLD_ID));
-        BlockPos min = NbtHelper.toBlockPos(tag.getCompound(TAG_MIN));
-        BlockPos max = NbtHelper.toBlockPos(tag.getCompound(TAG_MAX));
+    public static TransitionInfo fromTag(CompoundNBT tag) {
+        ResourceLocation worldId = new ResourceLocation(tag.getString(TAG_WORLD_ID));
+        BlockPos min = NBTUtil.readBlockPos(tag.getCompound(TAG_MIN));
+        BlockPos max = NBTUtil.readBlockPos(tag.getCompound(TAG_MAX));
         Instant timestamp = Instant.ofEpochMilli(tag.getLong(TAG_TIMESTAMP));
         return new TransitionInfo(worldId, min, max, timestamp);
     }

@@ -24,10 +24,9 @@ import java.util.Map;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ResourceLocation;
 import appeng.api.features.IMatterCannonAmmoRegistry;
 
 public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
@@ -35,7 +34,7 @@ public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
     /**
      * Contains a mapping from
      */
-    private final Map<Identifier, Double> tagDamageModifiers = new HashMap<>();
+    private final Map<ResourceLocation, Double> tagDamageModifiers = new HashMap<>();
 
     private final Map<Item, Double> itemDamageModifiers = new IdentityHashMap<>();
 
@@ -119,7 +118,7 @@ public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
     }
 
     @Override
-    public void registerAmmoTag(final Identifier ammoTag, final double weight) {
+    public void registerAmmoTag(final ResourceLocation ammoTag, final double weight) {
         this.tagDamageModifiers.put(ammoTag, weight);
     }
 
@@ -133,8 +132,8 @@ public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
         }
 
         // Next, check each item tag
-        for (Map.Entry<Identifier, Double> entry : tagDamageModifiers.entrySet()) {
-            Tag<Item> itemTag = ItemTags.getTagGroup().getTag(entry.getKey());
+        for (Map.Entry<ResourceLocation, Double> entry : tagDamageModifiers.entrySet()) {
+            ITag<Item> itemTag = ItemTags.getCollection().get(entry.getKey());
             if (itemTag != null && itemTag.contains(item)) {
                 return entry.getValue().floatValue();
             }
@@ -144,6 +143,6 @@ public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
     }
 
     private void addTagWeight(String name, final double weight) {
-        this.registerAmmoTag(new Identifier(name), weight);
+        this.registerAmmoTag(new ResourceLocation(name), weight);
     }
 }

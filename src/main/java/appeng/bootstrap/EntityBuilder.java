@@ -6,8 +6,8 @@ import java.util.function.Consumer;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.registry.Registry;
 
 import appeng.api.features.AEFeature;
@@ -25,8 +25,8 @@ public class EntityBuilder<T extends Entity> {
 
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
-    public EntityBuilder(FeatureFactory factory, String id, EntityType.EntityFactory<T> entityFactory,
-            SpawnGroup classification) {
+    public EntityBuilder(FeatureFactory factory, String id, EntityType.IFactory<T> entityFactory,
+            EntityClassification classification) {
         this.factory = factory;
         this.id = id;
         this.builder = FabricEntityTypeBuilder.create(classification, entityFactory);

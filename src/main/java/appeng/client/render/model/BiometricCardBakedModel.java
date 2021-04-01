@@ -12,27 +12,26 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
-
+import net.minecraft.world.IBlockDisplayReader;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CubeBuilder;
 
-class BiometricCardBakedModel implements BakedModel, FabricBakedModel {
+class BiometricCardBakedModel implements IBakedModel, FabricBakedModel {
 
-    private final BakedModel baseModel;
+    private final IBakedModel baseModel;
 
-    private final Sprite texture;
+    private final TextureAtlasSprite texture;
 
-    BiometricCardBakedModel(BakedModel baseModel, Sprite texture) {
+    BiometricCardBakedModel(IBakedModel baseModel, TextureAtlasSprite texture) {
         this.baseModel = baseModel;
         this.texture = texture;
     }
@@ -43,7 +42,7 @@ class BiometricCardBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
         // Not intended as a block
     }
@@ -98,13 +97,13 @@ class BiometricCardBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
-        return this.baseModel.useAmbientOcclusion();
+    public boolean isAmbientOcclusion() {
+        return this.baseModel.isAmbientOcclusion();
     }
 
     @Override
-    public boolean hasDepth() {
-        return this.baseModel.hasDepth();
+    public boolean isGui3d() {
+        return this.baseModel.isGui3d();
     }
 
     @Override
@@ -113,23 +112,23 @@ class BiometricCardBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean isBuiltin() {
-        return this.baseModel.isBuiltin();
+    public boolean isBuiltInRenderer() {
+        return this.baseModel.isBuiltInRenderer();
     }
 
     @Override
-    public Sprite getSprite() {
-        return this.baseModel.getSprite();
+    public TextureAtlasSprite getParticleTexture() {
+        return this.baseModel.getParticleTexture();
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return this.baseModel.getTransformation();
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return this.baseModel.getItemCameraTransforms();
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 
     private static int getHash(ItemStack stack) {

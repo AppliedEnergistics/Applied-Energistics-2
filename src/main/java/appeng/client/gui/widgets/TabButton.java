@@ -18,25 +18,24 @@
 
 package appeng.client.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
-public class TabButton extends ButtonWidget implements ITooltip {
-    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2", "textures/guis/states.png");
+public class TabButton extends Button implements ITooltip {
+    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2", "textures/guis/states.png");
     private final ItemRenderer itemRenderer;
     private boolean hideEdge;
     private int myIcon = -1;
     private ItemStack myItem;
 
-    public TabButton(final int x, final int y, final int ico, final Text message, final ItemRenderer ir,
-            PressAction onPress) {
+    public TabButton(final int x, final int y, final int ico, final ITextComponent message, final ItemRenderer ir,
+            IPressable onPress) {
         super(x, y, 22, 22, message, onPress);
 
         this.myIcon = ico;
@@ -52,8 +51,8 @@ public class TabButton extends ButtonWidget implements ITooltip {
      * @param message mouse over message
      * @param ir      renderer
      */
-    public TabButton(final int x, final int y, final ItemStack ico, final Text message, final ItemRenderer ir,
-            PressAction onPress) {
+    public TabButton(final int x, final int y, final ItemStack ico, final ITextComponent message, final ItemRenderer ir,
+            IPressable onPress) {
         super(x, y, 22, 22, message, onPress);
         this.myItem = ico;
         this.itemRenderer = ir;
@@ -61,7 +60,7 @@ public class TabButton extends ButtonWidget implements ITooltip {
 
     @Override
     public void renderButton(MatrixStack matrices, final int x, final int y, float partial) {
-        final MinecraftClient minecraft = MinecraftClient.getInstance();
+        final Minecraft minecraft = Minecraft.getInstance();
 
         if (this.visible) {
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -76,27 +75,27 @@ public class TabButton extends ButtonWidget implements ITooltip {
 
             final int offsetX = this.hideEdge ? 1 : 0;
 
-            drawTexture(matrices, this.x, this.y, uv_x * 16, uv_y * 16, 25, 22);
+            blit(matrices, this.x, this.y, uv_x * 16, uv_y * 16, 25, 22);
 
             if (this.myIcon >= 0) {
                 uv_y = this.myIcon / 16;
                 uv_x = this.myIcon - uv_y * 16;
 
-                drawTexture(matrices, offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16);
+                blit(matrices, offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16);
             }
 
             RenderSystem.disableAlphaTest();
 
             if (this.myItem != null) {
-                this.itemRenderer.zOffset = 100.0F;
-                this.itemRenderer.renderInGuiWithOverrides(this.myItem, offsetX + this.x + 3, this.y + 3);
-                this.itemRenderer.zOffset = 0.0F;
+                this.itemRenderer.zLevel = 100.0F;
+                this.itemRenderer.renderItemAndEffectIntoGUI(this.myItem, offsetX + this.x + 3, this.y + 3);
+                this.itemRenderer.zLevel = 0.0F;
             }
         }
     }
 
     @Override
-    public Text getTooltipMessage() {
+    public ITextComponent getTooltipMessage() {
         return getMessage();
     }
 

@@ -6,10 +6,10 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.ISeedReader;
+import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
 
 /**
@@ -25,18 +25,18 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
     }
 
     @Override
-    public boolean generate(StructureWorldAccess worldIn, ChunkGenerator generator, Random rand, BlockPos pos,
+    public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos,
             ChargedQuartzOreConfig config) {
         ChunkPos chunkPos = new ChunkPos(pos);
 
         BlockPos.Mutable bpos = new BlockPos.Mutable();
-        int height = worldIn.getTopY(Heightmap.Type.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
-        Chunk chunk = worldIn.getChunk(pos);
+        int height = worldIn.getHeight(Heightmap.Type.field_13194, pos.getX(), pos.getZ());
+        IChunk chunk = worldIn.getChunk(pos);
         for (int y = 0; y < height; y++) {
             bpos.setY(y);
-            for (int x = chunkPos.getStartX(); x <= chunkPos.getEndX(); x++) {
+            for (int x = chunkPos.getXStart(); x <= chunkPos.getXEnd(); x++) {
                 bpos.setX(x);
-                for (int z = chunkPos.getStartZ(); z <= chunkPos.getEndZ(); z++) {
+                for (int z = chunkPos.getZStart(); z <= chunkPos.getZEnd(); z++) {
                     bpos.setZ(z);
                     if (chunk.getBlockState(bpos).getBlock() == config.target.getBlock()
                             && rand.nextFloat() < config.chance) {

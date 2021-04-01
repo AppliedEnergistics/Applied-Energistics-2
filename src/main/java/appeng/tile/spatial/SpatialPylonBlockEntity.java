@@ -20,12 +20,10 @@ package appeng.tile.spatial;
 
 import java.io.IOException;
 import java.util.EnumSet;
-
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -57,7 +55,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     private SpatialPylonCluster cluster;
     private boolean didHaveLight = false;
 
-    public SpatialPylonBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public SpatialPylonBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK);
         this.getProxy().setIdlePowerUsage(0.5);
@@ -82,9 +80,9 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     @Override
-    public void markRemoved() {
+    public void remove() {
         this.disconnect(false);
-        super.markRemoved();
+        super.remove();
     }
 
     public void neighborUpdate(BlockPos changedPos) {
@@ -168,7 +166,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         final boolean hasLight = this.getLightValue() > 0;
         if (hasLight != this.didHaveLight) {
             this.didHaveLight = hasLight;
-            this.world.getLightingProvider().checkBlock(this.pos);
+            this.world.getLightManager().checkBlock(this.pos);
         }
     }
 
@@ -185,7 +183,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int old = this.displayBits;
         this.displayBits = data.readByte();
@@ -193,7 +191,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         data.writeByte(this.displayBits);
     }

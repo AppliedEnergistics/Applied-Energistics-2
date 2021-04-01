@@ -20,9 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FullnessMode;
@@ -38,12 +37,12 @@ import appeng.tile.storage.IOPortBlockEntity;
 
 public class IOPortContainer extends UpgradeableContainer {
 
-    public static ScreenHandlerType<IOPortContainer> TYPE;
+    public static ContainerType<IOPortContainer> TYPE;
 
     private static final ContainerHelper<IOPortContainer, IOPortBlockEntity> helper = new ContainerHelper<>(
             IOPortContainer::new, IOPortBlockEntity.class, SecurityPermissions.BUILD);
 
-    public static IOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static IOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -108,7 +107,7 @@ public class IOPortContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {

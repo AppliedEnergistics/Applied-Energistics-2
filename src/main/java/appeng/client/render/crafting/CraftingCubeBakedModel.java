@@ -30,16 +30,15 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
-
+import net.minecraft.world.IBlockDisplayReader;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.crafting.CraftingCubeModelData;
 import appeng.util.Platform;
@@ -49,15 +48,15 @@ import appeng.util.Platform;
  * this base class handles adding the "ring" that frames the multi-block structure and delegates rendering of the
  * "inner" part of each block to the subclasses of this class.
  */
-abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
+abstract class CraftingCubeBakedModel implements IBakedModel, FabricBakedModel {
 
-    private final Sprite ringCorner;
+    private final TextureAtlasSprite ringCorner;
 
-    private final Sprite ringHor;
+    private final TextureAtlasSprite ringHor;
 
-    private final Sprite ringVer;
+    private final TextureAtlasSprite ringVer;
 
-    CraftingCubeBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer) {
+    CraftingCubeBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer) {
         this.ringCorner = ringCorner;
         this.ringHor = ringHor;
         this.ringVer = ringVer;
@@ -69,7 +68,7 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
         CraftingCubeModelData modelData = getModelData(blockView, pos);
         EnumSet<Direction> connections = modelData.getConnections();
@@ -84,30 +83,30 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
 
             // Calculate the bounds of the "inner" block that is framed by the border drawn
             // above
-            float x2 = connections.contains(Direction.EAST) ? 16 : 13.01f;
-            float x1 = connections.contains(Direction.WEST) ? 0 : 2.99f;
+            float x2 = connections.contains(Direction.field_11034) ? 16 : 13.01f;
+            float x1 = connections.contains(Direction.field_11039) ? 0 : 2.99f;
 
-            float y2 = connections.contains(Direction.UP) ? 16 : 13.01f;
-            float y1 = connections.contains(Direction.DOWN) ? 0 : 2.99f;
+            float y2 = connections.contains(Direction.field_11036) ? 16 : 13.01f;
+            float y1 = connections.contains(Direction.field_11033) ? 0 : 2.99f;
 
-            float z2 = connections.contains(Direction.SOUTH) ? 16 : 13.01f;
-            float z1 = connections.contains(Direction.NORTH) ? 0 : 2.99f;
+            float z2 = connections.contains(Direction.field_11035) ? 16 : 13.01f;
+            float z1 = connections.contains(Direction.field_11043) ? 0 : 2.99f;
 
             // On the axis of the side that we're currently drawing, extend the dimensions
             // out to the outer face of the block
             switch (side) {
-                case DOWN:
-                case UP:
+                case field_11033:
+                case field_11036:
                     y1 = 0;
                     y2 = 16;
                     break;
-                case NORTH:
-                case SOUTH:
+                case field_11043:
+                case field_11035:
                     z1 = 0;
                     z2 = 16;
                     break;
-                case WEST:
-                case EAST:
+                case field_11039:
+                case field_11034:
                     x1 = 0;
                     x2 = 16;
                     break;
@@ -128,21 +127,21 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return ModelTransformation.NONE;
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return ItemCameraTransforms.DEFAULT;
     }
 
     private void addRing(CubeBuilder builder, Direction side, EnumSet<Direction> connections) {
         // Fill in the corners
         builder.setTexture(this.ringCorner);
-        this.addCornerCap(builder, connections, side, Direction.UP, Direction.EAST, Direction.NORTH);
-        this.addCornerCap(builder, connections, side, Direction.UP, Direction.EAST, Direction.SOUTH);
-        this.addCornerCap(builder, connections, side, Direction.UP, Direction.WEST, Direction.NORTH);
-        this.addCornerCap(builder, connections, side, Direction.UP, Direction.WEST, Direction.SOUTH);
-        this.addCornerCap(builder, connections, side, Direction.DOWN, Direction.EAST, Direction.NORTH);
-        this.addCornerCap(builder, connections, side, Direction.DOWN, Direction.EAST, Direction.SOUTH);
-        this.addCornerCap(builder, connections, side, Direction.DOWN, Direction.WEST, Direction.NORTH);
-        this.addCornerCap(builder, connections, side, Direction.DOWN, Direction.WEST, Direction.SOUTH);
+        this.addCornerCap(builder, connections, side, Direction.field_11036, Direction.field_11034, Direction.field_11043);
+        this.addCornerCap(builder, connections, side, Direction.field_11036, Direction.field_11034, Direction.field_11035);
+        this.addCornerCap(builder, connections, side, Direction.field_11036, Direction.field_11039, Direction.field_11043);
+        this.addCornerCap(builder, connections, side, Direction.field_11036, Direction.field_11039, Direction.field_11035);
+        this.addCornerCap(builder, connections, side, Direction.field_11033, Direction.field_11034, Direction.field_11043);
+        this.addCornerCap(builder, connections, side, Direction.field_11033, Direction.field_11034, Direction.field_11035);
+        this.addCornerCap(builder, connections, side, Direction.field_11033, Direction.field_11039, Direction.field_11043);
+        this.addCornerCap(builder, connections, side, Direction.field_11033, Direction.field_11039, Direction.field_11035);
 
         // Fill in the remaining stripes of the face
         for (Direction a : Direction.values()) {
@@ -152,10 +151,10 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
 
             // Select the horizontal or vertical ring texture depending on which side we're
             // filling in
-            if ((side.getAxis() != Direction.Axis.Y)
-                    && (a == Direction.NORTH || a == Direction.EAST || a == Direction.WEST || a == Direction.SOUTH)) {
+            if ((side.getAxis() != Direction.Axis.field_11052)
+                    && (a == Direction.field_11043 || a == Direction.field_11034 || a == Direction.field_11039 || a == Direction.field_11035)) {
                 builder.setTexture(this.ringVer);
-            } else if (side.getAxis() == Direction.Axis.Y && (a == Direction.EAST || a == Direction.WEST)) {
+            } else if (side.getAxis() == Direction.Axis.field_11052 && (a == Direction.field_11034 || a == Direction.field_11039)) {
                 builder.setTexture(this.ringVer);
             } else {
                 builder.setTexture(this.ringHor);
@@ -171,27 +170,27 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
                 float x1 = 0, y1 = 0, z1 = 0, x2 = 16, y2 = 16, z2 = 16;
 
                 switch (a) {
-                    case DOWN:
+                    case field_11033:
                         y1 = 0;
                         y2 = 3;
                         break;
-                    case UP:
+                    case field_11036:
                         y1 = 13.0f;
                         y2 = 16;
                         break;
-                    case WEST:
+                    case field_11039:
                         x1 = 0;
                         x2 = 3;
                         break;
-                    case EAST:
+                    case field_11034:
                         x1 = 13;
                         x2 = 16;
                         break;
-                    case NORTH:
+                    case field_11043:
                         z1 = 0;
                         z2 = 3;
                         break;
-                    case SOUTH:
+                    case field_11035:
                         z1 = 13;
                         z2 = 16;
                         break;
@@ -210,22 +209,22 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
                     if (!connections.contains(cornerCandidate)) {
                         // There's a cap in this direction
                         switch (cornerCandidate) {
-                            case DOWN:
+                            case field_11033:
                                 y1 = 3;
                                 break;
-                            case UP:
+                            case field_11036:
                                 y2 = 13;
                                 break;
-                            case NORTH:
+                            case field_11043:
                                 z1 = 3;
                                 break;
-                            case SOUTH:
+                            case field_11035:
                                 z2 = 13;
                                 break;
-                            case WEST:
+                            case field_11039:
                                 x1 = 3;
                                 break;
-                            case EAST:
+                            case field_11034:
                                 x2 = 13;
                                 break;
                         }
@@ -251,18 +250,18 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
             return;
         }
 
-        float x1 = (west == Direction.WEST ? 0 : 13);
-        float y1 = (down == Direction.DOWN ? 0 : 13);
-        float z1 = (north == Direction.NORTH ? 0 : 13);
-        float x2 = (west == Direction.WEST ? 3 : 16);
-        float y2 = (down == Direction.DOWN ? 3 : 16);
-        float z2 = (north == Direction.NORTH ? 3 : 16);
+        float x1 = (west == Direction.field_11039 ? 0 : 13);
+        float y1 = (down == Direction.field_11033 ? 0 : 13);
+        float z1 = (north == Direction.field_11043 ? 0 : 13);
+        float x2 = (west == Direction.field_11039 ? 3 : 16);
+        float y2 = (down == Direction.field_11033 ? 3 : 16);
+        float z2 = (north == Direction.field_11043 ? 3 : 16);
         builder.addCube(x1, y1, z1, x2, y2, z2);
     }
 
     // Retrieve the cube connection state from the block state
     // If none is present, just assume there are no adjacent crafting cube blocks
-    private static CraftingCubeModelData getModelData(BlockRenderView blockRenderView, BlockPos pos) {
+    private static CraftingCubeModelData getModelData(IBlockDisplayReader blockRenderView, BlockPos pos) {
         if (!(blockRenderView instanceof RenderAttachedBlockView)) {
             return null;
         }
@@ -277,22 +276,22 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
             CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2);
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getSprite() {
+    public TextureAtlasSprite getParticleTexture() {
         return this.ringCorner;
     }
 
@@ -302,8 +301,8 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 
 }

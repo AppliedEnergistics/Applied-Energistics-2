@@ -20,17 +20,16 @@ package appeng.debug;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.ActionResult;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridConnection;
@@ -55,26 +54,26 @@ import appeng.tile.networking.ControllerBlockEntity;
 
 public class DebugCardItem extends AEBaseItem implements AEToolItem {
 
-    public DebugCardItem(Settings properties) {
+    public DebugCardItem(Properties properties) {
         super(properties);
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
-        if (context.getWorld().isClient()) {
-            return ActionResult.PASS;
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        if (context.getWorld().isRemote()) {
+            return ActionResultType.field_5811;
         }
 
         PlayerEntity player = context.getPlayer();
         World world = context.getWorld();
-        BlockPos pos = context.getBlockPos();
-        Direction side = context.getSide();
+        BlockPos pos = context.getPos();
+        Direction side = context.getFace();
 
         if (player == null) {
-            return ActionResult.PASS;
+            return ActionResultType.field_5811;
         }
 
-        if (player.isInSneakingPose()) {
+        if (player.isCrouching()) {
             int grids = 0;
             int totalNodes = 0;
 
@@ -86,7 +85,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
             this.outputMsg(player, "Grids: " + grids);
             this.outputMsg(player, "Total Nodes: " + totalNodes);
         } else {
-            final BlockEntity te = world.getBlockEntity(pos);
+            final TileEntity te = world.getTileEntity(pos);
 
             if (te instanceof IGridHost) {
                 final GridNode node = (GridNode) ((IGridHost) te).getGridNode(AEPartLocation.fromFacing(side));
@@ -184,11 +183,11 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
                 }
             }
         }
-        return ActionResult.SUCCESS;
+        return ActionResultType.field_5812;
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendSystemMessage(new LiteralText(string), Util.NIL_UUID);
+        player.sendMessage(new StringTextComponent(string), Util.DUMMY_UUID);
     }
 
     private String timeMeasurement(final long nanos) {

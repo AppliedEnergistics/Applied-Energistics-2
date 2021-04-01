@@ -21,11 +21,10 @@ package appeng.debug;
 import javax.annotation.Nullable;
 
 import com.google.common.math.IntMath;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.Tickable;
-import net.minecraft.util.math.Direction;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -34,13 +33,13 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.tile.AEBaseBlockEntity;
 
-public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Tickable, IEnergyStorage {
+public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements ITickableTileEntity, IEnergyStorage {
     /**
      * The base energy injected each tick. Adjacent TileEnergyGenerators will increase it to pow(base, #generators).
      */
     private static final int BASE_ENERGY = 8;
 
-    public EnergyGeneratorBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public EnergyGeneratorBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -53,7 +52,7 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Tic
 
         int tier = 1;
         for (Direction facing : Direction.values()) {
-            final BlockEntity te = world.getBlockEntity(this.getPos().offset(facing));
+            final TileEntity te = world.getTileEntity(this.getPos().offset(facing));
 
             if (te instanceof EnergyGeneratorBlockEntity) {
                 tier++;
@@ -63,7 +62,7 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Tic
         final int energyToInsert = IntMath.pow(BASE_ENERGY, tier);
 
         for (Direction facing : Direction.values()) {
-            final BlockEntity te = this.getWorld().getBlockEntity(this.getPos().offset(facing));
+            final TileEntity te = this.getWorld().getBlockEntity(this.getPos().offset(facing));
             if (te == null) {
                 continue;
             }

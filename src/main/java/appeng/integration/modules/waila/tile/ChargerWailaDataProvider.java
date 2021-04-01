@@ -22,13 +22,12 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 import alexiil.mc.lib.attributes.item.FixedItemInvView;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
@@ -48,23 +47,23 @@ public final class ChargerWailaDataProvider extends BaseWailaDataProvider {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
 
-        final BlockEntity te = accessor.getBlockEntity();
+        final TileEntity te = accessor.getBlockEntity();
         if (te instanceof ChargerBlockEntity) {
             final ChargerBlockEntity charger = (ChargerBlockEntity) te;
             final FixedItemInvView chargerInventory = charger.getInternalInventory();
             final ItemStack chargingItem = chargerInventory.getInvStack(0);
 
             if (!chargingItem.isEmpty()) {
-                final Text currentInventory = chargingItem.getName();
+                final ITextComponent currentInventory = chargingItem.getDisplayName();
                 final PlayerEntity player = accessor.getPlayer();
 
-                tooltip.add(WailaText.Contains.text().copy().append(": ").append(currentInventory));
-                TooltipContext tooltipFlag = MinecraftClient.getInstance().options.advancedItemTooltips
-                        ? TooltipContext.Default.ADVANCED
-                        : TooltipContext.Default.NORMAL;
-                chargingItem.getItem().appendTooltip(chargingItem, player.world, tooltip, tooltipFlag);
+                tooltip.add(WailaText.Contains.text().copyRaw().appendString(": ").append(currentInventory));
+                ITooltipFlag tooltipFlag = Minecraft.getInstance().gameSettings.advancedItemTooltips
+                        ? ITooltipFlag.TooltipFlags.field_8935
+                        : ITooltipFlag.TooltipFlags.field_8934;
+                chargingItem.getItem().addInformation(chargingItem, player.world, tooltip, tooltipFlag);
             }
         }
 

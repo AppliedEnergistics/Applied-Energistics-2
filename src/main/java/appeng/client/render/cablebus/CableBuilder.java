@@ -29,12 +29,11 @@ import java.util.function.Function;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -46,19 +45,19 @@ import appeng.core.AppEng;
 class CableBuilder {
 
     // Textures for the cable core types, one per type/color pair
-    private final EnumMap<CableCoreType, EnumMap<AEColor, Sprite>> coreTextures;
+    private final EnumMap<CableCoreType, EnumMap<AEColor, TextureAtlasSprite>> coreTextures;
 
     // Textures for rendering the actual connection cubes, one per type/color pair
     // FIXME
-    public final EnumMap<AECableType, EnumMap<AEColor, Sprite>> connectionTextures;
+    public final EnumMap<AECableType, EnumMap<AEColor, TextureAtlasSprite>> connectionTextures;
 
     private final SmartCableTextures smartCableTextures;
 
-    CableBuilder(Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
+    CableBuilder(Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
         this.coreTextures = new EnumMap<>(CableCoreType.class);
 
         for (CableCoreType type : CableCoreType.values()) {
-            EnumMap<AEColor, Sprite> colorTextures = new EnumMap<>(AEColor.class);
+            EnumMap<AEColor, TextureAtlasSprite> colorTextures = new EnumMap<>(AEColor.class);
 
             for (AEColor color : AEColor.values()) {
                 colorTextures.put(color, bakedTextureGetter.apply(type.getTexture(color)));
@@ -70,7 +69,7 @@ class CableBuilder {
         this.connectionTextures = new EnumMap<>(AECableType.class);
 
         for (AECableType type : AECableType.VALIDCABLES) {
-            EnumMap<AEColor, Sprite> colorTextures = new EnumMap<>(AEColor.class);
+            EnumMap<AEColor, TextureAtlasSprite> colorTextures = new EnumMap<>(AEColor.class);
 
             for (AEColor color : AEColor.values()) {
                 colorTextures.put(color, bakedTextureGetter.apply(getConnectionTexture(type, color)));
@@ -82,7 +81,7 @@ class CableBuilder {
         this.smartCableTextures = new SmartCableTextures(bakedTextureGetter);
     }
 
-    static SpriteIdentifier getConnectionTexture(AECableType cableType, AEColor color) {
+    static RenderMaterial getConnectionTexture(AECableType cableType, AEColor color) {
         String textureFolder;
         switch (cableType) {
             case GLASS:
@@ -104,8 +103,8 @@ class CableBuilder {
                 throw new IllegalStateException("Cable type " + cableType + " does not support connections.");
         }
 
-        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-                new Identifier(AppEng.MOD_ID, textureFolder + color.name().toLowerCase(Locale.ROOT)));
+        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+                new ResourceLocation(AppEng.MOD_ID, textureFolder + color.name().toLowerCase(Locale.ROOT)));
     }
 
     /**
@@ -133,7 +132,7 @@ class CableBuilder {
     public void addCableCore(CableCoreType coreType, AEColor color, QuadEmitter emitter) {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
-        Sprite texture = this.coreTextures.get(coreType).get(color);
+        TextureAtlasSprite texture = this.coreTextures.get(coreType).get(color);
         cubeBuilder.setTexture(texture);
 
         switch (coreType) {
@@ -158,32 +157,32 @@ class CableBuilder {
 
         // For to-machine connections, use a thicker end-cap for the connection
         if (connectionType != AECableType.GLASS && !cableBusAdjacent) {
-            Sprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
+            TextureAtlasSprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
             cubeBuilder.setTexture(texture);
 
             this.addBigCoveredCableSizedCube(facing, cubeBuilder);
         }
 
-        Sprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         switch (facing) {
-            case DOWN:
+            case field_11033:
                 cubeBuilder.addCube(6, 0, 6, 10, 6, 10);
                 break;
-            case EAST:
+            case field_11034:
                 cubeBuilder.addCube(10, 6, 6, 16, 10, 10);
                 break;
-            case NORTH:
+            case field_11043:
                 cubeBuilder.addCube(6, 6, 0, 10, 10, 6);
                 break;
-            case SOUTH:
+            case field_11035:
                 cubeBuilder.addCube(6, 6, 10, 10, 10, 16);
                 break;
-            case UP:
+            case field_11036:
                 cubeBuilder.addCube(6, 10, 6, 10, 16, 10);
                 break;
-            case WEST:
+            case field_11039:
                 cubeBuilder.addCube(0, 6, 6, 6, 10, 10);
                 break;
         }
@@ -197,20 +196,20 @@ class CableBuilder {
         // and its ends will always be covered by something
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing, facing.getOpposite())));
 
-        Sprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         switch (facing) {
-            case DOWN:
-            case UP:
+            case field_11033:
+            case field_11036:
                 cubeBuilder.addCube(6, 0, 6, 10, 16, 10);
                 break;
-            case NORTH:
-            case SOUTH:
+            case field_11043:
+            case field_11035:
                 cubeBuilder.addCube(6, 6, 0, 10, 10, 16);
                 break;
-            case EAST:
-            case WEST:
+            case field_11034:
+            case field_11039:
                 cubeBuilder.addCube(0, 6, 6, 16, 10, 10);
                 break;
         }
@@ -226,26 +225,26 @@ class CableBuilder {
 
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
-        Sprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         switch (facing) {
-            case DOWN:
+            case field_11033:
                 cubeBuilder.addCube(6, distanceFromEdge, 6, 10, 6, 10);
                 break;
-            case EAST:
+            case field_11034:
                 cubeBuilder.addCube(10, 6, 6, 16 - distanceFromEdge, 10, 10);
                 break;
-            case NORTH:
+            case field_11043:
                 cubeBuilder.addCube(6, 6, distanceFromEdge, 10, 10, 6);
                 break;
-            case SOUTH:
+            case field_11035:
                 cubeBuilder.addCube(6, 6, 10, 10, 10, 16 - distanceFromEdge);
                 break;
-            case UP:
+            case field_11036:
                 cubeBuilder.addCube(6, 10, 6, 10, 16 - distanceFromEdge, 10);
                 break;
-            case WEST:
+            case field_11039:
                 cubeBuilder.addCube(distanceFromEdge, 6, 6, 6, 10, 10);
                 break;
         }
@@ -259,7 +258,7 @@ class CableBuilder {
         // We render all faces except the one on the connection side
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
-        Sprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         // Draw a covered connection, if anything but glass is requested
@@ -273,7 +272,7 @@ class CableBuilder {
     public void addStraightCoveredConnection(Direction facing, AEColor cableColor, QuadEmitter emitter) {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
-        Sprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         setStraightCableUVs(cubeBuilder, facing, 5, 11);
@@ -283,26 +282,26 @@ class CableBuilder {
 
     private static void setStraightCableUVs(CubeBuilder cubeBuilder, Direction facing, int x, int y) {
         switch (facing) {
-            case DOWN:
-            case UP:
-                cubeBuilder.setCustomUv(Direction.NORTH, x, 0, y, x);
-                cubeBuilder.setCustomUv(Direction.EAST, x, 0, y, x);
-                cubeBuilder.setCustomUv(Direction.SOUTH, x, 0, y, x);
-                cubeBuilder.setCustomUv(Direction.WEST, x, 0, y, x);
+            case field_11033:
+            case field_11036:
+                cubeBuilder.setCustomUv(Direction.field_11043, x, 0, y, x);
+                cubeBuilder.setCustomUv(Direction.field_11034, x, 0, y, x);
+                cubeBuilder.setCustomUv(Direction.field_11035, x, 0, y, x);
+                cubeBuilder.setCustomUv(Direction.field_11039, x, 0, y, x);
                 break;
-            case EAST:
-            case WEST:
-                cubeBuilder.setCustomUv(Direction.UP, 0, x, x, y);
-                cubeBuilder.setCustomUv(Direction.DOWN, 0, x, x, y);
-                cubeBuilder.setCustomUv(Direction.NORTH, 0, x, x, y);
-                cubeBuilder.setCustomUv(Direction.SOUTH, 0, x, x, y);
+            case field_11034:
+            case field_11039:
+                cubeBuilder.setCustomUv(Direction.field_11036, 0, x, x, y);
+                cubeBuilder.setCustomUv(Direction.field_11033, 0, x, x, y);
+                cubeBuilder.setCustomUv(Direction.field_11043, 0, x, x, y);
+                cubeBuilder.setCustomUv(Direction.field_11035, 0, x, x, y);
                 break;
-            case NORTH:
-            case SOUTH:
-                cubeBuilder.setCustomUv(Direction.UP, x, 0, y, x);
-                cubeBuilder.setCustomUv(Direction.DOWN, x, 0, y, x);
-                cubeBuilder.setCustomUv(Direction.EAST, 0, x, x, y);
-                cubeBuilder.setCustomUv(Direction.WEST, 0, x, x, y);
+            case field_11043:
+            case field_11035:
+                cubeBuilder.setCustomUv(Direction.field_11036, x, 0, y, x);
+                cubeBuilder.setCustomUv(Direction.field_11033, x, 0, y, x);
+                cubeBuilder.setCustomUv(Direction.field_11034, 0, x, x, y);
+                cubeBuilder.setCustomUv(Direction.field_11039, 0, x, x, y);
                 break;
         }
     }
@@ -317,7 +316,7 @@ class CableBuilder {
 
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
-        Sprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         addCoveredCableSizedCube(facing, distanceFromEdge, cubeBuilder);
@@ -335,11 +334,11 @@ class CableBuilder {
         // We render all faces except the one on the connection side
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
-        Sprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
-        Sprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // For to-machine connections, use a thicker end-cap for the connection
         if (connectionType != AECableType.GLASS && !cableBusAdjacent) {
@@ -381,15 +380,15 @@ class CableBuilder {
     public void addStraightSmartConnection(Direction facing, AEColor cableColor, int channels, QuadEmitter emitter) {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
-        Sprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         setStraightCableUVs(cubeBuilder, facing, 5, 11);
 
         addStraightCoveredCableSizedCube(facing, cubeBuilder);
 
-        Sprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setEmissiveMaterial(true);
@@ -417,13 +416,13 @@ class CableBuilder {
 
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
-        Sprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         addCoveredCableSizedCube(facing, distanceFromEdge, cubeBuilder);
 
-        Sprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setEmissiveMaterial(true);
@@ -455,7 +454,7 @@ class CableBuilder {
         // We render all faces except the one on the connection side
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
-        Sprite texture = this.connectionTextures.get(AECableType.DENSE_COVERED).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         addDenseCableSizedCube(facing, cubeBuilder);
@@ -485,7 +484,7 @@ class CableBuilder {
         // We render all faces except the one on the connection side
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
-        Sprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         addDenseCableSizedCube(facing, cubeBuilder);
@@ -493,8 +492,8 @@ class CableBuilder {
         // Dense cables show used channels in groups of 4, rounded up
         channels = (channels + 3) / 4;
 
-        Sprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setEmissiveMaterial(true);
@@ -515,7 +514,7 @@ class CableBuilder {
     public void addStraightDenseCoveredConnection(Direction facing, AEColor cableColor, QuadEmitter emitter) {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
-        Sprite texture = this.connectionTextures.get(AECableType.DENSE_COVERED).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         setStraightCableUVs(cubeBuilder, facing, 5, 11);
@@ -527,7 +526,7 @@ class CableBuilder {
             QuadEmitter emitter) {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
-        Sprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
+        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         setStraightCableUVs(cubeBuilder, facing, 5, 11);
@@ -537,8 +536,8 @@ class CableBuilder {
         // Dense cables show used channels in groups of 4, rounded up
         channels = (channels + 3) / 4;
 
-        Sprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setEmissiveMaterial(true);
@@ -557,22 +556,22 @@ class CableBuilder {
 
     private static void addDenseCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
+            case field_11033:
                 cubeBuilder.addCube(4, 0, 4, 12, 5, 12);
                 break;
-            case EAST:
+            case field_11034:
                 cubeBuilder.addCube(11, 4, 4, 16, 12, 12);
                 break;
-            case NORTH:
+            case field_11043:
                 cubeBuilder.addCube(4, 4, 0, 12, 12, 5);
                 break;
-            case SOUTH:
+            case field_11035:
                 cubeBuilder.addCube(4, 4, 11, 12, 12, 16);
                 break;
-            case UP:
+            case field_11036:
                 cubeBuilder.addCube(4, 11, 4, 12, 16, 12);
                 break;
-            case WEST:
+            case field_11039:
                 cubeBuilder.addCube(0, 4, 4, 5, 12, 12);
                 break;
         }
@@ -583,27 +582,27 @@ class CableBuilder {
     // for the given direction
     private static void addStraightDenseCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
-            case UP:
-                cubeBuilder.setUvRotation(Direction.EAST, 3);
+            case field_11033:
+            case field_11036:
+                cubeBuilder.setUvRotation(Direction.field_11034, 3);
                 cubeBuilder.addCube(3, 0, 3, 13, 16, 13);
-                cubeBuilder.setUvRotation(Direction.EAST, 0);
+                cubeBuilder.setUvRotation(Direction.field_11034, 0);
                 break;
-            case EAST:
-            case WEST:
-                cubeBuilder.setUvRotation(Direction.SOUTH, 3);
-                cubeBuilder.setUvRotation(Direction.NORTH, 3);
+            case field_11034:
+            case field_11039:
+                cubeBuilder.setUvRotation(Direction.field_11035, 3);
+                cubeBuilder.setUvRotation(Direction.field_11043, 3);
                 cubeBuilder.addCube(0, 3, 3, 16, 13, 13);
-                cubeBuilder.setUvRotation(Direction.SOUTH, 0);
-                cubeBuilder.setUvRotation(Direction.NORTH, 0);
+                cubeBuilder.setUvRotation(Direction.field_11035, 0);
+                cubeBuilder.setUvRotation(Direction.field_11043, 0);
                 break;
-            case NORTH:
-            case SOUTH:
-                cubeBuilder.setUvRotation(Direction.EAST, 3);
-                cubeBuilder.setUvRotation(Direction.WEST, 3);
+            case field_11043:
+            case field_11035:
+                cubeBuilder.setUvRotation(Direction.field_11034, 3);
+                cubeBuilder.setUvRotation(Direction.field_11039, 3);
                 cubeBuilder.addCube(3, 3, 0, 13, 13, 16);
-                cubeBuilder.setUvRotation(Direction.EAST, 0);
-                cubeBuilder.setUvRotation(Direction.WEST, 0);
+                cubeBuilder.setUvRotation(Direction.field_11034, 0);
+                cubeBuilder.setUvRotation(Direction.field_11039, 0);
                 break;
         }
     }
@@ -613,22 +612,22 @@ class CableBuilder {
     // to the given face
     private static void addCoveredCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
+            case field_11033:
                 cubeBuilder.addCube(6, 0, 6, 10, 5, 10);
                 break;
-            case EAST:
+            case field_11034:
                 cubeBuilder.addCube(11, 6, 6, 16, 10, 10);
                 break;
-            case NORTH:
+            case field_11043:
                 cubeBuilder.addCube(6, 6, 0, 10, 10, 5);
                 break;
-            case SOUTH:
+            case field_11035:
                 cubeBuilder.addCube(6, 6, 11, 10, 10, 16);
                 break;
-            case UP:
+            case field_11036:
                 cubeBuilder.addCube(6, 11, 6, 10, 16, 10);
                 break;
-            case WEST:
+            case field_11039:
                 cubeBuilder.addCube(0, 6, 6, 5, 10, 10);
                 break;
         }
@@ -639,49 +638,49 @@ class CableBuilder {
     // for the given direction
     private static void addStraightCoveredCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
-            case UP:
-                cubeBuilder.setUvRotation(Direction.EAST, 3);
+            case field_11033:
+            case field_11036:
+                cubeBuilder.setUvRotation(Direction.field_11034, 3);
                 cubeBuilder.addCube(5, 0, 5, 11, 16, 11);
-                cubeBuilder.setUvRotation(Direction.EAST, 0);
+                cubeBuilder.setUvRotation(Direction.field_11034, 0);
                 break;
-            case EAST:
-            case WEST:
-                cubeBuilder.setUvRotation(Direction.SOUTH, 3);
-                cubeBuilder.setUvRotation(Direction.NORTH, 3);
+            case field_11034:
+            case field_11039:
+                cubeBuilder.setUvRotation(Direction.field_11035, 3);
+                cubeBuilder.setUvRotation(Direction.field_11043, 3);
                 cubeBuilder.addCube(0, 5, 5, 16, 11, 11);
-                cubeBuilder.setUvRotation(Direction.SOUTH, 0);
-                cubeBuilder.setUvRotation(Direction.NORTH, 0);
+                cubeBuilder.setUvRotation(Direction.field_11035, 0);
+                cubeBuilder.setUvRotation(Direction.field_11043, 0);
                 break;
-            case NORTH:
-            case SOUTH:
-                cubeBuilder.setUvRotation(Direction.EAST, 3);
-                cubeBuilder.setUvRotation(Direction.WEST, 3);
+            case field_11043:
+            case field_11035:
+                cubeBuilder.setUvRotation(Direction.field_11034, 3);
+                cubeBuilder.setUvRotation(Direction.field_11039, 3);
                 cubeBuilder.addCube(5, 5, 0, 11, 11, 16);
-                cubeBuilder.setUvRotation(Direction.EAST, 0);
-                cubeBuilder.setUvRotation(Direction.WEST, 0);
+                cubeBuilder.setUvRotation(Direction.field_11034, 0);
+                cubeBuilder.setUvRotation(Direction.field_11039, 0);
                 break;
         }
     }
 
     private static void addCoveredCableSizedCube(Direction facing, int distanceFromEdge, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
+            case field_11033:
                 cubeBuilder.addCube(6, distanceFromEdge, 6, 10, 5, 10);
                 break;
-            case EAST:
+            case field_11034:
                 cubeBuilder.addCube(11, 6, 6, 16 - distanceFromEdge, 10, 10);
                 break;
-            case NORTH:
+            case field_11043:
                 cubeBuilder.addCube(6, 6, distanceFromEdge, 10, 10, 5);
                 break;
-            case SOUTH:
+            case field_11035:
                 cubeBuilder.addCube(6, 6, 11, 10, 10, 16 - distanceFromEdge);
                 break;
-            case UP:
+            case field_11036:
                 cubeBuilder.addCube(6, 11, 6, 10, 16 - distanceFromEdge, 10);
                 break;
-            case WEST:
+            case field_11039:
                 cubeBuilder.addCube(distanceFromEdge, 6, 6, 5, 10, 10);
                 break;
         }
@@ -694,30 +693,30 @@ class CableBuilder {
      */
     private void addBigCoveredCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
+            case field_11033:
                 cubeBuilder.addCube(5, 0, 5, 11, 4, 11);
                 break;
-            case EAST:
+            case field_11034:
                 cubeBuilder.addCube(12, 5, 5, 16, 11, 11);
                 break;
-            case NORTH:
+            case field_11043:
                 cubeBuilder.addCube(5, 5, 0, 11, 11, 4);
                 break;
-            case SOUTH:
+            case field_11035:
                 cubeBuilder.addCube(5, 5, 12, 11, 11, 16);
                 break;
-            case UP:
+            case field_11036:
                 cubeBuilder.addCube(5, 12, 5, 11, 16, 11);
                 break;
-            case WEST:
+            case field_11039:
                 cubeBuilder.addCube(0, 5, 5, 4, 11, 11);
                 break;
         }
     }
 
     // Get all textures needed for building the actual cable quads
-    public static List<SpriteIdentifier> getTextures() {
-        List<SpriteIdentifier> locations = new ArrayList<>();
+    public static List<RenderMaterial> getTextures() {
+        List<RenderMaterial> locations = new ArrayList<>();
 
         for (CableCoreType coreType : CableCoreType.values()) {
             for (AEColor color : AEColor.values()) {
@@ -736,7 +735,7 @@ class CableBuilder {
         return locations;
     }
 
-    public Sprite getCoreTexture(CableCoreType coreType, AEColor color) {
+    public TextureAtlasSprite getCoreTexture(CableCoreType coreType, AEColor color) {
         return this.coreTextures.get(coreType).get(color);
     }
 }

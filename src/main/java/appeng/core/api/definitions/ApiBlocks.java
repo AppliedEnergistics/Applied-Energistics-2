@@ -26,14 +26,13 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.Material;
 import net.minecraft.block.SlabBlock;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.entity.EntityDimensions;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.sound.BlockSoundGroup;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
@@ -239,14 +238,14 @@ public final class ApiBlocks implements IBlocks {
     private IBlockDefinition cubeGenerator;
     private IBlockDefinition energyGenerator;
 
-    private static final FabricBlockSettings QUARTZ_PROPERTIES = defaultProps(Material.STONE).strength(3, 5);
+    private static final FabricBlockSettings QUARTZ_PROPERTIES = defaultProps(Material.ROCK).hardnessAndResistance(3, 5);
 
-    private static final FabricBlockSettings SKYSTONE_PROPERTIES = defaultProps(Material.STONE).strength(50, 150);
+    private static final FabricBlockSettings SKYSTONE_PROPERTIES = defaultProps(Material.ROCK).hardnessAndResistance(50, 150);
 
     private static FabricBlockSettings glassProps() {
-        return defaultProps(Material.GLASS).sounds(BlockSoundGroup.GLASS).nonOpaque()
-                .allowsSpawning((state, world, pos, type) -> false).nonOpaque().suffocates((state, world, pos) -> false)
-                .blockVision((state, world, pos) -> false);
+        return defaultProps(Material.GLASS).sound(SoundType.GLASS).notSolid()
+                .setAllowsSpawn((state, world, pos, type) -> false).notSolid().setSuffocates((state, world, pos) -> false)
+                .setBlocksVision((state, world, pos) -> false);
     }
 
     public ApiBlocks(FeatureFactory registry) {
@@ -257,7 +256,7 @@ public final class ApiBlocks implements IBlocks {
                     @Override
                     @Environment(EnvType.CLIENT)
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                        rendering.renderType(RenderLayer.getCutout());
+                        rendering.renderType(RenderType.getCutout());
                     }
                 }).build();
         this.matrixFrame = registry.block("matrix_frame", MatrixFrameBlock::new).features(AEFeature.SPATIAL_IO).build();
@@ -268,25 +267,25 @@ public final class ApiBlocks implements IBlocks {
         this.chiseledQuartzBlock = deco.block("chiseled_quartz_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES))
                 .build();
 
-        AbstractBlock.TypedContextPredicate<EntityType<?>> neverAllowSpawn = (p1, p2, p3, p4) -> false;
+        AbstractBlock.IExtendedPositionPredicate<EntityType<?>> neverAllowSpawn = (p1, p2, p3, p4) -> false;
         this.quartzGlass = registry.features(AEFeature.QUARTZ_GLASS).block("quartz_glass", () -> {
             return new QuartzGlassBlock(glassProps().allowsSpawning(neverAllowSpawn));
         }).rendering(new BlockRenderingCustomizer() {
             @Override
             @Environment(EnvType.CLIENT)
             public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                rendering.renderType(RenderLayer.getCutout());
+                rendering.renderType(RenderType.getCutout());
             }
         }).build();
         this.quartzVibrantGlass = deco
                 .block("quartz_vibrant_glass",
-                        () -> new QuartzLampBlock(glassProps().lightLevel(15).allowsSpawning(neverAllowSpawn)))
+                        () -> new QuartzLampBlock(glassProps().lightLevel(15).setAllowsSpawn(neverAllowSpawn)))
                 .addFeatures(AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS)
                 .rendering(new BlockRenderingCustomizer() {
                     @Override
                     @Environment(EnvType.CLIENT)
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                        rendering.renderType(RenderLayer.getCutout());
+                        rendering.renderType(RenderType.getCutout());
                     }
                 }).build();
 
@@ -295,7 +294,7 @@ public final class ApiBlocks implements IBlocks {
                     @Override
                     @Environment(EnvType.CLIENT)
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                        rendering.renderType(RenderLayer.getCutout());
+                        rendering.renderType(RenderType.getCutout());
                     }
                 }).build();
 
@@ -318,7 +317,7 @@ public final class ApiBlocks implements IBlocks {
                 .block("sky_stone_small_brick", () -> new SkyStoneBlock(SkystoneType.SMALL_BRICK, SKYSTONE_PROPERTIES))
                 .addFeatures(AEFeature.SKY_STONE).build();
 
-        AbstractBlock.Settings skyStoneChestProps = defaultProps(Material.STONE).strength(50, 150).nonOpaque();
+        AbstractBlock.Properties skyStoneChestProps = defaultProps(Material.ROCK).hardnessAndResistance(50, 150).notSolid();
 
         TileEntityDefinition skyChestTile = registry
                 .tileEntity("sky_chest", SkyChestBlockEntity.class, SkyChestBlockEntity::new)
@@ -337,13 +336,13 @@ public final class ApiBlocks implements IBlocks {
                         () -> new SkyChestBlock(SkyChestBlock.SkyChestType.BLOCK, skyStoneChestProps))
                 .features(AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS).tileEntity(skyChestTile).build();
 
-        this.skyCompass = registry.block("sky_compass", () -> new SkyCompassBlock(defaultProps(Material.SUPPORTED)))
+        this.skyCompass = registry.block("sky_compass", () -> new SkyCompassBlock(defaultProps(Material.MISCELLANEOUS)))
                 .features(AEFeature.METEORITE_COMPASS)
                 .tileEntity(registry.tileEntity("sky_compass", SkyCompassBlockEntity.class, SkyCompassBlockEntity::new)
                         .rendering(new SkyCompassRendering()).build())
                 .build();
         this.grindstone = registry
-                .block("grindstone", () -> new GrinderBlock(defaultProps(Material.STONE).strength(3.2f)))
+                .block("grindstone", () -> new GrinderBlock(defaultProps(Material.ROCK).hardnessAndResistance(3.2f)))
                 .features(AEFeature.GRIND_STONE)
                 .tileEntity(
                         registry.tileEntity("grindstone", GrinderBlockEntity.class, GrinderBlockEntity::new).build())
@@ -351,7 +350,7 @@ public final class ApiBlocks implements IBlocks {
         this.crank = registry
                 .block("crank",
                         () -> new CrankBlock(
-                                defaultProps(Material.WOOD).breakByTool(FabricToolTags.AXES, 0).nonOpaque()))
+                                defaultProps(Material.WOOD).breakByTool(FabricToolTags.AXES, 0).notSolid()))
                 .features(AEFeature.GRIND_STONE)
                 .tileEntity(registry.tileEntity("crank", CrankBlockEntity.class, CrankBlockEntity::new)
                         .rendering(new TileEntityRenderingCustomizer<CrankBlockEntity>() {
@@ -362,7 +361,7 @@ public final class ApiBlocks implements IBlocks {
                             }
                         }).build())
                 .build();
-        this.inscriber = registry.block("inscriber", () -> new InscriberBlock(defaultProps(Material.METAL).nonOpaque()))
+        this.inscriber = registry.block("inscriber", () -> new InscriberBlock(defaultProps(Material.IRON).notSolid()))
                 .features(AEFeature.INSCRIBER)
                 .tileEntity(registry.tileEntity("inscriber", InscriberBlockEntity.class, InscriberBlockEntity::new)
                         .rendering(new InscriberRendering()).build())
@@ -385,14 +384,14 @@ public final class ApiBlocks implements IBlocks {
                 .build();
 
         TinyTNTPrimedEntity.TYPE = registry
-                .<TinyTNTPrimedEntity>entity("tiny_tnt_primed", TinyTNTPrimedEntity::new, SpawnGroup.MISC)
+                .<TinyTNTPrimedEntity>entity("tiny_tnt_primed", TinyTNTPrimedEntity::new, EntityClassification.field_17715)
                 // Entity properties are a copy of the standard TNT entity
-                .customize(p -> p.trackable(10, 10, true).dimensions(EntityDimensions.fixed(0.98f, 0.98f))).build();
+                .customize(p -> p.trackable(10, 10, true).dimensions(EntitySize.fixed(0.98f, 0.98f))).build();
 
         this.tinyTNT = registry
                 .block("tiny_tnt",
                         () -> new TinyTNTBlock(
-                                defaultProps(Material.TNT).sounds(BlockSoundGroup.GRASS).breakInstantly()))
+                                defaultProps(Material.TNT).sound(SoundType.PLANT).zeroHardnessAndResistance()))
                 .features(AEFeature.TINY_TNT).bootstrap((block, item) -> (IInitComponent) () -> DispenserBlock
                         .registerBehavior(item, new TinyTNTDispenseItemBehavior()))
                 .build();
@@ -497,7 +496,7 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity("crafting_unit", CraftingBlockEntity.class, CraftingBlockEntity::new).build();
 
         FeatureFactory crafting = registry.features(AEFeature.CRAFTING_CPU);
-        AbstractBlock.Settings craftingBlockProps = defaultProps(Material.METAL);
+        AbstractBlock.Properties craftingBlockProps = defaultProps(Material.IRON);
         this.craftingUnit = crafting
                 .block("crafting_unit", () -> new CraftingUnitBlock(craftingBlockProps, CraftingUnitType.UNIT))
                 .rendering(new CraftingCubeRendering()).tileEntity(craftingUnit).build();
@@ -544,12 +543,12 @@ public final class ApiBlocks implements IBlocks {
 
         this.molecularAssembler = registry
                 .block("molecular_assembler",
-                        () -> new MolecularAssemblerBlock(defaultProps(Material.METAL).nonOpaque()))
+                        () -> new MolecularAssemblerBlock(defaultProps(Material.IRON).notSolid()))
                 .features(AEFeature.MOLECULAR_ASSEMBLER).rendering(new BlockRenderingCustomizer() {
                     @Environment(EnvType.CLIENT)
                     @Override
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                        rendering.renderType(RenderLayer.getCutout());
+                        rendering.renderType(RenderType.getCutout());
                     }
                 })
                 .tileEntity(registry
@@ -573,7 +572,7 @@ public final class ApiBlocks implements IBlocks {
                     @Override
                     @Environment(EnvType.CLIENT)
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                        rendering.renderType(RenderLayer.getCutout());
+                        rendering.renderType(RenderType.getCutout());
                     }
                 }).build();
         this.paint = registry.block("paint", PaintSplotchesBlock::new).features(AEFeature.PAINT_BALLS)

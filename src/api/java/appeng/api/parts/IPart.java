@@ -32,20 +32,19 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
@@ -54,6 +53,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public interface IPart extends ICustomCableConnection {
 
@@ -75,7 +75,7 @@ public interface IPart extends ICustomCableConnection {
      * {@link #requireDynamicRender()} in order for this method to be called.
      */
     @Environment(EnvType.CLIENT)
-    default void renderDynamic(float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffers,
+    default void renderDynamic(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers,
             int combinedLightIn, int combinedOverlayIn) {
     }
 
@@ -102,14 +102,14 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param data to be written nbt data
      */
-    void writeToNBT(CompoundTag data);
+    void writeToNBT(CompoundNBT data);
 
     /**
      * Read the previously written NBT Data. this is the mirror for writeToNBT
      *
      * @param data to be read nbt data
      */
-    void readFromNBT(CompoundTag data);
+    void readFromNBT(CompoundNBT data);
 
     /**
      * @return get the amount of light produced by the bus
@@ -127,7 +127,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * a block around the bus's host has been changed.
      */
-    void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor);
+    void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor);
 
     /**
      * @return output redstone on facing side
@@ -145,7 +145,7 @@ public interface IPart extends ICustomCableConnection {
      * @param data to be written data
      * @throws IOException
      */
-    void writeToStream(PacketByteBuf data) throws IOException;
+    void writeToStream(PacketBuffer data) throws IOException;
 
     /**
      * read data from bus packet.
@@ -154,7 +154,7 @@ public interface IPart extends ICustomCableConnection {
      * @return true will re-draw the part.
      * @throws IOException
      */
-    boolean readFromStream(PacketByteBuf data) throws IOException;
+    boolean readFromStream(PacketBuffer data) throws IOException;
 
     /**
      * get the Grid Node for the Bus, be sure your IGridBlock is NOT isWorldAccessible, if it is your going to cause
@@ -197,7 +197,7 @@ public interface IPart extends ICustomCableConnection {
      * @param host part side
      * @param tile block entity of part
      */
-    void setPartHostInfo(AEPartLocation side, IPartHost host, BlockEntity tile);
+    void setPartHostInfo(AEPartLocation side, IPartHost host, TileEntity tile);
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -207,7 +207,7 @@ public interface IPart extends ICustomCableConnection {
      * @param pos    position of block
      * @return if your activate method performed something.
      */
-    boolean onActivate(PlayerEntity player, Hand hand, Vec3d pos);
+    boolean onActivate(PlayerEntity player, Hand hand, Vector3d pos);
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -217,7 +217,7 @@ public interface IPart extends ICustomCableConnection {
      * @param pos    position of block
      * @return if your activate method performed something, you should use false unless you really need it.
      */
-    boolean onShiftActivate(PlayerEntity player, Hand hand, Vec3d pos);
+    boolean onShiftActivate(PlayerEntity player, Hand hand, Vector3d pos);
 
     /**
      * Called when you left click the part, very similar to Block.onBlockBreakStart
@@ -227,7 +227,7 @@ public interface IPart extends ICustomCableConnection {
      * @param pos    position of block
      * @return if your activate method performed something, you should use false unless you really need it.
      */
-    default boolean onClicked(PlayerEntity player, Hand hand, Vec3d pos) {
+    default boolean onClicked(PlayerEntity player, Hand hand, Vector3d pos) {
         return false;
     }
 
@@ -239,7 +239,7 @@ public interface IPart extends ICustomCableConnection {
      * @param pos    position of block
      * @return if your activate method performed something, you should use false unless you really need it.
      */
-    default boolean onShiftClicked(PlayerEntity player, Hand hand, Vec3d pos) {
+    default boolean onShiftClicked(PlayerEntity player, Hand hand, Vector3d pos) {
         return false;
     }
 
@@ -345,7 +345,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param section The crash report section the information will be added to.
      */
-    default void addEntityCrashInfo(CrashReportSection section) {
+    default void addEntityCrashInfo(CrashReportCategory section) {
     }
 
 }

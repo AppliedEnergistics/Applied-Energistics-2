@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.block.Block;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.renderer.RenderType;
 
 /**
  * Sets the rendering type for a block.
@@ -13,9 +13,9 @@ public class RenderTypeComponent implements IClientSetupComponent {
 
     private final Block block;
 
-    private final RenderLayer renderType;
+    private final RenderType renderType;
 
-    public RenderTypeComponent(Block block, RenderLayer renderType) {
+    public RenderTypeComponent(Block block, RenderType renderType) {
         this.block = block;
         this.renderType = Preconditions.checkNotNull(renderType);
     }

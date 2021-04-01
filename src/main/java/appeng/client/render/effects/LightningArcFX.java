@@ -22,10 +22,10 @@ import java.util.Random;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.SpriteBillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.world.ClientWorld;
 
 @Environment(EnvType.CLIENT)
@@ -67,19 +67,19 @@ public class LightningArcFX extends LightningFX {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<LightningArcParticleData> {
-        private final SpriteProvider spriteSet;
+    public static class Factory implements IParticleFactory<LightningArcParticleData> {
+        private final IAnimatedSprite spriteSet;
 
-        public Factory(SpriteProvider spriteSet) {
+        public Factory(IAnimatedSprite spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
         public Particle createParticle(LightningArcParticleData effect, ClientWorld world, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            SpriteBillboardParticle lightningFX = new LightningArcFX(world, x, y, z, effect.target.x, effect.target.y,
+            SpriteTexturedParticle lightningFX = new LightningArcFX(world, x, y, z, effect.target.x, effect.target.y,
                     effect.target.z, 0, 0, 0);
-            lightningFX.setSprite(this.spriteSet);
+            lightningFX.selectSpriteRandomly(this.spriteSet);
             return lightningFX;
         }
     }

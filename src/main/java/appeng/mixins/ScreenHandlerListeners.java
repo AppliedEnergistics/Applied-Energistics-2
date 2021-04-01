@@ -1,17 +1,15 @@
 package appeng.mixins;
 
 import java.util.List;
-
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerListener;
-
-@Mixin(ScreenHandler.class)
+@Mixin(Container.class)
 public interface ScreenHandlerListeners {
 
     @Accessor("listeners")
-    List<ScreenHandlerListener> ae2_getListeners();
+    List<IContainerListener> ae2_getListeners();
 
 }

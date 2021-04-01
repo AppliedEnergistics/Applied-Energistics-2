@@ -18,25 +18,23 @@
 
 package appeng.server;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.command.Commands.literal;
 
 import java.util.Locale;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
-
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
 public final class AECommand {
 
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public void register(CommandDispatcher<CommandSource> dispatcher) {
 
-        LiteralArgumentBuilder<ServerCommandSource> builder = literal("ae2");
+        LiteralArgumentBuilder<CommandSource> builder = literal("ae2");
         for (Commands command : Commands.values()) {
             if (command.test && !AEConfig.instance().isFeatureEnabled(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS)) {
                 continue;
@@ -47,9 +45,9 @@ public final class AECommand {
         dispatcher.register(builder);
     }
 
-    private void add(LiteralArgumentBuilder<ServerCommandSource> builder, Commands subCommand) {
+    private void add(LiteralArgumentBuilder<CommandSource> builder, Commands subCommand) {
 
-        LiteralArgumentBuilder<ServerCommandSource> subCommandBuilder = literal(
+        LiteralArgumentBuilder<CommandSource> subCommandBuilder = literal(
                 subCommand.name().toLowerCase(Locale.ROOT)).requires(src -> src.hasPermissionLevel(subCommand.level));
         subCommand.command.addArguments(subCommandBuilder);
         subCommandBuilder.executes(ctx -> {

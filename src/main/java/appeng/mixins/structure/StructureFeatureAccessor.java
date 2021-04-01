@@ -1,16 +1,15 @@
 package appeng.mixins.structure;
 
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.structure.Structure;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.feature.StructureFeature;
-
-@Mixin(StructureFeature.class)
+@Mixin(Structure.class)
 public interface StructureFeatureAccessor {
 
     @Invoker("register")
-    static <F extends StructureFeature<?>> F register(String id, F structureFeature, GenerationStep.Feature step) {
+    static <F extends Structure<?>> F register(String id, F structureFeature, GenerationStage.Decoration step) {
         throw new AssertionError();
     }
 

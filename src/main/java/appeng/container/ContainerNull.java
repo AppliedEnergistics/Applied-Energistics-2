@@ -19,19 +19,19 @@
 package appeng.container;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.inventory.container.Container;
 
 /*
  * Totally useless container that does nothing.
  */
-public class ContainerNull extends ScreenHandler {
+public class ContainerNull extends Container {
 
     public ContainerNull() {
         super(null, 0);
     }
 
     @Override
-    public boolean canUse(PlayerEntity player) {
+    public boolean canInteractWith(PlayerEntity player) {
         return false;
     }
 }

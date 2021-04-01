@@ -19,11 +19,11 @@
 package appeng.helpers;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
@@ -32,10 +32,10 @@ import appeng.decorative.solid.QuartzPillarBlock;
 public class MetaRotation implements IOrientable {
 
     private final DirectionProperty facingProp;
-    private final BlockView w;
+    private final IBlockReader w;
     private final BlockPos pos;
 
-    public MetaRotation(final BlockView world, final BlockPos pos, final DirectionProperty facingProp) {
+    public MetaRotation(final IBlockReader world, final BlockPos pos, final DirectionProperty facingProp) {
         this.w = world;
         this.pos = pos;
         this.facingProp = facingProp;
@@ -48,35 +48,35 @@ public class MetaRotation implements IOrientable {
 
     @Override
     public Direction getForward() {
-        if (this.getUp().getOffsetY() == 0) {
-            return Direction.UP;
+        if (this.getUp().getYOffset() == 0) {
+            return Direction.field_11036;
         }
-        return Direction.SOUTH;
+        return Direction.field_11035;
     }
 
     @Override
     public Direction getUp() {
         final BlockState state = this.w.getBlockState(this.pos);
 
-        if (this.facingProp != null && state.contains(this.facingProp)) {
+        if (this.facingProp != null && state.hasProperty(this.facingProp)) {
             return state.get(this.facingProp);
         }
 
         // TODO 1.10.2-R - Temp
-        if (state.contains(QuartzPillarBlock.AXIS)) {
+        if (state.hasProperty(QuartzPillarBlock.AXIS)) {
             Axis a = state.get(QuartzPillarBlock.AXIS);
             switch (a) {
-                case X:
-                    return Direction.EAST;
-                case Z:
-                    return Direction.SOUTH;
+                case field_11048:
+                    return Direction.field_11034;
+                case field_11051:
+                    return Direction.field_11035;
                 default:
-                case Y:
-                    return Direction.UP;
+                case field_11052:
+                    return Direction.field_11036;
             }
         }
 
-        return Direction.UP;
+        return Direction.field_11036;
     }
 
     @Override

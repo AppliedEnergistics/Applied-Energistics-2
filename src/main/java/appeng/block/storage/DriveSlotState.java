@@ -18,14 +18,13 @@
 
 package appeng.block.storage;
 
-import net.minecraft.util.StringIdentifiable;
-
 import appeng.api.storage.cells.CellState;
+import net.minecraft.util.IStringSerializable;
 
 /**
  * Describes the different states a single slot of a BlockDrive can be in in terms of rendering.
  */
-public enum DriveSlotState implements StringIdentifiable {
+public enum DriveSlotState implements IStringSerializable {
 
     // No cell in slot
     EMPTY("empty"),
@@ -52,7 +51,7 @@ public enum DriveSlotState implements StringIdentifiable {
     }
 
     @Override
-    public String asString() {
+    public String getString() {
         return this.name;
     }
 

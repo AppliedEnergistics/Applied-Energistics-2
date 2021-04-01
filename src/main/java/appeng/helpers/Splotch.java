@@ -18,11 +18,10 @@
 
 package appeng.helpers;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-
 import appeng.api.util.AEColor;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class Splotch {
 
@@ -31,17 +30,17 @@ public class Splotch {
     private final AEColor color;
     private final int pos;
 
-    public Splotch(final AEColor col, final boolean lit, final Direction side, final Vec3d position) {
+    public Splotch(final AEColor col, final boolean lit, final Direction side, final Vector3d position) {
         this.color = col;
         this.lumen = lit;
 
         final double x;
         final double y;
 
-        if (side == Direction.SOUTH || side == Direction.NORTH) {
+        if (side == Direction.field_11035 || side == Direction.field_11043) {
             x = position.x;
             y = position.y;
-        } else if (side == Direction.UP || side == Direction.DOWN) {
+        } else if (side == Direction.field_11036 || side == Direction.field_11033) {
             x = position.x;
             y = position.z;
         } else {
@@ -56,7 +55,7 @@ public class Splotch {
         this.side = side;
     }
 
-    public Splotch(final PacketByteBuf data) {
+    public Splotch(final PacketBuffer data) {
 
         this.pos = data.readByte();
         final int val = data.readByte();
@@ -66,7 +65,7 @@ public class Splotch {
         this.lumen = ((val >> 7) & 0x01) > 0;
     }
 
-    public void writeToStream(final PacketByteBuf stream) {
+    public void writeToStream(final PacketBuffer stream) {
         stream.writeByte(this.pos);
         final int val = this.getSide().ordinal() | (this.getColor().ordinal() << 3) | (this.isLumen() ? 0x80 : 0x00);
         stream.writeByte(val);

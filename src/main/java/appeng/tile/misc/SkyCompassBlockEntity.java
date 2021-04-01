@@ -18,14 +18,13 @@
 
 package appeng.tile.misc;
 
-import net.minecraft.block.entity.BlockEntityType;
-
 import appeng.client.render.model.AEModelData;
 import appeng.tile.AEBaseBlockEntity;
+import net.minecraft.tileentity.TileEntityType;
 
 public class SkyCompassBlockEntity extends AEBaseBlockEntity {
 
-    public SkyCompassBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public SkyCompassBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

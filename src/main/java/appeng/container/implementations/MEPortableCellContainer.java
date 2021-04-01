@@ -20,10 +20,9 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.network.PacketBuffer;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
@@ -32,12 +31,12 @@ import appeng.container.interfaces.IInventorySlotAware;
 
 public class MEPortableCellContainer extends MEMonitorableContainer {
 
-    public static ScreenHandlerType<MEPortableCellContainer> TYPE;
+    public static ContainerType<MEPortableCellContainer> TYPE;
 
     private static final ContainerHelper<MEPortableCellContainer, IPortableCell> helper = new ContainerHelper<>(
             MEPortableCellContainer::new, IPortableCell.class);
 
-    public static MEPortableCellContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static MEPortableCellContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -55,7 +54,7 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
         this(TYPE, id, ip, monitorable);
     }
 
-    protected MEPortableCellContainer(ScreenHandlerType<? extends MEPortableCellContainer> type, int id,
+    protected MEPortableCellContainer(ContainerType<? extends MEPortableCellContainer> type, int id,
             final PlayerInventory ip, final IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
         if (monitorable instanceof IInventorySlotAware) {
@@ -64,22 +63,22 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
             this.slot = slotIndex;
         } else {
             this.slot = -1;
-            this.lockPlayerInventorySlot(ip.selectedSlot);
+            this.lockPlayerInventorySlot(ip.currentItem);
         }
         this.civ = monitorable;
         this.bindPlayerInventory(ip, 0, 0);
     }
 
     @Override
-    public void sendContentUpdates() {
-        final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getMainHandStack()
-                : this.getPlayerInv().getStack(this.slot);
+    public void detectAndSendChanges() {
+        final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem()
+                : this.getPlayerInv().getStackInSlot(this.slot);
 
         if (this.civ == null || currentItem.isEmpty()) {
             this.setValidContainer(false);
         } else if (this.civ != null && !this.civ.getItemStack().isEmpty() && currentItem != this.civ.getItemStack()) {
-            if (ItemStack.areItemsEqual(this.civ.getItemStack(), currentItem)) {
-                this.getPlayerInv().setStack(this.getPlayerInv().selectedSlot, this.civ.getItemStack());
+            if (ItemStack.areItemsEqualIgnoreDurability(this.civ.getItemStack(), currentItem)) {
+                this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.civ.getItemStack());
             } else {
                 this.setValidContainer(false);
             }
@@ -92,7 +91,7 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
                     PowerMultiplier.CONFIG);
             this.ticks = 0;
         }
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     private double getPowerMultiplier() {

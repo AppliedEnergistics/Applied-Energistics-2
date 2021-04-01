@@ -19,8 +19,7 @@
 package appeng.parts.misc;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.util.ResourceLocation;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
@@ -28,7 +27,7 @@ import appeng.parts.PartModel;
 
 public class InvertedToggleBusPart extends ToggleBusPart {
     @PartModels
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/inverted_toggle_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/inverted_toggle_bus_base");
 
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);

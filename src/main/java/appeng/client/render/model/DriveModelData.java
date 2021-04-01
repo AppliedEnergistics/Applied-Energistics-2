@@ -1,9 +1,7 @@
 package appeng.client.render.model;
 
 import java.util.Objects;
-
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.util.Direction;
 import appeng.block.storage.DriveSlotsState;
 
 public class DriveModelData extends AEModelData {

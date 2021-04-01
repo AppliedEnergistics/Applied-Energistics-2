@@ -31,14 +31,13 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.chunk.ChunkManager;
-import net.minecraft.world.chunk.WorldChunk;
-
+import net.minecraft.world.chunk.AbstractChunkProvider;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.server.ServerWorld;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
 import appeng.api.networking.IGridNode;
@@ -60,7 +59,7 @@ public class TickHandler {
     private static TickHandler INSTANCE;
     private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
     private final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
-    private final Map<WorldAccess, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
+    private final Map<IWorld, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
     private final ServerTileRepo tiles = new ServerTileRepo();
     private final ServerGridRepo grids = new ServerGridRepo();
     private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
@@ -100,7 +99,7 @@ public class TickHandler {
         return this.srvPlayerColors;
     }
 
-    public void addCallable(final WorldAccess w, final IWorldCallable<?> c) {
+    public void addCallable(final IWorld w, final IWorldCallable<?> c) {
         if (w == null) {
             this.serverQueue.add(c);
         } else {
@@ -177,8 +176,8 @@ public class TickHandler {
      *
      * Removes any pending initialization callbacks for tile-entities in that chunk.
      */
-    public void onUnloadChunk(ServerWorld world, WorldChunk chunk) {
-        this.tiles.removeWorldChunk(world, chunk.getPos().toLong());
+    public void onUnloadChunk(ServerWorld world, Chunk chunk) {
+        this.tiles.removeWorldChunk(world, chunk.getPos().asLong());
     }
 
     /**
@@ -248,7 +247,7 @@ public class TickHandler {
     }
 
     public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
-        Preconditions.checkArgument(!world.isClient, "Trying to register a crafting job for a client-world");
+        Preconditions.checkArgument(!world.isRemote, "Trying to register a crafting job for a client-world");
 
         synchronized (this.craftingJobs) {
             this.craftingJobs.put(world, craftingJob);
@@ -288,16 +287,16 @@ public class TickHandler {
 
         for (long chunkPos : chunksQueued) {
             ChunkPos pos = new ChunkPos(chunkPos);
-            ChunkManager chunkManager = world.getChunkManager();
+            AbstractChunkProvider chunkManager = world.getChunkProvider();
 
             // Using the blockpos of the chunk start to test if it can tick.
             // Relies on the world to test the chunkpos and not the explicit blockpos.
-            BlockPos testBlockPos = new BlockPos(pos.getStartX(), 0, pos.getStartZ());
+            BlockPos testBlockPos = new BlockPos(pos.getXStart(), 0, pos.getZStart());
 
             // Readies this chunk, if it can tick and does exist.
             // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
             // will be readied.
-            if (world.isChunkLoaded(pos.x, pos.z) && chunkManager.shouldTickBlock(testBlockPos)) {
+            if (world.chunkExists(pos.x, pos.z) && chunkManager.canTick(testBlockPos)) {
                 Queue<AEBaseBlockEntity> chunkQueue = worldQueue.remove(chunkPos);
                 if (chunkQueue == null) {
                     continue; // This should never happen, chunk unloaded under our noses

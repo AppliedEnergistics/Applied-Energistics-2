@@ -20,9 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -37,12 +36,12 @@ import appeng.helpers.IInterfaceHost;
 
 public class InterfaceContainer extends UpgradeableContainer {
 
-    public static ScreenHandlerType<InterfaceContainer> TYPE;
+    public static ContainerType<InterfaceContainer> TYPE;
 
     private static final ContainerHelper<InterfaceContainer, IInterfaceHost> helper = new ContainerHelper<>(
             InterfaceContainer::new, IInterfaceHost.class, SecurityPermissions.BUILD);
 
-    public static InterfaceContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static InterfaceContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -93,9 +92,9 @@ public class InterfaceContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     @Override

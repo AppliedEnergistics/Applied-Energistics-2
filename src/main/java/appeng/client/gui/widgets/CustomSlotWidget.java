@@ -1,14 +1,14 @@
 package appeng.client.gui.widgets;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
-public abstract class CustomSlotWidget extends DrawableHelper implements ITooltip {
+public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
     private final int x;
     private final int y;
     private final int id;
@@ -30,15 +30,15 @@ public abstract class CustomSlotWidget extends DrawableHelper implements IToolti
     public void slotClicked(final ItemStack clickStack, final int mouseButton) {
     }
 
-    public abstract void drawContent(final MinecraftClient mc, final int mouseX, final int mouseY,
+    public abstract void drawContent(final Minecraft mc, final int mouseX, final int mouseY,
             final float partialTicks);
 
     public void drawBackground(MatrixStack matrices, int guileft, int guitop, int currentZIndex) {
     }
 
     @Override
-    public Text getTooltipMessage() {
-        return LiteralText.EMPTY;
+    public ITextComponent getTooltipMessage() {
+        return StringTextComponent.EMPTY;
     }
 
     @Override

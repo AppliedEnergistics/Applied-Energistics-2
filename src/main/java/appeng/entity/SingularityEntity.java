@@ -23,15 +23,14 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Box;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import appeng.api.definitions.IMaterials;
@@ -42,7 +41,7 @@ import appeng.util.Platform;
 
 public final class SingularityEntity extends AEBaseItemEntity {
 
-    private static final Identifier TAG_ENDER_PEARL = new Identifier("c:ender_pearls");
+    private static final ResourceLocation TAG_ENDER_PEARL = new ResourceLocation("c:ender_pearls");
 
     public static EntityType<SingularityEntity> TYPE;
 
@@ -57,13 +56,13 @@ public final class SingularityEntity extends AEBaseItemEntity {
     }
 
     @Override
-    public boolean damage(final DamageSource src, final float dmg) {
-        if (src.isExplosive()) {
+    public boolean attackEntityFrom(final DamageSource src, final float dmg) {
+        if (src.isExplosion()) {
             this.doExplosion();
             return false;
         }
 
-        return super.damage(src, dmg);
+        return super.attackEntityFrom(src, dmg);
     }
 
     private void doExplosion() {
@@ -75,18 +74,18 @@ public final class SingularityEntity extends AEBaseItemEntity {
             return;
         }
 
-        final ItemStack item = this.getStack();
+        final ItemStack item = this.getItem();
 
         final IMaterials materials = Api.instance().definitions().materials();
 
         if (materials.singularity().isSameAs(item)) {
-            final Box region = new Box(this.getX() - 4, this.getY() - 4, this.getZ() - 4, this.getX() + 4,
-                    this.getY() + 4, this.getZ() + 4);
+            final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4, this.getPosX() + 4,
+                    this.getPosY() + 4, this.getPosZ() + 4);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             for (final Entity e : l) {
                 if (e instanceof ItemEntity) {
-                    final ItemStack other = ((ItemEntity) e).getStack();
+                    final ItemStack other = ((ItemEntity) e).getItem();
                     if (!other.isEmpty()) {
                         boolean matches = false;
 
@@ -96,7 +95,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
                         // check... other name.
                         if (!matches) {
-                            Tag<Item> tag = ItemTags.getTagGroup().getTag(TAG_ENDER_PEARL);
+                            ITag<Item> tag = ItemTags.getCollection().get(TAG_ENDER_PEARL);
                             if (tag != null && other.getItem().isIn(tag)) {
                                 matches = true;
                             }
@@ -104,7 +103,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
                         if (matches) {
                             while (item.getCount() > 0 && other.getCount() > 0) {
-                                other.increment(-1);
+                                other.grow(-1);
                                 ;
                                 if (other.getCount() == 0) {
                                     e.remove();

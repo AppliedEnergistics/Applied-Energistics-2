@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * A registry for 3D models used to render storage cells in the world, when they are inserted into a drive or similar
@@ -44,28 +44,28 @@ public interface ICellModelRegistry {
      * You are responsible for ensuring that the given model is actually loaded by the game. See
      * {@see net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
      * <p>
-     * This method only maps an {@link Item} to a {@link Identifier} which can be looked up from the
-     * {@link net.minecraft.client.render.model.BakedModelManager}. No validation about missing models will be done.
+     * This method only maps an {@link Item} to a {@link ResourceLocation} which can be looked up from the
+     * {@link net.minecraft.client.renderer.model.ModelManager}. No validation about missing models will be done.
      * <p>
      * Will throw an exception in case a model is already registered for an item.
      * <p>
      * For examples look at our cell part models within the drive model directory.
      *
      * @param item  The cell item
-     * @param model The {@link net.minecraft.util.Identifier} representing the model.
+     * @param model The {@link net.minecraft.util.ResourceLocation} representing the model.
      * @return
      */
-    void registerModel(@Nonnull Item item, @Nonnull Identifier model);
+    void registerModel(@Nonnull Item item, @Nonnull ResourceLocation model);
 
     /**
-     * The {@link Identifier} of the model used to render the given storage cell {@link Item} when inserted into a drive
+     * The {@link ResourceLocation} of the model used to render the given storage cell {@link Item} when inserted into a drive
      * or similar.
      *
      * @param item
      * @return null, if no model is registered.
      */
     @Nullable
-    Identifier model(@Nonnull Item item);
+    ResourceLocation model(@Nonnull Item item);
 
     /**
      * An unmodifiable map of all registered mappings.
@@ -73,12 +73,12 @@ public interface ICellModelRegistry {
      * @return
      */
     @Nonnull
-    Map<Item, Identifier> models();
+    Map<Item, ResourceLocation> models();
 
     /**
      * Returns the default model, which can be used when no explicit model is registered.
      */
     @Nonnull
-    Identifier getDefaultModel();
+    ResourceLocation getDefaultModel();
 
 }

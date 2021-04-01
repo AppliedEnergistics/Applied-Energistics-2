@@ -24,17 +24,16 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.TeleportTarget;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
-
+import net.minecraft.world.server.ServerWorld;
 import appeng.api.util.WorldCoord;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -50,12 +49,12 @@ public class SpatialStorageHelper {
         return instance;
     }
 
-    private final ThreadLocal<TeleportTarget> teleportTarget = new ThreadLocal<>();
+    private final ThreadLocal<PortalInfo> teleportTarget = new ThreadLocal<>();
 
     /**
      * If an entity is currently being teleported, this will return the target within the target dimension.
      */
-    public TeleportTarget getTeleportTarget() {
+    public PortalInfo getTeleportTarget() {
         return teleportTarget.get();
     }
 
@@ -88,12 +87,12 @@ public class SpatialStorageHelper {
         }
 
         // Are we riding something? Teleport it instead.
-        if (entity.hasVehicle()) {
-            return this.teleportEntity(entity.getVehicle(), link);
+        if (entity.isPassenger()) {
+            return this.teleportEntity(entity.getRidingEntity(), link);
         }
 
         // Is something riding us? Handle it first.
-        final List<Entity> passengers = entity.getPassengerList();
+        final List<Entity> passengers = entity.getPassengers();
         final List<Entity> passengersOnOtherSide = new ArrayList<>(passengers.size());
         for (Entity passenger : passengers) {
             passenger.stopRiding();
@@ -102,18 +101,18 @@ public class SpatialStorageHelper {
         // We keep track of all so we can remount them on the other side.
 
         // load the chunk!
-        newWorld.getChunkManager().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
+        newWorld.getChunkProvider().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
-        if (entity instanceof ServerPlayerEntity && link.dim.getRegistryKey() == SpatialStorageDimensionIds.WORLD_ID) {
+        if (entity instanceof ServerPlayerEntity && link.dim.getDimensionKey() == SpatialStorageDimensionIds.WORLD_ID) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
         // Store in a threadlocal so that EntityMixin can return it for the Vanilla
         // logic to use
-        teleportTarget.set(new TeleportTarget(new Vec3d(link.x, link.y, link.z), Vec3d.ZERO, entity.yaw, entity.pitch));
+        teleportTarget.set(new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.rotationYaw, entity.rotationPitch));
         try {
-            entity = entity.moveToWorld(link.dim);
+            entity = entity.changeDimension(link.dim);
         } finally {
             teleportTarget.remove();
         }
@@ -159,9 +158,9 @@ public class SpatialStorageHelper {
                         dstY + scaleY + 1, dstZ + scaleZ + 1,
                         new WrapInMatrixFrame(matrixFrameBlock.getDefaultState(), dstWorld)));
 
-        final Box srcBox = new Box(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1);
+        final AxisAlignedBB srcBox = new AxisAlignedBB(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1);
 
-        final Box dstBox = new Box(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1);
+        final AxisAlignedBB dstBox = new AxisAlignedBB(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1);
 
         final CachedPlane cDst = new CachedPlane(dstWorld, dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY,
                 dstZ + scaleZ);
@@ -171,25 +170,25 @@ public class SpatialStorageHelper {
         // do nearly all the work... swaps blocks, tiles, and block ticks
         cSrc.swap(cDst);
 
-        final List<Entity> srcE = srcWorld.getEntitiesIncludingUngeneratedChunks(Entity.class, srcBox);
-        final List<Entity> dstE = dstWorld.getEntitiesIncludingUngeneratedChunks(Entity.class, dstBox);
+        final List<Entity> srcE = srcWorld.getLoadedEntitiesWithinAABB(Entity.class, srcBox);
+        final List<Entity> dstE = dstWorld.getLoadedEntitiesWithinAABB(Entity.class, dstBox);
 
         for (final Entity e : dstE) {
-            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getX(), e.getY(), e.getZ(), -dstX + srcX,
+            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getPosX(), e.getPosY(), e.getPosZ(), -dstX + srcX,
                     -dstY + srcY, -dstZ + srcZ));
         }
 
         for (final Entity e : srcE) {
-            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getX(), e.getY(), e.getZ(), -srcX + dstX,
+            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getPosX(), e.getPosY(), e.getPosZ(), -srcX + dstX,
                     -srcY + dstY, -srcZ + dstZ));
         }
 
         for (final WorldCoord wc : cDst.getUpdates()) {
-            cSrc.getWorld().updateNeighborsAlways(wc.getPos(), Blocks.AIR);
+            cSrc.getWorld().notifyNeighborsOfStateChange(wc.getPos(), Blocks.AIR);
         }
 
         for (final WorldCoord wc : cSrc.getUpdates()) {
-            cSrc.getWorld().updateNeighborsAlways(wc.getPos(), Blocks.AIR);
+            cSrc.getWorld().notifyNeighborsOfStateChange(wc.getPos(), Blocks.AIR);
         }
 
         this.transverseEdges(srcX - 1, srcY - 1, srcZ - 1, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1,
@@ -215,7 +214,7 @@ public class SpatialStorageHelper {
         public void visit(final BlockPos pos) {
             final BlockState state = this.dst.getBlockState(pos);
             final Block blk = state.getBlock();
-            blk.neighborUpdate(state, this.dst, pos, blk, pos, false);
+            blk.neighborChanged(state, this.dst, pos, blk, pos, false);
         }
     }
 
@@ -241,7 +240,7 @@ public class SpatialStorageHelper {
         private final double y;
         private final double z;
 
-        TelDestination(final ServerWorld dimension, final Box srcBox, final double x, final double y, final double z,
+        TelDestination(final ServerWorld dimension, final AxisAlignedBB srcBox, final double x, final double y, final double z,
                 final int tileX, final int tileY, final int tileZ) {
             this.dim = dimension;
             this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));

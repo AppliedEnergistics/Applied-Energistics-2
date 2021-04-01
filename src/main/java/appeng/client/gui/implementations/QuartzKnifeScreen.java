@@ -21,11 +21,9 @@ package appeng.client.gui.implementations;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.container.implementations.QuartzKnifeContainer;
@@ -33,40 +31,41 @@ import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
     private TextFieldWidget name;
 
-    public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, Text title) {
+    public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.backgroundHeight = 184;
+        this.ySize = 184;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.name = new TextFieldWidget(this.textRenderer, this.x + 24, this.y + 32, 79, this.textRenderer.fontHeight,
-                LiteralText.EMPTY);
-        this.name.setDrawsBackground(false);
-        this.name.setMaxLength(32);
-        this.name.setEditableColor(0xFFFFFF);
+        this.name = new TextFieldWidget(this.font, this.guiLeft + 24, this.guiTop + 32, 79, this.font.FONT_HEIGHT,
+                StringTextComponent.EMPTY);
+        this.name.setEnableBackgroundDrawing(false);
+        this.name.setMaxStringLength(32);
+        this.name.setTextColor(0xFFFFFF);
         this.name.setVisible(true);
-        this.name.setTextFieldFocused(true);
+        this.name.setFocused2(true);
     }
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()), 8, 6, 4210752);
+        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
         this.bindTexture("guis/quartzknife.png");
-        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
         this.name.render(matrices, mouseX, mouseY, partialTicks);
     }
 
@@ -74,7 +73,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     public boolean charTyped(char character, int key) {
         if (this.name.isFocused() && this.name.charTyped(character, key)) {
             final String Out = this.name.getText();
-            handler.setName(Out);
+            container.setName(Out);
             NetworkHandler.instance().sendToServer(new ConfigValuePacket("QuartzKnife.Name", Out));
             return true;
         }
@@ -87,19 +86,19 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(keyCode, scanCode)) {
             if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, keyCode, scanCode)) {
-                this.name.setTextFieldFocused(!this.name.isFocused());
+                this.name.setFocused2(!this.name.isFocused());
                 return true;
             }
 
             if (this.name.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.name.setTextFieldFocused(false);
+                    this.name.setFocused2(false);
                     return true;
                 }
 
                 if (this.name.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
                     final String Out = this.name.getText();
-                    handler.setName(Out);
+                    container.setName(Out);
                     NetworkHandler.instance().sendToServer(new ConfigValuePacket("QuartzKnife.Name", Out));
                     return true;
                 }

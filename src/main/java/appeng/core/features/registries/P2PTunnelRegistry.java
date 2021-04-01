@@ -29,7 +29,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 import alexiil.mc.lib.attributes.Attribute;
@@ -151,7 +151,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
                     return entry.getValue();
                 }
 
-                if (ItemStack.areItemsEqual(is, trigger)) {
+                if (ItemStack.areItemsEqualIgnoreDurability(is, trigger)) {
                     return entry.getValue();
                 }
             }
@@ -164,8 +164,8 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
             }
 
             // Use the mod id as last option.
-            Identifier itemId = Registry.ITEM.getId(trigger.getItem());
-            if (itemId == Registry.ITEM.getDefaultId()) {
+            ResourceLocation itemId = Registry.ITEM.getKey(trigger.getItem());
+            if (itemId == Registry.ITEM.getDefaultKey()) {
                 return null; // Unregistered item
             }
 
@@ -182,7 +182,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
     @Nonnull
     private ItemStack getModItem(final String modID, final String name) {
 
-        final Item item = Registry.ITEM.getOrEmpty(new Identifier(modID, name)).orElse(null);
+        final Item item = Registry.ITEM.getOptional(new ResourceLocation(modID, name)).orElse(null);
 
         if (item == null) {
             return ItemStack.EMPTY;

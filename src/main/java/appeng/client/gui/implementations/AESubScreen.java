@@ -3,12 +3,10 @@ package appeng.client.gui.implementations;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
 import appeng.client.gui.AEBaseScreen;
@@ -34,7 +32,7 @@ import appeng.tile.storage.ChestBlockEntity;
 final class AESubScreen {
 
     private final AEBaseScreen<?> gui;
-    private final ScreenHandlerType<?> previousContainerType;
+    private final ContainerType<?> previousContainerType;
     private final ItemStack previousContainerIcon;
 
     /**
@@ -80,10 +78,10 @@ final class AESubScreen {
         return addBackButton(buttonAdder, x, y, null);
     }
 
-    public final TabButton addBackButton(Consumer<TabButton> buttonAdder, int x, int y, @Nullable Text label) {
+    public final TabButton addBackButton(Consumer<TabButton> buttonAdder, int x, int y, @Nullable ITextComponent label) {
         if (this.previousContainerType != null && !previousContainerIcon.isEmpty()) {
             if (label == null) {
-                label = previousContainerIcon.getName();
+                label = previousContainerIcon.getDisplayName();
             }
             ItemRenderer itemRenderer = gui.getClient().getItemRenderer();
             TabButton button = new TabButton(gui.getX() + x, gui.getY() + y, previousContainerIcon, label, itemRenderer,

@@ -19,8 +19,7 @@
 package appeng.client.gui.widgets;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * AEBaseGui controlled Tooltip Interface.
@@ -30,12 +29,12 @@ public interface ITooltip {
     /**
      * Returns the tooltip message.
      * <p>
-     * Should use {@link net.minecraft.text.LiteralText#EMPTY} for no tooltip
+     * Should use {@link net.minecraft.util.text.StringTextComponent#EMPTY} for no tooltip
      *
      * @return tooltip message
      */
     @Nonnull
-    Text getTooltipMessage();
+    ITextComponent getTooltipMessage();
 
     /**
      * x Location for the object that triggers the tooltip.

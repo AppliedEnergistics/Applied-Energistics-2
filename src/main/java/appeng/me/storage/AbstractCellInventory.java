@@ -19,8 +19,7 @@
 package appeng.me.storage;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.nbt.CompoundNBT;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FuzzyMode;
@@ -48,7 +47,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
     protected static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
     private static final String[] ITEM_SLOT_KEYS = new String[MAX_ITEM_TYPES];
     private static final String[] ITEM_SLOT_COUNT_KEYS = new String[MAX_ITEM_TYPES];
-    private final CompoundTag tagCompound;
+    private final CompoundNBT tagCompound;
     protected final ISaveProvider container;
     private int maxItemTypes = MAX_ITEM_TYPES;
     private short storedItems = 0;
@@ -108,7 +107,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
         for (final T v : this.cellItems) {
             itemCount += v.getStackSize();
 
-            final CompoundTag g = new CompoundTag();
+            final CompoundNBT g = new CompoundNBT();
             v.writeToNBT(g);
             this.tagCompound.put(ITEM_SLOT_KEYS[x], g);
             this.tagCompound.putInt(ITEM_SLOT_COUNT_KEYS[x], (int) v.getStackSize());
@@ -169,7 +168,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
         boolean needsUpdate = false;
 
         for (int slot = 0; slot < types; slot++) {
-            CompoundTag compoundTag = this.tagCompound.getCompound(ITEM_SLOT_KEYS[slot]);
+            CompoundNBT compoundTag = this.tagCompound.getCompound(ITEM_SLOT_KEYS[slot]);
             int stackSize = this.tagCompound.getInt(ITEM_SLOT_COUNT_KEYS[slot]);
             needsUpdate |= !this.loadCellItem(compoundTag, stackSize);
         }
@@ -186,7 +185,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
      * @param stackSize
      * @return true when successfully loaded
      */
-    protected abstract boolean loadCellItem(CompoundTag compoundTag, int stackSize);
+    protected abstract boolean loadCellItem(CompoundNBT compoundTag, int stackSize);
 
     @Override
     public IItemList<T> getAvailableItems(final IItemList<T> out) {

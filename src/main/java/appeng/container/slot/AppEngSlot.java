@@ -23,18 +23,17 @@ import javax.annotation.Nonnull;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.SingleItemSlot;
 
 import appeng.container.AEBaseContainer;
 
 public class AppEngSlot extends Slot {
-    private static final Inventory EMPTY_INVENTORY = new SimpleInventory(0);
+    private static final IInventory EMPTY_INVENTORY = new Inventory(0);
     private final FixedItemInv itemHandler;
     private final SingleItemSlot backingSlot;
     private final int invSlot;
@@ -78,7 +77,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public boolean canInsert(@Nonnull final ItemStack stack) {
+    public boolean isItemValid(@Nonnull final ItemStack stack) {
         if (this.isSlotEnabled()) {
             return this.backingSlot.isValid(stack);
         }
@@ -105,10 +104,10 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public void setStack(final ItemStack stack) {
+    public void putStack(final ItemStack stack) {
         if (this.isSlotEnabled()) {
             this.backingSlot.set(stack);
-            this.markDirty();
+            this.onSlotChanged();
         }
     }
 
@@ -119,24 +118,24 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public void markDirty() {
-        super.markDirty();
+    public void onSlotChanged() {
+        super.onSlotChanged();
         this.setIsValid(CalculatedValidity.NotAvailable);
         notifyContainerSlotChanged();
     }
 
     @Override
-    public int getMaxItemCount() {
+    public int getSlotStackLimit() {
         return this.backingSlot.getMaxAmount(ItemStack.EMPTY);
     }
 
     @Override
-    public int getMaxItemCount(@Nonnull ItemStack stack) {
-        return Math.min(this.getMaxItemCount(), stack.getMaxCount());
+    public int getItemStackLimit(@Nonnull ItemStack stack) {
+        return Math.min(this.getSlotStackLimit(), stack.getMaxStackSize());
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity player) {
+    public boolean canTakeStack(final PlayerEntity player) {
         if (this.isSlotEnabled()) {
             return this.backingSlot.couldExtractAnything();
         }
@@ -145,18 +144,18 @@ public class AppEngSlot extends Slot {
 
     @Override
     @Nonnull
-    public ItemStack takeStack(int amount) {
+    public ItemStack decrStackSize(int amount) {
         return this.backingSlot.extract(amount);
     }
 
     @Override
-    public boolean hasStack() {
+    public boolean getHasStack() {
         return !backingSlot.get().isEmpty();
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public boolean doDrawHoveringEffect() {
+    public boolean isEnabled() {
         return this.isSlotEnabled();
     }
 

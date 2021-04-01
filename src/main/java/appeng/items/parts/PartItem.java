@@ -22,9 +22,8 @@ import java.util.function.Function;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.ActionResult;
-
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.core.Api;
@@ -34,20 +33,20 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
 
     private final Function<ItemStack, T> factory;
 
-    public PartItem(Settings properties, Function<ItemStack, T> factory) {
+    public PartItem(Properties properties, Function<ItemStack, T> factory) {
         super(properties);
         this.factory = factory;
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
+    public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        ItemStack held = player.getStackInHand(context.getHand());
+        ItemStack held = player.getHeldItem(context.getHand());
         if (held.getItem() != this) {
-            return ActionResult.PASS;
+            return ActionResultType.field_5811;
         }
 
-        return Api.instance().partHelper().placeBus(held, context.getBlockPos(), context.getSide(), player,
+        return Api.instance().partHelper().placeBus(held, context.getPos(), context.getFace(), player,
                 context.getHand(), context.getWorld());
     }
 

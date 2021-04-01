@@ -22,16 +22,13 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
-
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
-
 import appeng.client.render.BasicUnbakedModel;
 
 /**
@@ -41,15 +38,15 @@ public class GlassModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
+    public IBakedModel bakeModel(ModelBakery loader, Function<RenderMaterial, TextureAtlasSprite> textureGetter,
+            IModelTransform rotationContainer, ResourceLocation modelId) {
         return new GlassBakedModel(textureGetter);
     }
 
     @Override
-    public Stream<SpriteIdentifier> getAdditionalTextures() {
+    public Stream<RenderMaterial> getAdditionalTextures() {
         return ImmutableSet
-                .<SpriteIdentifier>builder().add(GlassBakedModel.TEXTURE_A, GlassBakedModel.TEXTURE_B,
+                .<RenderMaterial>builder().add(GlassBakedModel.TEXTURE_A, GlassBakedModel.TEXTURE_B,
                         GlassBakedModel.TEXTURE_C, GlassBakedModel.TEXTURE_D)
                 .add(GlassBakedModel.TEXTURES_FRAME).build().stream();
     }

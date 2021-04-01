@@ -33,7 +33,7 @@ public final class BasicStorageCellItem extends AbstractStorageCell<IAEItemStack
     protected final int perType;
     protected final double idleDrain;
 
-    public BasicStorageCellItem(Settings props, final MaterialType whichCell, final int kilobytes) {
+    public BasicStorageCellItem(Properties props, final MaterialType whichCell, final int kilobytes) {
         super(props, whichCell, kilobytes);
         switch (whichCell) {
             case ITEM_1K_CELL_COMPONENT:

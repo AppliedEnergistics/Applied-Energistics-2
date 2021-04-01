@@ -24,11 +24,11 @@ import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Simulation;
@@ -96,7 +96,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private ItemStack currentCell;
     private Map<IStorageChannel<?>, IMEInventory<?>> cachedInventories;
 
-    public IOPortBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public IOPortBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.manager = new ConfigManager(this);
@@ -117,8 +117,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         this.manager.writeToNBT(data);
         this.upgrades.writeToNBT(data, "upgrades");
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
@@ -126,8 +126,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.manager.readFromNBT(data);
         this.upgrades.readFromNBT(data, "upgrades");
         if (data.contains("lastRedstoneState")) {
@@ -158,7 +158,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     public void updateRedstoneState() {
-        final YesNo currentState = this.world.getReceivedRedstonePower(this.pos) != 0 ? YesNo.YES : YesNo.NO;
+        final YesNo currentState = this.world.getRedstonePowerFromNeighbors(this.pos) != 0 ? YesNo.YES : YesNo.NO;
         if (this.lastRedstoneState != currentState) {
             this.lastRedstoneState = currentState;
             this.updateTask();

@@ -18,25 +18,24 @@
 
 package appeng.client.gui.widgets;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
-public class ProgressBar extends AbstractButtonWidget implements ITooltip {
+public class ProgressBar extends Widget implements ITooltip {
 
     private final IProgressProvider source;
-    private final Identifier texture;
+    private final ResourceLocation texture;
     private final int fill_u;
     private final int fill_v;
     private final Direction layout;
-    private final Text titleName;
-    private Text fullMsg;
+    private final ITextComponent titleName;
+    private ITextComponent fullMsg;
 
     public ProgressBar(final IProgressProvider source, final String texture, final int posX, final int posY,
             final int u, final int y, final int width, final int height, final Direction dir) {
@@ -44,10 +43,10 @@ public class ProgressBar extends AbstractButtonWidget implements ITooltip {
     }
 
     public ProgressBar(final IProgressProvider source, final String texture, final int posX, final int posY,
-            final int u, final int y, final int width, final int height, final Direction dir, final Text title) {
-        super(posX, posY, width, height, LiteralText.EMPTY);
+            final int u, final int y, final int width, final int height, final Direction dir, final ITextComponent title) {
+        super(posX, posY, width, height, StringTextComponent.EMPTY);
         this.source = source;
-        this.texture = new Identifier("appliedenergistics2", "textures/" + texture);
+        this.texture = new ResourceLocation("appliedenergistics2", "textures/" + texture);
         this.fill_u = u;
         this.fill_v = y;
         this.layout = dir;
@@ -57,34 +56,34 @@ public class ProgressBar extends AbstractButtonWidget implements ITooltip {
     @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         if (this.visible) {
-            MinecraftClient.getInstance().getTextureManager().bindTexture(this.texture);
+            Minecraft.getInstance().getTextureManager().bindTexture(this.texture);
             final int max = this.source.getMaxProgress();
             final int current = this.source.getCurrentProgress();
 
             if (this.layout == Direction.VERTICAL) {
                 final int diff = this.height - (max > 0 ? (this.height * current) / max : 0);
-                drawTexture(matrices, this.x, this.y + diff, this.fill_u, this.fill_v + diff, this.width,
+                blit(matrices, this.x, this.y + diff, this.fill_u, this.fill_v + diff, this.width,
                         this.height - diff);
             } else {
                 final int diff = this.width - (max > 0 ? (this.width * current) / max : 0);
-                drawTexture(matrices, this.x, this.y, this.fill_u + diff, this.fill_v, this.width - diff, this.height);
+                blit(matrices, this.x, this.y, this.fill_u + diff, this.fill_v, this.width - diff, this.height);
             }
         }
     }
 
-    public void setFullMsg(final Text msg) {
+    public void setFullMsg(final ITextComponent msg) {
         this.fullMsg = msg;
     }
 
     @Override
-    public Text getTooltipMessage() {
+    public ITextComponent getTooltipMessage() {
         if (this.fullMsg != null) {
             return this.fullMsg;
         }
 
-        Text text = this.titleName != null ? this.titleName : LiteralText.EMPTY;
-        return text.copy().append("\n" + this.source.getCurrentProgress() + " ").append(GuiText.Of.text())
-                .append(" " + this.source.getMaxProgress());
+        ITextComponent text = this.titleName != null ? this.titleName : StringTextComponent.EMPTY;
+        return text.copyRaw().appendString("\n" + this.source.getCurrentProgress() + " ").append(GuiText.Of.text())
+                .appendString(" " + this.source.getMaxProgress());
     }
 
     @Override

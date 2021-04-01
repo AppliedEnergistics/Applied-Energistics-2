@@ -22,18 +22,16 @@ import java.io.IOException;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
@@ -53,6 +51,7 @@ import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
 import appeng.util.item.AEItemStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * A basic subclass for any item monitor like display with an item icon and an amount.
@@ -78,22 +77,22 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
 
         this.isLocked = data.getBoolean("isLocked");
 
-        final CompoundTag myItem = data.getCompound("configuredItem");
+        final CompoundNBT myItem = data.getCompound("configuredItem");
         this.configuredItem = AEItemStack.fromNBT(myItem);
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
 
         data.putBoolean("isLocked", this.isLocked);
 
-        final CompoundTag myItem = new CompoundTag();
+        final CompoundNBT myItem = new CompoundNBT();
         if (this.configuredItem != null) {
             this.configuredItem.writeToNBT(myItem);
         }
@@ -102,7 +101,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void writeToStream(final PacketByteBuf data) throws IOException {
+    public void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
 
         data.writeBoolean(this.isLocked);
@@ -113,7 +112,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean readFromStream(final PacketByteBuf data) throws IOException {
+    public boolean readFromStream(final PacketBuffer data) throws IOException {
         boolean needRedraw = super.readFromStream(data);
 
         final boolean isLocked = data.readBoolean();
@@ -132,7 +131,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (Platform.isClient()) {
             return true;
         }
@@ -146,7 +145,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         }
 
         if (!this.isLocked) {
-            final ItemStack eq = player.getStackInHand(hand);
+            final ItemStack eq = player.getHeldItem(hand);
             this.configuredItem = AEItemStack.fromItemStack(eq);
             this.configureWatchers();
             this.getHost().markForSave();
@@ -159,7 +158,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean onPartShiftActivate(PlayerEntity player, Hand hand, Vec3d pos) {
+    public boolean onPartShiftActivate(PlayerEntity player, Hand hand, Vector3d pos) {
         if (Platform.isClient()) {
             return true;
         }
@@ -172,10 +171,10 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             return false;
         }
 
-        if (player.getStackInHand(hand).isEmpty()) {
+        if (player.getHeldItem(hand).isEmpty()) {
             this.isLocked = !this.isLocked;
-            player.sendSystemMessage((this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get(),
-                    Util.NIL_UUID);
+            player.sendMessage((this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get(),
+                    Util.DUMMY_UUID);
             this.getHost().markForSave();
             this.getHost().markForUpdate();
         }
@@ -216,7 +215,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void renderDynamic(float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffers,
+    public void renderDynamic(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers,
             int combinedLightIn, int combinedOverlayIn) {
 
         if ((this.getClientFlags() & (PanelPart.POWERED_FLAG | PanelPart.CHANNEL_FLAG)) != (PanelPart.POWERED_FLAG
@@ -287,7 +286,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean showNetworkInfo(final HitResult where) {
+    public boolean showNetworkInfo(final RayTraceResult where) {
         return false;
     }
 

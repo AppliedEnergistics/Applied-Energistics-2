@@ -24,11 +24,10 @@ import java.util.Optional;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
-
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import me.shedaniel.rei.api.ClientHelper;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.LiveRecipeGenerator;
@@ -52,7 +51,7 @@ class FacadeRegistryGenerator implements LiveRecipeGenerator<DefaultShapedDispla
     }
 
     @Override
-    public Identifier getCategoryIdentifier() {
+    public ResourceLocation getCategoryIdentifier() {
         return FacadeRecipeCategory.ID;
     }
 
@@ -98,14 +97,14 @@ class FacadeRegistryGenerator implements LiveRecipeGenerator<DefaultShapedDispla
 
     private DefaultShapedDisplay make(ItemStack textureItem, ItemStack cableAnchor, ItemStack result) {
         // This id should only be used within JEI and not really matter
-        Identifier id = AppEng.makeId("facade/" + Item.getRawId(textureItem.getItem()));
+        ResourceLocation id = AppEng.makeId("facade/" + Item.getIdFromItem(textureItem.getItem()));
 
-        DefaultedList<Ingredient> ingredients = DefaultedList.ofSize(9, Ingredient.EMPTY);
-        ingredients.set(1, Ingredient.ofStacks(cableAnchor));
-        ingredients.set(3, Ingredient.ofStacks(cableAnchor));
-        ingredients.set(5, Ingredient.ofStacks(cableAnchor));
-        ingredients.set(7, Ingredient.ofStacks(cableAnchor));
-        ingredients.set(4, Ingredient.ofStacks(textureItem));
+        NonNullList<Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
+        ingredients.set(1, Ingredient.fromStacks(cableAnchor));
+        ingredients.set(3, Ingredient.fromStacks(cableAnchor));
+        ingredients.set(5, Ingredient.fromStacks(cableAnchor));
+        ingredients.set(7, Ingredient.fromStacks(cableAnchor));
+        ingredients.set(4, Ingredient.fromStacks(textureItem));
 
         result.setCount(4);
 

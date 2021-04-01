@@ -1,9 +1,9 @@
 package appeng.hooks;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.ActionResult;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
 
 public interface AEToolItem {
-    ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context);
+    ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context);
 }

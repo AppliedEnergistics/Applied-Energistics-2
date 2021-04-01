@@ -19,14 +19,14 @@
 package appeng.entity;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import appeng.api.features.AEFeature;
@@ -72,13 +72,13 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
     public void tick() {
         // Prevent the entity from despawning
         ItemEntityAccessor accessor = (ItemEntityAccessor) this;
-        if (!this.world.isClient && accessor.getAge() >= 1000) {
+        if (!this.world.isRemote && accessor.getAge() >= 1000) {
             accessor.setAge(0);
         }
 
         super.tick();
 
-        final ItemStack is = this.getStack();
+        final ItemStack is = this.getItem();
         final Item gc = is.getItem();
 
         if (!(gc instanceof IGrowableCrystal)) {
@@ -93,9 +93,9 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
             return;
         }
 
-        final int x = MathHelper.floor(this.getX());
+        final int x = MathHelper.floor(this.getPosX());
         final int y = MathHelper.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
-        final int z = MathHelper.floor(this.getZ());
+        final int z = MathHelper.floor(this.getPosZ());
 
         BlockPos pos = new BlockPos(x, y, z);
         final BlockState state = this.world.getBlockState(pos);
@@ -110,14 +110,14 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
 
         final int progressPerTick = (int) Math.max(1, this.getSpeed(pos) * multiplier);
 
-        if (world.isClient()) {
+        if (world.isRemote()) {
             // On the client, we reuse the growth-tick-progress
             // as a tick-counter for particle effects
             int len = getTicksBetweenParticleEffects(progressPerTick);
             if (++this.progress_1000 >= len) {
                 this.progress_1000 = 0;
-                AppEng.instance().spawnEffect(EffectType.Vibrant, this.world, this.getX(), this.getY() + 0.2,
-                        this.getZ(), null);
+                AppEng.instance().spawnEffect(EffectType.Vibrant, this.world, this.getPosX(), this.getPosY() + 0.2,
+                        this.getPosZ(), null);
             }
         } else {
             this.progress_1000 += progressPerTick;
@@ -138,7 +138,7 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
                     // We assume that if the item changes, the process is complete and we can break
                 } while (this.progress_1000 >= 1000 && newItem.getItem() == is.getItem());
 
-                this.setStack(newItem);
+                this.setItem(newItem);
             }
         }
     }
@@ -181,7 +181,7 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
 
         BlockPos.Mutable testPos = new BlockPos.Mutable();
         for (Direction direction : Direction.values()) {
-            if (this.isPoweredAccelerator(testPos.set(pos, direction))) {
+            if (this.isPoweredAccelerator(testPos.setAndMove(pos, direction))) {
                 count++;
             }
         }
@@ -190,30 +190,30 @@ public class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     private boolean isPoweredAccelerator(BlockPos pos) {
-        final BlockEntity te = this.world.getBlockEntity(pos);
+        final TileEntity te = this.world.getTileEntity(pos);
 
         return te instanceof ICrystalGrowthAccelerator && ((ICrystalGrowthAccelerator) te).isPowered();
     }
 
     @Override
-    public void applyBuoyancy() {
-        ItemStack item = getStack();
+    public void applyFloatMotion() {
+        ItemStack item = getItem();
 
         // Make ungrown seeds sink, and fully grown seeds bouyant allowing for
         // automation based around dropping seeds between 5 CGAs, then catchiung
         // them on their way up.
         if (item.getItem() instanceof CrystalSeedItem) {
-            Vec3d v = this.getVelocity();
+            Vector3d v = this.getMotion();
 
             // Apply a much smaller acceleration to make them slowly sink
             double yAccel = this.hasNoGravity() ? 0 : -0.002;
 
             // Apply the x/z slow-down, and the y acceleration
-            this.setVelocity(v.x * 0.99, v.y + yAccel, v.z * 0.99);
+            this.setMotion(v.x * 0.99, v.y + yAccel, v.z * 0.99);
 
             return;
         }
-        super.applyBuoyancy();
+        super.applyFloatMotion();
     }
 
 }

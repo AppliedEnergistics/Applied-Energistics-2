@@ -32,16 +32,16 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
@@ -64,7 +64,7 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public class AEBaseBlockEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject,
+public class AEBaseBlockEntity extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject,
         BlockEntityClientSerializable, RenderAttachmentBlockEntity, AttributeProvider {
 
     static {
@@ -75,19 +75,19 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     private static final ThreadLocal<WeakReference<AEBaseBlockEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
-    private static final Map<Class<? extends BlockEntity>, IStackSrc> ITEM_STACKS = new HashMap<>();
+    private static final Map<Class<? extends TileEntity>, IStackSrc> ITEM_STACKS = new HashMap<>();
     private int renderFragment = 0;
     @Nullable
     private String customName;
-    private Direction forward = Direction.NORTH;
-    private Direction up = Direction.UP;
+    private Direction forward = Direction.field_11043;
+    private Direction up = Direction.field_11036;
     private boolean markDirtyQueued = false;
 
-    public AEBaseBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public AEBaseBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
-    public static void registerTileItem(final Class<? extends BlockEntity> c, final IStackSrc wat) {
+    public static void registerTileItem(final Class<? extends TileEntity> c, final IStackSrc wat) {
         ITEM_STACKS.put(c, wat);
     }
 
@@ -97,11 +97,11 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     public boolean notLoaded() {
-        return !this.world.isChunkLoaded(this.pos);
+        return !this.world.isBlockLoaded(this.pos);
     }
 
     @Nonnull
-    public BlockEntity getTile() {
+    public TileEntity getTile() {
         return this;
     }
 
@@ -115,8 +115,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
 
         if (data.contains("customName")) {
             this.customName = data.getString("customName");
@@ -134,8 +134,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
 
         if (this.canBeRotated()) {
             data.putString("forward", this.getForward().name());
@@ -152,7 +152,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     public void onReady() {
     }
 
-    private boolean readUpdateData(PacketByteBuf stream) {
+    private boolean readUpdateData(PacketBuffer stream) {
         boolean output = false;
 
         try {
@@ -172,10 +172,10 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     @Override
-    public CompoundTag toClientTag(CompoundTag data) {
+    public CompoundNBT toClientTag(CompoundNBT data) {
         boolean finished = false;
 
-        final PacketByteBuf stream = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer stream = new PacketBuffer(Unpooled.buffer());
 
         try {
             this.writeToStream(stream);
@@ -197,15 +197,15 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
      * Handles tile entites that are being received by the client as part of a full chunk.
      */
     @Override
-    public void fromClientTag(CompoundTag tag) {
-        final PacketByteBuf stream = new PacketByteBuf(Unpooled.copiedBuffer(tag.getByteArray("X")));
+    public void fromClientTag(CompoundNBT tag) {
+        final PacketBuffer stream = new PacketBuffer(Unpooled.copiedBuffer(tag.getByteArray("X")));
 
         if (this.readUpdateData(stream)) {
             this.markForUpdate();
         }
     }
 
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         if (this.canBeRotated()) {
             final Direction old_Forward = this.forward;
             final Direction old_Up = this.up;
@@ -219,7 +219,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
         return false;
     }
 
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         if (this.canBeRotated()) {
             final byte orientation = (byte) ((this.up.ordinal() << 3) | this.forward.ordinal());
             data.writeByte(orientation);
@@ -234,7 +234,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
             if (this.world != null && !this.isRemoved() && !notLoaded()) {
                 boolean alreadyUpdated = false;
                 // Let the block update it's own state with our internal state changes
-                BlockState currentState = getCachedState();
+                BlockState currentState = getBlockState();
                 if (currentState.getBlock() instanceof AEBaseTileBlock) {
                     AEBaseTileBlock<?> tileBlock = (AEBaseTileBlock<?>) currentState.getBlock();
                     BlockState newState = tileBlock.getBlockEntityBlockState(currentState, this);
@@ -246,7 +246,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
                 }
 
                 if (!alreadyUpdated) {
-                    this.world.updateListeners(this.pos, currentState, currentState, 1);
+                    this.world.notifyBlockUpdate(this.pos, currentState, currentState, 1);
                 }
             }
         }
@@ -281,8 +281,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
         this.saveChanges();
     }
 
-    public void onPlacement(ItemPlacementContext context) {
-        ItemStack stack = context.getStack();
+    public void onPlacement(BlockItemUseContext context) {
+        ItemStack stack = context.getItem();
         if (stack.hasTag()) {
             this.uploadSettings(SettingsFrom.DISMANTLE_ITEM, stack.getTag());
         }
@@ -294,7 +294,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
      * @param from     source of settings
      * @param compound compound of source
      */
-    public void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
+    public void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
         if (this instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
             if (cm != null) {
@@ -342,11 +342,11 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
      * @param from source of settings
      * @return compound of source
      */
-    public CompoundTag downloadSettings(final SettingsFrom from) {
-        final CompoundTag output = new CompoundTag();
+    public CompoundNBT downloadSettings(final SettingsFrom from) {
+        final CompoundNBT output = new CompoundNBT();
 
         if (this.hasCustomInventoryName()) {
-            final CompoundTag dsp = new CompoundTag();
+            final CompoundNBT dsp = new CompoundNBT();
             dsp.putString("Name", this.customName);
             output.put("display", dsp);
         }
@@ -374,8 +374,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     @Override
-    public Text getCustomInventoryName() {
-        return new LiteralText(this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
+    public ITextComponent getCustomInventoryName() {
+        return new StringTextComponent(this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
     }
 
     @Override
@@ -384,7 +384,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     public void securityBreak() {
-        this.world.breakBlock(this.pos, true);
+        this.world.destroyBlock(this.pos, true);
         this.disableDrops();
     }
 
@@ -393,7 +393,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
      */
     public boolean isClient() {
         World world = getWorld();
-        return world == null || world.isClient();
+        return world == null || world.isRemote();
     }
 
     public void disableDrops() {
@@ -402,7 +402,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
 
     public void saveChanges() {
         if (this.world != null) {
-            this.world.markDirty(this.pos, this);
+            this.world.markChunkDirty(this.pos, this);
             if (!this.markDirtyQueued) {
                 TickHandler.instance().addCallable(null, this::markDirtyAtEndOfTick);
                 this.markDirtyQueued = true;

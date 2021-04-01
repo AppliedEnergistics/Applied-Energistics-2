@@ -18,9 +18,8 @@
 
 package appeng.tile.networking;
 
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-
+import net.minecraft.tileentity.TileEntityType;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
@@ -34,7 +33,7 @@ import appeng.util.inv.InvOperation;
 
 public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
 
-    public EnergyAcceptorBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public EnergyAcceptorBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setIdlePowerUsage(0.0);
         this.setInternalMaxPower(0);

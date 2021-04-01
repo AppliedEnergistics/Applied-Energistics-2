@@ -29,20 +29,20 @@ import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -81,7 +81,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
     private final AENetworkProxy proxy;
     private final ItemStack is;
-    private BlockEntity tile = null;
+    private TileEntity tile = null;
     private IPartHost host = null;
     private AEPartLocation side = null;
 
@@ -136,7 +136,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public BlockEntity getTile() {
+    public TileEntity getTile() {
         return this.tile;
     }
 
@@ -165,18 +165,18 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public Text getCustomInventoryName() {
-        return this.getItemStack().getName();
+    public ITextComponent getCustomInventoryName() {
+        return this.getItemStack().getDisplayName();
     }
 
     @Override
     public boolean hasCustomInventoryName() {
-        return this.getItemStack().hasCustomName();
+        return this.getItemStack().hasDisplayName();
     }
 
     @Override
-    public void addEntityCrashInfo(final CrashReportSection section) {
-        section.add("Part Side", this.getSide());
+    public void addEntityCrashInfo(final CrashReportCategory section) {
+        section.addDetail("Part Side", this.getSide());
     }
 
     @Override
@@ -195,7 +195,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -205,12 +205,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         this.proxy.readFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         this.proxy.writeToNBT(data);
     }
 
@@ -225,12 +225,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void writeToStream(final PacketByteBuf data) throws IOException {
+    public void writeToStream(final PacketBuffer data) throws IOException {
 
     }
 
     @Override
-    public boolean readFromStream(final PacketByteBuf data) throws IOException {
+    public boolean readFromStream(final PacketBuffer data) throws IOException {
         return false;
     }
 
@@ -255,7 +255,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
         this.setSide(side);
         this.tile = tile;
         this.host = host;
@@ -308,7 +308,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * @param from     source of settings
      * @param compound compound of source
      */
-    private void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
+    private void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
         final IConfigManager cm = this.getConfigManager();
         if (cm != null) {
             cm.readFromNBT(compound);
@@ -340,8 +340,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * @param from source of settings
      * @return compound of source
      */
-    private CompoundTag downloadSettings(final SettingsFrom from) {
-        final CompoundTag output = new CompoundTag();
+    private CompoundNBT downloadSettings(final SettingsFrom from) {
+        final CompoundNBT output = new CompoundNBT();
 
         final IConfigManager cm = this.getConfigManager();
         if (cm != null) {
@@ -370,7 +370,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     private boolean useMemoryCard(final PlayerEntity player) {
-        final ItemStack memCardIS = player.inventory.getMainHandStack();
+        final ItemStack memCardIS = player.inventory.getCurrentItem();
 
         if (!memCardIS.isEmpty() && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard) {
             final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
@@ -388,15 +388,15 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
             final String name = is.getTranslationKey();
 
-            if (player.isInSneakingPose()) {
-                final CompoundTag data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
+            if (player.isCrouching()) {
+                final CompoundNBT data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
                 if (data != null) {
                     memoryCard.setMemoryCardContents(memCardIS, name, data);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                 }
             } else {
                 final String storedName = memoryCard.getSettingsName(memCardIS);
-                final CompoundTag data = memoryCard.getData(memCardIS);
+                final CompoundNBT data = memoryCard.getData(memCardIS);
                 if (name.equals(storedName)) {
                     this.uploadSettings(SettingsFrom.MEMORY_CARD, data);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
@@ -410,7 +410,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public final boolean onActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public final boolean onActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (this.useMemoryCard(player)) {
             return true;
         }
@@ -419,7 +419,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public final boolean onShiftActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public final boolean onShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (this.useMemoryCard(player)) {
             return true;
         }
@@ -427,11 +427,11 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         return this.onPartShiftActivate(player, hand, pos);
     }
 
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         return false;
     }
 
-    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         return false;
     }
 

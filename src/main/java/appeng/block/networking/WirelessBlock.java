@@ -22,20 +22,20 @@ import java.util.Locale;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.util.ActionResult;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -48,19 +48,19 @@ import appeng.util.Platform;
 
 public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
 
-    enum State implements StringIdentifiable {
+    enum State implements IStringSerializable {
         OFF, ON, HAS_CHANNEL;
 
         @Override
-        public String asString() {
+        public String getString() {
             return this.name().toLowerCase(Locale.ROOT);
         }
     }
 
-    public static final EnumProperty<State> STATE = EnumProperty.of("state", State.class);
+    public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 
     public WirelessBlock() {
-        super(defaultProps(AEMaterials.GLASS).nonOpaque());
+        super(defaultProps(AEMaterials.GLASS).notSolid());
         this.setDefaultState(this.getDefaultState().with(STATE, State.OFF));
     }
 
@@ -78,29 +78,29 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(STATE);
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand,
-            BlockHitResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand,
+            BlockRayTraceResult hit) {
         final WirelessBlockEntity tg = this.getBlockEntity(w, pos);
 
-        if (tg != null && !player.isInSneakingPose()) {
+        if (tg != null && !player.isCrouching()) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(WirelessContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.field_5812;
         }
 
-        return super.onUse(state, w, pos, player, hand, hit);
+        return super.onBlockActivated(state, w, pos, player, hand, hit);
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
         final WirelessBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
@@ -113,37 +113,37 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
             double maxZ = 1;
 
             switch (forward) {
-                case DOWN:
+                case field_11033:
                     minZ = minX = 3.0 / 16.0;
                     maxZ = maxX = 13.0 / 16.0;
                     maxY = 1.0;
                     minY = 5.0 / 16.0;
                     break;
-                case EAST:
+                case field_11034:
                     minZ = minY = 3.0 / 16.0;
                     maxZ = maxY = 13.0 / 16.0;
                     maxX = 11.0 / 16.0;
                     minX = 0.0;
                     break;
-                case NORTH:
+                case field_11043:
                     minY = minX = 3.0 / 16.0;
                     maxY = maxX = 13.0 / 16.0;
                     maxZ = 1.0;
                     minZ = 5.0 / 16.0;
                     break;
-                case SOUTH:
+                case field_11035:
                     minY = minX = 3.0 / 16.0;
                     maxY = maxX = 13.0 / 16.0;
                     maxZ = 11.0 / 16.0;
                     minZ = 0.0;
                     break;
-                case UP:
+                case field_11036:
                     minZ = minX = 3.0 / 16.0;
                     maxZ = maxX = 13.0 / 16.0;
                     maxY = 11.0 / 16.0;
                     minY = 0.0;
                     break;
-                case WEST:
+                case field_11039:
                     minZ = minY = 3.0 / 16.0;
                     maxZ = maxY = 13.0 / 16.0;
                     maxX = 1.0;
@@ -153,13 +153,13 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
                     break;
             }
 
-            return VoxelShapes.cuboid(new Box(minX, minY, minZ, maxX, maxY, maxZ));
+            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
         }
         return VoxelShapes.empty();
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
 
         final WirelessBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
@@ -173,37 +173,37 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
             double maxZ = 1;
 
             switch (forward) {
-                case DOWN:
+                case field_11033:
                     minZ = minX = 3.0 / 16.0;
                     maxZ = maxX = 13.0 / 16.0;
                     maxY = 1.0;
                     minY = 5.0 / 16.0;
                     break;
-                case EAST:
+                case field_11034:
                     minZ = minY = 3.0 / 16.0;
                     maxZ = maxY = 13.0 / 16.0;
                     maxX = 11.0 / 16.0;
                     minX = 0.0;
                     break;
-                case NORTH:
+                case field_11043:
                     minY = minX = 3.0 / 16.0;
                     maxY = maxX = 13.0 / 16.0;
                     maxZ = 1.0;
                     minZ = 5.0 / 16.0;
                     break;
-                case SOUTH:
+                case field_11035:
                     minY = minX = 3.0 / 16.0;
                     maxY = maxX = 13.0 / 16.0;
                     maxZ = 11.0 / 16.0;
                     minZ = 0.0;
                     break;
-                case UP:
+                case field_11036:
                     minZ = minX = 3.0 / 16.0;
                     maxZ = maxX = 13.0 / 16.0;
                     maxY = 11.0 / 16.0;
                     minY = 0.0;
                     break;
-                case WEST:
+                case field_11039:
                     minZ = minY = 3.0 / 16.0;
                     maxZ = maxY = 13.0 / 16.0;
                     maxX = 1.0;
@@ -213,14 +213,14 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
                     break;
             }
 
-            return VoxelShapes.cuboid(new Box(minX, minY, minZ, maxX, maxY, maxZ));
+            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
         } else {
             return VoxelShapes.empty();
         }
     }
 
     @Override
-    public boolean isTranslucent(BlockState state, BlockView reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
         return true;
     }
 

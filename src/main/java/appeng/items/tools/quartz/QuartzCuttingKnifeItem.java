@@ -22,8 +22,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -41,7 +41,7 @@ import appeng.util.Platform;
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     private final AEFeature type;
 
-    public QuartzCuttingKnifeItem(Item.Settings props, final AEFeature type) {
+    public QuartzCuttingKnifeItem(Item.Properties props, final AEFeature type) {
         super(props);
         this.type = type;
         // See below for reasoning
@@ -49,12 +49,12 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
         if (Platform.isServer()) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
-        p.swingHand(hand);
-        return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));
+        p.swingArm(hand);
+        return new ActionResult<>(ActionResultType.field_5812, p.getHeldItem(hand));
     }
 
     @Override

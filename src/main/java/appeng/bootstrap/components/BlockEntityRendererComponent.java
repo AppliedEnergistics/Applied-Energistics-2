@@ -3,23 +3,23 @@ package appeng.bootstrap.components;
 import java.util.function.Function;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 
 /**
  * Registers a block entity renderer for a given block entity type. This must occur late in the client's initialization,
  * since the constructors of our block entity renderers rely on the client being fully initialized.
  */
-public class BlockEntityRendererComponent<T extends BlockEntity> implements IClientSetupComponent {
+public class BlockEntityRendererComponent<T extends TileEntity> implements IClientSetupComponent {
 
-    private final BlockEntityType<T> type;
+    private final TileEntityType<T> type;
 
-    private final Function<BlockEntityRenderDispatcher, BlockEntityRenderer<T>> renderer;
+    private final Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> renderer;
 
-    public BlockEntityRendererComponent(BlockEntityType<T> type,
-            Function<BlockEntityRenderDispatcher, BlockEntityRenderer<T>> renderer) {
+    public BlockEntityRendererComponent(TileEntityType<T> type,
+            Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> renderer) {
         this.type = type;
         this.renderer = renderer;
     }

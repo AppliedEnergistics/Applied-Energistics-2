@@ -18,10 +18,10 @@
 
 package appeng.bootstrap;
 
-import net.minecraft.advancement.criterion.Criterion;
-import net.minecraft.advancement.criterion.CriterionConditions;
+import net.minecraft.advancements.ICriterionInstance;
+import net.minecraft.advancements.ICriterionTrigger;
 
 @FunctionalInterface
 public interface ICriterionTriggerRegistry {
-    void register(Criterion<? extends CriterionConditions> trigger);
+    void register(ICriterionTrigger<? extends ICriterionInstance> trigger);
 }

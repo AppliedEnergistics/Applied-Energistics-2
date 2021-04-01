@@ -26,10 +26,8 @@ package appeng.api.networking;
 import java.util.EnumSet;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.WorldAccess;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.IWorld;
 import appeng.api.IAppEngApi;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
@@ -88,7 +86,7 @@ public interface IGridNode {
      * @return the world the node is located in
      */
     @Nonnull
-    WorldAccess getWorld();
+    IWorld getWorld();
 
     /**
      * @return a set of the connected sides, INTERNAL represents an invisible connection
@@ -127,7 +125,7 @@ public interface IGridNode {
      * @param name     nbt name
      * @param nodeData to be loaded data
      */
-    void loadFromNBT(@Nonnull String name, @Nonnull CompoundTag nodeData);
+    void loadFromNBT(@Nonnull String name, @Nonnull CompoundNBT nodeData);
 
     /**
      * this should be called for each node you maintain, you can save all your nodes to the same tag with different
@@ -136,7 +134,7 @@ public interface IGridNode {
      * @param name     nbt name
      * @param nodeData to be saved data
      */
-    void saveToNBT(@Nonnull String name, @Nonnull CompoundTag nodeData);
+    void saveToNBT(@Nonnull String name, @Nonnull CompoundNBT nodeData);
 
     /**
      * @return if the node's channel requirements are currently met, use this for display purposes, use isActive for

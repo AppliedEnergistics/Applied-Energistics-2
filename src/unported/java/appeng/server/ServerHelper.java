@@ -21,13 +21,12 @@ package appeng.server;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -48,7 +47,7 @@ public class ServerHelper extends CommonHelper {
     }
 
     @Override
-    public void bindTileEntitySpecialRenderer(final Class<? extends BlockEntity> tile, final AEBaseBlock blk) {
+    public void bindTileEntitySpecialRenderer(final Class<? extends TileEntity> tile, final AEBaseBlock blk) {
         throw new UnsupportedOperationException("This is a server...");
     }
 
@@ -68,15 +67,15 @@ public class ServerHelper extends CommonHelper {
     @Override
     public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
             final double dist, final World w, final BasePacket packet) {
-        if (w.isClient()) {
+        if (w.isRemote()) {
             return;
         }
         for (final PlayerEntity o : this.getPlayers()) {
             final ServerPlayerEntity entityplayermp = (ServerPlayerEntity) o;
             if (entityplayermp != p && entityplayermp.world == w) {
-                final double dX = x - entityplayermp.getX();
-                final double dY = y - entityplayermp.getY();
-                final double dZ = z - entityplayermp.getZ();
+                final double dX = x - entityplayermp.getPosX();
+                final double dY = y - entityplayermp.getPosY();
+                final double dZ = z - entityplayermp.getPosZ();
                 if (dX * dX + dY * dY + dZ * dZ < dist * dist) {
                     NetworkHandler.instance().sendTo(packet, entityplayermp);
                 }
@@ -96,7 +95,7 @@ public class ServerHelper extends CommonHelper {
     }
 
     @Override
-    public HitResult getRTR() {
+    public RayTraceResult getRTR() {
         return null;
     }
 
@@ -110,7 +109,7 @@ public class ServerHelper extends CommonHelper {
     }
 
     @Override
-    public boolean isActionKey(ActionKey key, InputUtil.Key input) {
+    public boolean isActionKey(ActionKey key, InputMappings.Input input) {
         return false;
     }
 }

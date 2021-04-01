@@ -18,22 +18,21 @@
 
 package appeng.tile.networking;
 
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Direction;
-
 import appeng.api.parts.IPart;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.Direction;
 
-public class CableBusTESR extends BlockEntityRenderer<CableBusBlockEntity> {
+public class CableBusTESR extends TileEntityRenderer<CableBusBlockEntity> {
 
-    public CableBusTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
+    public CableBusTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(CableBusBlockEntity te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
+    public void render(CableBusBlockEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
             int combinedLightIn, int combinedOverlayIn) {
         if (!te.getCableBus().isRequiresDynamicRender()) {
             return;

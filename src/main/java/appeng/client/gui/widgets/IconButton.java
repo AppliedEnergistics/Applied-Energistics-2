@@ -18,19 +18,18 @@
 
 package appeng.client.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.sound.SoundManager;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
-public abstract class IconButton extends ButtonWidget implements ITooltip {
-    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2", "textures/guis/states.png");
+public abstract class IconButton extends Button implements ITooltip {
+    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2", "textures/guis/states.png");
 
     private boolean halfSize = false;
 
@@ -38,8 +37,8 @@ public abstract class IconButton extends ButtonWidget implements ITooltip {
 
     private boolean disableBackground = false;
 
-    public IconButton(final int x, final int y, PressAction onPress) {
-        super(x, y, 16, 16, LiteralText.EMPTY, onPress);
+    public IconButton(final int x, final int y, IPressable onPress) {
+        super(x, y, 16, 16, StringTextComponent.EMPTY, onPress);
     }
 
     public void setVisibility(final boolean vis) {
@@ -48,7 +47,7 @@ public abstract class IconButton extends ButtonWidget implements ITooltip {
     }
 
     @Override
-    public void playDownSound(SoundManager soundManager) {
+    public void playDownSound(SoundHandler soundManager) {
         if (!disableClickSound) {
             super.playDownSound(soundManager);
         }
@@ -57,7 +56,7 @@ public abstract class IconButton extends ButtonWidget implements ITooltip {
     @Override
     public void renderButton(MatrixStack matrices, final int mouseX, final int mouseY, float partial) {
 
-        MinecraftClient minecraft = MinecraftClient.getInstance();
+        Minecraft minecraft = Minecraft.getInstance();
 
         if (this.visible) {
             final int iconIndex = this.getIconIndex();
@@ -85,9 +84,9 @@ public abstract class IconButton extends ButtonWidget implements ITooltip {
                 final int uv_x = iconIndex - uv_y * 16;
 
                 if (!disableBackground) {
-                    drawTexture(matrices, 0, 0, 256 - 16, 256 - 16, 16, 16);
+                    blit(matrices, 0, 0, 256 - 16, 256 - 16, 16, 16);
                 }
-                drawTexture(matrices, 0, 0, uv_x * 16, uv_y * 16, 16, 16);
+                blit(matrices, 0, 0, uv_x * 16, uv_y * 16, 16, 16);
                 RenderSystem.popMatrix();
             } else {
                 if (this.active) {
@@ -100,9 +99,9 @@ public abstract class IconButton extends ButtonWidget implements ITooltip {
                 final int uv_x = iconIndex - uv_y * 16;
 
                 if (!disableBackground) {
-                    drawTexture(matrices, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
+                    blit(matrices, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
                 }
-                drawTexture(matrices, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
+                blit(matrices, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
             }
             RenderSystem.enableDepthTest();
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -116,7 +115,7 @@ public abstract class IconButton extends ButtonWidget implements ITooltip {
     protected abstract int getIconIndex();
 
     @Override
-    public Text getTooltipMessage() {
+    public ITextComponent getTooltipMessage() {
         return getMessage();
     }
 

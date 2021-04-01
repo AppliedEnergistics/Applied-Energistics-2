@@ -24,9 +24,9 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 
 import team.reborn.energy.EnergySide;
@@ -57,7 +57,7 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
 
     // IC2 private IC2PowerSink ic2Sink;
 
-    public AEBasePoweredBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public AEBasePoweredBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         // IC2 this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
         // IC2 this.ic2Sink.setValidFaces( this.internalPowerSides );
@@ -74,15 +74,15 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         data.putDouble("internalCurrentPower", this.getInternalCurrentPower());
         return data;
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
     }
 
@@ -224,8 +224,8 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     }
 
     @Override
-    public void markRemoved() {
-        super.markRemoved();
+    public void remove() {
+        super.remove();
 
         // IC2 this.ic2Sink.invalidate();
     }

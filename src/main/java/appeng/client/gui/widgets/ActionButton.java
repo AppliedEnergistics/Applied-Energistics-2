@@ -20,10 +20,8 @@ package appeng.client.gui.widgets;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
-
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import appeng.api.config.ActionItems;
 import appeng.core.localization.ButtonToolTips;
 
@@ -79,7 +77,7 @@ public class ActionButton extends IconButton {
         return iconIndex;
     }
 
-    private Text buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {
+    private ITextComponent buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {
         String name = displayName.text().getString();
         String value = displayValue.text().getString();
 
@@ -94,7 +92,7 @@ public class ActionButton extends IconButton {
             sb.replace(i, i + 1, "\n");
         }
 
-        return new LiteralText(name + '\n' + sb);
+        return new StringTextComponent(name + '\n' + sb);
     }
 
 }

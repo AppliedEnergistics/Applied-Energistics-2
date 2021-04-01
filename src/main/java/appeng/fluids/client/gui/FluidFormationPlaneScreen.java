@@ -1,8 +1,7 @@
 package appeng.fluids.client.gui;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.PriorityContainer;
@@ -16,9 +15,9 @@ import appeng.fluids.util.IAEFluidTank;
 
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneContainer> {
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, PlayerInventory playerInventory,
-            Text title) {
+            ITextComponent title) {
         super(container, playerInventory, title);
-        this.backgroundHeight = 251;
+        this.ySize = 251;
     }
 
     @Override
@@ -28,7 +27,7 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
         final int xo = 8;
         final int yo = 23 + 6;
 
-        final IAEFluidTank config = handler.getFluidConfigInventory();
+        final IAEFluidTank config = container.getFluidConfigInventory();
 
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
@@ -36,7 +35,7 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
                 if (y < 2) {
                     this.guiSlots.add(new FluidSlotWidget(config, idx, idx, xo + x * 18, yo + y * 18));
                 } else {
-                    this.guiSlots.add(new OptionalFluidSlotWidget(config, handler, idx, idx, y - 2, xo, yo, x, y));
+                    this.guiSlots.add(new OptionalFluidSlotWidget(config, container, idx, idx, y - 2, xo, yo, x, y));
                 }
             }
         }
@@ -44,7 +43,7 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
 
     @Override
     protected void addButtons() {
-        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(), this.itemRenderer,
+        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(), this.itemRenderer,
                 btn -> openPriorityGui()));
     }
 

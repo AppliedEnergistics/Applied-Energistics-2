@@ -1,15 +1,14 @@
 package appeng.mixins;
 
+import net.minecraft.client.renderer.RenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.render.RenderPhase;
-
-@Mixin(RenderPhase.class)
+@Mixin(RenderState.class)
 public interface RenderPhaseMixin {
 
     @Accessor("TRANSLUCENT_TRANSPARENCY")
-    static RenderPhase.Transparency getTranslucentTransparency() {
+    static RenderState.TransparencyState getTranslucentTransparency() {
         throw new AssertionError("Mixin dummy");
     }
 

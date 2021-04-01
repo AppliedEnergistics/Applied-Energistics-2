@@ -25,20 +25,20 @@ import javax.annotation.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEAxisAlignedBB;
@@ -53,19 +53,19 @@ import appeng.util.Platform;
 public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
 
     public ChargerBlock() {
-        super(defaultProps(Material.METAL).nonOpaque());
+        super(defaultProps(Material.IRON).notSolid());
     }
 
     @Override
-    public int getOpacity(BlockState state, BlockView worldIn, BlockPos pos) {
+    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 2; // FIXME Double check this (esp. value range)
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (player.isInSneakingPose()) {
-            return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (player.isCrouching()) {
+            return ActionResultType.field_5811;
         }
 
         if (Platform.isServer()) {
@@ -75,12 +75,12 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
             }
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResultType.field_5812;
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -99,7 +99,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
 
                 for (int bolts = 0; bolts < 3; bolts++) {
                     if (AppEng.instance().shouldAddParticles(r)) {
-                        MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING,
+                        Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING,
                                 xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0,
                                 0.0);
                     }
@@ -109,7 +109,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
 
         final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
@@ -119,50 +119,50 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
             final AEAxisAlignedBB bb = new AEAxisAlignedBB(twoPixels, twoPixels, twoPixels, 1.0 - twoPixels,
                     1.0 - twoPixels, 1.0 - twoPixels);
 
-            if (up.getOffsetX() != 0) {
+            if (up.getXOffset() != 0) {
                 bb.minX = 0;
                 bb.maxX = 1;
             }
-            if (up.getOffsetY() != 0) {
+            if (up.getYOffset() != 0) {
                 bb.minY = 0;
                 bb.maxY = 1;
             }
-            if (up.getOffsetZ() != 0) {
+            if (up.getZOffset() != 0) {
                 bb.minZ = 0;
                 bb.maxZ = 1;
             }
 
             switch (forward) {
-                case DOWN:
+                case field_11033:
                     bb.maxY = 1;
                     break;
-                case UP:
+                case field_11036:
                     bb.minY = 0;
                     break;
-                case NORTH:
+                case field_11043:
                     bb.maxZ = 1;
                     break;
-                case SOUTH:
+                case field_11035:
                     bb.minZ = 0;
                     break;
-                case EAST:
+                case field_11034:
                     bb.minX = 0;
                     break;
-                case WEST:
+                case field_11039:
                     bb.maxX = 1;
                     break;
                 default:
                     break;
             }
 
-            return VoxelShapes.cuboid(bb.getBoundingBox());
+            return VoxelShapes.create(bb.getBoundingBox());
         }
-        return VoxelShapes.cuboid(new Box(0.0, 0, 0.0, 1.0, 1.0, 1.0));
+        return VoxelShapes.create(new AxisAlignedBB(0.0, 0, 0.0, 1.0, 1.0, 1.0));
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
-        return VoxelShapes.cuboid(new Box(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return VoxelShapes.create(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
     }
 
 }

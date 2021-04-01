@@ -24,13 +24,12 @@ import javax.annotation.Nonnull;
 
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
@@ -66,7 +65,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     // client side..
     public boolean isOn;
 
-    public VibrationChamberBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public VibrationChamberBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setIdlePowerUsage(0);
         this.getProxy().setFlags();
@@ -82,7 +81,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         final boolean wasOn = this.isOn;
 
@@ -92,14 +91,14 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.getBurnTime() > 0);
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         data.putDouble("burnTime", this.getBurnTime());
         data.putDouble("maxBurnTime", this.getMaxBurnTime());
         data.putInt("burnSpeed", this.getBurnSpeed());
@@ -107,8 +106,8 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.setBurnTime(data.getDouble("burnTime"));
         this.setMaxBurnTime(data.getDouble("maxBurnTime"));
         this.setBurnSpeed(data.getInt("burnSpeed"));
@@ -219,10 +218,10 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
                 this.setMaxBurnTime(this.getBurnTime());
 
                 final Item fuelItem = is.getItem();
-                is.decrement(1);
+                is.shrink(1);
 
                 if (is.isEmpty()) {
-                    this.inv.setInvStack(0, new ItemStack(fuelItem.getRecipeRemainder()), Simulation.ACTION);
+                    this.inv.setInvStack(0, new ItemStack(fuelItem.getContainerItem()), Simulation.ACTION);
                 } else {
                     this.inv.setInvStack(0, is, Simulation.ACTION);
                 }

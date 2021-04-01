@@ -23,11 +23,11 @@ import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -38,30 +38,30 @@ import appeng.tile.misc.InscriberBlockEntity;
 
 public class InscriberBlock extends AEBaseTileBlock<InscriberBlockEntity> {
 
-    public InscriberBlock(Settings props) {
+    public InscriberBlock(Properties props) {
         super(props);
     }
 
     @Override
-    public int getOpacity(BlockState state, BlockView worldIn, BlockPos pos) {
+    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 2; // FIXME validate this. a) possibly not required because of getShape b) value
         // range. was 2 in 1.10
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (!p.isInSneakingPose()) {
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (!p.isCrouching()) {
             final InscriberBlockEntity tg = this.getBlockEntity(w, pos);
             if (tg != null) {
                 if (!tg.isClient()) {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,
-                            ContainerLocator.forTileEntitySide(tg, hit.getSide()));
+                            ContainerLocator.forTileEntitySide(tg, hit.getFace()));
                 }
-                return ActionResult.SUCCESS;
+                return ActionResultType.field_5812;
             }
         }
-        return ActionResult.PASS;
+        return ActionResultType.field_5811;
 
     }
 

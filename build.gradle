@@ -18,7 +18,7 @@
 
 plugins {
     id 'java'
-    id 'fabric-loom'
+    id 'forgified-fabric-loom'
     id 'maven-publish'
     id "com.diffplug.gradle.spotless" version "4.3.0"
     id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -58,7 +58,7 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    mappings "de.oceanlabs.mcp:mcp_snapshot:20201028-1.16.3"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     //Fabric api

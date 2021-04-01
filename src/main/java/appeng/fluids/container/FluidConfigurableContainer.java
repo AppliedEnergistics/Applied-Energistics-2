@@ -5,10 +5,9 @@ import java.util.Collections;
 import java.util.Map;
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
-
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
@@ -25,7 +24,7 @@ import appeng.fluids.util.IAEFluidTank;
 public abstract class FluidConfigurableContainer extends UpgradeableContainer implements IFluidSyncContainer {
     private FluidSyncHelper sync = null;
 
-    public FluidConfigurableContainer(ScreenHandlerType<?> containerType, int id, PlayerInventory ip,
+    public FluidConfigurableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
             IUpgradeableHost te) {
         super(containerType, id, ip, te);
     }
@@ -90,7 +89,7 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
     }
 
     @Override
-    public void addListener(ScreenHandlerListener listener) {
+    public void addListener(IContainerListener listener) {
         super.addListener(listener);
         this.getSyncHelper().sendFull(Collections.singleton(listener));
     }

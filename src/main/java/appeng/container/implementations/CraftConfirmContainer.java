@@ -23,13 +23,13 @@ import java.util.concurrent.Future;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.config.Actionable;
@@ -63,12 +63,12 @@ import appeng.parts.reporting.TerminalPart;
 
 public class CraftConfirmContainer extends AEBaseContainer implements CraftingCPUCyclingContainer {
 
-    public static ScreenHandlerType<CraftConfirmContainer> TYPE;
+    public static ContainerType<CraftConfirmContainer> TYPE;
 
     private static final ContainerHelper<CraftConfirmContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftConfirmContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
-    public static CraftConfirmContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static CraftConfirmContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -100,7 +100,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     @GuiSync(2)
     public int cpuCoProcessors;
     @GuiSync(7)
-    public Text cpuName;
+    public ITextComponent cpuName;
 
     public CraftConfirmContainer(int id, PlayerInventory ip, ITerminalHost te) {
         super(TYPE, id, ip, te);
@@ -115,14 +115,14 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         if (isClient()) {
             return;
         }
 
         this.cpuCycler.detectAndSendChanges(this.getGrid());
 
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
 
         if (this.getJob() != null && this.getJob().isDone()) {
             try {
@@ -203,7 +203,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
                     // :P
                 }
             } catch (final Throwable e) {
-                this.getPlayerInv().player.sendSystemMessage(new LiteralText("Error: " + e.toString()), Util.NIL_UUID);
+                this.getPlayerInv().player.sendMessage(new StringTextComponent("Error: " + e.toString()), Util.DUMMY_UUID);
                 AELog.debug(e);
                 this.setValidContainer(false);
                 this.result = null;
@@ -224,7 +224,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     public void startJob() {
-        ScreenHandlerType<?> originalGui = null;
+        ContainerType<?> originalGui = null;
 
         final IActionHost ah = this.getActionHost();
         if (ah instanceof WirelessTerminalGuiObject) {
@@ -258,7 +258,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void removeListener(final ScreenHandlerListener c) {
+    public void removeListener(final IContainerListener c) {
         super.removeListener(c);
         if (this.getJob() != null) {
             this.getJob().cancel(true);
@@ -267,8 +267,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void close(final PlayerEntity par1PlayerEntity) {
-        super.close(par1PlayerEntity);
+    public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
+        super.onContainerClosed(par1PlayerEntity);
         if (this.getJob() != null) {
             this.getJob().cancel(true);
             this.setJob(null);
@@ -319,7 +319,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         return this.cpuCoProcessors;
     }
 
-    public Text getName() {
+    public ITextComponent getName() {
         return this.cpuName;
     }
 

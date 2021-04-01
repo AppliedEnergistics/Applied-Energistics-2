@@ -1,15 +1,14 @@
 package appeng.client.render;
 
-import net.minecraft.client.render.model.BakedModel;
-
 import appeng.client.render.model.AutoRotatingBakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
 
 public final class BakedModelUnwrapper {
 
     private BakedModelUnwrapper() {
     }
 
-    public static <T> T unwrap(BakedModel model, Class<T> targetClass) {
+    public static <T> T unwrap(IBakedModel model, Class<T> targetClass) {
         if (targetClass.isInstance(model)) {
             return targetClass.cast(model);
         }

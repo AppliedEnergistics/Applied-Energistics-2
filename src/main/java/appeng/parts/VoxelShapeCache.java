@@ -19,20 +19,18 @@
 package appeng.parts;
 
 import java.util.List;
-
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import net.minecraft.util.function.BooleanBiFunction;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-
 /**
- * While creation of a {@link net.minecraft.util.shape.VoxelShape} with
- * {@link net.minecraft.util.shape.VoxelShapes#cuboid(Box)} is fast enough, combining voxel shapes with
- * {@link net.minecraft.util.shape.VoxelShapes#union(VoxelShape, VoxelShape)} or any other combination method, as well
+ * While creation of a {@link net.minecraft.util.math.shapes.VoxelShape} with
+ * {@link net.minecraft.util.math.shapes.VoxelShapes#create(AxisAlignedBB)} is fast enough, combining voxel shapes with
+ * {@link net.minecraft.util.math.shapes.VoxelShapes#or(VoxelShape, VoxelShape)} or any other combination method, as well
  * as {@link VoxelShape#simplify()} are <b>extremely slow</b>. For example: Creating a VoxelShape for a list of 5
  * bounding boxes 10,000 times takes about 1.7 seconds.
  *
@@ -47,11 +45,11 @@ final class VoxelShapeCache {
     // are iterated over in a fixed order, meaning the order of bounding boxes
     // should
     // be the same for a same set of parts.
-    private static final LoadingCache<List<Box>, VoxelShape> CACHE = CacheBuilder.newBuilder()//
+    private static final LoadingCache<List<AxisAlignedBB>, VoxelShape> CACHE = CacheBuilder.newBuilder()//
             .maximumSize(10000L)//
-            .build(new CacheLoader<List<Box>, VoxelShape>() {
+            .build(new CacheLoader<List<AxisAlignedBB>, VoxelShape>() {
                 @Override
-                public VoxelShape load(List<Box> key) {
+                public VoxelShape load(List<AxisAlignedBB> key) {
                     return create(key);
                 }
             });
@@ -59,20 +57,20 @@ final class VoxelShapeCache {
     private VoxelShapeCache() {
     }
 
-    public static VoxelShape get(List<Box> boxes) {
+    public static VoxelShape get(List<AxisAlignedBB> boxes) {
         return CACHE.getUnchecked(boxes);
     }
 
-    private static VoxelShape create(List<Box> boxes) {
+    private static VoxelShape create(List<AxisAlignedBB> boxes) {
         if (boxes.isEmpty()) {
             return VoxelShapes.empty();
         }
 
         int i = 0;
-        VoxelShape shape = VoxelShapes.cuboid(boxes.get(i));
+        VoxelShape shape = VoxelShapes.create(boxes.get(i));
         for (; i < boxes.size(); i++) {
-            Box box = boxes.get(i);
-            shape = VoxelShapes.combine(shape, VoxelShapes.cuboid(box), BooleanBiFunction.OR);
+            AxisAlignedBB box = boxes.get(i);
+            shape = VoxelShapes.combine(shape, VoxelShapes.create(box), IBooleanFunction.OR);
         }
         return shape.simplify();
     }

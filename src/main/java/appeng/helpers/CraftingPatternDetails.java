@@ -37,13 +37,13 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -69,7 +69,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private final CraftingInventory crafting = new CraftingInventory(new ContainerNull(), 3, 3);
     private final CraftingInventory testFrame = new CraftingInventory(new ContainerNull(), 3, 3);
     private final ItemStack correctOutput;
-    private final CraftingRecipe standardRecipe;
+    private final ICraftingRecipe standardRecipe;
     private final List<IAEItemStack> inputs;
     private final List<IAEItemStack> outputs;
     private final IAEItemStack[] sparseInputs;
@@ -91,7 +91,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
         final List<IAEItemStack> ingredients = templateItem.getIngredients(itemStack);
         final List<IAEItemStack> products = templateItem.getProducts(itemStack);
-        final Identifier recipeId = templateItem.getCraftingRecipeId(itemStack);
+        final ResourceLocation recipeId = templateItem.getCraftingRecipeId(itemStack);
 
         this.pattern = is.copy();
         this.isCraftable = recipeId != null;
@@ -104,25 +104,25 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             final IAEItemStack ais = ingredients.get(x);
             final ItemStack gs = ais != null ? ais.createItemStack() : ItemStack.EMPTY;
 
-            this.crafting.setStack(x, gs);
+            this.crafting.setInventorySlotContents(x, gs);
 
             if (!gs.isEmpty() && (!this.isCraftable) || !gs.hasTag()) {
                 this.markItemAs(x, gs, TestStatus.ACCEPT);
             }
 
             in.add(ais != null ? ais.copy() : null);
-            this.testFrame.setStack(x, gs);
+            this.testFrame.setInventorySlotContents(x, gs);
         }
 
         if (this.isCraftable) {
-            Recipe<?> recipe = w.getRecipeManager().getAllOfType(RecipeType.CRAFTING).get(recipeId);
+            IRecipe<?> recipe = w.getRecipeManager().getRecipes(IRecipeType.CRAFTING).get(recipeId);
 
-            if (recipe == null || recipe.getType() != RecipeType.CRAFTING) {
+            if (recipe == null || recipe.getType() != IRecipeType.CRAFTING) {
                 throw new IllegalStateException("recipe id is not a crafting recipe");
             }
 
-            this.standardRecipe = (CraftingRecipe) recipe;
-            this.correctOutput = this.standardRecipe.craft(this.crafting);
+            this.standardRecipe = (ICraftingRecipe) recipe;
+            this.correctOutput = this.standardRecipe.getCraftingResult(this.crafting);
 
             out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                     .createStack(this.correctOutput));
@@ -177,11 +177,11 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
                 break;
         }
 
-        for (int x = 0; x < this.crafting.size(); x++) {
-            this.testFrame.setStack(x, this.crafting.getStack(x));
+        for (int x = 0; x < this.crafting.getSizeInventory(); x++) {
+            this.testFrame.setInventorySlotContents(x, this.crafting.getStackInSlot(x));
         }
 
-        this.testFrame.setStack(slotIndex, i);
+        this.testFrame.setInventorySlotContents(slotIndex, i);
 
         // If we cannot substitute, the items must match exactly
         if (!canSubstitute && slotIndex < sparseInputs.length) {
@@ -192,10 +192,10 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         if (this.standardRecipe.matches(this.testFrame, w)) {
-            final ItemStack testOutput = this.standardRecipe.craft(this.testFrame);
+            final ItemStack testOutput = this.standardRecipe.getCraftingResult(this.testFrame);
 
             if (Platform.itemComparisons().isSameItem(this.correctOutput, testOutput)) {
-                this.testFrame.setStack(slotIndex, this.crafting.getStack(slotIndex));
+                this.testFrame.setInventorySlotContents(slotIndex, this.crafting.getStackInSlot(slotIndex));
                 this.markItemAs(slotIndex, i, TestStatus.ACCEPT);
                 return true;
             }
@@ -300,7 +300,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         // Compute the index into the recipe's ingredient list now
         int ingredientIndex = slotY * recipeWidth + slotX;
 
-        DefaultedList<Ingredient> ingredients = standardRecipe.getPreviewInputs();
+        NonNullList<Ingredient> ingredients = standardRecipe.getIngredients();
 
         if (ingredientIndex < 0 || ingredientIndex > ingredients.size()) {
             return Ingredient.EMPTY;
@@ -320,7 +320,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             }
         }
 
-        DefaultedList<Ingredient> ingredients = standardRecipe.getPreviewInputs();
+        NonNullList<Ingredient> ingredients = standardRecipe.getIngredients();
         if (ingredientIndex < ingredients.size()) {
             return ingredients.get(ingredientIndex);
         }
@@ -334,8 +334,8 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             throw new IllegalStateException("Only crafting recipes supported.");
         }
 
-        for (int x = 0; x < craftingInv.size(); x++) {
-            if (!this.isValidItemForSlot(x, craftingInv.getStack(x), w)) {
+        for (int x = 0; x < craftingInv.getSizeInventory(); x++) {
+            if (!this.isValidItemForSlot(x, craftingInv.getStackInSlot(x), w)) {
                 return ItemStack.EMPTY;
             }
         }
@@ -348,7 +348,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     private TestStatus getStatus(final int slotIndex, final ItemStack i) {
-        if (this.crafting.getStack(slotIndex).isEmpty()) {
+        if (this.crafting.getStackInSlot(slotIndex).isEmpty()) {
             return i.isEmpty() ? TestStatus.ACCEPT : TestStatus.DECLINE;
         }
 
@@ -444,7 +444,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
         public TestLookup(final int slot, final Item item, final int dmg) {
             this.slot = slot;
-            this.ref = (dmg << Platform.DEF_OFFSET) | (Item.getRawId(item) & 0xffff);
+            this.ref = (dmg << Platform.DEF_OFFSET) | (Item.getIdFromItem(item) & 0xffff);
             final int offset = 3 * slot;
             this.hash = (this.ref << offset) | (this.ref >> (offset + 32));
         }

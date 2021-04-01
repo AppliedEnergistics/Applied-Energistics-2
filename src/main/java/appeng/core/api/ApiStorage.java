@@ -27,9 +27,8 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
@@ -97,7 +96,7 @@ public class ApiStorage implements IStorageHelper {
     }
 
     @Override
-    public ICraftingLink loadCraftingLink(final CompoundTag data, final ICraftingRequester req) {
+    public ICraftingLink loadCraftingLink(final CompoundNBT data, final ICraftingRequester req) {
         Preconditions.checkNotNull(data);
         Preconditions.checkNotNull(req);
 
@@ -145,13 +144,13 @@ public class ApiStorage implements IStorageHelper {
         }
 
         @Override
-        public IAEItemStack createFromNBT(CompoundTag nbt) {
+        public IAEItemStack createFromNBT(CompoundNBT nbt) {
             Preconditions.checkNotNull(nbt);
             return AEItemStack.fromNBT(nbt);
         }
 
         @Override
-        public IAEItemStack readFromPacket(PacketByteBuf input) {
+        public IAEItemStack readFromPacket(PacketBuffer input) {
             Preconditions.checkNotNull(input);
 
             return AEItemStack.fromPacket(input);
@@ -201,14 +200,14 @@ public class ApiStorage implements IStorageHelper {
         }
 
         @Override
-        public IAEFluidStack readFromPacket(PacketByteBuf input) {
+        public IAEFluidStack readFromPacket(PacketBuffer input) {
             Preconditions.checkNotNull(input);
 
             return AEFluidStack.fromPacket(input);
         }
 
         @Override
-        public IAEFluidStack createFromNBT(CompoundTag nbt) {
+        public IAEFluidStack createFromNBT(CompoundNBT nbt) {
             Preconditions.checkNotNull(nbt);
             return AEFluidStack.fromNBT(nbt);
         }

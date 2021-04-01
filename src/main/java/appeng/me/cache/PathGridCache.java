@@ -26,8 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.entity.player.ServerPlayerEntity;
 import appeng.api.features.AEFeature;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;

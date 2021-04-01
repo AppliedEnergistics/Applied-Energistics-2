@@ -20,10 +20,8 @@ package appeng.fluids.helper;
 
 import java.math.RoundingMode;
 import java.util.Optional;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -172,7 +170,7 @@ public class DualityFluidInterface
             }
         }
 
-        final BlockEntity te = this.iHost.getBlockEntity();
+        final TileEntity te = this.iHost.getBlockEntity();
         if (te != null && te.getWorld() != null) {
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
         }
@@ -388,13 +386,13 @@ public class DualityFluidInterface
         this.priority = newValue;
     }
 
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         data.putInt("priority", this.priority);
         this.tanks.writeToNBT(data, "storage");
         this.config.writeToNBT(data, "config");
     }
 
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         this.config.readFromNBT(data, "config");
         this.tanks.readFromNBT(data, "storage");
         this.priority = data.getInt("priority");
@@ -487,8 +485,8 @@ public class DualityFluidInterface
     }
 
     @Override
-    public BlockEntity getTile() {
-        return (BlockEntity) (this.iHost instanceof BlockEntity ? this.iHost : null);
+    public TileEntity getTile() {
+        return (TileEntity) (this.iHost instanceof TileEntity ? this.iHost : null);
     }
 
     @Override

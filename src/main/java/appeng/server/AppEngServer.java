@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.client.ActionKey;
@@ -58,7 +58,7 @@ public final class AppEngServer extends AppEngBase {
     }
 
     @Override
-    public HitResult getRTR() {
+    public RayTraceResult getRTR() {
         return null;
     }
 
@@ -79,7 +79,7 @@ public final class AppEngServer extends AppEngBase {
 
     @Override
     public boolean isOnServerThread() {
-        return server != null && server.isOnThread();
+        return server != null && server.isOnExecutionThread();
     }
 
 }

@@ -10,17 +10,16 @@ import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
-
+import net.minecraft.world.IBlockDisplayReader;
 import appeng.client.render.cablebus.QuadRotator;
 
 @Environment(EnvType.CLIENT)
 public class AutoRotatingBakedModel extends ForwardingBakedModel implements FabricBakedModel {
 
-    public AutoRotatingBakedModel(BakedModel wrapped) {
+    public AutoRotatingBakedModel(IBakedModel wrapped) {
         this.wrapped = wrapped;
     }
 
@@ -29,12 +28,12 @@ public class AutoRotatingBakedModel extends ForwardingBakedModel implements Fabr
         return false;
     }
 
-    public BakedModel getWrapped() {
+    public IBakedModel getWrapped() {
         return wrapped;
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
         RenderContext.QuadTransform transform = getTransform(blockView, pos);
 
@@ -54,7 +53,7 @@ public class AutoRotatingBakedModel extends ForwardingBakedModel implements Fabr
         super.emitItemQuads(stack, randomSupplier, context);
     }
 
-    private RenderContext.QuadTransform getTransform(BlockRenderView view, BlockPos pos) {
+    private RenderContext.QuadTransform getTransform(IBlockDisplayReader view, BlockPos pos) {
         if (!(view instanceof RenderAttachedBlockView)) {
             return null;
         }

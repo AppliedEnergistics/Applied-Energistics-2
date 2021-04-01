@@ -18,23 +18,22 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.container.implementations.CraftingStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContainer> {
 
     private final AESubScreen subGui;
 
-    private ButtonWidget selectCPU;
+    private Button selectCPU;
 
-    public CraftingStatusScreen(CraftingStatusContainer container, PlayerInventory playerInventory, Text title) {
+    public CraftingStatusScreen(CraftingStatusContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.subGui = new AESubScreen(this, container.getTarget());
     }
@@ -43,7 +42,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     public void init() {
         super.init();
 
-        this.selectCPU = new ButtonWidget(this.x + 8, this.y + this.backgroundHeight - 25, 150, 20,
+        this.selectCPU = new Button(this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20,
                 getNextCpuButtonLabel(), btn -> selectNextCpu());
         this.addButton(this.selectCPU);
 
@@ -63,15 +62,15 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
         this.selectCPU.setMessage(getNextCpuButtonLabel());
     }
 
-    private Text getNextCpuButtonLabel() {
-        if (this.handler.noCPU) {
+    private ITextComponent getNextCpuButtonLabel() {
+        if (this.container.noCPU) {
             return GuiText.NoCraftingJobs.text();
         }
-        return GuiText.CraftingCPU.withSuffix(": ").append(handler.cpuName);
+        return GuiText.CraftingCPU.withSuffix(": ").append(container.cpuName);
     }
 
     @Override
-    protected Text getGuiDisplayName(final Text in) {
+    protected ITextComponent getGuiDisplayName(final ITextComponent in) {
         return in; // the cup name is on the button
     }
 

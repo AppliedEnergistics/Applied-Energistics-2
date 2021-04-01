@@ -20,8 +20,7 @@ package appeng.api.parts;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Allows registration of part models that can then be used in {@link IPart#getStaticModels()}.
@@ -35,12 +34,12 @@ public interface IPartModels {
      * <p>
      * This method must be called during the pre-init phase (as part of your plugin's constructor).
      */
-    void registerModels(Collection<Identifier> partModels);
+    void registerModels(Collection<ResourceLocation> partModels);
 
     /**
      * Convenience overload of {@link #registerModels(Collection)}
      */
-    default void registerModels(Identifier... partModels) {
+    default void registerModels(ResourceLocation... partModels) {
         registerModels(Arrays.asList(partModels));
     }
 }

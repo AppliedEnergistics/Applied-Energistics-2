@@ -4,14 +4,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.item.Item;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.Tag;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
 
 @Mixin(ItemTags.class)
 public interface ItemTagsAccessor {
 
     @Invoker("register")
-    static Tag.Identified<Item> register(String id) {
+    static ITag.INamedTag<Item> register(String id) {
         throw new AssertionError();
     }
 

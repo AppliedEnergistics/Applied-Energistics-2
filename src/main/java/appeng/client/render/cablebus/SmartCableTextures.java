@@ -23,11 +23,10 @@ import java.util.function.Function;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 import appeng.core.AppEng;
 
 /**
@@ -36,35 +35,35 @@ import appeng.core.AppEng;
 @Environment(EnvType.CLIENT)
 public class SmartCableTextures {
 
-    public static final SpriteIdentifier[] SMART_CHANNELS_TEXTURES = Arrays
-            .stream(new Identifier[] { new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_00"), //
-                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_01"), //
-                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_02"), //
-                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_03"), //
-                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_04"), //
-                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_10"), //
-                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_11"), //
-                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_12"), //
-                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_13"), //
-                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_14")//
-            }).map(e -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, e))
-            .toArray(SpriteIdentifier[]::new);
+    public static final RenderMaterial[] SMART_CHANNELS_TEXTURES = Arrays
+            .stream(new ResourceLocation[] { new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_00"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_01"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_02"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_03"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_04"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_10"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_11"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_12"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_13"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_14")//
+            }).map(e -> new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, e))
+            .toArray(RenderMaterial[]::new);
 
     // Textures used to display channels on smart cables. There's two sets of 5
     // textures each, and
     // one of each set are composed together to get even/odd colored channels
-    private final Sprite[] textures;
+    private final TextureAtlasSprite[] textures;
 
-    public SmartCableTextures(Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
+    public SmartCableTextures(Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
         this.textures = Arrays.stream(SMART_CHANNELS_TEXTURES)//
                 .map(bakedTextureGetter)//
-                .toArray(Sprite[]::new);
+                .toArray(TextureAtlasSprite[]::new);
     }
 
     /**
      * The odd variant is used for displaying channels 1-4 as in use.
      */
-    public Sprite getOddTextureForChannels(int channels) {
+    public TextureAtlasSprite getOddTextureForChannels(int channels) {
         if (channels < 0) {
             return this.textures[0];
         } else if (channels <= 4) {
@@ -77,7 +76,7 @@ public class SmartCableTextures {
     /**
      * The odd variant is used for displaying channels 5-8 as in use.
      */
-    public Sprite getEvenTextureForChannels(int channels) {
+    public TextureAtlasSprite getEvenTextureForChannels(int channels) {
         if (channels < 5) {
             return this.textures[5];
         } else if (channels <= 8) {

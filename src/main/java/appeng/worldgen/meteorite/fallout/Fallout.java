@@ -21,8 +21,7 @@ package appeng.worldgen.meteorite.fallout;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldAccess;
-
+import net.minecraft.world.IWorld;
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
 public class Fallout {
@@ -38,7 +37,7 @@ public class Fallout {
         return 0;
     }
 
-    public void getRandomFall(final WorldAccess w, BlockPos pos) {
+    public void getRandomFall(final IWorld w, BlockPos pos) {
         final double a = Math.random();
         if (a > 0.9) {
             this.putter.put(w, pos, Blocks.STONE.getDefaultState());
@@ -51,7 +50,7 @@ public class Fallout {
         }
     }
 
-    public void getRandomInset(final WorldAccess w, BlockPos pos) {
+    public void getRandomInset(final IWorld w, BlockPos pos) {
         final double a = Math.random();
         if (a > 0.9) {
             this.putter.put(w, pos, Blocks.COBBLESTONE.getDefaultState());

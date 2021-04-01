@@ -23,9 +23,8 @@ import java.util.EnumSet;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -38,7 +37,7 @@ public final class ConfigButtonPacket extends BasePacket {
     private final Settings option;
     private final boolean rotationDirection;
 
-    public ConfigButtonPacket(final PacketByteBuf stream) {
+    public ConfigButtonPacket(final PacketBuffer stream) {
         this.option = Settings.values()[stream.readInt()];
         this.rotationDirection = stream.readBoolean();
     }
@@ -48,7 +47,7 @@ public final class ConfigButtonPacket extends BasePacket {
         this.option = option;
         this.rotationDirection = rotationDirection;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(option.ordinal());
@@ -60,8 +59,8 @@ public final class ConfigButtonPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
-        if (sender.currentScreenHandler instanceof AEBaseContainer) {
-            final AEBaseContainer baseContainer = (AEBaseContainer) sender.currentScreenHandler;
+        if (sender.openContainer instanceof AEBaseContainer) {
+            final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
             if (baseContainer.getTarget() instanceof IConfigurableObject) {
                 final IConfigManager cm = ((IConfigurableObject) baseContainer.getTarget()).getConfigManager();
                 Enum setting = cm.getSetting(this.option);

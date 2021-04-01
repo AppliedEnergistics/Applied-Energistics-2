@@ -24,10 +24,8 @@
 package appeng.api.parts;
 
 import java.io.IOException;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import appeng.api.util.AEPartLocation;
 
 /**
@@ -64,7 +62,7 @@ public interface IFacadeContainer {
      *
      * @param data to be written data
      */
-    void writeToNBT(CompoundTag data);
+    void writeToNBT(CompoundNBT data);
 
     /**
      * read from stream
@@ -73,14 +71,14 @@ public interface IFacadeContainer {
      * @return true if it was readable
      * @throws IOException
      */
-    boolean readFromStream(PacketByteBuf data) throws IOException;
+    boolean readFromStream(PacketBuffer data) throws IOException;
 
     /**
      * read from NBT
      *
      * @param data to be read data
      */
-    void readFromNBT(CompoundTag data);
+    void readFromNBT(CompoundNBT data);
 
     /**
      * write to stream
@@ -88,7 +86,7 @@ public interface IFacadeContainer {
      * @param data to be written data
      * @throws IOException
      */
-    void writeToStream(PacketByteBuf data) throws IOException;
+    void writeToStream(PacketBuffer data) throws IOException;
 
     /**
      * @return true if there are no facades.

@@ -22,13 +22,12 @@ import java.util.Iterator;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
@@ -56,7 +55,7 @@ import appeng.util.iterators.NullIterator;
 
 public class CellWorkbenchContainer extends UpgradeableContainer {
 
-    public static ScreenHandlerType<CellWorkbenchContainer> TYPE;
+    public static ContainerType<CellWorkbenchContainer> TYPE;
 
     private static final ContainerHelper<CellWorkbenchContainer, CellWorkbenchBlockEntity> helper = new ContainerHelper<>(
             CellWorkbenchContainer::new, CellWorkbenchBlockEntity.class);
@@ -72,7 +71,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         this.workBench = te;
     }
 
-    public static CellWorkbenchContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static CellWorkbenchContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -140,22 +139,22 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         final ItemStack is = this.workBench.getInventoryByName("cell").getInvStack(0);
         if (isServer()) {
-            for (final ScreenHandlerListener listener : this.getListeners()) {
+            for (final IContainerListener listener : this.getListeners()) {
                 if (this.prevStack != is) {
                     // if the bars changed an item was probably made, so just send shit!
-                    for (int i = 0; i < this.slots.size(); i++) {
-                        Slot s = this.slots.get(i);
+                    for (int i = 0; i < this.inventorySlots.size(); i++) {
+                        Slot s = this.inventorySlots.get(i);
                         if (s instanceof OptionalRestrictedInputSlot) {
                             final OptionalRestrictedInputSlot sri = (OptionalRestrictedInputSlot) s;
-                            listener.onSlotUpdate(this, i, sri.getStack());
+                            listener.sendSlotContents(this, i, sri.getStack());
                         }
                     }
 
                     if (listener instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity) listener).skipPacketSlotUpdates = false;
+                        ((ServerPlayerEntity) listener).isChangingQuantityOnly = false;
                     }
                 }
             }
@@ -190,7 +189,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
 
     public void clear() {
         ItemHandlerUtil.clear(this.getUpgradeable().getInventoryByName("config"));
-        this.sendContentUpdates();
+        this.detectAndSendChanges();
     }
 
     private FuzzyMode getWorkBenchFuzzyMode() {
@@ -228,7 +227,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
             }
         }
 
-        this.sendContentUpdates();
+        this.detectAndSendChanges();
     }
 
     public CopyMode getCopyMode() {

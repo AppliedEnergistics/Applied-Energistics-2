@@ -30,7 +30,7 @@ public class OutputSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean canInsert(final ItemStack stack) {
+    public boolean isItemValid(final ItemStack stack) {
         return false;
     }
 }

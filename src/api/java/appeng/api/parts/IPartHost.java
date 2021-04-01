@@ -24,14 +24,12 @@
 package appeng.api.parts;
 
 import java.util.Set;
-
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.util.math.vector.Vector3d;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
@@ -109,7 +107,7 @@ public interface IPartHost extends ICustomCableConnection {
     /**
      * @return the block entity for the host, this can either be an FMP tile, or a AE tile
      */
-    BlockEntity getTile();
+    TileEntity getTile();
 
     /**
      * @return the color of the host type ( this is determined by the middle cable. ) if no cable is present, it returns
@@ -135,7 +133,7 @@ public interface IPartHost extends ICustomCableConnection {
      * @param pos part position
      * @return a new SelectedPart, this is never null.
      */
-    SelectedPart selectPart(Vec3d pos);
+    SelectedPart selectPart(Vector3d pos);
 
     /**
      * can be used by parts to trigger the tile or part to save.

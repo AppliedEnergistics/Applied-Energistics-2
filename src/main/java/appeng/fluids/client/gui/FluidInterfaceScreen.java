@@ -18,10 +18,8 @@
 
 package appeng.fluids.client.gui;
 
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.PriorityContainer;
@@ -33,19 +31,20 @@ import appeng.fluids.client.gui.widgets.FluidTankWidget;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.util.IAEFluidTank;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContainer> {
-    public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory, Text title) {
+    public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.backgroundHeight = 231;
+        this.ySize = 231;
     }
 
     @Override
     public void init() {
         super.init();
 
-        final IAEFluidTank configFluids = this.handler.getFluidConfigInventory();
-        final IAEFluidTank fluidTank = this.handler.getTanks();
+        final IAEFluidTank configFluids = this.container.getFluidConfigInventory();
+        final IAEFluidTank fluidTank = this.container.getTanks();
 
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
             final FluidTankWidget guiTank = new FluidTankWidget(fluidTank, i, this.getX() + 35 + 18 * i,
@@ -64,16 +63,16 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
 
     @Override
     public void drawFG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.FluidInterface.text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.Config.text(), 35, 6 + 11 + 7, 4210752);
-        this.textRenderer.draw(matrices, GuiText.StoredFluids.text(), 35, 6 + 112 + 7, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.FluidInterface.text()), 8, 6, 4210752);
+        this.font.method_30883(matrices, GuiText.Config.text(), 35, 6 + 11 + 7, 4210752);
+        this.font.method_30883(matrices, GuiText.StoredFluids.text(), 35, 6 + 112 + 7, 4210752);
+        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         this.bindTexture("guis/interfacefluid.png");
-        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 
     private void openPriorityGui() {

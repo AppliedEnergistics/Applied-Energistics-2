@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.tiles;
 
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.Direction;
 
 /**
  * Crank/Crankable API,

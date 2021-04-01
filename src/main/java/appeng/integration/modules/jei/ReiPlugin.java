@@ -26,12 +26,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
-
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import me.shedaniel.rei.api.BaseBoundsHandler;
 import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryRegistry;
@@ -63,7 +61,7 @@ import appeng.recipes.handlers.InscriberRecipe;
 
 public class ReiPlugin implements REIPluginV0 {
 
-    private static final Identifier ID = new Identifier(AppEng.MOD_ID, "core");
+    private static final ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
 
     private final ApiBlocks blocks = Api.INSTANCE.definitions().blocks();
 
@@ -99,7 +97,7 @@ public class ReiPlugin implements REIPluginV0 {
     }
 
     @Override
-    public Identifier getPluginIdentifier() {
+    public ResourceLocation getPluginIdentifier() {
         return ID;
     }
 
@@ -157,7 +155,7 @@ public class ReiPlugin implements REIPluginV0 {
         BaseBoundsHandler baseBoundsHandler = BaseBoundsHandler.getInstance();
 
         baseBoundsHandler.registerExclusionZones(AEBaseScreen.class, () -> {
-            AEBaseScreen<?> screen = (AEBaseScreen<?>) MinecraftClient.getInstance().currentScreen;
+            AEBaseScreen<?> screen = (AEBaseScreen<?>) Minecraft.getInstance().currentScreen;
             return screen != null ? screen.getExclusionZones() : Collections.emptyList();
         });
 
@@ -215,7 +213,7 @@ public class ReiPlugin implements REIPluginV0 {
     private static void addDescription(IItemDefinition itemDefinition, String... message) {
         DefaultInformationDisplay info = DefaultInformationDisplay.createFromEntry(EntryStack.create(itemDefinition),
                 itemDefinition.item().getName());
-        info.lines(Arrays.stream(message).map(TranslatableText::new).collect(Collectors.toList()));
+        info.lines(Arrays.stream(message).map(TranslationTextComponent::new).collect(Collectors.toList()));
         RecipeHelper.getInstance().registerDisplay(info);
     }
 

@@ -19,8 +19,7 @@
 package appeng.decorative.solid;
 
 import java.util.EnumSet;
-
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.Direction;
 
 /**
  * Immutable (and thus thread-safe) class that encapsulates the rendering state required for a connected texture glass

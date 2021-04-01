@@ -2,29 +2,28 @@ package appeng.client.render.tesr;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.math.vector.Vector3f;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.tile.storage.DriveBlockEntity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 /**
  * Renders the drive cell status indicators.
  */
 @Environment(EnvType.CLIENT)
-public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEntity> {
+public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveBlockEntity> {
 
-    public DriveLedTileEntityRenderer(BlockEntityRenderDispatcher renderDispatcher) {
+    public DriveLedTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
         super(renderDispatcher);
     }
 
     @Override
-    public void render(DriveBlockEntity drive, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
+    public void render(DriveBlockEntity drive, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
             int combinedLightIn, int combinedOverlayIn) {
 
         if (drive.getCellCount() != 10) {
@@ -36,7 +35,7 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
         FacingToRotation.get(drive.getForward(), drive.getUp()).push(ms);
         ms.translate(-0.5, -0.5, -0.5);
 
-        VertexConsumer buffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
+        IVertexBuilder buffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
 
         Vector3f slotTranslation = new Vector3f();
         for (int row = 0; row < 5; row++) {

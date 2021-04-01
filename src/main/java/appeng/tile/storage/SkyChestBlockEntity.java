@@ -23,14 +23,14 @@ import java.io.IOException;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.EnvironmentInterface;
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.block.ChestAnimationProgress;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Tickable;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.IChestLid;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -40,8 +40,8 @@ import appeng.tile.AEBaseInvBlockEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
-@EnvironmentInterface(value = EnvType.CLIENT, itf = ChestAnimationProgress.class)
-public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickable, ChestAnimationProgress {
+@EnvironmentInterface(value = EnvType.CLIENT, itf = IChestLid.class)
+public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ITickableTileEntity, IChestLid {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
 
@@ -52,18 +52,18 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickabl
     private float lidAngle;
     private float prevLidAngle;
 
-    public SkyChestBlockEntity(BlockEntityType<? extends SkyChestBlockEntity> type) {
+    public SkyChestBlockEntity(TileEntityType<? extends SkyChestBlockEntity> type) {
         super(type);
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.getPlayerOpen() > 0);
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int wasOpen = this.getPlayerOpen();
         this.setPlayerOpen(data.readBoolean() ? 1 : 0);
@@ -87,8 +87,8 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickabl
 
             if (this.getPlayerOpen() == 1) {
                 this.getWorld().playSound(player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D,
-                        this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F,
-                        this.getWorld().random.nextFloat() * 0.1F + 0.9F);
+                        this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.field_15245, 0.5F,
+                        this.getWorld().rand.nextFloat() * 0.1F + 0.9F);
                 this.markForUpdate();
             }
         }
@@ -105,8 +105,8 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickabl
 
             if (this.getPlayerOpen() == 0) {
                 this.getWorld().playSound(player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D,
-                        this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F,
-                        this.getWorld().random.nextFloat() * 0.1F + 0.9F);
+                        this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.field_15245, 0.5F,
+                        this.getWorld().rand.nextFloat() * 0.1F + 0.9F);
                 this.markForUpdate();
             }
         }
@@ -114,12 +114,12 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickabl
 
     // See ChestTileEntity
     private void onOpenOrClose() {
-        Block block = getCachedState().getBlock();
+        Block block = getBlockState().getBlock();
         if (block instanceof SkyChestBlock) {
-            this.world.addSyncedBlockEvent(this.pos, block, 1, this.numPlayersUsing);
-            this.world.updateNeighborsAlways(this.pos, block);
+            this.world.addBlockEvent(this.pos, block, 1, this.numPlayersUsing);
+            this.world.notifyNeighborsOfStateChange(this.pos, block);
             // FIXME: Uhm, we are we doing this?
-            this.world.updateNeighborsAlways(this.pos.down(), block);
+            this.world.notifyNeighborsOfStateChange(this.pos.down(), block);
         }
     }
 
@@ -160,7 +160,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickabl
     }
 
     @Override
-    public float getAnimationProgress(float partialTicks) {
+    public float getLidAngle(float partialTicks) {
         return MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
     }
 

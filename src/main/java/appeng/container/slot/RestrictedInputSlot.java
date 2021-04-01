@@ -25,13 +25,13 @@ import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -61,10 +61,10 @@ import appeng.util.Platform;
  */
 public class RestrictedInputSlot extends AppEngSlot {
 
-    private static final List<Identifier> METAL_INGOT_TAGS = ImmutableList.of(new Identifier("c:copper_ingots"),
-            new Identifier("c:tin_ingots"), new Identifier("c:iron_ingots"), new Identifier("c:gold_ingots"),
-            new Identifier("c:lead_ingots"), new Identifier("c:bronze_ingots"), new Identifier("c:brass_ingots"),
-            new Identifier("c:nickel_ingots"), new Identifier("c:aluminium_ingots"));
+    private static final List<ResourceLocation> METAL_INGOT_TAGS = ImmutableList.of(new ResourceLocation("c:copper_ingots"),
+            new ResourceLocation("c:tin_ingots"), new ResourceLocation("c:iron_ingots"), new ResourceLocation("c:gold_ingots"),
+            new ResourceLocation("c:lead_ingots"), new ResourceLocation("c:bronze_ingots"), new ResourceLocation("c:brass_ingots"),
+            new ResourceLocation("c:nickel_ingots"), new ResourceLocation("c:aluminium_ingots"));
 
     private final PlacableItemType which;
     private final PlayerInventory p;
@@ -80,11 +80,11 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public int getMaxItemCount() {
+    public int getSlotStackLimit() {
         if (this.stackLimit != -1) {
             return this.stackLimit;
         }
-        return super.getMaxItemCount();
+        return super.getSlotStackLimit();
     }
 
     public boolean isValid(final ItemStack is, final World theWorld) {
@@ -100,7 +100,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean canInsert(final ItemStack stack) {
+    public boolean isItemValid(final ItemStack stack) {
         if (!this.getContainer().isValidForSlot(this, stack)) {
             return false;
         }
@@ -113,7 +113,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        if (!super.canInsert(stack)) {
+        if (!super.isItemValid(stack)) {
             return false;
         }
 
@@ -208,7 +208,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity player) {
+    public boolean canTakeStack(final PlayerEntity player) {
         return this.isAllowEdit();
     }
 
@@ -234,8 +234,8 @@ public class RestrictedInputSlot extends AppEngSlot {
 
         // TODO: Can be optimized by somehow caching the Tag's
         Item item = i.getItem();
-        for (Identifier tagName : METAL_INGOT_TAGS) {
-            Tag<Item> ingotTag = ItemTags.getTagGroup().getTag(tagName);
+        for (ResourceLocation tagName : METAL_INGOT_TAGS) {
+            ITag<Item> ingotTag = ItemTags.getCollection().get(tagName);
             if (ingotTag != null && item.isIn(ingotTag)) {
                 return true;
             }

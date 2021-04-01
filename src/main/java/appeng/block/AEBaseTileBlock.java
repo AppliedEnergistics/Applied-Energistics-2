@@ -28,21 +28,21 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
@@ -61,14 +61,14 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBaseBlock
-        implements BlockEntityProvider, AttributeProvider {
+        implements ITileEntityProvider, AttributeProvider {
 
     @Nonnull
     private Class<T> blockEntityClass;
     @Nonnull
     private Supplier<T> tileEntityFactory;
 
-    public AEBaseTileBlock(final Settings props) {
+    public AEBaseTileBlock(final Properties props) {
         super(props);
     }
 
@@ -84,14 +84,14 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     }
 
     @Nullable
-    public T getBlockEntity(final BlockView w, final int x, final int y, final int z) {
+    public T getBlockEntity(final IBlockReader w, final int x, final int y, final int z) {
         return this.getBlockEntity(w, new BlockPos(x, y, z));
     }
 
     @Nullable
-    public T getBlockEntity(final BlockView w, final BlockPos pos) {
+    public T getBlockEntity(final IBlockReader w, final BlockPos pos) {
 
-        final BlockEntity te = w.getBlockEntity(pos);
+        final TileEntity te = w.getTileEntity(pos);
         // FIXME: This gets called as part of building the block state cache
         if (this.blockEntityClass != null && this.blockEntityClass.isInstance(te)) {
             return this.blockEntityClass.cast(te);
@@ -102,12 +102,12 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
+    public TileEntity createNewTileEntity(IBlockReader world) {
         return this.tileEntityFactory.get();
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
@@ -126,12 +126,12 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
         }
 
         // super will remove the TE, as it is not an instance of BlockContainer
-        super.onStateReplaced(state, w, pos, newState, isMoving);
+        super.onReplaced(state, w, pos, newState, isMoving);
     }
 
     @Override
-    public int getComparatorOutput(BlockState state, final World w, final BlockPos pos) {
-        final BlockEntity te = this.getBlockEntity(w, pos);
+    public int getComparatorInputOverride(BlockState state, final World w, final BlockPos pos) {
+        final TileEntity te = this.getBlockEntity(w, pos);
         if (te instanceof AEBaseInvBlockEntity) {
             AEBaseInvBlockEntity invTile = (AEBaseInvBlockEntity) te;
             if (invTile.getInternalInventory().getSlotCount() > 0) {
@@ -156,7 +156,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
             }
 
             int slotMaxCount = inv.getMaxAmount(i, stack);
-            fillRatio += stack.getCount() / (float) Math.min(slotMaxCount, stack.getMaxCount());
+            fillRatio += stack.getCount() / (float) Math.min(slotMaxCount, stack.getMaxStackSize());
             foundAnything = true;
         }
 
@@ -168,14 +168,14 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     }
 
     @Override
-    public boolean onSyncedBlockEvent(BlockState state, World world, BlockPos pos, int type, int data) {
-        super.onSyncedBlockEvent(state, world, pos, type, data);
-        final BlockEntity tileentity = world.getBlockEntity(pos);
-        return tileentity != null && tileentity.onSyncedBlockEvent(type, data);
+    public boolean eventReceived(BlockState state, World world, BlockPos pos, int type, int data) {
+        super.eventReceived(state, world, pos, type, data);
+        final TileEntity tileentity = world.getTileEntity(pos);
+        return tileentity != null && tileentity.receiveClientEvent(type, data);
     }
 
     @Override
-    public void onPlaced(final World w, final BlockPos pos, final BlockState state, final LivingEntity placer,
+    public void onBlockPlacedBy(final World w, final BlockPos pos, final BlockState state, final LivingEntity placer,
             final ItemStack is) {
         // Inherit the item stack's display name, but only if it's a user defined string
         // rather
@@ -183,33 +183,33 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
         // untranslated
         // I18N strings and we would translate it using the server's locale :-(
         AEBaseBlockEntity te = this.getBlockEntity(w, pos);
-        if (te != null && is.hasCustomName()) {
-            Text displayName = is.getName();
-            if (displayName instanceof LiteralText) {
-                te.setName(((LiteralText) displayName).getRawString());
+        if (te != null && is.hasDisplayName()) {
+            ITextComponent displayName = is.getDisplayName();
+            if (displayName instanceof StringTextComponent) {
+                te.setName(((StringTextComponent) displayName).getText());
             }
         }
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-            BlockHitResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
+            BlockRayTraceResult hit) {
         ItemStack heldItem;
-        if (player != null && !player.getStackInHand(hand).isEmpty()) {
-            heldItem = player.getStackInHand(hand);
+        if (player != null && !player.getHeldItem(hand).isEmpty()) {
+            heldItem = player.getHeldItem(hand);
 
-            if (Platform.isWrench(player, heldItem, pos) && player.isInSneakingPose()) {
+            if (Platform.isWrench(player, heldItem, pos) && player.isCrouching()) {
                 final BlockState blockState = world.getBlockState(pos);
                 final Block block = blockState.getBlock();
 
                 final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
 
                 if (tile == null) {
-                    return ActionResult.FAIL;
+                    return ActionResultType.field_5814;
                 }
 
                 if (tile instanceof CableBusBlockEntity || tile instanceof SkyChestBlockEntity) {
-                    return ActionResult.FAIL;
+                    return ActionResultType.field_5814;
                 }
 
                 final ItemStack[] itemDropCandidates = Platform.getBlockDrops(world, pos);
@@ -217,22 +217,22 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
 
                 for (final ItemStack ol : itemDropCandidates) {
                     if (Platform.itemComparisons().isEqualItemType(ol, op)) {
-                        final CompoundTag tag = tile.downloadSettings(SettingsFrom.DISMANTLE_ITEM);
+                        final CompoundNBT tag = tile.downloadSettings(SettingsFrom.DISMANTLE_ITEM);
                         if (tag != null) {
                             ol.setTag(tag);
                         }
                     }
                 }
 
-                block.onBreak(world, pos, blockState, player);
+                block.onBlockHarvested(world, pos, blockState, player);
                 boolean bl = world.removeBlock(pos, false);
                 if (bl) {
-                    block.onBroken(world, pos, blockState);
+                    block.onPlayerDestroy(world, pos, blockState);
                     final List<ItemStack> itemsToDrop = Lists.newArrayList(itemDropCandidates);
                     Platform.spawnDrops(world, pos, itemsToDrop);
                 }
 
-                return ActionResult.SUCCESS;
+                return ActionResultType.field_5812;
             }
 
             if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof CableBusBlock)) {
@@ -240,20 +240,20 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
                 final AEBaseBlockEntity tileEntity = this.getBlockEntity(world, pos);
 
                 if (tileEntity == null) {
-                    return ActionResult.FAIL;
+                    return ActionResultType.field_5814;
                 }
 
                 final String name = this.getTranslationKey();
 
-                if (player.isInSneakingPose()) {
-                    final CompoundTag data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
+                if (player.isCrouching()) {
+                    final CompoundNBT data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
                     if (data != null) {
                         memoryCard.setMemoryCardContents(heldItem, name, data);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                     }
                 } else {
                     final String savedName = memoryCard.getSettingsName(heldItem);
-                    final CompoundTag data = memoryCard.getData(heldItem);
+                    final CompoundNBT data = memoryCard.getData(heldItem);
 
                     if (this.getTranslationKey().equals(savedName)) {
                         tileEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data);
@@ -263,20 +263,20 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
                     }
                 }
 
-                return ActionResult.SUCCESS;
+                return ActionResultType.field_5812;
             }
         }
 
-        return this.onActivated(world, pos, player, hand, player.getStackInHand(hand), hit);
+        return this.onActivated(world, pos, player, hand, player.getHeldItem(hand), hit);
     }
 
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        return ActionResultType.field_5811;
     }
 
     @Override
-    public IOrientable getOrientable(final BlockView w, final BlockPos pos) {
+    public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
         return this.getBlockEntity(w, pos);
     }
 
@@ -286,7 +286,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
      * If the given TileEntity is not of the right type for this block, the state is returned unchanged, this is also
      * the case if the given block state does not belong to this block.
      */
-    public final BlockState getBlockEntityBlockState(BlockState current, BlockEntity te) {
+    public final BlockState getBlockEntityBlockState(BlockState current, TileEntity te) {
         if (current.getBlock() != this || !blockEntityClass.isInstance(te)) {
             return current;
         }

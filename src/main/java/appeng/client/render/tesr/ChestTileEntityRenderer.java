@@ -27,20 +27,18 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.BlockModelRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockModelRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelManager;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
 import appeng.block.storage.DriveSlotsState;
@@ -49,26 +47,28 @@ import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.core.Api;
 import appeng.tile.storage.ChestBlockEntity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 /**
  * The tile entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
  * LED.
  */
-public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntity> {
+public class ChestTileEntityRenderer extends TileEntityRenderer<ChestBlockEntity> {
 
-    private final BakedModelManager modelManager;
+    private final ModelManager modelManager;
 
     private final BlockModelRenderer blockRenderer;
 
-    public ChestTileEntityRenderer(BlockEntityRenderDispatcher renderDispatcher) {
+    public ChestTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
         super(renderDispatcher);
-        MinecraftClient client = MinecraftClient.getInstance();
-        modelManager = client.getBakedModelManager();
-        blockRenderer = client.getBlockRenderManager().getModelRenderer();
+        Minecraft client = Minecraft.getInstance();
+        modelManager = client.getModelManager();
+        blockRenderer = client.getBlockRendererDispatcher().getBlockModelRenderer();
     }
 
     @Override
-    public void render(ChestBlockEntity chest, float partialTicks, MatrixStack matrices, VertexConsumerProvider buffers,
+    public void render(ChestBlockEntity chest, float partialTicks, MatrixStack matrices, IRenderTypeBuffer buffers,
             int combinedLight, int combinedOverlay) {
 
         World world = chest.getWorld();
@@ -89,7 +89,7 @@ public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntit
         if (driveModel == null) {
             return;
         }
-        BakedModel cellModel = driveModel.getCellChassisModel(cellItem);
+        IBakedModel cellModel = driveModel.getCellChassisModel(cellItem);
 
         matrices.push();
         matrices.translate(0.5, 0.5, 0.5);
@@ -102,21 +102,21 @@ public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntit
         matrices.translate(5 / 16.0, 4 / 16.0, 0);
 
         // Render the cell model as-if it was a block model
-        VertexConsumer buffer = buffers.getBuffer(RenderLayer.getCutout());
+        IVertexBuilder buffer = buffers.getBuffer(RenderType.getCutout());
         // We "fake" the position here to make it use the light-value in front of the
         // drive
-        BakedModel rotatedModel = new FaceRotatingModel(cellModel, rotation);
-        blockRenderer.render(world, rotatedModel, chest.getCachedState(), chest.getPos(), matrices, buffer, false,
+        IBakedModel rotatedModel = new FaceRotatingModel(cellModel, rotation);
+        blockRenderer.renderModel(world, rotatedModel, chest.getBlockState(), chest.getPos(), matrices, buffer, false,
                 new Random(), 0L, combinedOverlay);
 
-        VertexConsumer ledBuffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
+        IVertexBuilder ledBuffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
         CellLedRenderer.renderLed(chest, 0, ledBuffer, matrices, partialTicks);
 
         matrices.pop();
     }
 
     private DriveBakedModel getDriveModel() {
-        BakedModel driveModel = modelManager.getBlockModels()
+        IBakedModel driveModel = modelManager.getBlockModelShapes()
                 .getModel(Api.instance().definitions().blocks().drive().block().getDefaultState());
         return BakedModelUnwrapper.unwrap(driveModel, DriveBakedModel.class);
     }
@@ -128,7 +128,7 @@ public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntit
     private static class FaceRotatingModel extends ForwardingBakedModel {
         private final FacingToRotation r;
 
-        protected FaceRotatingModel(BakedModel base, FacingToRotation r) {
+        protected FaceRotatingModel(IBakedModel base, FacingToRotation r) {
             this.wrapped = base;
             this.r = r;
         }
@@ -143,8 +143,8 @@ public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntit
 
             for (int i = 0; i < quads.size(); i++) {
                 BakedQuad quad = quads.get(i);
-                quads.set(i, new BakedQuad(quad.getVertexData(), quad.getColorIndex(), r.rotate(quad.getFace()),
-                        /* FIXME FABRIC: sprite is protected but unused?? */ null, quad.hasShade()));
+                quads.set(i, new BakedQuad(quad.getVertexData(), quad.getTintIndex(), r.rotate(quad.getFace()),
+                        /* FIXME FABRIC: sprite is protected but unused?? */ null, quad.applyDiffuseLighting()));
             }
             return quads;
         }

@@ -20,8 +20,7 @@ package appeng.block.networking;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.RenderLayer;
-
+import net.minecraft.client.renderer.RenderType;
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
@@ -37,7 +36,7 @@ public class CableBusRendering extends BlockRenderingCustomizer {
         // FIXME This is straight up impossible in Vanilla, and questionable if it's
         // actually needed.
         // FIXME rendering.renderType(rt -> true);
-        rendering.renderType(RenderLayer.getCutout());
+        rendering.renderType(RenderType.getCutout());
 
         rendering.blockColor(new CableBusColor());
         rendering.modelCustomizer((loc, model) -> model);

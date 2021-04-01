@@ -22,8 +22,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.nbt.CompoundNBT;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
@@ -116,13 +115,13 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
             ItemStack oldStack = previous;
             InvOperation op = InvOperation.SET;
 
-            if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.areItemsEqual(newStack, oldStack)) {
+            if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.areItemsEqualIgnoreDurability(newStack, oldStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
-                    newStack.decrement(oldStack.getCount());
+                    newStack.shrink(oldStack.getCount());
                     oldStack = ItemStack.EMPTY;
                     op = InvOperation.INSERT;
                 } else {
-                    oldStack.decrement(newStack.getCount());
+                    oldStack.shrink(newStack.getCount());
                     newStack = ItemStack.EMPTY;
                     op = InvOperation.EXTRACT;
                 }
@@ -181,18 +180,18 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
         return true;
     }
 
-    public void writeToNBT(final CompoundTag data, final String name) {
+    public void writeToNBT(final CompoundNBT data, final String name) {
         data.put(name, this.toTag());
     }
 
-    public void readFromNBT(final CompoundTag data, final String name) {
-        final CompoundTag c = data.getCompound(name);
+    public void readFromNBT(final CompoundNBT data, final String name) {
+        final CompoundNBT c = data.getCompound(name);
         if (c != null) {
             this.readFromNBT(c);
         }
     }
 
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         this.fromTag(data);
     }
 

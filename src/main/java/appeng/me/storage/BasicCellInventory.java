@@ -2,8 +2,7 @@ package appeng.me.storage;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.nbt.CompoundNBT;
 import appeng.api.config.Actionable;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.items.IStorageCell;
@@ -207,7 +206,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
     }
 
     @Override
-    protected boolean loadCellItem(CompoundTag compoundTag, int stackSize) {
+    protected boolean loadCellItem(CompoundNBT compoundTag, int stackSize) {
         // Now load the item stack
         final T t;
         try {

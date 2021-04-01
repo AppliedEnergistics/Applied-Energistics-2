@@ -22,10 +22,9 @@ import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-
+import net.minecraft.network.PacketBuffer;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.sync.BasePacket;
@@ -38,7 +37,7 @@ public class LightningPacket extends BasePacket {
     private final double y;
     private final double z;
 
-    public LightningPacket(final PacketByteBuf stream) {
+    public LightningPacket(final PacketBuffer stream) {
         this.x = stream.readFloat();
         this.y = stream.readFloat();
         this.z = stream.readFloat();
@@ -50,7 +49,7 @@ public class LightningPacket extends BasePacket {
         this.y = y;
         this.z = z;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeFloat((float) x);
@@ -65,7 +64,7 @@ public class LightningPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
             if (Platform.isClient() && AEConfig.instance().isEnableEffects()) {
-                MinecraftClient.getInstance().world.addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f,
+                Minecraft.getInstance().world.addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f,
                         0.0f, 0.0f);
             }
         } catch (final Exception ignored) {

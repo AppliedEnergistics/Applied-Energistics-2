@@ -23,15 +23,12 @@ import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.storage.WorldSavedData;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.authlib.GameProfile;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.PersistentState;
-
 import appeng.core.AELog;
 import appeng.core.AppEng;
 
@@ -43,7 +40,7 @@ import appeng.core.AppEng;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class PlayerData extends PersistentState implements IWorldPlayerData {
+final class PlayerData extends WorldSavedData implements IWorldPlayerData {
 
     public static final String NAME = AppEng.MOD_ID + "_players";
     public static final String TAG_PLAYER_IDS = "playerIds";
@@ -84,7 +81,7 @@ final class PlayerData extends PersistentState implements IWorldPlayerData {
     }
 
     @Override
-    public void fromTag(CompoundTag nbt) {
+    public void read(CompoundNBT nbt) {
         int[] playerIds = nbt.getIntArray(TAG_PLAYER_IDS);
         long[] profileIds = nbt.getLongArray(TAG_PROFILE_IDS);
 
@@ -106,7 +103,7 @@ final class PlayerData extends PersistentState implements IWorldPlayerData {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag compound) {
+    public CompoundNBT write(CompoundNBT compound) {
         int index = 0;
         int[] playerIds = new int[mapping.size()];
         long[] profileIds = new long[mapping.size() * 2];

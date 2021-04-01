@@ -19,14 +19,13 @@
 package appeng.client.gui.widgets;
 
 import java.time.Duration;
-
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.Rect2i;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 import appeng.client.gui.AEBaseScreen;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * Implements a vertical scrollbar using Vanilla's scrollbar handle texture from the creative tab.
@@ -36,7 +35,7 @@ import appeng.client.gui.AEBaseScreen;
  * {@link #setHeight(int)}. While the width of the track can also be set, the drawn handle will use vanilla's sprite
  * width (see {@link #HANDLE_WIDTH}.
  */
-public class Scrollbar extends DrawableHelper implements IScrollSource {
+public class Scrollbar extends AbstractGui implements IScrollSource {
 
     /**
      * Width of the scrollbar handle sprite in the source texture.
@@ -51,18 +50,18 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
     /**
      * Texture containing the scrollbar handle sprites.
      */
-    private static final Identifier TEXTURE = new Identifier("minecraft",
+    private static final ResourceLocation TEXTURE = new ResourceLocation("minecraft",
             "textures/gui/container/creative_inventory/tabs.png");
 
     /**
      * Rectangle in the source texture that contains the sprite for an enabled handle.
      */
-    private static final Rect2i ENABLED = new Rect2i(232, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
+    private static final Rectangle2d ENABLED = new Rectangle2d(232, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
 
     /**
      * Rectangle in the source texture that contains the sprite for a disabled handle.
      */
-    private static final Rect2i DISABLED = new Rect2i(232 + HANDLE_WIDTH, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
+    private static final Rectangle2d DISABLED = new Rectangle2d(232 + HANDLE_WIDTH, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
 
     /**
      * The screen x-coordinate of the scrollbar's inner track.
@@ -107,7 +106,7 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
      * The GUI is assumed to already contain a prebaked scrollbar track in its background.
      */
     public void draw(MatrixStack matrices, final AEBaseScreen<?> g) {
-        setZOffset(g.getZOffset());
+        setBlitOffset(g.getBlitOffset());
 
         // Draw the track (nice for debugging)
         // fill(matrices, displayX, displayY, this.displayX + width, this.displayY +
@@ -116,7 +115,7 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
         g.bindTexture(TEXTURE);
 
         int yOffset;
-        Rect2i sourceRect;
+        Rectangle2d sourceRect;
         if (this.getRange() == 0) {
             yOffset = 0;
             sourceRect = DISABLED;
@@ -125,7 +124,7 @@ public class Scrollbar extends DrawableHelper implements IScrollSource {
             sourceRect = ENABLED;
         }
 
-        drawTexture(matrices, this.displayX, this.displayY + yOffset, sourceRect.getX(), sourceRect.getY(),
+        blit(matrices, this.displayX, this.displayY + yOffset, sourceRect.getX(), sourceRect.getY(),
                 sourceRect.getWidth(), sourceRect.getHeight());
     }
 

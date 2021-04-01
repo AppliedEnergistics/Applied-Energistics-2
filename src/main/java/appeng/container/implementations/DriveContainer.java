@@ -20,9 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.slot.RestrictedInputSlot;
@@ -30,12 +29,12 @@ import appeng.tile.storage.DriveBlockEntity;
 
 public class DriveContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<DriveContainer> TYPE;
+    public static ContainerType<DriveContainer> TYPE;
 
     private static final ContainerHelper<DriveContainer, DriveBlockEntity> helper = new ContainerHelper<>(
             DriveContainer::new, DriveBlockEntity.class);
 
-    public static DriveContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static DriveContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

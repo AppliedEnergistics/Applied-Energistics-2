@@ -22,44 +22,41 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
-
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.util.ResourceLocation;
 import com.google.common.collect.Sets;
-
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.util.Identifier;
-
 import appeng.core.AppEng;
 
 public class ModelOverrideComponent implements IModelBakeComponent {
 
     // Maps from resource path to customizer
-    private final Map<String, BiFunction<Identifier, BakedModel, BakedModel>> customizer = new HashMap<>();
+    private final Map<String, BiFunction<ResourceLocation, IBakedModel, IBakedModel>> customizer = new HashMap<>();
 
-    public void addOverride(String resourcePath, BiFunction<Identifier, BakedModel, BakedModel> customizer) {
+    public void addOverride(String resourcePath, BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer) {
         this.customizer.put(resourcePath, customizer);
     }
 
     @Override
-    public void onModelsReloaded(final Map<Identifier, BakedModel> loadedModels) {
-        Set<Identifier> keys = Sets.newHashSet(loadedModels.keySet());
-        BakedModel missingModel = loadedModels.get(ModelLoader.MISSING);
+    public void onModelsReloaded(final Map<ResourceLocation, IBakedModel> loadedModels) {
+        Set<ResourceLocation> keys = Sets.newHashSet(loadedModels.keySet());
+        IBakedModel missingModel = loadedModels.get(ModelBakery.MODEL_MISSING);
 
-        for (Identifier location : keys) {
+        for (ResourceLocation location : keys) {
             if (!location.getNamespace().equals(AppEng.MOD_ID)) {
                 continue;
             }
 
-            BakedModel orgModel = loadedModels.get(location);
+            IBakedModel orgModel = loadedModels.get(location);
 
             // Don't customize the missing model. This causes Forge to swallow exceptions
             if (orgModel == missingModel) {
                 continue;
             }
 
-            BiFunction<Identifier, BakedModel, BakedModel> customizer = this.customizer.get(location.getPath());
+            BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer = this.customizer.get(location.getPath());
             if (customizer != null) {
-                BakedModel newModel = customizer.apply(location, orgModel);
+                IBakedModel newModel = customizer.apply(location, orgModel);
 
                 if (newModel != orgModel) {
                     loadedModels.put(location, newModel);

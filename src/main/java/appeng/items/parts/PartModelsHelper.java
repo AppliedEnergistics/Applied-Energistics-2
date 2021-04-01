@@ -7,9 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import net.minecraft.util.Identifier;
-
+import net.minecraft.util.ResourceLocation;
 import appeng.api.parts.IPartModel;
 import appeng.core.AELog;
 
@@ -18,8 +16,8 @@ import appeng.core.AELog;
  */
 public class PartModelsHelper {
 
-    public static List<Identifier> createModels(Class<?> clazz) {
-        List<Identifier> locations = new ArrayList<>();
+    public static List<ResourceLocation> createModels(Class<?> clazz) {
+        List<ResourceLocation> locations = new ArrayList<>();
 
         // Check all static fields for used models
         Field[] fields = clazz.getDeclaredFields();
@@ -68,7 +66,7 @@ public class PartModelsHelper {
 
             // Make sure we can handle the return type
             Class<?> returnType = method.getReturnType();
-            if (!Identifier.class.isAssignableFrom(returnType) && !Collection.class.isAssignableFrom(returnType)) {
+            if (!ResourceLocation.class.isAssignableFrom(returnType) && !Collection.class.isAssignableFrom(returnType)) {
                 AELog.error(
                         "The @PartModels annotation can only be used on static methods that return a ResourceLocation or Collection of "
                                 + "ResourceLocations. Was seen on: " + method);
@@ -94,13 +92,13 @@ public class PartModelsHelper {
         return locations;
     }
 
-    private static void convertAndAddLocation(Object source, Object value, List<Identifier> locations) {
+    private static void convertAndAddLocation(Object source, Object value, List<ResourceLocation> locations) {
         if (value == null) {
             return;
         }
 
-        if (value instanceof Identifier) {
-            locations.add((Identifier) value);
+        if (value instanceof ResourceLocation) {
+            locations.add((ResourceLocation) value);
         } else if (value instanceof IPartModel) {
             locations.addAll(((IPartModel) value).getModels());
         } else if (value instanceof Collection) {

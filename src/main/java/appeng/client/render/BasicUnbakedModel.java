@@ -6,33 +6,31 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.util.ResourceLocation;
 import com.mojang.datafixers.util.Pair;
-
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
 
 /**
  * An unbaked model that has standard models as a dependency and produces a custom baked model as a result.
  */
-public interface BasicUnbakedModel extends UnbakedModel {
+public interface BasicUnbakedModel extends IUnbakedModel {
 
     @Override
-    default Collection<Identifier> getModelDependencies() {
+    default Collection<ResourceLocation> getDependencies() {
         return Collections.emptyList();
     }
 
-    default Stream<SpriteIdentifier> getAdditionalTextures() {
+    default Stream<RenderMaterial> getAdditionalTextures() {
         return Stream.empty();
     }
 
     @Override
-    default Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
+    default Collection<RenderMaterial> getTextures(Function<ResourceLocation, IUnbakedModel> unbakedModelGetter,
             Set<Pair<String, String>> unresolvedTextureReferences) {
         return Stream.concat(
-                getModelDependencies().stream().map(unbakedModelGetter).flatMap(
-                        ubm -> ubm.getTextureDependencies(unbakedModelGetter, unresolvedTextureReferences).stream()),
+                getDependencies().stream().map(unbakedModelGetter).flatMap(
+                        ubm -> ubm.getTextures(unbakedModelGetter, unresolvedTextureReferences).stream()),
                 getAdditionalTextures()).collect(Collectors.toList());
     }
 

@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-
+import net.minecraft.util.text.StringTextComponent;
 import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.text.LiteralText;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -75,7 +72,7 @@ class CraftingCPUCycler {
             for (int i = 0; i < this.cpus.size(); i++) {
                 CraftingCPURecord cpu = cpus.get(i);
                 if (cpu.getName() == null) {
-                    cpu.setName(new LiteralText("#" + (i + 1)));
+                    cpu.setName(new StringTextComponent("#" + (i + 1)));
                 }
             }
 

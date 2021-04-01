@@ -24,8 +24,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.nbt.CompoundNBT;
 import appeng.api.config.FuzzyMode;
 
 final class AESharedItemStack implements Comparable<AESharedItemStack> {
@@ -37,7 +36,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
 
     public AESharedItemStack(final ItemStack itemStack) {
         this.itemStack = itemStack;
-        this.itemId = Item.getRawId(itemStack.getItem());
+        this.itemId = Item.getIdFromItem(itemStack.getItem());
         this.itemDamage = itemStack.getDamage();
         this.hashCode = this.makeHashCode();
     }
@@ -74,7 +73,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             if (this.itemStack == other.itemStack) {
                 return true;
             }
-            return ItemStack.areEqual(this.itemStack, other.itemStack);
+            return ItemStack.areItemStacksEqual(this.itemStack, other.itemStack);
         }
         return false;
     }
@@ -123,7 +122,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             Preconditions.checkState(!stack.isEmpty(), "ItemStack#isEmpty() has to be false");
             Preconditions.checkState(stack.getCount() == 1, "ItemStack#getCount() has to be 1");
 
-            final CompoundTag tag = stack.hasTag() ? stack.getTag() : null;
+            final CompoundNBT tag = stack.hasTag() ? stack.getTag() : null;
 
             this.lower = this.makeLowerBound(stack, tag, fuzzy);
             this.upper = this.makeUpperBound(stack, tag, fuzzy);
@@ -137,7 +136,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             return this.upper;
         }
 
-        private AESharedItemStack makeLowerBound(final ItemStack itemStack, final CompoundTag tag,
+        private AESharedItemStack makeLowerBound(final ItemStack itemStack, final CompoundNBT tag,
                 final FuzzyMode fuzzy) {
             final ItemStack newDef = itemStack.copy();
 
@@ -160,7 +159,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             return new AESharedItemStack(newDef);
         }
 
-        private AESharedItemStack makeUpperBound(final ItemStack itemStack, final CompoundTag tag,
+        private AESharedItemStack makeUpperBound(final ItemStack itemStack, final CompoundNBT tag,
                 final FuzzyMode fuzzy) {
             final ItemStack newDef = itemStack.copy();
 

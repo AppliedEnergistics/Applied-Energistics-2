@@ -4,12 +4,12 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.Packet;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketDirection;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import appeng.core.AELog;
@@ -28,19 +28,19 @@ public class ServerNetworkHandler implements NetworkHandler {
 
     public void sendToAll(final BasePacket message) {
         MinecraftServer server = AppEng.instance().getServer();
-        Packet<?> packet = message.toPacket(NetworkSide.CLIENTBOUND);
+        IPacket<?> packet = message.toPacket(PacketDirection.field_11942);
 
         PlayerStream.all(server).forEach(player -> registry.sendToPlayer(player, packet));
     }
 
     public void sendTo(final BasePacket message, final ServerPlayerEntity player) {
-        Packet<?> packet = message.toPacket(NetworkSide.CLIENTBOUND);
+        IPacket<?> packet = message.toPacket(PacketDirection.field_11942);
         registry.sendToPlayer(player, packet);
     }
 
     public void sendToAllAround(final BasePacket message, final TargetPoint point) {
-        Packet<?> packet = message.toPacket(NetworkSide.CLIENTBOUND);
-        PlayerStream.around(point.world, new Vec3d(point.x, point.y, point.z), point.radius).forEach(player -> {
+        IPacket<?> packet = message.toPacket(PacketDirection.field_11942);
+        PlayerStream.around(point.world, new Vector3d(point.x, point.y, point.z), point.radius).forEach(player -> {
             if (player != point.excluded) {
                 ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet);
             }
@@ -48,7 +48,7 @@ public class ServerNetworkHandler implements NetworkHandler {
     }
 
     public void sendToDimension(final BasePacket message, final World world) {
-        Packet<?> packet = message.toPacket(NetworkSide.CLIENTBOUND);
+        IPacket<?> packet = message.toPacket(PacketDirection.field_11942);
         PlayerStream.world(world).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet));
     }
 
@@ -57,7 +57,7 @@ public class ServerNetworkHandler implements NetworkHandler {
         throw new IllegalStateException("Cannot send packets to the server when we're the server!");
     }
 
-    private void handlePacketFromClient(PacketContext packetContext, PacketByteBuf payload) {
+    private void handlePacketFromClient(PacketContext packetContext, PacketBuffer payload) {
 
         // Deserialize the packet on the netwhrok th
         PlayerEntity player = packetContext.getPlayer();

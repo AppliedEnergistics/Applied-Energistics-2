@@ -20,9 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -31,12 +30,12 @@ import appeng.tile.qnb.QuantumBridgeBlockEntity;
 
 public class QNBContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<QNBContainer> TYPE;
+    public static ContainerType<QNBContainer> TYPE;
 
     private static final ContainerHelper<QNBContainer, QuantumBridgeBlockEntity> helper = new ContainerHelper<>(
             QNBContainer::new, QuantumBridgeBlockEntity.class, SecurityPermissions.BUILD);
 
-    public static QNBContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static QNBContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

@@ -12,8 +12,8 @@ import com.google.common.base.Preconditions;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.Identifier;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 import appeng.api.features.AEFeature;
@@ -36,15 +36,15 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
 
     private final FeatureFactory factory;
 
-    private final Identifier id;
+    private final ResourceLocation id;
 
     // The block entity class
     private final Class<T> tileClass;
 
-    private BlockEntityType<T> type;
+    private TileEntityType<T> type;
 
     // The factory for creating block entity objects
-    private final Function<BlockEntityType<T>, T> supplier;
+    private final Function<TileEntityType<T>, T> supplier;
 
     private TileEntityRendering<T> tileEntityRendering;
 
@@ -53,7 +53,7 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
     public BlockEntityBuilder(FeatureFactory factory, String id, Class<T> tileClass,
-            Function<BlockEntityType<T>, T> supplier) {
+            Function<TileEntityType<T>, T> supplier) {
         this.factory = factory;
         this.id = AppEng.makeId(id);
         this.tileClass = tileClass;
@@ -89,7 +89,7 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
             }
 
             Supplier<T> factory = () -> supplier.apply(type);
-            type = BlockEntityType.Builder.create(factory, blocks.toArray(new Block[0])).build(null);
+            type = TileEntityType.Builder.create(factory, blocks.toArray(new Block[0])).build(null);
 
             Registry.register(Registry.BLOCK_ENTITY_TYPE, id, type);
 

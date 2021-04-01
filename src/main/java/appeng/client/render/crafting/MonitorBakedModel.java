@@ -19,9 +19,8 @@
 package appeng.client.render.crafting;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
 import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.client.render.cablebus.CubeBuilder;
@@ -35,18 +34,18 @@ import appeng.tile.crafting.CraftingMonitorModelData;
  */
 public class MonitorBakedModel extends CraftingCubeBakedModel {
 
-    private final Sprite chassisTexture;
+    private final TextureAtlasSprite chassisTexture;
 
-    private final Sprite baseTexture;
+    private final TextureAtlasSprite baseTexture;
 
-    private final Sprite lightDarkTexture;
+    private final TextureAtlasSprite lightDarkTexture;
 
-    private final Sprite lightMediumTexture;
+    private final TextureAtlasSprite lightMediumTexture;
 
-    private final Sprite lightBrightTexture;
+    private final TextureAtlasSprite lightBrightTexture;
 
-    MonitorBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer, Sprite chassisTexture, Sprite baseTexture,
-            Sprite lightDarkTexture, Sprite lightMediumTexture, Sprite lightBrightTexture) {
+    MonitorBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer, TextureAtlasSprite chassisTexture, TextureAtlasSprite baseTexture,
+            TextureAtlasSprite lightDarkTexture, TextureAtlasSprite lightMediumTexture, TextureAtlasSprite lightBrightTexture) {
         super(ringCorner, ringHor, ringVer);
         this.chassisTexture = chassisTexture;
         this.baseTexture = baseTexture;

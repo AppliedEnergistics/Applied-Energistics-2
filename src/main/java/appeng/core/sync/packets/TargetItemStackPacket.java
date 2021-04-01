@@ -21,8 +21,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-
+import net.minecraft.network.PacketBuffer;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
@@ -32,7 +31,7 @@ import appeng.util.item.AEItemStack;
 public class TargetItemStackPacket extends BasePacket {
     private AEItemStack stack;
 
-    public TargetItemStackPacket(final PacketByteBuf stream) {
+    public TargetItemStackPacket(final PacketBuffer stream) {
         try {
             if (stream.readableBytes() > 0) {
                 this.stack = AEItemStack.fromPacket(stream);
@@ -50,7 +49,7 @@ public class TargetItemStackPacket extends BasePacket {
 
         this.stack = stack;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
         data.writeInt(this.getPacketID());
         if (stack != null) {
             try {
@@ -64,8 +63,8 @@ public class TargetItemStackPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        if (player.currentScreenHandler instanceof AEBaseContainer) {
-            ((AEBaseContainer) player.currentScreenHandler).setTargetStack(this.stack);
+        if (player.openContainer instanceof AEBaseContainer) {
+            ((AEBaseContainer) player.openContainer).setTargetStack(this.stack);
         }
     }
 }

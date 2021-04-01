@@ -25,13 +25,12 @@ import java.util.LinkedList;
 import java.util.Optional;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-
+import net.minecraft.world.IBlockReader;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -56,11 +55,11 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         implements IAEMultiBlock<CraftingCPUCluster>, IPowerChannelState {
 
     private final CraftingCPUCalculator calc = new CraftingCPUCalculator(this);
-    private CompoundTag previousState = null;
+    private CompoundNBT previousState = null;
     private boolean isCoreBlock = false;
     private CraftingCPUCluster cluster;
 
-    public CraftingBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public CraftingBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
@@ -173,8 +172,8 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         data.putBoolean("core", this.isCoreBlock());
         if (this.isCoreBlock() && this.cluster != null) {
             this.cluster.writeToNBT(data);
@@ -183,8 +182,8 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.setCoreBlock(data.getBoolean("core"));
         if (this.isCoreBlock()) {
             if (this.cluster != null) {
@@ -241,7 +240,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         // Since breaking the cluster will most likely also update the TE's state,
         // it's essential that we're not working with outdated block-state information,
         // since this particular TE's block might already have been removed (state=air)
-        resetBlock();
+        updateContainingBlockInfo();
 
         if (this.cluster != null) {
             this.cluster.cancel();
@@ -257,7 +256,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                 } else {
                     for (Direction d : Direction.values()) {
                         BlockPos p = h.pos.offset(d);
-                        if (this.world.isAir(p)) {
+                        if (this.world.isAirBlock(p)) {
                             places.add(p);
                         }
                     }
@@ -317,11 +316,11 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         this.isCoreBlock = isCoreBlock;
     }
 
-    public CompoundTag getPreviousState() {
+    public CompoundNBT getPreviousState() {
         return this.previousState;
     }
 
-    public void setPreviousState(final CompoundTag previousState) {
+    public void setPreviousState(final CompoundNBT previousState) {
         this.previousState = previousState;
     }
 
@@ -346,7 +345,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         return connections;
     }
 
-    private boolean isConnected(BlockView world, BlockPos pos, Direction side) {
+    private boolean isConnected(IBlockReader world, BlockPos pos, Direction side) {
         BlockPos adjacentPos = pos.offset(side);
         return world.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
     }

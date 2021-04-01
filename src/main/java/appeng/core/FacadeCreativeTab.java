@@ -29,7 +29,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.registry.Registry;
 
 import appeng.items.parts.FacadeItem;
@@ -72,15 +72,15 @@ public final class FacadeCreativeTab {
         FacadeItem itemFacade = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
         for (final Block b : Registry.BLOCK) {
             try {
-                final Item item = Item.fromBlock(b);
+                final Item item = Item.getItemFromBlock(b);
                 if (item == Items.AIR) {
                     continue;
                 }
 
                 Item blockItem = b.asItem();
                 if (blockItem != Items.AIR && blockItem.getGroup() != null) {
-                    final DefaultedList<ItemStack> tmpList = DefaultedList.of();
-                    b.addStacksForDisplay(blockItem.getGroup(), tmpList);
+                    final NonNullList<ItemStack> tmpList = NonNullList.create();
+                    b.fillItemGroup(blockItem.getGroup(), tmpList);
                     for (final ItemStack l : tmpList) {
                         final ItemStack facade = itemFacade.createFacadeForItem(l, false);
                         if (!facade.isEmpty()) {

@@ -19,9 +19,7 @@
 package appeng.me.cache.helpers;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.util.crash.CrashReportSection;
-
+import net.minecraft.crash.CrashReportCategory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickingRequest;
@@ -63,22 +61,22 @@ public class TickTracker implements Comparable<TickTracker> {
 
     }
 
-    public void addEntityCrashInfo(final CrashReportSection section) {
+    public void addEntityCrashInfo(final CrashReportCategory section) {
         if (this.getGridTickable() instanceof IPart) {
             final IPart part = (IPart) this.getGridTickable();
             part.addEntityCrashInfo(section);
         }
 
-        section.add("CurrentTickRate", this.getCurrentRate());
-        section.add("MinTickRate", this.getRequest().minTickRate);
-        section.add("MaxTickRate", this.getRequest().maxTickRate);
-        section.add("MachineType", this.getGridTickable().getClass().getName());
-        section.add("GridBlockType", this.getNode().getGridBlock().getClass().getName());
-        section.add("ConnectedSides", this.getNode().getConnectedSides());
+        section.addDetail("CurrentTickRate", this.getCurrentRate());
+        section.addDetail("MinTickRate", this.getRequest().minTickRate);
+        section.addDetail("MaxTickRate", this.getRequest().maxTickRate);
+        section.addDetail("MachineType", this.getGridTickable().getClass().getName());
+        section.addDetail("GridBlockType", this.getNode().getGridBlock().getClass().getName());
+        section.addDetail("ConnectedSides", this.getNode().getConnectedSides());
 
         final DimensionalCoord dc = this.getNode().getGridBlock().getLocation();
         if (dc != null) {
-            section.add("Location", dc);
+            section.addDetail("Location", dc);
         }
     }
 

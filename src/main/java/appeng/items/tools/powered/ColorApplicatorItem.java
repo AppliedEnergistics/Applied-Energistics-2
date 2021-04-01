@@ -31,26 +31,25 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.SnowballItem;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.property.Property;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.Tag;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.Property;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-
+import net.minecraft.world.server.ServerWorld;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;
@@ -85,30 +84,30 @@ import appeng.util.item.AEItemStack;
 public class ColorApplicatorItem extends AEBasePoweredItem
         implements IStorageCell<IAEItemStack>, IBlockTool, IMouseWheelItem {
 
-    private static final Map<Identifier, AEColor> TAG_TO_COLOR = ImmutableMap.<Identifier, AEColor>builder()
-            .put(new Identifier("c:black_dyes"), AEColor.BLACK).put(new Identifier("c:blue_dyes"), AEColor.BLUE)
-            .put(new Identifier("c:brown_dyes"), AEColor.BROWN).put(new Identifier("c:cyan_dyes"), AEColor.CYAN)
-            .put(new Identifier("c:gray_dyes"), AEColor.GRAY).put(new Identifier("c:green_dyes"), AEColor.GREEN)
-            .put(new Identifier("c:light_blue_dyes"), AEColor.LIGHT_BLUE)
-            .put(new Identifier("c:light_gray_dyes"), AEColor.LIGHT_GRAY)
-            .put(new Identifier("c:lime_dyes"), AEColor.LIME).put(new Identifier("c:magenta_dyes"), AEColor.MAGENTA)
-            .put(new Identifier("c:orange_dyes"), AEColor.ORANGE).put(new Identifier("c:pink_dyes"), AEColor.PINK)
-            .put(new Identifier("c:purple_dyes"), AEColor.PURPLE).put(new Identifier("c:red_dyes"), AEColor.RED)
-            .put(new Identifier("c:white_dyes"), AEColor.WHITE).put(new Identifier("c:yellow_dyes"), AEColor.YELLOW)
+    private static final Map<ResourceLocation, AEColor> TAG_TO_COLOR = ImmutableMap.<ResourceLocation, AEColor>builder()
+            .put(new ResourceLocation("c:black_dyes"), AEColor.BLACK).put(new ResourceLocation("c:blue_dyes"), AEColor.BLUE)
+            .put(new ResourceLocation("c:brown_dyes"), AEColor.BROWN).put(new ResourceLocation("c:cyan_dyes"), AEColor.CYAN)
+            .put(new ResourceLocation("c:gray_dyes"), AEColor.GRAY).put(new ResourceLocation("c:green_dyes"), AEColor.GREEN)
+            .put(new ResourceLocation("c:light_blue_dyes"), AEColor.LIGHT_BLUE)
+            .put(new ResourceLocation("c:light_gray_dyes"), AEColor.LIGHT_GRAY)
+            .put(new ResourceLocation("c:lime_dyes"), AEColor.LIME).put(new ResourceLocation("c:magenta_dyes"), AEColor.MAGENTA)
+            .put(new ResourceLocation("c:orange_dyes"), AEColor.ORANGE).put(new ResourceLocation("c:pink_dyes"), AEColor.PINK)
+            .put(new ResourceLocation("c:purple_dyes"), AEColor.PURPLE).put(new ResourceLocation("c:red_dyes"), AEColor.RED)
+            .put(new ResourceLocation("c:white_dyes"), AEColor.WHITE).put(new ResourceLocation("c:yellow_dyes"), AEColor.YELLOW)
             .build();
 
     private static final String TAG_COLOR = "color";
 
-    public ColorApplicatorItem(Item.Settings props) {
+    public ColorApplicatorItem(Item.Properties props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
+    public ActionResultType onItemUse(ItemUseContext context) {
         World w = context.getWorld();
-        BlockPos pos = context.getBlockPos();
-        ItemStack is = context.getStack();
-        Direction side = context.getSide();
+        BlockPos pos = context.getPos();
+        ItemStack is = context.getItem();
+        Direction side = context.getFace();
         PlayerEntity p = context.getPlayer(); // This can be null
         if (p == null && w instanceof ServerWorld) {
             p = FakePlayer.getOrCreate((ServerWorld) w);
@@ -132,12 +131,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             }
 
             if (p != null && !Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
-                return ActionResult.FAIL;
+                return ActionResultType.field_5814;
             }
 
             final double powerPerUse = 100;
             if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
-                final BlockEntity te = w.getBlockEntity(pos);
+                final TileEntity te = w.getTileEntity(pos);
                 // clean cables.
                 if (te instanceof IColorableTile && p != null) {
                     if (this.getAECurrentPower(is) > powerPerUse
@@ -146,20 +145,20 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                             inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                     new BaseActionSource());
                             this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                            return ActionResult.SUCCESS;
+                            return ActionResultType.field_5812;
                         }
                     }
                 }
 
                 // clean paint balls..
                 final Block testBlk = w.getBlockState(pos.offset(side)).getBlock();
-                final BlockEntity painted = w.getBlockEntity(pos.offset(side));
+                final TileEntity painted = w.getTileEntity(pos.offset(side));
                 if (this.getAECurrentPower(is) > powerPerUse && testBlk instanceof PaintSplotchesBlock
                         && painted instanceof PaintSplotchesBlockEntity) {
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                     ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
-                    return ActionResult.SUCCESS;
+                    return ActionResultType.field_5812;
                 }
             } else if (!paintBall.isEmpty()) {
                 final AEColor color = this.getColorFromItem(paintBall);
@@ -169,30 +168,30 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                         inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                 new BaseActionSource());
                         this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                        return ActionResult.SUCCESS;
+                        return ActionResultType.field_5812;
                     }
                 }
             }
         }
 
-        if (p != null && p.isInSneakingPose()) {
+        if (p != null && p.isCrouching()) {
             this.cycleColors(is, paintBall, 1);
         }
 
-        return ActionResult.FAIL;
+        return ActionResultType.field_5814;
     }
 
     @Override
-    public Text getName(final ItemStack is) {
-        Text extra = GuiText.Empty.text();
+    public ITextComponent getDisplayName(final ItemStack is) {
+        ITextComponent extra = GuiText.Empty.text();
 
         final AEColor selected = this.getActiveColor(is);
 
         if (selected != null && Platform.isClient()) {
-            extra = new TranslatableText(selected.translationKey);
+            extra = new TranslationTextComponent(selected.translationKey);
         }
 
-        return super.getName(is).copy().append(" - ").append(extra);
+        return super.getDisplayName(is).copyRaw().appendString(" - ").append(extra);
     }
 
     public AEColor getActiveColor(final ItemStack tol) {
@@ -212,8 +211,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             final PaintBallItem ipb = (PaintBallItem) paintBall.getItem();
             return ipb.getColor();
         } else {
-            for (Map.Entry<Identifier, AEColor> entry : TAG_TO_COLOR.entrySet()) {
-                Tag<Item> tag = ItemTags.getTagGroup().getTag(entry.getKey());
+            for (Map.Entry<ResourceLocation, AEColor> entry : TAG_TO_COLOR.entrySet()) {
+                ITag<Item> tag = ItemTags.getCollection().get(entry.getKey());
                 if (tag != null && paintBall.getItem().isIn(tag)) {
                     return entry.getValue();
                 }
@@ -224,10 +223,10 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     public ItemStack getColor(final ItemStack is) {
-        final CompoundTag c = is.getTag();
+        final CompoundNBT c = is.getTag();
         if (c != null && c.contains(TAG_COLOR)) {
-            final CompoundTag color = c.getCompound(TAG_COLOR);
-            final ItemStack oldColor = ItemStack.fromTag(color);
+            final CompoundNBT color = c.getCompound(TAG_COLOR);
+            final ItemStack oldColor = ItemStack.read(color);
             if (!oldColor.isEmpty()) {
                 return oldColor;
             }
@@ -296,12 +295,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     private void setColor(final ItemStack is, final ItemStack newColor) {
-        final CompoundTag data = is.getOrCreateTag();
+        final CompoundNBT data = is.getOrCreateTag();
         if (newColor.isEmpty()) {
             data.remove(TAG_COLOR);
         } else {
-            final CompoundTag color = new CompoundTag();
-            newColor.toTag(color);
+            final CompoundNBT color = new CompoundNBT();
+            newColor.write(color);
             data.put(TAG_COLOR, color);
         }
     }
@@ -324,7 +323,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return ((CableBusBlock) blk).recolorBlock(w, pos, side, newColor.dye, p);
         }
 
-        BlockEntity be = w.getBlockEntity(pos);
+        TileEntity be = w.getTileEntity(pos);
         if (be instanceof IColorableTile) {
             IColorableTile ct = (IColorableTile) be;
             AEColor c = ct.getColor();
@@ -340,7 +339,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     private static <T extends Comparable<T>> BlockState copyProp(BlockState oldState, BlockState newState,
             Property<T> prop) {
-        if (newState.contains(prop)) {
+        if (newState.hasProperty(prop)) {
             return newState.with(prop, oldState.get(prop));
         }
         return newState;
@@ -356,9 +355,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
-            final TooltipContext advancedTooltips) {
-        super.appendTooltip(stack, world, lines, advancedTooltips);
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        super.addInformation(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
@@ -445,7 +444,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public boolean canRepair(ItemStack stack, ItemStack ingredient) {
+    public boolean getIsRepairable(ItemStack stack, ItemStack ingredient) {
         return false;
     }
 

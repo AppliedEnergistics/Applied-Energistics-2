@@ -18,10 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
@@ -34,26 +32,27 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
     private SettingToggleButton<YesNo> blockMode;
     private ToggleButton interfaceMode;
 
-    public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, Text title) {
+    public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.backgroundHeight = 211;
+        this.ySize = 211;
     }
 
     @Override
     protected void addButtons() {
-        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(), this.itemRenderer,
+        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(), this.itemRenderer,
                 btn -> openPriorityGui()));
 
-        this.blockMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8, Settings.BLOCK, YesNo.NO);
+        this.blockMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO);
         this.addButton(this.blockMode);
 
-        this.interfaceMode = new ToggleButton(this.x - 18, this.y + 26, 84, 85, GuiText.InterfaceTerminal.text(),
+        this.interfaceMode = new ToggleButton(this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal.text(),
                 GuiText.InterfaceTerminalHint.text(), btn -> selectNextInterfaceMode());
         this.addButton(this.interfaceMode);
     }
@@ -68,13 +67,13 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
             this.interfaceMode.setState(((InterfaceContainer) this.cvb).getInterfaceTerminalMode() == YesNo.YES);
         }
 
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.Interface.text()), 8, 6, 4210752);
+        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.Interface.text()), 8, 6, 4210752);
 
-        this.textRenderer.draw(matrices, GuiText.Config.text(), 8, 6 + 11 + 7, 4210752);
-        this.textRenderer.draw(matrices, GuiText.StoredItems.text(), 8, 6 + 60 + 7, 4210752);
-        this.textRenderer.draw(matrices, GuiText.Patterns.text(), 8, 6 + 73 + 7, 4210752);
+        this.font.method_30883(matrices, GuiText.Config.text(), 8, 6 + 11 + 7, 4210752);
+        this.font.method_30883(matrices, GuiText.StoredItems.text(), 8, 6 + 60 + 7, 4210752);
+        this.font.method_30883(matrices, GuiText.Patterns.text(), 8, 6 + 73 + 7, 4210752);
 
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override

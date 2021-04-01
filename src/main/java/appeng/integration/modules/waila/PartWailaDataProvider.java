@@ -22,13 +22,12 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
-
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import mcp.mobius.waila.api.IComponentProvider;
@@ -54,7 +53,7 @@ import appeng.integration.modules.waila.part.Tracer;
  * @version rv2
  * @since rv2
  */
-public final class PartWailaDataProvider implements IComponentProvider, IServerDataProvider<BlockEntity> {
+public final class PartWailaDataProvider implements IComponentProvider, IServerDataProvider<TileEntity> {
     /**
      * Contains all providers
      */
@@ -85,8 +84,8 @@ public final class PartWailaDataProvider implements IComponentProvider, IServerD
 
     @Override
     public ItemStack getStack(final IDataAccessor accessor, final IPluginConfig config) {
-        final BlockEntity te = accessor.getBlockEntity();
-        final HitResult mop = accessor.getHitResult();
+        final TileEntity te = accessor.getBlockEntity();
+        final RayTraceResult mop = accessor.getHitResult();
 
         final Optional<IPart> maybePart = this.accessor.getMaybePart(te, mop);
 
@@ -105,9 +104,9 @@ public final class PartWailaDataProvider implements IComponentProvider, IServerD
     }
 
     @Override
-    public void appendHead(List<Text> currentToolTip, final IDataAccessor accessor, final IPluginConfig config) {
-        final BlockEntity te = accessor.getBlockEntity();
-        final HitResult mop = accessor.getHitResult();
+    public void appendHead(List<ITextComponent> currentToolTip, final IDataAccessor accessor, final IPluginConfig config) {
+        final TileEntity te = accessor.getBlockEntity();
+        final RayTraceResult mop = accessor.getHitResult();
 
         final Optional<IPart> maybePart = this.accessor.getMaybePart(te, mop);
 
@@ -124,9 +123,9 @@ public final class PartWailaDataProvider implements IComponentProvider, IServerD
     }
 
     @Override
-    public void appendBody(List<Text> tooltip, final IDataAccessor accessor, final IPluginConfig config) {
-        final BlockEntity te = accessor.getBlockEntity();
-        final HitResult mop = accessor.getHitResult();
+    public void appendBody(List<ITextComponent> tooltip, final IDataAccessor accessor, final IPluginConfig config) {
+        final TileEntity te = accessor.getBlockEntity();
+        final RayTraceResult mop = accessor.getHitResult();
 
         final Optional<IPart> maybePart = this.accessor.getMaybePart(te, mop);
 
@@ -140,9 +139,9 @@ public final class PartWailaDataProvider implements IComponentProvider, IServerD
     }
 
     @Override
-    public void appendTail(List<Text> tooltip, final IDataAccessor accessor, final IPluginConfig config) {
-        final BlockEntity te = accessor.getBlockEntity();
-        final HitResult mop = accessor.getHitResult();
+    public void appendTail(List<ITextComponent> tooltip, final IDataAccessor accessor, final IPluginConfig config) {
+        final TileEntity te = accessor.getBlockEntity();
+        final RayTraceResult mop = accessor.getHitResult();
 
         final Optional<IPart> maybePart = this.accessor.getMaybePart(te, mop);
 
@@ -156,8 +155,8 @@ public final class PartWailaDataProvider implements IComponentProvider, IServerD
     }
 
     @Override
-    public void appendServerData(CompoundTag tag, ServerPlayerEntity player, World world, BlockEntity te) {
-        final HitResult mop = this.tracer.retraceBlock(world, player, te.getPos());
+    public void appendServerData(CompoundNBT tag, ServerPlayerEntity player, World world, TileEntity te) {
+        final RayTraceResult mop = this.tracer.retraceBlock(world, player, te.getPos());
 
         if (mop != null) {
             final Optional<IPart> maybePart = this.accessor.getMaybePart(te, mop);

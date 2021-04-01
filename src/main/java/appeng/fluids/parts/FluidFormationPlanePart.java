@@ -9,17 +9,17 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.block.FluidFillable;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Simulation;
@@ -110,7 +110,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
             return input;
         }
 
-        final BlockEntity te = this.getHost().getTile();
+        final TileEntity te = this.getHost().getTile();
         final World w = te.getWorld();
         final AEPartLocation side = this.getSide();
         final BlockPos pos = te.getPos().offset(side.getFacing());
@@ -140,22 +140,22 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         }
     }
 
-    protected boolean isBlocking(BlockView w, BlockPos pos) {
+    protected boolean isBlocking(IBlockReader w, BlockPos pos) {
         // Mirror the restrictions from the fill method
         BlockState state = w.getBlockState(pos);
         Block block = state.getBlock();
-        return !state.isAir() && !(block instanceof FluidFillable) && !(block instanceof FluidBlock);
+        return !state.isAir() && !(block instanceof ILiquidContainer) && !(block instanceof FlowingFluidBlock);
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.config.readFromNBT(data, "config");
         this.updateHandler();
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         this.config.writeToNBT(data, "config");
     }
@@ -172,7 +172,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (Platform.isServer()) {
             ContainerOpener.openContainer(FluidFormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
         }
@@ -217,7 +217,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType() {
+    public ContainerType<?> getContainerType() {
         return FluidFormationPlaneContainer.TYPE;
     }
 }

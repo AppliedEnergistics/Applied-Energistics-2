@@ -21,8 +21,8 @@ package appeng.container.slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -57,7 +57,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
      */
     @Override
-    public boolean canInsert(final ItemStack stack) {
+    public boolean isItemValid(final ItemStack stack) {
         return false;
     }
 
@@ -66,34 +66,34 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * internal count then calls onCrafted(item).
      */
     @Override
-    protected void onCrafted(final ItemStack par1ItemStack, final int par2) {
+    protected void onCrafting(final ItemStack par1ItemStack, final int par2) {
         this.amountCrafted += par2;
-        this.onCrafted(par1ItemStack);
+        this.onCrafting(par1ItemStack);
     }
 
     /**
      * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
      */
     @Override
-    protected void onCrafted(final ItemStack par1ItemStack) {
-        par1ItemStack.onCraft(this.thePlayer.world, this.thePlayer, this.amountCrafted);
+    protected void onCrafting(final ItemStack par1ItemStack) {
+        par1ItemStack.onCrafting(this.thePlayer.world, this.thePlayer, this.amountCrafted);
         this.amountCrafted = 0;
     }
 
     @Override
-    public ItemStack onTakeItem(final PlayerEntity playerIn, final ItemStack stack) {
+    public ItemStack onTake(final PlayerEntity playerIn, final ItemStack stack) {
         // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent(playerIn, stack, new
         // WrapperInvItemHandler(this.craftMatrix));
-        this.onCrafted(stack);
+        this.onCrafting(stack);
         // FIXME FABRIC:
         // net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
         final CraftingInventory ic = new CraftingInventory(this.getContainer(), 3, 3);
 
         for (int x = 0; x < this.craftMatrix.getSlotCount(); x++) {
-            ic.setStack(x, this.craftMatrix.getInvStack(x));
+            ic.setInventorySlotContents(x, this.craftMatrix.getInvStack(x));
         }
 
-        final DefaultedList<ItemStack> remainingItems = getRemainingItems(ic, playerIn.world);
+        final NonNullList<ItemStack> remainingItems = getRemainingItems(ic, playerIn.world);
 
         ItemHandlerUtil.copy(ic, this.craftMatrix, false);
 
@@ -110,7 +110,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
             if (!itemstack2.isEmpty()) {
                 if (this.craftMatrix.getInvStack(i).isEmpty()) {
                     ItemHandlerUtil.setStackInSlot(this.craftMatrix, i, itemstack2);
-                } else if (!this.thePlayer.inventory.insertStack(itemstack2)) {
+                } else if (!this.thePlayer.inventory.addItemStackToInventory(itemstack2)) {
                     this.thePlayer.dropItem(itemstack2, false);
                 }
             }
@@ -124,17 +124,17 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * stack.
      */
     @Override
-    public ItemStack takeStack(final int par1) {
-        if (this.hasStack()) {
+    public ItemStack decrStackSize(final int par1) {
+        if (this.getHasStack()) {
             this.amountCrafted += Math.min(par1, this.getStack().getCount());
         }
 
-        return super.takeStack(par1);
+        return super.decrStackSize(par1);
     }
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
-    protected DefaultedList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
-        return world.getRecipeManager().getRemainingStacks(RecipeType.CRAFTING, ic, world);
+    protected NonNullList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
+        return world.getRecipeManager().getRecipeNonNull(IRecipeType.CRAFTING, ic, world);
     }
 }

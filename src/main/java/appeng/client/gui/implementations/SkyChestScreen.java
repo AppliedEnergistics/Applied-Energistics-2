@@ -18,36 +18,35 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import appeng.client.gui.AEBaseScreen;
 import appeng.container.implementations.SkyChestContainer;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class SkyChestScreen extends AEBaseScreen<SkyChestContainer> {
 
-    private static final Identifier TEXTURE = new Identifier(AppEng.MOD_ID, "textures/guis/skychest.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(AppEng.MOD_ID, "textures/guis/skychest.png");
 
-    public SkyChestScreen(SkyChestContainer container, PlayerInventory playerInv, Text title) {
+    public SkyChestScreen(SkyChestContainer container, PlayerInventory playerInv, ITextComponent title) {
         super(container, playerInv, title);
-        this.backgroundHeight = 195;
+        this.ySize = 195;
     }
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.SkyChest.text()), 8, 8, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 2, 4210752);
+        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.SkyChest.text()), 8, 8, 4210752);
+        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 2, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
         bindTexture(TEXTURE);
-        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 
     @Override

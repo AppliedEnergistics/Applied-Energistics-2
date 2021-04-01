@@ -28,22 +28,21 @@ import javax.annotation.Nullable;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.world.BlockRenderView;
-
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.IBlockDisplayReader;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
 
@@ -51,26 +50,26 @@ import appeng.hooks.CompassResult;
  * This baked model combines the quads of a compass base and the quads of a compass pointer, which will be rotated
  * around the Y-axis to get the compass to point in the right direction.
  */
-public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
+public class SkyCompassBakedModel implements IBakedModel, FabricBakedModel {
 
     // Rotation is expressed as radians
 
-    private final BakedModel base;
+    private final IBakedModel base;
 
-    private final BakedModel pointer;
+    private final IBakedModel pointer;
 
     private float fallbackRotation = 0;
 
-    public SkyCompassBakedModel(BakedModel base, BakedModel pointer) {
+    public SkyCompassBakedModel(IBakedModel base, IBakedModel pointer) {
         this.base = base;
         this.pointer = pointer;
     }
 
-    public BakedModel getBase() {
+    public IBakedModel getBase() {
         return base;
     }
 
-    public BakedModel getPointer() {
+    public IBakedModel getPointer() {
         return pointer;
     }
 
@@ -80,7 +79,7 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
         // Pre-compute the quad count to avoid list resizes
         context.fallbackConsumer().accept(this.base);
@@ -99,7 +98,7 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
             for (int i = 0; i < 4; i++) {
                 quad.copyPos(i, pos);
                 pos.add(-0.5f, -0.5f, -0.5f);
-                pos.rotate(quaternion);
+                pos.transform(quaternion);
                 pos.add(0.5f, 0.5f, 0.5f);
                 quad.pos(i, pos);
             }
@@ -116,12 +115,12 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
-        return this.base.useAmbientOcclusion();
+    public boolean isAmbientOcclusion() {
+        return this.base.isAmbientOcclusion();
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return true;
     }
 
@@ -131,39 +130,39 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getSprite() {
-        return this.base.getSprite();
+    public TextureAtlasSprite getParticleTexture() {
+        return this.base.getParticleTexture();
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return this.base.getTransformation();
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return this.base.getItemCameraTransforms();
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
+    public ItemOverrideList getOverrides() {
         /*
          * This handles setting the rotation of the compass when being held in hand. If it's not held in hand, it'll
          * animate using the spinning animation.
          */
-        return new ModelOverrideList(null, null, null, Collections.emptyList()) {
+        return new ItemOverrideList(null, null, null, Collections.emptyList()) {
             @Override
-            public BakedModel apply(BakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
+            public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
                     @Nullable LivingEntity entity) {
                 // FIXME: This check prevents compasses being held by OTHERS from getting the
                 // rotation, BUT do we actually still need this???
                 if (world != null && entity instanceof ClientPlayerEntity) {
                     PlayerEntity player = (PlayerEntity) entity;
 
-                    float offRads = (float) (player.yaw / 180.0f * (float) Math.PI + Math.PI);
+                    float offRads = (float) (player.rotationYaw / 180.0f * (float) Math.PI + Math.PI);
 
                     SkyCompassBakedModel.this.fallbackRotation = offRads
-                            + getAnimatedRotation(player.getBlockPos(), true);
+                            + getAnimatedRotation(player.getPosition(), true);
                 } else {
                     SkyCompassBakedModel.this.fallbackRotation = getAnimatedRotation(null, false);
                 }

@@ -6,15 +6,15 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidDrainable;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tag.Tag;
+import net.minecraft.tags.ITag;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
@@ -55,7 +55,7 @@ import appeng.util.Platform;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
-    public static final Tag.Identified<Fluid> TAG_BLACKLIST = FluidTagsAccessor
+    public static final ITag.INamedTag<Fluid> TAG_BLACKLIST = FluidTagsAccessor
             .register(AppEng.makeId("blacklisted/fluid_annihilation_plane").toString());
 
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
@@ -84,7 +84,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     @Override
-    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.refresh();
         } else {
@@ -124,12 +124,12 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
             return TickRateModulation.SLEEP;
         }
 
-        final BlockEntity te = this.getTile();
+        final TileEntity te = this.getTile();
         final World w = te.getWorld();
         final BlockPos pos = te.getPos().offset(this.getSide().getFacing());
 
         BlockState blockstate = w.getBlockState(pos);
-        if (blockstate.getBlock() instanceof FluidDrainable) {
+        if (blockstate.getBlock() instanceof IBucketPickupHandler) {
             FluidState fluidState = blockstate.getFluidState();
 
             Fluid fluid = fluidState.getFluid();
@@ -137,7 +137,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                 return TickRateModulation.SLEEP;
             }
 
-            if (fluid != Fluids.EMPTY && fluidState.isStill()) {
+            if (fluid != Fluids.EMPTY && fluidState.isSource()) {
                 // Attempt to store the fluid in the network
                 final IAEFluidStack blockFluid = AEFluidStack
                         .fromFluidVolume(FluidKeys.get(fluid).withAmount(FluidAmount.ONE), RoundingMode.DOWN);
@@ -146,7 +146,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
-                    fluid = ((FluidDrainable) blockstate.getBlock()).tryDrainFluid(w, pos, blockstate);
+                    fluid = ((IBucketPickupHandler) blockstate.getBlock()).pickupFluid(w, pos, blockstate);
                     this.storeFluid(AEFluidStack.fromFluidVolume(FluidKeys.get(fluid).withAmount(FluidAmount.ONE),
                             RoundingMode.DOWN), true);
 

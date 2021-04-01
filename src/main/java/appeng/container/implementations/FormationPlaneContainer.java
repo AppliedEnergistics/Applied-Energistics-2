@@ -20,9 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FuzzyMode;
@@ -39,12 +38,12 @@ import appeng.parts.automation.FormationPlanePart;
 
 public class FormationPlaneContainer extends UpgradeableContainer {
 
-    public static ScreenHandlerType<FormationPlaneContainer> TYPE;
+    public static ContainerType<FormationPlaneContainer> TYPE;
 
     private static final ContainerHelper<FormationPlaneContainer, FormationPlanePart> helper = new ContainerHelper<>(
             FormationPlaneContainer::new, FormationPlanePart.class, SecurityPermissions.BUILD);
 
-    public static FormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static FormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -104,7 +103,7 @@ public class FormationPlaneContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {

@@ -5,10 +5,10 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.definitions.IComparableDefinition;
@@ -24,7 +24,7 @@ import appeng.recipes.handlers.InscriberRecipe;
  */
 public final class InscriberRecipes {
 
-    public static final Identifier NAMEPLATE_RECIPE_ID = new Identifier(AppEng.MOD_ID, "nameplate");
+    public static final ResourceLocation NAMEPLATE_RECIPE_ID = new ResourceLocation(AppEng.MOD_ID, "nameplate");
 
     private InscriberRecipes() {
     }
@@ -33,7 +33,7 @@ public final class InscriberRecipes {
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
     public static Iterable<InscriberRecipe> getRecipes(World world) {
-        return world.getRecipeManager().listAllOfType(InscriberRecipe.TYPE);
+        return world.getRecipeManager().getRecipesForType(InscriberRecipe.TYPE);
     }
 
     @Nullable
@@ -70,29 +70,29 @@ public final class InscriberRecipes {
         String name = "";
 
         if (!plateA.isEmpty()) {
-            final CompoundTag tag = plateA.getOrCreateTag();
+            final CompoundNBT tag = plateA.getOrCreateTag();
             name += tag.getString(MaterialItem.TAG_INSCRIBE_NAME);
         }
 
         if (!plateB.isEmpty()) {
-            final CompoundTag tag = plateB.getOrCreateTag();
+            final CompoundNBT tag = plateB.getOrCreateTag();
             name += " " + tag.getString(MaterialItem.TAG_INSCRIBE_NAME);
         }
 
-        final Ingredient startingItem = Ingredient.ofStacks(Stream.of(input.copy()));
+        final Ingredient startingItem = Ingredient.fromStacks(Stream.of(input.copy()));
         final ItemStack renamedItem = input.copy();
 
         if (!name.isEmpty()) {
-            renamedItem.setCustomName(new LiteralText(name));
+            renamedItem.setDisplayName(new StringTextComponent(name));
         } else {
-            renamedItem.setCustomName(null);
+            renamedItem.setDisplayName(null);
         }
 
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
         return new InscriberRecipe(NAMEPLATE_RECIPE_ID, "", startingItem, renamedItem,
-                plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.ofStacks(Stream.of(plateA)),
-                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.ofStacks(Stream.of(plateB)), type);
+                plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.fromStacks(Stream.of(plateA)),
+                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.fromStacks(Stream.of(plateB)), type);
     }
 
     /**

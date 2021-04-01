@@ -22,15 +22,15 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
@@ -66,17 +66,17 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
             return;
         }
 
-        if (world.isClient && this.delay > 30 && AEConfig.instance().isEnableEffects()) {
-            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING, this.getX(),
-                    this.getY() + 0.3f, this.getZ(), 0.0f, 0.0f, 0.0f);
+        if (world.isRemote && this.delay > 30 && AEConfig.instance().isEnableEffects()) {
+            Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, this.getPosX(),
+                    this.getPosY() + 0.3f, this.getPosZ(), 0.0f, 0.0f, 0.0f);
             this.delay = 0;
         }
 
         this.delay++;
 
-        final int j = MathHelper.floor(this.getX());
+        final int j = MathHelper.floor(this.getPosX());
         final int i = MathHelper.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
-        final int k = MathHelper.floor(this.getZ());
+        final int k = MathHelper.floor(this.getPosZ());
 
         BlockState state = this.world.getBlockState(new BlockPos(j, i, k));
         final Material mat = state.getMaterial();
@@ -94,12 +94,12 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     }
 
     private boolean transform() {
-        final ItemStack item = this.getStack();
+        final ItemStack item = this.getItem();
         final IMaterials materials = Api.instance().definitions().materials();
 
         if (materials.certusQuartzCrystalCharged().isSameAs(item)) {
-            final Box region = new Box(this.getX() - 1, this.getY() - 1, this.getZ() - 1, this.getX() + 1,
-                    this.getY() + 1, this.getZ() + 1);
+            final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 1, this.getPosY() - 1, this.getPosZ() - 1, this.getPosX() + 1,
+                    this.getPosY() + 1, this.getPosZ() + 1);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             ItemEntity redstone = null;
@@ -107,13 +107,13 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
             for (final Entity e : l) {
                 if (e instanceof ItemEntity && !e.removed) {
-                    final ItemStack other = ((ItemEntity) e).getStack();
+                    final ItemStack other = ((ItemEntity) e).getItem();
                     if (!other.isEmpty()) {
-                        if (ItemStack.areItemsEqual(other, new ItemStack(Items.REDSTONE))) {
+                        if (ItemStack.areItemsEqualIgnoreDurability(other, new ItemStack(Items.REDSTONE))) {
                             redstone = (ItemEntity) e;
                         }
 
-                        if (ItemStack.areItemsEqual(other, new ItemStack(Items.QUARTZ))) {
+                        if (ItemStack.areItemsEqualIgnoreDurability(other, new ItemStack(Items.QUARTZ))) {
                             netherQuartz = (ItemEntity) e;
                         }
                     }
@@ -121,19 +121,19 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
             }
 
             if (redstone != null && netherQuartz != null) {
-                this.getStack().increment(-1);
-                redstone.getStack().increment(-1);
-                netherQuartz.getStack().increment(-1);
+                this.getItem().grow(-1);
+                redstone.getItem().grow(-1);
+                netherQuartz.getItem().grow(-1);
 
-                if (this.getStack().getCount() <= 0) {
+                if (this.getItem().getCount() <= 0) {
                     this.remove();
                 }
 
-                if (redstone.getStack().getCount() <= 0) {
+                if (redstone.getItem().getCount() <= 0) {
                     redstone.remove();
                 }
 
-                if (netherQuartz.getStack().getCount() <= 0) {
+                if (netherQuartz.getItem().getCount() <= 0) {
                     netherQuartz.remove();
                 }
 

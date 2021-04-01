@@ -20,29 +20,28 @@ package appeng.client.render.crafting;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.Direction;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.TesrRenderHelper;
 import appeng.tile.crafting.CraftingMonitorBlockEntity;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * Renders the item currently being crafted
  */
 @Environment(EnvType.CLIENT)
-public class CraftingMonitorTESR extends BlockEntityRenderer<CraftingMonitorBlockEntity> {
+public class CraftingMonitorTESR extends TileEntityRenderer<CraftingMonitorBlockEntity> {
 
-    public CraftingMonitorTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
+    public CraftingMonitorTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
     public void render(CraftingMonitorBlockEntity te, float partialTicks, MatrixStack matrixStack,
-            VertexConsumerProvider buffers, int combinedLight, int combinedOverlay) {
+            IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
 
         Direction facing = te.getForward();
 

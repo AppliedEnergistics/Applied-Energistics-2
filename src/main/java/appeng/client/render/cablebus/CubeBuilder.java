@@ -26,10 +26,10 @@ import com.google.common.base.Preconditions;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.Vector4f;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Vector4f;
 
 /**
  * Builds the quads for a cube.
@@ -37,7 +37,7 @@ import net.minecraft.util.math.Direction;
 @Environment(EnvType.CLIENT)
 public class CubeBuilder {
 
-    private final EnumMap<Direction, Sprite> textures = new EnumMap<>(Direction.class);
+    private final EnumMap<Direction, TextureAtlasSprite> textures = new EnumMap<>(Direction.class);
 
     private EnumSet<Direction> drawFaces = EnumSet.allOf(Direction.class);
 
@@ -85,7 +85,7 @@ public class CubeBuilder {
 
     private void putFace(Direction face, float x1, float y1, float z1, float x2, float y2, float z2) {
 
-        Sprite texture = this.textures.get(face);
+        TextureAtlasSprite texture = this.textures.get(face);
 
         QuadEmitter emitter = this.emitter;
         emitter.colorIndex(-1).nominalFace(face);
@@ -95,10 +95,10 @@ public class CubeBuilder {
         // The user might have set specific UV coordinates for this face
         Vector4f customUv = this.customUv.get(face);
         if (customUv != null) {
-            uv.u1 = texture.getFrameU(customUv.getX());
-            uv.v1 = texture.getFrameV(customUv.getY());
-            uv.u2 = texture.getFrameU(customUv.getZ());
-            uv.v2 = texture.getFrameV(customUv.getW());
+            uv.u1 = texture.getInterpolatedU(customUv.getX());
+            uv.v1 = texture.getInterpolatedV(customUv.getY());
+            uv.u2 = texture.getInterpolatedU(customUv.getZ());
+            uv.v2 = texture.getInterpolatedV(customUv.getW());
         } else if (this.useStandardUV) {
             uv = this.getStandardUv(face, texture, x1, y1, z1, x2, y2, z2);
         } else {
@@ -106,37 +106,37 @@ public class CubeBuilder {
         }
 
         switch (face) {
-            case DOWN:
+            case field_11033:
                 this.putVertexTR(face, x2, y1, z1, uv);
                 this.putVertexBR(face, x2, y1, z2, uv);
                 this.putVertexBL(face, x1, y1, z2, uv);
                 this.putVertexTL(face, x1, y1, z1, uv);
                 break;
-            case UP:
+            case field_11036:
                 this.putVertexTL(face, x1, y2, z1, uv);
                 this.putVertexBL(face, x1, y2, z2, uv);
                 this.putVertexBR(face, x2, y2, z2, uv);
                 this.putVertexTR(face, x2, y2, z1, uv);
                 break;
-            case NORTH:
+            case field_11043:
                 this.putVertexBR(face, x2, y2, z1, uv);
                 this.putVertexTR(face, x2, y1, z1, uv);
                 this.putVertexTL(face, x1, y1, z1, uv);
                 this.putVertexBL(face, x1, y2, z1, uv);
                 break;
-            case SOUTH:
+            case field_11035:
                 this.putVertexBL(face, x1, y2, z2, uv);
                 this.putVertexTL(face, x1, y1, z2, uv);
                 this.putVertexTR(face, x2, y1, z2, uv);
                 this.putVertexBR(face, x2, y2, z2, uv);
                 break;
-            case WEST:
+            case field_11039:
                 this.putVertexTL(face, x1, y1, z1, uv);
                 this.putVertexTR(face, x1, y1, z2, uv);
                 this.putVertexBR(face, x1, y2, z2, uv);
                 this.putVertexBL(face, x1, y2, z1, uv);
                 break;
-            case EAST:
+            case field_11034:
                 this.putVertexBR(face, x2, y2, z1, uv);
                 this.putVertexBL(face, x2, y2, z2, uv);
                 this.putVertexTL(face, x2, y1, z2, uv);
@@ -147,7 +147,7 @@ public class CubeBuilder {
         if (emissiveMaterial) {
             // Force Brightness to 15, this is for full bright mode
             // this vertex element will only be present in that case
-            int lightmap = LightmapTextureManager.pack(15, 15);
+            int lightmap = LightTexture.packLight(15, 15);
             emitter.lightmap(lightmap, lightmap, lightmap, lightmap);
         }
 
@@ -155,92 +155,92 @@ public class CubeBuilder {
         this.vertexIndex = 0;
     }
 
-    private UvVector getDefaultUv(Direction face, Sprite texture, float x1, float y1, float z1, float x2, float y2,
+    private UvVector getDefaultUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2,
             float z2) {
 
         UvVector uv = new UvVector();
 
         switch (face) {
-            case DOWN:
-                uv.u1 = texture.getFrameU(x1 * 16);
-                uv.v1 = texture.getFrameV(z1 * 16);
-                uv.u2 = texture.getFrameU(x2 * 16);
-                uv.v2 = texture.getFrameV(z2 * 16);
+            case field_11033:
+                uv.u1 = texture.getInterpolatedU(x1 * 16);
+                uv.v1 = texture.getInterpolatedV(z1 * 16);
+                uv.u2 = texture.getInterpolatedU(x2 * 16);
+                uv.v2 = texture.getInterpolatedV(z2 * 16);
                 break;
-            case UP:
-                uv.u1 = texture.getFrameU(x1 * 16);
-                uv.v1 = texture.getFrameV(z1 * 16);
-                uv.u2 = texture.getFrameU(x2 * 16);
-                uv.v2 = texture.getFrameV(z2 * 16);
+            case field_11036:
+                uv.u1 = texture.getInterpolatedU(x1 * 16);
+                uv.v1 = texture.getInterpolatedV(z1 * 16);
+                uv.u2 = texture.getInterpolatedU(x2 * 16);
+                uv.v2 = texture.getInterpolatedV(z2 * 16);
                 break;
-            case NORTH:
-                uv.u1 = texture.getFrameU(x1 * 16);
-                uv.v1 = texture.getFrameV(16 - y1 * 16);
-                uv.u2 = texture.getFrameU(x2 * 16);
-                uv.v2 = texture.getFrameV(16 - y2 * 16);
+            case field_11043:
+                uv.u1 = texture.getInterpolatedU(x1 * 16);
+                uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
+                uv.u2 = texture.getInterpolatedU(x2 * 16);
+                uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case SOUTH:
-                uv.u1 = texture.getFrameU(x1 * 16);
-                uv.v1 = texture.getFrameV(16 - y1 * 16);
-                uv.u2 = texture.getFrameU(x2 * 16);
-                uv.v2 = texture.getFrameV(16 - y2 * 16);
+            case field_11035:
+                uv.u1 = texture.getInterpolatedU(x1 * 16);
+                uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
+                uv.u2 = texture.getInterpolatedU(x2 * 16);
+                uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case WEST:
-                uv.u1 = texture.getFrameU(z1 * 16);
-                uv.v1 = texture.getFrameV(16 - y1 * 16);
-                uv.u2 = texture.getFrameU(z2 * 16);
-                uv.v2 = texture.getFrameV(16 - y2 * 16);
+            case field_11039:
+                uv.u1 = texture.getInterpolatedU(z1 * 16);
+                uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
+                uv.u2 = texture.getInterpolatedU(z2 * 16);
+                uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case EAST:
-                uv.u1 = texture.getFrameU(z2 * 16);
-                uv.v1 = texture.getFrameV(16 - y1 * 16);
-                uv.u2 = texture.getFrameU(z1 * 16);
-                uv.v2 = texture.getFrameV(16 - y2 * 16);
+            case field_11034:
+                uv.u1 = texture.getInterpolatedU(z2 * 16);
+                uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
+                uv.u2 = texture.getInterpolatedU(z1 * 16);
+                uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
         }
 
         return uv;
     }
 
-    private UvVector getStandardUv(Direction face, Sprite texture, float x1, float y1, float z1, float x2, float y2,
+    private UvVector getStandardUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2,
             float z2) {
         UvVector uv = new UvVector();
         switch (face) {
-            case DOWN:
-                uv.u1 = texture.getFrameU(x1 * 16);
-                uv.v1 = texture.getFrameV(16 - z1 * 16);
-                uv.u2 = texture.getFrameU(x2 * 16);
-                uv.v2 = texture.getFrameV(16 - z2 * 16);
+            case field_11033:
+                uv.u1 = texture.getInterpolatedU(x1 * 16);
+                uv.v1 = texture.getInterpolatedV(16 - z1 * 16);
+                uv.u2 = texture.getInterpolatedU(x2 * 16);
+                uv.v2 = texture.getInterpolatedV(16 - z2 * 16);
                 break;
-            case UP:
-                uv.u1 = texture.getFrameU(x1 * 16);
-                uv.v1 = texture.getFrameV(z1 * 16);
-                uv.u2 = texture.getFrameU(x2 * 16);
-                uv.v2 = texture.getFrameV(z2 * 16);
+            case field_11036:
+                uv.u1 = texture.getInterpolatedU(x1 * 16);
+                uv.v1 = texture.getInterpolatedV(z1 * 16);
+                uv.u2 = texture.getInterpolatedU(x2 * 16);
+                uv.v2 = texture.getInterpolatedV(z2 * 16);
                 break;
-            case NORTH:
-                uv.u1 = texture.getFrameU(16 - x1 * 16);
-                uv.v1 = texture.getFrameV(16 - y1 * 16);
-                uv.u2 = texture.getFrameU(16 - x2 * 16);
-                uv.v2 = texture.getFrameV(16 - y2 * 16);
+            case field_11043:
+                uv.u1 = texture.getInterpolatedU(16 - x1 * 16);
+                uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
+                uv.u2 = texture.getInterpolatedU(16 - x2 * 16);
+                uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case SOUTH:
-                uv.u1 = texture.getFrameU(x1 * 16);
-                uv.v1 = texture.getFrameV(16 - y1 * 16);
-                uv.u2 = texture.getFrameU(x2 * 16);
-                uv.v2 = texture.getFrameV(16 - y2 * 16);
+            case field_11035:
+                uv.u1 = texture.getInterpolatedU(x1 * 16);
+                uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
+                uv.u2 = texture.getInterpolatedU(x2 * 16);
+                uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case WEST:
-                uv.u1 = texture.getFrameU(z1 * 16);
-                uv.v1 = texture.getFrameV(16 - y1 * 16);
-                uv.u2 = texture.getFrameU(z2 * 16);
-                uv.v2 = texture.getFrameV(16 - y2 * 16);
+            case field_11039:
+                uv.u1 = texture.getInterpolatedU(z1 * 16);
+                uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
+                uv.u2 = texture.getInterpolatedU(z2 * 16);
+                uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
-            case EAST:
-                uv.u1 = texture.getFrameU(16 - z2 * 16);
-                uv.v1 = texture.getFrameV(16 - y1 * 16);
-                uv.u2 = texture.getFrameU(16 - z1 * 16);
-                uv.v2 = texture.getFrameV(16 - y2 * 16);
+            case field_11034:
+                uv.u1 = texture.getInterpolatedU(16 - z2 * 16);
+                uv.v1 = texture.getInterpolatedV(16 - y1 * 16);
+                uv.u2 = texture.getInterpolatedU(16 - z1 * 16);
+                uv.v2 = texture.getInterpolatedV(16 - y2 * 16);
                 break;
         }
         return uv;
@@ -360,7 +360,7 @@ public class CubeBuilder {
     private void putVertex(Direction face, float x, float y, float z, float u, float v) {
 
         emitter.pos(vertexIndex, x, y, z);
-        emitter.normal(vertexIndex, face.getOffsetX(), face.getOffsetY(), face.getOffsetZ());
+        emitter.normal(vertexIndex, face.getXOffset(), face.getYOffset(), face.getZOffset());
 
         // Color format is RGBA
         emitter.spriteColor(vertexIndex, 0, this.color);
@@ -370,22 +370,22 @@ public class CubeBuilder {
         vertexIndex++;
     }
 
-    public void setTexture(Sprite texture) {
+    public void setTexture(TextureAtlasSprite texture) {
         for (Direction face : Direction.values()) {
             this.textures.put(face, texture);
         }
     }
 
-    public void setTextures(Sprite up, Sprite down, Sprite north, Sprite south, Sprite east, Sprite west) {
-        this.textures.put(Direction.UP, up);
-        this.textures.put(Direction.DOWN, down);
-        this.textures.put(Direction.NORTH, north);
-        this.textures.put(Direction.SOUTH, south);
-        this.textures.put(Direction.EAST, east);
-        this.textures.put(Direction.WEST, west);
+    public void setTextures(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west) {
+        this.textures.put(Direction.field_11036, up);
+        this.textures.put(Direction.field_11033, down);
+        this.textures.put(Direction.field_11043, north);
+        this.textures.put(Direction.field_11035, south);
+        this.textures.put(Direction.field_11034, east);
+        this.textures.put(Direction.field_11039, west);
     }
 
-    public void setTexture(Direction facing, Sprite sprite) {
+    public void setTexture(Direction facing, TextureAtlasSprite sprite) {
         this.textures.put(facing, sprite);
     }
 

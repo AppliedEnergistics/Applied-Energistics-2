@@ -22,18 +22,17 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.helpers.AEMaterials;
@@ -43,7 +42,7 @@ public abstract class AEBaseBlock extends Block {
 
     private boolean isInventory = false;
 
-    protected AEBaseBlock(final Settings props) {
+    protected AEBaseBlock(final Properties props) {
         super(props);
     }
 
@@ -58,38 +57,38 @@ public abstract class AEBaseBlock extends Block {
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
     public static FabricBlockSettings defaultProps(Material material, MaterialColor color) {
-        return FabricBlockSettings.of(material, color)
+        return FabricBlockSettings.create(material, color)
                 // These values previousls were encoded in AEBaseBlock
-                .strength(2.2f, 11.f).breakByTool(FabricToolTags.PICKAXES, 0)
-                .sounds(getDefaultSoundByMaterial(material));
+                .hardnessAndResistance(2.2f, 11.f).breakByTool(FabricToolTags.PICKAXES, 0)
+                .sound(getDefaultSoundByMaterial(material));
     }
 
-    private static BlockSoundGroup getDefaultSoundByMaterial(Material mat) {
+    private static SoundType getDefaultSoundByMaterial(Material mat) {
         if (mat == AEMaterials.GLASS || mat == Material.GLASS) {
-            return BlockSoundGroup.GLASS;
-        } else if (mat == Material.STONE) {
-            return BlockSoundGroup.STONE;
+            return SoundType.GLASS;
+        } else if (mat == Material.ROCK) {
+            return SoundType.STONE;
         } else if (mat == Material.WOOD) {
-            return BlockSoundGroup.WOOD;
+            return SoundType.WOOD;
         } else {
-            return BlockSoundGroup.METAL;
+            return SoundType.METAL;
         }
     }
 
     @Override
-    public boolean hasComparatorOutput(BlockState state) {
+    public boolean hasComparatorInputOverride(BlockState state) {
         return this.isInventory();
     }
 
     @Override
-    public int getComparatorOutput(BlockState state, final World worldIn, final BlockPos pos) {
+    public int getComparatorInputOverride(BlockState state, final World worldIn, final BlockPos pos) {
         return 0;
     }
 
     /**
      * Rotates around the given Axis (usually the current up axis).
      */
-    public boolean rotateAroundFaceAxis(WorldAccess w, BlockPos pos, Direction face) {
+    public boolean rotateAroundFaceAxis(IWorld w, BlockPos pos, Direction face) {
         final IOrientable rotatable = this.getOrientable(w, pos);
 
         if (rotatable != null && rotatable.canBeRotated()) {
@@ -130,13 +129,13 @@ public abstract class AEBaseBlock extends Block {
             return dir;
         }
 
-        final int west_x = forward.getOffsetY() * up.getOffsetZ() - forward.getOffsetZ() * up.getOffsetY();
-        final int west_y = forward.getOffsetZ() * up.getOffsetX() - forward.getOffsetX() * up.getOffsetZ();
-        final int west_z = forward.getOffsetX() * up.getOffsetY() - forward.getOffsetY() * up.getOffsetX();
+        final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
+        final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
+        final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
 
         Direction west = null;
         for (final Direction dx : Direction.values()) {
-            if (dx.getOffsetX() == west_x && dx.getOffsetY() == west_y && dx.getOffsetZ() == west_z) {
+            if (dx.getXOffset() == west_x && dx.getYOffset() == west_y && dx.getZOffset() == west_z) {
                 west = dx;
             }
         }
@@ -146,24 +145,24 @@ public abstract class AEBaseBlock extends Block {
         }
 
         if (dir == forward) {
-            return Direction.SOUTH;
+            return Direction.field_11035;
         }
         if (dir == forward.getOpposite()) {
-            return Direction.NORTH;
+            return Direction.field_11043;
         }
 
         if (dir == up) {
-            return Direction.UP;
+            return Direction.field_11036;
         }
         if (dir == up.getOpposite()) {
-            return Direction.DOWN;
+            return Direction.field_11033;
         }
 
         if (dir == west) {
-            return Direction.WEST;
+            return Direction.field_11039;
         }
         if (dir == west.getOpposite()) {
-            return Direction.EAST;
+            return Direction.field_11034;
         }
 
         return null;
@@ -171,8 +170,8 @@ public abstract class AEBaseBlock extends Block {
 
     @Override
     public String toString() {
-        Identifier id = Registry.BLOCK.getId(this);
-        String regName = id == Registry.BLOCK.getDefaultId() ? "unregistered" : id.getPath();
+        ResourceLocation id = Registry.BLOCK.getKey(this);
+        String regName = id == Registry.BLOCK.getDefaultKey() ? "unregistered" : id.getPath();
         return this.getClass().getSimpleName() + "[" + regName + "]";
     }
 
@@ -188,7 +187,7 @@ public abstract class AEBaseBlock extends Block {
 
     }
 
-    protected IOrientable getOrientable(final BlockView w, final BlockPos pos) {
+    protected IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
         if (this instanceof IOrientableBlock) {
             IOrientableBlock orientable = (IOrientableBlock) this;
             return orientable.getOrientable(w, pos);
@@ -196,7 +195,7 @@ public abstract class AEBaseBlock extends Block {
         return null;
     }
 
-    protected boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward,
+    protected boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward,
             final Direction up) {
         return true;
     }

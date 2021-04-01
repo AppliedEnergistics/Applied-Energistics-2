@@ -23,15 +23,15 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
@@ -58,32 +58,32 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
 
     private int oldLV = -1; // on re-calculate light when it changes
 
-    public CableBusBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public CableBusBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.getCableBus().readFromNBT(data);
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         this.getCableBus().writeToNBT(data);
         return data;
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         boolean ret = this.getCableBus().readFromStream(data);
 
         final int newLV = this.getCableBus().getLightValue();
         if (newLV != this.oldLV) {
             this.oldLV = newLV;
-            this.world.getLightingProvider().checkBlock(this.pos);
+            this.world.getLightManager().checkBlock(this.pos);
             ret = true;
         }
 
@@ -92,7 +92,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         this.getCableBus().writeToStream(data);
     }
@@ -105,19 +105,19 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
     }
 
     @Override
-    public double getSquaredRenderDistance() {
+    public double getMaxRenderDistanceSquared() {
         return 900.0;
     }
 
     @Override
-    public void markRemoved() {
-        super.markRemoved();
+    public void remove() {
+        super.remove();
         this.getCableBus().removeFromWorld();
     }
 
     @Override
-    public void cancelRemoval() {
-        super.cancelRemoval();
+    public void validate() {
+        super.validate();
         TickHandler.instance().addInit(this);
     }
 
@@ -151,7 +151,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
         final int newLV = this.getCableBus().getLightValue();
         if (newLV != this.oldLV) {
             this.oldLV = newLV;
-            this.world.getLightingProvider().checkBlock(this.pos);
+            this.world.getLightManager().checkBlock(this.pos);
         }
 
         super.markForUpdate();
@@ -177,8 +177,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
     public void onReady() {
         super.onReady();
         if (this.getCableBus().isEmpty()) {
-            if (this.world.getBlockEntity(this.pos) == this) {
-                this.world.breakBlock(this.pos, true);
+            if (this.world.getTileEntity(this.pos) == this) {
+                this.world.destroyBlock(this.pos, true);
             }
         } else {
             this.getCableBus().addToWorld();
@@ -238,7 +238,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
     }
 
     @Override
-    public SelectedPart selectPart(final Vec3d pos) {
+    public SelectedPart selectPart(final Vector3d pos) {
         return this.getCableBus().selectPart(pos);
     }
 
@@ -274,7 +274,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
 
     @Override
     public void notifyNeighbors() {
-        if (this.world != null && this.world.isChunkLoaded(this.pos) && !CableBusContainer.isLoading()) {
+        if (this.world != null && this.world.isBlockLoaded(this.pos) && !CableBusContainer.isLoading()) {
             Platform.notifyBlocksOfNeighbors(this.world, this.pos);
         }
     }

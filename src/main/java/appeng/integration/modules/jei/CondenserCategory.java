@@ -24,12 +24,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Splitter;
-
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
-
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.EntryStack;
@@ -38,7 +32,10 @@ import me.shedaniel.rei.api.widgets.Slot;
 import me.shedaniel.rei.api.widgets.Tooltip;
 import me.shedaniel.rei.api.widgets.Widgets;
 import me.shedaniel.rei.gui.widget.Widget;
-
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.LanguageMap;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import appeng.api.config.CondenserOutput;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -47,19 +44,19 @@ class CondenserCategory implements RecipeCategory<CondenserOutputDisplay> {
 
     private static final int PADDING = 7;
 
-    public static final Identifier UID = new Identifier(AppEng.MOD_ID, "condenser");
+    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
 
     private final String localizedName;
 
     private final EntryStack icon;
 
     public CondenserCategory() {
-        this.localizedName = Language.getInstance().get("gui.appliedenergistics2.Condenser");
+        this.localizedName = LanguageMap.getInstance().method_4679("gui.appliedenergistics2.Condenser");
         this.icon = EntryStack.create(Api.INSTANCE.definitions().blocks().condenser().stack(1));
     }
 
     @Override
-    public Identifier getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return UID;
     }
 
@@ -81,10 +78,10 @@ class CondenserCategory implements RecipeCategory<CondenserOutputDisplay> {
 
         Point origin = new Point(bounds.x + PADDING, bounds.y + PADDING);
 
-        Identifier location = new Identifier(AppEng.MOD_ID, "textures/guis/condenser.png");
+        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/condenser.png");
         widgets.add(Widgets.createTexturedWidget(location, origin.x, origin.y, 50, 25, 94, 48));
 
-        Identifier statesLocation = new Identifier(AppEng.MOD_ID, "textures/guis/states.png");
+        ResourceLocation statesLocation = new ResourceLocation(AppEng.MOD_ID, "textures/guis/states.png");
         widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 2, origin.y + 28, 241, 81, 14, 14));
         widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 240, 240, 16, 16));
 
@@ -104,7 +101,7 @@ class CondenserCategory implements RecipeCategory<CondenserOutputDisplay> {
             Rectangle rect = new Rectangle(origin.x + 78, origin.y + 28, 16, 16);
             if (rect.contains(mouseX, mouseY)) {
                 Tooltip.create(
-                        getTooltip(recipeDisplay.getType()).stream().map(LiteralText::new).collect(Collectors.toList()))
+                        getTooltip(recipeDisplay.getType()).stream().map(StringTextComponent::new).collect(Collectors.toList()))
                         .queue();
             }
         }));
@@ -144,7 +141,7 @@ class CondenserCategory implements RecipeCategory<CondenserOutputDisplay> {
                 return Collections.emptyList();
         }
 
-        return Splitter.on("\n").splitToList(new TranslatableText(key, type.requiredPower).getString());
+        return Splitter.on("\n").splitToList(new TranslationTextComponent(key, type.requiredPower).getString());
     }
 
 }

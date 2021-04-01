@@ -29,12 +29,11 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.chunk.Chunk;
-
+import net.minecraft.world.IServerWorld;
+import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.server.ServerWorld;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
 import appeng.services.compass.CompassReader;
@@ -85,17 +84,17 @@ public final class CompassService {
         }
     }
 
-    public void tryUpdateArea(final ServerWorldAccess w, ChunkPos chunkPos) {
+    public void tryUpdateArea(final IServerWorld w, ChunkPos chunkPos) {
         // If this seems weird: during worldgen, WorldAccess is a specific region, but
         // getWorld is
         // still the server world. We do need to use the world access to get the chunk
         // in question
         // though, since during worldgen, it's not comitted to the actual world yet.
-        Chunk chunk = w.getChunk(chunkPos.x, chunkPos.z);
-        updateArea(w.toServerWorld(), chunk);
+        IChunk chunk = w.getChunk(chunkPos.x, chunkPos.z);
+        updateArea(w.getWorld(), chunk);
     }
 
-    public void updateArea(final ServerWorld w, Chunk chunk) {
+    public void updateArea(final ServerWorld w, IChunk chunk) {
         this.updateArea(w, chunk, CHUNK_SIZE);
         this.updateArea(w, chunk, CHUNK_SIZE + 32);
         this.updateArea(w, chunk, CHUNK_SIZE + 64);
@@ -111,11 +110,11 @@ public final class CompassService {
      * Notifies the compass service that a skystone block has either been placed or replaced at the give position.
      */
     public void notifyBlockChange(final ServerWorld w, BlockPos pos) {
-        Chunk chunk = w.getChunk(pos);
+        IChunk chunk = w.getChunk(pos);
         updateArea(w, chunk, pos.getY());
     }
 
-    private Future<?> updateArea(final ServerWorld w, Chunk c, int y) {
+    private Future<?> updateArea(final ServerWorld w, IChunk c, int y) {
         this.jobSize++;
 
         final int cdy = y >> 5;

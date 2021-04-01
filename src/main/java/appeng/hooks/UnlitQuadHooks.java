@@ -2,19 +2,17 @@ package appeng.hooks;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormatElement;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelElementFace;
-import net.minecraft.client.render.model.json.ModelElementTexture;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.BlockFaceUV;
+import net.minecraft.client.renderer.model.BlockPartFace;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.util.Direction;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
 import appeng.core.AppEng;
 import appeng.mixins.unlitquad.BakedQuadAccessor;
 
@@ -27,7 +25,7 @@ public class UnlitQuadHooks {
     /**
      * Vertex format used for blocks.
      */
-    private static final VertexFormat VERTEX_FORMAT = VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL;
+    private static final VertexFormat VERTEX_FORMAT = DefaultVertexFormats.BLOCK;
 
     /**
      * Offset into the vertex data (which is represented as integers).
@@ -36,7 +34,7 @@ public class UnlitQuadHooks {
 
     // Lightmap texture coordinate with full intensity light leading to no drop in
     // brightness
-    private static final int UNLIT_LIGHT_UV = LightmapTextureManager.pack(15, 15);
+    private static final int UNLIT_LIGHT_UV = LightTexture.packLight(15, 15);
 
     /**
      * Thread-Local flag to indicate that an enhanced Applied Energistics model is currently being deserialized.
@@ -45,9 +43,9 @@ public class UnlitQuadHooks {
 
     /**
      * Notify the unlit model system that a specific model is about to be deserialized by
-     * {@link net.minecraft.client.render.model.ModelLoader}.
+     * {@link net.minecraft.client.renderer.model.ModelBakery}.
      */
-    public static void beginDeserializingModel(Identifier location) {
+    public static void beginDeserializingModel(ResourceLocation location) {
         String namespace = location.getNamespace();
         if (namespace.equals(AppEng.MOD_ID)) {
             ENABLE_UNLIT_EXTENSIONS.set(true);
@@ -66,11 +64,11 @@ public class UnlitQuadHooks {
         return b != null && b;
     }
 
-    public static ModelElementFace enhanceModelElementFace(ModelElementFace modelElement, JsonElement jsonElement) {
+    public static BlockPartFace enhanceModelElementFace(BlockPartFace modelElement, JsonElement jsonElement) {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
-        if (JsonHelper.getBoolean(jsonObject, "unlit", false)) {
-            return new UnlitModelElementFace(modelElement.cullFace, modelElement.tintIndex, modelElement.textureId,
-                    modelElement.textureData);
+        if (JSONUtils.getBoolean(jsonObject, "unlit", false)) {
+            return new UnlitModelElementFace(modelElement.cullFace, modelElement.tintIndex, modelElement.texture,
+                    modelElement.blockFaceUV);
         }
         return modelElement;
     }
@@ -82,24 +80,24 @@ public class UnlitQuadHooks {
      */
     public static BakedQuad makeUnlit(BakedQuad quad) {
         int[] vertexData = quad.getVertexData().clone();
-        int stride = VERTEX_FORMAT.getVertexSizeInteger();
+        int stride = VERTEX_FORMAT.getIntegerSize();
         // Set the pre-baked texture coords for the lightmap.
         // Vanilla will not overwrite them if they are non-zero
         for (int i = 0; i < 4; i++) {
             vertexData[stride * i + LIGHT_OFFSET] = UNLIT_LIGHT_UV;
         }
-        Sprite sprite = ((BakedQuadAccessor) quad).getSprite();
+        TextureAtlasSprite sprite = ((BakedQuadAccessor) quad).getSprite();
         // Copy the quad to disable diffuse lighting
-        return new BakedQuad(vertexData, quad.getColorIndex(), quad.getFace(), sprite, false /* diffuse lighting */);
+        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getFace(), sprite, false /* diffuse lighting */);
     }
 
     /**
      * This subclass is used as a marker to indicate this face deserialized from JSON is supposed to be unlit, which
      * translates to processing by {@link #makeUnlit(BakedQuad)}.
      */
-    public static class UnlitModelElementFace extends ModelElementFace {
+    public static class UnlitModelElementFace extends BlockPartFace {
         public UnlitModelElementFace(Direction cullFaceIn, int tintIndexIn, String textureIn,
-                ModelElementTexture blockFaceUVIn) {
+                BlockFaceUV blockFaceUVIn) {
             super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
         }
     }
@@ -112,8 +110,8 @@ public class UnlitQuadHooks {
         int offset = 0;
         for (VertexFormatElement element : VERTEX_FORMAT.getElements()) {
             // LIGHT_ELEMENT is the lightmap vertex element
-            if (element == VertexFormats.LIGHT_ELEMENT) {
-                if (element.getFormat() != VertexFormatElement.Format.SHORT) {
+            if (element == DefaultVertexFormats.TEX_2SB) {
+                if (element.getType() != VertexFormatElement.Type.field_1625) {
                     throw new UnsupportedOperationException("Expected light map format to be of type SHORT");
                 }
                 if (offset % 4 != 0) {

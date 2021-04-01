@@ -20,24 +20,24 @@ package appeng.items;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 public abstract class AEBaseItem extends Item {
 
-    public AEBaseItem(Item.Settings properties) {
+    public AEBaseItem(Item.Properties properties) {
         super(properties);
     }
 
     @Override
     public String toString() {
-        Identifier id = Registry.ITEM.getId(this);
-        String regName = id != Registry.ITEM.getDefaultId() ? id.getPath() : "unregistered";
+        ResourceLocation id = Registry.ITEM.getKey(this);
+        String regName = id != Registry.ITEM.getDefaultKey() ? id.getPath() : "unregistered";
         return this.getClass().getSimpleName() + "[" + regName + "]";
     }
 
     @Override
-    public boolean canRepair(ItemStack stack, ItemStack ingredient) {
+    public boolean getIsRepairable(ItemStack stack, ItemStack ingredient) {
         return false;
     }
 

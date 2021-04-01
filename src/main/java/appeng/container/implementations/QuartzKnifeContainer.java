@@ -22,11 +22,9 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.container.AEBaseContainer;
@@ -40,12 +38,12 @@ import appeng.tile.inventory.AppEngInternalInventory;
 
 public class QuartzKnifeContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<QuartzKnifeContainer> TYPE;
+    public static ContainerType<QuartzKnifeContainer> TYPE;
 
     private static final ContainerHelper<QuartzKnifeContainer, QuartzKnifeObj> helper = new ContainerHelper<>(
             QuartzKnifeContainer::new, QuartzKnifeObj.class);
 
-    public static QuartzKnifeContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static QuartzKnifeContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -66,7 +64,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
                 new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip));
         this.addSlot(new QuartzKniveSlot(this.inSlot, 0, 134, 44, -1));
 
-        this.lockPlayerInventorySlot(ip.selectedSlot);
+        this.lockPlayerInventorySlot(ip.currentItem);
 
         this.bindPlayerInventory(ip, 0, 184 - /* height of player inventory */82);
     }
@@ -76,13 +74,13 @@ public class QuartzKnifeContainer extends AEBaseContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
-        final ItemStack currentItem = this.getPlayerInv().getMainHandStack();
+    public void detectAndSendChanges() {
+        final ItemStack currentItem = this.getPlayerInv().getCurrentItem();
 
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
-                if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setStack(this.getPlayerInv().selectedSlot, this.toolInv.getItemStack());
+                if (ItemStack.areItemsEqualIgnoreDurability(this.toolInv.getItemStack(), currentItem)) {
+                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.toolInv.getItemStack());
                 } else {
                     this.setValidContainer(false);
                 }
@@ -91,11 +89,11 @@ public class QuartzKnifeContainer extends AEBaseContainer {
             }
         }
 
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     @Override
-    public void close(final PlayerEntity par1PlayerEntity) {
+    public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
         if (this.inSlot.getInvStack(0) != null) {
             par1PlayerEntity.dropItem(this.inSlot.getInvStack(0), false);
         }
@@ -125,7 +123,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
         @Override
         @Nonnull
-        public ItemStack takeStack(int amount) {
+        public ItemStack decrStackSize(int amount) {
             ItemStack ret = this.getStack();
             if (!ret.isEmpty()) {
                 this.makePlate();
@@ -134,7 +132,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         }
 
         @Override
-        public void setStack(ItemStack stack) {
+        public void putStack(ItemStack stack) {
             if (stack.isEmpty()) {
                 this.makePlate();
             }
@@ -147,15 +145,15 @@ public class QuartzKnifeContainer extends AEBaseContainer {
                     final ItemStack before = item.copy();
                     // FIXME FABRIC: Quartz Knife currently is not damageable due to recipe
                     // remainder concerns
-                    item.damage(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
+                    item.damageItem(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
                         QuartzKnifeContainer.this.getPlayerInv()
-                                .setStack(QuartzKnifeContainer.this.getPlayerInv().selectedSlot, ItemStack.EMPTY);
+                                .setInventorySlotContents(QuartzKnifeContainer.this.getPlayerInv().currentItem, ItemStack.EMPTY);
                         // FIXME FABRIC equivalent??
                         // FIXME FABRIC MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(
                         // FIXME FABRIC QuartzKnifeContainer.this.getPlayerInv().player, before, null));
                     });
 
-                    QuartzKnifeContainer.this.sendContentUpdates();
+                    QuartzKnifeContainer.this.detectAndSendChanges();
                 }
             }
         }

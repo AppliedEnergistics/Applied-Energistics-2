@@ -21,9 +21,9 @@ package appeng.tile.misc;
 import java.util.List;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -55,7 +55,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     private FixedItemInv cacheConfig = null;
     private boolean locked = false;
 
-    public CellWorkbenchBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public CellWorkbenchBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.manager.registerSetting(Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE);
         this.cell.setEnableClientEvents(true);
@@ -96,8 +96,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         this.cell.writeToNBT(data, "cell");
         this.config.writeToNBT(data, "config");
         this.manager.writeToNBT(data);
@@ -105,8 +105,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.cell.readFromNBT(data, "cell");
         this.config.readFromNBT(data, "config");
         this.manager.readFromNBT(data);

@@ -30,14 +30,13 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
@@ -106,7 +105,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
      */
     private int state = 0;
 
-    public DriveBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public DriveBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.mySrc = new MachineSource(this);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -120,7 +119,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         int newState = 0;
 
@@ -138,13 +137,13 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         writeCellItemIds(data);
     }
 
-    private void writeCellItemIds(PacketByteBuf data) {
+    private void writeCellItemIds(PacketBuffer data) {
         List<Integer> cellItemIds = new ArrayList<>(getCellCount());
         byte[] bm = new byte[getCellCount()];
         for (int x = 0; x < this.getCellCount(); x++) {
             Item item = getCellItem(x);
             if (item != null) {
-                int itemId = Item.getRawId(item);
+                int itemId = Item.getIdFromItem(item);
                 int idx = cellItemIds.indexOf(itemId);
                 if (idx == -1) {
                     cellItemIds.add(itemId);
@@ -167,7 +166,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         boolean c = super.readFromStream(data);
         final int oldState = this.state;
         this.state = data.readInt();
@@ -177,7 +176,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         return (this.state & BIT_STATE_MASK) != (oldState & BIT_STATE_MASK) || c;
     }
 
-    private boolean readCellItemIDs(final PacketByteBuf data) {
+    private boolean readCellItemIDs(final PacketBuffer data) {
         int uniqueIdCount = data.readByte();
         int[] uniqueIds = new int[uniqueIdCount];
         for (int i = 0; i < uniqueIdCount; i++) {
@@ -193,7 +192,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
             if (idx > 0) {
                 --idx;
                 int itemId = uniqueIds[idx];
-                item = Item.byRawId(itemId);
+                item = Item.getItemById(itemId);
             }
             if (cellItems[i] != item) {
                 changed = true;
@@ -213,7 +212,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     @Override
     public Item getCellItem(int slot) {
         // Client-side we'll need to actually use the synced state
-        if (world == null || world.isClient) {
+        if (world == null || world.isRemote) {
             return cellItems[slot];
         }
 
@@ -254,15 +253,15 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.isCached = false;
         this.priority = data.getInt("priority");
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         data.putInt("priority", this.priority);
         return data;
     }
@@ -425,7 +424,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     @Override
     public void saveChanges(final ICellInventory<?> cellInventory) {
-        this.world.markDirty(this.pos, this);
+        this.world.markChunkDirty(this.pos, this);
     }
 
     @Override
@@ -439,7 +438,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType() {
+    public ContainerType<?> getContainerType() {
         return DriveContainer.TYPE;
     }
 

@@ -12,10 +12,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.block.Block;
-import net.minecraft.data.DataCache;
-import net.minecraft.data.DataProvider;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.DirectoryCache;
+import net.minecraft.data.IDataProvider;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 import appeng.core.AppEng;
@@ -31,7 +31,7 @@ public abstract class TagProvider implements IAE2DataProvider {
 
     private final Path outputPath;
 
-    private DataCache cache;
+    private DirectoryCache cache;
 
     protected TagProvider(String defaultNamespace, Path outputPath) {
         this.defaultNamespace = defaultNamespace;
@@ -39,7 +39,7 @@ public abstract class TagProvider implements IAE2DataProvider {
     }
 
     @Override
-    public void run(DataCache cache) throws IOException {
+    public void act(DirectoryCache cache) throws IOException {
         this.cache = cache;
         try {
             generate();
@@ -50,18 +50,18 @@ public abstract class TagProvider implements IAE2DataProvider {
 
     protected abstract void generate() throws IOException;
 
-    protected void addItemTag(String name, ItemConvertible... items) throws IOException {
-        Identifier id = parseId(name);
+    protected void addItemTag(String name, IItemProvider... items) throws IOException {
+        ResourceLocation id = parseId(name);
 
-        List<String> itemIds = Arrays.stream(items).map(ItemConvertible::asItem).map(Registry.ITEM::getId)
-                .map(Identifier::toString).collect(Collectors.toList());
+        List<String> itemIds = Arrays.stream(items).map(IItemProvider::asItem).map(Registry.ITEM::getKey)
+                .map(ResourceLocation::toString).collect(Collectors.toList());
         writeTagFile(id.getNamespace(), TYPE_ITEMS, id.getPath(), itemIds);
     }
 
     protected void addBlockTag(String name, Block... blocks) throws IOException {
-        Identifier id = parseId(name);
+        ResourceLocation id = parseId(name);
 
-        List<String> itemIds = Arrays.stream(blocks).map(Registry.BLOCK::getId).map(Identifier::toString)
+        List<String> itemIds = Arrays.stream(blocks).map(Registry.BLOCK::getKey).map(ResourceLocation::toString)
                 .collect(Collectors.toList());
         writeTagFile(id.getNamespace(), TYPE_BLOCKS, id.getPath(), itemIds);
     }
@@ -76,7 +76,7 @@ public abstract class TagProvider implements IAE2DataProvider {
         rootObj.add("values", valuesArr);
 
         Path path = outputPath.resolve("data/" + namespace + "/tags/" + tagType + "/" + tagName + ".json");
-        DataProvider.writeToPath(GSON, this.cache, rootObj, path);
+        IDataProvider.save(GSON, this.cache, rootObj, path);
     }
 
     @Override
@@ -84,11 +84,11 @@ public abstract class TagProvider implements IAE2DataProvider {
         return AppEng.MOD_NAME + " Tags (" + defaultNamespace + ")";
     }
 
-    private Identifier parseId(String name) {
+    private ResourceLocation parseId(String name) {
         if (name.contains(":")) {
-            return new Identifier(name);
+            return new ResourceLocation(name);
         } else {
-            return new Identifier(defaultNamespace, name);
+            return new ResourceLocation(defaultNamespace, name);
         }
     }
 

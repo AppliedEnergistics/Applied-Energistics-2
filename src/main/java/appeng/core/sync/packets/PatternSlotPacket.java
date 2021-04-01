@@ -21,9 +21,8 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -42,7 +41,7 @@ public class PatternSlotPacket extends BasePacket {
 
     public final boolean shift;
 
-    public PatternSlotPacket(final PacketByteBuf stream) {
+    public PatternSlotPacket(final PacketBuffer stream) {
 
         this.shift = stream.readBoolean();
 
@@ -53,7 +52,7 @@ public class PatternSlotPacket extends BasePacket {
         }
     }
 
-    private IAEItemStack readItem(final PacketByteBuf stream) {
+    private IAEItemStack readItem(final PacketBuffer stream) {
         final boolean hasItem = stream.readBoolean();
 
         if (hasItem) {
@@ -69,7 +68,7 @@ public class PatternSlotPacket extends BasePacket {
         this.slotItem = slotItem;
         this.shift = shift;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
 
@@ -85,7 +84,7 @@ public class PatternSlotPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    private void writeItem(final IAEItemStack slotItem, final PacketByteBuf data) {
+    private void writeItem(final IAEItemStack slotItem, final PacketBuffer data) {
         if (slotItem == null) {
             data.writeBoolean(false);
         } else {
@@ -97,8 +96,8 @@ public class PatternSlotPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
-        if (sender.currentScreenHandler instanceof PatternTermContainer) {
-            final PatternTermContainer patternTerminal = (PatternTermContainer) sender.currentScreenHandler;
+        if (sender.openContainer instanceof PatternTermContainer) {
+            final PatternTermContainer patternTerminal = (PatternTermContainer) sender.openContainer;
             patternTerminal.craftOrGetItem(this);
         }
     }

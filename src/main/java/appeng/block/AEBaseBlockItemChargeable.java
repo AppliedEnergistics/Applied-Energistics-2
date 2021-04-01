@@ -24,11 +24,11 @@ import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.config.AccessRestriction;
@@ -41,29 +41,29 @@ import appeng.core.localization.GuiText;
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
-    public AEBaseBlockItemChargeable(Block id, Settings props) {
+    public AEBaseBlockItemChargeable(Block id, Properties props) {
         super(id, props);
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void addCheckedInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final TooltipContext advancedTooltips) {
+    public void addCheckedInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getMaxEnergyCapacity();
 
         if (internalMaxPower > 0) {
-            final CompoundTag tag = stack.getTag();
+            final CompoundNBT tag = stack.getTag();
             if (tag != null) {
                 internalCurrentPower = tag.getDouble("internalCurrentPower");
             }
 
             final double percent = internalCurrentPower / internalMaxPower;
 
-            lines.add(GuiText.StoredEnergy.text().copy()
-                    .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                    .append(new TranslatableText(PowerUnits.AE.unlocalizedName))
-                    .append(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
+            lines.add(GuiText.StoredEnergy.text().copyRaw()
+                    .appendString(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+                    .append(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
+                    .appendString(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
         }
     }
 
@@ -127,12 +127,12 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     private double getInternal(final ItemStack is) {
-        final CompoundTag nbt = is.getOrCreateTag();
+        final CompoundNBT nbt = is.getOrCreateTag();
         return nbt.getDouble("internalCurrentPower");
     }
 
     private void setInternal(final ItemStack is, final double amt) {
-        final CompoundTag nbt = is.getOrCreateTag();
+        final CompoundNBT nbt = is.getOrCreateTag();
         nbt.putDouble("internalCurrentPower", amt);
     }
 

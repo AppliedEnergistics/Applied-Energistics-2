@@ -29,10 +29,10 @@ import java.util.function.Supplier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.dispenser.DispenserBehavior;
+import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 import appeng.api.features.AEFeature;
@@ -46,24 +46,24 @@ class ItemDefinitionBuilder implements IItemBuilder {
 
     private final FeatureFactory factory;
 
-    private final Identifier id;
+    private final ResourceLocation id;
 
-    private final Function<Item.Settings, Item> itemFactory;
+    private final Function<Item.Properties, Item> itemFactory;
 
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
     private final List<Function<Item, IBootstrapComponent>> boostrapComponents = new ArrayList<>();
 
-    private final Item.Settings props = new Item.Settings();
+    private final Item.Properties props = new Item.Properties();
 
-    private Supplier<DispenserBehavior> dispenserBehaviorSupplier;
+    private Supplier<IDispenseItemBehavior> dispenserBehaviorSupplier;
 
     @Environment(EnvType.CLIENT)
     private ItemRendering itemRendering;
 
     private ItemGroup itemGroup = CreativeTab.INSTANCE;
 
-    ItemDefinitionBuilder(FeatureFactory factory, String id, Function<Item.Settings, Item> itemFactory) {
+    ItemDefinitionBuilder(FeatureFactory factory, String id, Function<Item.Properties, Item> itemFactory) {
         this.factory = factory;
         this.id = AppEng.makeId(id);
         this.itemFactory = itemFactory;
@@ -98,7 +98,7 @@ class ItemDefinitionBuilder implements IItemBuilder {
     }
 
     @Override
-    public IItemBuilder props(Consumer<Item.Settings> consumer) {
+    public IItemBuilder props(Consumer<Item.Properties> consumer) {
         consumer.accept(props);
         return this;
     }
@@ -113,7 +113,7 @@ class ItemDefinitionBuilder implements IItemBuilder {
     }
 
     @Override
-    public IItemBuilder dispenserBehavior(Supplier<DispenserBehavior> behavior) {
+    public IItemBuilder dispenserBehavior(Supplier<IDispenseItemBehavior> behavior) {
         this.dispenserBehaviorSupplier = behavior;
         return this;
     }
@@ -137,8 +137,8 @@ class ItemDefinitionBuilder implements IItemBuilder {
         // Register custom dispenser behavior if requested
         if (this.dispenserBehaviorSupplier != null) {
             this.factory.addBootstrapComponent((IInitComponent) () -> {
-                DispenserBehavior behavior = this.dispenserBehaviorSupplier.get();
-                DispenserBlock.registerBehavior(item, behavior);
+                IDispenseItemBehavior behavior = this.dispenserBehaviorSupplier.get();
+                DispenserBlock.registerDispenseBehavior(item, behavior);
             });
         }
 

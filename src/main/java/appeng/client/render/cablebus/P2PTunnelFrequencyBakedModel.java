@@ -15,13 +15,12 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
-
+import net.minecraft.world.IBlockDisplayReader;
 import appeng.api.parts.IDynamicPartBakedModel;
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
@@ -30,18 +29,18 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
 
     private final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
 
-    private final Sprite texture;
+    private final TextureAtlasSprite texture;
 
     private final static Cache<Long, Mesh> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
     private static final int[][] QUAD_OFFSETS = new int[][] { { 4, 10, 2 }, { 10, 10, 2 }, { 4, 4, 2 }, { 10, 4, 2 } };
 
-    public P2PTunnelFrequencyBakedModel(final Sprite texture) {
+    public P2PTunnelFrequencyBakedModel(final TextureAtlasSprite texture) {
         this.texture = texture;
     }
 
     @Override
-    public void emitQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier,
+    public void emitQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier,
             RenderContext context, Direction partSide, @Nullable Object modelData) {
         if (!(modelData instanceof Long)) {
             return;
@@ -55,8 +54,8 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return ModelTransformation.NONE;
+    public ItemCameraTransforms getTransformation() {
+        return ItemCameraTransforms.DEFAULT;
     }
 
     private Mesh createFrequencyMesh(final short frequency, final boolean active) {
@@ -128,12 +127,12 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
     }
 
     @Override
-    public Sprite getSprite() {
+    public TextureAtlasSprite getSprite() {
         return this.texture;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 }

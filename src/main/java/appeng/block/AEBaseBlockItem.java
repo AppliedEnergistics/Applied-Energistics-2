@@ -23,14 +23,14 @@ import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
@@ -45,22 +45,22 @@ public class AEBaseBlockItem extends BlockItem {
 
     private final AEBaseBlock blockType;
 
-    public AEBaseBlockItem(final Block id, Settings props) {
+    public AEBaseBlockItem(final Block id, Properties props) {
         super(id, props);
         this.blockType = (AEBaseBlock) id;
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public final void appendTooltip(final ItemStack itemStack, final World world, final List<Text> toolTip,
-            final TooltipContext advancedTooltips) {
+    public final void addInformation(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
+            final ITooltipFlag advancedTooltips) {
         this.addCheckedInformation(itemStack, world, toolTip, advancedTooltips);
     }
 
     @Environment(EnvType.CLIENT)
-    public void addCheckedInformation(final ItemStack itemStack, final World world, final List<Text> toolTip,
-            final TooltipContext advancedTooltips) {
-        this.blockType.appendTooltip(itemStack, world, toolTip, advancedTooltips);
+    public void addCheckedInformation(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
+            final ITooltipFlag advancedTooltips) {
+        this.blockType.addInformation(itemStack, world, toolTip, advancedTooltips);
     }
 
     @Override
@@ -69,40 +69,40 @@ public class AEBaseBlockItem extends BlockItem {
     }
 
     @Override
-    public ActionResult place(ItemPlacementContext context) {
+    public ActionResultType tryPlace(BlockItemUseContext context) {
 
         Direction up = null;
         Direction forward = null;
 
-        Direction side = context.getSide();
+        Direction side = context.getFace();
         PlayerEntity player = context.getPlayer();
 
         if (this.blockType instanceof AEBaseTileBlock) {
             if (this.blockType instanceof LightDetectorBlock) {
                 up = side;
-                if (up == Direction.UP || up == Direction.DOWN) {
-                    forward = Direction.SOUTH;
+                if (up == Direction.field_11036 || up == Direction.field_11033) {
+                    forward = Direction.field_11035;
                 } else {
-                    forward = Direction.UP;
+                    forward = Direction.field_11036;
                 }
             } else if (this.blockType instanceof WirelessBlock || this.blockType instanceof SkyCompassBlock) {
                 forward = side;
-                if (forward == Direction.UP || forward == Direction.DOWN) {
-                    up = Direction.SOUTH;
+                if (forward == Direction.field_11036 || forward == Direction.field_11033) {
+                    up = Direction.field_11035;
                 } else {
-                    up = Direction.UP;
+                    up = Direction.field_11036;
                 }
             } else {
-                up = Direction.UP;
-                forward = context.getPlayerFacing().getOpposite();
+                up = Direction.field_11036;
+                forward = context.getPlacementHorizontalFacing().getOpposite();
 
                 if (player != null) {
-                    if (player.pitch > 65) {
+                    if (player.rotationPitch > 65) {
                         up = forward.getOpposite();
-                        forward = Direction.UP;
-                    } else if (player.pitch < -65) {
+                        forward = Direction.field_11036;
+                    } else if (player.rotationPitch < -65) {
                         up = forward.getOpposite();
-                        forward = Direction.DOWN;
+                        forward = Direction.field_11033;
                     }
                 }
             }
@@ -110,26 +110,26 @@ public class AEBaseBlockItem extends BlockItem {
 
         IOrientable ori = null;
         if (this.blockType instanceof IOrientableBlock) {
-            ori = ((IOrientableBlock) this.blockType).getOrientable(context.getWorld(), context.getBlockPos());
+            ori = ((IOrientableBlock) this.blockType).getOrientable(context.getWorld(), context.getPos());
             up = side;
-            forward = Direction.SOUTH;
-            if (up.getOffsetY() == 0) {
-                forward = Direction.UP;
+            forward = Direction.field_11035;
+            if (up.getYOffset() == 0) {
+                forward = Direction.field_11036;
             }
         }
 
-        if (!this.blockType.isValidOrientation(context.getWorld(), context.getBlockPos(), forward, up)) {
-            return ActionResult.FAIL;
+        if (!this.blockType.isValidOrientation(context.getWorld(), context.getPos(), forward, up)) {
+            return ActionResultType.field_5814;
         }
 
-        ActionResult result = super.place(context);
-        if (!result.isAccepted()) {
+        ActionResultType result = super.tryPlace(context);
+        if (!result.isSuccessOrConsume()) {
             return result;
         }
 
         if (this.blockType instanceof AEBaseTileBlock && !(this.blockType instanceof LightDetectorBlock)) {
             final AEBaseBlockEntity tile = ((AEBaseTileBlock<?>) this.blockType).getBlockEntity(context.getWorld(),
-                    context.getBlockPos());
+                    context.getPos());
             ori = tile;
 
             if (tile == null) {

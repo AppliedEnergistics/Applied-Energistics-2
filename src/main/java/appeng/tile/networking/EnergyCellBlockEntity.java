@@ -19,8 +19,8 @@
 package appeng.tile.networking;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.MathHelper;
 
 import appeng.api.config.AccessRestriction;
@@ -45,7 +45,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
 
     private byte currentMeta = -1;
 
-    public EnergyCellBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public EnergyCellBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setIdlePowerUsage(0);
     }
@@ -88,15 +88,15 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         data.putDouble("internalCurrentPower", this.internalCurrentPower);
         return data;
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.internalCurrentPower = data.getDouble("internalCurrentPower");
     }
 
@@ -106,16 +106,16 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
+    public void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
         if (from == SettingsFrom.DISMANTLE_ITEM) {
             this.internalCurrentPower = compound.getDouble("internalCurrentPower");
         }
     }
 
     @Override
-    public CompoundTag downloadSettings(final SettingsFrom from) {
+    public CompoundNBT downloadSettings(final SettingsFrom from) {
         if (from == SettingsFrom.DISMANTLE_ITEM) {
-            final CompoundTag tag = new CompoundTag();
+            final CompoundNBT tag = new CompoundNBT();
             tag.putDouble("internalCurrentPower", this.internalCurrentPower);
             tag.putDouble("internalMaxPower", this.getInternalMaxPower()); // used for tool tip.
             return tag;

@@ -21,31 +21,29 @@ package appeng.client.render.tesr;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
 import appeng.tile.AEBaseBlockEntity;
 
 @Environment(EnvType.CLIENT)
-public class ModularTESR<T extends AEBaseBlockEntity> extends BlockEntityRenderer<T> {
+public class ModularTESR<T extends AEBaseBlockEntity> extends TileEntityRenderer<T> {
 
     private final List<Renderable<? super T>> renderables;
 
     @SafeVarargs
-    public ModularTESR(BlockEntityRenderDispatcher rendererDispatcherIn, Renderable<? super T>... renderables) {
+    public ModularTESR(TileEntityRendererDispatcher rendererDispatcherIn, Renderable<? super T>... renderables) {
         super(rendererDispatcherIn);
         this.renderables = ImmutableList.copyOf(renderables);
     }
 
     @Override
-    public void render(T te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers, int combinedLight,
+    public void render(T te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLight,
             int combinedOverlay) {
         ms.push();
         ms.translate(0.5, 0.5, 0.5);

@@ -57,7 +57,7 @@ public class AdaptorList extends InventoryAdaptor {
                 if (amount > 0) {
                     final ItemStack rv = is.copy();
                     rv.setCount(amount);
-                    is.increment(-amount);
+                    is.grow(-amount);
 
                     // remove it..
                     if (is.getCount() <= 0) {
@@ -110,7 +110,7 @@ public class AdaptorList extends InventoryAdaptor {
                 if (amount > 0) {
                     final ItemStack rv = is.copy();
                     rv.setCount(amount);
-                    is.increment(-amount);
+                    is.grow(-amount);
 
                     // remove it..
                     if (is.getCount() <= 0) {
@@ -159,8 +159,8 @@ public class AdaptorList extends InventoryAdaptor {
         final ItemStack left = toBeAdded.copy();
 
         for (final ItemStack is : this.i) {
-            if (ItemStack.areItemsEqual(is, left)) {
-                is.increment(left.getCount());
+            if (ItemStack.areItemsEqualIgnoreDurability(is, left)) {
+                is.grow(left.getCount());
                 return ItemStack.EMPTY;
             }
         }

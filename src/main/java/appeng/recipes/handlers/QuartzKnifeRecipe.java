@@ -3,10 +3,9 @@ package appeng.recipes.handlers;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.util.collection.DefaultedList;
-
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.ShapelessRecipe;
+import net.minecraft.util.NonNullList;
 import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
 import appeng.mixins.ShapelessRecipeMixin;
 
@@ -16,21 +15,21 @@ import appeng.mixins.ShapelessRecipeMixin;
 public class QuartzKnifeRecipe extends ShapelessRecipe {
 
     public QuartzKnifeRecipe(ShapelessRecipe original) {
-        super(original.getId(), ((ShapelessRecipeMixin) original).getGroup(), original.getOutput(),
-                original.getPreviewInputs());
+        super(original.getId(), ((ShapelessRecipeMixin) original).getGroup(), original.getRecipeOutput(),
+                original.getIngredients());
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public IRecipeSerializer<?> getSerializer() {
         return QuartzKnifeRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public DefaultedList<ItemStack> getRemainingStacks(CraftingInventory inventory) {
-        DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(inventory.size(), ItemStack.EMPTY);
+    public NonNullList<ItemStack> getRemainingStacks(CraftingInventory inventory) {
+        NonNullList<ItemStack> defaultedList = NonNullList.withSize(inventory.getSizeInventory(), ItemStack.EMPTY);
 
         for (int i = 0; i < defaultedList.size(); ++i) {
-            ItemStack stack = inventory.getStack(i);
+            ItemStack stack = inventory.getStackInSlot(i);
             Item item = stack.getItem();
             if (item instanceof QuartzCuttingKnifeItem) {
                 // If it still has durability left, put a more damaged one back, otherwise
@@ -41,8 +40,8 @@ public class QuartzKnifeRecipe extends ShapelessRecipe {
                     stack.setDamage(newDamage);
                     defaultedList.set(i, stack);
                 }
-            } else if (item.hasRecipeRemainder()) {
-                defaultedList.set(i, new ItemStack(item.getRecipeRemainder()));
+            } else if (item.hasContainerItem()) {
+                defaultedList.set(i, new ItemStack(item.getContainerItem()));
             }
         }
 

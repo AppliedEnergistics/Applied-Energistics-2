@@ -25,15 +25,13 @@ package appeng.api.networking;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import net.minecraft.block.entity.BlockEntity;
-
+import net.minecraft.tileentity.TileEntity;
 import appeng.api.parts.IPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 
 /**
- * Implement to create a networked {@link BlockEntity} or {@link IPart} must be implemented for a part, or block entity
+ * Implement to create a networked {@link TileEntity} or {@link IPart} must be implemented for a part, or block entity
  * to become part of a grid.
  */
 public interface IGridHost {

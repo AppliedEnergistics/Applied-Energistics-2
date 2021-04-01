@@ -19,8 +19,7 @@
 package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
-
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -159,10 +158,10 @@ public class QuantumCluster implements ILocatable, IAECluster {
                 // In future versions, we might actually want to delay the entire registration
                 // until the center
                 // tile begins ticking normally.
-                if (theWorld.isChunkLoaded(qc.center.getPos())) {
-                    final World cur = theWorld.getServer().getWorld(theWorld.getRegistryKey());
+                if (theWorld.isBlockLoaded(qc.center.getPos())) {
+                    final World cur = theWorld.getServer().getWorld(theWorld.getDimensionKey());
 
-                    final BlockEntity te = theWorld.getBlockEntity(qc.center.getPos());
+                    final TileEntity te = theWorld.getTileEntity(qc.center.getPos());
                     return te != qc.center || theWorld != cur;
                 } else {
                     AELog.warn("Found a registered QNB with serial %s whose chunk seems to be unloaded: %s", qe, qc);

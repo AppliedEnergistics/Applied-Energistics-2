@@ -23,11 +23,10 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
@@ -69,19 +68,19 @@ import appeng.util.item.AEItemStack;
 
 public class ExportBusPart extends SharedItemBusPart implements ICraftingRequester {
 
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/export_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/export_bus_base");
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/export_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/export_bus_off"));
 
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/export_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/export_bus_on"));
 
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/export_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/export_bus_has_channel"));
 
     private final MultiCraftingTracker craftingTracker = new MultiCraftingTracker(this, 9);
     private final IActionSource mySrc;
@@ -100,14 +99,14 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     }
 
     @Override
-    public void readFromNBT(final CompoundTag extra) {
+    public void readFromNBT(final CompoundNBT extra) {
         super.readFromNBT(extra);
         this.craftingTracker.readFromNBT(extra);
         this.nextSlot = extra.getInt("nextSlot");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag extra) {
+    public void writeToNBT(final CompoundNBT extra) {
         super.writeToNBT(extra);
         this.craftingTracker.writeToNBT(extra);
         extra.putInt("nextSlot", this.nextSlot);
@@ -194,7 +193,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (Platform.isServer()) {
             ContainerOpener.openContainer(UpgradeableContainer.TYPE, player, ContainerLocator.forPart(this));
         }

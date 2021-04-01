@@ -24,9 +24,8 @@
 package appeng.api.config;
 
 import java.util.Locale;
-
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 /**
  * Represent the security systems basic permissions, these are not for anti-griefing, they are part of the mod as a
@@ -66,16 +65,16 @@ public enum SecurityPermissions {
         return this.translationKey + ".name";
     }
 
-    public Text nameText() {
-        return new TranslatableText(getTranslatedName());
+    public ITextComponent nameText() {
+        return new TranslationTextComponent(getTranslatedName());
     }
 
     public String getTranslatedTip() {
         return this.translationKey + ".tip";
     }
 
-    public Text tooltipText() {
-        return new TranslatableText(getTranslatedTip());
+    public ITextComponent tooltipText() {
+        return new TranslationTextComponent(getTranslatedTip());
     }
 
 }

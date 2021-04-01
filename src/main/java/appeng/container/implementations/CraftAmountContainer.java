@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;
@@ -41,7 +41,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 
 public class CraftAmountContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<CraftAmountContainer> TYPE;
+    public static ContainerType<CraftAmountContainer> TYPE;
 
     private static final ContainerHelper<CraftAmountContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftAmountContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
@@ -56,7 +56,7 @@ public class CraftAmountContainer extends AEBaseContainer {
         this.addSlot(this.getCraftingItem());
     }
 
-    public static CraftAmountContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static CraftAmountContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -65,8 +65,8 @@ public class CraftAmountContainer extends AEBaseContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
-        super.sendContentUpdates();
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
         this.verifyPermissions(SecurityPermissions.CRAFT, false);
     }
 

@@ -18,12 +18,11 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPart;
 import appeng.container.AEBaseContainer;
@@ -34,12 +33,12 @@ import appeng.helpers.IPriorityHost;
 
 public class PriorityContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<PriorityContainer> TYPE;
+    public static ContainerType<PriorityContainer> TYPE;
 
     private static final ContainerHelper<PriorityContainer, IPriorityHost> helper = new ContainerHelper<>(
             PriorityContainer::new, IPriorityHost.class, SecurityPermissions.BUILD);
 
-    public static PriorityContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static PriorityContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf, (host, container, buffer) -> {
             container.priorityValue = buffer.readVarInt();
         });
@@ -54,7 +53,7 @@ public class PriorityContainer extends AEBaseContainer {
     private int priorityValue;
 
     public PriorityContainer(int id, final PlayerInventory ip, final IPriorityHost te) {
-        super(TYPE, id, ip, (BlockEntity) (te instanceof BlockEntity ? te : null),
+        super(TYPE, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
                 (IPart) (te instanceof IPart ? te : null));
         this.priHost = te;
         this.priorityValue = te.getPriority();
@@ -76,8 +75,8 @@ public class PriorityContainer extends AEBaseContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
-        super.sendContentUpdates();
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
         this.verifyPermissions(SecurityPermissions.BUILD, false);
     }
 

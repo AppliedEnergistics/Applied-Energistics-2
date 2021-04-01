@@ -21,9 +21,9 @@ package appeng.tile.misc;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -83,7 +83,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private double storedPower = 0;
 
-    public CondenserBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public CondenserBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
 
@@ -93,16 +93,16 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         this.cm.writeToNBT(data);
         data.putDouble("storedPower", this.getStoredPower());
         return data;
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.cm.readFromNBT(data);
         this.setStoredPower(data.getDouble("storedPower"));
     }

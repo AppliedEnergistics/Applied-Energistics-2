@@ -28,17 +28,15 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.glfw.GLFW;
-
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.text.Text;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.text.ITextComponent;
 import alexiil.mc.lib.attributes.Simulation;
 
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -68,35 +66,35 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private boolean refreshList = false;
     private AETextField searchField;
 
-    public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory, Text title) {
+    public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.setScrollBar(new Scrollbar().setLeft(175).setTop(18).setHeight(106));
-        this.backgroundWidth = 195;
-        this.backgroundHeight = 222;
+        this.xSize = 195;
+        this.ySize = 222;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.searchField = new AETextField(this.textRenderer, this.x + 104, this.y + 4, 65, 12);
-        this.searchField.setDrawsBackground(false);
-        this.searchField.setMaxLength(25);
-        this.searchField.setEditableColor(0xFFFFFF);
+        this.searchField = new AETextField(this.font, this.guiLeft + 104, this.guiTop + 4, 65, 12);
+        this.searchField.setEnableBackgroundDrawing(false);
+        this.searchField.setMaxStringLength(25);
+        this.searchField.setTextColor(0xFFFFFF);
         this.searchField.setVisible(true);
-        this.searchField.setChangedListener(str -> this.refreshList());
-        this.addChild(this.searchField);
+        this.searchField.setResponder(str -> this.refreshList());
+        this.addListener(this.searchField);
         this.changeFocus(true);
     }
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.font.method_30883(matrices, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()), 8, 6, 4210752);
+        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
 
         final int ex = this.getScrollBar().getCurrentScroll();
 
-        this.handler.slots.removeIf(slot -> slot instanceof SlotDisconnected);
+        this.container.inventorySlots.removeIf(slot -> slot instanceof SlotDisconnected);
 
         int offset = 17;
         for (int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++) {
@@ -104,7 +102,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             if (lineObj instanceof ClientDCInternalInv) {
                 final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
                 for (int z = 0; z < inv.getInventory().getSlotCount(); z++) {
-                    this.handler.slots.add(new SlotDisconnected(inv, z, z * 18 + 8, 1 + offset));
+                    this.container.inventorySlots.add(new SlotDisconnected(inv, z, z * 18 + 8, 1 + offset));
                 }
             } else if (lineObj instanceof String) {
                 String name = (String) lineObj;
@@ -113,11 +111,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     name = name + " (" + rows + ')';
                 }
 
-                while (name.length() > 2 && this.textRenderer.getWidth(name) > 155) {
+                while (name.length() > 2 && this.font.getStringWidth(name) > 155) {
                     name = name.substring(0, name.length() - 1);
                 }
 
-                this.textRenderer.draw(matrices, name, 10, 6 + offset, 4210752);
+                this.font.drawString(matrices, name, 10, 6 + offset, 4210752);
             }
             offset += 18;
         }
@@ -137,7 +135,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
-        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
 
         int offset = 17;
         final int ex = this.getScrollBar().getCurrentScroll();
@@ -149,7 +147,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
                 RenderSystem.color4f(1, 1, 1, 1);
                 final int width = inv.getInventory().getSlotCount() * 18;
-                drawTexture(matrices, offsetX + 7, offsetY + offset, 7, 139, width, 18);
+                blit(matrices, offsetX + 7, offsetY + offset, 7, 139, width, 18);
             }
             offset += 18;
         }
@@ -194,25 +192,25 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }
 
-    public void postUpdate(final CompoundTag in) {
+    public void postUpdate(final CompoundNBT in) {
         if (in.getBoolean("clear")) {
             this.byId.clear();
             this.refreshList = true;
         }
 
-        for (final Object oKey : in.getKeys()) {
+        for (final Object oKey : in.keySet()) {
             final String key = (String) oKey;
             if (key.startsWith("=")) {
                 try {
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
-                    final CompoundTag invData = in.getCompound(key);
-                    Text un = Text.Serializer.fromJson(invData.getString("un"));
+                    final CompoundNBT invData = in.getCompound(key);
+                    ITextComponent un = ITextComponent.Serializer.getComponentFromJson(invData.getString("un"));
                     final ClientDCInternalInv current = this.getById(id, invData.getLong("sortBy"), un);
 
                     for (int x = 0; x < current.getInventory().getSlotCount(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setInvStack(x, ItemStack.fromTag(invData.getCompound(which)),
+                            current.getInventory().setInvStack(x, ItemStack.read(invData.getCompound(which)),
                                     Simulation.ACTION);
                         }
                     }
@@ -296,7 +294,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             return false;
         }
 
-        final CompoundTag encodedValue = itemStack.getTag();
+        final CompoundNBT encodedValue = itemStack.getTag();
 
         if (encodedValue == null) {
             return false;
@@ -304,11 +302,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         // Potential later use to filter by input
         // ListNBT inTag = encodedValue.getTagList( "in", 10 );
-        final ListTag outTag = encodedValue.getList("out", 10);
+        final ListNBT outTag = encodedValue.getList("out", 10);
 
         for (int i = 0; i < outTag.size(); i++) {
 
-            final ItemStack parsedItemStack = ItemStack.fromTag(outTag.getCompound(i));
+            final ItemStack parsedItemStack = ItemStack.read(outTag.getCompound(i));
             if (!parsedItemStack.isEmpty()) {
                 final String displayName = Platform.getItemDisplayName(Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createStack(parsedItemStack)).getString()
@@ -354,7 +352,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return this.names.size() + this.byId.size();
     }
 
-    private ClientDCInternalInv getById(final long id, final long sortBy, final Text name) {
+    private ClientDCInternalInv getById(final long id, final long sortBy, final ITextComponent name) {
         ClientDCInternalInv o = this.byId.get(id);
 
         if (o == null) {

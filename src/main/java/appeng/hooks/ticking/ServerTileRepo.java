@@ -35,7 +35,7 @@ class ServerTileRepo {
         final World world = tile.getWorld();
         final int x = tile.getPos().getX() >> 4;
         final int z = tile.getPos().getZ() >> 4;
-        final long chunkPos = ChunkPos.toLong(x, z);
+        final long chunkPos = ChunkPos.asLong(x, z);
 
         Long2ObjectMap<Queue<AEBaseBlockEntity>> worldQueue = this.tiles.get(world);
 

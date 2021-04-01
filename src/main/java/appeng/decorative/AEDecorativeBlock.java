@@ -21,7 +21,7 @@ package appeng.decorative;
 import appeng.block.AEBaseBlock;
 
 public class AEDecorativeBlock extends AEBaseBlock {
-    public AEDecorativeBlock(Settings props) {
+    public AEDecorativeBlock(Properties props) {
         super(props);
     }
 }

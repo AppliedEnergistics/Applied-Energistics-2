@@ -28,8 +28,8 @@ import java.util.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
-import net.minecraft.block.TntBlock;
+import net.minecraft.block.TNTBlock;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -38,25 +38,24 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.SmeltingRecipe;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.property.Properties;
+import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.RaycastContext;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-
+import net.minecraft.world.server.ServerWorld;
 import appeng.api.config.Actionable;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.misc.TinyTNTBlock;
@@ -73,7 +72,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> heatUp;
     private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> coolDown;
 
-    public EntropyManipulatorItem(Item.Settings props) {
+    public EntropyManipulatorItem(Item.Properties props) {
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);
 
         this.heatUp = new HashMap<>();
@@ -104,7 +103,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         this.heatUp.put(new InWorldToolOperationIngredient(Blocks.WATER, Fluids.FLOWING_WATER),
                 new InWorldToolOperationResult());
         this.heatUp.put(new InWorldToolOperationIngredient(Blocks.SNOW), new InWorldToolOperationResult(
-                Blocks.WATER.getDefaultState().with(Properties.LEVEL_15, 7), Fluids.FLOWING_WATER));
+                Blocks.WATER.getDefaultState().with(BlockStateProperties.LEVEL_0_15, 7), Fluids.FLOWING_WATER));
     }
 
     private static class InWorldToolOperationIngredient {
@@ -154,10 +153,10 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             Platform.spawnDrops(w, pos, r.getDrops());
         }
 
-        if (!w.isClient) {
+        if (!w.isRemote) {
             // Same effect as emptying a water bucket in the nether (see BucketItem)
-            w.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
-                    2.6F + (w.random.nextFloat() - w.random.nextFloat()) * 0.8F);
+            w.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.field_15245, 0.5F,
+                    2.6F + (w.rand.nextFloat() - w.rand.nextFloat()) * 0.8F);
             for (int l = 0; l < 8; ++l) {
                 w.addParticle(ParticleTypes.LARGE_SMOKE, (double) pos.getX() + Math.random(),
                         (double) pos.getY() + Math.random(), (double) pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
@@ -206,10 +205,10 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Override
-    public boolean postHit(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
+    public boolean hitEntity(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
         if (this.getAECurrentPower(item) > 1600) {
             this.extractAEPower(item, 1600, Actionable.MODULATE);
-            target.setFireTicks(8);
+            target.forceFireTicks(8);
         }
 
         return false;
@@ -218,34 +217,34 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     // Overridden to allow use of the item on WATER and LAVA which are otherwise not
     // considered for onItemUse
     @Override
-    public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
-        final BlockHitResult target = raycast(w, p, RaycastContext.FluidHandling.ANY);
+    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+        final BlockRayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.field_1347);
 
-        if (target.getType() != HitResult.Type.BLOCK) {
-            BlockPos pos = target.getBlockPos();
+        if (target.getType() != RayTraceResult.Type.field_1332) {
+            BlockPos pos = target.getPos();
             final BlockState state = w.getBlockState(pos);
             if (state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER) {
                 if (Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
-                    ItemUsageContext context = new ItemUsageContext(p, hand, target);
-                    this.useOnBlock(context);
+                    ItemUseContext context = new ItemUseContext(p, hand, target);
+                    this.onItemUse(context);
                 }
             }
         }
 
-        return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));
+        return new ActionResult<>(ActionResultType.field_5812, p.getHeldItem(hand));
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
+    public ActionResultType onItemUse(ItemUseContext context) {
         World w = context.getWorld();
-        ItemStack item = context.getStack();
-        BlockPos pos = context.getBlockPos();
-        Direction side = context.getSide();
+        ItemStack item = context.getItem();
+        BlockPos pos = context.getPos();
+        Direction side = context.getFace();
         PlayerEntity p = context.getPlayer();
         boolean tryBoth = false;
         if (p == null) {
-            if (w.isClient) {
-                return ActionResult.FAIL;
+            if (w.isRemote) {
+                return ActionResultType.field_5814;
             }
             p = FakePlayer.getOrCreate((ServerWorld) w);
             // Fake players cannot crouch and we cannot communicate whether they want to
@@ -254,37 +253,37 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         }
 
         if (this.getAECurrentPower(item) > 1600) {
-            if (!p.canPlaceOn(pos, side, item)) {
-                return ActionResult.FAIL;
+            if (!p.canPlayerEdit(pos, side, item)) {
+                return ActionResultType.field_5814;
             }
 
             final Block block = w.getBlockState(pos).getBlock();
             final Fluid fluid = w.getFluidState(pos).getFluid();
 
-            if (tryBoth || p.isInSneakingPose()) {
+            if (tryBoth || p.isCrouching()) {
                 if (this.canCool(block, fluid)) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
                     this.cool(block, fluid, w, pos);
-                    return ActionResult.SUCCESS;
+                    return ActionResultType.field_5812;
                 }
             }
-            if (tryBoth || !p.isInSneakingPose()) {
-                if (block instanceof TntBlock) {
+            if (tryBoth || !p.isCrouching()) {
+                if (block instanceof TNTBlock) {
                     TntAccessor.callPrimeTnt(w, pos, p);
                     w.removeBlock(pos, false);
-                    return ActionResult.SUCCESS;
+                    return ActionResultType.field_5812;
                 }
 
                 if (block instanceof TinyTNTBlock) {
                     w.removeBlock(pos, false);
                     ((TinyTNTBlock) block).startFuse(w, pos, p);
-                    return ActionResult.SUCCESS;
+                    return ActionResultType.field_5812;
                 }
 
                 if (this.canHeat(block, fluid)) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
                     this.heat(block, fluid, w, pos);
-                    return ActionResult.SUCCESS;
+                    return ActionResultType.field_5812;
                 }
 
                 final ItemStack[] stack = Platform.getBlockDrops(w, pos);
@@ -294,12 +293,12 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
                 for (final ItemStack i : stack) {
                     CraftingInventory tempInv = new CraftingInventory(new ContainerNull(), 1, 1);
-                    tempInv.setStack(0, i);
-                    Optional<SmeltingRecipe> recipe = w.getRecipeManager().getFirstMatch(RecipeType.SMELTING, tempInv,
+                    tempInv.setInventorySlotContents(0, i);
+                    Optional<FurnaceRecipe> recipe = w.getRecipeManager().getRecipe(IRecipeType.SMELTING, tempInv,
                             w);
 
                     if (recipe.isPresent()) {
-                        ItemStack result = recipe.get().craft(tempInv);
+                        ItemStack result = recipe.get().getCraftingResult(tempInv);
                         if (result.getItem() instanceof BlockItem) {
                             // Anti-Dupe-Bug I presume...
                             if (Block.getBlockFromItem(result.getItem()) == block) {
@@ -319,8 +318,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                     final InWorldToolOperationResult or = InWorldToolOperationResult
                             .getBlockOperationResult(out.toArray(new ItemStack[0]));
                     w.playSound(p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
-                            SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
-                            RANDOM.nextFloat() * 0.4F + 0.8F);
+                            SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.field_15248, 1.0F,
+                            random.nextFloat() * 0.4F + 0.8F);
 
                     if (or.getBlockState() == null) {
                         w.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
@@ -332,27 +331,27 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                         Platform.spawnDrops(w, pos, or.getDrops());
                     }
 
-                    return ActionResult.SUCCESS;
+                    return ActionResultType.field_5812;
                 } else {
                     final BlockPos offsetPos = pos.offset(side);
 
-                    if (!p.canPlaceOn(offsetPos, side, item)) {
-                        return ActionResult.FAIL;
+                    if (!p.canPlayerEdit(offsetPos, side, item)) {
+                        return ActionResultType.field_5814;
                     }
 
-                    if (w.isAir(offsetPos)) {
+                    if (w.isAirBlock(offsetPos)) {
                         this.extractAEPower(item, 1600, Actionable.MODULATE);
                         w.playSound(p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D,
-                                SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
-                                RANDOM.nextFloat() * 0.4F + 0.8F);
+                                SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.field_15248, 1.0F,
+                                random.nextFloat() * 0.4F + 0.8F);
                         w.setBlockState(offsetPos, Blocks.FIRE.getDefaultState());
                     }
 
-                    return ActionResult.SUCCESS;
+                    return ActionResultType.field_5812;
                 }
             }
         }
 
-        return ActionResult.PASS;
+        return ActionResultType.field_5811;
     }
 }

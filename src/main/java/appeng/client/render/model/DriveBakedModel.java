@@ -36,26 +36,25 @@ import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
-
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.IBlockDisplayReader;
 import appeng.block.storage.DriveSlotsState;
 
 public class DriveBakedModel extends ForwardingBakedModel implements FabricBakedModel {
-    private final Map<Item, BakedModel> cellModels;
+    private final Map<Item, IBakedModel> cellModels;
     private final Map<Item, Mesh> bakedCells;
-    private final BakedModel defaultCellModel;
+    private final IBakedModel defaultCellModel;
     private final Mesh defaultCell;
 
     private final RenderContext.QuadTransform[] slotTransforms;
 
-    public DriveBakedModel(BakedModel bakedBase, Map<Item, BakedModel> cellModels, BakedModel defaultCell) {
+    public DriveBakedModel(IBakedModel bakedBase, Map<Item, IBakedModel> cellModels, IBakedModel defaultCell) {
         this.wrapped = bakedBase;
         this.defaultCellModel = defaultCell;
         this.defaultCell = convertCellModel(defaultCell);
@@ -78,7 +77,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
 
         super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
@@ -92,7 +91,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
 
                     // Add the cell chassis
                     Item cell = slotsState.getCell(slot);
-                    BakedModel cellChassisModel = getCellChassisModel(cell);
+                    IBakedModel cellChassisModel = getCellChassisModel(cell);
 
                     context.pushTransform(slotTransforms[slot]);
                     context.fallbackConsumer().accept(cellChassisModel);
@@ -104,7 +103,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
 
     }
 
-    private static DriveSlotsState getDriveSlotsState(BlockRenderView blockView, BlockPos pos) {
+    private static DriveSlotsState getDriveSlotsState(IBlockDisplayReader blockView, BlockPos pos) {
         if (!(blockView instanceof RenderAttachedBlockView)) {
             return null;
         }
@@ -117,7 +116,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         // We have faces inside the chassis that are facing east, but should not receive
         // ambient occlusion from the east-side, but sadly this cannot be fine-tuned on
         // a face-by-face basis.
@@ -134,11 +133,11 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
         return model != null ? model : defaultCell;
     }
 
-    public BakedModel getCellChassisModel(Item cell) {
+    public IBakedModel getCellChassisModel(Item cell) {
         if (cell == null) {
             return cellModels.get(Items.AIR);
         }
-        final BakedModel model = cellModels.get(cell);
+        final IBakedModel model = cellModels.get(cell);
 
         return model != null ? model : defaultCellModel;
     }
@@ -187,17 +186,17 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
         }
     }
 
-    private Map<Item, Mesh> convertCellModels(Map<Item, BakedModel> cellModels) {
+    private Map<Item, Mesh> convertCellModels(Map<Item, IBakedModel> cellModels) {
         Map<Item, Mesh> result = new IdentityHashMap<>();
 
-        for (Map.Entry<Item, BakedModel> entry : cellModels.entrySet()) {
+        for (Map.Entry<Item, IBakedModel> entry : cellModels.entrySet()) {
             result.put(entry.getKey(), convertCellModel(entry.getValue()));
         }
 
         return result;
     }
 
-    private Mesh convertCellModel(BakedModel bakedModel) {
+    private Mesh convertCellModel(IBakedModel bakedModel) {
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
         Random random = new Random();
         MeshBuilder meshBuilder = renderer.meshBuilder();

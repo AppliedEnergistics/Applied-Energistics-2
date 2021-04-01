@@ -21,13 +21,13 @@ package appeng.fluids.tile;
 import java.util.EnumSet;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
@@ -56,7 +56,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
         implements IGridTickable, IFluidInterfaceHost, IPriorityHost {
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
 
-    public FluidInterfaceBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public FluidInterfaceBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -86,7 +86,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public BlockEntity getBlockEntity() {
+    public TileEntity getBlockEntity() {
         return this;
     }
 
@@ -96,15 +96,15 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         this.duality.writeToNBT(data);
         return data;
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.duality.readFromNBT(data);
     }
 
@@ -160,7 +160,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType() {
+    public ContainerType<?> getContainerType() {
         return FluidInterfaceContainer.TYPE;
     }
 }

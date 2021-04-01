@@ -21,12 +21,11 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-
 import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -41,7 +40,7 @@ public class PartPlacementPacket extends BasePacket {
     private float eyeHeight;
     private Hand hand;
 
-    public PartPlacementPacket(final PacketByteBuf stream) {
+    public PartPlacementPacket(final PacketBuffer stream) {
         this.x = stream.readInt();
         this.y = stream.readInt();
         this.z = stream.readInt();
@@ -52,7 +51,7 @@ public class PartPlacementPacket extends BasePacket {
 
     // api
     public PartPlacementPacket(final BlockPos pos, final Direction face, final float eyeHeight, final Hand hand) {
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(pos.getX());
@@ -71,7 +70,7 @@ public class PartPlacementPacket extends BasePacket {
         AppEng.instance().setPartInteractionPlayer(sender);
         try {
             PartPlacement.setEyeHeight(this.eyeHeight);
-            PartPlacement.place(sender.getStackInHand(this.hand), new BlockPos(this.x, this.y, this.z),
+            PartPlacement.place(sender.getHeldItem(this.hand), new BlockPos(this.x, this.y, this.z),
                     Direction.values()[this.face], sender, this.hand, sender.world,
                     PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0);
         } finally {

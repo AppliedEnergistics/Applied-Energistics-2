@@ -24,15 +24,14 @@ import java.util.Set;
 import java.util.function.Function;
 
 import com.mojang.datafixers.util.Pair;
-
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -44,20 +43,20 @@ import appeng.core.AppEng;
  */
 public class DummyFluidItemModel implements BasicUnbakedModel {
     // We use this to get the default item transforms and make our lives easier
-    private static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "item/dummy_fluid_item_base");
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/dummy_fluid_item_base");
 
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-            Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
-            ModelOverrideList overrides, Identifier modelLocation) {
-        BakedModel bakedBaseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+            ItemOverrideList overrides, ResourceLocation modelLocation) {
+        IBakedModel bakedBaseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
 
         return new DummyFluidDispatcherBakedModel(bakedBaseModel, spriteGetter);
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
-            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
+            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Collections.emptyList();
     }
 

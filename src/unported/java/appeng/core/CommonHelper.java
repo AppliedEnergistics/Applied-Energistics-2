@@ -22,11 +22,10 @@ import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.api.parts.CableRenderMode;
@@ -37,7 +36,7 @@ import appeng.core.sync.BasePacket;
 
 public abstract class CommonHelper {
 
-    public abstract void bindTileEntitySpecialRenderer(Class<? extends BlockEntity> tile, AEBaseBlock blk);
+    public abstract void bindTileEntitySpecialRenderer(Class<? extends TileEntity> tile, AEBaseBlock blk);
 
     public abstract List<? extends PlayerEntity> getPlayers();
 
@@ -49,7 +48,7 @@ public abstract class CommonHelper {
 
     public abstract boolean shouldAddParticles(Random r);
 
-    public abstract HitResult getRTR();
+    public abstract RayTraceResult getRTR();
 
     public abstract void postInit();
 
@@ -57,6 +56,6 @@ public abstract class CommonHelper {
 
     public abstract void updateRenderMode(PlayerEntity player);
 
-    public abstract boolean isActionKey(@Nonnull final ActionKey key, InputUtil.Key input);
+    public abstract boolean isActionKey(@Nonnull final ActionKey key, InputMappings.Input input);
 
 }

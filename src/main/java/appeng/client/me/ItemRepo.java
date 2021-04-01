@@ -26,8 +26,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -155,9 +154,9 @@ public class ItemRepo {
             }
 
             if (terminalSearchToolTips && notDone && !searchMod) {
-                final List<Text> tooltip = Platform.getTooltip(is);
+                final List<ITextComponent> tooltip = Platform.getTooltip(is);
 
-                for (final Text line : tooltip) {
+                for (final ITextComponent line : tooltip) {
                     if (m.matcher(line.getString()).find()) {
                         foundMatchingItemStack = true;
                         notDone = false;

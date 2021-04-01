@@ -1,25 +1,25 @@
 package appeng.recipes.handlers;
 
-import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
 
-public class InscriberRecipe implements Recipe<Inventory> {
+public class InscriberRecipe implements IRecipe<IInventory> {
 
-    public static final Identifier TYPE_ID = AppEng.makeId("inscriber");
+    public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
-    public static final RecipeType<InscriberRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static final IRecipeType<InscriberRecipe> TYPE = IRecipeType.register(TYPE_ID.toString());
 
-    private final Identifier id;
+    private final ResourceLocation id;
     private final String group;
 
     private final Ingredient middleInput;
@@ -28,7 +28,7 @@ public class InscriberRecipe implements Recipe<Inventory> {
     private final ItemStack output;
     private final InscriberProcessType processType;
 
-    public InscriberRecipe(Identifier id, String group, Ingredient middleInput, ItemStack output,
+    public InscriberRecipe(ResourceLocation id, String group, Ingredient middleInput, ItemStack output,
             Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
         this.id = id;
         this.group = group;
@@ -40,43 +40,43 @@ public class InscriberRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public boolean matches(Inventory inv, World worldIn) {
+    public boolean matches(IInventory inv, World worldIn) {
         return false;
     }
 
     @Override
-    public ItemStack craft(Inventory inv) {
+    public ItemStack getCraftingResult(IInventory inv) {
         return this.output.copy();
     }
 
     @Override
-    public boolean fits(int width, int height) {
+    public boolean canFit(int width, int height) {
         return true;
     }
 
     @Override
-    public ItemStack getOutput() {
+    public ItemStack getRecipeOutput() {
         return output;
     }
 
     @Override
-    public Identifier getId() {
+    public ResourceLocation getId() {
         return id;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public IRecipeSerializer<?> getSerializer() {
         return InscriberRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public IRecipeType<?> getType() {
         return TYPE;
     }
 
     @Override
-    public DefaultedList<Ingredient> getPreviewInputs() {
-        DefaultedList<Ingredient> nonnulllist = DefaultedList.of();
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> nonnulllist = NonNullList.create();
         nonnulllist.add(this.topOptional);
         nonnulllist.add(this.middleInput);
         nonnulllist.add(this.bottomOptional);
@@ -105,7 +105,7 @@ public class InscriberRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public boolean isIgnoredInRecipeBook() {
+    public boolean isDynamic() {
         return true;
     }
 

@@ -20,9 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.container.AEBaseContainer;
@@ -34,12 +33,12 @@ import appeng.tile.grindstone.GrinderBlockEntity;
 
 public class GrinderContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<GrinderContainer> TYPE;
+    public static ContainerType<GrinderContainer> TYPE;
 
     private static final ContainerHelper<GrinderContainer, GrinderBlockEntity> helper = new ContainerHelper<>(
             GrinderContainer::new, GrinderBlockEntity.class);
 
-    public static GrinderContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static GrinderContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

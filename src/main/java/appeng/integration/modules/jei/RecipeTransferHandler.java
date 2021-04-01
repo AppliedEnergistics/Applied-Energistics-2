@@ -20,14 +20,12 @@ package appeng.integration.modules.jei;
 
 import java.util.List;
 import java.util.stream.Stream;
-
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
-
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import me.shedaniel.rei.api.AutoTransferHandler;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
@@ -37,7 +35,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.helpers.IContainerCraftingPacket;
 
-abstract class RecipeTransferHandler<T extends ScreenHandler & IContainerCraftingPacket>
+abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPacket>
         implements AutoTransferHandler {
 
     private final Class<T> containerClass;
@@ -50,19 +48,19 @@ abstract class RecipeTransferHandler<T extends ScreenHandler & IContainerCraftin
     public AutoTransferHandler.Result handle(AutoTransferHandler.Context context) {
         RecipeDisplay recipe = context.getRecipe();
 
-        if (!containerClass.isInstance(context.getContainerScreen().getScreenHandler())) {
+        if (!containerClass.isInstance(context.getContainerScreen().getContainer())) {
             return AutoTransferHandler.Result.createNotApplicable();
         }
 
-        T container = containerClass.cast(context.getContainerScreen().getScreenHandler());
+        T container = containerClass.cast(context.getContainerScreen().getContainer());
 
-        final Identifier recipeId = recipe.getRecipeLocation().orElse(null);
+        final ResourceLocation recipeId = recipe.getRecipeLocation().orElse(null);
 
         // Check that the recipe can actually be looked up via the manager, i.e. our
         // facade recipes
         // have an ID, but are never registered with the recipe manager.
         boolean canSendReference = true;
-        if (recipeId == null || !context.getMinecraft().world.getRecipeManager().get(recipeId).isPresent()) {
+        if (recipeId == null || !context.getMinecraft().world.getRecipeManager().getRecipe(recipeId).isPresent()) {
             canSendReference = false;
         }
 
@@ -90,7 +88,7 @@ abstract class RecipeTransferHandler<T extends ScreenHandler & IContainerCraftin
                 // as a fallback when the recipe ID could not be resolved, we'll just send the
                 // displayed
                 // items.
-                DefaultedList<Ingredient> flatIngredients = DefaultedList.ofSize(9, Ingredient.EMPTY);
+                NonNullList<Ingredient> flatIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
                 ItemStack output = null;
                 for (EntryStack entryStack : recipe.getResultingEntries().get(0)) {
                     if (entryStack.getType() == EntryStack.Type.ITEM) {
@@ -111,7 +109,7 @@ abstract class RecipeTransferHandler<T extends ScreenHandler & IContainerCraftin
                     if (i < flatIngredients.size()) {
                         ItemStack displayedIngredient = first.getItemStack();
                         if (displayedIngredient != null) {
-                            flatIngredients.set(i, Ingredient.ofStacks(Stream.of(displayedIngredient)));
+                            flatIngredients.set(i, Ingredient.fromStacks(Stream.of(displayedIngredient)));
                         }
                     }
                 }

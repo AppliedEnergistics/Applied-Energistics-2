@@ -23,11 +23,11 @@
 
 package appeng.api.util;
 
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.dimension.DimensionType;
 
 /**
  * Represents a location in the Minecraft Universe
@@ -43,22 +43,22 @@ public class DimensionalCoord extends WorldCoord {
         this.dimension = coordinate.dimension;
     }
 
-    public DimensionalCoord(final BlockEntity tileEntity) {
+    public DimensionalCoord(final TileEntity tileEntity) {
         super(tileEntity);
         this.world = tileEntity.getWorld();
-        this.dimension = this.world.getDimension();
+        this.dimension = this.world.getDimensionType();
     }
 
     public DimensionalCoord(final World world, final int x, final int y, final int z) {
         super(x, y, z);
         this.world = world;
-        this.dimension = world.getDimension();
+        this.dimension = world.getDimensionType();
     }
 
     public DimensionalCoord(final World world, final BlockPos pos) {
         super(pos);
         this.world = world;
-        this.dimension = world.getDimension();
+        this.dimension = world.getDimensionType();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class DimensionalCoord extends WorldCoord {
         return "dimension=" + this.dimension + ", " + super.toString();
     }
 
-    public boolean isInWorld(final WorldAccess world) {
+    public boolean isInWorld(final IWorld world) {
         return this.world == world;
     }
 

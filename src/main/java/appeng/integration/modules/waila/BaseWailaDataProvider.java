@@ -19,12 +19,11 @@
 package appeng.integration.modules.waila;
 
 import java.util.List;
-
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import mcp.mobius.waila.api.IComponentProvider;
@@ -39,7 +38,7 @@ import mcp.mobius.waila.api.IServerDataProvider;
  * @version rv2
  * @since rv2
  */
-public abstract class BaseWailaDataProvider implements IComponentProvider, IServerDataProvider<BlockEntity> {
+public abstract class BaseWailaDataProvider implements IComponentProvider, IServerDataProvider<TileEntity> {
 
     @Override
     public ItemStack getStack(final IDataAccessor accessor, final IPluginConfig config) {
@@ -47,23 +46,23 @@ public abstract class BaseWailaDataProvider implements IComponentProvider, IServ
     }
 
     @Override
-    public void appendServerData(CompoundTag CompoundTag, ServerPlayerEntity serverPlayerEntity, World world,
-            BlockEntity tileEntity) {
+    public void appendServerData(CompoundNBT CompoundTag, ServerPlayerEntity serverPlayerEntity, World world,
+            TileEntity tileEntity) {
 
     }
 
     @Override
-    public void appendHead(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    public void appendHead(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
 
     }
 
     @Override
-    public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
 
     }
 
     @Override
-    public void appendTail(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    public void appendTail(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
 
     }
 

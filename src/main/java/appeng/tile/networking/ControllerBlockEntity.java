@@ -19,12 +19,10 @@
 package appeng.tile.networking;
 
 import java.util.EnumSet;
-
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
@@ -48,7 +46,7 @@ import appeng.util.inv.InvOperation;
 public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     private boolean isValid = false;
 
-    public ControllerBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public ControllerBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(8000);
         this.setInternalPublicPowerStorage(true);
@@ -68,12 +66,12 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     public void onNeighborChange(final boolean force) {
-        final boolean xx = this.checkController(this.pos.offset(Direction.EAST))
-                && this.checkController(this.pos.offset(Direction.WEST));
-        final boolean yy = this.checkController(this.pos.offset(Direction.UP))
-                && this.checkController(this.pos.offset(Direction.DOWN));
-        final boolean zz = this.checkController(this.pos.offset(Direction.NORTH))
-                && this.checkController(this.pos.offset(Direction.SOUTH));
+        final boolean xx = this.checkController(this.pos.offset(Direction.field_11034))
+                && this.checkController(this.pos.offset(Direction.field_11039));
+        final boolean yy = this.checkController(this.pos.offset(Direction.field_11036))
+                && this.checkController(this.pos.offset(Direction.field_11033));
+        final boolean zz = this.checkController(this.pos.offset(Direction.field_11043))
+                && this.checkController(this.pos.offset(Direction.field_11035));
 
         // int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
         // boolean hasPower = meta > 0;
@@ -183,8 +181,8 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
      * @return true if there is a loaded controller
      */
     private boolean checkController(final BlockPos pos) {
-        if (this.world.getChunkManager().shouldTickBlock(pos)) {
-            return this.world.getBlockEntity(pos) instanceof ControllerBlockEntity;
+        if (this.world.getChunkProvider().canTick(pos)) {
+            return this.world.getTileEntity(pos) instanceof ControllerBlockEntity;
         }
 
         return false;

@@ -29,12 +29,11 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
-
+import net.minecraft.util.IItemProvider;
 import appeng.api.features.AEFeature;
 
-public interface IItemDefinition extends IComparableDefinition, ItemConvertible {
+public interface IItemDefinition extends IComparableDefinition, IItemProvider {
     /**
      * @return the unique name of the definition which will be used to register the underlying structure. Will never be
      *         null

@@ -6,8 +6,8 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.implementations.items.IMemoryCard;
@@ -19,9 +19,9 @@ class MemoryCardBakedModel extends ForwardingBakedModel implements FabricBakedMo
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, };
 
-    private final Sprite texture;
+    private final TextureAtlasSprite texture;
 
-    public MemoryCardBakedModel(BakedModel baseModel, Sprite texture) {
+    public MemoryCardBakedModel(IBakedModel baseModel, TextureAtlasSprite texture) {
         this.wrapped = baseModel;
         this.texture = texture;
     }

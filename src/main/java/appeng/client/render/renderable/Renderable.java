@@ -18,13 +18,13 @@
 
 package appeng.client.render.renderable;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.tileentity.TileEntity;
 
-public interface Renderable<T extends BlockEntity> {
+public interface Renderable<T extends TileEntity> {
 
-    void renderTileEntityAt(T te, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffers,
+    void renderTileEntityAt(T te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers,
             int combinedLight, int combinedOverlay);
 
 }

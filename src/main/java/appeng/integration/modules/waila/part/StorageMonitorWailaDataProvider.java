@@ -19,12 +19,9 @@
 package appeng.integration.modules.waila.part;
 
 import java.util.List;
-
-import net.minecraft.text.Text;
-
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.parts.IPart;
 import appeng.api.storage.data.IAEFluidStack;
@@ -49,7 +46,7 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
      * @param config   config option
      */
     @Override
-    public void appendBody(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
+    public void appendBody(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
             final IPluginConfig config) {
         if (part instanceof IStorageMonitorPart) {
             final IStorageMonitorPart monitor = (IStorageMonitorPart) part;
@@ -61,10 +58,10 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
             if (displayed instanceof IAEItemStack) {
                 final IAEItemStack ais = (IAEItemStack) displayed;
                 tooltip.add(
-                        WailaText.Showing.text().copy().append(": ").append(ais.asItemStackRepresentation().getName()));
+                        WailaText.Showing.text().copyRaw().appendString(": ").appendString(ais.asItemStackRepresentation().getName()));
             } else if (displayed instanceof IAEFluidStack) {
                 final IAEFluidStack ais = (IAEFluidStack) displayed;
-                tooltip.add(WailaText.Showing.text().copy().append(": ").append(ais.getFluidStack().getName()));
+                tooltip.add(WailaText.Showing.text().copyRaw().appendString(": ").appendString(ais.getFluidStack().getName()));
             }
 
             tooltip.add((isLocked) ? WailaText.Locked.text() : WailaText.Unlocked.text());

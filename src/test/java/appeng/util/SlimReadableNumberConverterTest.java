@@ -2,6 +2,7 @@ package appeng.util;
 
 import static org.junit.Assert.assertEquals;
 
+import ISlimReadableNumberConverter;
 import org.junit.Test;
 
 /*

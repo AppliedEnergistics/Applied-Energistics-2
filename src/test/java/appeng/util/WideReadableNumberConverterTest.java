@@ -20,6 +20,7 @@ package appeng.util;
 
 import static org.junit.Assert.assertEquals;
 
+import IWideReadableNumberConverter;
 import org.junit.Test;
 
 /**

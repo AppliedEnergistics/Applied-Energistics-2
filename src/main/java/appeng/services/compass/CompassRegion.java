@@ -19,10 +19,9 @@
 package appeng.services.compass;
 
 import com.google.common.base.Preconditions;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.PersistentState;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.WorldSavedData;
 
 final class CompassRegion {
     private final int lowX;
@@ -92,12 +91,12 @@ final class CompassRegion {
         String name = this.lowX + "_" + this.lowZ;
 
         if (create) {
-            this.data = world.getPersistentStateManager().getOrCreate(() -> new SaveData(name), name);
+            this.data = world.getSavedData().getOrCreate(() -> new SaveData(name), name);
             if (this.data.bitmap == null) {
                 this.data.bitmap = new byte[SaveData.BITMAP_LENGTH];
             }
         } else {
-            this.data = world.getPersistentStateManager().get(() -> new SaveData(name), name);
+            this.data = world.getSavedData().get(() -> new SaveData(name), name);
         }
     }
 
@@ -114,7 +113,7 @@ final class CompassRegion {
         this.data.markDirty();
     }
 
-    private static class SaveData extends PersistentState {
+    private static class SaveData extends WorldSavedData {
 
         private static final int BITMAP_LENGTH = 0x400 * 0x400;
 
@@ -125,7 +124,7 @@ final class CompassRegion {
         }
 
         @Override
-        public void fromTag(CompoundTag nbt) {
+        public void read(CompoundNBT nbt) {
             this.bitmap = nbt.getByteArray("b");
             if (this.bitmap.length != BITMAP_LENGTH) {
                 throw new IllegalStateException("Invalid bitmap length: " + bitmap.length);
@@ -133,7 +132,7 @@ final class CompassRegion {
         }
 
         @Override
-        public CompoundTag toTag(CompoundTag compound) {
+        public CompoundNBT write(CompoundNBT compound) {
             compound.putByteArray("b", bitmap);
             return compound;
         }

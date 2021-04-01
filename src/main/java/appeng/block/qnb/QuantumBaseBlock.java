@@ -20,14 +20,14 @@ package appeng.block.qnb;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -35,28 +35,28 @@ import appeng.tile.qnb.QuantumBridgeBlockEntity;
 
 public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeBlockEntity> {
 
-    public static final BooleanProperty FORMED = BooleanProperty.of("formed");
+    public static final BooleanProperty FORMED = BooleanProperty.create("formed");
 
     private static final VoxelShape SHAPE;
 
     static {
         final float shave = 2.0f / 16.0f;
-        SHAPE = VoxelShapes.cuboid(new Box(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
+        SHAPE = VoxelShapes.create(new AxisAlignedBB(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
     }
 
-    public QuantumBaseBlock(Settings props) {
+    public QuantumBaseBlock(Properties props) {
         super(props);
         this.setDefaultState(this.getDefaultState().with(FORMED, false));
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return SHAPE;
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(FORMED);
     }
 
@@ -66,7 +66,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeBloc
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(world, pos);
         if (bridge != null) {
@@ -75,7 +75,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeBloc
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
@@ -85,7 +85,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeBloc
             bridge.breakCluster();
         }
 
-        super.onStateReplaced(state, w, pos, newState, isMoving);
+        super.onReplaced(state, w, pos, newState, isMoving);
     }
 
 }

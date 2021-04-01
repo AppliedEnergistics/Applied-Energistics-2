@@ -25,18 +25,18 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -58,8 +58,8 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
 
     static {
         for (Direction up : Direction.values()) {
-            Box aabb = computeAABB(up);
-            SHAPES.put(up, VoxelShapes.cuboid(aabb));
+            AxisAlignedBB aabb = computeAABB(up);
+            SHAPES.put(up, VoxelShapes.create(aabb));
         }
     }
 
@@ -71,63 +71,63 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
 
     public final SkyChestType type;
 
-    public SkyChestBlock(final SkyChestType type, Settings props) {
+    public SkyChestBlock(final SkyChestType type, Properties props) {
         super(props);
         this.type = type;
     }
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+        return BlockRenderType.field_11456;
     }
 
     @Override
-    public boolean isTranslucent(BlockState state, BlockView reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
         return true;
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (Platform.isServer()) {
             SkyChestBlockEntity tile = getBlockEntity(w, pos);
             if (tile == null) {
-                return ActionResult.PASS;
+                return ActionResultType.field_5811;
             }
 
             ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResultType.field_5812;
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         final SkyChestBlockEntity sk = this.getBlockEntity(worldIn, pos);
-        Direction up = sk != null ? sk.getUp() : Direction.UP;
+        Direction up = sk != null ? sk.getUp() : Direction.field_11036;
         return SHAPES.get(up);
     }
 
-    private static Box computeAABB(Direction up) {
-        final double offsetX = up.getOffsetX() == 0 ? AABB_OFFSET_SIDES : 0.0;
-        final double offsetY = up.getOffsetY() == 0 ? AABB_OFFSET_SIDES : 0.0;
-        final double offsetZ = up.getOffsetZ() == 0 ? AABB_OFFSET_SIDES : 0.0;
+    private static AxisAlignedBB computeAABB(Direction up) {
+        final double offsetX = up.getXOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
+        final double offsetY = up.getYOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
+        final double offsetZ = up.getZOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
 
         // for x/z top and bottom is swapped
         final double minX = Math.max(0.0,
-                offsetX + (up.getOffsetX() < 0 ? AABB_OFFSET_BOTTOM : (up.getOffsetX() * AABB_OFFSET_TOP)));
+                offsetX + (up.getXOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getXOffset() * AABB_OFFSET_TOP)));
         final double minY = Math.max(0.0,
-                offsetY + (up.getOffsetY() < 0 ? AABB_OFFSET_TOP : (up.getOffsetY() * AABB_OFFSET_BOTTOM)));
+                offsetY + (up.getYOffset() < 0 ? AABB_OFFSET_TOP : (up.getYOffset() * AABB_OFFSET_BOTTOM)));
         final double minZ = Math.max(0.0,
-                offsetZ + (up.getOffsetZ() < 0 ? AABB_OFFSET_BOTTOM : (up.getOffsetZ() * AABB_OFFSET_TOP)));
+                offsetZ + (up.getZOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getZOffset() * AABB_OFFSET_TOP)));
 
         final double maxX = Math.min(1.0,
-                1.0 - offsetX - (up.getOffsetX() < 0 ? AABB_OFFSET_TOP : (up.getOffsetX() * AABB_OFFSET_BOTTOM)));
+                1.0 - offsetX - (up.getXOffset() < 0 ? AABB_OFFSET_TOP : (up.getXOffset() * AABB_OFFSET_BOTTOM)));
         final double maxY = Math.min(1.0,
-                1.0 - offsetY - (up.getOffsetY() < 0 ? AABB_OFFSET_BOTTOM : (up.getOffsetY() * AABB_OFFSET_TOP)));
+                1.0 - offsetY - (up.getYOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getYOffset() * AABB_OFFSET_TOP)));
         final double maxZ = Math.min(1.0,
-                1.0 - offsetZ - (up.getOffsetZ() < 0 ? AABB_OFFSET_TOP : (up.getOffsetZ() * AABB_OFFSET_BOTTOM)));
+                1.0 - offsetZ - (up.getZOffset() < 0 ? AABB_OFFSET_TOP : (up.getZOffset() * AABB_OFFSET_BOTTOM)));
 
-        return new Box(minX, minY, minZ, maxX, maxY, maxZ);
+        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }

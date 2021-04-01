@@ -19,14 +19,13 @@
 package appeng.debug;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -34,18 +33,18 @@ import appeng.block.AEBaseTileBlock;
 public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorBlockEntity> {
 
     public CubeGeneratorBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.IRON));
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final CubeGeneratorBlockEntity tcg = this.getBlockEntity(w, pos);
         if (tcg != null) {
             tcg.click(player);
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResultType.field_5812;
     }
 
 }

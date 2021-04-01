@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import appeng.hooks.ticking.TickHandler;
@@ -37,7 +37,7 @@ class DeferredTileEntityUnloader implements IWorldCallable<Void> {
     public static void register() {
         ServerChunkEvents.CHUNK_UNLOAD.register((serverWorld, worldChunk) -> {
             List<AEBaseBlockEntity> entitiesToRemove = null;
-            for (BlockEntity value : worldChunk.getBlockEntities().values()) {
+            for (TileEntity value : worldChunk.getTileEntityMap().values()) {
                 if (value instanceof AEBaseBlockEntity) {
                     if (entitiesToRemove == null) {
                         entitiesToRemove = new ArrayList<>();

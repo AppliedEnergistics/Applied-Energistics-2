@@ -20,10 +20,10 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -45,12 +45,12 @@ import appeng.tile.crafting.MolecularAssemblerBlockEntity;
 
 public class MolecularAssemblerContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static ScreenHandlerType<MolecularAssemblerContainer> TYPE;
+    public static ContainerType<MolecularAssemblerContainer> TYPE;
 
     private static final ContainerHelper<MolecularAssemblerContainer, MolecularAssemblerBlockEntity> helper = new ContainerHelper<>(
             MolecularAssemblerContainer::new, MolecularAssemblerBlockEntity.class);
 
-    public static MolecularAssemblerContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static MolecularAssemblerContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -144,7 +144,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -172,7 +172,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
 
         // If the pattern changes, the crafting grid slots lose validity
         if (s == encodedPatternSlot) {
-            for (Slot otherSlot : slots) {
+            for (Slot otherSlot : inventorySlots) {
                 if (otherSlot != s && otherSlot instanceof AppEngSlot) {
                     ((AppEngSlot) otherSlot).setIsValid(AppEngSlot.CalculatedValidity.NotAvailable);
                 }

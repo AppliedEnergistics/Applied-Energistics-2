@@ -21,6 +21,7 @@ package appeng.util;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import UUIDMatcher;
 import org.junit.Test;
 
 /**

@@ -5,17 +5,16 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -43,7 +42,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     private final SecurityPermissions requiredPermission;
 
-    private Function<I, Text> containerTitleStrategy = this::getDefaultContainerTitle;
+    private Function<I, ITextComponent> containerTitleStrategy = this::getDefaultContainerTitle;
 
     public ContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass) {
         this(factory, interfaceClass, null);
@@ -59,9 +58,9 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
     /**
      * Specifies a custom strategy for obtaining a custom container name.
      * <p>
-     * The stratgy should return {@link LiteralText#EMPTY} if there's no custom name.
+     * The stratgy should return {@link StringTextComponent#EMPTY} if there's no custom name.
      */
-    public ContainerHelper<C, I> withContainerTitle(Function<I, Text> containerTitleStrategy) {
+    public ContainerHelper<C, I> withContainerTitle(Function<I, ITextComponent> containerTitleStrategy) {
         this.containerTitleStrategy = containerTitleStrategy;
         return this;
     }
@@ -70,7 +69,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
      * Opens a container that is based around a single block entity. The tile entity's position is encoded in the packet
      * buffer.
      */
-    public C fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf packetBuf) {
+    public C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf) {
         return fromNetwork(windowId, inv, packetBuf, (accessObj, container, buffer) -> {
         });
     }
@@ -78,7 +77,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
     /**
      * Same as {@link #open}, but allows or additional data to be read from the packet, and passed onto the container.
      */
-    public C fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf packetBuf,
+    public C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf,
             InitialDataDeserializer<C, I> initialDataDeserializer) {
         I host = getHostFromLocator(inv.player, ContainerLocator.read(packetBuf));
         if (host != null) {
@@ -111,9 +110,9 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             return false;
         }
 
-        Text title = containerTitleStrategy.apply(accessInterface);
+        ITextComponent title = containerTitleStrategy.apply(accessInterface);
 
-        player.openHandledScreen(new HandlerFactory(locator, title, accessInterface, initialDataSerializer));
+        player.openContainer(new HandlerFactory(locator, title, accessInterface, initialDataSerializer));
 
         return true;
     }
@@ -124,11 +123,11 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
         private final I accessInterface;
 
-        private final Text title;
+        private final ITextComponent title;
 
         private final InitialDataSerializer<I> initialDataSerializer;
 
-        public HandlerFactory(ContainerLocator locator, Text title, I accessInterface,
+        public HandlerFactory(ContainerLocator locator, ITextComponent title, I accessInterface,
                 InitialDataSerializer<I> initialDataSerializer) {
             this.locator = locator;
             this.title = title;
@@ -137,19 +136,19 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         }
 
         @Override
-        public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+        public void writeScreenOpeningData(ServerPlayerEntity player, PacketBuffer buf) {
             locator.write(buf);
             initialDataSerializer.serializeInitialData(accessInterface, buf);
         }
 
         @Override
-        public Text getDisplayName() {
+        public ITextComponent getDisplayName() {
             return title;
         }
 
         @Nullable
         @Override
-        public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+        public Container createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
             C c = factory.create(syncId, inv, accessInterface);
             // Set the original locator on the opened server-side container for it to more
             // easily remember how to re-open after being closed.
@@ -168,7 +167,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             return null; // No block was clicked
         }
 
-        BlockEntity tileEntity = player.world.getBlockEntity(locator.getBlockPos());
+        TileEntity tileEntity = player.world.getTileEntity(locator.getBlockPos());
 
         // The block entity itself can host a terminal (i.e. Chest!)
         if (interfaceClass.isInstance(tileEntity)) {
@@ -202,7 +201,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     private I getHostFromPlayerInventory(PlayerEntity player, ContainerLocator locator) {
 
-        ItemStack it = player.inventory.getStack(locator.getItemIndex());
+        ItemStack it = player.inventory.getStackInSlot(locator.getItemIndex());
 
         if (it.isEmpty()) {
             AELog.debug("Cannot open container for player %s since they no longer hold the item in slot %d", player,
@@ -241,7 +240,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
      */
     @FunctionalInterface
     public interface InitialDataSerializer<I> {
-        void serializeInitialData(I host, PacketByteBuf buffer);
+        void serializeInitialData(I host, PacketBuffer buffer);
     }
 
     /**
@@ -250,7 +249,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
      */
     @FunctionalInterface
     public interface InitialDataDeserializer<C, I> {
-        void deserializeInitialData(I host, C container, PacketByteBuf buffer);
+        void deserializeInitialData(I host, C container, PacketBuffer buffer);
     }
 
     private boolean checkPermission(PlayerEntity player, Object accessInterface) {
@@ -263,7 +262,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     }
 
-    private Text getDefaultContainerTitle(I accessInterface) {
+    private ITextComponent getDefaultContainerTitle(I accessInterface) {
         if (accessInterface instanceof ICustomNameObject) {
             ICustomNameObject customNameObject = (ICustomNameObject) accessInterface;
             if (customNameObject.hasCustomInventoryName()) {
@@ -271,7 +270,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             }
         }
 
-        return LiteralText.EMPTY;
+        return StringTextComponent.EMPTY;
     }
 
 }

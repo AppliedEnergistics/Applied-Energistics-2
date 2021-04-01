@@ -25,24 +25,22 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.TntEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.network.Packet;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.item.TNTEntity;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
-
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.Api;
@@ -50,7 +48,7 @@ import appeng.core.sync.packets.ICustomEntity;
 import appeng.core.sync.packets.SpawnEntityPacket;
 import appeng.util.Platform;
 
-public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntity {
+public final class TinyTNTPrimedEntity extends TNTEntity implements ICustomEntity {
 
     public static EntityType<TinyTNTPrimedEntity> TYPE;
 
@@ -58,25 +56,25 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
 
     public TinyTNTPrimedEntity(EntityType<? extends TinyTNTPrimedEntity> type, World worldIn) {
         super(type, worldIn);
-        this.inanimate = true;
+        this.preventEntitySpawning = true;
     }
 
     public TinyTNTPrimedEntity(final World world, final double x, final double y, final double z,
             final LivingEntity igniter) {
         super(TYPE, world);
-        this.updatePosition(x, y, z);
-        double d = world.random.nextDouble() * 6.2831854820251465D;
-        this.setVelocity(-Math.sin(d) * 0.02D, 0.20000000298023224D, -Math.cos(d) * 0.02D);
+        this.setPosition(x, y, z);
+        double d = world.rand.nextDouble() * 6.2831854820251465D;
+        this.setMotion(-Math.sin(d) * 0.02D, 0.20000000298023224D, -Math.cos(d) * 0.02D);
         this.setFuse(80);
-        this.prevX = x;
-        this.prevY = y;
-        this.prevZ = z;
+        this.prevPosX = x;
+        this.prevPosY = y;
+        this.prevPosZ = z;
         this.causingEntity = igniter;
     }
 
     @Nullable
     @Override
-    public LivingEntity getCausingEntity() {
+    public LivingEntity getTntPlacedBy() {
         return causingEntity;
     }
 
@@ -87,25 +85,25 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
     public void tick() {
 
         if (!this.hasNoGravity()) {
-            this.setVelocity(this.getVelocity().add(0.0D, -0.04D, 0.0D));
+            this.setMotion(this.getMotion().add(0.0D, -0.04D, 0.0D));
         }
 
-        this.move(MovementType.SELF, this.getVelocity());
-        this.setVelocity(this.getVelocity().multiply(0.98D));
+        this.move(MoverType.field_6308, this.getMotion());
+        this.setMotion(this.getMotion().scale(0.98D));
         if (this.onGround) {
             // Bounce up
-            this.setVelocity(this.getVelocity().multiply(0.7D, -0.5D, 0.7D));
+            this.setMotion(this.getMotion().mul(0.7D, -0.5D, 0.7D));
         }
 
-        if (this.getFuse() <= 0) {
+        if (this.getFuseDataManager() <= 0) {
             this.remove();
 
-            if (!this.world.isClient) {
+            if (!this.world.isRemote) {
                 this.explode();
             }
         } else {
-            this.updateWaterState();
-            if (this.isSubmergedInWater() && Platform.isServer()) // put out the fuse.
+            this.method_5876();
+            if (this.canSwim() && Platform.isServer()) // put out the fuse.
             {
                 Api.instance().definitions().blocks().tinyTNT().maybeStack(1).ifPresent(tntStack -> {
                     final ItemEntity item = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(), tntStack);
@@ -120,58 +118,58 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
                 });
             }
 
-            this.world.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
+            this.world.addParticle(ParticleTypes.SMOKE, this.getPosX(), this.getPosY(), this.getPosZ(), 0.0D, 0.0D, 0.0D);
         }
-        this.setFuse(this.getFuse() - 1);
+        this.setFuse(this.getFuseDataManager() - 1);
     }
 
     private void explode() {
-        this.world.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE,
-                SoundCategory.BLOCKS, 4.0F,
-                (1.0F + (this.world.random.nextFloat() - this.world.random.nextFloat()) * 0.2F) * 32.9F);
+        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_GENERIC_EXPLODE,
+                SoundCategory.field_15245, 4.0F,
+                (1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 32.9F);
 
-        if (this.isSubmergedInWater()) {
+        if (this.canSwim()) {
             return;
         }
 
-        final Explosion ex = new Explosion(this.world, this, null, null, this.getX(), this.getY(), this.getZ(), 0.2f,
-                false, Explosion.DestructionType.BREAK);
+        final Explosion ex = new Explosion(this.world, this, null, null, this.getPosX(), this.getPosY(), this.getPosZ(), 0.2f,
+                false, Explosion.Mode.field_18686);
 
-        final Box area = new Box(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5, this.getX() + 1.5,
-                this.getY() + 1.5, this.getZ() + 1.5);
-        final List<Entity> list = this.world.getOtherEntities(this, area);
+        final AxisAlignedBB area = new AxisAlignedBB(this.getPosX() - 1.5, this.getPosY() - 1.5f, this.getPosZ() - 1.5, this.getPosX() + 1.5,
+                this.getPosY() + 1.5, this.getPosZ() + 1.5);
+        final List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, area);
 
         for (final Entity e : list) {
-            e.damage(DamageSource.explosion(ex), 6);
+            e.attackEntityFrom(DamageSource.causeExplosionDamage(ex), 6);
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.TINY_TNT_BLOCK_DAMAGE)) {
-            this.updatePosition(this.getX(), this.getY() - 0.25, this.getZ());
+            this.setPosition(this.getPosX(), this.getPosY() - 0.25, this.getPosZ());
 
             // For reference see Explosion.affectWorld
-            for (int x = (int) (this.getX() - 2); x <= this.getX() + 2; x++) {
-                for (int y = (int) (this.getY() - 2); y <= this.getY() + 2; y++) {
-                    for (int z = (int) (this.getZ() - 2); z <= this.getZ() + 2; z++) {
+            for (int x = (int) (this.getPosX() - 2); x <= this.getPosX() + 2; x++) {
+                for (int y = (int) (this.getPosY() - 2); y <= this.getPosY() + 2; y++) {
+                    for (int z = (int) (this.getPosZ() - 2); z <= this.getPosZ() + 2; z++) {
                         final BlockPos blockPos = new BlockPos(x, y, z);
                         final BlockState state = this.world.getBlockState(blockPos);
                         final Block block = state.getBlock();
 
                         if (block != null && !state.isAir()) {
-                            float strength = (float) (2.3f - (((x + 0.5f) - this.getX()) * ((x + 0.5f) - this.getX())
-                                    + ((y + 0.5f) - this.getY()) * ((y + 0.5f) - this.getY())
-                                    + ((z + 0.5f) - this.getZ()) * ((z + 0.5f) - this.getZ())));
+                            float strength = (float) (2.3f - (((x + 0.5f) - this.getPosX()) * ((x + 0.5f) - this.getPosX())
+                                    + ((y + 0.5f) - this.getPosY()) * ((y + 0.5f) - this.getPosY())
+                                    + ((z + 0.5f) - this.getPosZ()) * ((z + 0.5f) - this.getPosZ())));
 
-                            final float resistance = block.getBlastResistance();
+                            final float resistance = block.getExplosionResistance();
                             strength -= (resistance + 0.3F) * 0.11f;
 
                             if (strength > 0.01) {
                                 if (state.getMaterial() != Material.AIR) {
-                                    if (block.shouldDropItemsOnExplosion(ex)) {
-                                        Block.dropStacks(state, this.world, blockPos);
+                                    if (block.canDropFromExplosion(ex)) {
+                                        Block.spawnDrops(state, this.world, blockPos);
                                     }
 
                                     this.world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 3);
-                                    block.onDestroyedByExplosion(this.world, blockPos, ex);
+                                    block.onExplosionDestroy(this.world, blockPos, ex);
                                 }
                             }
                         }
@@ -180,21 +178,21 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
             }
         }
 
-        this.world.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 1.0D, 0.0D, 0.0D);
+        this.world.addParticle(ParticleTypes.EXPLOSION, this.getPosX(), this.getPosY(), this.getPosZ(), 1.0D, 0.0D, 0.0D);
     }
 
     @Override
-    public Packet<?> createSpawnPacket() {
+    public IPacket<?> createSpawnPacket() {
         return SpawnEntityPacket.create(this);
     }
 
     @Override
-    public void writeAdditionalSpawnData(PacketByteBuf buf) {
-        buf.writeByte(this.getFuse());
+    public void writeAdditionalSpawnData(PacketBuffer buf) {
+        buf.writeByte(this.getFuseDataManager());
     }
 
     @Override
-    public void readAdditionalSpawnData(PacketByteBuf buf) {
+    public void readAdditionalSpawnData(PacketBuffer buf) {
         this.setFuse(buf.readByte());
     }
 

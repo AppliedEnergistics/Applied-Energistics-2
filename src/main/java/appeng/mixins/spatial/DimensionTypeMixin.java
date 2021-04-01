@@ -9,17 +9,15 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.tag.BlockTags;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.world.Dimension;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
-
+import net.minecraft.world.gen.DimensionSettings;
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 
@@ -33,29 +31,29 @@ public class DimensionTypeMixin {
     @Invoker("<init>")
     static DimensionType create(OptionalLong fixedTime, boolean hasSkylight, boolean hasCeiling, boolean ultrawarm,
             boolean natural, double coordinateScale, boolean piglinSafe, boolean bedWorks, boolean respawnAnchorWorks,
-            boolean hasRaids, int logicalHeight, Identifier infiniburn, Identifier skyProperties, float ambientLight) {
+            boolean hasRaids, int logicalHeight, ResourceLocation infiniburn, ResourceLocation skyProperties, float ambientLight) {
         throw new AssertionError();
     }
 
     @Inject(method = "addRegistryDefaults", at = @At("TAIL"))
-    private static void addRegistryDefaults(DynamicRegistryManager.Impl registryTracker,
+    private static void addRegistryDefaults(DynamicRegistries.Impl registryTracker,
             CallbackInfoReturnable<?> cir) {
         DimensionType dimensionType = create(OptionalLong.of(12000), false, false, false, false, 1.0, false, false,
-                false, false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), SpatialStorageDimensionIds.SKY_PROPERTIES_ID,
+                false, false, 256, BlockTags.INFINIBURN_OVERWORLD.getName(), SpatialStorageDimensionIds.SKY_PROPERTIES_ID,
                 1.0f);
 
-        Registry.register(registryTracker.getDimensionTypes(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.getValue(),
+        Registry.register(registryTracker.method_30518(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.getLocation(),
                 dimensionType);
     }
 
     @Inject(method = "createDefaultDimensionOptions", at = @At("RETURN"))
     private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,
-            Registry<ChunkGeneratorSettings> chunkGeneratorSettings, long seed,
-            CallbackInfoReturnable<SimpleRegistry<DimensionOptions>> cir) {
-        SimpleRegistry<DimensionOptions> simpleregistry = cir.getReturnValue();
+            Registry<DimensionSettings> chunkGeneratorSettings, long seed,
+            CallbackInfoReturnable<SimpleRegistry<Dimension>> cir) {
+        SimpleRegistry<Dimension> simpleregistry = cir.getReturnValue();
 
-        simpleregistry.add(SpatialStorageDimensionIds.DIMENSION_ID, new DimensionOptions(() -> {
-            return dimensionTypes.get(SpatialStorageDimensionIds.DIMENSION_TYPE_ID);
+        simpleregistry.register(SpatialStorageDimensionIds.DIMENSION_ID, new Dimension(() -> {
+            return dimensionTypes.getValueForKey(SpatialStorageDimensionIds.DIMENSION_TYPE_ID);
         }, new SpatialStorageChunkGenerator(biomes)), Lifecycle.stable());
 
     }

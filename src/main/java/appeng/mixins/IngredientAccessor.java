@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
+import net.minecraft.item.crafting.Ingredient;
 
 @Mixin(Ingredient.class)
 public interface IngredientAccessor {

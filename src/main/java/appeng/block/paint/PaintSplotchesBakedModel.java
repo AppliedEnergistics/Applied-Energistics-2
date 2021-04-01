@@ -14,19 +14,18 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
-
+import net.minecraft.world.IBlockDisplayReader;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
 import appeng.helpers.Splotch;
@@ -35,19 +34,19 @@ import appeng.helpers.Splotch;
  * Renders paint blocks, which render multiple "splotches" that have been applied to the sides of adjacent blocks using
  * a matter cannon with paint balls.
  */
-class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
+class PaintSplotchesBakedModel implements IBakedModel, FabricBakedModel {
 
-    private static final SpriteIdentifier TEXTURE_PAINT1 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "block/paint1"));
-    private static final SpriteIdentifier TEXTURE_PAINT2 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "block/paint2"));
-    private static final SpriteIdentifier TEXTURE_PAINT3 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "block/paint3"));
+    private static final RenderMaterial TEXTURE_PAINT1 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "block/paint1"));
+    private static final RenderMaterial TEXTURE_PAINT2 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "block/paint2"));
+    private static final RenderMaterial TEXTURE_PAINT3 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "block/paint3"));
 
-    private final Sprite[] textures;
+    private final TextureAtlasSprite[] textures;
 
-    PaintSplotchesBakedModel(Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
-        this.textures = new Sprite[] { bakedTextureGetter.apply(TEXTURE_PAINT1),
+    PaintSplotchesBakedModel(Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
+        this.textures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_PAINT1),
                 bakedTextureGetter.apply(TEXTURE_PAINT2), bakedTextureGetter.apply(TEXTURE_PAINT3) };
     }
 
@@ -57,7 +56,7 @@ class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
 
         Object renderAttachment = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
@@ -92,41 +91,41 @@ class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
             pos_x = Math.max(buffer, Math.min(1.0f - buffer, pos_x));
             pos_y = Math.max(buffer, Math.min(1.0f - buffer, pos_y));
 
-            Sprite ico = this.textures[s.getSeed() % this.textures.length];
+            TextureAtlasSprite ico = this.textures[s.getSeed() % this.textures.length];
             builder.setTexture(ico);
             builder.setCustomUv(s.getSide().getOpposite(), 0, 0, 16, 16);
 
             switch (s.getSide()) {
-                case UP:
+                case field_11036:
                     offset = 1.0f - offset;
-                    builder.addQuad(Direction.DOWN, pos_x - buffer, offset, pos_y - buffer, pos_x + buffer, offset,
+                    builder.addQuad(Direction.field_11033, pos_x - buffer, offset, pos_y - buffer, pos_x + buffer, offset,
                             pos_y + buffer);
                     break;
 
-                case DOWN:
-                    builder.addQuad(Direction.UP, pos_x - buffer, offset, pos_y - buffer, pos_x + buffer, offset,
+                case field_11033:
+                    builder.addQuad(Direction.field_11036, pos_x - buffer, offset, pos_y - buffer, pos_x + buffer, offset,
                             pos_y + buffer);
                     break;
 
-                case EAST:
+                case field_11034:
                     offset = 1.0f - offset;
-                    builder.addQuad(Direction.WEST, offset, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
+                    builder.addQuad(Direction.field_11039, offset, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
                             pos_y + buffer);
                     break;
 
-                case WEST:
-                    builder.addQuad(Direction.EAST, offset, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
+                case field_11039:
+                    builder.addQuad(Direction.field_11034, offset, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
                             pos_y + buffer);
                     break;
 
-                case SOUTH:
+                case field_11035:
                     offset = 1.0f - offset;
-                    builder.addQuad(Direction.NORTH, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
+                    builder.addQuad(Direction.field_11043, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
                             pos_y + buffer, offset);
                     break;
 
-                case NORTH:
-                    builder.addQuad(Direction.SOUTH, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
+                case field_11043:
+                    builder.addQuad(Direction.field_11035, pos_x - buffer, pos_y - buffer, offset, pos_x + buffer,
                             pos_y + buffer, offset);
                     break;
 
@@ -145,33 +144,33 @@ class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return true;
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getSprite() {
+    public TextureAtlasSprite getParticleTexture() {
         return this.textures[0];
     }
 
     @Override
-    public ModelTransformation getTransformation() {
+    public ItemCameraTransforms getItemCameraTransforms() {
         return null;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 
     @Override
@@ -179,7 +178,7 @@ class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
         return false;
     }
 
-    static List<SpriteIdentifier> getRequiredTextures() {
+    static List<RenderMaterial> getRequiredTextures() {
         return ImmutableList.of(TEXTURE_PAINT1, TEXTURE_PAINT2, TEXTURE_PAINT3);
     }
 

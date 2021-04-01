@@ -22,9 +22,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -59,16 +58,16 @@ import appeng.util.item.AEItemStack;
 
 public class ImportBusPart extends SharedItemBusPart implements IInventoryDestination {
 
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/import_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/import_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/import_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/import_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_has_channel"));
 
     private final IActionSource source;
     private int itemsToSend; // used in tickingRequest
@@ -117,7 +116,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (Platform.isServer()) {
             ContainerOpener.openContainer(UpgradeableContainer.TYPE, player, ContainerLocator.forPart(this));
         }

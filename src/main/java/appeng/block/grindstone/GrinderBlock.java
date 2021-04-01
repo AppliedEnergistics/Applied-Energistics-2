@@ -21,12 +21,12 @@ package appeng.block.grindstone;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -37,21 +37,21 @@ import appeng.tile.grindstone.GrinderBlockEntity;
 
 public class GrinderBlock extends AEBaseTileBlock<GrinderBlockEntity> {
 
-    public GrinderBlock(Settings props) {
+    public GrinderBlock(Properties props) {
         super(props);
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final GrinderBlockEntity tg = this.getBlockEntity(w, pos);
-        if (tg != null && !p.isInSneakingPose()) {
+        if (tg != null && !p.isCrouching()) {
             if (p instanceof ServerPlayerEntity) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.field_5812;
         }
-        return ActionResult.PASS;
+        return ActionResultType.field_5811;
     }
 }

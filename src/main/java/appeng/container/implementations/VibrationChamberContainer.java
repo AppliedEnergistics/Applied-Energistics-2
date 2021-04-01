@@ -20,9 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
@@ -32,12 +31,12 @@ import appeng.tile.misc.VibrationChamberBlockEntity;
 
 public class VibrationChamberContainer extends AEBaseContainer implements IProgressProvider {
 
-    public static ScreenHandlerType<VibrationChamberContainer> TYPE;
+    public static ContainerType<VibrationChamberContainer> TYPE;
 
     private static final ContainerHelper<VibrationChamberContainer, VibrationChamberBlockEntity> helper = new ContainerHelper<>(
             VibrationChamberContainer::new, VibrationChamberBlockEntity.class);
 
-    public static VibrationChamberContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static VibrationChamberContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -63,14 +62,14 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         if (isServer()) {
             this.remainingBurnTime = this.vibrationChamber.getMaxBurnTime() <= 0 ? 0
                     : (int) (100.0 * this.vibrationChamber.getBurnTime() / this.vibrationChamber.getMaxBurnTime());
             this.burnSpeed = this.remainingBurnTime <= 0 ? 0 : this.vibrationChamber.getBurnSpeed();
 
         }
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     @Override

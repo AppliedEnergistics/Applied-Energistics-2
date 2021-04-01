@@ -2,9 +2,8 @@ package appeng.fluids.container;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.SecurityPermissions;
@@ -18,12 +17,12 @@ import appeng.fluids.util.IAEFluidTank;
 
 public class FluidFormationPlaneContainer extends FluidConfigurableContainer {
 
-    public static ScreenHandlerType<FluidFormationPlaneContainer> TYPE;
+    public static ContainerType<FluidFormationPlaneContainer> TYPE;
 
     private static final ContainerHelper<FluidFormationPlaneContainer, FluidFormationPlanePart> helper = new ContainerHelper<>(
             FluidFormationPlaneContainer::new, FluidFormationPlanePart.class, SecurityPermissions.BUILD);
 
-    public static FluidFormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static FluidFormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -64,7 +63,7 @@ public class FluidFormationPlaneContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
         this.checkToolbox();
         this.standardDetectAndSendChanges();

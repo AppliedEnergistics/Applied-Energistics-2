@@ -25,12 +25,12 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SpecialCraftingRecipe;
-import net.minecraft.recipe.SpecialRecipeSerializer;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.api.definitions.IBlocks;
@@ -44,8 +44,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 
-public final class DisassembleRecipe extends SpecialCraftingRecipe {
-    public static final RecipeSerializer<DisassembleRecipe> SERIALIZER = new SpecialRecipeSerializer<>(
+public final class DisassembleRecipe extends SpecialRecipe {
+    public static final IRecipeSerializer<DisassembleRecipe> SERIALIZER = new SpecialRecipeSerializer<>(
             DisassembleRecipe::new);
 
     private static final ItemStack MISMATCHED_STACK = ItemStack.EMPTY;
@@ -53,7 +53,7 @@ public final class DisassembleRecipe extends SpecialCraftingRecipe {
     private final Map<IItemDefinition, IItemDefinition> cellMappings;
     private final Map<IItemDefinition, IItemDefinition> nonCellMappings;
 
-    public DisassembleRecipe(Identifier id) {
+    public DisassembleRecipe(ResourceLocation id) {
         super(id);
 
         final IDefinitions definitions = Api.instance().definitions();
@@ -82,12 +82,12 @@ public final class DisassembleRecipe extends SpecialCraftingRecipe {
     }
 
     @Nonnull
-    private ItemStack getOutput(final Inventory inventory) {
+    private ItemStack getOutput(final IInventory inventory) {
         int itemCount = 0;
         ItemStack output = MISMATCHED_STACK;
 
-        for (int slotIndex = 0; slotIndex < inventory.size(); slotIndex++) {
-            final ItemStack stackInSlot = inventory.getStack(slotIndex);
+        for (int slotIndex = 0; slotIndex < inventory.getSizeInventory(); slotIndex++) {
+            final ItemStack stackInSlot = inventory.getStackInSlot(slotIndex);
             if (!stackInSlot.isEmpty()) {
                 // needs a single input in the recipe
                 itemCount++;
@@ -150,13 +150,13 @@ public final class DisassembleRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public boolean fits(int i, int i1) {
+    public boolean canFit(int i, int i1) {
         return false;
     }
 
     @Nonnull
     @Override
-    public RecipeSerializer<DisassembleRecipe> getSerializer() {
+    public IRecipeSerializer<DisassembleRecipe> getSerializer() {
         return SERIALIZER;
     }
 

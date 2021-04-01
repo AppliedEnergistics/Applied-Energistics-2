@@ -18,41 +18,40 @@
 
 package appeng.debug;
 
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Tickable;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-
+import net.minecraft.world.server.ServerWorld;
 import appeng.core.AELog;
 import appeng.tile.AEBaseBlockEntity;
 
-public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements Tickable {
+public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements ITickableTileEntity {
 
-    public ChunkLoaderBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public ChunkLoaderBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
     public void onReady() {
-        if (world.isClient) {
+        if (world.isRemote) {
             return;
         }
 
         World world = getWorld();
         if (world instanceof ServerWorld) {
             ChunkPos chunkPos = new ChunkPos(getPos());
-            ((ServerWorld) world).setChunkForced(chunkPos.x, chunkPos.z, true);
+            ((ServerWorld) world).forceChunk(chunkPos.x, chunkPos.z, true);
         }
     }
 
     @Override
-    public void markRemoved() {
-        super.markRemoved();
+    public void remove() {
+        super.remove();
         World world = getWorld();
         if (world instanceof ServerWorld) {
             ChunkPos chunkPos = new ChunkPos(getPos());
-            ((ServerWorld) world).setChunkForced(chunkPos.x, chunkPos.z, false);
+            ((ServerWorld) world).forceChunk(chunkPos.x, chunkPos.z, false);
         }
     }
 
@@ -64,10 +63,10 @@ public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements Tickabl
             ChunkPos chunkPos = new ChunkPos(getPos());
             ServerWorld serverWorld = (ServerWorld) world;
 
-            if (!serverWorld.getForcedChunks().contains(chunkPos.toLong())) {
+            if (!serverWorld.getForcedChunks().contains(chunkPos.asLong())) {
                 AELog.debug("Force-loading chunk @ %d,%d in world %s", chunkPos.x, chunkPos.z,
-                        serverWorld.getRegistryKey().getValue());
-                serverWorld.setChunkForced(chunkPos.x, chunkPos.z, true);
+                        serverWorld.getDimensionKey().getLocation());
+                serverWorld.forceChunk(chunkPos.x, chunkPos.z, true);
             }
         }
     }

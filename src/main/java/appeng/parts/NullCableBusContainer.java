@@ -23,11 +23,11 @@ import java.util.Random;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.parts.SelectedPart;
@@ -57,12 +57,12 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public boolean activate(final PlayerEntity player, final Hand hand, final Vec3d vecFromPool) {
+    public boolean activate(final PlayerEntity player, final Hand hand, final Vector3d vecFromPool) {
         return false;
     }
 
     @Override
-    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onneighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -72,7 +72,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public SelectedPart selectPart(final Vec3d v3) {
+    public SelectedPart selectPart(final Vector3d v3) {
         return new SelectedPart();
     }
 
@@ -102,7 +102,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public boolean clicked(PlayerEntity player, Hand hand, Vec3d hitVec) {
+    public boolean clicked(PlayerEntity player, Hand hand, Vector3d hitVec) {
         return false;
     }
 

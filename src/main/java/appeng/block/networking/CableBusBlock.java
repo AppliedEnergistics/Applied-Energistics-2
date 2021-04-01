@@ -30,37 +30,37 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.hit.HitResult.Type;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.parts.IFacadeContainer;
@@ -88,22 +88,22 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
-    private static final IntProperty LIGHT_LEVEL = IntProperty.of("light_level", 0, 15);
+    private static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
 
     public CableBusBlock() {
-        super(defaultProps(AEMaterials.GLASS).nonOpaque().dropsNothing().dynamicBounds()
-                .luminance(state -> state.get(LIGHT_LEVEL)));
+        super(defaultProps(AEMaterials.GLASS).notSolid().noDrops().variableOpacity()
+                .setLightLevel(state -> state.get(LIGHT_LEVEL)));
         setDefaultState(getDefaultState().with(LIGHT_LEVEL, 0));
     }
 
     static {
         ClientPickBlockGatherCallback.EVENT.register((player, result) -> {
-            if (result instanceof BlockHitResult) {
-                BlockHitResult blockResult = (BlockHitResult) result;
-                BlockState blockState = player.world.getBlockState(((BlockHitResult) result).getBlockPos());
+            if (result instanceof BlockRayTraceResult) {
+                BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
+                BlockState blockState = player.world.getBlockState(((BlockRayTraceResult) result).getPos());
                 if (blockState.getBlock() instanceof CableBusBlock) {
                     CableBusBlock cableBus = (CableBusBlock) blockState.getBlock();
-                    return cableBus.getPickBlock(blockState, result, player.world, blockResult.getBlockPos(), player);
+                    return cableBus.getPickBlock(blockState, result, player.world, blockResult.getPos(), player);
                 }
             }
             return ItemStack.EMPTY;
@@ -111,18 +111,18 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public boolean isTranslucent(BlockState state, BlockView reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
         return true;
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void randomDisplayTick(final BlockState state, final World worldIn, final BlockPos pos, final Random rand) {
+    public void animateTick(final BlockState state, final World worldIn, final BlockPos pos, final Random rand) {
         this.cb(worldIn, pos).randomDisplayTick(worldIn, pos, rand);
     }
 
     @Override
-    public int getWeakRedstonePower(final BlockState state, final BlockView w, final BlockPos pos,
+    public int getWeakPower(final BlockState state, final IBlockReader w, final BlockPos pos,
             final Direction side) {
         return this.cb(w, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
         // IS
@@ -130,7 +130,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public boolean emitsRedstonePower(final BlockState state) {
+    public boolean canProvidePower(final BlockState state) {
         return true;
     }
 
@@ -140,15 +140,15 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public int getStrongRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
+    public int getStrongPower(BlockState state, IBlockReader world, BlockPos pos, Direction direction) {
         return this.cb(world, pos).isProvidingStrongPower(direction.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(LIGHT_LEVEL);
     }
 
@@ -159,17 +159,17 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 // FIXME FABRIC }
 
     @Override
-    public boolean canReplace(BlockState state, ItemPlacementContext context) {
+    public boolean isReplaceable(BlockState state, BlockItemUseContext context) {
         // FIXME: Potentially check the fluid one too
-        return super.canReplace(state, context) && this.cb(context.getWorld(), context.getBlockPos()).isEmpty();
+        return super.isReplaceable(state, context) && this.cb(context.getWorld(), context.getPos()).isEmpty();
     }
 
     // We drop the parts and the facades here, and the contents of the parts are handled by the block entity.
     @Override
-    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
-        LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state)
-                .build(LootContextTypes.BLOCK);
-        BlockEntity be = lootContext.get(LootContextParameters.BLOCK_ENTITY);
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        LootContext lootContext = builder.withParameter(LootParameters.BLOCK_STATE, state)
+                .build(LootParameterSets.BLOCK);
+        TileEntity be = lootContext.get(LootParameters.BLOCK_ENTITY);
         if (be instanceof CableBusBlockEntity) {
             CableBusBlockEntity bus = (CableBusBlockEntity) be;
             List<ItemStack> drops = new ArrayList<>();
@@ -192,9 +192,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 // FIXME FABRIC        return this.cb(w, pos).canConnectRedstone(side.getOpposite());
 // FIXME FABRIC    }
 
-    public ItemStack getPickBlock(BlockState state, HitResult target, BlockView world, BlockPos pos,
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos,
             PlayerEntity player) {
-        final Vec3d v3 = target.getPos().subtract(pos.getX(), pos.getY(), pos.getZ());
+        final Vector3d v3 = target.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ());
         final SelectedPart sp = this.cb(world, pos).selectPart(v3);
 
         if (sp.part != null) {
@@ -209,7 +209,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     // FIXME FABRIC MIXIN
     // net.minecraft.client.particle.ParticleManager.addBlockBreakingParticles
     @Environment(EnvType.CLIENT)
-    public boolean addHitEffects(final BlockState state, final World world, final HitResult target,
+    public boolean addHitEffects(final BlockState state, final World world, final RayTraceResult target,
             final ParticleManager effectRenderer) {
 
         // Half the particle rate. Since we're spawning concentrated on a specific spot,
@@ -218,15 +218,15 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
             return true;
         }
 
-        if (target.getType() != Type.BLOCK) {
+        if (target.getType() != Type.field_1332) {
             return false;
         }
-        BlockPos blockPos = new BlockPos(target.getPos().x, target.getPos().y, target.getPos().z);
+        BlockPos blockPos = new BlockPos(target.getHitVec().x, target.getHitVec().y, target.getHitVec().z);
 
         ICableBusContainer cb = this.cb(world, blockPos);
 
         // Our built-in model has the actual baked sprites we need
-        BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(this.getDefaultState());
+        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(this.getDefaultState());
 
         // We cannot add the effect if we don't have the model
         if (!(model instanceof CableBusBakedModel)) {
@@ -238,14 +238,14 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         CableBusRenderState renderState = cb.getRenderState();
 
         // Spawn a particle for one of the particle textures
-        Sprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
+        TextureAtlasSprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
         if (texture != null) {
-            double x = target.getPos().x;
-            double y = target.getPos().y;
-            double z = target.getPos().z;
+            double x = target.getHitVec().x;
+            double y = target.getHitVec().y;
+            double z = target.getHitVec().z;
             // FIXME: Check how this looks, probably like shit, maybe provide parts the
             // ability to supply particle textures???
-            effectRenderer.addParticle(new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).scale(0.8F));
+            effectRenderer.addEffect(new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).multiplyParticleScaleBy(0.8F));
         }
 
         return true;
@@ -258,7 +258,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         ICableBusContainer cb = this.cb(world, pos);
 
         // Our built-in model has the actual baked sprites we need
-        BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(this.getDefaultState());
+        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(this.getDefaultState());
 
         // We cannot add the effect if we dont have the model
         if (!(model instanceof CableBusBakedModel)) {
@@ -269,7 +269,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 
         CableBusRenderState renderState = cb.getRenderState();
 
-        List<Sprite> textures = cableBusModel.getParticleTextures(renderState);
+        List<TextureAtlasSprite> textures = cableBusModel.getParticleTextures(renderState);
 
         if (!textures.isEmpty()) {
             // Shamelessly inspired by ParticleManager.addBlockDestroyEffects
@@ -278,7 +278,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
                     for (int l = 0; l < 4; ++l) {
                         // Randomly select one of the textures if the cable bus has more than just one
                         // possibility here
-                        final Sprite texture = Platform.pickRandom(textures);
+                        final TextureAtlasSprite texture = Platform.pickRandom(textures);
 
                         final double x = pos.getX() + (j + 0.5D) / 4.0D;
                         final double y = pos.getY() + (k + 0.5D) / 4.0D;
@@ -288,7 +288,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
                         // ability to supply particle textures???
                         Particle effect = new CableBusBreakingParticle((ClientWorld) world, x, y, z,
                                 x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
-                        effectRenderer.addParticle(effect);
+                        effectRenderer.addEffect(effect);
                     }
                 }
             }
@@ -298,15 +298,15 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         if (Platform.isServer()) {
             this.cb(world, pos).onneighborUpdate(world, pos, fromPos);
         }
     }
 
-    private ICableBusContainer cb(final BlockView w, final BlockPos pos) {
-        final BlockEntity te = w.getBlockEntity(pos);
+    private ICableBusContainer cb(final IBlockReader w, final BlockPos pos) {
+        final TileEntity te = w.getTileEntity(pos);
         ICableBusContainer out = null;
 
         if (te instanceof CableBusBlockEntity) {
@@ -317,8 +317,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Nullable
-    private IFacadeContainer fc(final BlockView w, final BlockPos pos) {
-        final BlockEntity te = w.getBlockEntity(pos);
+    private IFacadeContainer fc(final IBlockReader w, final BlockPos pos) {
+        final TileEntity te = w.getTileEntity(pos);
         IFacadeContainer out = null;
 
         if (te instanceof CableBusBlockEntity) {
@@ -330,37 +330,37 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void onBlockBreakStart(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
-        if (worldIn.isClient()) {
-            final HitResult rtr = AppEng.instance().getRTR();
-            if (rtr instanceof BlockHitResult) {
-                BlockHitResult brtr = (BlockHitResult) rtr;
-                if (brtr.getBlockPos().equals(pos)) {
-                    final Vec3d hitVec = rtr.getPos().subtract(new Vec3d(pos.getX(), pos.getY(), pos.getZ()));
+    public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
+        if (worldIn.isRemote()) {
+            final RayTraceResult rtr = AppEng.instance().getRTR();
+            if (rtr instanceof BlockRayTraceResult) {
+                BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
+                if (brtr.getPos().equals(pos)) {
+                    final Vector3d hitVec = rtr.getHitVec().subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
 
-                    if (this.cb(worldIn, pos).clicked(player, Hand.MAIN_HAND, hitVec)) {
-                        NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getSide(), (float) hitVec.x,
-                                (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
+                    if (this.cb(worldIn, pos).clicked(player, Hand.field_5808, hitVec)) {
+                        NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getFace(), (float) hitVec.x,
+                                (float) hitVec.y, (float) hitVec.z, Hand.field_5808, true));
                     }
                 }
             }
         }
     }
 
-    public void onBlockClickPacket(World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, Vec3d hitVec) {
+    public void onBlockClickPacket(World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, Vector3d hitVec) {
         this.cb(worldIn, pos).clicked(playerIn, hand, hitVec);
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         // Transform from world into block space
-        Vec3d hitVec = hit.getPos();
-        Vec3d hitInBlock = new Vec3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
-        return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResult.SUCCESS : ActionResult.PASS;
+        Vector3d hitVec = hit.getHitVec();
+        Vector3d hitInBlock = new Vector3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
+        return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResultType.field_5812 : ActionResultType.field_5811;
     }
 
-    public boolean recolorBlock(final BlockView world, final BlockPos pos, final Direction side, final DyeColor color,
+    public boolean recolorBlock(final IBlockReader world, final BlockPos pos, final Direction side, final DyeColor color,
             final PlayerEntity who) {
         try {
             return this.cb(world, pos).recolourBlock(side, AEColor.values()[color.ordinal()], who);
@@ -370,12 +370,12 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public void addStacksForDisplay(ItemGroup group, DefaultedList<ItemStack> list) {
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list) {
         // do nothing
     }
 
     @Override
-    public BlockState getFacadeState(BlockView world, BlockPos pos, Direction side) {
+    public BlockState getFacadeState(IBlockReader world, BlockPos pos, Direction side) {
         if (side != null) {
             IFacadeContainer container = this.fc(world, pos);
             if (container != null) {
@@ -389,7 +389,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
         CableBusBlockEntity te = getBlockEntity(w, pos);
         if (te == null) {
             return VoxelShapes.empty();
@@ -399,7 +399,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
         CableBusBlockEntity te = getBlockEntity(w, pos);
         if (te == null) {
             return VoxelShapes.empty();

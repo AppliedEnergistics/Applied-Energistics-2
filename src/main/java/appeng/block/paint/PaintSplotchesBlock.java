@@ -20,17 +20,17 @@ package appeng.block.paint;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -39,20 +39,20 @@ import appeng.util.Platform;
 
 public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEntity> {
     public PaintSplotchesBlock() {
-        super(defaultProps(Material.WATER, MaterialColor.CLEAR).nonOpaque().air());
+        super(defaultProps(Material.WATER, MaterialColor.AIR).notSolid().setAir());
     }
 
     @Override
-    public void addStacksForDisplay(ItemGroup group, DefaultedList<ItemStack> list) {
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list) {
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return VoxelShapes.empty();
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         final PaintSplotchesBlockEntity tp = this.getBlockEntity(world, pos);
 
@@ -62,7 +62,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEnti
     }
 
     @Override
-    public void rainTick(World world, BlockPos pos) {
+    public void fillWithRain(World world, BlockPos pos) {
         if (Platform.isServer()) {
             world.removeBlock(pos, false);
         }
@@ -81,7 +81,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEnti
 // FIXME FABRIC   }
 
     @Override
-    public boolean canReplace(BlockState state, ItemPlacementContext context) {
+    public boolean isReplaceable(BlockState state, BlockItemUseContext context) {
         return true;
     }
 

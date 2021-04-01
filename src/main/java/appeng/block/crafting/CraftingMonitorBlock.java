@@ -21,7 +21,7 @@ package appeng.block.crafting;
 import appeng.tile.crafting.CraftingMonitorBlockEntity;
 
 public class CraftingMonitorBlock extends AbstractCraftingUnitBlock<CraftingMonitorBlockEntity> {
-    public CraftingMonitorBlock(Settings props) {
+    public CraftingMonitorBlock(Properties props) {
         super(props, CraftingUnitType.MONITOR);
     }
 }

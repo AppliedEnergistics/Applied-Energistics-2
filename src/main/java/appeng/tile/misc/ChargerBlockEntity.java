@@ -24,13 +24,11 @@ import java.util.EnumSet;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -68,7 +66,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
     private final FixedItemInv externalInv = inv.createFiltered(new ChargerInvFilter());
 
-    public ChargerBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public ChargerBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
         this.getProxy().setFlags();
@@ -82,7 +80,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         try {
             final IAEItemStack item = AEItemStack.fromPacket(data);
@@ -95,7 +93,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         final AEItemStack is = AEItemStack.fromItemStack(this.inv.getInvStack(0));
         if (is != null) {
@@ -167,11 +165,11 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
         final ItemStack myItem = this.inv.getInvStack(0);
         if (myItem.isEmpty()) {
-            ItemStack held = player.inventory.getMainHandStack();
+            ItemStack held = player.inventory.getCurrentItem();
 
             if (Api.instance().definitions().materials().certusQuartzCrystal().isSameAs(held)
                     || Platform.isChargeable(held)) {
-                held = player.inventory.removeStack(player.inventory.selectedSlot, 1);
+                held = player.inventory.decrStackSize(player.inventory.currentItem, 1);
                 this.inv.setInvStack(0, held, Simulation.ACTION);
             }
         } else {

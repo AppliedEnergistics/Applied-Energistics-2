@@ -20,11 +20,10 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
-
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.definitions.IItemDefinition;
@@ -45,12 +44,12 @@ import appeng.tile.misc.InscriberRecipes;
  */
 public class InscriberContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static ScreenHandlerType<InscriberContainer> TYPE;
+    public static ContainerType<InscriberContainer> TYPE;
 
     private static final ContainerHelper<InscriberContainer, InscriberBlockEntity> helper = new ContainerHelper<>(
             InscriberContainer::new, InscriberBlockEntity.class);
 
-    public static InscriberContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static InscriberContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -116,7 +115,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.standardDetectAndSendChanges();
 
         if (isServer()) {

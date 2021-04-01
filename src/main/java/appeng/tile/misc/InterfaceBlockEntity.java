@@ -25,15 +25,15 @@ import java.util.List;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
@@ -74,7 +74,7 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     // Indicates that this interface has no specific direction set
     private boolean omniDirectional = true;
 
-    public InterfaceBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public InterfaceBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -108,11 +108,11 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
         }
 
         if (this.omniDirectional) {
-            this.setOrientation(Direction.NORTH, Direction.UP);
+            this.setOrientation(Direction.field_11043, Direction.field_11036);
         } else {
-            Direction newUp = Direction.UP;
-            if (newForward == Direction.UP || newForward == Direction.DOWN) {
-                newUp = Direction.NORTH;
+            Direction newUp = Direction.field_11036;
+            if (newForward == Direction.field_11036 || newForward == Direction.field_11033) {
+                newUp = Direction.field_11043;
             }
             this.setOrientation(newForward, newUp);
         }
@@ -149,23 +149,23 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         data.putBoolean("omniDirectional", this.omniDirectional);
         this.duality.writeToNBT(data);
         return data;
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.omniDirectional = data.getBoolean("omniDirectional");
 
         this.duality.readFromNBT(data);
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         boolean oldOmniDirectional = this.omniDirectional;
         this.omniDirectional = data.readBoolean();
@@ -173,7 +173,7 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.omniDirectional);
     }
@@ -233,7 +233,7 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public BlockEntity getBlockEntity() {
+    public TileEntity getBlockEntity() {
         return this;
     }
 
@@ -305,7 +305,7 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType() {
+    public ContainerType<?> getContainerType() {
         return InterfaceContainer.TYPE;
     }
 }

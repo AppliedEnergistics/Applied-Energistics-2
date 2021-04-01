@@ -19,8 +19,7 @@
 package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
-
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -65,8 +64,8 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     public boolean verifyInternalStructure(final World w, final BlockPos min, final BlockPos max) {
         boolean storage = false;
 
-        for (BlockPos blockPos : BlockPos.iterate(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(blockPos);
+        for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getTileEntity(blockPos);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -82,8 +81,8 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
 
     @Override
     public void updateTiles(final CraftingCPUCluster c, final World w, final BlockPos min, final BlockPos max) {
-        for (BlockPos blockPos : BlockPos.iterate(min, max)) {
-            final CraftingBlockEntity te = (CraftingBlockEntity) w.getBlockEntity(blockPos);
+        for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
+            final CraftingBlockEntity te = (CraftingBlockEntity) w.getTileEntity(blockPos);
             te.updateStatus(c);
             c.addTile(te);
         }
@@ -105,7 +104,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     }
 
     @Override
-    public boolean isValidTile(final BlockEntity te) {
+    public boolean isValidTile(final TileEntity te) {
         return te instanceof CraftingBlockEntity;
     }
 }

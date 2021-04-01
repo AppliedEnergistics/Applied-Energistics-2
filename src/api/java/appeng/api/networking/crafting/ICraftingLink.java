@@ -23,7 +23,7 @@
 
 package appeng.api.networking.crafting;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 
 public interface ICraftingLink {
 
@@ -52,7 +52,7 @@ public interface ICraftingLink {
      *
      * @param tag to be written data
      */
-    void writeToNBT(CompoundTag tag);
+    void writeToNBT(CompoundNBT tag);
 
     /**
      * @return the crafting ID for this link.

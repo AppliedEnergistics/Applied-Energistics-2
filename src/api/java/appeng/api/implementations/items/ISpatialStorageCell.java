@@ -25,8 +25,7 @@ package appeng.api.implementations.items;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-
+import net.minecraft.world.server.ServerWorld;
 import appeng.api.util.WorldCoord;
 
 /**

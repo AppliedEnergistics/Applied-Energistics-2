@@ -18,8 +18,8 @@
 
 package appeng.core.localization;
 
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum PlayerMessages {
     ChestCannotReadStorageCell, InvalidMachine, LoadedSettings, SavedSettings, ResetSettings, MachineNotPowered,
@@ -27,8 +27,8 @@ public enum PlayerMessages {
     isNowLocked, isNowUnlocked, AmmoDepleted, CommunicationError, OutOfRange, DeviceNotPowered,
     DeviceNotWirelessTerminal, DeviceNotLinked, StationCanNotBeLocated, SettingCleared,;
 
-    public Text get() {
-        return new TranslatableText(this.getTranslationKey());
+    public ITextComponent get() {
+        return new TranslationTextComponent(this.getTranslationKey());
     }
 
     String getTranslationKey() {

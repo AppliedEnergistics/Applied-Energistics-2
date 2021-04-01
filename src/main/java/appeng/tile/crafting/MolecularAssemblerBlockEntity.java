@@ -28,14 +28,14 @@ import org.jetbrains.annotations.NotNull;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Simulation;
@@ -107,7 +107,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @Environment(EnvType.CLIENT)
     private AssemblerAnimationStatus animationStatus;
 
-    public MolecularAssemblerBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public MolecularAssemblerBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         final ITileDefinition assembler = Api.instance().definitions().blocks().molecularAssembler();
 
@@ -149,8 +149,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 this.myPlan = patternDetails;
                 this.pushDirection = AEPartLocation.fromFacing(where);
 
-                for (int x = 0; x < table.size(); x++) {
-                    this.gridInv.setInvStack(x, table.getStack(x), Simulation.ACTION);
+                for (int x = 0; x < table.getSizeInventory(); x++) {
+                    this.gridInv.setInvStack(x, table.getStackInSlot(x), Simulation.ACTION);
                 }
 
                 this.updateSleepiness();
@@ -186,8 +186,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             return false;
         }
 
-        for (int x = 0; x < this.craftingInv.size(); x++) {
-            this.craftingInv.setStack(x, this.gridInv.getInvStack(x));
+        for (int x = 0; x < this.craftingInv.getSizeInventory(); x++) {
+            this.craftingInv.setInventorySlotContents(x, this.gridInv.getInvStack(x));
         }
 
         return !this.myPlan.getOutput(this.craftingInv, this.getWorld()).isEmpty();
@@ -204,7 +204,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         final boolean oldPower = this.isPowered;
         this.isPowered = data.readBoolean();
@@ -212,19 +212,19 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.isPowered);
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         if (this.forcePlan && this.myPlan != null) {
             final ItemStack pattern = this.myPlan.getPattern();
             if (!pattern.isEmpty()) {
-                final CompoundTag compound = new CompoundTag();
-                pattern.toTag(compound);
+                final CompoundNBT compound = new CompoundNBT();
+                pattern.write(compound);
                 data.put("myPlan", compound);
                 data.putInt("pushDirection", this.pushDirection.ordinal());
             }
@@ -236,10 +236,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         if (data.contains("myPlan")) {
-            final ItemStack myPat = ItemStack.fromTag(data.getCompound("myPlan"));
+            final ItemStack myPat = ItemStack.read(data.getCompound("myPlan"));
 
             if (!myPat.isEmpty() && myPat.getItem() instanceof EncodedPatternItem) {
                 final World w = this.getWorld();
@@ -267,7 +267,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         final ItemStack is = this.patternInv.getInvStack(0);
 
         if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
-            if (!ItemStack.areItemsEqual(is, this.myPattern)) {
+            if (!ItemStack.areItemsEqualIgnoreDurability(is, this.myPattern)) {
                 final World w = this.getWorld();
                 final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
 
@@ -416,8 +416,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         }
 
         if (this.progress >= 100) {
-            for (int x = 0; x < this.craftingInv.size(); x++) {
-                this.craftingInv.setStack(x, this.gridInv.getInvStack(x));
+            for (int x = 0; x < this.craftingInv.getSizeInventory(); x++) {
+                this.craftingInv.setInventorySlotContents(x, this.gridInv.getInvStack(x));
             }
 
             this.progress = 0;
@@ -429,8 +429,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
                 this.pushOut(output.copy());
 
-                for (int x = 0; x < this.craftingInv.size(); x++) {
-                    this.gridInv.setInvStack(x, Platform.getRecipeRemainder(this.craftingInv.getStack(x)),
+                for (int x = 0; x < this.craftingInv.getSizeInventory(); x++) {
+                    this.gridInv.setInvStack(x, Platform.getRecipeRemainder(this.craftingInv.getStackInSlot(x)),
                             Simulation.ACTION);
                 }
 
@@ -506,7 +506,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             return output;
         }
 
-        final BlockEntity te = this.getWorld().getBlockEntity(this.pos.offset(d));
+        final TileEntity te = this.getWorld().getTileEntity(this.pos.offset(d));
 
         if (te == null) {
             return output;

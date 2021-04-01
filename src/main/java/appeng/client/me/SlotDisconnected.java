@@ -18,7 +18,7 @@
 
 package appeng.client.me;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
@@ -36,17 +36,17 @@ public class SlotDisconnected extends AppEngSlot {
     }
 
     @Override
-    public boolean canInsert(final ItemStack stack) {
+    public boolean isItemValid(final ItemStack stack) {
         return false;
     }
 
     @Override
-    public void setStack(final ItemStack par1ItemStack) {
+    public void putStack(final ItemStack par1ItemStack) {
 
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity player) {
+    public boolean canTakeStack(final PlayerEntity player) {
         return false;
     }
 
@@ -56,7 +56,7 @@ public class SlotDisconnected extends AppEngSlot {
             final ItemStack is = super.getStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
-                final ItemStack out = iep.getOutput(MinecraftClient.getInstance().world, is);
+                final ItemStack out = iep.getOutput(Minecraft.getInstance().world, is);
                 if (!out.isEmpty()) {
                     return out;
                 }
@@ -66,17 +66,17 @@ public class SlotDisconnected extends AppEngSlot {
     }
 
     @Override
-    public boolean hasStack() {
+    public boolean getHasStack() {
         return !this.getStack().isEmpty();
     }
 
     @Override
-    public int getMaxItemCount() {
+    public int getSlotStackLimit() {
         return 0;
     }
 
     @Override
-    public ItemStack takeStack(final int par1) {
+    public ItemStack decrStackSize(final int par1) {
         return ItemStack.EMPTY;
     }
 

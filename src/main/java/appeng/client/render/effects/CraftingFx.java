@@ -18,23 +18,23 @@
 
 package appeng.client.render.effects;
 
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.client.particle.SpriteBillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 @Environment(EnvType.CLIENT)
-public class CraftingFx extends SpriteBillboardParticle {
+public class CraftingFx extends SpriteTexturedParticle {
 
     // Offset relative to center of block, is the starting point of the particle
     // movement
@@ -42,41 +42,41 @@ public class CraftingFx extends SpriteBillboardParticle {
     private final float offsetY;
     private final float offsetZ;
 
-    public CraftingFx(ClientWorld world, final double x, final double y, final double z, final SpriteProvider sprite) {
+    public CraftingFx(ClientWorld world, final double x, final double y, final double z, final IAnimatedSprite sprite) {
         super(world, x, y, z);
 
         // Pick a random normal, offset it by 0.35 and use that as the particle origin
-        Vector3f off = new Vector3f(random.nextFloat() - 0.5f, random.nextFloat() - 0.5f, random.nextFloat() - 0.5f);
+        Vector3f off = new Vector3f(rand.nextFloat() - 0.5f, rand.nextFloat() - 0.5f, rand.nextFloat() - 0.5f);
         off.normalize();
-        off.scale(0.35f);
+        off.mul(0.35f);
         offsetX = off.getX();
         offsetY = off.getY();
         offsetZ = off.getZ();
 
-        this.gravityStrength = 0;
-        this.colorBlue = 1;
-        this.colorGreen = 0.9f;
-        this.colorRed = 1;
-        this.setSprite(sprite);
+        this.particleGravity = 0;
+        this.particleBlue = 1;
+        this.particleGreen = 0.9f;
+        this.particleRed = 1;
+        this.selectSpriteRandomly(sprite);
         this.maxAge /= 1.2;
-        this.collidesWithWorld = false; // we're INSIDE the block anyway
+        this.canCollide = false; // we're INSIDE the block anyway
     }
 
     @Override
-    public void buildGeometry(VertexConsumer buffer, Camera camera, float partialTicks) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo camera, float partialTicks) {
 
         float f = (this.age + partialTicks) / this.maxAge;
 
-        float offX = (float) x + MathHelper.lerp(f, offsetX, 0);
-        float offY = (float) y + MathHelper.lerp(f, offsetY, 0);
-        float offZ = (float) z + MathHelper.lerp(f, offsetZ, 0);
+        float offX = (float) posX + MathHelper.lerp(f, offsetX, 0);
+        float offY = (float) posY + MathHelper.lerp(f, offsetY, 0);
+        float offZ = (float) posZ + MathHelper.lerp(f, offsetZ, 0);
         float alpha = MathHelper.lerp(easeOutCirc(f), 1.3f, 0.1f);
         float scale = MathHelper.lerp(easeOutCirc(f), 0.13f, 0.0f);
 
         // I believe this particle is same as breaking particle, but should not exit the
         // original block it was
         // spawned in (which is encased in glass)
-        Vec3d vec3d = camera.getPos();
+        Vector3d vec3d = camera.getProjectedView();
         offX -= vec3d.x;
         offY -= vec3d.y;
         offZ -= vec3d.z;
@@ -86,8 +86,8 @@ public class CraftingFx extends SpriteBillboardParticle {
 
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
-            vector3f.rotate(camera.getRotation());
-            vector3f.scale(scale);
+            vector3f.transform(camera.getRotation());
+            vector3f.mul(scale);
             vector3f.add(offX, offY, offZ);
         }
 
@@ -96,14 +96,14 @@ public class CraftingFx extends SpriteBillboardParticle {
         float minV = this.getMinV();
         float maxV = this.getMaxV();
         int j = 15728880; // full brightness
-        buffer.vertex(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).texture(maxU, maxV)
-                .color(this.colorRed, this.colorGreen, this.colorBlue, alpha).light(j).next();
-        buffer.vertex(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).texture(maxU, minV)
-                .color(this.colorRed, this.colorGreen, this.colorBlue, alpha).light(j).next();
-        buffer.vertex(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).texture(minU, minV)
-                .color(this.colorRed, this.colorGreen, this.colorBlue, alpha).light(j).next();
-        buffer.vertex(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).texture(minU, maxV)
-                .color(this.colorRed, this.colorGreen, this.colorBlue, alpha).light(j).next();
+        buffer.pos(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).tex(maxU, maxV)
+                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).tex(maxU, minV)
+                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).tex(minU, minV)
+                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).tex(minU, maxV)
+                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
     }
 
     // https://easings.net/#easeOutCirc
@@ -112,27 +112,27 @@ public class CraftingFx extends SpriteBillboardParticle {
     }
 
     @Override
-    public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
     public void tick() {
         if (this.age++ >= this.maxAge) {
-            this.markDead();
+            this.setExpired();
         }
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<DefaultParticleType> {
-        private final SpriteProvider spriteSet;
+    public static class Factory implements IParticleFactory<BasicParticleType> {
+        private final IAnimatedSprite spriteSet;
 
-        public Factory(SpriteProvider p_i50477_1_) {
+        public Factory(IAnimatedSprite p_i50477_1_) {
             this.spriteSet = p_i50477_1_;
         }
 
         @Override
-        public Particle createParticle(DefaultParticleType effect, ClientWorld world, double x, double y, double z,
+        public Particle createParticle(BasicParticleType effect, ClientWorld world, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             return new CraftingFx(world, x, y, z, spriteSet);
         }

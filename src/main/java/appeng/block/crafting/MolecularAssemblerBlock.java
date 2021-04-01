@@ -21,12 +21,12 @@ package appeng.block.crafting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.util.ActionResult;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -37,16 +37,16 @@ import appeng.tile.crafting.MolecularAssemblerBlockEntity;
 
 public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerBlockEntity> {
 
-    public static final BooleanProperty POWERED = BooleanProperty.of("powered");
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public MolecularAssemblerBlock(Settings props) {
+    public MolecularAssemblerBlock(Properties props) {
         super(props);
         setDefaultState(getDefaultState().with(POWERED, false));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(POWERED);
     }
 
@@ -56,17 +56,17 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerB
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockHitResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockRayTraceResult hit) {
         final MolecularAssemblerBlockEntity tg = this.getBlockEntity(w, pos);
-        if (tg != null && !p.isInSneakingPose()) {
+        if (tg != null && !p.isCrouching()) {
             if (!tg.isClient()) {
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.field_5812;
         }
 
-        return super.onUse(state, w, pos, p, hand, hit);
+        return super.onBlockActivated(state, w, pos, p, hand, hit);
     }
 
 }

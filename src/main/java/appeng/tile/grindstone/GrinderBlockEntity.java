@@ -22,10 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
@@ -48,7 +47,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     private final LimitedFixedItemInv invExt;
     private int points;
 
-    public GrinderBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public GrinderBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
         invExt = inv.createLimitedFixedInv();
@@ -61,7 +60,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
         final BlockState state = this.world.getBlockState(this.pos);
-        state.getBlock().neighborUpdate(state, this.world, this.pos, state.getBlock(), this.pos, false);
+        state.getBlock().neighborChanged(state, this.world, this.pos, state.getBlock(), this.pos, false);
     }
 
     @Override
@@ -98,7 +97,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
                 if (r != null) {
                     final ItemStack ais = item.copy();
                     ais.setCount(r.getIngredientCount());
-                    item.decrement(r.getIngredientCount());
+                    item.shrink(r.getIngredientCount());
 
                     if (item.getCount() <= 0) {
                         item = ItemStack.EMPTY;
@@ -132,7 +131,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
             this.points = 0;
             final InventoryAdaptor sia = new AdaptorFixedInv(this.inv.getSubInv(3, 6));
 
-            this.addItem(sia, r.getOutput());
+            this.addItem(sia, r.getRecipeOutput());
 
             for (GrinderOptionalResult optionalResult : r.getOptionalResults()) {
                 final float chance = (Platform.getRandomInt() % 2000) / 2000.0f;

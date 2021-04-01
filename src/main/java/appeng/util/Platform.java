@@ -35,35 +35,34 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.RaycastContext;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-
+import net.minecraft.world.server.ServerWorld;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
 import appeng.api.config.AccessRestriction;
@@ -180,29 +179,29 @@ public class Platform {
     }
 
     public static Direction crossProduct(final Direction forward, final Direction up) {
-        final int west_x = forward.getOffsetY() * up.getOffsetZ() - forward.getOffsetZ() * up.getOffsetY();
-        final int west_y = forward.getOffsetZ() * up.getOffsetX() - forward.getOffsetX() * up.getOffsetZ();
-        final int west_z = forward.getOffsetX() * up.getOffsetY() - forward.getOffsetY() * up.getOffsetX();
+        final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
+        final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
+        final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
 
         switch (west_x + west_y * 2 + west_z * 3) {
             case 1:
-                return Direction.EAST;
+                return Direction.field_11034;
             case -1:
-                return Direction.WEST;
+                return Direction.field_11039;
 
             case 2:
-                return Direction.UP;
+                return Direction.field_11036;
             case -2:
-                return Direction.DOWN;
+                return Direction.field_11033;
 
             case 3:
-                return Direction.SOUTH;
+                return Direction.field_11035;
             case -3:
-                return Direction.NORTH;
+                return Direction.field_11043;
         }
 
         // something is better then nothing?
-        return Direction.NORTH;
+        return Direction.field_11043;
     }
 
     /**
@@ -223,7 +222,7 @@ public class Platform {
         if (!dc.isInWorld(player.world)) {
             return false;
         }
-        return player.world.canPlayerModifyAt(player, dc.getPos());
+        return player.world.isBlockModifiable(player, dc.getPos());
     }
 
     public static boolean checkPermissions(final PlayerEntity player, final Object accessInterface,
@@ -245,9 +244,9 @@ public class Platform {
 
                     final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
-                        player.sendSystemMessage(
-                                new TranslatableText("appliedenergistics2.permission_denied").formatted(Formatting.RED),
-                                Util.NIL_UUID);
+                        player.sendMessage(
+                                new TranslationTextComponent("appliedenergistics2.permission_denied").mergeStyle(TextFormatting.field_1061),
+                                Util.DUMMY_UUID);
                         // FIXME trace logging?
                         return false;
                     }
@@ -268,9 +267,9 @@ public class Platform {
         ServerWorld serverWorld = (ServerWorld) w;
 
         final BlockState state = w.getBlockState(pos);
-        final BlockEntity tileEntity = w.getBlockEntity(pos);
+        final TileEntity tileEntity = w.getTileEntity(pos);
 
-        List<ItemStack> out = Block.getDroppedStacks(state, serverWorld, pos, tileEntity);
+        List<ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
 
         return out.toArray(new ItemStack[0]);
     }
@@ -288,7 +287,7 @@ public class Platform {
                         final double offset_z = (getRandomInt() % 32 - 16) / 82;
                         final ItemEntity ei = new ItemEntity(w, 0.5 + offset_x + pos.getX(),
                                 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy());
-                        w.spawnEntity(ei);
+                        w.addEntity(ei);
                     }
                 }
             }
@@ -307,7 +306,7 @@ public class Platform {
     }
 
     @Environment(EnvType.CLIENT)
-    public static List<Text> getTooltip(final Object o) {
+    public static List<ITextComponent> getTooltip(final Object o) {
         if (o == null) {
             return Collections.emptyList();
         }
@@ -323,10 +322,10 @@ public class Platform {
         }
 
         try {
-            TooltipContext tooltipFlag = MinecraftClient.getInstance().options.advancedItemTooltips
-                    ? TooltipContext.Default.ADVANCED
-                    : TooltipContext.Default.NORMAL;
-            return itemStack.getTooltip(MinecraftClient.getInstance().player, tooltipFlag);
+            ITooltipFlag tooltipFlag = Minecraft.getInstance().gameSettings.advancedItemTooltips
+                    ? ITooltipFlag.TooltipFlags.field_8935
+                    : ITooltipFlag.TooltipFlags.field_8934;
+            return itemStack.getTooltip(Minecraft.getInstance().player, tooltipFlag);
         } catch (final Exception errB) {
             return Collections.emptyList();
         }
@@ -346,44 +345,44 @@ public class Platform {
             return "** Null";
         }
 
-        final Identifier n = Registry.FLUID.getId(fs.getFluidStack().getRawFluid());
-        return n == Registry.FLUID.getDefaultId() ? "** Null" : n.getNamespace();
+        final ResourceLocation n = Registry.FLUID.getKey(fs.getFluidStack().getRawFluid());
+        return n == Registry.FLUID.getDefaultKey() ? "** Null" : n.getNamespace();
     }
 
     public static String getModName(String modId) {
-        return "" + Formatting.BLUE + Formatting.ITALIC
+        return "" + TextFormatting.field_1078 + TextFormatting.field_1056
                 + FABRIC.getModContainer(modId).map(mc -> mc.getMetadata().getName()).orElse(null);
     }
 
-    public static Text getItemDisplayName(final Object o) {
+    public static ITextComponent getItemDisplayName(final Object o) {
         if (o == null) {
-            return new LiteralText("** Null");
+            return new StringTextComponent("** Null");
         }
 
         ItemStack itemStack = ItemStack.EMPTY;
         if (o instanceof AEItemStack) {
-            final Text n = ((AEItemStack) o).getDisplayName();
-            return n == null ? new LiteralText("** Null") : n;
+            final ITextComponent n = ((AEItemStack) o).getDisplayName();
+            return n == null ? new StringTextComponent("** Null") : n;
         } else if (o instanceof ItemStack) {
             itemStack = (ItemStack) o;
         } else {
-            return new LiteralText("**Invalid Object");
+            return new StringTextComponent("**Invalid Object");
         }
 
         try {
-            return itemStack.getName();
+            return itemStack.getDisplayName();
         } catch (final Exception errA) {
             try {
-                return new TranslatableText(itemStack.getTranslationKey());
+                return new TranslationTextComponent(itemStack.getTranslationKey());
             } catch (final Exception errB) {
-                return new LiteralText("** Exception");
+                return new StringTextComponent("** Exception");
             }
         }
     }
 
-    public static Text getFluidDisplayName(Object o) {
+    public static ITextComponent getFluidDisplayName(Object o) {
         if (o == null) {
-            return new LiteralText("** Null");
+            return new StringTextComponent("** Null");
         }
         FluidVolume fluidStack = null;
         if (o instanceof AEFluidStack) {
@@ -391,7 +390,7 @@ public class Platform {
         } else if (o instanceof FluidVolume) {
             fluidStack = (FluidVolume) o;
         } else {
-            return new LiteralText("**Invalid Object");
+            return new StringTextComponent("**Invalid Object");
         }
         return fluidStack.getName();
     }
@@ -548,89 +547,89 @@ public class Platform {
 
     public static Direction rotateAround(final Direction forward, final Direction axis) {
         switch (forward) {
-            case DOWN:
+            case field_11033:
                 switch (axis) {
-                    case DOWN:
+                    case field_11033:
                         return forward;
-                    case UP:
+                    case field_11036:
                         return forward;
-                    case NORTH:
-                        return Direction.EAST;
-                    case SOUTH:
-                        return Direction.WEST;
-                    case EAST:
-                        return Direction.NORTH;
-                    case WEST:
-                        return Direction.SOUTH;
+                    case field_11043:
+                        return Direction.field_11034;
+                    case field_11035:
+                        return Direction.field_11039;
+                    case field_11034:
+                        return Direction.field_11043;
+                    case field_11039:
+                        return Direction.field_11035;
                     default:
                         break;
                 }
                 break;
-            case UP:
+            case field_11036:
                 switch (axis) {
-                    case NORTH:
-                        return Direction.WEST;
-                    case SOUTH:
-                        return Direction.EAST;
-                    case EAST:
-                        return Direction.SOUTH;
-                    case WEST:
-                        return Direction.NORTH;
+                    case field_11043:
+                        return Direction.field_11039;
+                    case field_11035:
+                        return Direction.field_11034;
+                    case field_11034:
+                        return Direction.field_11035;
+                    case field_11039:
+                        return Direction.field_11043;
                     default:
                         break;
                 }
                 break;
-            case NORTH:
+            case field_11043:
                 switch (axis) {
-                    case UP:
-                        return Direction.WEST;
-                    case DOWN:
-                        return Direction.EAST;
-                    case EAST:
-                        return Direction.UP;
-                    case WEST:
-                        return Direction.DOWN;
+                    case field_11036:
+                        return Direction.field_11039;
+                    case field_11033:
+                        return Direction.field_11034;
+                    case field_11034:
+                        return Direction.field_11036;
+                    case field_11039:
+                        return Direction.field_11033;
                     default:
                         break;
                 }
                 break;
-            case SOUTH:
+            case field_11035:
                 switch (axis) {
-                    case UP:
-                        return Direction.EAST;
-                    case DOWN:
-                        return Direction.WEST;
-                    case EAST:
-                        return Direction.DOWN;
-                    case WEST:
-                        return Direction.UP;
+                    case field_11036:
+                        return Direction.field_11034;
+                    case field_11033:
+                        return Direction.field_11039;
+                    case field_11034:
+                        return Direction.field_11033;
+                    case field_11039:
+                        return Direction.field_11036;
                     default:
                         break;
                 }
                 break;
-            case EAST:
+            case field_11034:
                 switch (axis) {
-                    case UP:
-                        return Direction.NORTH;
-                    case DOWN:
-                        return Direction.SOUTH;
-                    case NORTH:
-                        return Direction.UP;
-                    case SOUTH:
-                        return Direction.DOWN;
+                    case field_11036:
+                        return Direction.field_11043;
+                    case field_11033:
+                        return Direction.field_11035;
+                    case field_11043:
+                        return Direction.field_11036;
+                    case field_11035:
+                        return Direction.field_11033;
                     default:
                         break;
                 }
-            case WEST:
+            case field_11039:
                 switch (axis) {
-                    case UP:
-                        return Direction.SOUTH;
-                    case DOWN:
-                        return Direction.NORTH;
-                    case NORTH:
-                        return Direction.DOWN;
-                    case SOUTH:
-                        return Direction.UP;
+                    case field_11036:
+                        return Direction.field_11035;
+                    case field_11033:
+                        return Direction.field_11043;
+                    case field_11043:
+                        return Direction.field_11033;
+                    case field_11035:
+                        return Direction.field_11036;
                     default:
                         break;
                 }
@@ -648,12 +647,12 @@ public class Platform {
     }
 
     public static LookDirection getPlayerRay(final PlayerEntity playerIn, double reachDistance) {
-        final double x = playerIn.prevX + (playerIn.getX() - playerIn.prevX);
-        final double y = playerIn.prevY + (playerIn.getY() - playerIn.prevY) + playerIn.getStandingEyeHeight();
-        final double z = playerIn.prevZ + (playerIn.getZ() - playerIn.prevZ);
+        final double x = playerIn.prevPosX + (playerIn.getPosX() - playerIn.prevPosX);
+        final double y = playerIn.prevPosY + (playerIn.getPosY() - playerIn.prevPosY) + playerIn.getEyeHeight();
+        final double z = playerIn.prevPosZ + (playerIn.getPosZ() - playerIn.prevPosZ);
 
-        final float playerPitch = playerIn.prevPitch + (playerIn.pitch - playerIn.prevPitch);
-        final float playerYaw = playerIn.prevYaw + (playerIn.yaw - playerIn.prevYaw);
+        final float playerPitch = playerIn.prevRotationPitch + (playerIn.rotationPitch - playerIn.prevRotationPitch);
+        final float playerYaw = playerIn.prevRotationYaw + (playerIn.rotationYaw - playerIn.prevRotationYaw);
 
         final float yawRayX = MathHelper.sin(-playerYaw * 0.017453292f - (float) Math.PI);
         final float yawRayZ = MathHelper.cos(-playerYaw * 0.017453292f - (float) Math.PI);
@@ -663,22 +662,22 @@ public class Platform {
         final float eyeRayX = yawRayX * pitchMultiplier;
         final float eyeRayZ = yawRayZ * pitchMultiplier;
 
-        final Vec3d from = new Vec3d(x, y, z);
-        final Vec3d to = from.add(eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance);
+        final Vector3d from = new Vector3d(x, y, z);
+        final Vector3d to = from.add(eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance);
 
         return new LookDirection(from, to);
     }
 
-    public static HitResult rayTrace(final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities) {
+    public static RayTraceResult rayTrace(final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities) {
         final World w = p.getEntityWorld();
 
         final float f = 1.0F;
-        float f1 = p.prevPitch + (p.pitch - p.prevPitch) * f;
-        final float f2 = p.prevYaw + (p.yaw - p.prevYaw) * f;
-        final double d0 = p.prevX + (p.getX() - p.prevX) * f;
-        final double d1 = p.prevY + (p.getY() - p.prevY) * f + 1.62D - p.getHeightOffset();
-        final double d2 = p.prevZ + (p.getZ() - p.prevZ) * f;
-        final Vec3d vec3 = new Vec3d(d0, d1, d2);
+        float f1 = p.prevRotationPitch + (p.rotationPitch - p.prevRotationPitch) * f;
+        final float f2 = p.prevRotationYaw + (p.rotationYaw - p.prevRotationYaw) * f;
+        final double d0 = p.prevPosX + (p.getPosX() - p.prevPosX) * f;
+        final double d1 = p.prevPosY + (p.getPosY() - p.prevPosY) * f + 1.62D - p.getYOffset();
+        final double d2 = p.prevPosZ + (p.getPosZ() - p.prevPosZ) * f;
+        final Vector3d vec3 = new Vector3d(d0, d1, d2);
         final float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
         final float f4 = MathHelper.sin(-f2 * 0.017453292F - (float) Math.PI);
         final float f5 = -MathHelper.cos(-f1 * 0.017453292F);
@@ -687,30 +686,30 @@ public class Platform {
         final float f8 = f3 * f5;
         final double d3 = 32.0D;
 
-        final Vec3d vec31 = vec3.add(f7 * d3, f6 * d3, f8 * d3);
+        final Vector3d vec31 = vec3.add(f7 * d3, f6 * d3, f8 * d3);
 
-        final Box bb = new Box(Math.min(vec3.x, vec31.x), Math.min(vec3.y, vec31.y), Math.min(vec3.z, vec31.z),
-                Math.max(vec3.x, vec31.x), Math.max(vec3.y, vec31.y), Math.max(vec3.z, vec31.z)).expand(16, 16, 16);
+        final AxisAlignedBB bb = new AxisAlignedBB(Math.min(vec3.x, vec31.x), Math.min(vec3.y, vec31.y), Math.min(vec3.z, vec31.z),
+                Math.max(vec3.x, vec31.x), Math.max(vec3.y, vec31.y), Math.max(vec3.z, vec31.z)).grow(16, 16, 16);
 
         Entity entity = null;
         double closest = 9999999.0D;
         if (hitEntities) {
-            final List<Entity> list = w.getOtherEntities(p, bb);
+            final List<Entity> list = w.getEntitiesWithinAABBExcludingEntity(p, bb);
 
             for (final Entity entity1 : list) {
                 if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
                     // prevent killing / flying of mounts.
-                    if (entity1.isConnectedThroughVehicle(p)) {
+                    if (entity1.isRidingSameEntity(p)) {
                         continue;
                     }
 
                     f1 = 0.3F;
                     // FIXME: Three different bounding boxes available, should double-check
-                    final Box boundingBox = entity1.getBoundingBox().expand(f1, f1, f1);
-                    final Vec3d rtResult = boundingBox.raycast(vec3, vec31).orElse(null);
+                    final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
+                    final Vector3d rtResult = boundingBox.rayTrace(vec3, vec31).orElse(null);
 
                     if (rtResult != null) {
-                        final double nd = vec3.squaredDistanceTo(rtResult);
+                        final double nd = vec3.squareDistanceTo(rtResult);
 
                         if (nd < closest) {
                             entity = entity1;
@@ -721,20 +720,20 @@ public class Platform {
             }
         }
 
-        HitResult pos = null;
-        Vec3d vec = null;
+        RayTraceResult pos = null;
+        Vector3d vec = null;
 
         if (hitBlocks) {
-            vec = new Vec3d(d0, d1, d2);
+            vec = new Vector3d(d0, d1, d2);
             // FIXME: passing p as entity here might be incorrect
-            pos = w.raycast(new RaycastContext(vec3, vec31, RaycastContext.ShapeType.COLLIDER,
-                    RaycastContext.FluidHandling.ANY, p));
+            pos = w.rayTraceBlocks(new RayTraceContext(vec3, vec31, RayTraceContext.BlockMode.field_17558,
+                    RayTraceContext.FluidMode.field_1347, p));
         }
 
-        if (entity != null && pos != null && pos.getPos().squaredDistanceTo(vec) > closest) {
-            pos = new EntityHitResult(entity);
+        if (entity != null && pos != null && pos.getHitVec().squareDistanceTo(vec) > closest) {
+            pos = new EntityRayTraceResult(entity);
         } else if (entity != null && pos == null) {
-            pos = new EntityHitResult(entity);
+            pos = new EntityRayTraceResult(entity);
         }
 
         return pos;
@@ -963,7 +962,7 @@ public class Platform {
         return gs.hasPermission(playerID, SecurityPermissions.BUILD);
     }
 
-    public static void configurePlayer(final PlayerEntity player, final AEPartLocation side, final BlockEntity tile) {
+    public static void configurePlayer(final PlayerEntity player, final AEPartLocation side, final TileEntity tile) {
         float pitch = 0.0f;
         float yaw = 0.0f;
         // player.yOffset = 1.8f;
@@ -992,7 +991,7 @@ public class Platform {
                 break;
         }
 
-        player.refreshPositionAndAngles(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5,
+        player.setLocationAndAngles(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5,
                 tile.getPos().getZ() + 0.5, yaw, pitch);
     }
 
@@ -1018,7 +1017,7 @@ public class Platform {
     }
 
     public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
-            final IMEMonitor<IAEItemStack> src, final World w, final Recipe<CraftingInventory> r,
+            final IMEMonitor<IAEItemStack> src, final World w, final IRecipe<CraftingInventory> r,
             final ItemStack output, final CraftingInventory ci, final ItemStack providedTemplate, final int slot,
             final IItemList<IAEItemStack> items, final Actionable realForFake,
             final IPartitionList<IAEItemStack> filter) {
@@ -1050,14 +1049,14 @@ public class Platform {
                 for (final IAEItemStack x : items) {
                     final ItemStack sh = x.getDefinition();
                     if ((Platform.itemComparisons().isEqualItemType(providedTemplate,
-                            sh) /* FIXME || ae_req.sameOre( x ) */) && !ItemStack.areItemsEqual(sh, output)) { // Platform.isSameItemType(
+                            sh) /* FIXME || ae_req.sameOre( x ) */) && !ItemStack.areItemsEqualIgnoreDurability(sh, output)) { // Platform.isSameItemType(
                         // sh,
                         // providedTemplate
                         // )
                         final ItemStack cp = sh.copy();
                         cp.setCount(1);
-                        ci.setStack(slot, cp);
-                        if (r.matches(ci, w) && ItemStack.areItemsEqual(r.craft(ci), output)) {
+                        ci.setInventorySlotContents(slot, cp);
+                        if (r.matches(ci, w) && ItemStack.areItemsEqualIgnoreDurability(r.getCraftingResult(ci), output)) {
                             final IAEItemStack ax = x.copy();
                             ax.setStackSize(1);
                             if (filter == null || filter.isListed(ax)) {
@@ -1068,7 +1067,7 @@ public class Platform {
                                 }
                             }
                         }
-                        ci.setStack(slot, providedTemplate);
+                        ci.setInventorySlotContents(slot, providedTemplate);
                     }
                 }
             }
@@ -1086,7 +1085,7 @@ public class Platform {
         }
 
         final Item i = stackInSlot.getItem();
-        if (i == null || !i.hasRecipeRemainder()) {
+        if (i == null || !i.hasContainerItem()) {
             if (stackInSlot.getCount() > 1) {
                 stackInSlot.setCount(stackInSlot.getCount() - 1);
                 return stackInSlot;
@@ -1094,7 +1093,7 @@ public class Platform {
             return ItemStack.EMPTY;
         }
 
-        ItemStack ci = new ItemStack(i.getRecipeRemainder());
+        ItemStack ci = new ItemStack(i.getContainerItem());
         if (!ci.isEmpty() && ci.isDamageable() && ci.getDamage() == ci.getMaxDamage()) {
             ci = ItemStack.EMPTY;
         }
@@ -1103,7 +1102,7 @@ public class Platform {
     }
 
     public static void notifyBlocksOfNeighbors(final World world, final BlockPos pos) {
-        if (!world.isClient) {
+        if (!world.isRemote) {
             TickHandler.instance().addCallable(world, new BlockUpdate(pos));
         }
     }
@@ -1127,9 +1126,9 @@ public class Platform {
     }
 
     public static float getEyeOffset(final PlayerEntity player) {
-        assert player.world.isClient : "Valid only on client";
+        assert player.world.isRemote : "Valid only on client";
         // FIXME: The entire premise of this seems broken
-        return (float) player.getEyeY() - 1.62F;
+        return (float) player.getPosYEye() - 1.62F;
     }
 
     public static boolean isRecipePrioritized(final ItemStack what) {

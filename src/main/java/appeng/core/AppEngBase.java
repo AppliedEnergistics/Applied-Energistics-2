@@ -6,30 +6,30 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.minecraft.block.entity.BannerBlockEntity;
-import net.minecraft.block.entity.BeaconBlockEntity;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.CommandBlockBlockEntity;
-import net.minecraft.block.entity.ComparatorBlockEntity;
-import net.minecraft.block.entity.DaylightDetectorBlockEntity;
-import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.block.entity.DropperBlockEntity;
-import net.minecraft.block.entity.EnchantingTableBlockEntity;
-import net.minecraft.block.entity.EndPortalBlockEntity;
-import net.minecraft.block.entity.EnderChestBlockEntity;
-import net.minecraft.block.entity.FurnaceBlockEntity;
-import net.minecraft.block.entity.HopperBlockEntity;
-import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import net.minecraft.block.entity.PistonBlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.BannerTileEntity;
+import net.minecraft.tileentity.BeaconTileEntity;
+import net.minecraft.tileentity.BrewingStandTileEntity;
+import net.minecraft.tileentity.ChestTileEntity;
+import net.minecraft.tileentity.CommandBlockTileEntity;
+import net.minecraft.tileentity.ComparatorTileEntity;
+import net.minecraft.tileentity.DaylightDetectorTileEntity;
+import net.minecraft.tileentity.DispenserTileEntity;
+import net.minecraft.tileentity.DropperTileEntity;
+import net.minecraft.tileentity.EnchantingTableTileEntity;
+import net.minecraft.tileentity.EndPortalTileEntity;
+import net.minecraft.tileentity.EnderChestTileEntity;
+import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.tileentity.HopperTileEntity;
+import net.minecraft.tileentity.MobSpawnerTileEntity;
+import net.minecraft.tileentity.PistonTileEntity;
+import net.minecraft.tileentity.ShulkerBoxTileEntity;
+import net.minecraft.tileentity.SignTileEntity;
+import net.minecraft.tileentity.SkullTileEntity;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
@@ -327,25 +327,25 @@ public abstract class AppEngBase implements AppEng {
         /*
          * White List Vanilla...
          */
-        mr.whiteListBlockEntity(BannerBlockEntity.class);
-        mr.whiteListBlockEntity(BeaconBlockEntity.class);
-        mr.whiteListBlockEntity(BrewingStandBlockEntity.class);
-        mr.whiteListBlockEntity(ChestBlockEntity.class);
-        mr.whiteListBlockEntity(CommandBlockBlockEntity.class);
-        mr.whiteListBlockEntity(ComparatorBlockEntity.class);
-        mr.whiteListBlockEntity(DaylightDetectorBlockEntity.class);
-        mr.whiteListBlockEntity(DispenserBlockEntity.class);
-        mr.whiteListBlockEntity(DropperBlockEntity.class);
-        mr.whiteListBlockEntity(EnchantingTableBlockEntity.class);
-        mr.whiteListBlockEntity(EnderChestBlockEntity.class);
-        mr.whiteListBlockEntity(EndPortalBlockEntity.class);
-        mr.whiteListBlockEntity(FurnaceBlockEntity.class);
-        mr.whiteListBlockEntity(HopperBlockEntity.class);
-        mr.whiteListBlockEntity(MobSpawnerBlockEntity.class);
-        mr.whiteListBlockEntity(PistonBlockEntity.class);
-        mr.whiteListBlockEntity(ShulkerBoxBlockEntity.class);
-        mr.whiteListBlockEntity(SignBlockEntity.class);
-        mr.whiteListBlockEntity(SkullBlockEntity.class);
+        mr.whiteListBlockEntity(BannerTileEntity.class);
+        mr.whiteListBlockEntity(BeaconTileEntity.class);
+        mr.whiteListBlockEntity(BrewingStandTileEntity.class);
+        mr.whiteListBlockEntity(ChestTileEntity.class);
+        mr.whiteListBlockEntity(CommandBlockTileEntity.class);
+        mr.whiteListBlockEntity(ComparatorTileEntity.class);
+        mr.whiteListBlockEntity(DaylightDetectorTileEntity.class);
+        mr.whiteListBlockEntity(DispenserTileEntity.class);
+        mr.whiteListBlockEntity(DropperTileEntity.class);
+        mr.whiteListBlockEntity(EnchantingTableTileEntity.class);
+        mr.whiteListBlockEntity(EnderChestTileEntity.class);
+        mr.whiteListBlockEntity(EndPortalTileEntity.class);
+        mr.whiteListBlockEntity(FurnaceTileEntity.class);
+        mr.whiteListBlockEntity(HopperTileEntity.class);
+        mr.whiteListBlockEntity(MobSpawnerTileEntity.class);
+        mr.whiteListBlockEntity(PistonTileEntity.class);
+        mr.whiteListBlockEntity(ShulkerBoxTileEntity.class);
+        mr.whiteListBlockEntity(SignTileEntity.class);
+        mr.whiteListBlockEntity(SkullTileEntity.class);
 
         /*
          * Whitelist AE2
@@ -387,7 +387,7 @@ public abstract class AppEngBase implements AppEng {
     @Override
     public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
             final double dist, final World w, final BasePacket packet) {
-        if (w.isClient()) {
+        if (w.isRemote()) {
             return;
         }
 
@@ -413,10 +413,10 @@ public abstract class AppEngBase implements AppEng {
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable final PlayerEntity player) {
         if (player != null) {
             for (int x = 0; x < PlayerInventory.getHotbarSize(); x++) {
-                final ItemStack is = player.inventory.getStack(x);
+                final ItemStack is = player.inventory.getStackInSlot(x);
 
                 if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
-                    final CompoundTag c = is.getTag();
+                    final CompoundNBT c = is.getTag();
                     if (c != null && c.getBoolean("hideFacades")) {
                         return CableRenderMode.CABLE_VIEW;
                     }
@@ -506,9 +506,9 @@ public abstract class AppEngBase implements AppEng {
 
     }
 
-    private <T extends AEBaseContainer> ScreenHandlerType<T> registerScreenHandler(String id,
+    private <T extends AEBaseContainer> ContainerType<T> registerScreenHandler(String id,
             ScreenHandlerRegistry.ExtendedClientHandlerFactory<T> factory, ContainerOpener.Opener<T> opener) {
-        ScreenHandlerType<T> type = ScreenHandlerRegistry.registerExtended(AppEng.makeId(id), factory);
+        ContainerType<T> type = ScreenHandlerRegistry.registerExtended(AppEng.makeId(id), factory);
         ContainerOpener.addOpener(type, opener);
         return type;
     }

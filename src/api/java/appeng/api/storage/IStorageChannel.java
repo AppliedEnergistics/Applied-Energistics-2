@@ -29,9 +29,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
@@ -87,7 +86,7 @@ public interface IStorageChannel<T extends IAEStack<T>> {
      * @throws IOException
      */
     @Nullable
-    T readFromPacket(@Nonnull PacketByteBuf input);
+    T readFromPacket(@Nonnull PacketBuffer input);
 
     /**
      * create from nbt data
@@ -96,5 +95,5 @@ public interface IStorageChannel<T extends IAEStack<T>> {
      * @return
      */
     @Nullable
-    T createFromNBT(@Nonnull CompoundTag nbt);
+    T createFromNBT(@Nonnull CompoundNBT nbt);
 }

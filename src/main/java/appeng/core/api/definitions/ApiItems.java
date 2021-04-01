@@ -23,12 +23,11 @@ import java.util.function.Consumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.util.Rarity;
-
+import net.minecraft.item.Rarity;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.features.AEFeature;
@@ -171,12 +170,12 @@ public final class ApiItems implements IItems {
                 .item("certus_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
         this.certusQuartzWrench = certusTools.item("certus_quartz_wrench", QuartzWrenchItem::new)
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxCount(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
+                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
                 .build();
         this.certusQuartzKnife = certusTools
                 .item("certus_quartz_cutting_knife",
                         props -> new QuartzCuttingKnifeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxCount(1).maxDamage(50))
+                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50))
                 .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
         FeatureFactory netherTools = registry.features(AEFeature.NETHER_QUARTZ_TOOLS);
@@ -196,15 +195,15 @@ public final class ApiItems implements IItems {
                 .item("nether_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
         this.netherQuartzWrench = netherTools.item("nether_quartz_wrench", QuartzWrenchItem::new)
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxCount(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
+                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
                 .build();
         this.netherQuartzKnife = netherTools
                 .item("nether_quartz_cutting_knife",
                         props -> new QuartzCuttingKnifeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxCount(1).maxDamage(50))
+                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50))
                 .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
-        Consumer<Item.Settings> chargedDefaults = props -> props.maxCount(1).maxDamage(32);
+        Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1).maxDamage(32);
 
         FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
         this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)
@@ -252,11 +251,11 @@ public final class ApiItems implements IItems {
                     }
                 }).rendering(new ColorApplicatorItemRendering()).build();
 
-        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new).props(props -> props.maxCount(1))
+        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.SECURITY).build();
-        this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxCount(1))
+        this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.MEMORY_CARD).build();
-        this.networkTool = registry.item("network_tool", NetworkToolItem::new).props(props -> props.maxCount(1)) // FIXME
+        this.networkTool = registry.item("network_tool", NetworkToolItem::new).props(props -> props.maxStackSize(1)) // FIXME
                 // FABRIC
                 // .addToolType(FabricToolTags.get("wrench"),
                 // 0)
@@ -268,12 +267,12 @@ public final class ApiItems implements IItems {
                 .features(AEFeature.NETWORK_TOOL).build();
 
         this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
-                .props(props -> props.maxCount(1).rarity(Rarity.EPIC))
+                .props(props -> props.maxStackSize(1).rarity(Rarity.field_8904))
                 .features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
-        this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxCount(1))
+        this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.VIEW_CELL).build();
 
-        Consumer<Item.Settings> storageCellProps = p -> p.maxCount(1);
+        Consumer<Item.Properties> storageCellProps = p -> p.maxStackSize(1);
 
         FeatureFactory storageCells = registry.features(AEFeature.STORAGE_CELLS);
         this.cell1k = storageCells
@@ -337,12 +336,12 @@ public final class ApiItems implements IItems {
                 .bootstrap(CrystalSeedRendering::new).features(AEFeature.CRYSTAL_SEEDS).build();
 
         GrowingCrystalEntity.TYPE = registry
-                .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, SpawnGroup.MISC)
-                .customize(builder -> builder.dimensions(EntityDimensions.fixed(0.25F, 0.4F))).build();
+                .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, EntityClassification.field_17715)
+                .customize(builder -> builder.dimensions(EntitySize.fixed(0.25F, 0.4F))).build();
 
         // rv1
         this.encodedPattern = registry.item("encoded_pattern", EncodedPatternItem::new)
-                .props(props -> props.maxCount(1)).features(AEFeature.PATTERNS).build();
+                .props(props -> props.maxStackSize(1)).features(AEFeature.PATTERNS).build();
 
         this.coloredPaintBall = createPaintBalls(registry, "_paint_ball", false);
         this.coloredLumenPaintBall = createPaintBalls(registry, "_lumen_paint_ball", true);

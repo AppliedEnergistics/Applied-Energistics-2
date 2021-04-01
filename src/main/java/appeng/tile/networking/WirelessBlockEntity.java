@@ -20,12 +20,10 @@ package appeng.tile.networking;
 
 import java.io.IOException;
 import java.util.EnumSet;
-
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.implementations.IPowerChannelState;
@@ -55,7 +53,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
 
     private int clientFlags = 0;
 
-    public WirelessBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public WirelessBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.inv.setFilter(new AEItemDefinitionFilter(Api.instance().definitions().materials().wirelessBooster()));
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -79,7 +77,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int old = this.getClientFlags();
         this.setClientFlags(data.readByte());
@@ -88,7 +86,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         this.setClientFlags(0);
 

@@ -19,8 +19,7 @@
 package appeng.me.cluster;
 
 import java.lang.ref.WeakReference;
-
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -94,8 +93,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         }
 
         try {
-            final BlockPos.Mutable min = loc.mutableCopy();
-            final BlockPos.Mutable max = loc.mutableCopy();
+            final BlockPos.Mutable min = loc.toMutable();
+            final BlockPos.Mutable max = loc.toMutable();
 
             // find size of MB structure...
             while (this.isValidTileAt(world, min.getX() - 1, min.getY(), min.getZ())) {
@@ -164,7 +163,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
     }
 
     private boolean isValidTileAt(final World w, final int x, final int y, final int z) {
-        return this.isValidTile(w.getBlockEntity(new BlockPos(x, y, z)));
+        return this.isValidTile(w.getTileEntity(new BlockPos(x, y, z)));
     }
 
     /**
@@ -222,7 +221,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      * @param te to be checked block entity
      * @return true if block entity is valid for structure
      */
-    public abstract boolean isValidTile(BlockEntity te);
+    public abstract boolean isValidTile(TileEntity te);
 
     private boolean verifyUnownedRegionInner(final World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ,
             final AEPartLocation side) {
@@ -255,8 +254,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
                 return false;
         }
 
-        for (BlockPos p : BlockPos.iterate(minX, minY, minZ, maxX, maxY, maxZ)) {
-            final BlockEntity te = w.getBlockEntity(p);
+        for (BlockPos p : BlockPos.getAllInBoxMutable(minX, minY, minZ, maxX, maxY, maxZ)) {
+            final TileEntity te = w.getTileEntity(p);
             if (this.isValidTile(te)) {
                 return true;
             }

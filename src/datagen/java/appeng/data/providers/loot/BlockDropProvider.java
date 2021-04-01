@@ -13,29 +13,25 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import net.minecraft.block.Block;
-import net.minecraft.data.DataCache;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.server.BlockLootTableGenerator;
+import net.minecraft.data.DirectoryCache;
+import net.minecraft.data.IDataProvider;
+import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.loot.ConstantLootTableRange;
-import net.minecraft.loot.LootManager;
+import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.ItemLootEntry;
+import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.UniformLootTableRange;
-import net.minecraft.loot.condition.SurvivesExplosionLootCondition;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.entry.LeafEntry;
-import net.minecraft.loot.function.ApplyBonusLootFunction;
-import net.minecraft.loot.function.SetCountLootFunction;
-import net.minecraft.util.Identifier;
+import net.minecraft.loot.LootTableManager;
+import net.minecraft.loot.StandaloneLootEntry;
+import net.minecraft.loot.conditions.SurvivesExplosion;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-
 import appeng.core.AppEng;
 import appeng.data.providers.IAE2DataProvider;
 
-public class BlockDropProvider extends BlockLootTableGenerator implements IAE2DataProvider {
+public class BlockDropProvider extends BlockLootTables implements IAE2DataProvider {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -60,37 +56,37 @@ public class BlockDropProvider extends BlockLootTableGenerator implements IAE2Da
     }
 
     @Override
-    public void run(DataCache cache) throws IOException {
+    public void act(DirectoryCache cache) throws IOException {
         for (Map.Entry<RegistryKey<Block>, Block> entry : Registry.BLOCK.getEntries()) {
             LootTable.Builder builder;
-            Identifier id = entry.getKey().getValue();
+            ResourceLocation id = entry.getKey().getLocation();
             if (id.getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                DataProvider.writeToPath(GSON, cache, toJson(builder), getPath(outputFolder, id));
+                IDataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, id));
             }
         }
     }
 
     private LootTable.Builder defaultBuilder(Block block) {
-        LeafEntry.Builder<?> entry = ItemEntry.builder(block);
-        LootPool.Builder pool = LootPool.builder().rolls(ConstantLootTableRange.create(1)).with(entry)
-                .conditionally(SurvivesExplosionLootCondition.builder());
+        StandaloneLootEntry.Builder<?> entry = ItemLootEntry.builder(block);
+        LootPool.Builder pool = LootPool.builder().rolls(ConstantRange.of(1)).addEntry(entry)
+                .acceptCondition(SurvivesExplosion.builder());
 
-        return LootTable.builder().pool(pool);
+        return LootTable.builder().addLootPool(pool);
     }
 
-    private Path getPath(Path root, Identifier id) {
+    private Path getPath(Path root, ResourceLocation id) {
         return root.resolve("data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json");
     }
 
     public JsonElement toJson(LootTable.Builder builder) {
-        return LootManager.toJson(finishBuilding(builder));
+        return LootTableManager.toJson(finishBuilding(builder));
     }
 
     @Nonnull
     public LootTable finishBuilding(LootTable.Builder builder) {
-        return builder.type(LootContextTypes.BLOCK).build();
+        return builder.setParameterSet(LootParameterSets.BLOCK).build();
     }
 
     @Nonnull

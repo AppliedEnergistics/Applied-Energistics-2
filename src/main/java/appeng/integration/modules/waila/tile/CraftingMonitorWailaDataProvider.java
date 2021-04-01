@@ -19,13 +19,10 @@
 package appeng.integration.modules.waila.tile;
 
 import java.util.List;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.text.Text;
-
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
-
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.localization.WailaText;
 import appeng.integration.modules.waila.BaseWailaDataProvider;
@@ -41,16 +38,16 @@ import appeng.tile.crafting.CraftingMonitorBlockEntity;
 public final class CraftingMonitorWailaDataProvider extends BaseWailaDataProvider {
 
     @Override
-    public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
-        final BlockEntity te = accessor.getBlockEntity();
+    public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+        final TileEntity te = accessor.getBlockEntity();
         if (te instanceof CraftingMonitorBlockEntity) {
             final CraftingMonitorBlockEntity monitor = (CraftingMonitorBlockEntity) te;
             final IAEItemStack displayStack = monitor.getJobProgress();
 
             if (displayStack != null) {
-                final Text currentCrafting = displayStack.asItemStackRepresentation().getName();
+                final ITextComponent currentCrafting = displayStack.asItemStackRepresentation().getName();
 
-                tooltip.add(WailaText.Crafting.text().copy().append(": ").append(currentCrafting));
+                tooltip.add(WailaText.Crafting.text().copyRaw().appendString(": ").append(currentCrafting));
             }
         }
     }

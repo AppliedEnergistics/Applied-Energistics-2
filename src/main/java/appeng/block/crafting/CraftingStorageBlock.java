@@ -22,7 +22,7 @@ import appeng.tile.crafting.CraftingStorageBlockEntity;
 
 public class CraftingStorageBlock extends AbstractCraftingUnitBlock<CraftingStorageBlockEntity> {
 
-    public CraftingStorageBlock(Settings props, CraftingUnitType type) {
+    public CraftingStorageBlock(Properties props, CraftingUnitType type) {
         super(props, type);
     }
 

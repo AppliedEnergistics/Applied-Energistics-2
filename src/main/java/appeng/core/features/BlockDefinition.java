@@ -26,8 +26,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-
+import net.minecraft.world.IBlockReader;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.features.AEFeature;
 
@@ -60,7 +59,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition 
     }
 
     @Override
-    public final boolean isSameAs(final BlockView world, final BlockPos pos) {
+    public final boolean isSameAs(final IBlockReader world, final BlockPos pos) {
         return world.getBlockState(pos).getBlock() == this.block;
     }
 }

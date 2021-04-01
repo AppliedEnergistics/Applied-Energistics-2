@@ -25,7 +25,7 @@ package appeng.api.features;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 public interface IMatterCannonAmmoRegistry {
 
@@ -43,7 +43,7 @@ public interface IMatterCannonAmmoRegistry {
      * @param ammoTag item tag id
      * @param weight  atomic weight
      */
-    void registerAmmoTag(Identifier ammoTag, double weight);
+    void registerAmmoTag(ResourceLocation ammoTag, double weight);
 
     /**
      * get the penetration value for a particular ammo, 0 indicates a non-ammo.

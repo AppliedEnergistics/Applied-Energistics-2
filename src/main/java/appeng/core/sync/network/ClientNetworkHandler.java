@@ -2,9 +2,8 @@ package appeng.core.sync.network;
 
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.PacketByteBuf;
-
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketDirection;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
@@ -19,10 +18,10 @@ public class ClientNetworkHandler extends ServerNetworkHandler {
 
     @Override
     public void sendToServer(BasePacket message) {
-        registry.sendToServer(message.toPacket(NetworkSide.SERVERBOUND));
+        registry.sendToServer(message.toPacket(PacketDirection.field_11941));
     }
 
-    private void handlePacketFromServer(PacketContext packetContext, PacketByteBuf payload) {
+    private void handlePacketFromServer(PacketContext packetContext, PacketBuffer payload) {
         final int packetType = payload.readInt();
         final BasePacket packet = BasePacketHandler.PacketTypes.getPacket(packetType).parsePacket(payload);
 

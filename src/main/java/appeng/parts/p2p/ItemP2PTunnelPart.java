@@ -22,10 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-
+import net.minecraft.world.IBlockReader;
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.CacheInfo;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -72,7 +71,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
     }
 
     @Override
-    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         this.cachedInv = null;
         this.cachedInvs.clear();
         final ItemP2PTunnelPart input = this.getInput();

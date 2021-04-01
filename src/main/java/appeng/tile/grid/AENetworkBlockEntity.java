@@ -19,9 +19,8 @@
 package appeng.tile.grid;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AECableType;
@@ -35,19 +34,19 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IActionHo
 
     private final AENetworkProxy gridProxy = this.createProxy();
 
-    public AENetworkBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public AENetworkBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.getProxy().readFromNBT(data);
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         this.getProxy().writeToNBT(data);
         return data;
     }
@@ -79,14 +78,14 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IActionHo
     }
 
     @Override
-    public void markRemoved() {
-        super.markRemoved();
+    public void remove() {
+        super.remove();
         this.getProxy().remove();
     }
 
     @Override
-    public void cancelRemoval() {
-        super.cancelRemoval();
+    public void validate() {
+        super.validate();
         this.getProxy().validate();
     }
 

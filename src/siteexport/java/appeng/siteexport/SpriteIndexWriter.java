@@ -13,10 +13,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-
-import net.minecraft.MinecraftVersion;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.NBTDynamicOps;
+import net.minecraft.util.MinecraftVersion;
 import net.minecraft.util.registry.Registry;
 
 public class SpriteIndexWriter {
@@ -68,7 +67,7 @@ public class SpriteIndexWriter {
 
         public SpriteIndexJson() {
             generated = Instant.now().toString();
-            gameVersion = MinecraftVersion.create().getName();
+            gameVersion = MinecraftVersion.load().getName();
         }
 
         public String getGenerated() {
@@ -155,9 +154,9 @@ public class SpriteIndexWriter {
         private int y;
 
         public SpriteIndexEntryJson(ItemStack is, int x, int y) {
-            this.itemId = Registry.ITEM.getId(is.getItem()).toString();
+            this.itemId = Registry.ITEM.getKey(is.getItem()).toString();
             if (is.hasTag()) {
-                this.tag = NbtOps.INSTANCE.convertMap(JsonOps.INSTANCE, is.getTag());
+                this.tag = NBTDynamicOps.INSTANCE.convertMap(JsonOps.INSTANCE, is.getTag());
             }
             this.x = x;
             this.y = y;

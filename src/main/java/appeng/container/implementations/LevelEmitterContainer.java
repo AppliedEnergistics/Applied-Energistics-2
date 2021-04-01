@@ -20,9 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FuzzyMode;
@@ -41,12 +40,12 @@ import appeng.parts.automation.LevelEmitterPart;
 
 public class LevelEmitterContainer extends UpgradeableContainer {
 
-    public static ScreenHandlerType<LevelEmitterContainer> TYPE;
+    public static ContainerType<LevelEmitterContainer> TYPE;
 
     private static final ContainerHelper<LevelEmitterContainer, LevelEmitterPart> helper = new ContainerHelper<>(
             LevelEmitterContainer::new, LevelEmitterPart.class, SecurityPermissions.BUILD);
 
-    public static LevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static LevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf, (host, container, buffer) -> {
             container.reportingValue = buffer.readVarLong();
         });
@@ -126,7 +125,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {

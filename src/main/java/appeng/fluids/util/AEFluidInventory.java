@@ -2,9 +2,7 @@ package appeng.fluids.util;
 
 import java.math.RoundingMode;
 import java.util.Objects;
-
-import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.nbt.CompoundNBT;
 import alexiil.mc.lib.attributes.ListenerRemovalToken;
 import alexiil.mc.lib.attributes.ListenerToken;
 import alexiil.mc.lib.attributes.Simulation;
@@ -182,16 +180,16 @@ public class AEFluidInventory implements IAEFluidTank {
         return amount;
     }
 
-    public void writeToNBT(final CompoundTag data, final String name) {
-        final CompoundTag c = new CompoundTag();
+    public void writeToNBT(final CompoundNBT data, final String name) {
+        final CompoundNBT c = new CompoundNBT();
         this.writeToNBT(c);
         data.put(name, c);
     }
 
-    private void writeToNBT(final CompoundTag target) {
+    private void writeToNBT(final CompoundNBT target) {
         for (int x = 0; x < this.fluids.length; x++) {
             try {
-                final CompoundTag c = new CompoundTag();
+                final CompoundNBT c = new CompoundNBT();
 
                 if (this.fluids[x] != EMPTY_AE_FLUIDSTACK) {
                     this.fluids[x].writeToNBT(c);
@@ -203,17 +201,17 @@ public class AEFluidInventory implements IAEFluidTank {
         }
     }
 
-    public void readFromNBT(final CompoundTag data, final String name) {
-        final CompoundTag c = data.getCompound(name);
+    public void readFromNBT(final CompoundNBT data, final String name) {
+        final CompoundNBT c = data.getCompound(name);
         if (!c.isEmpty()) {
             this.readFromNBT(c);
         }
     }
 
-    private void readFromNBT(final CompoundTag target) {
+    private void readFromNBT(final CompoundNBT target) {
         for (int x = 0; x < this.fluids.length; x++) {
             try {
-                final CompoundTag c = target.getCompound("#" + x);
+                final CompoundNBT c = target.getCompound("#" + x);
 
                 if (!c.isEmpty()) {
                     this.fluids[x] = AEFluidStack.fromNBT(c);

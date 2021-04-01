@@ -24,17 +24,17 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.util.ActionResult;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -48,10 +48,10 @@ import appeng.util.Platform;
 public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChamberBlockEntity> {
 
     // Indicates that the vibration chamber is currently working
-    private static final BooleanProperty ACTIVE = BooleanProperty.of("active");
+    private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public VibrationChamberBlock() {
-        super(defaultProps(Material.METAL).strength(4.2F));
+        super(defaultProps(Material.IRON).hardnessAndResistance(4.2F));
         this.setDefaultState(this.getDefaultState().with(ACTIVE, false));
     }
 
@@ -61,32 +61,32 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(ACTIVE);
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (player.isInSneakingPose()) {
-            return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (player.isCrouching()) {
+            return ActionResultType.field_5811;
         }
 
         if (Platform.isServer()) {
             final VibrationChamberBlockEntity tc = this.getBlockEntity(w, pos);
-            if (tc != null && !player.isInSneakingPose()) {
+            if (tc != null && !player.isCrouching()) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tc, hit.getSide()));
-                return ActionResult.SUCCESS;
+                        ContainerLocator.forTileEntitySide(tc, hit.getFace()));
+                return ActionResultType.field_5812;
             }
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResultType.field_5812;
     }
 
     @Override
-    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -100,20 +100,20 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             final Direction forward = tile.getForward();
             final Direction up = tile.getUp();
 
-            final int west_x = forward.getOffsetY() * up.getOffsetZ() - forward.getOffsetZ() * up.getOffsetY();
-            final int west_y = forward.getOffsetZ() * up.getOffsetX() - forward.getOffsetX() * up.getOffsetZ();
-            final int west_z = forward.getOffsetX() * up.getOffsetY() - forward.getOffsetY() * up.getOffsetX();
+            final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
+            final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
+            final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
 
-            f1 += forward.getOffsetX() * 0.6;
-            f2 += forward.getOffsetY() * 0.6;
-            f3 += forward.getOffsetZ() * 0.6;
+            f1 += forward.getXOffset() * 0.6;
+            f2 += forward.getYOffset() * 0.6;
+            f3 += forward.getZOffset() * 0.6;
 
             final double ox = r.nextDouble();
             final double oy = r.nextDouble() * 0.2f;
 
-            f1 += up.getOffsetX() * (-0.3 + oy);
-            f2 += up.getOffsetY() * (-0.3 + oy);
-            f3 += up.getOffsetZ() * (-0.3 + oy);
+            f1 += up.getXOffset() * (-0.3 + oy);
+            f2 += up.getYOffset() * (-0.3 + oy);
+            f3 += up.getZOffset() * (-0.3 + oy);
 
             f1 += west_x * (0.3 * ox - 0.15);
             f2 += west_y * (0.3 * ox - 0.15);

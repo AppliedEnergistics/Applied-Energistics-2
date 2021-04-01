@@ -1,6 +1,6 @@
 package appeng.server.subcommands;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.command.Commands.literal;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -15,21 +15,20 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.worlddata.WorldData;
@@ -46,12 +45,12 @@ import appeng.spatial.TransitionInfo;
 public class SpatialStorageCommand implements ISubCommand {
 
     @Override
-    public void addArguments(LiteralArgumentBuilder<ServerCommandSource> builder) {
+    public void addArguments(LiteralArgumentBuilder<CommandSource> builder) {
         // Shows info about a given plot or about the plot the player is currently in
         builder.then(literal("info").executes(ctx -> {
             showPlotInfo(ctx.getSource(), getCurrentPlot(ctx.getSource()));
             return 1;
-        }).then(CommandManager.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+        }).then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
             int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
             showPlotInfo(ctx.getSource(), getPlot(plotId));
             return 1;
@@ -59,7 +58,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
         // Teleport into the plot
         builder.then(
-                literal("tp").then(CommandManager.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+                literal("tp").then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
                     int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
                     teleportToPlot(ctx.getSource(), plotId);
                     return 1;
@@ -70,7 +69,7 @@ public class SpatialStorageCommand implements ISubCommand {
         builder.then(literal("tpback").executes(ctx -> {
             teleportBack(ctx.getSource());
             return 1;
-        }).then(CommandManager.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+        }).then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
             int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
             teleportBack(ctx.getSource(), getPlot(plotId));
             return 1;
@@ -78,7 +77,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
         // Creates a storage cell for the given plot id and gives it to the player
         builder.then(literal("givecell")
-                .then(CommandManager.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+                .then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
                     int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
                     giveCell(ctx.getSource(), plotId);
                     return 1;
@@ -88,13 +87,13 @@ public class SpatialStorageCommand implements ISubCommand {
     /**
      * If the player is currently within a spatial storage plot, teleports them back to the last source of transition.
      */
-    private void teleportBack(ServerCommandSource source) {
+    private void teleportBack(CommandSource source) {
 
-        if (source.getWorld().getRegistryKey() != SpatialStorageDimensionIds.WORLD_ID) {
-            throw new CommandException(new LiteralText("Must be within the spatial storage world."));
+        if (source.getWorld().getDimensionKey() != SpatialStorageDimensionIds.WORLD_ID) {
+            throw new CommandException(new StringTextComponent("Must be within the spatial storage world."));
         }
 
-        BlockPos playerPos = new BlockPos(source.getPosition());
+        BlockPos playerPos = new BlockPos(source.getPos());
         int x = playerPos.getX();
         int z = playerPos.getZ();
 
@@ -110,17 +109,17 @@ public class SpatialStorageCommand implements ISubCommand {
             }
         }
 
-        throw new CommandException(new LiteralText("Couldn't find a plot for the current position."));
+        throw new CommandException(new StringTextComponent("Couldn't find a plot for the current position."));
 
     }
 
     /**
      * Teleports back from the given plot.
      */
-    private void teleportBack(ServerCommandSource source, SpatialStoragePlot plot) {
+    private void teleportBack(CommandSource source, SpatialStoragePlot plot) {
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition == null) {
-            throw new CommandException(new LiteralText("This plot doesn't have a last known transition."));
+            throw new CommandException(new StringTextComponent("This plot doesn't have a last known transition."));
         }
 
         String command = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().add(0, 1, 0));
@@ -130,7 +129,7 @@ public class SpatialStorageCommand implements ISubCommand {
     /**
      * Shows detailed information about a spatial storage plot.
      */
-    private static void showPlotInfo(ServerCommandSource source, SpatialStoragePlot plot) {
+    private static void showPlotInfo(CommandSource source, SpatialStoragePlot plot) {
 
         sendKeyValuePair(source, "Plot ID", String.valueOf(plot.getId()));
         // Show the owner of the spatial storage plot
@@ -142,7 +141,7 @@ public class SpatialStorageCommand implements ISubCommand {
                 sendKeyValuePair(source, "Owner", "Unknown AE2 player (" + playerId + ")");
             } else {
                 MinecraftServer server = AppEng.instance().getServer();
-                ServerPlayerEntity player = server.getPlayerManager().getPlayer(profileId);
+                ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(profileId);
                 if (player == null) {
                     sendKeyValuePair(source, "Owner", "Unknown Minecraft profile (" + profileId + ")");
                 } else {
@@ -156,10 +155,10 @@ public class SpatialStorageCommand implements ISubCommand {
         sendKeyValuePair(source, "Size", formatBlockPos(plot.getSize(), "x"));
 
         // Show the plot's origin and make it clickable to teleport directly to it
-        String teleportToPlotCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.getValue(),
+        String teleportToPlotCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.getLocation(),
                 plot.getOrigin());
-        sendKeyValuePair(source, "Origin", new LiteralText(formatBlockPos(plot.getOrigin(), ","))
-                .styled(makeCommandLink(teleportToPlotCommand, "Teleport into plot")));
+        sendKeyValuePair(source, "Origin", new StringTextComponent(formatBlockPos(plot.getOrigin(), ","))
+                .modifyStyle(makeCommandLink(teleportToPlotCommand, "Teleport into plot")));
 
         sendKeyValuePair(source, "Region file:", plot.getRegionFilename());
 
@@ -167,34 +166,34 @@ public class SpatialStorageCommand implements ISubCommand {
         // clickable link to the source)
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition != null) {
-            source.sendFeedback(new LiteralText("Last Transition:").formatted(Formatting.UNDERLINE, Formatting.BOLD),
+            source.sendFeedback(new StringTextComponent("Last Transition:").mergeStyle(TextFormatting.field_1073, TextFormatting.field_1067),
                     true);
 
             String sourceWorldId = lastTransition.getWorldId().toString();
-            MutableText sourceLink = new LiteralText(
+            IFormattableTextComponent sourceLink = new StringTextComponent(
                     sourceWorldId + " - " + formatBlockPos(lastTransition.getMin(), ",") + " to "
                             + formatBlockPos(lastTransition.getMax(), ","));
             String tpCommand = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().add(0, 1, 0));
-            sourceLink.styled(makeCommandLink(tpCommand, "Click to teleport"));
+            sourceLink.modifyStyle(makeCommandLink(tpCommand, "Click to teleport"));
 
             sendKeyValuePair(source, "Source", sourceLink);
             sendKeyValuePair(source, "When", lastTransition.getTimestamp().toString());
         } else {
-            source.sendFeedback(new LiteralText("Last Transition unknown"), true);
+            source.sendFeedback(new StringTextComponent("Last Transition unknown"), true);
         }
 
     }
 
-    private static void teleportToPlot(ServerCommandSource source, int plotId) {
+    private static void teleportToPlot(CommandSource source, int plotId) {
         SpatialStoragePlot plot = getPlot(plotId);
 
-        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.getValue(), plot.getOrigin());
+        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.getLocation(), plot.getOrigin());
 
         runCommandFor(source, teleportCommand);
     }
 
-    private void giveCell(ServerCommandSource source, int plotId) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getPlayer();
+    private void giveCell(CommandSource source, int plotId) throws CommandSyntaxException {
+        ServerPlayerEntity player = source.asPlayer();
 
         SpatialStoragePlot plot = getPlot(plotId);
 
@@ -210,13 +209,13 @@ public class SpatialStorageCommand implements ISubCommand {
 
         if (!(cell.getItem() instanceof SpatialStorageCellItem)) {
             throw new CommandException(
-                    new LiteralText("Storage cell items don't implement the storage cell interface!"));
+                    new StringTextComponent("Storage cell items don't implement the storage cell interface!"));
         }
 
         SpatialStorageCellItem spatialCellItem = (SpatialStorageCellItem) cell.getItem();
         spatialCellItem.setStoredDimension(cell, plotId, plot.getSize());
 
-        player.giveItemStack(cell);
+        player.addItemStackToInventory(cell);
     }
 
     private static int getLongestSide(BlockPos size) {
@@ -224,7 +223,7 @@ public class SpatialStorageCommand implements ISubCommand {
     }
 
     @Override
-    public void call(MinecraftServer srv, CommandContext<ServerCommandSource> ctx, ServerCommandSource sender) {
+    public void call(MinecraftServer srv, CommandContext<CommandSource> ctx, CommandSource sender) {
 
         List<SpatialStoragePlot> plots = new ArrayList<>(SpatialStoragePlotManager.INSTANCE.getPlots());
 
@@ -244,12 +243,12 @@ public class SpatialStorageCommand implements ISubCommand {
             BlockPos originPos = plot.getOrigin();
             String origin = formatBlockPos(originPos, ",");
 
-            Text infoLink = new LiteralText("Plot #" + plot.getId())
-                    .styled(makeCommandLink("/ae2 spatial info " + plot.getId(), "Click to show details"));
-            Text tpLink = new LiteralText("Origin: " + origin)
-                    .styled(makeCommandLink("/ae2 spatial tp " + plot.getId(), "Click to teleport into plot"));
+            ITextComponent infoLink = new StringTextComponent("Plot #" + plot.getId())
+                    .modifyStyle(makeCommandLink("/ae2 spatial info " + plot.getId(), "Click to show details"));
+            ITextComponent tpLink = new StringTextComponent("Origin: " + origin)
+                    .modifyStyle(makeCommandLink("/ae2 spatial tp " + plot.getId(), "Click to teleport into plot"));
 
-            Text message = new LiteralText("").append(infoLink).append(" Size: " + size + " ").append(tpLink);
+            ITextComponent message = new StringTextComponent("").append(infoLink).appendString(" Size: " + size + " ").append(tpLink);
 
             sender.sendFeedback(message, true);
         }
@@ -262,48 +261,48 @@ public class SpatialStorageCommand implements ISubCommand {
 
     private static UnaryOperator<Style> makeCommandLink(String command, String tooltip) {
 
-        return style -> style.withFormatting(Formatting.UNDERLINE)
-                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new LiteralText(tooltip)));
+        return style -> style.applyFormatting(TextFormatting.field_1073)
+                .setClickEvent(new ClickEvent(ClickEvent.Action.field_11750, command))
+                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(tooltip)));
 
     }
 
-    private static void runCommandFor(ServerCommandSource source, String command) {
-        CommandManager commandManager = AppEng.instance().getServer().getCommandManager();
-        commandManager.execute(source, command);
+    private static void runCommandFor(CommandSource source, String command) {
+        Commands commandManager = AppEng.instance().getServer().getCommandManager();
+        commandManager.handleCommand(source, command);
     }
 
-    private static String getTeleportCommand(Identifier worldId, BlockPos pos) {
+    private static String getTeleportCommand(ResourceLocation worldId, BlockPos pos) {
         return "/execute in " + worldId + " run tp @s " + pos.getX() + " " + (pos.getY() + 1) + " " + pos.getZ();
     }
 
     private static SpatialStoragePlot getPlot(int plotId) {
         SpatialStoragePlot plot = SpatialStoragePlotManager.INSTANCE.getPlot(plotId);
         if (plot == null) {
-            throw new CommandException(new LiteralText("Plot not found: " + plotId));
+            throw new CommandException(new StringTextComponent("Plot not found: " + plotId));
         }
         return plot;
     }
 
-    private static void sendKeyValuePair(ServerCommandSource source, String label, Text value) {
+    private static void sendKeyValuePair(CommandSource source, String label, ITextComponent value) {
         source.sendFeedback(
-                new LiteralText("").append(new LiteralText(label + ": ").formatted(Formatting.BOLD)).append(value),
+                new StringTextComponent("").append(new StringTextComponent(label + ": ").mergeStyle(TextFormatting.field_1067)).append(value),
                 true);
     }
 
-    private static void sendKeyValuePair(ServerCommandSource source, String label, String value) {
-        sendKeyValuePair(source, label, new LiteralText(value));
+    private static void sendKeyValuePair(CommandSource source, String label, String value) {
+        sendKeyValuePair(source, label, new StringTextComponent(value));
     }
 
     /**
      * Gets the spatial storage plot that the command source is currently in.
      */
-    private static SpatialStoragePlot getCurrentPlot(ServerCommandSource source) {
-        if (source.getWorld().getRegistryKey() != SpatialStorageDimensionIds.WORLD_ID) {
-            throw new CommandException(new LiteralText("Must be within the spatial storage world."));
+    private static SpatialStoragePlot getCurrentPlot(CommandSource source) {
+        if (source.getWorld().getDimensionKey() != SpatialStorageDimensionIds.WORLD_ID) {
+            throw new CommandException(new StringTextComponent("Must be within the spatial storage world."));
         }
 
-        BlockPos playerPos = new BlockPos(source.getPosition());
+        BlockPos playerPos = new BlockPos(source.getPos());
         int x = playerPos.getX();
         int z = playerPos.getZ();
 
@@ -317,7 +316,7 @@ public class SpatialStorageCommand implements ISubCommand {
             }
         }
 
-        throw new CommandException(new LiteralText("Couldn't find a plot for the current position."));
+        throw new CommandException(new StringTextComponent("Couldn't find a plot for the current position."));
     }
 
 }

@@ -18,10 +18,8 @@
 
 package appeng.fluids.client.gui;
 
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.FuzzyMode;
@@ -41,6 +39,7 @@ import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.fluids.util.IAEFluidTank;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * @author BrockWS
@@ -51,9 +50,9 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     private SettingToggleButton<AccessRestriction> rwMode;
     private SettingToggleButton<StorageFilter> storageFilter;
 
-    public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory, Text title) {
+    public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.backgroundHeight = 251;
+        this.ySize = 251;
     }
 
     @Override
@@ -63,7 +62,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
         final int xo = 8;
         final int yo = 23 + 6;
 
-        final IAEFluidTank config = this.handler.getFluidConfigInventory();
+        final IAEFluidTank config = this.container.getFluidConfigInventory();
 
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
@@ -71,7 +70,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
                 if (y < 2) {
                     this.guiSlots.add(new FluidSlotWidget(config, idx, idx, xo + x * 18, yo + y * 18));
                 } else {
-                    this.guiSlots.add(new OptionalFluidSlotWidget(config, handler, idx, idx, y - 2, xo, yo, x, y));
+                    this.guiSlots.add(new OptionalFluidSlotWidget(config, container, idx, idx, y - 2, xo, yo, x, y));
                 }
             }
         }
@@ -79,16 +78,16 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
 
     @Override
     protected void addButtons() {
-        addButton(new ActionButton(this.x - 18, this.y + 8, ActionItems.CLOSE, btn -> clear()));
-        addButton(new ActionButton(this.x - 18, this.y + 28, ActionItems.WRENCH, btn -> partition()));
-        this.rwMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.ACCESS,
+        addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, btn -> clear()));
+        addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, btn -> partition()));
+        this.rwMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(this.x - 18, this.y + 68, Settings.STORAGE_FILTER,
+        this.storageFilter = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68, Settings.STORAGE_FILTER,
                 StorageFilter.EXTRACTABLE_ONLY);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 88, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        addButton(this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(),
+        addButton(this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui())));
 
         this.addButton(this.storageFilter);
@@ -98,8 +97,8 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(this.getName().text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.font.method_30883(matrices, this.getGuiDisplayName(this.getName().text()), 8, 6, 4210752);
+        this.font.method_30883(matrices, GuiText.inventory.text(), 8, this.ySize - 96 + 3, 4210752);
 
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.cvb.getFuzzyMode());

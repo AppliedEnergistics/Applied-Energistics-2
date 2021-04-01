@@ -20,11 +20,10 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -33,12 +32,12 @@ import appeng.container.slot.RestrictedInputSlot;
 
 public class NetworkToolContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<NetworkToolContainer> TYPE;
+    public static ContainerType<NetworkToolContainer> TYPE;
 
     private static final ContainerHelper<NetworkToolContainer, INetworkTool> helper = new ContainerHelper<>(
             NetworkToolContainer::new, INetworkTool.class);
 
-    public static NetworkToolContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static NetworkToolContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -55,7 +54,7 @@ public class NetworkToolContainer extends AEBaseContainer {
         super(TYPE, id, ip, null, null);
         this.toolInv = te;
 
-        this.lockPlayerInventorySlot(ip.selectedSlot);
+        this.lockPlayerInventorySlot(ip.currentItem);
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
@@ -68,19 +67,19 @@ public class NetworkToolContainer extends AEBaseContainer {
     }
 
     public void toggleFacadeMode() {
-        final CompoundTag data = this.toolInv.getItemStack().getOrCreateTag();
+        final CompoundNBT data = this.toolInv.getItemStack().getOrCreateTag();
         data.putBoolean("hideFacades", !data.getBoolean("hideFacades"));
-        this.sendContentUpdates();
+        this.detectAndSendChanges();
     }
 
     @Override
-    public void sendContentUpdates() {
-        final ItemStack currentItem = this.getPlayerInv().getMainHandStack();
+    public void detectAndSendChanges() {
+        final ItemStack currentItem = this.getPlayerInv().getCurrentItem();
 
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
-                if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setStack(this.getPlayerInv().selectedSlot, this.toolInv.getItemStack());
+                if (ItemStack.areItemsEqualIgnoreDurability(this.toolInv.getItemStack(), currentItem)) {
+                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.toolInv.getItemStack());
                 } else {
                     this.setValidContainer(false);
                 }
@@ -90,11 +89,11 @@ public class NetworkToolContainer extends AEBaseContainer {
         }
 
         if (this.isValidContainer()) {
-            final CompoundTag data = currentItem.getOrCreateTag();
+            final CompoundNBT data = currentItem.getOrCreateTag();
             this.setFacadeMode(data.getBoolean("hideFacades"));
         }
 
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     public boolean isFacadeMode() {

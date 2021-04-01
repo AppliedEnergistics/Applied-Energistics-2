@@ -19,14 +19,13 @@
 package appeng.block.storage;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -39,14 +38,14 @@ import appeng.util.Platform;
 public class DriveBlock extends AEBaseTileBlock<DriveBlockEntity> {
 
     public DriveBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.IRON));
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (p.isInSneakingPose()) {
-            return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (p.isCrouching()) {
+            return ActionResultType.field_5811;
         }
 
         final DriveBlockEntity tg = this.getBlockEntity(w, pos);
@@ -54,8 +53,8 @@ public class DriveBlock extends AEBaseTileBlock<DriveBlockEntity> {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.field_5812;
         }
-        return ActionResult.PASS;
+        return ActionResultType.field_5811;
     }
 }

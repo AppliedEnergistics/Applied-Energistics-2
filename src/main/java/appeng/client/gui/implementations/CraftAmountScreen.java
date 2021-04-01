@@ -18,26 +18,25 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.container.implementations.CraftAmountContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.CraftRequestPacket;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     private final AESubScreen subGui;
 
     private NumberEntryWidget amountToCraft;
 
-    private ButtonWidget next;
+    private Button next;
 
-    public CraftAmountScreen(CraftAmountContainer container, PlayerInventory playerInventory, Text title) {
+    public CraftAmountScreen(CraftAmountContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.subGui = new AESubScreen(this, container.getTarget());
     }
@@ -54,7 +53,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         this.amountToCraft.addButtons(children::add, this::addButton);
 
         this.next = this
-                .addButton(new ButtonWidget(this.x + 128, this.y + 51, 38, 20, GuiText.Next.text(), this::confirm));
+                .addButton(new Button(this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.text(), this::confirm));
         this.amountToCraft.setOnConfirm(() -> this.confirm(this.next));
 
         subGui.addBackButton(this::addButton, 154, 0);
@@ -62,7 +61,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         changeFocus(true);
     }
 
-    private void confirm(ButtonWidget button) {
+    private void confirm(Button button) {
         int amount = this.amountToCraft.getIntValue().orElse(0);
         if (amount <= 0) {
             return;
@@ -72,7 +71,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, GuiText.SelectAmount.text(), 8, 6, 4210752);
+        this.font.method_30883(matrices, GuiText.SelectAmount.text(), 8, 6, 4210752);
     }
 
     @Override
@@ -81,7 +80,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
 
         this.bindTexture("guis/craft_amt.png");
-        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
 
         this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;
 

@@ -9,11 +9,10 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
 import appeng.mixins.BakedQuadAccessor;
 
 /**
@@ -29,7 +28,7 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
 
     private final List<BakedQuad> generalQuads;
 
-    ColorApplicatorBakedModel(BakedModel baseModel, Sprite texDark, Sprite texMedium, Sprite texBright) {
+    ColorApplicatorBakedModel(IBakedModel baseModel, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
         this.wrapped = baseModel;
 
         // Put the tint indices in... Since this is an item model, we are ignoring rand
@@ -40,11 +39,11 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
         }
     }
 
-    private Sprite getSprite(BakedQuad quad) {
+    private TextureAtlasSprite getSprite(BakedQuad quad) {
         return ((BakedQuadAccessor) quad).getSprite();
     }
 
-    private List<BakedQuad> fixQuadTint(Direction facing, Sprite texDark, Sprite texMedium, Sprite texBright) {
+    private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
         List<BakedQuad> quads = this.wrapped.getQuads(null, facing, new Random(0));
         List<BakedQuad> result = new ArrayList<>(quads.size());
         for (BakedQuad quad : quads) {
@@ -62,7 +61,7 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
             }
 
             BakedQuad newQuad = new BakedQuad(quad.getVertexData(), tint, quad.getFace(), getSprite(quad),
-                    quad.hasShade());
+                    quad.applyDiffuseLighting());
             result.add(newQuad);
         }
 

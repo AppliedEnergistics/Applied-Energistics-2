@@ -2,11 +2,8 @@ package appeng.tile.crafting;
 
 import java.util.EnumSet;
 import java.util.Objects;
-
+import net.minecraft.util.Direction;
 import com.google.common.base.Preconditions;
-
-import net.minecraft.util.math.Direction;
-
 import appeng.client.render.model.AEModelData;
 
 public class CraftingCubeModelData extends AEModelData {

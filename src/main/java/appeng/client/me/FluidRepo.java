@@ -24,9 +24,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.text.Text;
-
+import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
@@ -111,9 +109,9 @@ public class FluidRepo {
             }
 
             if (terminalSearchToolTips && notDone && !searchMod) {
-                final List<Text> tooltip = Platform.getTooltip(fs);
+                final List<ITextComponent> tooltip = Platform.getTooltip(fs);
 
-                for (final Text line : tooltip) {
+                for (final ITextComponent line : tooltip) {
                     if (m.matcher(line.getString()).find()) {
                         foundMatchingFluidStack = true;
                         break;

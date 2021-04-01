@@ -22,10 +22,9 @@ import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-
+import net.minecraft.network.PacketBuffer;
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AppEng;
@@ -49,7 +48,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
         this.z = z;
         this.d = direction;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeFloat((float) x);
@@ -60,7 +59,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    public ItemTransitionEffectPacket(final PacketByteBuf stream) {
+    public ItemTransitionEffectPacket(final PacketBuffer stream) {
         this.x = stream.readFloat();
         this.y = stream.readFloat();
         this.z = stream.readFloat();
@@ -80,7 +79,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
                 double speedX = 0.1f * this.d.xOffset;
                 double speedY = 0.1f * this.d.yOffset;
                 double speedZ = 0.1f * this.d.zOffset;
-                MinecraftClient.getInstance().particleManager.addParticle(data, x, y, z, speedX, speedY, speedZ);
+                Minecraft.getInstance().particles.addParticle(data, x, y, z, speedX, speedY, speedZ);
             }
         }
     }

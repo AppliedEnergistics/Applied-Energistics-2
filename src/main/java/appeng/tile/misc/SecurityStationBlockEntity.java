@@ -24,15 +24,15 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -93,7 +93,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isActive = false;
 
-    public SecurityStationBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public SecurityStationBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.getProxy().setIdlePowerUsage(2.0);
@@ -131,7 +131,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         final boolean wasActive = this.isActive;
         this.isActive = data.readBoolean();
@@ -143,26 +143,26 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.getProxy().isActive());
         data.writeByte(this.paintedColor.ordinal());
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         this.cm.writeToNBT(data);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
 
         data.putLong("securityKey", this.securityKey);
         this.getConfigSlot().writeToNBT(data, "config");
 
-        final CompoundTag storedItems = new CompoundTag();
+        final CompoundNBT storedItems = new CompoundNBT();
 
         int offset = 0;
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {
-            final CompoundTag it = new CompoundTag();
+            final CompoundNBT it = new CompoundNBT();
             ais.createItemStack().toTag(it);
             storedItems.put(String.valueOf(offset), it);
             offset++;
@@ -173,8 +173,8 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.cm.readFromNBT(data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
@@ -183,11 +183,11 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         this.securityKey = data.getLong("securityKey");
         this.getConfigSlot().readFromNBT(data, "config");
 
-        final CompoundTag storedItems = data.getCompound("storedItems");
-        for (final Object key : storedItems.getKeys()) {
-            final Tag obj = storedItems.get((String) key);
-            if (obj instanceof CompoundTag) {
-                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.fromTag((CompoundTag) obj)));
+        final CompoundNBT storedItems = data.getCompound("storedItems");
+        for (final Object key : storedItems.keySet()) {
+            final INBT obj = storedItems.get((String) key);
+            if (obj instanceof CompoundNBT) {
+                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.read((CompoundNBT) obj)));
             }
         }
     }
@@ -233,8 +233,8 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void markRemoved() {
-        super.markRemoved();
+    public void remove() {
+        super.remove();
         LocatableEventAnnounce.EVENT.invoker().onLocatableAnnounce(this, LocatableEvent.UNREGISTER);
         this.isActive = false;
     }
@@ -245,7 +245,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     public boolean isActive() {
-        if (world != null && !world.isClient) {
+        if (world != null && !world.isRemote) {
             return isPowered();
         } else {
             return this.isActive;

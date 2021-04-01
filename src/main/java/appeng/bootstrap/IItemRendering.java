@@ -20,7 +20,7 @@ package appeng.bootstrap;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.color.item.ItemColorProvider;
+import net.minecraft.client.renderer.color.IItemColor;
 
 /**
  * Allows the rendering of an item to be customized.
@@ -31,6 +31,6 @@ public interface IItemRendering {
      * Registers a custom item color definition that inspects an item stack and tint and returns a color multiplier.
      */
     @Environment(EnvType.CLIENT)
-    IItemRendering color(ItemColorProvider itemColor);
+    IItemRendering color(IItemColor itemColor);
 
 }

@@ -22,9 +22,8 @@ import java.util.Iterator;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.AccessRestriction;
@@ -53,12 +52,12 @@ import appeng.util.iterators.NullIterator;
  */
 public class FluidStorageBusContainer extends FluidConfigurableContainer {
 
-    public static ScreenHandlerType<FluidStorageBusContainer> TYPE;
+    public static ContainerType<FluidStorageBusContainer> TYPE;
 
     private static final ContainerHelper<FluidStorageBusContainer, FluidStorageBusPart> helper = new ContainerHelper<>(
             FluidStorageBusContainer::new, FluidStorageBusPart.class);
 
-    public static FluidStorageBusContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static FluidStorageBusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -125,7 +124,7 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -151,7 +150,7 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
         for (int i = 0; i < h.getSlots(); ++i) {
             h.setFluidInSlot(i, null);
         }
-        this.sendContentUpdates();
+        this.detectAndSendChanges();
     }
 
     public void partition() {
@@ -173,7 +172,7 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
                 h.setFluidInSlot(x, null);
             }
         }
-        this.sendContentUpdates();
+        this.detectAndSendChanges();
     }
 
     public AccessRestriction getReadWriteMode() {

@@ -19,9 +19,8 @@
 package appeng.tile.grid;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AEPartLocation;
@@ -33,19 +32,19 @@ public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity imple
 
     private final AENetworkProxy gridProxy = new AENetworkProxy(this, "proxy", this.getItemFromTile(this), true);
 
-    public AENetworkInvBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public AENetworkInvBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.getProxy().readFromNBT(data);
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
         this.getProxy().writeToNBT(data);
         return data;
     }
@@ -78,18 +77,18 @@ public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity imple
     }
 
     @Override
-    public void markRemoved() {
-        super.markRemoved();
+    public void remove() {
+        super.remove();
         // if the cached block state is not current, the following method may call
         // markForUpdate
         // and cause the block state to be changed back to non-air
-        resetBlock();
+        updateContainingBlockInfo();
         this.getProxy().remove();
     }
 
     @Override
-    public void cancelRemoval() {
-        super.cancelRemoval();
+    public void validate() {
+        super.validate();
         this.getProxy().validate();
     }
 

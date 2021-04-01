@@ -18,29 +18,28 @@
 
 package appeng.debug;
 
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AutomaticItemPlacementContext;
+import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Tickable;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.util.text.StringTextComponent;
 import appeng.core.AppEng;
 import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;
 
-public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Tickable {
+public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements ITickableTileEntity {
 
     private int size = 3;
     private ItemStack is = ItemStack.EMPTY;
     private int countdown = 20 * 10;
 
-    public CubeGeneratorBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public CubeGeneratorBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -51,7 +50,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
 
             if (this.countdown % 20 == 0) {
                 AppEng.instance().getPlayers().forEach(e -> {
-                    e.sendSystemMessage(new LiteralText("Spawning in... " + (this.countdown / 20)), Util.NIL_UUID);
+                    e.sendMessage(new StringTextComponent("Spawning in... " + (this.countdown / 20)), Util.DUMMY_UUID);
                 });
             }
 
@@ -65,7 +64,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
         this.world.removeBlock(this.pos, false);
 
         final Item i = this.is.getItem();
-        final Direction side = Direction.UP;
+        final Direction side = Direction.field_11036;
 
         final int half = (int) Math.floor(this.size / 2);
 
@@ -73,9 +72,9 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
             for (int x = -half; x < half; x++) {
                 for (int z = -half; z < half; z++) {
                     final BlockPos p = this.pos.add(x, y - 1, z);
-                    ItemUsageContext useContext = new AutomaticItemPlacementContext(this.world, p, side, this.is,
+                    ItemUseContext useContext = new DirectionalPlaceContext(this.world, p, side, this.is,
                             side.getOpposite());
-                    i.useOnBlock(useContext);
+                    i.onItemUse(useContext);
                 }
             }
         }
@@ -83,12 +82,12 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
 
     void click(final PlayerEntity player) {
         if (Platform.isServer()) {
-            final ItemStack hand = player.inventory.getMainHandStack();
+            final ItemStack hand = player.inventory.getCurrentItem();
 
             if (hand.isEmpty()) {
                 this.is = ItemStack.EMPTY;
 
-                if (player.isInSneakingPose()) {
+                if (player.isCrouching()) {
                     this.size--;
                 } else {
                     this.size++;
@@ -101,7 +100,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
                     this.size = 64;
                 }
 
-                player.sendSystemMessage(new LiteralText("Size: " + this.size), Util.NIL_UUID);
+                player.sendMessage(new StringTextComponent("Size: " + this.size), Util.DUMMY_UUID);
             } else {
                 this.countdown = 20 * 10;
                 this.is = hand;

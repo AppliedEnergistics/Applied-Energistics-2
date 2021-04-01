@@ -28,13 +28,13 @@ import java.util.List;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.LightType;
 
 import appeng.api.util.AEColor;
@@ -50,7 +50,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     private int isLit = 0;
     private List<Splotch> dots = null;
 
-    public PaintSplotchesBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
+    public PaintSplotchesBlockEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -60,9 +60,9 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag data) {
-        super.toTag(data);
-        final PacketByteBuf myDat = new PacketByteBuf(Unpooled.buffer());
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
+        final PacketBuffer myDat = new PacketBuffer(Unpooled.buffer());
         this.writeBuffer(myDat);
         if (myDat.hasArray()) {
             data.putByteArray("dots", myDat.array());
@@ -70,7 +70,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         return data;
     }
 
-    private void writeBuffer(final PacketByteBuf out) {
+    private void writeBuffer(final PacketBuffer out) {
         if (this.dots == null) {
             out.writeByte(0);
             return;
@@ -84,14 +84,14 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public void fromTag(BlockState state, final CompoundTag data) {
-        super.fromTag(state, data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         if (data.contains("dots")) {
-            this.readBuffer(new PacketByteBuf(Unpooled.copiedBuffer(data.getByteArray("dots"))));
+            this.readBuffer(new PacketBuffer(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }
     }
 
-    private void readBuffer(final PacketByteBuf in) {
+    private void readBuffer(final PacketBuffer in) {
         final byte howMany = in.readByte();
 
         if (howMany == 0) {
@@ -121,18 +121,18 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         }
 
         if (this.world != null) {
-            this.world.getLightLevel(LightType.BLOCK, this.pos);
+            this.world.getLightFor(LightType.field_9282, this.pos);
         }
     }
 
     @Override
-    protected void writeToStream(final PacketByteBuf data) throws IOException {
+    protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         this.writeBuffer(data);
     }
 
     @Override
-    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
         super.readFromStream(data);
         this.readBuffer(data);
         return true;
@@ -155,7 +155,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     public boolean isSideValid(final Direction side) {
         final BlockPos p = this.pos.offset(side);
         final BlockState blk = this.world.getBlockState(p);
-        return blk.isSideSolidFullSquare(world, p, side.getOpposite());
+        return blk.isSolidSide(world, p, side.getOpposite());
     }
 
     private void removeSide(final Direction side) {
@@ -204,11 +204,11 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         return this.isLit;
     }
 
-    public void addBlot(final ItemStack type, final Direction side, final Vec3d hitVec) {
+    public void addBlot(final ItemStack type, final Direction side, final Vector3d hitVec) {
         final BlockPos p = this.pos.offset(side);
 
         final BlockState blk = this.world.getBlockState(p);
-        if (blk.isSideSolidFullSquare(this.world, p, side.getOpposite())) {
+        if (blk.isSolidSide(this.world, p, side.getOpposite())) {
             final PaintBallItem ipb = (PaintBallItem) type.getItem();
 
             final AEColor col = ipb.getColor();

@@ -22,16 +22,14 @@ import java.io.IOException;
 import java.nio.BufferOverflowException;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
@@ -79,12 +77,12 @@ import appeng.util.IConfigManagerHost;
 public class MEMonitorableContainer extends AEBaseContainer
         implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack> {
 
-    public static ScreenHandlerType<MEMonitorableContainer> TYPE;
+    public static ContainerType<MEMonitorableContainer> TYPE;
 
     private static final ContainerHelper<MEMonitorableContainer, ITerminalHost> helper = new ContainerHelper<>(
             MEMonitorableContainer::new, ITerminalHost.class);
 
-    public static MEMonitorableContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static MEMonitorableContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -116,9 +114,9 @@ public class MEMonitorableContainer extends AEBaseContainer
         this(TYPE, id, ip, monitorable, true);
     }
 
-    public MEMonitorableContainer(ScreenHandlerType<?> containerType, int id, PlayerInventory ip,
+    public MEMonitorableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
             final ITerminalHost monitorable, final boolean bindInventory) {
-        super(containerType, id, ip, monitorable instanceof BlockEntity ? (BlockEntity) monitorable : null,
+        super(containerType, id, ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null,
                 monitorable instanceof IPart ? (IPart) monitorable : null,
                 monitorable instanceof IGuiItemObject ? (IGuiItemObject) monitorable : null);
 
@@ -189,7 +187,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         if (isServer()) {
             if (this.monitor != this.host
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))) {
@@ -204,7 +202,7 @@ public class MEMonitorableContainer extends AEBaseContainer
 
                 if (sideLocal != sideRemote) {
                     this.clientCM.putSetting(set, sideLocal);
-                    for (final ScreenHandlerListener crafter : this.getListeners()) {
+                    for (final IContainerListener crafter : this.getListeners()) {
                         if (crafter instanceof ServerPlayerEntity) {
                             NetworkHandler.instance().sendTo(new ConfigValuePacket(set.name(), sideLocal.name()),
                                     (ServerPlayerEntity) crafter);
@@ -255,7 +253,7 @@ public class MEMonitorableContainer extends AEBaseContainer
                 }
             }
 
-            super.sendContentUpdates();
+            super.detectAndSendChanges();
         }
 
     }
@@ -289,7 +287,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     @Override
-    public void addListener(final ScreenHandlerListener c) {
+    public void addListener(final IContainerListener c) {
         super.addListener(c);
 
         this.queueInventory(c);
@@ -325,7 +323,7 @@ public class MEMonitorableContainer extends AEBaseContainer
         this.activeCraftingJobs = activeJobs;
     }
 
-    private void queueInventory(final ScreenHandlerListener c) {
+    private void queueInventory(final IContainerListener c) {
         if (isServer() && c instanceof PlayerEntity && this.monitor != null) {
             try {
                 MEInventoryUpdatePacket piu = new MEInventoryUpdatePacket();
@@ -350,7 +348,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     @Override
-    public void removeListener(final ScreenHandlerListener c) {
+    public void removeListener(final IContainerListener c) {
         super.removeListener(c);
 
         if (this.getListeners().isEmpty() && this.monitor != null) {
@@ -359,8 +357,8 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     @Override
-    public void close(final PlayerEntity player) {
-        super.close(player);
+    public void onContainerClosed(final PlayerEntity player) {
+        super.onContainerClosed(player);
         if (this.monitor != null) {
             this.monitor.removeListener(this);
         }
@@ -381,7 +379,7 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     @Override
     public void onListUpdate() {
-        for (final ScreenHandlerListener c : this.getListeners()) {
+        for (final IContainerListener c : this.getListeners()) {
             this.queueInventory(c);
         }
     }

@@ -29,13 +29,12 @@ import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.Packet;
-import net.minecraft.network.PacketByteBuf;
-
+import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketDirection;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -58,12 +57,12 @@ public class MEFluidInventoryUpdatePacket extends BasePacket {
     private final byte ref;
 
     @Nullable
-    private final PacketByteBuf data;
+    private final PacketBuffer data;
 
     private int writtenBytes = 0;
     private boolean empty = true;
 
-    public MEFluidInventoryUpdatePacket(final PacketByteBuf stream) {
+    public MEFluidInventoryUpdatePacket(final PacketBuffer stream) {
         this.data = null;
         this.list = new LinkedList<>();
         this.ref = stream.readByte();
@@ -82,7 +81,7 @@ public class MEFluidInventoryUpdatePacket extends BasePacket {
     // api
     public MEFluidInventoryUpdatePacket(final byte ref) throws IOException {
         this.ref = ref;
-        this.data = new PacketByteBuf(Unpooled.buffer(OPERATION_BYTE_LIMIT));
+        this.data = new PacketBuffer(Unpooled.buffer(OPERATION_BYTE_LIMIT));
         this.data.writeInt(this.getPacketID());
         this.data.writeByte(this.ref);
         this.list = null;
@@ -91,7 +90,7 @@ public class MEFluidInventoryUpdatePacket extends BasePacket {
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Screen gs = MinecraftClient.getInstance().currentScreen;
+        final Screen gs = Minecraft.getInstance().currentScreen;
 
         if (gs instanceof FluidTerminalScreen) {
             ((FluidTerminalScreen) gs).postUpdate(this.list);
@@ -100,13 +99,13 @@ public class MEFluidInventoryUpdatePacket extends BasePacket {
 
     @Nullable
     @Override
-    public Packet<?> toPacket(NetworkSide direction) {
+    public IPacket<?> toPacket(PacketDirection direction) {
         this.configureWrite(this.data);
         return super.toPacket(direction);
     }
 
     public void appendFluid(final IAEFluidStack fs) throws IOException, BufferOverflowException {
-        final PacketByteBuf tmp = new PacketByteBuf(Unpooled.buffer(OPERATION_BYTE_LIMIT));
+        final PacketBuffer tmp = new PacketBuffer(Unpooled.buffer(OPERATION_BYTE_LIMIT));
         fs.writeToPacket(tmp);
 
         if (this.writtenBytes + tmp.readableBytes() > UNCOMPRESSED_PACKET_BYTE_LIMIT) {

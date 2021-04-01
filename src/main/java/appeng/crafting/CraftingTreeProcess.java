@@ -66,8 +66,8 @@ public class CraftingTreeProcess {
 
             final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
             final IAEItemStack[] is = details.getSparseInputs();
-            for (int x = 0; x < ic.size(); x++) {
-                ic.setStack(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
+            for (int x = 0; x < ic.getSizeInventory(); x++) {
+                ic.setInventorySlotContents(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
             }
 
             // FIXME FABRIC Hooks don't exist
@@ -75,8 +75,8 @@ public class CraftingTreeProcess {
             // FakePlayer.getOrCreate((ServerWorld) world),
             // FIXME FABRIC details.getOutput(ic, world), ic);
 
-            for (int x = 0; x < ic.size(); x++) {
-                final ItemStack g = ic.getStack(x);
+            for (int x = 0; x < ic.getSizeInventory(); x++) {
+                final ItemStack g = ic.getStackInSlot(x);
                 if (!g.isEmpty() && g.getCount() > 1) {
                     this.fullSimulation = true;
                 }
@@ -96,7 +96,7 @@ public class CraftingTreeProcess {
                     this.limitQty = true;
                 }
 
-                if (g.getItem().hasRecipeRemainder()) {
+                if (g.getItem().hasContainerItem()) {
                     this.limitQty = this.containerItems = true;
                 }
             }
@@ -170,7 +170,7 @@ public class CraftingTreeProcess {
                 final IAEItemStack item = entry.getKey().getStack(entry.getValue());
                 final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize(), src);
 
-                ic.setStack(entry.getKey().getSlot(), stack.createItemStack());
+                ic.setInventorySlotContents(entry.getKey().getSlot(), stack.createItemStack());
             }
 
             // FIXME FABRIC Hook doesn't exist
@@ -178,8 +178,8 @@ public class CraftingTreeProcess {
             // FakePlayer.getOrCreate((ServerWorld) this.world),
             // FIXME FABRIC this.details.getOutput(ic, this.world), ic);
 
-            for (int x = 0; x < ic.size(); x++) {
-                ItemStack is = ic.getStack(x);
+            for (int x = 0; x < ic.getSizeInventory(); x++) {
+                ItemStack is = ic.getStackInSlot(x);
                 is = Platform.getRecipeRemainder(is);
 
                 final IAEItemStack o = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)

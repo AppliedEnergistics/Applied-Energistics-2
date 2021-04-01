@@ -25,21 +25,20 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
+import net.minecraft.tags.ITag;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-
+import net.minecraft.world.server.ServerWorld;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
@@ -76,11 +75,11 @@ import appeng.util.item.AEItemStack;
 
 public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable, IWorldCallable<TickRateModulation> {
 
-    public static final Identifier TAG_BLACKLIST = new Identifier(AppEng.MOD_ID, "blacklisted/annihilation_plane");
+    public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID, "blacklisted/annihilation_plane");
 
-    private static final Tag.Identified<Block> BLOCK_BLACKLIST = BlockTagsAccessor.register(TAG_BLACKLIST.toString());
+    private static final ITag.INamedTag<Block> BLOCK_BLACKLIST = BlockTagsAccessor.register(TAG_BLACKLIST.toString());
 
-    private static final Tag.Identified<Item> ITEM_BLACKLIST = ItemTagsAccessor.register(TAG_BLACKLIST.toString());
+    private static final ITag.INamedTag<Item> ITEM_BLACKLIST = ItemTagsAccessor.register(TAG_BLACKLIST.toString());
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane", "part/annihilation_plane_on");
 
@@ -128,7 +127,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     @Override
-    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborUpdate(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.refresh();
         } else {
@@ -142,7 +141,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 && this.getProxy().isActive()) {
 
             ItemEntity itemEntity = (ItemEntity) entity;
-            if (isItemBlacklisted(itemEntity.getStack().getItem())) {
+            if (isItemBlacklisted(itemEntity.getItem().getItem())) {
                 return;
             }
 
@@ -154,9 +153,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             // This is the middle point of the entities BB, which is better suited for comparisons
             // that don't rely on it "touching" the plane
             final double posYMiddle = (entity.getBoundingBox().minY + entity.getBoundingBox().maxY) / 2.0D;
-            final double entityPosX = entity.getX();
-            final double entityPosY = entity.getY();
-            final double entityPosZ = entity.getZ();
+            final double entityPosX = entity.getPosX();
+            final double entityPosY = entity.getPosY();
+            final double entityPosZ = entity.getPosZ();
 
             final boolean captureX = entityPosX > planePosX && entityPosX < planePosX + 1;
             final boolean captureY = posYMiddle > planePosY && posYMiddle < planePosY + 1;
@@ -193,8 +192,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
                 if (changed) {
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
-                            this.getTile().getWorld(), new ItemTransitionEffectPacket(entity.getX(), entity.getY(),
-                                    entity.getZ(), this.getSide().getOpposite()));
+                            this.getTile().getWorld(), new ItemTransitionEffectPacket(entity.getPosX(), entity.getPosY(),
+                                    entity.getPosZ(), this.getSide().getOpposite()));
                 }
             }
         }
@@ -212,7 +211,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      */
     private boolean storeEntityItem(final ItemEntity entityItem) {
         if (entityItem.isAlive()) {
-            final IAEItemStack overflow = this.storeItemStack(entityItem.getStack());
+            final IAEItemStack overflow = this.storeItemStack(entityItem.getItem());
 
             return this.handleOverflow(entityItem, overflow);
         }
@@ -259,11 +258,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             return true;
         }
 
-        final int oldStackSize = entityItem.getStack().getCount();
+        final int oldStackSize = entityItem.getItem().getCount();
         final int newStackSize = (int) overflow.getStackSize();
         final boolean changed = oldStackSize != newStackSize;
 
-        entityItem.getStack().setCount(newStackSize);
+        entityItem.getItem().setCount(newStackSize);
 
         return changed;
     }
@@ -285,7 +284,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     private TickRateModulation breakBlock(final boolean modulate) {
         if (this.isAccepting && this.getProxy().isActive()) {
             try {
-                final BlockEntity te = this.getTile();
+                final TileEntity te = this.getTile();
                 final ServerWorld w = (ServerWorld) te.getWorld();
 
                 final BlockPos pos = te.getPos().offset(this.getSide().getFacing());
@@ -374,12 +373,12 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         }
 
         final Material material = state.getMaterial();
-        final float hardness = state.getHardness(w, pos);
+        final float hardness = state.getBlockHardness(w, pos);
         final boolean ignoreMaterials = material == Material.AIR || material == Material.LAVA
                 || material == Material.WATER || material.isLiquid();
 
-        return !ignoreMaterials && hardness >= 0f && w.isChunkLoaded(pos)
-                && w.canPlayerModifyAt(FakePlayer.getOrCreate(w), pos);
+        return !ignoreMaterials && hardness >= 0f && w.isBlockLoaded(pos)
+                && w.isBlockModifiable(FakePlayer.getOrCreate(w), pos);
     }
 
     protected List<ItemStack> obtainBlockDrops(final ServerWorld w, final BlockPos pos) {
@@ -391,7 +390,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         ItemStack harvestTool = createHarvestTool(state);
 
         if (harvestTool == null) {
-            if (!state.isToolRequired()) {
+            if (!state.getRequiresTool()) {
                 harvestTool = ItemStack.EMPTY;
             } else {
                 // In case the block does NOT allow us to harvest it without a tool, or the
@@ -400,8 +399,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             }
         }
 
-        BlockEntity te = w.getBlockEntity(pos);
-        return Block.getDroppedStacks(state, w, pos, te, fakePlayer, harvestTool);
+        TileEntity te = w.getTileEntity(pos);
+        return Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
     }
 
     /**
@@ -409,7 +408,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      */
     protected float calculateEnergyUsage(final ServerWorld w, final BlockPos pos, final List<ItemStack> items) {
         final BlockState state = w.getBlockState(pos);
-        final float hardness = state.getHardness(w, pos);
+        final float hardness = state.getBlockHardness(w, pos);
 
         float requiredEnergy = 1 + hardness;
         for (final ItemStack is : items) {
@@ -452,7 +451,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     private boolean breakBlockAndStoreExtraItems(final ServerWorld w, final BlockPos pos) {
         // Kill the block, but signal no drops
-        if (!w.breakBlock(pos, false)) {
+        if (!w.destroyBlock(pos, false)) {
             // The block was no longer there
             return false;
         }
@@ -460,8 +459,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         // This handles items that do not spawn via loot-tables but rather normal block
         // breaking
         // i.e. our cable-buses do this (bad practice, really)
-        final Box box = new Box(pos).expand(0.2);
-        for (final Object ei : w.getEntitiesByClass(ItemEntity.class, box, null)) {
+        final AxisAlignedBB box = new AxisAlignedBB(pos).grow(0.2);
+        for (final Object ei : w.getEntitiesWithinAABB(ItemEntity.class, box, null)) {
             if (ei instanceof ItemEntity) {
                 final ItemEntity entityItem = (ItemEntity) ei;
                 this.storeEntityItem(entityItem);
@@ -503,7 +502,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     protected ItemStack createHarvestTool(BlockState state) {
         // Try to use the right tool...
         for (Item toolItem : SUPPORTED_HARVEST_TOOLS) {
-            if (toolItem.isEffectiveOn(state)) {
+            if (toolItem.canHarvestBlock(state)) {
                 return new ItemStack(toolItem);
             }
         }

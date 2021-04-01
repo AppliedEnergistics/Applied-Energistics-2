@@ -2,9 +2,8 @@ package appeng.fluids.container;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -16,12 +15,12 @@ import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.IAEFluidTank;
 
 public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
-    public static ScreenHandlerType<FluidLevelEmitterContainer> TYPE;
+    public static ContainerType<FluidLevelEmitterContainer> TYPE;
 
     private static final ContainerHelper<FluidLevelEmitterContainer, FluidLevelEmitterPart> helper = new ContainerHelper<>(
             FluidLevelEmitterContainer::new, FluidLevelEmitterPart.class, SecurityPermissions.BUILD);
 
-    public static FluidLevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static FluidLevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf, (host, container, buffer) -> {
             container.reportingValue = buffer.readVarLong();
         });
@@ -75,7 +74,7 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {

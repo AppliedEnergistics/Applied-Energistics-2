@@ -1,8 +1,7 @@
 package appeng.block.qnb;
 
 import java.util.Set;
-
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.Direction;
 
 public class QnbFormedState {
 

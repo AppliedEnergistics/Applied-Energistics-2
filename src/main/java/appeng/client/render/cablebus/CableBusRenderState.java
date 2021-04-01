@@ -24,12 +24,10 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
-
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
-
+import net.minecraft.world.IBlockDisplayReader;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -76,14 +74,14 @@ public class CableBusRenderState {
     private EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>(Direction.class);
 
     // Used for Facades.
-    private WeakReference<BlockRenderView> world;
+    private WeakReference<IBlockDisplayReader> world;
     private BlockPos pos;
 
     // Contains the bounding boxes of all parts on the cable bus to allow facades to
     // cut out holes for the parts. This
     // list is only populated if there are
     // facades on this cable bus
-    private List<Box> boundingBoxes = new ArrayList<>();
+    private List<AxisAlignedBB> boundingBoxes = new ArrayList<>();
 
     // Additional model data passed to the part models
     private EnumMap<Direction, Object> partModelData = new EnumMap<>(Direction.class);
@@ -148,11 +146,11 @@ public class CableBusRenderState {
         return this.facades;
     }
 
-    public BlockRenderView getWorld() {
+    public IBlockDisplayReader getWorld() {
         return this.world.get();
     }
 
-    public void setWorld(BlockRenderView world) {
+    public void setWorld(IBlockDisplayReader world) {
         this.world = new WeakReference<>(world);
     }
 
@@ -164,7 +162,7 @@ public class CableBusRenderState {
         this.pos = pos;
     }
 
-    public List<Box> getBoundingBoxes() {
+    public List<AxisAlignedBB> getBoundingBoxes() {
         return this.boundingBoxes;
     }
 

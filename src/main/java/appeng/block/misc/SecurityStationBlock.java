@@ -22,15 +22,15 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.util.ActionResult;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -41,17 +41,17 @@ import appeng.tile.misc.SecurityStationBlockEntity;
 
 public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationBlockEntity> {
 
-    private static final BooleanProperty POWERED = BooleanProperty.of("powered");
+    private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public SecurityStationBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.IRON));
 
         this.setDefaultState(this.getDefaultState().with(POWERED, false));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(POWERED);
     }
 
@@ -61,22 +61,22 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationBlockEn
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (p.isInSneakingPose()) {
-            return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (p.isCrouching()) {
+            return ActionResultType.field_5811;
         }
 
         final SecurityStationBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
-            if (w.isClient()) {
-                return ActionResult.SUCCESS;
+            if (w.isRemote()) {
+                return ActionResultType.field_5812;
             }
 
             ContainerOpener.openContainer(SecurityStationContainer.TYPE, p,
-                    ContainerLocator.forTileEntitySide(tg, hit.getSide()));
-            return ActionResult.SUCCESS;
+                    ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+            return ActionResultType.field_5812;
         }
-        return ActionResult.PASS;
+        return ActionResultType.field_5811;
     }
 }

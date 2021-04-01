@@ -5,11 +5,17 @@ pluginManagement {
             name = "Fabric"
             url = "https://maven.fabricmc.net/"
         }
+        maven {
+            url "https://maven.shedaniel.me/"
+        }
+        maven {
+            url "https://files.minecraftforge.net/maven/"
+        }
         gradlePluginPortal()
     }
 
     plugins {
-        id "fabric-loom" version loom_version
+        id "forgified-fabric-loom" version loom_version
     }
 
 }

@@ -18,17 +18,16 @@
 
 package appeng.block.networking;
 
-import net.minecraft.client.render.RenderLayer;
-
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
+import net.minecraft.client.renderer.RenderType;
 
 public class ControllerRendering extends BlockRenderingCustomizer {
     @Override
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
         // Disables the default model rotator
         rendering.modelCustomizer((loc, model) -> model);
-        rendering.renderType(RenderLayer.getCutout());
+        rendering.renderType(RenderType.getCutout());
     }
 }

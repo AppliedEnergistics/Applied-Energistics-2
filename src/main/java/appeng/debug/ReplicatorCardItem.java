@@ -19,25 +19,25 @@
 package appeng.debug;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.LiteralText;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGrid;
@@ -51,14 +51,14 @@ import appeng.items.AEBaseItem;
 
 public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
 
-    public ReplicatorCardItem(Settings properties) {
+    public ReplicatorCardItem(Properties properties) {
         super(properties);
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (!world.isClient()) {
-            final CompoundTag tag = user.getStackInHand(hand).getOrCreateTag();
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity user, Hand hand) {
+        if (!world.isRemote()) {
+            final CompoundNBT tag = user.getHeldItem(hand).getOrCreateTag();
             final int replications;
 
             if (tag.contains("r")) {
@@ -69,41 +69,41 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
 
             tag.putInt("r", replications);
 
-            user.sendMessage(new LiteralText((replications + 1) + "³ Replications"), true);
+            user.sendStatusMessage(new StringTextComponent((replications + 1) + "³ Replications"), true);
         }
 
-        return super.use(world, user, hand);
+        return super.onItemRightClick(world, user, hand);
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
-        if (context.getWorld().isClient()) {
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        if (context.getWorld().isRemote()) {
             // Needed, otherwise client will trigger onItemRightClick also on server...
-            return ActionResult.SUCCESS;
+            return ActionResultType.field_5812;
         }
 
         PlayerEntity player = context.getPlayer();
         World world = context.getWorld();
-        BlockPos pos = context.getBlockPos();
-        Direction side = context.getSide();
+        BlockPos pos = context.getPos();
+        Direction side = context.getFace();
         Hand hand = context.getHand();
 
         if (player == null) {
-            return ActionResult.PASS;
+            return ActionResultType.field_5811;
         }
 
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
 
-        if (player.isInSneakingPose()) {
-            if (world.getBlockEntity(pos) instanceof IGridHost) {
-                final CompoundTag tag = player.getStackInHand(hand).getOrCreateTag();
+        if (player.isCrouching()) {
+            if (world.getTileEntity(pos) instanceof IGridHost) {
+                final CompoundNBT tag = player.getHeldItem(hand).getOrCreateTag();
                 tag.putInt("x", x);
                 tag.putInt("y", y);
                 tag.putInt("z", z);
                 tag.putInt("side", side.ordinal());
-                tag.putString("w", world.getRegistryKey().getValue().toString());
+                tag.putString("w", world.getDimensionKey().getLocation().toString());
                 tag.putInt("r", 0);
 
                 this.outputMsg(player, "Set replicator source");
@@ -111,7 +111,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                 this.outputMsg(player, "This is not a Grid Tile.");
             }
         } else {
-            final CompoundTag ish = player.getStackInHand(hand).getTag();
+            final CompoundNBT ish = player.getHeldItem(hand).getTag();
             if (ish != null) {
                 final int src_x = ish.getInt("x");
                 final int src_y = ish.getInt("y");
@@ -119,10 +119,10 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                 final int src_side = ish.getInt("side");
                 final String worldId = ish.getString("w");
                 final World src_w = world.getServer()
-                        .getWorld(RegistryKey.of(Registry.DIMENSION, new Identifier(worldId)));
+                        .getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
-                final BlockEntity te = src_w.getBlockEntity(new BlockPos(src_x, src_y, src_z));
+                final TileEntity te = src_w.getTileEntity(new BlockPos(src_x, src_y, src_z));
                 if (te instanceof IGridHost) {
                     final IGridHost gh = (IGridHost) te;
                     final Direction sideOff = Direction.values()[src_side];
@@ -153,9 +153,9 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                                 final int min_z = min.z;
 
                                 // Invert to maintain correct sign for west/east
-                                final int x_rot = (int) -Math.signum(MathHelper.wrapDegrees(player.yaw));
+                                final int x_rot = (int) -Math.signum(MathHelper.wrapDegrees(player.rotationYaw));
                                 // Rotate by 90 degree, so north/south are negative/positive
-                                final int z_rot = (int) Math.signum(MathHelper.wrapDegrees(player.yaw + 90));
+                                final int z_rot = (int) Math.signum(MathHelper.wrapDegrees(player.rotationYaw + 90));
 
                                 // Loops for replication in each direction
                                 for (int r_x = 0; r_x < replications; r_x++) {
@@ -182,17 +182,17 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                                                         final BlockState prev = world.getBlockState(d);
 
                                                         world.setBlockState(d, state);
-                                                        if (blk instanceof BlockEntityProvider) {
-                                                            BlockEntityProvider blkEntityProvider = (BlockEntityProvider) blk;
-                                                            final BlockEntity ote = src_w.getBlockEntity(p);
-                                                            final BlockEntity nte = blkEntityProvider
-                                                                    .createBlockEntity(world);
-                                                            final CompoundTag data = new CompoundTag();
-                                                            ote.toTag(data);
-                                                            nte.fromTag(state, data.copy());
-                                                            world.setBlockEntity(d, nte);
+                                                        if (blk instanceof ITileEntityProvider) {
+                                                            ITileEntityProvider blkEntityProvider = (ITileEntityProvider) blk;
+                                                            final TileEntity ote = src_w.getTileEntity(p);
+                                                            final TileEntity nte = blkEntityProvider
+                                                                    .createNewTileEntity(world);
+                                                            final CompoundNBT data = new CompoundNBT();
+                                                            ote.write(data);
+                                                            nte.read(state, data.copy());
+                                                            world.setTileEntity(d, nte);
                                                         }
-                                                        world.updateListeners(d, prev, state, 3);
+                                                        world.notifyBlockUpdate(d, prev, state, 3);
                                                     }
                                                 }
                                             }
@@ -215,10 +215,10 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                 this.outputMsg(player, "No Source Defined");
             }
         }
-        return ActionResult.SUCCESS;
+        return ActionResultType.field_5812;
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendSystemMessage(new LiteralText(string), Util.NIL_UUID);
+        player.sendMessage(new StringTextComponent(string), Util.DUMMY_UUID);
     }
 }

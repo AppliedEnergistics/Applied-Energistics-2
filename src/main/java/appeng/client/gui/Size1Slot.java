@@ -8,9 +8,9 @@ import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * A proxy for a slot that will always return an itemstack with size 1, if there is an item in the slot. Used to prevent
@@ -21,7 +21,7 @@ class Size1Slot extends Slot {
     private final Slot delegate;
 
     public Size1Slot(Slot delegate) {
-        super(delegate.inventory, -1, delegate.x, delegate.y);
+        super(delegate.inventory, -1, delegate.xPos, delegate.yPos);
         this.delegate = delegate;
     }
 
@@ -39,41 +39,41 @@ class Size1Slot extends Slot {
     }
 
     @Override
-    public boolean hasStack() {
-        return this.delegate.hasStack();
+    public boolean getHasStack() {
+        return this.delegate.getHasStack();
     }
 
     @Override
-    public int getMaxItemCount() {
-        return this.delegate.getMaxItemCount();
+    public int getSlotStackLimit() {
+        return this.delegate.getSlotStackLimit();
     }
 
     @Override
-    public int getMaxItemCount(ItemStack stack) {
-        return this.delegate.getMaxItemCount(stack);
+    public int getItemStackLimit(ItemStack stack) {
+        return this.delegate.getItemStackLimit(stack);
     }
 
     @Override
-    public boolean canTakeItems(PlayerEntity playerIn) {
-        return this.delegate.canTakeItems(playerIn);
+    public boolean canTakeStack(PlayerEntity playerIn) {
+        return this.delegate.canTakeStack(playerIn);
     }
 
     @Override
-    public void markDirty() {
-        delegate.markDirty();
+    public void onSlotChanged() {
+        delegate.onSlotChanged();
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     @Nullable
-    public Pair<Identifier, Identifier> getBackgroundSprite() {
-        return delegate.getBackgroundSprite();
+    public Pair<ResourceLocation, ResourceLocation> getBackground() {
+        return delegate.getBackground();
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public boolean doDrawHoveringEffect() {
-        return delegate.doDrawHoveringEffect();
+    public boolean isEnabled() {
+        return delegate.isEnabled();
     }
 
 }

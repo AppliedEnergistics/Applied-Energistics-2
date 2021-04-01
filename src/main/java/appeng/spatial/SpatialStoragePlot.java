@@ -5,8 +5,8 @@ import java.util.Locale;
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 
@@ -155,13 +155,13 @@ public class SpatialStoragePlot {
         BlockPos origin = this.getOrigin();
         ChunkPos originChunk = new ChunkPos(origin);
 
-        return String.format(Locale.ROOT, "r.%d.%d.mca", originChunk.getRegionX(), originChunk.getRegionZ());
+        return String.format(Locale.ROOT, "r.%d.%d.mca", originChunk.getRegionCoordX(), originChunk.getRegionCoordZ());
     }
 
-    public CompoundTag toTag() {
-        CompoundTag tag = new CompoundTag();
+    public CompoundNBT toTag() {
+        CompoundNBT tag = new CompoundNBT();
         tag.putInt(TAG_ID, id);
-        tag.put(TAG_SIZE, NbtHelper.fromBlockPos(size));
+        tag.put(TAG_SIZE, NBTUtil.writeBlockPos(size));
         tag.putInt(TAG_OWNER, owner);
         if (lastTransition != null) {
             tag.put(TAG_LAST_TRANSITION, lastTransition.toTag());
@@ -169,9 +169,9 @@ public class SpatialStoragePlot {
         return tag;
     }
 
-    public static SpatialStoragePlot fromTag(CompoundTag tag) {
+    public static SpatialStoragePlot fromTag(CompoundNBT tag) {
         int id = tag.getInt(TAG_ID);
-        BlockPos size = NbtHelper.toBlockPos(tag.getCompound(TAG_SIZE));
+        BlockPos size = NBTUtil.readBlockPos(tag.getCompound(TAG_SIZE));
         int ownerId = tag.getInt(TAG_OWNER);
         SpatialStoragePlot plot = new SpatialStoragePlot(id, size, ownerId);
 

@@ -18,10 +18,10 @@
 
 package appeng.attributes;
 
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Attribute;
@@ -42,7 +42,7 @@ public final class MEAttributes {
     public static Attribute<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR = Attributes
             .createDefaulted(IStorageMonitorableAccessor.class, new NullMENetworkAccessor());
 
-    public static <T> T getFirstAttributeOnSide(Attribute<T> attribute, BlockEntity be, Direction side) {
+    public static <T> T getFirstAttributeOnSide(Attribute<T> attribute, TileEntity be, Direction side) {
         World world = be.getWorld();
         if (world == null) {
             return null;
@@ -54,13 +54,13 @@ public final class MEAttributes {
     // Convenience function to get an attribute of the block that is in front of a
     // part
     public static <T> T getAttributeInFrontOfPart(Attribute<T> attribute, AEBasePart part) {
-        BlockEntity self = part.getHost().getTile();
+        TileEntity self = part.getHost().getTile();
         Direction direction = part.getSide().getFacing();
         final World w = self.getWorld();
         BlockPos neighborPos = self.getPos().offset(direction);
         // Do not force-load a neighboring chunk for this.
         ChunkPos chunkPos = new ChunkPos(neighborPos);
-        if (!w.getChunkManager().isChunkLoaded(chunkPos.x, chunkPos.z)) {
+        if (!w.getChunkProvider().chunkExists(chunkPos.x, chunkPos.z)) {
             return null;
         }
         return attribute.getFirstOrNull(w, neighborPos, SearchOptions.inDirection(direction));

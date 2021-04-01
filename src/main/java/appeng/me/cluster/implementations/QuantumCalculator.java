@@ -18,9 +18,9 @@
 
 package appeng.me.cluster.implementations;
 
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.definitions.IBlockDefinition;
@@ -60,8 +60,8 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
 
         byte num = 0;
 
-        for (BlockPos p : BlockPos.iterate(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(p);
+        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getTileEntity(p);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -87,8 +87,8 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
         byte num = 0;
         byte ringNum = 0;
 
-        for (BlockPos p : BlockPos.iterate(min, max)) {
-            final QuantumBridgeBlockEntity te = (QuantumBridgeBlockEntity) w.getBlockEntity(p);
+        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
+            final QuantumBridgeBlockEntity te = (QuantumBridgeBlockEntity) w.getTileEntity(p);
 
             num++;
             final byte flags;
@@ -110,11 +110,11 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
     }
 
     @Override
-    public boolean isValidTile(final BlockEntity te) {
+    public boolean isValidTile(final TileEntity te) {
         return te instanceof QuantumBridgeBlockEntity;
     }
 
-    private boolean isBlockAtLocation(final BlockView w, final BlockPos pos, final IBlockDefinition def) {
+    private boolean isBlockAtLocation(final IBlockReader w, final BlockPos pos, final IBlockDefinition def) {
         return def.maybeBlock().map(block -> block == w.getBlockState(pos).getBlock()).orElse(false);
     }
 }

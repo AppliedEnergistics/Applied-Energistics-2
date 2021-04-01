@@ -25,8 +25,8 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.api.parts.CableRenderMode;
@@ -45,8 +45,8 @@ public interface AppEng {
         return AppEngHolder.INSTANCE;
     }
 
-    static Identifier makeId(String id) {
-        return new Identifier(MOD_ID, id);
+    static ResourceLocation makeId(String id) {
+        return new ResourceLocation(MOD_ID, id);
     }
 
     AdvancementTriggers getAdvancementTriggers();
@@ -59,7 +59,7 @@ public interface AppEng {
 
     boolean shouldAddParticles(Random r);
 
-    HitResult getRTR();
+    RayTraceResult getRTR();
 
     void postInit();
 
