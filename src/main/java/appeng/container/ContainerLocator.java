@@ -21,6 +21,7 @@ package appeng.container;
 import com.google.common.base.Preconditions;
 
 import io.netty.handler.codec.DecoderException;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -41,7 +42,7 @@ import appeng.parts.AEBasePart;
  * Describes how a container the player has opened was originally located. This can be one of three ways:
  *
  * <ul>
- * <li>A block entity at a given block position.</li>
+ * <li>A tile entity at a given block position.</li>
  * <li>A part (i.e. cable bus part) at the side of a given block position.</li>
  * <li>An item held by the player.</li>
  * </ul>
@@ -70,7 +71,8 @@ public final class ContainerLocator {
         this(type, itemIndex, world.getDimensionKey().getLocation(), blockPos, side);
     }
 
-    private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos, AEPartLocation side) {
+    private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
+            AEPartLocation side) {
         this.type = type;
         this.itemIndex = itemIndex;
         this.worldId = worldId;
@@ -80,14 +82,14 @@ public final class ContainerLocator {
 
     public static ContainerLocator forTileEntity(TileEntity te) {
         if (te.getWorld() == null) {
-            throw new IllegalArgumentException("Cannot open a block entity that is not in a world");
+            throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
         }
         return new ContainerLocator(Type.BLOCK, -1, te.getWorld(), te.getPos(), null);
     }
 
     public static ContainerLocator forTileEntitySide(TileEntity te, Direction side) {
         if (te.getWorld() == null) {
-            throw new IllegalArgumentException("Cannot open a block entity that is not in a world");
+            throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
         }
         return new ContainerLocator(Type.PART, -1, te.getWorld(), te.getPos(), AEPartLocation.fromFacing(side));
     }

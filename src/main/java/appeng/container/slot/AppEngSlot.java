@@ -239,6 +239,10 @@ public class AppEngSlot extends Slot {
         this.myContainer = myContainer;
     }
 
+    protected boolean isRemote() {
+        return myContainer == null || myContainer.isRemote();
+    }
+
     public enum CalculatedValidity {
         NotAvailable, Valid, Invalid
     }

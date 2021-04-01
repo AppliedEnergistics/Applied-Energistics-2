@@ -112,7 +112,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
             this.getMonitor().removeListener(this);
         }
 
-        for (final Object g : this.getListeners()) {
+        for (final Object g : this.listeners) {
             if (g instanceof PlayerEntity) {
                 NetworkHandler.instance().sendTo(new ConfigValuePacket("CraftingStatus", "Clear"),
                         (ServerPlayerEntity) g);
@@ -142,7 +142,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     public void removeListener(final IContainerListener c) {
         super.removeListener(c);
 
-        if (this.getListeners().isEmpty() && this.getMonitor() != null) {
+        if (this.listeners.isEmpty() && this.getMonitor() != null) {
             this.getMonitor().removeListener(this);
         }
     }
@@ -180,7 +180,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
 
                 this.list.resetStatus();
 
-                for (final Object g : this.getListeners()) {
+                for (final Object g : this.listeners) {
                     if (g instanceof PlayerEntity) {
                         if (!a.isEmpty()) {
                             NetworkHandler.instance().sendTo(a, (ServerPlayerEntity) g);

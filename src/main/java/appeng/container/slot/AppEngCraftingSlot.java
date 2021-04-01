@@ -42,7 +42,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     private final PlayerEntity thePlayer;
 
     /**
-     * The number of items that have been crafted so far. Gets passed to ItemStack.onCrafted before being reset.
+     * The number of items that have been crafted so far. Gets passed to ItemStack.onCrafting before being reset.
      */
     private int amountCrafted;
 
@@ -63,7 +63,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
 
     /**
      * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood. Typically increases an
-     * internal count then calls onCrafted(item).
+     * internal count then calls onCrafting(item).
      */
     @Override
     protected void onCrafting(final ItemStack par1ItemStack, final int par2) {
@@ -93,15 +93,15 @@ public class AppEngCraftingSlot extends AppEngSlot {
             ic.setInventorySlotContents(x, this.craftMatrix.getInvStack(x));
         }
 
-        final NonNullList<ItemStack> remainingItems = getRemainingItems(ic, playerIn.world);
+        final NonNullList<ItemStack> aitemstack = this.getRemainingItems(ic, playerIn.world);
 
         ItemHandlerUtil.copy(ic, this.craftMatrix, false);
 
         // FIXME FABRIC: net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
 
-        for (int i = 0; i < remainingItems.size(); ++i) {
+        for (int i = 0; i < aitemstack.size(); ++i) {
             final ItemStack itemstack1 = this.craftMatrix.getInvStack(i);
-            final ItemStack itemstack2 = remainingItems.get(i);
+            final ItemStack itemstack2 = aitemstack.get(i);
 
             if (!itemstack1.isEmpty()) {
                 this.craftMatrix.getSlot(i).extract(1);
@@ -135,6 +135,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
     protected NonNullList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
-        return world.getRecipeManager().getRecipeNonNull(IRecipeType.CRAFTING, ic, world);
+        return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world)
+                .map(iCraftingRecipe -> iCraftingRecipe.getRemainingItems(ic))
+                .orElse(NonNullList.withSize(9, ItemStack.EMPTY));
     }
 }

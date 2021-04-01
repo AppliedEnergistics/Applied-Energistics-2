@@ -60,7 +60,6 @@ import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
-import appeng.mixins.SlotMixin;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.InventoryAdaptor;
@@ -140,23 +139,18 @@ public class PatternTermContainer extends MEMonitorableContainer
         this.updateOrderOfOutputSlots();
     }
 
-    // FIXME FABRIC MCP - remove mixin and use AW instead?
-    private void setSlotX(Slot s, int x) {
-        ((SlotMixin) s).setX(x);
-    }
-
     private void updateOrderOfOutputSlots() {
         if (!this.isCraftingMode()) {
-            setSlotX(this.craftSlot, -9000);
+            this.craftSlot.xPos = -9000;
 
             for (int y = 0; y < 3; y++) {
-                setSlotX(this.outputSlots[y], this.outputSlots[y].getX());
+                this.outputSlots[y].xPos = this.outputSlots[y].getX();
             }
         } else {
-            setSlotX(this.craftSlot, this.craftSlot.getX());
+            this.craftSlot.xPos = this.craftSlot.getX();
 
             for (int y = 0; y < 3; y++) {
-                setSlotX(this.outputSlots[y], -9000);
+                this.outputSlots[y].xPos = -9000;
             }
         }
     }
@@ -342,8 +336,8 @@ public class PatternTermContainer extends MEMonitorableContainer
                         : packetPatternSlot.pattern[x].createItemStack());
             }
 
-            final IRecipe<CraftingInventory> r = p.world.getRecipeManager()
-                    .getRecipe(IRecipeType.CRAFTING, ic, p.world).orElse(null);
+            final IRecipe<CraftingInventory> r = p.world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, p.world)
+                    .orElse(null);
 
             if (r == null) {
                 return;
@@ -425,11 +419,10 @@ public class PatternTermContainer extends MEMonitorableContainer
     @Override
     public void onSlotChange(final Slot s) {
         if (s == this.patternSlotOUT && isServer()) {
-            for (final IContainerListener listener : this.getListeners()) {
-                for (int i = 0; i < this.inventorySlots.size(); i++) {
-                    Slot slot = this.inventorySlots.get(i);
+            for (final IContainerListener listener : this.listeners) {
+                for (final Slot slot : this.inventorySlots) {
                     if (slot instanceof OptionalFakeSlot || slot instanceof FakeCraftingMatrixSlot) {
-                        listener.sendSlotContents(this, i, slot.getStack());
+                        listener.sendSlotContents(this, slot.slotNumber, slot.getStack());
                     }
                 }
                 if (listener instanceof ServerPlayerEntity) {

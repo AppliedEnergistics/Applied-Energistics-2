@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
@@ -96,7 +97,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         if (this.getStack().isEmpty()) {
             return;
         }
-        if (Platform.isClient()) {
+        if (who.getEntityWorld().isRemote()) {
             return;
         }
 
@@ -139,8 +140,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 if (!extra.isEmpty()) {
                     final List<ItemStack> drops = new ArrayList<>();
                     drops.add(extra);
-                    Platform.spawnDrops(who.world, new BlockPos((int) who.getPosX(), (int) who.getPosY(), (int) who.getPosZ()),
-                            drops);
+                    Platform.spawnDrops(who.world,
+                            new BlockPos((int) who.getPosX(), (int) who.getPosY(), (int) who.getPosZ()), drops);
                     return;
                 }
             }
@@ -170,7 +171,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             final IRecipe<CraftingInventory> recipe = containerTerminal.getCurrentRecipe();
 
             if (recipe != null && recipe.matches(ic, world)) {
-                return recipe.getRemainingItems(ic);
+                return containerTerminal.getCurrentRecipe().getRemainingItems(ic);
             }
         }
 
@@ -192,7 +193,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             Arrays.fill(set, ItemStack.EMPTY);
 
             // add one of each item to the items on the board...
-            if (Platform.isServer()) {
+            World world = p.world;
+            if (!world.isRemote()) {
                 final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
                 for (int x = 0; x < 9; x++) {
                     ic.setInventorySlotContents(x, this.getPattern().getInvStack(x));
@@ -267,7 +269,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         final List<ItemStack> drops = new ArrayList<>();
 
         // add one of each item to the items on the board...
-        if (Platform.isServer()) {
+        if (!p.getEntityWorld().isRemote()) {
             // set new items onto the crafting table...
             for (int x = 0; x < this.craftInv.getSlotCount(); x++) {
                 if (this.craftInv.getInvStack(x).isEmpty()) {

@@ -163,9 +163,9 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
                     this.wirelessOut.putStack(term);
 
                     // update the two slots in question...
-                    for (final IContainerListener listener : this.getListeners()) {
-                        listener.sendSlotContents(this, this.inventorySlots.indexOf(this.wirelessIn), this.wirelessIn.getStack());
-                        listener.sendSlotContents(this, this.inventorySlots.indexOf(this.wirelessOut), this.wirelessOut.getStack());
+                    for (final IContainerListener listener : this.listeners) {
+                        listener.sendSlotContents(this, this.wirelessIn.slotNumber, this.wirelessIn.getStack());
+                        listener.sendSlotContents(this, this.wirelessOut.slotNumber, this.wirelessOut.getStack());
                     }
                 }
             }

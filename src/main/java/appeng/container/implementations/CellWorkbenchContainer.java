@@ -142,7 +142,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     public void detectAndSendChanges() {
         final ItemStack is = this.workBench.getInventoryByName("cell").getInvStack(0);
         if (isServer()) {
-            for (final IContainerListener listener : this.getListeners()) {
+            for (final IContainerListener listener : this.listeners) {
                 if (this.prevStack != is) {
                     // if the bars changed an item was probably made, so just send shit!
                     for (final Slot s : this.inventorySlots) {

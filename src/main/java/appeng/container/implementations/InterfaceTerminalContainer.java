@@ -90,7 +90,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             this.grid = anchor.getActionableNode().getGrid();
         }
 
-        // FIXME INTERFACE GUI
+        // FIXME FABRIC INTERFACE GUI
         this.bindPlayerInventory(ip, 0, 222 - /* height of player inventory */82);
     }
 

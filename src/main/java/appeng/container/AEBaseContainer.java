@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -68,7 +69,6 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.TargetItemStackPacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
-import appeng.mixins.ScreenHandlerListeners;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorFixedInv;
@@ -138,6 +138,10 @@ public abstract class AEBaseContainer extends Container {
         return null;
     }
 
+    public boolean isRemote() {
+        return this.invPlayer.player.getEntityWorld().isRemote();
+    }
+
     private void prepareSync() {
         for (final Field f : this.getClass().getFields()) {
             if (f.isAnnotationPresent(GuiSync.class)) {
@@ -157,7 +161,7 @@ public abstract class AEBaseContainer extends Container {
 
     public void setTargetStack(final IAEItemStack stack) {
         // client doesn't need to re-send, makes for lower overhead rapid packets.
-        if (Platform.isClient()) {
+        if (isRemote()) {
             if (stack == null && this.clientRequestedTargetItem == null) {
                 return;
             }
@@ -176,7 +180,7 @@ public abstract class AEBaseContainer extends Container {
     }
 
     public void verifyPermissions(final SecurityPermissions security, final boolean requirePower) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return;
         }
 
@@ -313,7 +317,7 @@ public abstract class AEBaseContainer extends Container {
                 this.setValidContainer(false);
             }
 
-            for (final IContainerListener listener : this.getListeners()) {
+            for (final IContainerListener listener : this.listeners) {
                 for (final SyncData sd : this.syncData.values()) {
                     sd.tick(listener);
                 }
@@ -325,7 +329,7 @@ public abstract class AEBaseContainer extends Container {
 
     @Override
     public ItemStack transferStackInSlot(final PlayerEntity p, final int idx) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return ItemStack.EMPTY;
         }
 
@@ -538,8 +542,8 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public boolean canDragIntoSlot(Slot slot) {
-        return ((AppEngSlot) slot).isDraggable();
+    public boolean canDragIntoSlot(final Slot s) {
+        return ((AppEngSlot) s).isDraggable();
     }
 
     public void doAction(final ServerPlayerEntity player, final InventoryAction action, final int slot, final long id) {
@@ -609,17 +613,16 @@ public abstract class AEBaseContainer extends Container {
             }
 
             if (action == InventoryAction.MOVE_REGION) {
-                final List<Integer> from = new ArrayList<>();
+                final List<Slot> from = new ArrayList<>();
 
-                for (int i = 0; i < this.inventorySlots.size(); i++) {
-                    Slot j = this.inventorySlots.get(i);
-                    if (j.getClass() == s.getClass() && !(j instanceof CraftingTermSlot)) {
-                        from.add(i);
+                for (final Object j : this.inventorySlots) {
+                    if (j instanceof Slot && j.getClass() == s.getClass() && !(j instanceof CraftingTermSlot)) {
+                        from.add((Slot) j);
                     }
                 }
 
-                for (final int fromIndex : from) {
-                    this.transferStackInSlot(player, fromIndex);
+                for (final Slot fr : from) {
+                    this.transferStackInSlot(player, fr.slotNumber);
                 }
             }
 
@@ -732,7 +735,7 @@ public abstract class AEBaseContainer extends Container {
                 if (player.inventory.getItemStack().isEmpty()) {
                     if (slotItem != null) {
                         IAEItemStack ais = slotItem.copy();
-                        ais.setStackSize(ais.getDefinition().getMaxCount());
+                        ais.setStackSize(ais.getDefinition().getMaxStackSize());
                         ais = Platform.poweredExtraction(this.getPowerSource(), this.getCellInventory(), ais,
                                 this.getActionSource());
                         if (ais != null) {
@@ -764,7 +767,7 @@ public abstract class AEBaseContainer extends Container {
                 if (player.inventory.getItemStack().isEmpty()) {
                     if (slotItem != null) {
                         IAEItemStack ais = slotItem.copy();
-                        final long maxSize = ais.getDefinition().getMaxCount();
+                        final long maxSize = ais.getDefinition().getMaxStackSize();
                         ais.setStackSize(maxSize);
                         ais = this.getCellInventory().extractItems(ais, Actionable.SIMULATE, this.getActionSource());
 

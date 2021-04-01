@@ -31,7 +31,7 @@ public class ContainerNull extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean canInteractWith(final PlayerEntity PlayerEntity) {
         return false;
     }
 }
