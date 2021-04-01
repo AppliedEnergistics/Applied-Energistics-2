@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.world.IBlockReader;
+
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
@@ -72,7 +73,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
 
     @Override
     public void openWirelessTerminalGui(ItemStack item, IBlockReader world, PlayerEntity player, Hand hand) {
-        if (Platform.isClient()) {
+        if (player.getEntityWorld().isRemote()) {
             return;
         }
 

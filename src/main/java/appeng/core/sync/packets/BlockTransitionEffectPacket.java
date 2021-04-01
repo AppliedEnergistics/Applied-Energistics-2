@@ -147,8 +147,8 @@ public class BlockTransitionEffectPacket extends BasePacket {
             return;
         }
 
-        SimpleSound sound = new SimpleSound(soundEvent, SoundCategory.field_15245,
-                (volume + 1.0F) / 2.0F, pitch * 0.8F, pos);
+        SimpleSound sound = new SimpleSound(soundEvent, SoundCategory.BLOCKS, (volume + 1.0F) / 2.0F, pitch * 0.8F,
+                pos);
         Minecraft.getInstance().getSoundHandler().play(sound);
     }
 

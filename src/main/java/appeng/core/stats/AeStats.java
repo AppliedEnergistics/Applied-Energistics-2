@@ -53,7 +53,7 @@ public enum AeStats {
 
     public static void register() {
         for (AeStats stat : AeStats.values()) {
-            // Compare with net.minecraft.stat.Stats#registerCustom
+            // Compare with net.minecraft.stats.Stats#registerCustom
             ResourceLocation registryName = stat.getRegistryName();
             Registry.register(Registry.CUSTOM_STAT, registryName.getPath(), registryName);
             Stats.CUSTOM.get(registryName, IStatFormatter.DEFAULT);

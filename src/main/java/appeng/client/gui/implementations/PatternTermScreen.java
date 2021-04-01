@@ -18,7 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import appeng.mixins.SlotMixin;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.block.Blocks;
@@ -145,7 +144,7 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
     protected void repositionSlot(final AppEngSlot s) {
         final int offsetPlayerSide = s.isPlayerSide() ? 5 : 3;
 
-        ((SlotMixin) s).setY(s.getY() + this.ySize - 78 - offsetPlayerSide);
+        s.yPos = s.getY() + this.ySize - 78 - offsetPlayerSide;
     }
 
 }

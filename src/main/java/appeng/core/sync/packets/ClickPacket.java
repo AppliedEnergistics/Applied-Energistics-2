@@ -30,6 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.implementations.items.IMemoryCard;
@@ -152,7 +153,9 @@ public class ClickPacket extends BasePacket {
                     final IMemoryCard mem = (IMemoryCard) is.getItem();
                     mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
                     is.setTag(null);
-                } else if (maybeColorApplicator.isSameAs(is)) {
+                }
+
+                else if (maybeColorApplicator.isSameAs(is)) {
                     final ColorApplicatorItem mem = (ColorApplicatorItem) is.getItem();
                     mem.cycleColors(is, mem.getColor(is), 1);
                 }

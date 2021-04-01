@@ -20,6 +20,7 @@ package appeng.core.api.definitions;
 
 import static appeng.block.AEBaseBlock.defaultProps;
 
+import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.debug.*;
 import appeng.fluids.tile.FluidInterfaceTileEntity;
 import appeng.tile.grindstone.CrankTileEntity;

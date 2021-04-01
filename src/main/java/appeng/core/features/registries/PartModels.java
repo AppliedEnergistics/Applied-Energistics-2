@@ -21,7 +21,9 @@ package appeng.core.features.registries;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.parts.IPartModels;
 
 public class PartModels implements IPartModels {

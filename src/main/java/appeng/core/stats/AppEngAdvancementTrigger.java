@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gson.JsonObject;
+
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -34,9 +35,11 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.loot.ConditionArrayParser;
 import net.minecraft.loot.ConditionArraySerializer;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.core.AppEng;
 
-public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvancementTrigger.Instance>, IAdvancementTrigger {
+public class AppEngAdvancementTrigger
+        implements ICriterionTrigger<AppEngAdvancementTrigger.Instance>, IAdvancementTrigger {
     private final ResourceLocation ID;
     private final Map<PlayerAdvancements, AppEngAdvancementTrigger.Listeners> listeners = new HashMap<>();
 
@@ -114,7 +117,7 @@ public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvance
         }
 
         @Override
-        public JsonObject serialize(ConditionArraySerializer predicateSerializer) {
+        public JsonObject serialize(ConditionArraySerializer conditions) {
             return new JsonObject();
         }
     }

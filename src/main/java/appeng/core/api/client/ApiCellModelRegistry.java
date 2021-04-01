@@ -32,15 +32,18 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.client.ICellModelRegistry;
 import appeng.core.ApiDefinitions;
 
 public class ApiCellModelRegistry implements ICellModelRegistry {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation("appliedenergistics2:block/drive/drive_base");
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
+            "appliedenergistics2:block/drive/drive_base");
     private static final ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_cell_empty");
-    private static final ResourceLocation MODEL_CELL_DEFAULT = new ResourceLocation("appliedenergistics2:block/drive/drive_cell");
+    private static final ResourceLocation MODEL_CELL_DEFAULT = new ResourceLocation(
+            "appliedenergistics2:block/drive/drive_cell");
     private static final ResourceLocation MODEL_CELL_ITEMS_1K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/1k_item_cell");
     private static final ResourceLocation MODEL_CELL_ITEMS_4K = new ResourceLocation(
@@ -60,9 +63,9 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
     private static final ResourceLocation MODEL_CELL_CREATIVE = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/creative_cell");
 
-    private static final ResourceLocation[] MODELS = { MODEL_BASE, MODEL_CELL_EMPTY, MODEL_CELL_DEFAULT, MODEL_CELL_ITEMS_1K,
-            MODEL_CELL_ITEMS_4K, MODEL_CELL_ITEMS_16K, MODEL_CELL_ITEMS_64K, MODEL_CELL_FLUIDS_1K, MODEL_CELL_FLUIDS_4K,
-            MODEL_CELL_FLUIDS_16K, MODEL_CELL_FLUIDS_64K, MODEL_CELL_CREATIVE };
+    private static final ResourceLocation[] MODELS = { MODEL_BASE, MODEL_CELL_EMPTY, MODEL_CELL_DEFAULT,
+            MODEL_CELL_ITEMS_1K, MODEL_CELL_ITEMS_4K, MODEL_CELL_ITEMS_16K, MODEL_CELL_ITEMS_64K, MODEL_CELL_FLUIDS_1K,
+            MODEL_CELL_FLUIDS_4K, MODEL_CELL_FLUIDS_16K, MODEL_CELL_FLUIDS_64K, MODEL_CELL_CREATIVE };
 
     public static Collection<ResourceLocation> getModels() {
         return Arrays.asList(MODELS);

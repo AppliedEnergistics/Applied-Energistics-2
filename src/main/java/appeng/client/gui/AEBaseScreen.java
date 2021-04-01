@@ -91,7 +91,6 @@ import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.fluids.client.render.FluidStackSizeRenderer;
 import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
-import appeng.mixins.SlotMixin;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
 
@@ -538,7 +537,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     protected int getSlotIndex(Slot slot) {
-        return ((SlotMixin) slot).getIndex();
+        return slot.slotIndex;
     }
 
     protected boolean checkHotbarKeys(final InputMappings.Input input) {

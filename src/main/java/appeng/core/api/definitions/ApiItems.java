@@ -267,7 +267,7 @@ public final class ApiItems implements IItems {
                 .features(AEFeature.NETWORK_TOOL).build();
 
         this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
-                .props(props -> props.maxStackSize(1).rarity(Rarity.field_8904))
+                .props(props -> props.maxStackSize(1).rarity(Rarity.EPIC))
                 .features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
         this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.VIEW_CELL).build();

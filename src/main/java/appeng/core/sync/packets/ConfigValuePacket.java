@@ -19,6 +19,7 @@
 package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
@@ -78,14 +79,15 @@ public class ConfigValuePacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final Container c = player.openContainer;
-        if (this.Name.equals("Item") && ((!player.getHeldItem(Hand.field_5808).isEmpty()
-                && player.getHeldItem(Hand.field_5808).getItem() instanceof IMouseWheelItem)
+
+        if (this.Name.equals("Item") && ((!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
+                && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem)
                 || (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
                         && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem))) {
             final Hand hand;
-            if (!player.getHeldItem(Hand.field_5808).isEmpty()
-                    && player.getHeldItem(Hand.field_5808).getItem() instanceof IMouseWheelItem) {
-                hand = Hand.field_5808;
+            if (!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
+                    && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {
+                hand = Hand.MAIN_HAND;
             } else if (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
                     && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
                 hand = Hand.OFF_HAND;

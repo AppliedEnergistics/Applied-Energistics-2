@@ -66,7 +66,6 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.abstraction.ReiFacade;
-import appeng.mixins.SlotMixin;
 import appeng.parts.reporting.AbstractTerminalPart;
 import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.IConfigManagerHost;
@@ -389,7 +388,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     protected void repositionSlot(final AppEngSlot s) {
-        ((SlotMixin) s).setY(s.getY() + this.ySize - 78 - 5);
+        s.yPos = s.getY() + this.ySize - 78 - 5;
     }
 
     @Override

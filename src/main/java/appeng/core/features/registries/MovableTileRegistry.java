@@ -29,6 +29,7 @@ import net.minecraft.block.Block;
 import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.api.exceptions.AppEngException;
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
@@ -64,7 +65,7 @@ public class MovableTileRegistry implements IMovableRegistry {
     }
 
     @Override
-    public void whiteListBlockEntity(final Class<? extends TileEntity> c) {
+    public void whiteListTileEntity(final Class<? extends TileEntity> c) {
         if (c.getName().equals(TileEntity.class.getName())) {
             throw new IllegalArgumentException(new AppEngException("Someone tried to make all tiles movable with " + c
                     + ", this is a clear violation of the purpose of the white list."));
