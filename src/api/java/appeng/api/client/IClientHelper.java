@@ -41,7 +41,7 @@ public interface IClientHelper {
 
     /**
      * A helper to work with clientside related tasks for cells.
-     *
+     * 
      * @return
      */
     ICellModelRegistry cells();
