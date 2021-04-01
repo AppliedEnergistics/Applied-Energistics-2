@@ -132,8 +132,8 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
             ms.translate(0, -0.2f, 0);
         }
 
-        itemRenderer.renderItem(is, ItemCameraTransforms.TransformType.field_4318, combinedLightIn, OverlayTexture.NO_OVERLAY, ms,
-                bufferIn);
+        itemRenderer.renderItem(is, ItemCameraTransforms.TransformType.GROUND, combinedLightIn,
+                OverlayTexture.NO_OVERLAY, ms, bufferIn);
         ms.pop();
     }
 

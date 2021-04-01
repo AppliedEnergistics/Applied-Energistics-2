@@ -18,6 +18,8 @@
 
 package appeng.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -26,10 +28,10 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.vector.Vector3f;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 /**
  * Helper methods for rendering TESRs.
@@ -76,7 +78,6 @@ public class TesrRenderHelper {
 
     // TODO, A different approach will have to be used for this from TESRs, -covers,
     // i have ideas.
-
     /**
      * Render an item in 2D.
      */
@@ -91,7 +92,7 @@ public class TesrRenderHelper {
             // effect at least from head-on
             matrixStack.scale(scale, scale, 0.0002f);
 
-            Minecraft.getInstance().getItemRenderer().renderItem(itemStack, ItemCameraTransforms.TransformType.field_4317,
+            Minecraft.getInstance().getItemRenderer().renderItem(itemStack, ItemCameraTransforms.TransformType.GUI,
                     combinedLightIn, OverlayTexture.NO_OVERLAY, matrixStack, buffers);
 
             matrixStack.pop();
@@ -125,7 +126,8 @@ public class TesrRenderHelper {
         matrixStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
         matrixStack.scale(0.5f, 0.5f, 0);
         matrixStack.translate(-0.5f * width, 0.0f, 0.5f);
-        fr.renderString(renderedStackSize, 0, 0, -1, false, matrixStack.getLast().getMatrix(), buffers, false, 0, 15728880);
+        fr.renderString(renderedStackSize, 0, 0, -1, false, matrixStack.getLast().getMatrix(), buffers, false, 0,
+                15728880);
         matrixStack.pop();
 
     }

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,13 +16,9 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.hooks;
+package appeng.recipes.entropy;
 
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-
-public interface IBlockTool {
-    // Workaround for dispenser logic.
-    ActionResultType onItemUse(ItemUseContext itemUseContext);
-
+public enum EntropyMode {
+    HEAT,
+    COOL
 }

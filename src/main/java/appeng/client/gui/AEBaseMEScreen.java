@@ -73,16 +73,14 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
                     currentToolTip.add(ButtonToolTips.ItemsRequestable.text(formattedAmount));
                 }
 
-                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,
-                        this.font);
+                this.renderTooltip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y);
 
                 return;
             } else if (stack.getCount() > bigNumber) {
                 final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(stack.getCount());
                 currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
 
-                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,
-                        this.font);
+                this.renderTooltip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y);
 
                 return;
             }

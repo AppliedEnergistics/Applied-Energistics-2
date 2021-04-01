@@ -45,7 +45,7 @@ public class ItemRenderable<T extends TileEntity> implements Renderable<T> {
             if (pair.getRight() != null) {
                 pair.getRight().apply(false, matrixStack); // FIXME: check left handed
             }
-            Minecraft.getInstance().getItemRenderer().renderItem(pair.getLeft(), ItemCameraTransforms.TransformType.field_4318,
+            Minecraft.getInstance().getItemRenderer().renderItem(pair.getLeft(), ItemCameraTransforms.TransformType.GROUND,
                     combinedLight, combinedOverlay, matrixStack, buffers);
             matrixStack.pop();
         }
