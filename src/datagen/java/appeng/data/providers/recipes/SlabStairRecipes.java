@@ -52,13 +52,13 @@ public class SlabStairRecipes implements IAE2DataProvider {
         Block inputBlock = block.block();
         Block outputBlock = slabs.block();
 
-        ShapedRecipeBuilder.shapedRecipe(slabs.block(), 6).pattern("###").input('#', inputBlock)
-                .criterion(criterionName(block), hasItem(inputBlock))
-                .offerTo(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/slabs/" + block.identifier()));
+        ShapedRecipeBuilder.shapedRecipe(slabs.block(), 6).patternLine("###").key('#', inputBlock)
+                .addCriterion(criterionName(block), hasItem(inputBlock))
+                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/slabs/" + block.identifier()));
 
         SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock, 2)
                 .addCriterion(criterionName(block), hasItem(inputBlock))
-                .offerTo(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/slabs/" + slabs.identifier()));
+                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/slabs/" + slabs.identifier()));
     }
 
     private void stairRecipe(IBlockDefinition block, IBlockDefinition stairs) {
@@ -67,11 +67,11 @@ public class SlabStairRecipes implements IAE2DataProvider {
 
         ShapedRecipeBuilder.shapedRecipe(outputBlock, 4).patternLine("#  ").patternLine("## ").patternLine("###")
                 .key('#', inputBlock).addCriterion(criterionName(block), hasItem(inputBlock))
-                .offerTo(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/stairs/" + block.identifier()));
+                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/stairs/" + block.identifier()));
 
         SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock)
                 .addCriterion(criterionName(block), hasItem(inputBlock))
-                .offerTo(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/stairs/" + stairs.identifier()));
+                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/stairs/" + stairs.identifier()));
 
     }
 

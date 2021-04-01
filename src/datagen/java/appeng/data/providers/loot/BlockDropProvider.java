@@ -17,14 +17,10 @@ import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.loot.ConstantRange;
-import net.minecraft.loot.ItemLootEntry;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTableManager;
-import net.minecraft.loot.StandaloneLootEntry;
+import net.minecraft.loot.*;
 import net.minecraft.loot.conditions.SurvivesExplosion;
+import net.minecraft.loot.functions.ApplyBonus;
+import net.minecraft.loot.functions.SetCount;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -40,15 +36,15 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
     private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
             .put(BLOCKS.matrixFrame().block(), $ -> LootTable.builder())
             .put(BLOCKS.quartzOre().block(),
-                    b -> dropsWithSilkTouch(BLOCKS.quartzOre().block(), applyExplosionDecay(BLOCKS.quartzOre().block(),
-                            ItemEntry.builder(MATERIALS.certusQuartzCrystal().item())
-                                    .apply(SetCountLootFunction.builder(UniformLootTableRange.between(1.0F, 2.0F)))
-                                    .apply(ApplyBonusLootFunction.uniformBonusCount(Enchantments.FORTUNE)))))
-            .put(BLOCKS.quartzOreCharged().block(), b -> dropsWithSilkTouch(BLOCKS.quartzOreCharged().block(),
-                    applyExplosionDecay(BLOCKS.quartzOreCharged().block(),
-                            ItemEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
-                                    .apply(SetCountLootFunction.builder(UniformLootTableRange.between(1.0F, 2.0F)))
-                                    .apply(ApplyBonusLootFunction.uniformBonusCount(Enchantments.FORTUNE)))))
+                    b -> droppingWithSilkTouch(BLOCKS.quartzOre().block(), withExplosionDecay(BLOCKS.quartzOre().block(),
+                            ItemLootEntry.builder(MATERIALS.certusQuartzCrystal().item())
+                                    .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
+                                    .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
+            .put(BLOCKS.quartzOreCharged().block(), b -> droppingWithSilkTouch(BLOCKS.quartzOreCharged().block(),
+                    withExplosionDecay(BLOCKS.quartzOreCharged().block(),
+                            ItemLootEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
+                                    .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
+                                    .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
             .build();
 
     public BlockDropProvider(Path outputFolder) {

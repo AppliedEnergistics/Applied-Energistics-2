@@ -1,23 +1,23 @@
 accessWidener	v1	named
-accessible method net/minecraft/client/particle/RedDustParticle <init> (Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/particle/DustParticleEffect;Lnet/minecraft/client/particle/SpriteProvider;)V
+accessible method net/minecraft/client/particle/RedstoneParticle <init> (Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/particles/RedstoneParticleData;Lnet/minecraft/client/particle/IAnimatedSprite;)V
 
 # To disable water-bobbing of item entities (for growing crystals)
-extendable method net/minecraft/entity/ItemEntity applyBuoyancy ()V
+extendable method net/minecraft/entity/ItemEntity applyFloatMotion ()V
 
-extendable method net/minecraft/client/gui/screen/ingame/HandledScreen drawSlot (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/screen/slot/Slot;)V
+extendable method net/minecraft/client/gui/screen/inventory/ContainerScreen moveItems (Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/inventory/container/Slot;)V
 
 # Show selection highlight only on focus
-extendable method net/minecraft/client/gui/widget/TextFieldWidget drawSelectionHighlight (IIII)V
+extendable method net/minecraft/client/gui/widget/TextFieldWidget drawSelectionBox (IIII)V
 
 # Allow data-gen of recipes & loot tables
-accessible method net/minecraft/data/server/RecipesProvider conditionsFromItem (Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
-accessible method net/minecraft/data/server/RecipesProvider saveRecipe (Lnet/minecraft/data/DataCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
-accessible method net/minecraft/data/server/RecipesProvider saveRecipeAdvancement (Lnet/minecraft/data/DataCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
+accessible method net/minecraft/data/RecipeProvider hasItem (Lnet/minecraft/util/IItemProvider;)Lnet/minecraft/advancements/criterion/InventoryChangeTrigger$Instance;
+accessible method net/minecraft/data/RecipeProvider saveRecipe (Lnet/minecraft/data/DirectoryCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
+accessible method net/minecraft/data/RecipeProvider saveRecipeAdvancement (Lnet/minecraft/data/DirectoryCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
 
-accessible method net/minecraft/data/server/BlockLootTableGenerator dropsWithSilkTouch (Lnet/minecraft/block/Block;Lnet/minecraft/loot/entry/LootPoolEntry$Builder;)Lnet/minecraft/loot/LootTable$Builder;
-accessible method net/minecraft/data/server/BlockLootTableGenerator applyExplosionDecay (Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;)Ljava/lang/Object;
+accessible method net/minecraft/data/loot/BlockLootTables droppingWithSilkTouch (Lnet/minecraft/block/Block;Lnet/minecraft/loot/LootEntry$Builder;)Lnet/minecraft/loot/LootTable$Builder;
+accessible method net/minecraft/data/loot/BlockLootTables withExplosionDecay (Lnet/minecraft/util/IItemProvider;Lnet/minecraft/loot/ILootFunctionConsumer;)Ljava/lang/Object;
 
-accessible method net/minecraft/world/dimension/DimensionType <init> (Ljava/util/OptionalLong;ZZZZZZZZZILnet/minecraft/util/Identifier;F)V
+accessible method net/minecraft/world/DimensionType <init> (Ljava/util/OptionalLong;ZZZZZZZZZILnet/minecraft/util/ResourceLocation;F)V
 
-accessible method net/minecraft/recipe/RecipeManager getAllOfType (Lnet/minecraft/recipe/RecipeType;)Ljava/util/Map;
+accessible method net/minecraft/item/crafting/RecipeManager getRecipes (Lnet/minecraft/item/crafting/IRecipeType;)Ljava/util/Map;
 
