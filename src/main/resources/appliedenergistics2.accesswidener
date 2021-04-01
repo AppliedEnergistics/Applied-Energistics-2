@@ -25,3 +25,5 @@ accessible field net/minecraft/inventory/container/Container listeners Ljava/uti
 accessible field net/minecraft/inventory/container/Slot slotIndex I
 mutable field net/minecraft/inventory/container/Slot xPos I
 mutable field net/minecraft/inventory/container/Slot yPos I
+
+accessible method  net/minecraft/block/TNTBlock explode (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/LivingEntity;)V

@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+import appeng.hooks.AEToolItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ITileEntityProvider;
@@ -46,8 +47,8 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 
 public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
 
@@ -56,9 +57,9 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity user, Hand hand) {
-        if (!world.isRemote()) {
-            final CompoundNBT tag = user.getHeldItem(hand).getOrCreateTag();
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        if (!worldIn.isRemote()) {
+            final CompoundNBT tag = playerIn.getHeldItem(handIn).getOrCreateTag();
             final int replications;
 
             if (tag.contains("r")) {
@@ -69,17 +70,18 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
 
             tag.putInt("r", replications);
 
-            user.sendStatusMessage(new StringTextComponent((replications + 1) + "³ Replications"), true);
+            playerIn.sendMessage(new StringTextComponent((replications + 1) + "³ Replications"), Util.DUMMY_UUID);
         }
 
-        return super.onItemRightClick(world, user, hand);
+        return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getWorld().isRemote()) {
+        World w = context.getWorld();
+        if (w.isRemote()) {
             // Needed, otherwise client will trigger onItemRightClick also on server...
-            return ActionResultType.field_5812;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
         PlayerEntity player = context.getPlayer();
@@ -96,7 +98,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
         int y = pos.getY();
         int z = pos.getZ();
 
-        if (player.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             if (world.getTileEntity(pos) instanceof IGridHost) {
                 final CompoundNBT tag = player.getHeldItem(hand).getOrCreateTag();
                 tag.putInt("x", x);
@@ -123,6 +125,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                 final int replications = ish.getInt("r") + 1;
 
                 final TileEntity te = src_w.getTileEntity(new BlockPos(src_x, src_y, src_z));
+
                 if (te instanceof IGridHost) {
                     final IGridHost gh = (IGridHost) te;
                     final Direction sideOff = Direction.values()[src_side];
@@ -140,9 +143,9 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                                 final DimensionalCoord max = sc.getMax();
 
                                 // TODO: Why??? Places it one block up each time...
-                                // x += currentSideOff.getOffsetX();
-                                // y += currentSideOff.getOffsetY();
-                                // z += currentSideOff.getOffsetZ();
+                                // x += currentSideOff.getXOffset();
+                                // y += currentSideOff.getYOffset();
+                                // z += currentSideOff.getZOffset();
 
                                 final int sc_size_x = max.x - min.x;
                                 final int sc_size_y = max.y - min.y;
@@ -215,7 +218,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                 this.outputMsg(player, "No Source Defined");
             }
         }
-        return ActionResultType.field_5812;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
     private void outputMsg(final Entity player, final String string) {

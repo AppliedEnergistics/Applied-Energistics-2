@@ -4,6 +4,8 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.entropy.EntropyRecipeSerializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -374,6 +376,7 @@ public abstract class AppEngBase implements AppEng {
                 QuartzKnifeRecipeSerializer.INSTANCE);
         Registry.register(Registry.RECIPE_SERIALIZER, GrinderRecipe.TYPE_ID, GrinderRecipeSerializer.INSTANCE);
         Registry.register(Registry.RECIPE_SERIALIZER, InscriberRecipe.TYPE_ID, InscriberRecipeSerializer.INSTANCE);
+        Registry.register(Registry.RECIPE_SERIALIZER, EntropyRecipe.TYPE_ID, EntropyRecipeSerializer.INSTANCE);
         Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("disassemble"), DisassembleRecipe.SERIALIZER);
         FacadeItem facadeItem = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
         Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("facade"), FacadeRecipe.getSerializer(facadeItem));
