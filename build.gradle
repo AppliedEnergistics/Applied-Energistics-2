@@ -171,6 +171,10 @@ configurations {
     siteexportRuntime.extendsFrom(runtimeClasspath)
 }
 
+test {
+    useJUnitPlatform()
+}
+
 ////////////////////
 // Forge/Minecraft
 minecraft {

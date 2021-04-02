@@ -8,9 +8,9 @@ import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.registry.Bootstrap;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -25,7 +25,7 @@ class AESharedItemStackTest {
     final Map<AESharedItemStack, String> stacks = new IdentityHashMap<>();
 
     AESharedItemStackTest() {
-        TestItemWithCaps TEST_ITEM = new TestItemWithCaps();
+        Item TEST_ITEM = Items.NAME_TAG;
 
         ItemStack nameTag1 = new ItemStack(TEST_ITEM);
         stacks.put(new AESharedItemStack(nameTag1), "no-nbt");
@@ -39,20 +39,6 @@ class AESharedItemStackTest {
         ItemStack nameTag3 = new ItemStack(TEST_ITEM);
         nameTag3.setDisplayName(new StringTextComponent("ABCDEFGH"));
         stacks.put(new AESharedItemStack(nameTag3), "nbt2");
-
-        // NBT + Cap
-        CompoundNBT capNbt = new CompoundNBT();
-        capNbt.putInt("Parent", 1);
-        ItemStack nameTag4 = new ItemStack(TEST_ITEM, 1, capNbt);
-        nameTag4.setDisplayName(new StringTextComponent("Hello World"));
-        stacks.put(new AESharedItemStack(nameTag4), "nbt1+cap1");
-
-        // NBT + Different Cap
-        CompoundNBT capNbt2 = new CompoundNBT();
-        capNbt2.putInt("Parent", 123);
-        ItemStack nameTag5 = new ItemStack(TEST_ITEM, 1, capNbt2);
-        nameTag5.setDisplayName(new StringTextComponent("Hello World"));
-        stacks.put(new AESharedItemStack(nameTag5), "nbt1+cap2");
     }
 
     /**

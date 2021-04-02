@@ -65,7 +65,7 @@ public class Entrypoint implements ClientModInitializer {
 
         // Iterate over all Applied Energistics items
         NonNullList<ItemStack> stacks = NonNullList.create();
-        CreativeTab.INSTANCE.appendStacks(stacks);
+        CreativeTab.INSTANCE.fill(stacks);
 
         // Compute the square grid size needed to have enough cells for the number of
         // items we
