@@ -5,19 +5,23 @@
             "values": [
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:material:13"
+                    "item": "appliedenergistics2:material",
+                    "data": 13
                 },
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:material:14"
+                    "item": "appliedenergistics2:material",
+                    "data": 14
                 },
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:material:15"
+                    "item": "appliedenergistics2:material",
+                    "data": 15
                 },
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:material:19"
+                    "item": "appliedenergistics2:material",
+                    "data": 19
                 },
                 {
                     "type": "minecraft:item_exists",

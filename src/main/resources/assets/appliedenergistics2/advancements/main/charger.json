@@ -9,7 +9,8 @@
                 },
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:material:1"
+                    "item": "appliedenergistics2:material",
+                    "data": 1
                 }
             ]
         }

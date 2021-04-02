@@ -9,11 +9,13 @@
                 },
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:material:7"
+                    "item": "appliedenergistics2:material",
+                    "data": 7
                 },
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:16"
+                    "item": "appliedenergistics2:part",
+                    "data": 16
                 },
                 {
                     "type": "minecraft:item_exists",
@@ -24,7 +26,8 @@
     ],
     "display": {
         "icon": {
-            "item": "appliedenergistics2:facade"
+            "item": "appliedenergistics2:facade",
+            "nbt": "{item:\"minecraft:stone\"}"
         },
         "title": {
             "translate": "achievement.ae2.Facade"

@@ -1,44 +1,53 @@
 {
     "conditions": [
         {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:storage_cell_1k"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:storage_cell_4k"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:storage_cell_16k"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:storage_cell_64k"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:material:13"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:material:14"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:material:15"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:material:19"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:controller"
-        },
-        {
-            "type": "minecraft:item_exists",
-            "item": "appliedenergistics2:portable_cell"
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:storage_cell_1k"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:storage_cell_4k"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:storage_cell_16k"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:storage_cell_64k"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:material",
+                    "data": 13
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:material",
+                    "data": 14
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:material",
+                    "data": 15
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:material",
+                    "data": 19
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:controller"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:portable_cell"
+                }
+            ]
         }
     ],
     "display": {

@@ -9,15 +9,18 @@
                 },
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:material:7"
+                    "item": "appliedenergistics2:material",
+                    "data": 7
                 },
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:16"
+                    "item": "appliedenergistics2:part",
+                    "data": 16
                 },
                 {
                     "type": "minecraft:item_exists",
-                    "item": "appliedenergistics2:part:460"
+                    "item": "appliedenergistics2:part",
+                    "data": 460
                 },
                 {
                     "type": "minecraft:item_exists",
