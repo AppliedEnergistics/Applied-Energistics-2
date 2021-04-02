@@ -18,11 +18,13 @@
 
 package appeng.container.implementations;
 
-import java.io.IOException;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import appeng.api.networking.IGridHost;
+import appeng.core.AELog;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -42,7 +44,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.MEInterfaceUpdatePacket;
+import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.InventoryAction;
@@ -58,6 +60,8 @@ import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.WrapperRangeItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
+
+import javax.annotation.Nullable;
 
 public final class InterfaceTerminalContainer extends AEBaseContainer {
 
@@ -78,19 +82,14 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
      * this stuff is all server side..
      */
 
-    private static long autoBase = Long.MIN_VALUE;
-    private final Map<IInterfaceHost, InvTracker> diList = new HashMap<>();
-    private final Map<Long, InvTracker> byId = new HashMap<>();
-    private IGrid grid;
-    private CompoundNBT data = new CompoundNBT();
+    // We use this serial number to uniquely identify all inventories we send to the client
+    // It is used in packets sent by the client to interact with these inventories
+    private static long inventorySerial = Long.MIN_VALUE;
+    private final Map<IInterfaceHost, InvTracker> diList = new IdentityHashMap<>();
+    private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
 
     public InterfaceTerminalContainer(int id, final PlayerInventory ip, final InterfaceTerminalPart anchor) {
         super(TYPE, id, ip, anchor);
-
-        if (isServer()) {
-            this.grid = anchor.getActionableNode().getGrid();
-        }
-
         this.bindPlayerInventory(ip, 0, 0);
     }
 
@@ -102,216 +101,219 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
         super.detectAndSendChanges();
 
-        if (this.grid == null) {
-            return;
+        IGrid grid = getGrid();
+
+        VisitorState state = new VisitorState();
+        if (grid != null) {
+            visitInterfaceHosts(grid, InterfaceTileEntity.class, state);
+            visitInterfaceHosts(grid, InterfacePart.class, state);
         }
 
-        int total = 0;
-        boolean missing = false;
+        InterfaceTerminalPacket packet;
+        if (state.total != this.diList.size() || state.forceFullUpdate) {
+            packet = this.createFullUpdate(grid);
+        } else {
+            packet = createIncrementalUpdate();
+        }
 
-        final IActionHost host = this.getActionHost();
+        if (packet != null) {
+            NetworkHandler.instance().sendTo(packet, (ServerPlayerEntity) this.getPlayerInv().player);
+        }
+    }
+
+    @Nullable
+    private IGrid getGrid() {
+        IActionHost host = this.getActionHost();
         if (host != null) {
             final IGridNode agn = host.getActionableNode();
             if (agn != null && agn.isActive()) {
-                for (final IGridNode gn : this.grid.getMachines(InterfaceTileEntity.class)) {
-                    if (gn.isActive()) {
-                        final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-                        if (ih.getInterfaceDuality().getConfigManager()
-                                .getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {
-                            continue;
-                        }
-
-                        final InvTracker t = this.diList.get(ih);
-
-                        if (t == null) {
-                            missing = true;
-                        } else {
-                            final DualityInterface dual = ih.getInterfaceDuality();
-                            if (!t.name.equals(dual.getTermName())) {
-                                missing = true;
-                            }
-                        }
-
-                        total++;
-                    }
-                }
-
-                for (final IGridNode gn : this.grid.getMachines(InterfacePart.class)) {
-                    if (gn.isActive()) {
-                        final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-                        if (ih.getInterfaceDuality().getConfigManager()
-                                .getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {
-                            continue;
-                        }
-
-                        final InvTracker t = this.diList.get(ih);
-
-                        if (t == null) {
-                            missing = true;
-                        } else {
-                            final DualityInterface dual = ih.getInterfaceDuality();
-                            if (!t.name.equals(dual.getTermName())) {
-                                missing = true;
-                            }
-                        }
-
-                        total++;
-                    }
-                }
+                return agn.getGrid();
             }
         }
+        return null;
+    }
 
-        if (total != this.diList.size() || missing) {
-            this.regenList(this.data);
-        } else {
-            for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
-                final InvTracker inv = en.getValue();
-                for (int x = 0; x < inv.server.getSlots(); x++) {
-                    if (this.isDifferent(inv.server.getStackInSlot(x), inv.client.getStackInSlot(x))) {
-                        this.addItems(this.data, inv, x, 1);
+    private static class VisitorState {
+        // Total number of interface hosts founds
+        int total;
+        // Set to true if any visited machines were missing from diList, or had a different name
+        boolean forceFullUpdate;
+    }
+
+    private <T extends IInterfaceHost & IGridHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass, VisitorState state) {
+        for (final IGridNode gn : grid.getMachines(machineClass)) {
+            if (gn.isActive()) {
+                final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+                final DualityInterface dual = ih.getInterfaceDuality();
+                if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {
+                    continue;
+                }
+
+                final InvTracker t = this.diList.get(ih);
+                if (t == null) {
+                    state.forceFullUpdate = true;
+                } else {
+                    if (!t.name.equals(dual.getTermName())) {
+                        state.forceFullUpdate = true;
                     }
                 }
-            }
-        }
 
-        if (!this.data.isEmpty()) {
-            try {
-                NetworkHandler.instance().sendTo(new MEInterfaceUpdatePacket(this.data),
-                        (ServerPlayerEntity) this.getPlayerInv().player);
-            } catch (final IOException e) {
-                // :P
+                state.total++;
             }
-
-            this.data = new CompoundNBT();
         }
     }
 
     @Override
     public void doAction(final ServerPlayerEntity player, final InventoryAction action, final int slot, final long id) {
         final InvTracker inv = this.byId.get(id);
-        if (inv != null) {
-            final ItemStack is = inv.server.getStackInSlot(slot);
-            final boolean hasItemInHand = !player.inventory.getItemStack().isEmpty();
-
-            final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(player.inventory));
-
-            final IItemHandler theSlot = new WrapperFilteredItemHandler(
-                    new WrapperRangeItemHandler(inv.server, slot, slot + 1), new PatternSlotFilter());
-            final InventoryAdaptor interfaceSlot = new AdaptorItemHandler(theSlot);
-
-            switch (action) {
-                case PICKUP_OR_SET_DOWN:
-
-                    if (hasItemInHand) {
-                        ItemStack inSlot = theSlot.getStackInSlot(0);
-                        if (inSlot.isEmpty()) {
-                            player.inventory.setItemStack(interfaceSlot.addItems(player.inventory.getItemStack()));
-                        } else {
-                            inSlot = inSlot.copy();
-                            final ItemStack inHand = player.inventory.getItemStack().copy();
-
-                            ItemHandlerUtil.setStackInSlot(theSlot, 0, ItemStack.EMPTY);
-                            player.inventory.setItemStack(ItemStack.EMPTY);
-
-                            player.inventory.setItemStack(interfaceSlot.addItems(inHand.copy()));
-
-                            if (player.inventory.getItemStack().isEmpty()) {
-                                player.inventory.setItemStack(inSlot);
-                            } else {
-                                player.inventory.setItemStack(inHand);
-                                ItemHandlerUtil.setStackInSlot(theSlot, 0, inSlot);
-                            }
-                        }
-                    } else {
-                        ItemHandlerUtil.setStackInSlot(theSlot, 0, playerHand.addItems(theSlot.getStackInSlot(0)));
-                    }
-
-                    break;
-                case SPLIT_OR_PLACE_SINGLE:
-
-                    if (hasItemInHand) {
-                        ItemStack extra = playerHand.removeItems(1, ItemStack.EMPTY, null);
-                        if (!extra.isEmpty()) {
-                            extra = interfaceSlot.addItems(extra);
-                        }
-                        if (!extra.isEmpty()) {
-                            playerHand.addItems(extra);
-                        }
-                    } else if (!is.isEmpty()) {
-                        ItemStack extra = interfaceSlot.removeItems((is.getCount() + 1) / 2, ItemStack.EMPTY, null);
-                        if (!extra.isEmpty()) {
-                            extra = playerHand.addItems(extra);
-                        }
-                        if (!extra.isEmpty()) {
-                            interfaceSlot.addItems(extra);
-                        }
-                    }
-
-                    break;
-                case SHIFT_CLICK:
-
-                    final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(player);
-
-                    ItemHandlerUtil.setStackInSlot(theSlot, 0, playerInv.addItems(theSlot.getStackInSlot(0)));
-
-                    break;
-                case MOVE_REGION:
-
-                    final InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor(player);
-                    for (int x = 0; x < inv.server.getSlots(); x++) {
-                        ItemHandlerUtil.setStackInSlot(inv.server, x,
-                                playerInvAd.addItems(inv.server.getStackInSlot(x)));
-                    }
-
-                    break;
-                case CREATIVE_DUPLICATE:
-
-                    if (player.abilities.isCreativeMode && !hasItemInHand) {
-                        player.inventory.setItemStack(is.isEmpty() ? ItemStack.EMPTY : is.copy());
-                    }
-
-                    break;
-                default:
-                    return;
-            }
-
-            this.updateHeld(player);
+        if (inv == null) {
+            // Can occur if the client sent an interaction packet right before an inventory got removed
+            return;
         }
+        if (slot < 0 || slot >= inv.server.getSlots()) {
+            // Client refers to an invalid slot. This should NOT happen
+            AELog.warn("Client refers to invalid slot %d of inventory %s", slot, inv.name.getString());
+            return;
+        }
+
+        final ItemStack is = inv.server.getStackInSlot(slot);
+        final boolean hasItemInHand = !player.inventory.getItemStack().isEmpty();
+
+        final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(player.inventory));
+
+        final IItemHandler theSlot = new WrapperFilteredItemHandler(
+                new WrapperRangeItemHandler(inv.server, slot, slot + 1), new PatternSlotFilter());
+        final InventoryAdaptor interfaceSlot = new AdaptorItemHandler(theSlot);
+
+        switch (action) {
+            case PICKUP_OR_SET_DOWN:
+
+                if (hasItemInHand) {
+                    ItemStack inSlot = theSlot.getStackInSlot(0);
+                    if (inSlot.isEmpty()) {
+                        player.inventory.setItemStack(interfaceSlot.addItems(player.inventory.getItemStack()));
+                    } else {
+                        inSlot = inSlot.copy();
+                        final ItemStack inHand = player.inventory.getItemStack().copy();
+
+                        ItemHandlerUtil.setStackInSlot(theSlot, 0, ItemStack.EMPTY);
+                        player.inventory.setItemStack(ItemStack.EMPTY);
+
+                        player.inventory.setItemStack(interfaceSlot.addItems(inHand.copy()));
+
+                        if (player.inventory.getItemStack().isEmpty()) {
+                            player.inventory.setItemStack(inSlot);
+                        } else {
+                            player.inventory.setItemStack(inHand);
+                            ItemHandlerUtil.setStackInSlot(theSlot, 0, inSlot);
+                        }
+                    }
+                } else {
+                    ItemHandlerUtil.setStackInSlot(theSlot, 0, playerHand.addItems(theSlot.getStackInSlot(0)));
+                }
+
+                break;
+            case SPLIT_OR_PLACE_SINGLE:
+
+                if (hasItemInHand) {
+                    ItemStack extra = playerHand.removeItems(1, ItemStack.EMPTY, null);
+                    if (!extra.isEmpty()) {
+                        extra = interfaceSlot.addItems(extra);
+                    }
+                    if (!extra.isEmpty()) {
+                        playerHand.addItems(extra);
+                    }
+                } else if (!is.isEmpty()) {
+                    ItemStack extra = interfaceSlot.removeItems((is.getCount() + 1) / 2, ItemStack.EMPTY, null);
+                    if (!extra.isEmpty()) {
+                        extra = playerHand.addItems(extra);
+                    }
+                    if (!extra.isEmpty()) {
+                        interfaceSlot.addItems(extra);
+                    }
+                }
+
+                break;
+            case SHIFT_CLICK:
+
+                final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(player);
+
+                ItemHandlerUtil.setStackInSlot(theSlot, 0, playerInv.addItems(theSlot.getStackInSlot(0)));
+
+                break;
+            case MOVE_REGION:
+
+                final InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor(player);
+                for (int x = 0; x < inv.server.getSlots(); x++) {
+                    ItemHandlerUtil.setStackInSlot(inv.server, x,
+                            playerInvAd.addItems(inv.server.getStackInSlot(x)));
+                }
+
+                break;
+            case CREATIVE_DUPLICATE:
+
+                if (player.abilities.isCreativeMode && !hasItemInHand) {
+                    player.inventory.setItemStack(is.isEmpty() ? ItemStack.EMPTY : is.copy());
+                }
+
+                break;
+            default:
+                return;
+        }
+
+        this.updateHeld(player);
     }
 
-    private void regenList(final CompoundNBT data) {
+    private InterfaceTerminalPacket createFullUpdate(@Nullable IGrid grid) {
         this.byId.clear();
         this.diList.clear();
 
-        final IActionHost host = this.getActionHost();
-        if (host != null) {
-            final IGridNode agn = host.getActionableNode();
-            if (agn != null && agn.isActive()) {
-                for (final IGridNode gn : this.grid.getMachines(InterfaceTileEntity.class)) {
-                    final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-                    final DualityInterface dual = ih.getInterfaceDuality();
-                    if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
-                        this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
-                    }
-                }
+        if (grid == null) {
+            return new InterfaceTerminalPacket(true, new CompoundNBT());
+        }
 
-                for (final IGridNode gn : this.grid.getMachines(InterfacePart.class)) {
-                    final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-                    final DualityInterface dual = ih.getInterfaceDuality();
-                    if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
-                        this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
-                    }
-                }
+        for (final IGridNode gn : grid.getMachines(InterfaceTileEntity.class)) {
+            final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+            final DualityInterface dual = ih.getInterfaceDuality();
+            if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
+                this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
             }
         }
 
-        data.putBoolean("clear", true);
+        for (final IGridNode gn : grid.getMachines(InterfacePart.class)) {
+            final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+            final DualityInterface dual = ih.getInterfaceDuality();
+            if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
+                this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
+            }
+        }
 
+        CompoundNBT data = new CompoundNBT();
         for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
-            this.byId.put(inv.which, inv);
+            this.byId.put(inv.serverId, inv);
             this.addItems(data, inv, 0, inv.server.getSlots());
         }
+        return new InterfaceTerminalPacket(true, data);
+    }
+
+    private InterfaceTerminalPacket createIncrementalUpdate() {
+        CompoundNBT data = null;
+        for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
+            final InvTracker inv = en.getValue();
+            for (int x = 0; x < inv.server.getSlots(); x++) {
+                if (this.isDifferent(inv.server.getStackInSlot(x), inv.client.getStackInSlot(x))) {
+                    if (data == null) {
+                        data = new CompoundNBT();
+                    }
+                    this.addItems(data, inv, x, 1);
+                }
+            }
+        }
+        if (data != null) {
+            return new InterfaceTerminalPacket(false, data);
+        }
+        return null;
     }
 
     private boolean isDifferent(final ItemStack a, final ItemStack b) {
@@ -327,7 +329,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     }
 
     private void addItems(final CompoundNBT data, final InvTracker inv, final int offset, final int length) {
-        final String name = '=' + Long.toString(inv.which, Character.MAX_RADIX);
+        final String name = '=' + Long.toString(inv.serverId, Character.MAX_RADIX);
         final CompoundNBT tag = data.getCompound(name);
 
         if (tag.isEmpty()) {
@@ -356,9 +358,11 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     private static class InvTracker {
 
         private final long sortBy;
-        private final long which = autoBase++;
+        private final long serverId = inventorySerial++;
         private final ITextComponent name;
+        // This is used to track the inventory contents we sent to the client for change detection
         private final IItemHandler client;
+        // This is a reference to the real inventory used by this machine
         private final IItemHandler server;
 
         public InvTracker(final DualityInterface dual, final IItemHandler patterns, final ITextComponent name) {

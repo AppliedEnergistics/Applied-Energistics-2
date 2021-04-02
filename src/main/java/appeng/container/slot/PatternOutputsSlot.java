@@ -32,8 +32,4 @@ public class PatternOutputsSlot extends OptionalFakeSlot {
         return true;
     }
 
-    @Override
-    public boolean shouldDisplay() {
-        return super.isSlotEnabled();
-    }
 }

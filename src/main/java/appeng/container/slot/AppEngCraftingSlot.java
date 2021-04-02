@@ -54,9 +54,6 @@ public class AppEngCraftingSlot extends AppEngSlot {
         this.craftMatrix = par2IInventory;
     }
 
-    /**
-     * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
-     */
     @Override
     public boolean isItemValid(final ItemStack stack) {
         return false;

@@ -478,7 +478,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         if (s instanceof VirtualItemSlot) {
 
             try {
-                if (!this.isPowered()) {
+                if (!this.repo.hasPower()) {
                     fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
                 }
 
@@ -547,11 +547,6 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
     protected String getBackground() {
         return "guis/terminal.png";
-    }
-
-    @Override
-    protected boolean isPowered() {
-        return this.repo.hasPower();
     }
 
     protected int getMaxRows() {

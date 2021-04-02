@@ -10,14 +10,14 @@ import net.minecraft.item.ItemStack;
  * Base class for virtual client-side only slots that do not allow Vanilla to directly interact with the contained item
  * (since it purely exists client-side).
  */
-public class ReadOnlySlot extends Slot {
+public class ClientReadOnlySlot extends Slot {
     /**
      * We use this fake/empty inventory to prevent other mods from attempting to interact with anything based on this
      * slot's inventory/slot index.
      */
     private static final IInventory EMPTY_INVENTORY = new Inventory(0);
 
-    public ReadOnlySlot(int xPosition, int yPosition) {
+    public ClientReadOnlySlot(int xPosition, int yPosition) {
         super(EMPTY_INVENTORY, 0, xPosition, yPosition);
     }
 

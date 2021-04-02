@@ -169,11 +169,11 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     @Override
     public void onSlotChange(Slot s) {
 
-        // If the pattern changes, the crafting grid slots lose validity
+        // If the pattern changes, the crafting grid slots have to be revalidated
         if (s == encodedPatternSlot) {
             for (Slot otherSlot : inventorySlots) {
                 if (otherSlot != s && otherSlot instanceof AppEngSlot) {
-                    ((AppEngSlot) otherSlot).setIsValid(AppEngSlot.CalculatedValidity.NotAvailable);
+                    ((AppEngSlot) otherSlot).resetCachedValidation();
                 }
             }
         }

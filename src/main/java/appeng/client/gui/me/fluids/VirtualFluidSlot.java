@@ -23,9 +23,9 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.client.gui.me.common.ReadOnlySlot;
+import appeng.client.gui.me.common.ClientReadOnlySlot;
 
-class VirtualFluidSlot extends ReadOnlySlot {
+class VirtualFluidSlot extends ClientReadOnlySlot {
 
     private final FluidRepo repo;
     private final int offset;

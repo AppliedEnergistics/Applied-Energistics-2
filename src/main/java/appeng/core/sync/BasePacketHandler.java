@@ -38,7 +38,7 @@ import appeng.core.sync.packets.ItemTransitionEffectPacket;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.core.sync.packets.LightningPacket;
 import appeng.core.sync.packets.MEFluidInventoryUpdatePacket;
-import appeng.core.sync.packets.MEInterfaceUpdatePacket;
+import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.core.sync.packets.MatterCannonPacket;
 import appeng.core.sync.packets.MockExplosionPacket;
@@ -101,7 +101,7 @@ public class BasePacketHandler {
 
         PACKET_ASSEMBLER_ANIMATION(AssemblerAnimationPacket.class, AssemblerAnimationPacket::new),
 
-        PACKET_ME_INTERFACE_UPDATE(MEInterfaceUpdatePacket.class, MEInterfaceUpdatePacket::new),
+        PACKET_ME_INTERFACE_UPDATE(InterfaceTerminalPacket.class, InterfaceTerminalPacket::new),
 
         PACKET_PAINTED_ENTITY(PaintedEntityPacket.class, PaintedEntityPacket::new),
 

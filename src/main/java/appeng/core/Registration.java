@@ -105,7 +105,7 @@ import appeng.client.gui.implementations.GrinderScreen;
 import appeng.client.gui.implementations.IOPortScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.client.gui.implementations.InterfaceScreen;
-import appeng.client.gui.implementations.InterfaceTerminalScreen;
+import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.client.gui.implementations.LevelEmitterScreen;
 import appeng.client.gui.implementations.MEPortableCellScreen;
 import appeng.client.gui.implementations.MolecularAssemblerScreen;

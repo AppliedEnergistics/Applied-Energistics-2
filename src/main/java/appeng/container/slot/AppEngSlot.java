@@ -20,6 +20,8 @@ package appeng.container.slot;
 
 import javax.annotation.Nonnull;
 
+import appeng.client.gui.me.interfaceterminal.InterfaceSlot;
+import appeng.core.AELog;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
@@ -40,11 +42,20 @@ public class AppEngSlot extends Slot {
     private final int defX;
     private final int defY;
     private boolean isDraggable = true;
+    /**
+     * Indicates that this slot is part of the player's inventory.
+     */
     private boolean isPlayerSide = false;
-    private AEBaseContainer myContainer = null;
-    private int IIcon = -1;
-    private CalculatedValidity isValid;
-    private boolean isDisplay = false;
+    private AEBaseContainer container = null;
+    /**
+     * Shows an icon from the icon sprite-sheet in the background of this slot, -1 means no icon
+     */
+    private int iconIndex = -1;
+    /**
+     * Caches if the item stack currently contained in this slot is "valid" or not for UI purposes.
+     */
+    private Boolean validState = null;
+    private boolean rendering = false;
 
     public AppEngSlot(final IItemHandler inv, final int invSlot, final int x, final int y) {
         super(EMPTY_INVENTORY, invSlot, x, y);
@@ -53,7 +64,6 @@ public class AppEngSlot extends Slot {
 
         this.defX = x;
         this.defY = y;
-        this.setIsValid(CalculatedValidity.NotAvailable);
     }
 
     public Slot setNotDraggable() {
@@ -93,8 +103,10 @@ public class AppEngSlot extends Slot {
             return ItemStack.EMPTY;
         }
 
-        if (this.isDisplay()) {
-            this.setDisplay(false);
+        // Some slots may want to display a different stack in the GUI, which we solve by
+        // returning getDisplayStack() during rendering, which a slot can override.
+        if (this.rendering) {
+            this.rendering = false;
             return this.getDisplayStack();
         }
 
@@ -122,7 +134,7 @@ public class AppEngSlot extends Slot {
     @Override
     public void onSlotChanged() {
         super.onSlotChanged();
-        this.setIsValid(CalculatedValidity.NotAvailable);
+        this.validState = null;
         notifyContainerSlotChanged();
     }
 
@@ -165,6 +177,10 @@ public class AppEngSlot extends Slot {
         return true;
     }
 
+    /**
+     * This method can be overridden in a subclass to show a specific item stack in the UI when this slot is
+     * being rendered.
+     */
     public ItemStack getDisplayStack() {
         return this.itemHandler.getStackInSlot(this.invSlot);
     }
@@ -178,15 +194,11 @@ public class AppEngSlot extends Slot {
     }
 
     public int getIcon() {
-        return this.getIIcon();
+        return this.getIconIndex();
     }
 
     public boolean isPlayerSide() {
         return this.isPlayerSide;
-    }
-
-    public boolean shouldDisplay() {
-        return this.isSlotEnabled();
     }
 
     public int getX() {
@@ -197,20 +209,20 @@ public class AppEngSlot extends Slot {
         return this.defY;
     }
 
-    private int getIIcon() {
-        return this.IIcon;
+    private int getIconIndex() {
+        return this.iconIndex;
     }
 
-    public void setIIcon(final int iIcon) {
-        this.IIcon = iIcon;
+    public void setIconIndex(final int iIcon) {
+        this.iconIndex = iIcon;
     }
 
-    private boolean isDisplay() {
-        return this.isDisplay;
-    }
-
-    public void setDisplay(final boolean isDisplay) {
-        this.isDisplay = isDisplay;
+    /**
+     * Indicate that this slot is currently being rendered, which is used to provide a slot with the
+     * ability to return a different stack for rendering purposes by overriding {@link #getDisplayStack()}.
+     */
+    public void setRendering(final boolean rendering) {
+        this.rendering = rendering;
     }
 
     public boolean isDraggable() {
@@ -225,27 +237,50 @@ public class AppEngSlot extends Slot {
         this.isPlayerSide = isPlayerSide;
     }
 
-    public CalculatedValidity getIsValid() {
-        return this.isValid;
-    }
-
-    public void setIsValid(final CalculatedValidity isValid) {
-        this.isValid = isValid;
-    }
-
     protected AEBaseContainer getContainer() {
-        return this.myContainer;
+        return this.container;
     }
 
     public void setContainer(final AEBaseContainer myContainer) {
-        this.myContainer = myContainer;
+        this.container = myContainer;
     }
 
     protected boolean isRemote() {
-        return myContainer == null || myContainer.isRemote();
+        return container == null || container.isRemote();
     }
 
-    public enum CalculatedValidity {
-        NotAvailable, Valid, Invalid
+    /**
+     * @return True if the slot is in a valid state
+     */
+    public final boolean isValid() {
+        // Lazily compute whether the currently held item is valid or not
+        if (validState == null) {
+            try {
+                validState = getCurrentValidationState();
+            } catch (Exception e) {
+                validState = false;
+                AELog.warn("Failed to update validation state for slot %s: %s", this, e);
+            }
+        }
+        return validState;
     }
+
+    /**
+     * Override in subclasses to customize the validation state of a slot, which is used to draw
+     * a red backdrop for invalid slots. Please note that the return value is cached.
+     *
+     * @return True if the current state of the slot is valid, false otherwise.
+     * @see #resetCachedValidation()
+     */
+    protected boolean getCurrentValidationState() {
+        return true;
+    }
+
+    /**
+     * Call to cause {@link #isValid()} to recompute the state next time it is called.
+     */
+    public void resetCachedValidation() {
+        this.validState = null;
+    }
+
 }

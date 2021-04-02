@@ -37,4 +37,11 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot {
     public boolean isItemValid(final ItemStack stack) {
         return this.mac.isValidItemForSlot(this.getSlotIndex(), stack);
     }
+
+    @Override
+    protected boolean getCurrentValidationState() {
+        ItemStack stack = getStack();
+        return stack.isEmpty() || isItemValid(stack);
+    }
+
 }
