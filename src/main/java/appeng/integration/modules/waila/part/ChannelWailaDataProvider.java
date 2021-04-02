@@ -19,6 +19,7 @@
 package appeng.integration.modules.waila.part;
 
 import java.util.List;
+import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -27,15 +28,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-import it.unimi.dsi.fastutil.objects.Object2ByteMap;
-import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 
 import appeng.api.parts.IPart;
 import appeng.core.localization.WailaText;
-import appeng.parts.networking.SmartCablePart;
-import appeng.parts.networking.SmartDenseCablePart;
+import appeng.parts.networking.IUsedChannelProvider;
 
 /**
  * Channel-information provider for WAILA
@@ -49,6 +47,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
      * Channel key used for the transferred {@link net.minecraft.nbt.CompoundNBT}
      */
     private static final String ID_USED_CHANNELS = "usedChannels";
+    private static final String ID_MAX_CHANNELS = "maxChannels";
 
     /**
      * Used cache for channels if the channel was not transmitted through the server.
@@ -58,7 +57,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
      * <p/>
      * The cache will be updated from the server.
      */
-    private final Object2ByteMap<IPart> cache = new Object2ByteOpenHashMap<>();
+    private final WeakHashMap<IPart, UsedChannelInfo> cache = new WeakHashMap<>();
 
     /**
      * Adds the used and max channel to the tool tip
@@ -71,15 +70,15 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
     @Override
     public void appendBody(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
             final IPluginConfig config) {
-        if (part instanceof SmartCablePart || part instanceof SmartDenseCablePart) {
+        if (part instanceof IUsedChannelProvider) {
             final CompoundNBT tag = accessor.getServerData();
 
-            final byte usedChannels = this.getUsedChannels(part, tag, this.cache);
+            UsedChannelInfo usedChannelInfo = this.getUsedChannels(part, tag);
 
-            if (usedChannels >= 0) {
-                final byte maxChannels = (byte) ((part instanceof SmartDenseCablePart) ? 32 : 8);
-
-                final ITextComponent formattedToolTip = WailaText.Channels.textComponent(usedChannels, maxChannels);
+            if (usedChannelInfo != null) {
+                final ITextComponent formattedToolTip = WailaText.Channels.textComponent(
+                        usedChannelInfo.usedChannels,
+                        usedChannelInfo.maxChannels);
                 tooltip.add(formattedToolTip);
             }
         }
@@ -91,24 +90,21 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
      * If the client received information of the channels on the server, they are used, else if the cache contains a
      * previous stored value, this will be used. Default value is 0.
      *
-     * @param part  part to be looked at
-     * @param tag   tag maybe containing the channel information
-     * @param cache cache with previous knowledge
+     * @param part part to be looked at
+     * @param tag  tag maybe containing the channel information
      * @return used channels on the cable
      */
-    private byte getUsedChannels(final IPart part, final CompoundNBT tag, final Object2ByteMap<IPart> cache) {
-        final byte usedChannels;
+    private UsedChannelInfo getUsedChannels(final IPart part, final CompoundNBT tag) {
+        UsedChannelInfo info;
 
-        if (tag.contains(ID_USED_CHANNELS)) {
-            usedChannels = tag.getByte(ID_USED_CHANNELS);
-            this.cache.put(part, usedChannels);
-        } else if (this.cache.containsKey(part)) {
-            usedChannels = this.cache.get(part);
+        if (tag.contains(ID_USED_CHANNELS) && tag.contains(ID_MAX_CHANNELS)) {
+            info = new UsedChannelInfo(tag.getInt(ID_USED_CHANNELS), tag.getInt(ID_MAX_CHANNELS));
+            this.cache.put(part, info);
         } else {
-            usedChannels = -1;
+            info = this.cache.get(part);
         }
 
-        return usedChannels;
+        return info;
     }
 
     /**
@@ -127,16 +123,21 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
     @Override
     public void appendServerData(ServerPlayerEntity player, IPart part, TileEntity te, CompoundNBT tag, World world,
             BlockPos pos) {
-        if (part instanceof SmartCablePart || part instanceof SmartDenseCablePart) {
-            final CompoundNBT tempTag = new CompoundNBT();
-
-            part.writeToNBT(tempTag);
-
-            if (tempTag.contains(ID_USED_CHANNELS)) {
-                final byte usedChannels = tempTag.getByte(ID_USED_CHANNELS);
-
-                tag.putByte(ID_USED_CHANNELS, usedChannels);
-            }
+        if (part instanceof IUsedChannelProvider) {
+            IUsedChannelProvider usedChannelProvider = (IUsedChannelProvider) part;
+            tag.putInt(ID_USED_CHANNELS, usedChannelProvider.getUsedChannelsInfo());
+            tag.putInt(ID_MAX_CHANNELS, usedChannelProvider.getMaxChannelsInfo());
         }
     }
+
+    private static class UsedChannelInfo {
+        private final int usedChannels;
+        private final int maxChannels;
+
+        public UsedChannelInfo(int usedChannels, int maxChannels) {
+            this.usedChannels = usedChannels;
+            this.maxChannels = maxChannels;
+        }
+    }
+
 }

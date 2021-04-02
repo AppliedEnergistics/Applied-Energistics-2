@@ -14,7 +14,7 @@ public interface IngredientAccessor {
     @Invoker("determineMatchingStacks")
     void appeng_cacheMatchingStacks();
 
-    @Accessor
-    ItemStack[] getMatchingStacks();
+    @Accessor("matchingStacks")
+    ItemStack[] appeng_getMatchingStacks();
 
 }

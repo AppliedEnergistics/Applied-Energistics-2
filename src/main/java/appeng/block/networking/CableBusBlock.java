@@ -85,6 +85,7 @@ import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.helpers.AEMaterials;
+import appeng.hooks.INeighborChangeSensitive;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
@@ -92,7 +93,8 @@ import appeng.tile.AEBaseTileEntity;
 import appeng.tile.networking.CableBusTileEntity;
 import appeng.util.Platform;
 
-public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade, IWaterLoggable {
+public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity>
+        implements IAEFacade, IWaterLoggable, INeighborChangeSensitive {
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 

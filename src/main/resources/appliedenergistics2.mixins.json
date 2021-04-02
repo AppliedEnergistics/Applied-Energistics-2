@@ -23,7 +23,8 @@
     "BootstrapMixin",
     "ItemEntityAccessor",
     "IngredientAccessor",
-    "feature.WorldLightManagerMixin"
+    "feature.WorldLightManagerMixin",
+    "OnNeighborUpdateMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",

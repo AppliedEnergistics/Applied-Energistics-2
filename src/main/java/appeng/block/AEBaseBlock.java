@@ -212,8 +212,4 @@ public abstract class AEBaseBlock extends Block {
         this.isInventory = isInventory;
     }
 
-    // This is usually a Forge extension. We replace it using a Mixin.
-    public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
-    }
-
 }

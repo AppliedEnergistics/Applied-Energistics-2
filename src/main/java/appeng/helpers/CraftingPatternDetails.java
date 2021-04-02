@@ -244,7 +244,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         return this.substituteInputs.computeIfAbsent(slot, value -> {
             IngredientAccessor accessor = (IngredientAccessor) (Object) getRecipeIngredient(slot);
             accessor.appeng_cacheMatchingStacks();
-            ItemStack[] matchingStacks = accessor.getMatchingStacks();
+            ItemStack[] matchingStacks = accessor.appeng_getMatchingStacks();
             List<IAEItemStack> itemList = new ArrayList<>(matchingStacks.length + 1);
             for (ItemStack matchingStack : matchingStacks) {
                 itemList.add(AEItemStack.fromItemStack(matchingStack));
