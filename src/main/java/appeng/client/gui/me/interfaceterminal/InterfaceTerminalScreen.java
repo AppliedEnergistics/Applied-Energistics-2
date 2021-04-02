@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.client.gui.me.interfaceterminal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,9 +27,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.helpers.DualityInterface;
+import appeng.helpers.InventoryAction;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.inventory.container.ClickType;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.AbstractGui;
@@ -51,8 +56,6 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.client.me.ClientDCInternalInv;
-import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.InterfaceTerminalContainer;
 import appeng.container.slot.AppEngSlot;
 import appeng.core.AEConfig;
@@ -125,8 +128,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     // This is the lower part of the UI, anything below the scrollable area (incl. its bottom border)
     private static final Rectangle2d FOOTER_BBOX = new Rectangle2d(0, 125, GUI_WIDTH, GUI_FOOTER_HEIGHT);
 
-    private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<>();
-    private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
+    private final HashMap<Long, InterfaceRecord> byId = new HashMap<>();
+    // Used to show multiple interfaces with the same name under a single header
+    private final HashMultimap<String, InterfaceRecord> byName = HashMultimap.create();
     private final ArrayList<String> names = new ArrayList<>();
     private final ArrayList<Object> lines = new ArrayList<>();
 
@@ -187,19 +191,19 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()).getString(),
                 GUI_PADDING_X, GUI_PADDING_Y, COLOR_DARK_GRAY);
 
-        this.container.inventorySlots.removeIf(slot -> slot instanceof SlotDisconnected);
+        this.container.inventorySlots.removeIf(slot -> slot instanceof InterfaceSlot);
 
         final int scrollLevel = this.getScrollBar().getCurrentScroll();
         int i = 0;
         for (; i < this.numLines; ++i) {
             if (scrollLevel + i < this.lines.size()) {
                 final Object lineObj = this.lines.get(scrollLevel + i);
-                if (lineObj instanceof ClientDCInternalInv) {
+                if (lineObj instanceof InterfaceRecord) {
                     // Note: We have to shift everything after the header up by 1 to avoid black line duplication.
-                    final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
+                    final InterfaceRecord inv = (InterfaceRecord) lineObj;
                     for (int z = 0; z < inv.getInventory().getSlots(); z++) {
                         this.container.inventorySlots
-                                .add(new SlotDisconnected(inv, z, z * SLOT_SIZE + GUI_PADDING_X, (i + 1) * SLOT_SIZE));
+                                .add(new InterfaceSlot(inv, z, z * SLOT_SIZE + GUI_PADDING_X, (i + 1) * SLOT_SIZE));
                     }
                 } else if (lineObj instanceof String) {
                     String name = (String) lineObj;
@@ -235,6 +239,44 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     }
 
     @Override
+    protected void handleMouseClick(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+        if (slot instanceof InterfaceSlot) {
+            InventoryAction action = null;
+
+            switch (clickType) {
+                case PICKUP: // pickup / set-down.
+                    action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+                            : InventoryAction.PICKUP_OR_SET_DOWN;
+                    break;
+                case QUICK_MOVE:
+                    action = (mouseButton == 1) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+                    break;
+
+                case CLONE: // creative dupe:
+                    if (getPlayer().abilities.isCreativeMode) {
+                        action = InventoryAction.CREATIVE_DUPLICATE;
+                    }
+
+                    break;
+
+                default:
+                case THROW: // drop item:
+            }
+
+            if (action != null) {
+                InterfaceSlot machineSlot = (InterfaceSlot) slot;
+                final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.getSlotIndex(),
+                        machineSlot.getMachineInv().getServerId());
+                NetworkHandler.instance().sendToServer(p);
+            }
+
+            return;
+        }
+
+        super.handleMouseClick(slot, slotIdx, mouseButton, clickType);
+    }
+
+    @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
@@ -261,7 +303,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             isInvLine = false;
             if (scrollLevel + i < this.lines.size()) {
                 final Object lineObj = this.lines.get(scrollLevel + i);
-                isInvLine = lineObj instanceof ClientDCInternalInv;
+                isInvLine = lineObj instanceof InterfaceRecord;
             }
 
             Rectangle2d bbox = selectRowBackgroundBox(isInvLine, firstLine, lastLine);
@@ -333,8 +375,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }
 
-    public void postUpdate(final CompoundNBT in) {
-        if (in.getBoolean("clear")) {
+    public void postUpdate(boolean fullUpdate, final CompoundNBT in) {
+        if (fullUpdate) {
             this.byId.clear();
             this.refreshList = true;
         }
@@ -346,7 +388,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
                     final CompoundNBT invData = in.getCompound(key);
                     ITextComponent un = ITextComponent.Serializer.getComponentFromJson(invData.getString("un"));
-                    final ClientDCInternalInv current = this.getById(id, invData.getLong("sortBy"), un);
+                    final InterfaceRecord current = this.getById(id, invData.getLong("sortBy"), un);
 
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
                         final String which = Integer.toString(x);
@@ -380,7 +422,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         final Set<Object> cachedSearch = this.getCacheForSearchTerm(searchFilterLowerCase);
         final boolean rebuild = cachedSearch.isEmpty();
 
-        for (final ClientDCInternalInv entry : this.byId.values()) {
+        for (final InterfaceRecord entry : this.byId.values()) {
             // ignore inventory if not doing a full rebuild or cache already marks it as miss.
             if (!rebuild && !cachedSearch.contains(entry)) {
                 continue;
@@ -401,7 +443,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
             // if found, filter skipped or machine name matching the search term, add it
             if (found || entry.getSearchName().contains(searchFilterLowerCase)) {
-                this.byName.put(entry.getFormattedName(), entry);
+                this.byName.put(entry.getDisplayName(), entry);
                 cachedSearch.add(entry);
             } else {
                 cachedSearch.remove(entry);
@@ -416,10 +458,10 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         this.lines.clear();
         this.lines.ensureCapacity(this.getMaxRows());
 
-        for (final String n : this.names) {
+        for (String n : this.names) {
             this.lines.add(n);
 
-            List<ClientDCInternalInv> clientInventories = new ArrayList<>(this.byName.get(n));
+            List<InterfaceRecord> clientInventories = new ArrayList<>(this.byName.get(n));
 
             Collections.sort(clientInventories);
             this.lines.addAll(clientInventories);
@@ -515,11 +557,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return this.names.size() + this.byId.size();
     }
 
-    private ClientDCInternalInv getById(final long id, final long sortBy, final ITextComponent name) {
-        ClientDCInternalInv o = this.byId.get(id);
+    private InterfaceRecord getById(final long id, final long sortBy, final ITextComponent name) {
+        InterfaceRecord o = this.byId.get(id);
 
         if (o == null) {
-            this.byId.put(id, o = new ClientDCInternalInv(9, id, sortBy, name));
+            this.byId.put(id, o = new InterfaceRecord(id, DualityInterface.NUMBER_OF_PATTERN_SLOTS, sortBy, name));
             this.refreshList = true;
         }
 

@@ -119,12 +119,12 @@ public class PatternTermContainer extends MEMonitorableContainer
 
         this.addSlot(this.craftSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.getPowerSource(),
                 monitorable, this.crafting, patternInv, this.cOut, 110, -76 + 18, this, 2, this));
-        this.craftSlot.setIIcon(-1);
+        this.craftSlot.setIconIndex(-1);
 
         for (int y = 0; y < 3; y++) {
             this.addSlot(this.outputSlots[y] = new PatternOutputsSlot(output, this, y, 110, -76 + y * 18, 0, 0, 1));
             this.outputSlots[y].setRenderDisabled(false);
-            this.outputSlots[y].setIIcon(-1);
+            this.outputSlots[y].setIconIndex(-1);
         }
 
         this.addSlot(this.patternSlotIN = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BLANK_PATTERN,

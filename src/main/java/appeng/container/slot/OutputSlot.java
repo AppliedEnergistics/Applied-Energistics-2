@@ -25,11 +25,12 @@ public class OutputSlot extends AppEngSlot {
 
     public OutputSlot(final IItemHandler inv, final int invSlot, final int x, final int y, final int iconIndex) {
         super(inv, invSlot, x, y);
-        this.setIIcon(iconIndex);
+        this.setIconIndex(iconIndex);
     }
 
     @Override
     public boolean isItemValid(final ItemStack stack) {
         return false;
     }
+
 }

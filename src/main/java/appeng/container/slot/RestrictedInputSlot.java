@@ -74,7 +74,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             final int y, final PlayerInventory p) {
         super(inv, invSlot, x, y);
         this.which = valid;
-        this.setIIcon(valid.IIcon);
+        this.setIconIndex(valid.IIcon);
         this.p = p;
     }
 
@@ -84,13 +84,6 @@ public class RestrictedInputSlot extends AppEngSlot {
             return this.stackLimit;
         }
         return super.getSlotStackLimit();
-    }
-
-    public boolean isValid(final ItemStack is, final World theWorld) {
-        if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
-            return Api.instance().crafting().decodePattern(is, theWorld) != null;
-        }
-        return true;
     }
 
     public Slot setStackLimit(final int i) {
@@ -213,8 +206,9 @@ public class RestrictedInputSlot extends AppEngSlot {
 
     @Override
     public ItemStack getDisplayStack() {
+        // If the slot only takes encoded patterns, show the encoded item instead
         if (isRemote() && (this.which == PlacableItemType.ENCODED_PATTERN)) {
-            final ItemStack is = super.getStack();
+            final ItemStack is = super.getDisplayStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
                 final ItemStack out = iep.getOutput(is);
@@ -223,7 +217,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 }
             }
         }
-        return super.getStack();
+        return super.getDisplayStack();
     }
 
     public static boolean isMetalIngot(final ItemStack i) {
@@ -247,6 +241,16 @@ public class RestrictedInputSlot extends AppEngSlot {
 
     public void setAllowEdit(final boolean allowEdit) {
         this.allowEdit = allowEdit;
+    }
+
+    protected boolean getCurrentValidationState() {
+        if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
+            // Allow either an empty slot, or a valid encoded pattern
+            World world = this.p.player.getEntityWorld();
+            ItemStack stack = getStack();
+            return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, world) != null;
+        }
+        return true;
     }
 
     public enum PlacableItemType {

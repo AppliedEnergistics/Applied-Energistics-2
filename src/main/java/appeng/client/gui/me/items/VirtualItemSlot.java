@@ -18,18 +18,16 @@
 
 package appeng.client.gui.me.items;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.gui.me.common.ReadOnlySlot;
+import appeng.client.gui.me.common.ClientReadOnlySlot;
 
 /**
  * This is a virtual slot that has no corresponding slot on the server-side. It displays an item stack from the
  * client-side {@link ItemRepo}.
  */
-public class VirtualItemSlot extends ReadOnlySlot {
+public class VirtualItemSlot extends ClientReadOnlySlot {
 
     private final ItemRepo repo;
     private final int offset;

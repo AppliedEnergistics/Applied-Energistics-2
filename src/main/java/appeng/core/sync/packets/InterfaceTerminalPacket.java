@@ -18,8 +18,7 @@
 
 package appeng.core.sync.packets;
 
-import java.io.IOException;
-
+import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -30,29 +29,32 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.client.gui.implementations.InterfaceTerminalScreen;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 
-public class MEInterfaceUpdatePacket extends BasePacket {
+/**
+ * Sends the content for the interface terminal GUI to the client.
+ */
+public class InterfaceTerminalPacket extends BasePacket {
 
     // input.
+    private final boolean fullUpdate;
     private final CompoundNBT in;
-    // output...
-    private final PacketBuffer data;
 
-    public MEInterfaceUpdatePacket(final PacketBuffer stream) {
-        this.data = null;
+    public InterfaceTerminalPacket(final PacketBuffer stream) {
+        this.fullUpdate = stream.readBoolean();
         this.in = stream.readCompoundTag();
     }
 
     // api
-    public MEInterfaceUpdatePacket(final CompoundNBT din) throws IOException {
+    public InterfaceTerminalPacket(boolean fullUpdate, CompoundNBT din) {
+        this.fullUpdate = false;
         this.in = null;
-        this.data = new PacketBuffer(Unpooled.buffer(2048));
-        this.data.writeInt(this.getPacketID());
-        this.data.writeCompoundTag(din);
-        this.configureWrite(this.data);
+        PacketBuffer data = new PacketBuffer(Unpooled.buffer(2048));
+        data.writeInt(this.getPacketID());
+        data.writeBoolean(fullUpdate);
+        data.writeCompoundTag(din);
+        this.configureWrite(data);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class MEInterfaceUpdatePacket extends BasePacket {
         final Screen gs = Minecraft.getInstance().currentScreen;
 
         if (gs instanceof InterfaceTerminalScreen) {
-            ((InterfaceTerminalScreen) gs).postUpdate(this.in);
+            ((InterfaceTerminalScreen) gs).postUpdate(fullUpdate, this.in);
         }
     }
 }

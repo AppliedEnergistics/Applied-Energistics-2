@@ -39,7 +39,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -164,7 +163,9 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
             final VirtualFluidSlot slot = (VirtualFluidSlot) s;
             final IAEFluidStack fs = slot.getAEFluidStack();
 
-            if (fs != null && this.isPowered()) {
+            if (!this.repo.hasPower()) {
+                fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+            } else if (fs != null) {
                 RenderSystem.disableBlend();
                 final Fluid fluid = fs.getFluid();
                 FluidAttributes fluidAttributes = fluid.getAttributes();
@@ -180,13 +181,10 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
                 float blue = (fluidAttributes.getColor() & 255) / 255.0F;
                 RenderSystem.color3f(red, green, blue);
 
-                blit(matrices, s.xPos, s.yPos, 0 /* FIXME: Validate this was previous the controls zindex */, 16, 16,
-                        sprite);
+                blit(matrices, s.xPos, s.yPos, getBlitOffset(), 16, 16, sprite);
                 RenderSystem.enableBlend();
 
                 this.fluidStackSizeRenderer.renderStackSize(this.font, fs, s.xPos, s.yPos);
-            } else if (!this.isPowered()) {
-                fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
             }
 
             return;
@@ -365,11 +363,6 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
         }
 
         this.repo.updateView();
-    }
-
-    @Override
-    protected boolean isPowered() {
-        return this.repo.hasPower();
     }
 
     protected String getBackground() {
