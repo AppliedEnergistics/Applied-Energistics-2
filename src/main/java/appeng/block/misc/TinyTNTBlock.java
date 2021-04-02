@@ -52,7 +52,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             .create(new AxisAlignedBB(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
     public TinyTNTBlock(AbstractBlock.Properties props) {
-        super(defaultProps(Material.TNT).notSolid());
+        super(props);
     }
 
     @Override
@@ -118,11 +118,9 @@ public class TinyTNTBlock extends AEBaseBlock {
             if (entityarrow.isBurning()) {
                 LivingEntity igniter = null;
                 // Check if the shooter still exists
-                if (w instanceof ServerWorld) {
-                    Entity shooter = entityarrow.func_234616_v_();
-                    if (shooter instanceof LivingEntity) {
-                        igniter = (LivingEntity) shooter;
-                    }
+                Entity shooter = entityarrow.func_234616_v_();
+                if (shooter instanceof LivingEntity) {
+                    igniter = (LivingEntity) shooter;
                 }
                 this.startFuse(w, pos, igniter);
                 w.removeBlock(pos, false);
