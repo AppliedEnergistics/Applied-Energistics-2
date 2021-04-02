@@ -26,10 +26,11 @@ public class HighlighterHandler
             return;
         }
         Minecraft mc = Minecraft.getMinecraft();
+        int dimension = mc.world.provider.getDimension();
         long time = System.currentTimeMillis();
 
-        if (time > BlockPosHighlighter.getExpireHilight()) {
-            BlockPosHighlighter.hilightBlock(null, -1);
+        if (time > BlockPosHighlighter.getExpireHilight() || dimension != BlockPosHighlighter.getDimension()) {
+            BlockPosHighlighter.hilightBlock(null, -1, BlockPosHighlighter.getDimension() );
             return;
         }
 

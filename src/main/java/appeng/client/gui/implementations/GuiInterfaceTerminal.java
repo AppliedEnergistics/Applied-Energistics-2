@@ -217,7 +217,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		{
 			BlockPos blockPos = blockPosHashMap.get( guiButtonHashMap.get( this.selectedButton ) );
 			BlockPos blockPos2 = mc.player.getPosition();
-			hilightBlock( blockPos, System.currentTimeMillis() + 500 * BlockPosUtils.getDistance(blockPos, blockPos2) );
+			int dimension = mc.world.provider.getDimension();
+			hilightBlock( blockPos, System.currentTimeMillis() + 500 * BlockPosUtils.getDistance(blockPos, blockPos2), dimension );
 			mc.player.sendStatusMessage( new TextComponentString( "The interface is now highlighted at " + "X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() ), false );
 			mc.player.closeScreen();
 		}

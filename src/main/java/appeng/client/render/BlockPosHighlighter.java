@@ -8,9 +8,14 @@ public class BlockPosHighlighter
     private static BlockPos hilightedBlock;
     private static long expireHilight;
 
-    public static void hilightBlock( BlockPos c, long expireHilight ) {
+
+
+    private static int dimension;
+
+    public static void hilightBlock( BlockPos c, long expireHilight, int dimension ) {
         hilightedBlock = c;
         BlockPosHighlighter.expireHilight = expireHilight;
+        BlockPosHighlighter.dimension = dimension;
     }
 
     public static BlockPos getHilightedBlock() {
@@ -21,5 +26,9 @@ public class BlockPosHighlighter
         return expireHilight;
     }
 
+    public static int getDimension()
+    {
+        return dimension;
+    }
 
 }

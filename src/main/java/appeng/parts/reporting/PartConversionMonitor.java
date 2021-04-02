@@ -19,15 +19,31 @@
 package appeng.parts.reporting;
 
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
+import appeng.api.config.Actionable;
+import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.fluids.util.AEFluidStack;
+import appeng.helpers.InventoryAction;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
@@ -92,6 +108,13 @@ public class PartConversionMonitor extends AbstractPartMonitor
 		}
 
 		final ItemStack eq = player.getHeldItem( hand );
+		FluidStack fluidInTank = null;
+		if( eq.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null ) )
+		{
+			IFluidHandlerItem fluidHandlerItem = ( eq.getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null ) );
+			fluidInTank = fluidHandlerItem.drain( Integer.MAX_VALUE, false );
+		}
+
 		if( this.isLocked() )
 		{
 			if( eq.isEmpty() )
@@ -103,18 +126,49 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				// wrench it
 				return super.onPartActivate( player, hand, pos );
 			}
+			else if( fluidInTank != null && fluidInTank.amount > 0 )
+			{
+				if( this.getDisplayed() != null && getDisplayed().equals( AEFluidStack.fromFluidStack( fluidInTank ) ) )
+				{
+					this.drainFluidContainer( player, hand );
+				}
+			}
 			else
 			{
 				this.insertItem( player, hand, false );
 			}
+
 		}
-		else if( this.getDisplayed() != null && this.getDisplayed().equals( eq ) )
+
+		//If its a fluid container, grab its fluidstack. if its empty pass its itemstack;
+
+		if (eq.isEmpty()){
+			return super.onPartActivate( player, hand, pos );
+		}
+		if( fluidInTank != null && fluidInTank.amount > 0 )
 		{
-			this.insertItem( player, hand, false );
+			if( getDisplayed() instanceof IAEItemStack || getDisplayed() == null )
+			{
+				return super.onPartActivate( player, hand, pos );
+			}
+			if( ( (IAEFluidStack) this.getDisplayed() ).equals( AEFluidStack.fromFluidStack( fluidInTank ) ) )
+			{
+				this.drainFluidContainer( player, hand );
+			}
+			else {
+				return super.onPartActivate( player, hand, pos );
+			}
 		}
 		else
 		{
-			return super.onPartActivate( player, hand, pos );
+			if( getDisplayed() instanceof IAEFluidStack || getDisplayed() == null )
+			{
+				return super.onPartActivate( player, hand, pos );
+			}
+			if( ( (IAEItemStack) this.getDisplayed() ).equals( eq ) )
+			{
+				this.insertItem( player, hand, false );
+			}
 		}
 
 		return true;
@@ -138,9 +192,14 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			return false;
 		}
 
-		if( this.getDisplayed() != null )
+		ItemStack eq = player.getHeldItem( hand );
+		if( this.getDisplayed() != null && this.getDisplayed() instanceof IAEItemStack )
 		{
-			this.extractItem( player, this.getDisplayed().getDefinition().getMaxStackSize() );
+			this.extractItem( player, ( (IAEItemStack) this.getDisplayed() ).getDefinition().getMaxStackSize() );
+		}
+		else if( this.getDisplayed() != null && this.getDisplayed() instanceof IAEFluidStack )
+		{
+			this.fillFluidContainer( player,hand );
 		}
 
 		return true;
@@ -183,9 +242,9 @@ public class PartConversionMonitor extends AbstractPartMonitor
 
 			if( allItems )
 			{
-				if( this.getDisplayed() != null )
+				if( this.getDisplayed() != null && this.getDisplayed() instanceof IAEItemStack)
 				{
-					final IAEItemStack input = this.getDisplayed().copy();
+					final IAEItemStack input = (IAEItemStack) this.getDisplayed().copy();
 					IItemHandler inv = new PlayerMainInvWrapper( player.inventory );
 
 					for( int x = 0; x < inv.getSlots(); x++ )
@@ -221,7 +280,9 @@ public class PartConversionMonitor extends AbstractPartMonitor
 
 	private void extractItem( final EntityPlayer player, int count )
 	{
-		final IAEItemStack input = this.getDisplayed();
+		if (!(this.getDisplayed() instanceof IAEItemStack))
+			return;
+		final IAEItemStack input = (IAEItemStack) this.getDisplayed();
 		if( input != null )
 		{
 			try
@@ -262,6 +323,141 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			{
 				// :P
 			}
+		}
+	}
+
+	private void drainFluidContainer( final EntityPlayer player, final EnumHand hand ) {
+		try
+		{
+			final ItemStack held = player.getHeldItem( hand );
+			if( held.getCount() != 1 )
+			{
+				// only support stacksize 1 for now
+				return;
+			}
+
+			final IFluidHandlerItem fh = FluidUtil.getFluidHandler( held );
+			if( fh == null )
+			{
+				// only fluid handlers items
+				return;
+			}
+
+			// See how much we can drain from the item
+			final FluidStack extract = fh.drain( Integer.MAX_VALUE, false );
+			if( extract == null || extract.amount < 1 )
+			{
+				return;
+			}
+
+			// Check if we can push into the system
+			final IEnergySource energy = this.getProxy().getEnergy();
+			final IMEMonitor<IAEFluidStack> cell = this.getProxy()
+					.getStorage()
+					.getInventory(
+							AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+			final IAEFluidStack notStorable = Platform.poweredInsert( energy, cell, AEFluidStack.fromFluidStack( extract ), new PlayerSource( player, this ), Actionable.SIMULATE );
+
+			if( notStorable != null && notStorable.getStackSize() > 0 )
+			{
+				final int toStore = (int) ( extract.amount - notStorable.getStackSize() );
+				final FluidStack storable = fh.drain( toStore, false );
+
+				if( storable == null || storable.amount == 0 )
+				{
+					return;
+				}
+				else
+				{
+					extract.amount = storable.amount;
+				}
+			}
+
+			// Actually drain
+			final FluidStack drained = fh.drain( extract, true );
+			extract.amount = drained.amount;
+
+			final IAEFluidStack notInserted = Platform.poweredInsert( energy, cell, AEFluidStack.fromFluidStack( extract ), new PlayerSource( player, this ) );
+
+			if( notInserted != null && notInserted.getStackSize() > 0 )
+			{
+				AELog.error( "Fluid item [%s] reported a different possible amount to drain than it actually provided.", held.getDisplayName() );
+			}
+
+			player.setHeldItem( hand, fh.getContainer() );
+		}
+		catch( GridAccessException e )
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private void fillFluidContainer( final EntityPlayer player, final EnumHand hand  )
+	{
+		try
+		{
+			final ItemStack held = player.getHeldItem( hand );
+			if( held.getCount() != 1 )
+			{
+				// only support stacksize 1 for now
+				return;
+			}
+
+			final IFluidHandlerItem fh = FluidUtil.getFluidHandler( held );
+			if( fh == null )
+			{
+				// only fluid handlers items
+				return;
+			}
+
+			final IAEFluidStack stack = (IAEFluidStack) this.getDisplayed().copy();
+
+			// Check how much we can store in the item
+			stack.setStackSize( Integer.MAX_VALUE );
+			int amountAllowed = fh.fill( stack.getFluidStack(), false );
+			stack.setStackSize( amountAllowed );
+
+			// Check if we can pull out of the system
+			final IEnergySource energy = this.getProxy().getEnergy();
+			final IMEMonitor<IAEFluidStack> cell = this.getProxy()
+					.getStorage()
+					.getInventory(
+							AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+			final IAEFluidStack canPull = Platform.poweredExtraction( energy, cell, stack, new PlayerSource( player, this ), Actionable.SIMULATE );
+			if( canPull == null || canPull.getStackSize() < 1 )
+			{
+				return;
+			}
+
+			// How much could fit into the container
+			final int canFill = fh.fill( canPull.getFluidStack(), false );
+			if( canFill == 0 )
+			{
+				return;
+			}
+
+			// Now actually pull out of the system
+			stack.setStackSize( canFill );
+			final IAEFluidStack pulled = Platform.poweredExtraction( energy, cell, stack, new PlayerSource( player, this ) );
+			if( pulled == null || pulled.getStackSize() < 1 )
+			{
+				// Something went wrong
+				AELog.error( "Unable to pull fluid out of the ME system even though the simulation said yes " );
+				return;
+			}
+
+			// Actually fill
+			final int used = fh.fill( pulled.getFluidStack(), true );
+
+			if( used != canFill )
+			{
+				AELog.error( "Fluid item [%s] reported a different possible amount than it actually accepted.", held.getDisplayName() );
+			}
+			player.setHeldItem( hand, fh.getContainer() );
+		}
+		catch( GridAccessException e )
+		{
+			e.printStackTrace();
 		}
 	}
 
