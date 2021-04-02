@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -73,7 +74,7 @@ public interface AppEng {
      */
     void setPartInteractionPlayer(PlayerEntity player);
 
-    boolean isActionKey(@Nonnull final ActionKey key, int keyCode, int scanCode);
+    boolean isActionKey(@Nonnull final ActionKey key, InputMappings.Input input);
 
     /**
      * Get the currently running server. On the client-side this may throw if no server is currently running or a remote

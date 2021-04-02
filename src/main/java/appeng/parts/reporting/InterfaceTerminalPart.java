@@ -51,7 +51,7 @@ public class InterfaceTerminalPart extends AbstractDisplayPart {
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (!super.onPartActivate(player, hand, pos)) {
-            if (Platform.isServer()) {
+            if (!isRemote()) {
                 ContainerOpener.openContainer(InterfaceTerminalContainer.TYPE, player, ContainerLocator.forPart(this));
             }
         }

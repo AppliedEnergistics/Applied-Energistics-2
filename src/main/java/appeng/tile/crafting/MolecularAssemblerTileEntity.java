@@ -236,8 +236,8 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         if (data.contains("myPlan")) {
             final ItemStack myPat = ItemStack.read(data.getCompound("myPlan"));
 
@@ -267,7 +267,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         final ItemStack is = this.patternInv.getInvStack(0);
 
         if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
-            if (!ItemStack.areItemsEqualIgnoreDurability(is, this.myPattern)) {
+            if (!ItemStack.areItemsEqual(is, this.myPattern)) {
                 final World w = this.getWorld();
                 final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
 

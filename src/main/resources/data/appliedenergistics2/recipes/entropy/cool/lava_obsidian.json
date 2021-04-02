@@ -1,0 +1,14 @@
+{
+  "type": "appliedenergistics2:entropy",
+  "mode": "cool",
+  "input": {
+    "fluid": {
+      "id": "minecraft:lava"
+    }
+  },
+  "output": {
+    "block": {
+      "id": "minecraft:obsidian"
+    }
+  }
+}

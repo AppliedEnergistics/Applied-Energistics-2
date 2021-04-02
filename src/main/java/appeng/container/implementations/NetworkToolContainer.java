@@ -79,7 +79,7 @@ public class NetworkToolContainer extends AEBaseContainer {
 
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
-                if (ItemStack.areItemsEqualIgnoreDurability(this.toolInv.getItemStack(), currentItem)) {
+                if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
                     this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem,
                             this.toolInv.getItemStack());
                 } else {

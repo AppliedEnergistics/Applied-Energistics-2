@@ -34,5 +34,6 @@ public interface IFluidInterfaceHost extends IActionHost, IGridProxyable, IUpgra
 
     TileEntity getTileEntity();
 
+    @Override
     void saveChanges();
 }

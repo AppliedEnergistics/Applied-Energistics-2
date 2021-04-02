@@ -38,6 +38,7 @@ import net.minecraft.world.server.ServerWorld;
 
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.MeteoritePlacer;
@@ -58,7 +59,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
             return ActionResult.resultPass(player.getHeldItem(hand));
         }
 
-        if (player.isSneaking()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             final ItemStack itemStack = player.getHeldItem(hand);
             final CompoundNBT tag = itemStack.getOrCreateTag();
 
@@ -108,7 +109,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
                 pureCrater, false);
 
         if (spawned == null) {
-            player.sendStatusMessage(new StringTextComponent("Un-suitable Location."), false);
+            player.sendMessage(new StringTextComponent("Un-suitable Location."), Util.DUMMY_UUID);
             return ActionResultType.FAIL;
         }
 
@@ -117,23 +118,22 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         int range = (int) Math.ceil((coreRadius * 2 + 5) * 5f);
 
         MutableBoundingBox boundingBox = new MutableBoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
-                pos.getX() + range,
-                pos.getY(), pos.getZ() + range);
+                pos.getX() + range, pos.getY(), pos.getZ() + range);
 
         final MeteoritePlacer placer = new MeteoritePlacer(world, spawned, boundingBox);
         placer.place();
 
-        player.sendStatusMessage(new StringTextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
-                + " biomeCategory=" + world.getBiome(pos).getCategory()), false);
+        player.sendMessage(new StringTextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
+                + " biomeCategory=" + world.getBiome(pos).getCategory()), Util.DUMMY_UUID);
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this
         // is a debug tool, we'll not care about being terribly efficient here
-        ChunkPos.getAllInBox(new ChunkPos(spawned.getPos()), 2).forEach(cp -> {
+        ChunkPos.getAllInBox(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
             Chunk c = world.getChunk(cp.x, cp.z);
             player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
         });
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(world.isRemote());
     }
 }

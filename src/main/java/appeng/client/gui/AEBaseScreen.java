@@ -852,12 +852,4 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return guiTop;
     }
 
-    public int getXSize() {
-        return xSize;
-    }
-
-    public int getYSize() {
-        return ySize;
-    }
-
 }

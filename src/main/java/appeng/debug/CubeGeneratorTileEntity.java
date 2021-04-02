@@ -32,6 +32,7 @@ import net.minecraft.util.text.StringTextComponent;
 
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTileEntity;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickableTileEntity {
@@ -39,6 +40,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
     private int size = 3;
     private ItemStack is = ItemStack.EMPTY;
     private int countdown = 20 * 10;
+    private PlayerEntity who = null;
 
     public CubeGeneratorTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -46,7 +48,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
 
     @Override
     public void tick() {
-        if (!this.is.isEmpty() && Platform.isServer()) {
+        if (!this.is.isEmpty() && !isRemote()) {
             this.countdown--;
 
             if (this.countdown % 20 == 0) {
@@ -82,13 +84,14 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
     }
 
     void click(final PlayerEntity player) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             final ItemStack hand = player.inventory.getCurrentItem();
+            this.who = player;
 
             if (hand.isEmpty()) {
                 this.is = ItemStack.EMPTY;
 
-                if (player.isCrouching()) {
+                if (InteractionUtil.isInAlternateUseMode(player)) {
                     this.size--;
                 } else {
                     this.size++;

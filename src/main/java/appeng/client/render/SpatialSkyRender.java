@@ -46,10 +46,9 @@ public class SpatialSkyRender {
         return INSTANCE;
     }
 
-    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.ONE,
-            new Quaternion(90.0F, 0.0F, 0.0F, true), new Quaternion(-90.0F, 0.0F, 0.0F, true),
-            new Quaternion(180.0F, 0.0F, 0.0F, true), new Quaternion(0.0F, 0.0F, 90.0F, true),
-            new Quaternion(0.0F, 0.0F, -90.0F, true), };
+    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.ONE, new Quaternion(90.0F, 0.0F, 0.0F, true),
+            new Quaternion(-90.0F, 0.0F, 0.0F, true), new Quaternion(180.0F, 0.0F, 0.0F, true),
+            new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
 
     public void render(MatrixStack matrixStack) {
         final long now = System.currentTimeMillis();

@@ -173,8 +173,8 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.cm.readFromNBT(data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
@@ -226,7 +226,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     @Override
     public void onReady() {
         super.onReady();
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             this.isActive = true;
             LocatableEventAnnounce.EVENT.invoker().onLocatableAnnounce(this, LocatableEvent.REGISTER);
         }

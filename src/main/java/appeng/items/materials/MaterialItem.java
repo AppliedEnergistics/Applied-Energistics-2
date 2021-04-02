@@ -50,6 +50,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.hooks.AECustomEntityItem;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 import appeng.util.inv.AdaptorFixedInv;
 
@@ -118,7 +119,7 @@ public final class MaterialItem extends AEBaseItem
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         Hand hand = context.getHand();
-        if (player.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             final TileEntity te = context.getWorld().getTileEntity(context.getPos());
             FixedItemInv upgrades = null;
 
@@ -137,13 +138,13 @@ public final class MaterialItem extends AEBaseItem
                 final Upgrades u = um.getType(player.getHeldItem(hand));
 
                 if (u != null) {
-                    if (player.world.isRemote) {
+                    if (player.getEntityWorld().isRemote()) {
                         return ActionResultType.PASS;
                     }
 
                     final InventoryAdaptor ad = new AdaptorFixedInv(upgrades);
                     player.setHeldItem(hand, ad.addItems(player.getHeldItem(hand)));
-                    return ActionResultType.SUCCESS;
+                    return ActionResultType.func_233537_a_(player.getEntityWorld().isRemote());
                 }
             }
         }
@@ -152,9 +153,9 @@ public final class MaterialItem extends AEBaseItem
     }
 
     @Override
-    public Entity replaceItemEntity(ServerWorld world, ItemEntity itemEntity, ItemStack itemStack) {
+    public Entity replaceItemEntity(ServerWorld w, ItemEntity location, ItemStack itemstack) {
         if (!materialType.hasCustomEntity()) {
-            return itemEntity;
+            return location;
         }
 
         final Class<? extends Entity> droppedEntity = materialType.getCustomEntityClass();
@@ -162,12 +163,12 @@ public final class MaterialItem extends AEBaseItem
 
         try {
             eqi = droppedEntity.getConstructor(World.class, double.class, double.class, double.class, ItemStack.class)
-                    .newInstance(world, itemEntity.getPosX(), itemEntity.getPosY(), itemEntity.getPosZ(), itemStack);
+                    .newInstance(w, location.getPosX(), location.getPosY(), location.getPosZ(), itemstack);
         } catch (final Throwable t) {
             throw new IllegalStateException(t);
         }
 
-        eqi.setMotion(itemEntity.getMotion());
+        eqi.setMotion(location.getMotion());
 
         if (eqi instanceof ItemEntity) {
             ((ItemEntity) eqi).setDefaultPickupDelay();

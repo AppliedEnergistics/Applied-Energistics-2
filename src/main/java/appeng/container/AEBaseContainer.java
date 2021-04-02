@@ -91,13 +91,13 @@ public abstract class AEBaseContainer extends Container {
     private int ticksSinceCheck = 900;
     private IAEItemStack clientRequestedTargetItem = null;
 
-    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip,
-            final TileEntity myTile, final IPart myPart) {
+    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
+            final IPart myPart) {
         this(containerType, id, ip, myTile, myPart, null);
     }
 
-    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip,
-            final TileEntity myTile, final IPart myPart, final IGuiItemObject gio) {
+    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
+            final IPart myPart, final IGuiItemObject gio) {
         super(containerType, id);
         this.invPlayer = ip;
         this.tileEntity = myTile;
@@ -260,40 +260,34 @@ public abstract class AEBaseContainer extends Container {
         }
     }
 
-    protected void bindPlayerInventory(final PlayerInventory playerInventory, final int offsetX, final int offsetY) {
-        FixedItemInv ih = new FixedInventoryVanillaWrapper(playerInventory) {
+    protected void bindPlayerInventory(final PlayerInventory PlayerInventory, final int offsetX, final int offsetY) {
+        FixedItemInv ih = new FixedInventoryVanillaWrapper(PlayerInventory) {
             // Vanilla needs this to be modifiable otherwise stacking will eat items.
             // FIXME FABRIC: Remove when LBA makes these mutable as per
             // ModifiableFixedItemInv
             @Override
             public ItemStack getInvStack(int slot) {
-                return playerInventory.getStackInSlot(slot);
+                return PlayerInventory.getStackInSlot(slot);
             }
         };
 
         // bind player inventory
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                int invSlot = j + i * 9 + 9;
-                int x = 8 + j * 18 + offsetX;
-                int y = offsetY + i * 18;
-
-                if (this.locked.contains(invSlot)) {
-                    this.addSlot(new DisabledSlot(ih, invSlot, x, y));
+                if (this.locked.contains(j + i * 9 + 9)) {
+                    this.addSlot(new DisabledSlot(ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18));
                 } else {
-                    this.addSlot(new PlayerInvSlot(ih, invSlot, x, y));
+                    this.addSlot(new PlayerInvSlot(ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18));
                 }
             }
         }
 
         // bind player hotbar
         for (int i = 0; i < 9; i++) {
-            int x = 8 + i * 18 + offsetX;
-            int y = 58 + offsetY;
             if (this.locked.contains(i)) {
-                this.addSlot(new DisabledSlot(ih, i, x, y));
+                this.addSlot(new DisabledSlot(ih, i, 8 + i * 18 + offsetX, 58 + offsetY));
             } else {
-                this.addSlot(new PlayerHotBarSlot(ih, i, x, y));
+                this.addSlot(new PlayerHotBarSlot(ih, i, 8 + i * 18 + offsetX, 58 + offsetY));
             }
         }
     }
@@ -532,10 +526,10 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean canInteractWith(final PlayerEntity PlayerEntity) {
         if (this.isValidContainer()) {
             if (this.tileEntity instanceof IInventory) {
-                return ((IInventory) this.tileEntity).isUsableByPlayer(player);
+                return ((IInventory) this.tileEntity).isUsableByPlayer(PlayerEntity);
             }
             return true;
         }
@@ -590,7 +584,7 @@ public abstract class AEBaseContainer extends Container {
                         if (!is.isEmpty()) {
                             if (hand.isEmpty()) {
                                 is.setCount(Math.max(1, is.getCount() - 1));
-                            } else if (hand.isItemEqualIgnoreDurability(is)) {
+                            } else if (hand.isItemEqual(is)) {
                                 is.setCount(Math.min(is.getMaxStackSize(), is.getCount() + 1));
                             } else {
                                 is = hand.copy();
@@ -677,7 +671,8 @@ public abstract class AEBaseContainer extends Container {
                     ais = Platform.poweredInsert(this.getPowerSource(), this.getCellInventory(), ais,
                             this.getActionSource());
                     if (ais == null) {
-                        final InventoryAdaptor ia = new AdaptorFixedInv(new WrapperCursorItemHandler(player.inventory));
+                        final InventoryAdaptor ia = new AdaptorFixedInv(
+                                new WrapperCursorItemHandler(player.inventory));
 
                         final ItemStack fail = ia.removeItems(1, extracted.getDefinition(), null);
                         if (fail.isEmpty()) {
@@ -804,7 +799,7 @@ public abstract class AEBaseContainer extends Container {
 
                 break;
             case CREATIVE_DUPLICATE:
-                if (player.isCreative() && slotItem != null) {
+                if (player.abilities.isCreativeMode && slotItem != null) {
                     final ItemStack is = slotItem.createItemStack();
                     is.setCount(is.getMaxStackSize());
                     player.inventory.setItemStack(is);
@@ -850,10 +845,8 @@ public abstract class AEBaseContainer extends Container {
     }
 
     protected void updateHeld(final ServerPlayerEntity p) {
-        if (Platform.isServer()) {
-            NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0,
-                    AEItemStack.fromItemStack(p.inventory.getItemStack())), p);
-        }
+        NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0,
+                AEItemStack.fromItemStack(p.inventory.getItemStack())), p);
     }
 
     protected ItemStack transferStackToContainer(final ItemStack input) {

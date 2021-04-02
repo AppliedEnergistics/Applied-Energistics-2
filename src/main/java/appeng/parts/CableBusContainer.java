@@ -844,7 +844,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
             String defKey = "def:" + side.ordinal();
             String extraKey = "extra:" + side.ordinal();
-            if (data.contains(defKey, NbtType.COMPOUND) && data.contains(extraKey, NbtType.COMPOUND)) {
+            if (data.contains(defKey, NbtType.COMPOUND)
+                    && data.contains(extraKey, NbtType.COMPOUND)) {
                 final CompoundNBT def = data.getCompound(defKey);
                 final CompoundNBT extra = data.getCompound(extraKey);
                 IPart p = this.getPart(side);

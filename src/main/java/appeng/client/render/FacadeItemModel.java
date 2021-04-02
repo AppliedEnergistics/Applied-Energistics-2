@@ -48,7 +48,7 @@ public class FacadeItemModel implements BasicUnbakedModel {
     public IBakedModel bakeModel(ModelBakery loader, Function<RenderMaterial, TextureAtlasSprite> textureGetter,
             IModelTransform rotationContainer, ResourceLocation modelId) {
         IBakedModel bakedBaseModel = loader.bake(MODEL_BASE, rotationContainer);
-        FacadeBuilder facadeBuilder = new FacadeBuilder(loader);
+        FacadeBuilder facadeBuilder = new FacadeBuilder(loader, null);
 
         return new FacadeBakedItemModel(bakedBaseModel, facadeBuilder);
     }

@@ -142,8 +142,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
                 }
 
                 this.power = b.getWeakPower(state, this.getTile().getWorld(), target, srcSide);
-                this.power = Math.max(this.power,
-                        b.getWeakPower(state, this.getTile().getWorld(), target, srcSide));
+                this.power = Math.max(this.power, b.getWeakPower(state, this.getTile().getWorld(), target, srcSide));
                 this.sendToOutput(this.power);
             } else {
                 this.sendToOutput(0);

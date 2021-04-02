@@ -90,15 +90,16 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             return;
         }
 
-        final VibrationChamberTileEntity tile = this.getTileEntity(w, pos);
-        if (tile != null && tile.isOn) {
+        final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
+        if (tc != null && tc.isOn) {
             double f1 = pos.getX() + 0.5F;
             double f2 = pos.getY() + 0.5F;
             double f3 = pos.getZ() + 0.5F;
 
-            final Direction forward = tile.getForward();
-            final Direction up = tile.getUp();
+            final Direction forward = tc.getForward();
+            final Direction up = tc.getUp();
 
+            // Cross-Product of forward/up directional vector
             final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
             final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
             final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();

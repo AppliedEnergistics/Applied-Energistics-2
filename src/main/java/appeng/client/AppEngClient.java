@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
@@ -295,8 +296,10 @@ public final class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public boolean isActionKey(@Nonnull ActionKey key, int keyCode, int scanCode) {
-        return this.bindings.get(key).matchesKey(keyCode, scanCode);
+    public boolean isActionKey(@Nonnull ActionKey key, InputMappings.Input input) {
+        KeyBinding binding = this.bindings.get(key);
+
+        return !binding.isInvalid() && binding.matchesKey(input.getKeyCode(), -1);
     }
 
     protected void registerParticleRenderers() {

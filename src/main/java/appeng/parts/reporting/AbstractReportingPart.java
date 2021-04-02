@@ -20,6 +20,8 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -240,6 +242,12 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         } else {
             return offModels;
         }
+    }
+
+    @Override
+    @Nullable
+    public Object getModelData() {
+        return new ReportingModelData(getSpin());
     }
 
     public final int getClientFlags() {

@@ -97,7 +97,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         if (this.getStack().isEmpty()) {
             return;
         }
-        if (who.getEntityWorld().isRemote()) {
+        if (isRemote()) {
             return;
         }
 
@@ -187,7 +187,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         // update crafting matrix...
         ItemStack is = this.getStack();
 
-        if (!is.isEmpty() && ItemStack.areItemsEqualIgnoreDurability(request, is)) {
+        if (!is.isEmpty() && ItemStack.areItemsEqual(request, is)) {
             final ItemStack[] set = new ItemStack[this.getPattern().getSlotCount()];
             // Safeguard for empty slots in the inventory for now
             Arrays.fill(set, ItemStack.EMPTY);

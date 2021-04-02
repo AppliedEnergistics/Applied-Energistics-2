@@ -20,17 +20,14 @@ package appeng.parts.networking;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.util.Platform;
 
 public class CoveredCablePart extends CablePart {
-
     public CoveredCablePart(final ItemStack is) {
         super(is);
     }
@@ -52,16 +49,9 @@ public class CoveredCablePart extends CablePart {
 
     @Override
     public void getBoxes(final IPartCollisionHelper bch) {
-        bch.addBox(5.0, 5.0, 5.0, 11.0, 11.0, 11.0);
+        updateConnections();
 
-        if (Platform.isServer()) {
-            final IGridNode n = this.getGridNode();
-            if (n != null) {
-                this.setConnections(n.getConnectedSides());
-            } else {
-                this.getConnections().clear();
-            }
-        }
+        bch.addBox(5.0, 5.0, 5.0, 11.0, 11.0, 11.0);
 
         for (final AEPartLocation of : this.getConnections()) {
             switch (of) {

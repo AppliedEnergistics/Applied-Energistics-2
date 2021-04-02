@@ -81,8 +81,8 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
     }
 

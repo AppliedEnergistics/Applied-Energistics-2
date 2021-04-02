@@ -65,7 +65,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
         ContainerOpener.openContainer(MEPortableCellContainer.TYPE, player, ContainerLocator.forHand(player, hand));
-        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), player.getHeldItem(hand));
     }
 
     @Override
@@ -171,7 +171,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
         private final int types;
         private final int bytesPerType;
 
-        private StorageTier(int bytes, int types, int bytesPerType) {
+        StorageTier(int bytes, int types, int bytesPerType) {
             this.bytes = bytes;
             this.types = types;
             this.bytesPerType = bytesPerType;

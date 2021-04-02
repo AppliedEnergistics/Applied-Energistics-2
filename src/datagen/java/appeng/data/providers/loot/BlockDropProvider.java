@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.data.providers.loot;
 
 import java.io.IOException;
@@ -17,7 +35,14 @@ import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.loot.*;
+import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.ItemLootEntry;
+import net.minecraft.loot.LootEntry;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTableManager;
+import net.minecraft.loot.RandomValueRange;
 import net.minecraft.loot.conditions.SurvivesExplosion;
 import net.minecraft.loot.functions.ApplyBonus;
 import net.minecraft.loot.functions.SetCount;
@@ -42,11 +67,12 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
                                     ItemLootEntry.builder(MATERIALS.certusQuartzCrystal().item())
                                             .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
                                             .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
-            .put(BLOCKS.quartzOreCharged().block(), b -> droppingWithSilkTouch(BLOCKS.quartzOreCharged().block(),
-                    withExplosionDecay(BLOCKS.quartzOreCharged().block(),
-                            ItemLootEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
-                                    .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
-                                    .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
+            .put(BLOCKS.quartzOreCharged().block(),
+                    b -> droppingWithSilkTouch(BLOCKS.quartzOreCharged().block(),
+                            withExplosionDecay(BLOCKS.quartzOreCharged().block(),
+                                    ItemLootEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
+                                            .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
+                                            .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
             .build();
 
     public BlockDropProvider(Path outputFolder) {
@@ -54,20 +80,19 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
     }
 
     @Override
-    public void act(DirectoryCache cache) throws IOException {
+    public void act(@Nonnull DirectoryCache cache) throws IOException {
         for (Map.Entry<RegistryKey<Block>, Block> entry : Registry.BLOCK.getEntries()) {
             LootTable.Builder builder;
-            ResourceLocation id = entry.getKey().getLocation();
-            if (id.getNamespace().equals(AppEng.MOD_ID)) {
+            if (entry.getKey().getLocation().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                IDataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, id));
+                IDataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, entry.getKey().getLocation()));
             }
         }
     }
 
     private LootTable.Builder defaultBuilder(Block block) {
-        StandaloneLootEntry.Builder<?> entry = ItemLootEntry.builder(block);
+        LootEntry.Builder<?> entry = ItemLootEntry.builder(block);
         LootPool.Builder pool = LootPool.builder().rolls(ConstantRange.of(1)).addEntry(entry)
                 .acceptCondition(SurvivesExplosion.builder());
 

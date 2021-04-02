@@ -60,6 +60,7 @@ import appeng.api.parts.IDynamicPartBakedModel;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.parts.reporting.ReportingModelData;
 
 @Environment(EnvType.CLIENT)
 public class CableBusBakedModel implements IBakedModel, FabricBakedModel {
@@ -71,6 +72,21 @@ public class CableBusBakedModel implements IBakedModel, FabricBakedModel {
 
     // The number of meshes overall that will be cached
     private static final int CACHE_MESH_COUNT = 100;
+
+    /**
+     * Lookup table to match the spin of a part with an up direction.
+     *
+     * DUNSWE for the facing index, 4 spin values per facing.
+     *
+     */
+    private static final Direction[] SPIN_TO_DIRECTION = new Direction[] {
+            Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
+            Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, // UP
+            Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST, // NORTH
+            Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST, // SOUTH
+            Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH, // WEST
+            Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH // EAST
+    };
 
     private final LoadingCache<CableBusRenderState, Mesh> cableModelCache;
 
@@ -148,7 +164,9 @@ public class CableBusBakedModel implements IBakedModel, FabricBakedModel {
                     throw new IllegalStateException("Trying to use an unregistered part model: " + model);
                 }
 
-                context.pushTransform(QuadRotator.get(facing, Direction.UP));
+                Direction spinDirection = getPartSpin(facing, partModelData);
+
+                context.pushTransform(QuadRotator.get(facing, spinDirection));
                 if (bakedModel instanceof IDynamicPartBakedModel) {
                     ((IDynamicPartBakedModel) bakedModel).emitQuads(blockView, state, pos, randomSupplier, context,
                             facing, partModelData);
@@ -190,6 +208,15 @@ public class CableBusBakedModel implements IBakedModel, FabricBakedModel {
         final AECableType secondType = sides.get(firstSide.getOpposite());
 
         return firstType == secondType && cableType == firstType && cableType == secondType;
+    }
+
+    private static Direction getPartSpin(Direction facing, Object partModelData) {
+        if (partModelData instanceof ReportingModelData) {
+            byte spin = ((ReportingModelData) partModelData).getSpin();
+            return SPIN_TO_DIRECTION[facing.ordinal() * 4 + spin];
+        }
+
+        return Direction.UP;
     }
 
     private Mesh buildCableModel(CableBusRenderState renderState) {

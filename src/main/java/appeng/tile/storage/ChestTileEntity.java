@@ -425,8 +425,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.config.readFromNBT(data);
         this.priority = data.getInt("priority");
         if (data.contains("paintedColor")) {

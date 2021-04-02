@@ -84,8 +84,8 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         if (data.contains("dots")) {
             this.readBuffer(new PacketBuffer(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }

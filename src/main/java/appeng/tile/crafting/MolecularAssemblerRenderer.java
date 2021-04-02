@@ -154,8 +154,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
                 .alpha(new RenderState.AlphaState(0.05F)).lightmap(disableLightmap).build(true);
 
         return RenderType.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
-                GL11.GL_QUADS,
-                256, glState);
+                GL11.GL_QUADS, 256, glState);
     }
 
 }

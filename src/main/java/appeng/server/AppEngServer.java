@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.server.PlayerStream;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.RayTraceResult;
@@ -68,7 +69,7 @@ public final class AppEngServer extends AppEngBase {
     }
 
     @Override
-    public boolean isActionKey(@Nonnull ActionKey key, int keyCode, int scanCode) {
+    public boolean isActionKey(@Nonnull ActionKey key, InputMappings.Input input) {
         return false;
     }
 

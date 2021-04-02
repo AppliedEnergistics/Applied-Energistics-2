@@ -35,6 +35,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -55,7 +56,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
         Api.instance().registries().wireless().openWirelessTerminalGui(player.getHeldItem(hand), w, player, hand);
-        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), player.getHeldItem(hand));
     }
 
     @Override
@@ -102,9 +103,9 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
             manager.writeToNBT(data);
         });
 
-        out.registerSetting(appeng.api.config.Settings.SORT_BY, SortOrder.NAME);
-        out.registerSetting(appeng.api.config.Settings.VIEW_MODE, ViewItems.ALL);
-        out.registerSetting(appeng.api.config.Settings.SORT_DIRECTION, SortDir.ASCENDING);
+        out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
+        out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         out.readFromNBT(target.getOrCreateTag().copy());
         return out;

@@ -49,6 +49,7 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements ITickable
     @Override
     public void remove() {
         super.remove();
+
         World world = getWorld();
         if (world instanceof ServerWorld) {
             ChunkPos chunkPos = new ChunkPos(getPos());
@@ -65,9 +66,8 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements ITickable
             ServerWorld serverWorld = (ServerWorld) world;
 
             if (!serverWorld.getForcedChunks().contains(chunkPos.asLong())) {
-                AELog.debug("Force-loading chunk @ %d,%d in world %s", chunkPos.x, chunkPos.z,
-                        serverWorld.getDimensionKey().getLocation());
-                serverWorld.forceChunk(chunkPos.x, chunkPos.z, true);
+                AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.getDimensionKey());
+                serverWorld.forceChunk(chunkPos.x, chunkPos.z, false);
             }
         }
     }

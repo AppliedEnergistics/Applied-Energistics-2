@@ -161,7 +161,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return true;
         }
 
@@ -239,7 +239,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                     break;
             }
 
-            if (!newType.isEmpty() && !ItemStack.areItemsEqualIgnoreDurability(newType, this.getItemStack())) {
+            if (!newType.isEmpty() && !ItemStack.areItemsEqual(newType, this.getItemStack())) {
                 final boolean oldOutput = this.isOutput();
                 final short myFreq = this.getFrequency();
 
@@ -272,7 +272,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         final ItemStack is = player.inventory.getCurrentItem();
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
-            if (Platform.isClient()) {
+            if (isRemote()) {
                 return true;
             }
 

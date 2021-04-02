@@ -76,8 +76,8 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
         }
@@ -102,7 +102,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
     }
 
     private void triggerTransition() {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             final ItemStack cell = this.inv.getInvStack(0);
             if (this.isSpatialCell(cell)) {
                 TickHandler.instance().addCallable(null, this);// this needs to be cross world synced.

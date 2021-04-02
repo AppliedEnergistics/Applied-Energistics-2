@@ -101,8 +101,8 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.cm.readFromNBT(data);
         this.setStoredPower(data.getDouble("storedPower"));
     }

@@ -45,8 +45,8 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         final FixedItemInv inv = this.getInternalInventory();
         if (inv != EmptyFixedItemInv.INSTANCE) {
             final CompoundNBT opt = data.getCompound("inv");

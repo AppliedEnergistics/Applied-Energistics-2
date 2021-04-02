@@ -41,6 +41,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.fluid.world.FluidWorldUtil;
@@ -65,6 +66,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.core.Api;
 import appeng.fluids.container.FluidFormationPlaneContainer;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidInventory;
@@ -77,7 +79,8 @@ import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
 import appeng.util.prioritylist.PrecisePriorityList;
 
-public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluidStack> implements IAEFluidInventory {
+public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluidStack>
+        implements IAEFluidInventory, IConfigurableFluidInventory {
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_formation_plane",
             "part/fluid_formation_plane_on");
 
@@ -176,6 +179,14 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         this.config.writeToNBT(data, "config");
+    }
+
+    @Override
+    public FixedFluidInv getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
     }
 
     @Override

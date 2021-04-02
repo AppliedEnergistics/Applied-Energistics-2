@@ -45,7 +45,7 @@ public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity>
             tcg.click(player);
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
 }

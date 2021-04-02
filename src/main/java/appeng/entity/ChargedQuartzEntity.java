@@ -39,7 +39,6 @@ import appeng.api.features.AEFeature;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.util.Platform;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
@@ -66,7 +65,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
             return;
         }
 
-        if (world.isRemote && this.delay > 30 && AEConfig.instance().isEnableEffects()) {
+        if (world.isRemote() && this.delay > 30 && AEConfig.instance().isEnableEffects()) {
             Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, this.getPosX(),
                     this.getPosY() + 0.3f, this.getPosZ(), 0.0f, 0.0f, 0.0f);
             this.delay = 0;

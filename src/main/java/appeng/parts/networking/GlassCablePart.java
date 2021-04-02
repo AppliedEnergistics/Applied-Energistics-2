@@ -21,7 +21,6 @@ package appeng.parts.networking;
 import net.minecraft.item.ItemStack;
 
 public class GlassCablePart extends CablePart {
-
     public GlassCablePart(final ItemStack is) {
         super(is);
     }

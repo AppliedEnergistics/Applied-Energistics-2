@@ -78,7 +78,7 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
         if (this.civ == null || currentItem.isEmpty()) {
             this.setValidContainer(false);
         } else if (this.civ != null && !this.civ.getItemStack().isEmpty() && currentItem != this.civ.getItemStack()) {
-            if (ItemStack.areItemsEqualIgnoreDurability(this.civ.getItemStack(), currentItem)) {
+            if (ItemStack.areItemsEqual(this.civ.getItemStack(), currentItem)) {
                 this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.civ.getItemStack());
             } else {
                 this.setValidContainer(false);

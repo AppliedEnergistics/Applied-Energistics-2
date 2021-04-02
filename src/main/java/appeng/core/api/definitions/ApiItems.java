@@ -204,7 +204,7 @@ public final class ApiItems implements IItems {
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50))
                 .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
-        Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1).maxDamage(32);
+        Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1);
 
         FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
         this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)
@@ -253,19 +253,14 @@ public final class ApiItems implements IItems {
                 }).rendering(new ColorApplicatorItemRendering()).build();
 
         this.biometricCard = registry.item("biometric_card", BiometricCardItem::new)
-                .props(props -> props.maxStackSize(1))
-                .features(AEFeature.SECURITY).build();
+                .props(props -> props.maxStackSize(1)).features(AEFeature.SECURITY).build();
         this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.MEMORY_CARD).build();
-        this.networkTool = registry.item("network_tool", NetworkToolItem::new).props(props -> props.maxStackSize(1)) // FIXME
+        this.networkTool = registry.item("network_tool", NetworkToolItem::new)
+                .props(props -> props.maxStackSize(1)) // FIXME
                 // FABRIC
                 // .addToolType(FabricToolTags.get("wrench"),
                 // 0)
-                // (how???,
-                // just
-                // add
-                // a
-                // tag???)
                 .features(AEFeature.NETWORK_TOOL).build();
 
         this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)

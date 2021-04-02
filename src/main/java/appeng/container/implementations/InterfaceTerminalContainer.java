@@ -91,8 +91,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             this.grid = anchor.getActionableNode().getGrid();
         }
 
-        // FIXME FABRIC INTERFACE GUI
-        this.bindPlayerInventory(ip, 0, 222 - /* height of player inventory */82);
+        this.bindPlayerInventory(ip, 0, 0);
     }
 
     @Override
@@ -261,13 +260,14 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
                     final InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor(player);
                     for (int x = 0; x < inv.server.getSlotCount(); x++) {
-                        ItemHandlerUtil.setStackInSlot(inv.server, x, playerInvAd.addItems(inv.server.getInvStack(x)));
+                        ItemHandlerUtil.setStackInSlot(inv.server, x,
+                                playerInvAd.addItems(inv.server.getInvStack(x)));
                     }
 
                     break;
                 case CREATIVE_DUPLICATE:
 
-                    if (player.isCreative() && !hasItemInHand) {
+                    if (player.abilities.isCreativeMode && !hasItemInHand) {
                         player.inventory.setItemStack(is.isEmpty() ? ItemStack.EMPTY : is.copy());
                     }
 

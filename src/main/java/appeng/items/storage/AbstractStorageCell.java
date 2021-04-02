@@ -48,6 +48,7 @@ import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.materials.MaterialType;
+import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
@@ -136,12 +137,12 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World world, final PlayerEntity player, final Hand hand) {
         this.disassembleDrive(player.getHeldItem(hand), world, player);
-        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.func_233537_a_(world.isRemote()), player.getHeldItem(hand));
     }
 
     private boolean disassembleDrive(final ItemStack stack, final World world, final PlayerEntity player) {
-        if (player.isCrouching()) {
-            if (Platform.isClient()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
+            if (world.isRemote()) {
                 return false;
             }
 
@@ -188,7 +189,8 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return this.disassembleDrive(stack, context.getWorld(), context.getPlayer()) ? ActionResultType.SUCCESS
+        return this.disassembleDrive(stack, context.getWorld(), context.getPlayer())
+                ? ActionResultType.func_233537_a_(context.getWorld().isRemote())
                 : ActionResultType.PASS;
     }
 

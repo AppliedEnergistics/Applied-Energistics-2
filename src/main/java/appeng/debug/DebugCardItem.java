@@ -52,6 +52,7 @@ import appeng.me.GridNode;
 import appeng.me.cache.TickManagerCache;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.tile.networking.ControllerTileEntity;
+import appeng.util.InteractionUtil;
 
 public class DebugCardItem extends AEBaseItem implements AEToolItem {
 
@@ -74,7 +75,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
             return ActionResultType.PASS;
         }
 
-        if (player.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
             int grids = 0;
             int totalNodes = 0;
 
@@ -184,7 +185,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
                 }
             }
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(world.isRemote());
     }
 
     private void outputMsg(final Entity player, final String string) {

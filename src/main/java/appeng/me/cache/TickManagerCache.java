@@ -111,9 +111,9 @@ public class TickManagerCache implements ITickManager {
             }
         } catch (final Throwable t) {
             final CrashReport crashreport = CrashReport.makeCrashReport(t, "Ticking GridNode");
-            final CrashReportCategory section = crashreport
+            final CrashReportCategory crashreportcategory = crashreport
                     .makeCategory(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");
-            tt.addEntityCrashInfo(section);
+            tt.addEntityCrashInfo(crashreportcategory);
             throw new ReportedException(crashreport);
         }
     }
@@ -202,7 +202,6 @@ public class TickManagerCache implements ITickManager {
             final TickTracker gt = this.awake.get(node);
             this.awake.remove(node);
             this.sleeping.put(node, gt);
-
             return true;
         }
 

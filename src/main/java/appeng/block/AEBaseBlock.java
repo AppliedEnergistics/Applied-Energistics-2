@@ -33,6 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
@@ -209,6 +210,10 @@ public abstract class AEBaseBlock extends Block {
 
     protected void setInventory(final boolean isInventory) {
         this.isInventory = isInventory;
+    }
+
+    // This is usually a Forge extension. We replace it using a Mixin.
+    public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
     }
 
 }

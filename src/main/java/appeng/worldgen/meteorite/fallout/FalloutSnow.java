@@ -30,8 +30,7 @@ public class FalloutSnow extends FalloutCopy {
     private static final double ICE_THRESHOLD = 0.5;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutSnow(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter,
-            final BlockState skyStone) {
+    public FalloutSnow(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
         super(w, pos, putter, skyStone);
         this.putter = putter;
     }

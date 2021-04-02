@@ -194,9 +194,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
                 if (changed) {
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
-                            this.getTile().getWorld(),
-                            new ItemTransitionEffectPacket(entity.getPosX(), entity.getPosY(),
-                                    entity.getPosZ(), this.getSide().getOpposite()));
+                            this.getTile().getWorld(), new ItemTransitionEffectPacket(entity.getPosX(),
+                                    entity.getPosY(), entity.getPosZ(), this.getSide().getOpposite()));
                 }
             }
         }

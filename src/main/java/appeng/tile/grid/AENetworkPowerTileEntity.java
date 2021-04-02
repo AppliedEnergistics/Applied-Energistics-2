@@ -31,8 +31,7 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.powersink.AEBasePoweredTileEntity;
 
-public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
-        implements IActionHost, IGridProxyable {
+public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity implements IActionHost, IGridProxyable {
 
     private final AENetworkProxy gridProxy = new AENetworkProxy(this, "proxy", this.getItemFromTile(this), true);
 
@@ -41,8 +40,8 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.getProxy().readFromNBT(data);
     }
 

@@ -31,6 +31,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 
 import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Upgrades;
@@ -64,7 +65,7 @@ import appeng.parts.PartModel;
 import appeng.util.Platform;
 
 public class FluidInterfacePart extends BasicStatePart
-        implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost {
+        implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_base");
 
     @PartModels
@@ -130,7 +131,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public boolean onPartActivate(final PlayerEntity p, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p, ContainerLocator.forPart(this));
         }
 
@@ -202,6 +203,11 @@ public class FluidInterfacePart extends BasicStatePart
     @Override
     public FixedItemInv getInventoryByName(String name) {
         return this.duality.getInventoryByName(name);
+    }
+
+    @Override
+    public FixedFluidInv getFluidInventoryByName(final String name) {
+        return this.duality.getFluidInventoryByName(name);
     }
 
     @Override

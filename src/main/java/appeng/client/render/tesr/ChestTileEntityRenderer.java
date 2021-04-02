@@ -61,8 +61,8 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
 
     private final BlockModelRenderer blockRenderer;
 
-    public ChestTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
-        super(renderDispatcher);
+    public ChestTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
         Minecraft client = Minecraft.getInstance();
         modelManager = client.getModelManager();
         blockRenderer = client.getBlockRendererDispatcher().getBlockModelRenderer();

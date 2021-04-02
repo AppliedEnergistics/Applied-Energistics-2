@@ -1,9 +1,3 @@
-package appeng.util;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
 /*
  * This file is part of Applied Energistics 2.
  * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
@@ -22,6 +16,13 @@ import org.junit.Test;
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
+package appeng.util;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
 /**
  * Test for {@link ISlimReadableNumberConverter}
  *
@@ -29,15 +30,12 @@ import org.junit.Test;
  * @version rv2
  * @since rv2
  */
-public final class SlimReadableNumberConverterTest {
+public class SlimReadableNumberConverterTest {
     private static final long NUMBER_NEG_999999 = -999999L;
-    private static final String RESULT_NEG_999999 = "-0M";
 
     private static final long NUMBER_NEG_9999 = -9999L;
-    private static final String RESULT_NEG_9999 = "-9K";
 
     private static final long NUMBER_NEG_999 = -999L;
-    private static final String RESULT_NEG_999 = "-0K";
 
     private static final long NUMBER_0 = 0L;
     private static final String RESULT_0 = "0";
@@ -68,19 +66,19 @@ public final class SlimReadableNumberConverterTest {
 
     private final ISlimReadableNumberConverter converter = ReadableNumberConverter.INSTANCE;
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testConvertNeg999999() {
-        assertEquals(RESULT_NEG_999999, this.converter.toSlimReadableForm(NUMBER_NEG_999999));
+        assertThrows(AssertionError.class, () -> this.converter.toSlimReadableForm(NUMBER_NEG_999999));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testConvertNeg9999() {
-        assertEquals(RESULT_NEG_9999, this.converter.toSlimReadableForm(NUMBER_NEG_9999));
+        assertThrows(AssertionError.class, () -> this.converter.toSlimReadableForm(NUMBER_NEG_9999));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testConvertNeg999() {
-        assertEquals(RESULT_NEG_999, this.converter.toSlimReadableForm(NUMBER_NEG_999));
+        assertThrows(AssertionError.class, () -> this.converter.toSlimReadableForm(NUMBER_NEG_999));
     }
 
     @Test

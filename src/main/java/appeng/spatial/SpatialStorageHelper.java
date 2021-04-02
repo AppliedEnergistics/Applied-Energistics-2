@@ -119,9 +119,11 @@ public class SpatialStorageHelper {
             teleportTarget.remove();
         }
 
-        if (!passengersOnOtherSide.isEmpty()) {
-            for (Entity passanger : passengersOnOtherSide) {
-                passanger.startRiding(entity, true);
+        if (entity != null) {
+            if (!passengersOnOtherSide.isEmpty()) {
+                for (Entity passanger : passengersOnOtherSide) {
+                    passanger.startRiding(entity, true);
+                }
             }
         }
 
@@ -174,19 +176,17 @@ public class SpatialStorageHelper {
         // do nearly all the work... swaps blocks, tiles, and block ticks
         cSrc.swap(cDst);
 
-        final List<Entity> srcE = srcWorld.getLoadedEntitiesWithinAABB(Entity.class, srcBox);
-        final List<Entity> dstE = dstWorld.getLoadedEntitiesWithinAABB(Entity.class, dstBox);
+        final List<Entity> srcE = srcWorld.getEntitiesWithinAABB(Entity.class, srcBox);
+        final List<Entity> dstE = dstWorld.getEntitiesWithinAABB(Entity.class, dstBox);
 
         for (final Entity e : dstE) {
-            this.teleportEntity(e,
-                    new TelDestination(srcWorld, srcBox, e.getPosX(), e.getPosY(), e.getPosZ(), -dstX + srcX,
-                            -dstY + srcY, -dstZ + srcZ));
+            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getPosX(), e.getPosY(), e.getPosZ(),
+                    -dstX + srcX, -dstY + srcY, -dstZ + srcZ));
         }
 
         for (final Entity e : srcE) {
-            this.teleportEntity(e,
-                    new TelDestination(dstWorld, dstBox, e.getPosX(), e.getPosY(), e.getPosZ(), -srcX + dstX,
-                            -srcY + dstY, -srcZ + dstZ));
+            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getPosX(), e.getPosY(), e.getPosZ(),
+                    -srcX + dstX, -srcY + dstY, -srcZ + dstZ));
         }
 
         for (final WorldCoord wc : cDst.getUpdates()) {
@@ -247,8 +247,7 @@ public class SpatialStorageHelper {
         private final double z;
 
         TelDestination(final ServerWorld dimension, final AxisAlignedBB srcBox, final double x, final double y,
-                final double z,
-                final int tileX, final int tileY, final int tileZ) {
+                final double z, final int tileX, final int tileY, final int tileZ) {
             this.dim = dimension;
             this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));
             this.y = Math.min(srcBox.maxY - 0.5, Math.max(srcBox.minY + 0.5, y + tileY));

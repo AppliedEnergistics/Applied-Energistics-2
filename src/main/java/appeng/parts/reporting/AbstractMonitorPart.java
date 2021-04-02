@@ -57,7 +57,7 @@ import appeng.util.item.AEItemStack;
 
 /**
  * A basic subclass for any item monitor like display with an item icon and an amount.
- * <p>
+ *
  * It can also be used to extract items from somewhere and spawned into the world.
  *
  * @author AlgorithmX2
@@ -134,7 +134,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return true;
         }
 
@@ -161,7 +161,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     @Override
     public boolean onPartShiftActivate(PlayerEntity player, Hand hand, Vector3d pos) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return true;
         }
 

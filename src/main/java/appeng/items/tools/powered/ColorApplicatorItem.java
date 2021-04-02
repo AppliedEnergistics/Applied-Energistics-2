@@ -79,6 +79,7 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
 import appeng.tile.misc.PaintSplotchesTileEntity;
 import appeng.util.FakePlayer;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -153,7 +154,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                             inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                     new BaseActionSource());
                             this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                            return ActionResultType.SUCCESS;
+                            return ActionResultType.func_233537_a_(w.isRemote());
                         }
                     }
                 }
@@ -166,7 +167,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                     ((PaintSplotchesTileEntity) painted).cleanSide(side.getOpposite());
-                    return ActionResultType.SUCCESS;
+                    return ActionResultType.func_233537_a_(w.isRemote());
                 }
             } else if (!paintBall.isEmpty()) {
                 final AEColor color = this.getColorFromItem(paintBall);
@@ -176,13 +177,13 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                         inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                 new BaseActionSource());
                         this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                        return ActionResultType.SUCCESS;
+                        return ActionResultType.func_233537_a_(w.isRemote());
                     }
                 }
             }
         }
 
-        if (p != null && p.isCrouching()) {
+        if (p != null && InteractionUtil.isInAlternateUseMode(p)) {
             this.cycleColors(is, paintBall, 1);
         }
 
@@ -199,7 +200,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             extra = new TranslationTextComponent(selected.translationKey);
         }
 
-        return super.getDisplayName(is).copyRaw().appendString(" - ").append(extra);
+        return super.getDisplayName(is).deepCopy().appendString(" - ").append(extra);
     }
 
     public AEColor getActiveColor(final ItemStack tol) {

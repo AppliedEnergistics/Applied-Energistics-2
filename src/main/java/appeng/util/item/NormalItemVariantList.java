@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2020, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,37 +19,33 @@
 package appeng.util.item;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.util.item.AESharedItemStack.Bounds;
 
-class FuzzyItemList extends AbstractItemList {
-    private final NavigableMap<AESharedItemStack, IAEItemStack> records = new TreeMap<>();
+/**
+ * This variant list is optimized for items that cannot be damaged and thus do not support querying durability ranges
+ * via {@link #findFuzzy(IAEItemStack, FuzzyMode)}.
+ */
+class NormalItemVariantList extends ItemVariantList {
 
-    @Override
-    public Collection<IAEItemStack> findFuzzy(final IAEItemStack filter, final FuzzyMode fuzzy) {
-        if (filter == null) {
-            return Collections.emptyList();
-        }
-
-        return this.findFuzzyDamage(filter, fuzzy);
-    }
+    private final Reference2ObjectMap<AESharedItemStack, IAEItemStack> records = new Reference2ObjectOpenHashMap<>();
 
     @Override
     Map<AESharedItemStack, IAEItemStack> getRecords() {
         return this.records;
     }
 
-    private Collection<IAEItemStack> findFuzzyDamage(final IAEItemStack filter, final FuzzyMode fuzzy) {
-        final AEItemStack itemStack = (AEItemStack) filter;
-        final Bounds bounds = itemStack.getSharedStack().getBounds(fuzzy);
-
-        return this.records.subMap(bounds.lower(), true, bounds.upper(), true).descendingMap().values();
+    /**
+     * For items that do not support durability, we just return all variants to a fuzzy search.
+     */
+    @Override
+    public Collection<IAEItemStack> findFuzzy(IAEItemStack filter, FuzzyMode fuzzy) {
+        return this.getRecords().values();
     }
 
 }

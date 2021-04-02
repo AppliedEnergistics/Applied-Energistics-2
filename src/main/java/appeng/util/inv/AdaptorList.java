@@ -159,7 +159,7 @@ public class AdaptorList extends InventoryAdaptor {
         final ItemStack left = toBeAdded.copy();
 
         for (final ItemStack is : this.i) {
-            if (ItemStack.areItemsEqualIgnoreDurability(is, left)) {
+            if (ItemStack.areItemsEqual(is, left)) {
                 is.grow(left.getCount());
                 return ItemStack.EMPTY;
             }

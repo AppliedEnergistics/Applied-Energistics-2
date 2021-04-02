@@ -40,8 +40,8 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IActionHost
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.getProxy().readFromNBT(data);
     }
 

@@ -23,7 +23,6 @@ import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -31,10 +30,8 @@ import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.util.Platform;
 
 public abstract class DenseCablePart extends CablePart {
-
     public DenseCablePart(final ItemStack is) {
         super(is);
 
@@ -48,20 +45,13 @@ public abstract class DenseCablePart extends CablePart {
 
     @Override
     public void getBoxes(final IPartCollisionHelper bch) {
+        updateConnections();
+
         final boolean noLadder = !bch.isBBCollision();
         final double min = noLadder ? 3.0 : 4.9;
         final double max = noLadder ? 13.0 : 11.1;
 
         bch.addBox(min, min, min, max, max, max);
-
-        if (Platform.isServer()) {
-            final IGridNode n = this.getGridNode();
-            if (n != null) {
-                this.setConnections(n.getConnectedSides());
-            } else {
-                this.getConnections().clear();
-            }
-        }
 
         for (final AEPartLocation of : this.getConnections()) {
             if (this.isDense(of)) {

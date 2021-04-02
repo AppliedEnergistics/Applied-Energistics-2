@@ -47,8 +47,7 @@ public class SmartCableTextures {
                     new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_12"), //
                     new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_13"), //
                     new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_14")//
-            }).map(e -> new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, e))
-            .toArray(RenderMaterial[]::new);
+            }).map(e -> new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, e)).toArray(RenderMaterial[]::new);
 
     // Textures used to display channels on smart cables. There's two sets of 5
     // textures each, and

@@ -29,8 +29,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
@@ -53,9 +55,10 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.helpers.AEMaterials;
 import appeng.helpers.MetaRotation;
 
-public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock {
+public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock, IWaterLoggable {
 
     // Cache VoxelShapes for each facing
     private static final Map<Direction, VoxelShape> SHAPES;
@@ -79,16 +82,19 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     // Used to alternate between two variants of the fixture on adjacent blocks
     public static final BooleanProperty ODD = BooleanProperty.create("odd");
 
-    public QuartzFixtureBlock() {
-        super(defaultProps(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0)
-                .setLightLevel((b) -> 14).sound(SoundType.GLASS));
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-        this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false));
+    public QuartzFixtureBlock() {
+        super(defaultProps(
+                AEMaterials.FIXTURE).doesNotBlockMovement().notSolid().hardnessAndResistance(0)
+                        .setLightLevel((b) -> 14).sound(SoundType.GLASS));
+
+        this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false).with(WATERLOGGED, false));
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING, ODD);
+        builder.add(FACING, ODD, WATERLOGGED);
     }
 
     // For reference, see WallTorchBlock
@@ -97,10 +103,11 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockState blockstate = super.getStateForPlacement(context);
         BlockPos pos = context.getPos();
+        FluidState fluidState = context.getWorld().getFluidState(pos);
 
         // Set the even/odd property
         boolean oddPlacement = ((pos.getX() + pos.getY() + pos.getZ()) % 2) != 0;
-        blockstate = blockstate.with(ODD, oddPlacement);
+        blockstate = blockstate.with(ODD, oddPlacement).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
 
         IWorldReader iworldreader = context.getWorld();
         Direction[] adirection = context.getNearestLookingDirections();
@@ -117,18 +124,22 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     // Break the fixture if the block it is attached to is changed so that it could
     // no longer be placed
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState,
-            IWorld worldIn, BlockPos pos, BlockPos facingPos) {
-        Direction fixtureFacing = state.get(FACING);
-        if (facing.getOpposite() == fixtureFacing && !canPlaceAt(worldIn, pos, facing)) {
+    public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
+            BlockPos currentPos, BlockPos facingPos) {
+        if (blockState.get(WATERLOGGED).booleanValue()) {
+            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickRate(world));
+        }
+
+        Direction fixtureFacing = blockState.get(FACING);
+        if (facing.getOpposite() == fixtureFacing && !canPlaceAt(world, currentPos, facing)) {
             return Blocks.AIR.getDefaultState();
         }
-        return state;
+        return blockState;
     }
 
     @Override
-    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward,
-            final Direction up) {
+    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
         // FIXME: I think this entire method -> not required, but not sure... are quartz
         // fixtures rotateable???
         return this.canPlaceAt(w, pos, up.getOpposite());
@@ -198,6 +209,13 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     @Override
     public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
         return new MetaRotation(w, pos, FACING);
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState blockState) {
+        return blockState.get(WATERLOGGED).booleanValue()
+                ? Fluids.WATER.getStillFluidState(false)
+                : super.getFluidState(blockState);
     }
 
 }

@@ -30,6 +30,7 @@ import net.minecraft.tileentity.IChestLid;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 
@@ -45,10 +46,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
 
-    // server
     private int numPlayersUsing;
-    // client..
-    private long lastEvent;
     private float lidAngle;
     private float prevLidAngle;
 
@@ -59,20 +57,16 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     @Override
     protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
-        data.writeBoolean(this.getPlayerOpen() > 0);
+        data.writeBoolean(this.numPlayersUsing > 0);
     }
 
     @Override
     protected boolean readFromStream(final PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
-        final int wasOpen = this.getPlayerOpen();
-        this.setPlayerOpen(data.readBoolean() ? 1 : 0);
+        final int wasOpen = this.numPlayersUsing;
+        this.numPlayersUsing = data.readBoolean() ? 1 : 0;
 
-        if (wasOpen != this.getPlayerOpen()) {
-            this.setLastEvent(System.currentTimeMillis());
-        }
-
-        return c; // TESR yo!
+        return wasOpen != numPlayersUsing || c;
     }
 
     @Override
@@ -81,82 +75,71 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     }
 
     public void openInventory(final PlayerEntity player) {
-        if (!player.isSpectator()) {
-            this.setPlayerOpen(this.getPlayerOpen() + 1);
+        // Ignore calls to this function on the client, since the server is responsible for
+        // calculating the numPlayersUsing count.
+        if (!player.isSpectator() && !isRemote()) {
+            this.numPlayersUsing++;
             onOpenOrClose();
-
-            if (this.getPlayerOpen() == 1) {
-                this.getWorld().playSound(player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D,
-                        this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F,
-                        this.getWorld().rand.nextFloat() * 0.1F + 0.9F);
-                this.markForUpdate();
-            }
         }
     }
 
     public void closeInventory(final PlayerEntity player) {
-        if (!player.isSpectator()) {
-            this.setPlayerOpen(this.getPlayerOpen() - 1);
+        // Ignore calls to this function on the client, since the server is responsible for
+        // calculating the numPlayersUsing count.
+        if (!player.isSpectator() && !isRemote()) {
+            this.numPlayersUsing = Math.max(this.numPlayersUsing - 1, 0);
             onOpenOrClose();
-
-            if (this.getPlayerOpen() < 0) {
-                this.setPlayerOpen(0);
-            }
-
-            if (this.getPlayerOpen() == 0) {
-                this.getWorld().playSound(player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D,
-                        this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F,
-                        this.getWorld().rand.nextFloat() * 0.1F + 0.9F);
-                this.markForUpdate();
-            }
         }
     }
 
     // See ChestTileEntity
     private void onOpenOrClose() {
-        Block block = getBlockState().getBlock();
+        Block block = this.getBlockState().getBlock();
         if (block instanceof SkyChestBlock) {
             this.world.addBlockEvent(this.pos, block, 1, this.numPlayersUsing);
             this.world.notifyNeighborsOfStateChange(this.pos, block);
-            // FIXME: Uhm, we are we doing this?
-            this.world.notifyNeighborsOfStateChange(this.pos.down(), block);
         }
     }
 
     @Override
     public void tick() {
         this.prevLidAngle = this.lidAngle;
-        if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F) {
-            if (this.numPlayersUsing > 0) {
-                this.lidAngle += 0.1F;
-            } else {
-                this.lidAngle -= 0.1F;
-            }
-
-            this.lidAngle = MathHelper.clamp(this.lidAngle, 0, 1);
+        // Play a sound on initial opening.
+        if (this.numPlayersUsing > 0 && this.lidAngle == 0.0f) {
+            this.playSound(SoundEvents.BLOCK_CHEST_OPEN);
         }
+
+        if (this.numPlayersUsing == 0 && this.lidAngle > 0.0f) {
+            this.lidAngle = Math.max(this.lidAngle - 0.1f, 0);
+            // Play a sound on the way down.
+            if (this.lidAngle < 0.5f && this.prevLidAngle >= 0.5f) {
+                this.playSound(SoundEvents.BLOCK_CHEST_CLOSE);
+            }
+        } else if (this.numPlayersUsing > 0 && this.lidAngle < 1.0f) {
+            this.lidAngle = Math.min(this.lidAngle + 0.1f, 1);
+        }
+    }
+
+    private void playSound(SoundEvent soundIn) {
+        double d0 = this.pos.getX() + 0.5d;
+        double d1 = this.pos.getY() + 0.5d;
+        double d2 = this.pos.getZ() + 0.5d;
+        this.world.playSound((PlayerEntity) null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5f,
+                this.world.rand.nextFloat() * 0.1f + 0.9f);
+    }
+
+    public boolean receiveClientEvent(int id, int type) {
+        if (id == 1) {
+            this.numPlayersUsing = type;
+            return true;
+        }
+        return super.receiveClientEvent(id, type);
     }
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
 
-    }
-
-    public int getPlayerOpen() {
-        return this.numPlayersUsing;
-    }
-
-    private void setPlayerOpen(final int playerOpen) {
-        this.numPlayersUsing = playerOpen;
-    }
-
-    public long getLastEvent() {
-        return this.lastEvent;
-    }
-
-    private void setLastEvent(final long lastEvent) {
-        this.lastEvent = lastEvent;
     }
 
     @Override

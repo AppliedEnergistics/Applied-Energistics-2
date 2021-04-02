@@ -80,7 +80,7 @@ public class FacadeBlockAccess implements IBlockDisplayReader {
     }
 
     @Override
-    public int getBlockColor(BlockPos pos, ColorResolver colorResolver) {
-        return world.getBlockColor(pos, colorResolver);
+    public int getBlockColor(BlockPos blockPosIn, ColorResolver colorResolverIn) {
+        return world.getBlockColor(blockPosIn, colorResolverIn);
     }
 }

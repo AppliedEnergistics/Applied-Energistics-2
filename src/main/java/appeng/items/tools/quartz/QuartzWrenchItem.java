@@ -39,6 +39,7 @@ import appeng.block.AEBaseBlock;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.parts.PartPlacement;
+import appeng.util.InteractionUtil;
 import appeng.util.PartHostWrenching;
 import appeng.util.Platform;
 
@@ -50,52 +51,52 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolIte
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
-        if (player == null) {
+        PlayerEntity p = context.getPlayer();
+        if (p == null) {
             return ActionResultType.PASS;
         }
 
-        boolean isHoldingShift = player.isCrouching();
-        World world = context.getWorld();
+        boolean isHoldingShift = InteractionUtil.isInAlternateUseMode(p);
+        World w = context.getWorld();
         BlockPos pos = context.getPos();
-        if (!Platform.hasPermissions(new DimensionalCoord(world, pos), player)) {
+        if (!Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
             return ActionResultType.FAIL;
         }
 
-        BlockState blockState = world.getBlockState(pos);
+        BlockState blockState = w.getBlockState(pos);
         Block block = blockState.getBlock();
 
         if (isHoldingShift) {
 
             // Wrenching parts of cable buses or other part hosts
-            TileEntity tile = world.getTileEntity(pos);
+            TileEntity tile = w.getTileEntity(pos);
             IPartHost host = null;
             if (tile instanceof IPartHost) {
                 host = (IPartHost) tile;
             }
 
             if (host != null) {
-                if (!world.isRemote) {
+                if (!w.isRemote) {
                     // Build the relative position within the part
                     Vector3d relPos = context.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ());
 
-                    final SelectedPart sp = PartPlacement.selectPart(player, host, relPos);
+                    final SelectedPart sp = PartPlacement.selectPart(p, host, relPos);
 
-                    PartHostWrenching.wrenchPart(world, pos, host, sp);
+                    PartHostWrenching.wrenchPart(w, pos, host, sp);
                 }
                 return ActionResultType.SUCCESS;
             }
 
             // Pass the use onto the block...
-            return block.onBlockActivated(blockState, world, pos, player, context.getHand(),
+            return block.onBlockActivated(blockState, w, pos, p, context.getHand(),
                     new BlockRayTraceResult(context.getHitVec(), context.getFace(), pos, context.isInside()));
         }
 
         if (block instanceof AEBaseBlock) {
-            if (!world.isRemote) {
+            if (!w.isRemote) {
                 AEBaseBlock aeBlock = (AEBaseBlock) block;
-                if (aeBlock.rotateAroundFaceAxis(world, pos, context.getFace())) {
-                    player.swingArm(context.getHand());
+                if (aeBlock.rotateAroundFaceAxis(w, pos, context.getFace())) {
+                    p.swingArm(context.getHand());
                 }
             }
             return ActionResultType.SUCCESS;

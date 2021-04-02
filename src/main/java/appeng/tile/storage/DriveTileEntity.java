@@ -26,6 +26,7 @@ import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -37,6 +38,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -63,6 +66,7 @@ import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
 import appeng.core.Api;
+import appeng.core.sync.BasePacket;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -93,16 +97,19 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
     /**
      * The state of all cells inside a drive as bitset, using the following format.
-     * <p>
+     *
      * - Bit 31: power state. 0 = off, 1 = on.
-     * <p>
+     *
      * - Bit 30: reserved
-     * <p>
+     *
      * - Bit 29-0: 3 bits for the state of each cell
-     * <p>
+     *
      * Cell states:
-     * <p>
+     *
      * - Bit 2-0: {@link CellState} ordinal
+     *
+     *
+     *
      */
     private int state = 0;
 
@@ -139,12 +146,12 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     private void writeCellItemIds(PacketBuffer data) {
-        List<Integer> cellItemIds = new ArrayList<>(getCellCount());
+        List<ResourceLocation> cellItemIds = new ArrayList<>(getCellCount());
         byte[] bm = new byte[getCellCount()];
         for (int x = 0; x < this.getCellCount(); x++) {
             Item item = getCellItem(x);
-            if (item != null) {
-                int itemId = Item.getIdFromItem(item);
+            if (item != null && !Objects.equals(Registry.ITEM.getKey(item), Registry.ITEM.getDefaultKey())) {
+                ResourceLocation itemId = Registry.ITEM.getKey(item);
                 int idx = cellItemIds.indexOf(itemId);
                 if (idx == -1) {
                     cellItemIds.add(itemId);
@@ -157,8 +164,8 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
         // Write out the list of unique cell item ids
         data.writeByte(cellItemIds.size());
-        for (int itemId : cellItemIds) {
-            data.writeVarInt(itemId);
+        for (ResourceLocation itemId : cellItemIds) {
+            data.writeResourceLocation(itemId);
         }
         // Then the lookup table for each slot
         for (int i = 0; i < getCellCount(); i++) {
@@ -178,10 +185,10 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     private boolean readCellItemIDs(final PacketBuffer data) {
-        int uniqueIdCount = data.readByte();
-        int[] uniqueIds = new int[uniqueIdCount];
-        for (int i = 0; i < uniqueIdCount; i++) {
-            uniqueIds[i] = data.readVarInt();
+        int uniqueStrCount = data.readByte();
+        String[] uniqueStrs = new String[uniqueStrCount];
+        for (int i = 0; i < uniqueStrCount; i++) {
+            uniqueStrs[i] = data.readString(BasePacket.MAX_STRING_LENGTH);
         }
 
         boolean changed = false;
@@ -192,8 +199,8 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             Item item = null;
             if (idx > 0) {
                 --idx;
-                int itemId = uniqueIds[idx];
-                item = Item.getItemById(itemId);
+                String itemId = uniqueStrs[idx];
+                item = Registry.ITEM.getOrDefault(new ResourceLocation(itemId));
             }
             if (cellItems[i] != item) {
                 changed = true;
@@ -226,7 +233,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
     @Override
     public CellState getCellStatus(final int slot) {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             final int cellState = ((this.state >> (slot * BIT_CELL_STATE_BITS)) & BIT_CELL_STATE_MASK);
             return CellState.values()[cellState];
         }
@@ -254,8 +261,8 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.isCached = false;
         this.priority = data.getInt("priority");
     }

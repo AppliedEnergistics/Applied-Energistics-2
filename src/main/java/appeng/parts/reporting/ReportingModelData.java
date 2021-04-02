@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2020, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,20 +16,35 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.util.item;
+package appeng.parts.reporting;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
+public class ReportingModelData {
 
-import appeng.api.storage.data.IAEItemStack;
+    private final byte spin;
 
-class StrictItemList extends AbstractItemList {
+    public ReportingModelData(byte spin) {
+        this.spin = spin;
+    }
 
-    private final Map<AESharedItemStack, IAEItemStack> records = new IdentityHashMap<>();
+    public byte getSpin() {
+        return spin;
+    }
 
     @Override
-    Map<AESharedItemStack, IAEItemStack> getRecords() {
-        return this.records;
+    public int hashCode() {
+        return Byte.hashCode(spin);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ReportingModelData that = (ReportingModelData) o;
+        return spin == that.spin;
     }
 
 }

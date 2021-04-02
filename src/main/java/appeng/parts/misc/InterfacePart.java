@@ -163,7 +163,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
 
     @Override
     public boolean onPartActivate(final PlayerEntity p, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!p.getEntityWorld().isRemote()) {
             ContainerOpener.openContainer(InterfaceContainer.TYPE, p, ContainerLocator.forPart(this));
         }
         return true;

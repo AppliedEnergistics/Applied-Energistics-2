@@ -95,8 +95,8 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.internalCurrentPower = data.getDouble("internalCurrentPower");
     }
 

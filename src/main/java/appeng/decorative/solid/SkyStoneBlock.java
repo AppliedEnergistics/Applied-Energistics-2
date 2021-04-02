@@ -60,8 +60,8 @@ public class SkyStoneBlock extends AEBaseBlock {
 //    }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState,
-            IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
+            BlockPos currentPos, BlockPos facingPos) {
         if (worldIn instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) worldIn;
             WorldData.instance().compassData().service().notifyBlockChange(serverWorld, currentPos);

@@ -203,6 +203,11 @@ public class DualityFluidInterface
         return new DimensionalCoord(this.iHost.getTileEntity());
     }
 
+    public void addAllAttributes(AttributeList<?> to) {
+        to.offer(this.tanks);
+        to.offer(this.accessor);
+    }
+
     private boolean hasConfig() {
         return this.hasConfig;
     }
@@ -511,10 +516,4 @@ public class DualityFluidInterface
     @Override
     public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue) {
     }
-
-    public void addAllAttributes(AttributeList<?> to) {
-        to.offer(this.tanks);
-        to.offer(this.accessor);
-    }
-
 }

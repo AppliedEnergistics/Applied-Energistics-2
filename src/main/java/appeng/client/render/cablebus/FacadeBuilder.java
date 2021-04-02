@@ -93,10 +93,47 @@ public class FacadeBuilder {
             new AxisAlignedBB(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
             new AxisAlignedBB(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
+    // Pre-rotated transparent facade quads
+    private final Map<Direction, Mesh> transparentFacadeQuads;
+
     private final Map<Direction, Mesh> cableAnchorStilts;
 
-    public FacadeBuilder(ModelBakery modelLoader) {
+    public FacadeBuilder(ModelBakery modelLoader, @Nullable IBakedModel transparentFacadeModel) {
         cableAnchorStilts = buildCableAnchorStems(modelLoader);
+
+        // Pre-rotate the transparent facade model to all possible sides so that we can
+        // add it quicker later.
+        this.transparentFacadeQuads = new EnumMap<>(Direction.class);
+        // This can be null for item models.
+        if (transparentFacadeModel != null) {
+            List<BakedQuad> partQuads = transparentFacadeModel.getQuads(null, null, new Random());
+
+            for (Direction facing : Direction.values()) {
+                MeshBuilder meshBuilder = renderer.meshBuilder();
+                QuadEmitter emitter = meshBuilder.getEmitter();
+
+                // Rotate quads accordingly
+                RenderContext.QuadTransform rotator = QuadRotator.get(facing, Direction.UP);
+
+                for (BakedQuad quad : partQuads) {
+                    emitter.fromVanilla(quad.getVertexData(), 0, false);
+                    emitter.cullFace(null);
+                    emitter.nominalFace(quad.getFace());
+                    if (!rotator.transform(emitter)) {
+                        continue;
+                    }
+                    emitter.emit();
+                }
+
+                this.transparentFacadeQuads.put(facing, meshBuilder.build());
+            }
+        } else {
+            // This constructor is used for item models where transparent facades are not a
+            // concern
+            for (Direction facing : Direction.values()) {
+                this.transparentFacadeQuads.put(facing, renderer.meshBuilder().build());
+            }
+        }
     }
 
     /**
@@ -161,10 +198,21 @@ public class FacadeBuilder {
             FacadeRenderState facadeRenderState = entry.getValue();
             boolean renderStilt = !sidesWithParts.contains(side);
             if (renderStilt) {
-                cableAnchorStilts.get(entry.getKey()).forEach(quad -> {
+                cableAnchorStilts.get(side).forEach(quad -> {
                     quad.copyTo(emitter);
                     emitter.emit();
                 });
+            }
+
+            // When we're forcing transparent facades, add a "border" model that indicates
+            // where the facade is,
+            // But otherwise skip the rest.
+            if (transparent) {
+                transparentFacadeQuads.get(side).forEach(quad -> {
+                    quad.copyTo(emitter);
+                    emitter.emit();
+                });
+                continue;
             }
 
             BlockState blockState = facadeRenderState.getSourceBlock();
@@ -428,6 +476,7 @@ public class FacadeBuilder {
      * @param fb   The Facade's box.
      * @param hole The hole to 'cut'.
      * @param axis The axis the facade is on.
+     *
      * @return The box segments.
      */
     private static List<AxisAlignedBB> getBoxes(AxisAlignedBB fb, AEAxisAlignedBB hole, Axis axis) {

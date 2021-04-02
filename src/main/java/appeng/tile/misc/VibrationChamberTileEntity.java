@@ -107,8 +107,8 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.setBurnTime(data.getDouble("burnTime"));
         this.setMaxBurnTime(data.getDouble("maxBurnTime"));
         this.setBurnSpeed(data.getInt("burnSpeed"));

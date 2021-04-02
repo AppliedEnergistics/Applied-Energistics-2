@@ -22,7 +22,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.chunk.Chunk;
 
 import appeng.api.movable.IMovableHandler;
 
@@ -31,7 +31,8 @@ public class DefaultSpatialHandler implements IMovableHandler {
     /**
      * never called for the default.
      *
-     * @param tile block entity
+     * @param tile tile entity
+     *
      * @return true
      */
     @Override
@@ -43,13 +44,14 @@ public class DefaultSpatialHandler implements IMovableHandler {
     public void moveTile(final TileEntity te, final World w, final BlockPos newPosition) {
         te.setWorldAndPos(w, newPosition);
 
-        final IChunk c = w.getChunk(newPosition);
+        final Chunk c = w.getChunkAt(newPosition);
         c.addTileEntity(newPosition, te);
 
         if (w.getChunkProvider().canTick(newPosition)) {
             final BlockState state = w.getBlockState(newPosition);
             w.addTileEntity(te);
             w.notifyBlockUpdate(newPosition, state, state, 1);
+            te.updateContainingBlockInfo();
         }
     }
 }

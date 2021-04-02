@@ -27,6 +27,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.ticking.IGridTickable;
@@ -38,6 +40,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.core.Api;
 import appeng.fluids.container.FluidIOContainer;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;
@@ -49,7 +52,7 @@ import appeng.util.Platform;
  * @version rv6 - 30/04/2018
  * @since rv6 30/04/2018
  */
-public abstract class SharedFluidBusPart extends UpgradeablePart implements IGridTickable {
+public abstract class SharedFluidBusPart extends UpgradeablePart implements IGridTickable, IConfigurableFluidInventory {
 
     private final AEFluidInventory config = new AEFluidInventory(null, 9);
     private boolean lastRedstone;
@@ -88,7 +91,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        if (Platform.isServer()) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FluidIOContainer.TYPE, player, ContainerLocator.forPart(this));
         }
 
@@ -133,6 +136,14 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     public IAEFluidTank getConfig() {
         return this.config;
+    }
+
+    @Override
+    public FixedFluidInv getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
     }
 
     protected IFluidStorageChannel getChannel() {

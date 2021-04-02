@@ -312,7 +312,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
-            if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, keyCode, scanCode)) {
+            if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
                 this.searchField.setFocused2(!this.searchField.isFocused());
                 return true;
             }

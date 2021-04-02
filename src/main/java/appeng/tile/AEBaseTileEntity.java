@@ -46,6 +46,7 @@ import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProvider;
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.implementations.tiles.ISegmentedInventory;
@@ -57,6 +58,8 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
+import appeng.fluids.helper.IConfigurableFluidInventory;
+import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.hooks.ticking.TickHandler;
@@ -341,7 +344,6 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * null means nothing to store...
      *
      * @param from source of settings
-     *
      * @return compound of source
      */
     public CompoundNBT downloadSettings(final SettingsFrom from) {
@@ -371,7 +373,12 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
                 ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
             }
         }
-
+        if (this instanceof IConfigurableFluidInventory) {
+            final FixedFluidInv tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+            if (tank instanceof AEFluidInventory) {
+                ((AEFluidInventory) tank).writeToNBT(output, "config");
+            }
+        }
         return output.isEmpty() ? null : output;
     }
 

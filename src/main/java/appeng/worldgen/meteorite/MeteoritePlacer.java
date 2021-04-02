@@ -187,7 +187,7 @@ public final class MeteoritePlacer {
         }
 
         for (final Object o : world.getEntitiesWithinAABB(ItemEntity.class,
-                new AxisAlignedBB(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)), null)) {
+                new AxisAlignedBB(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)))) {
             final Entity e = (Entity) o;
             e.remove();
         }

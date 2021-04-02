@@ -35,7 +35,7 @@ class Size1Slot extends Slot {
     private final Slot delegate;
 
     public Size1Slot(Slot delegate) {
-        super(delegate.inventory, -1, delegate.xPos, delegate.yPos);
+        super(delegate.inventory, delegate.slotIndex, delegate.xPos, delegate.yPos);
         this.delegate = delegate;
     }
 

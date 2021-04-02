@@ -160,8 +160,8 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.upgrades.readFromNBT(data, "upgrades");
         this.settings.readFromNBT(data);
     }

@@ -99,9 +99,8 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
                 for (int bolts = 0; bolts < 3; bolts++) {
                     if (AppEng.instance().shouldAddParticles(r)) {
-                        Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING,
-                                xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0,
-                                0.0);
+                        Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
+                                yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
                     }
                 }
             }

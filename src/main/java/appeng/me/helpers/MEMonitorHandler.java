@@ -43,7 +43,7 @@ import appeng.api.storage.data.IItemList;
  * Common implementation of a simple class that monitors injection/extraction of a inventory to send events to a list of
  * listeners.
  *
- * @param <T> TODO: Needs to be redesigned to solve performance issues.
+ * TODO: Needs to be redesigned to solve performance issues.
  */
 public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T> {
 

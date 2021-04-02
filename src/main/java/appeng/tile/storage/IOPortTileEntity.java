@@ -126,8 +126,8 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.manager.readFromNBT(data);
         this.upgrades.readFromNBT(data, "upgrades");
         if (data.contains("lastRedstoneState")) {
@@ -435,8 +435,8 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
      * Adds the items in the upgrade slots to the drop list.
      *
      * @param w     world
-     * @param pos   pos of block entity
-     * @param drops drops of block entity
+     * @param pos   pos of tile entity
+     * @param drops drops of tile entity
      */
     @Override
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {

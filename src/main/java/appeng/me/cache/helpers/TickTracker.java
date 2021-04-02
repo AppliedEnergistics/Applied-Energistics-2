@@ -63,22 +63,22 @@ public class TickTracker implements Comparable<TickTracker> {
 
     }
 
-    public void addEntityCrashInfo(final CrashReportCategory section) {
+    public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
         if (this.getGridTickable() instanceof IPart) {
             final IPart part = (IPart) this.getGridTickable();
-            part.addEntityCrashInfo(section);
+            part.addEntityCrashInfo(crashreportcategory);
         }
 
-        section.addDetail("CurrentTickRate", this.getCurrentRate());
-        section.addDetail("MinTickRate", this.getRequest().minTickRate);
-        section.addDetail("MaxTickRate", this.getRequest().maxTickRate);
-        section.addDetail("MachineType", this.getGridTickable().getClass().getName());
-        section.addDetail("GridBlockType", this.getNode().getGridBlock().getClass().getName());
-        section.addDetail("ConnectedSides", this.getNode().getConnectedSides());
+        crashreportcategory.addDetail("CurrentTickRate", this.getCurrentRate());
+        crashreportcategory.addDetail("MinTickRate", this.getRequest().minTickRate);
+        crashreportcategory.addDetail("MaxTickRate", this.getRequest().maxTickRate);
+        crashreportcategory.addDetail("MachineType", this.getGridTickable().getClass().getName());
+        crashreportcategory.addDetail("GridBlockType", this.getNode().getGridBlock().getClass().getName());
+        crashreportcategory.addDetail("ConnectedSides", this.getNode().getConnectedSides());
 
         final DimensionalCoord dc = this.getNode().getGridBlock().getLocation();
         if (dc != null) {
-            section.addDetail("Location", dc);
+            crashreportcategory.addDetail("Location", dc);
         }
     }
 

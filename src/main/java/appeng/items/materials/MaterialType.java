@@ -155,10 +155,6 @@ public enum MaterialType {
         return this.features;
     }
 
-    public String getOreName() {
-        return this.oreName;
-    }
-
     boolean hasCustomEntity() {
         return this.droppedEntity != null;
     }

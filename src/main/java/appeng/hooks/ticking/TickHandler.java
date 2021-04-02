@@ -84,6 +84,10 @@ public class TickHandler {
     private int processQueueElementsProcessed = 0;
     private int processQueueElementsRemaining = 0;
 
+    public static TickHandler instance() {
+        return INSTANCE;
+    }
+
     public TickHandler() {
         // Register for all the tick events we care about
         ServerTickEvents.START_SERVER_TICK.register(this::onBeforeServerTick);
@@ -94,10 +98,6 @@ public class TickHandler {
         ServerWorldEvents.LOAD.register(this::onLoadWorld);
         ServerWorldEvents.UNLOAD.register(this::onUnloadWorld);
         ServerLifecycleEvents.SERVER_STOPPED.register(this::onServerStopped);
-    }
-
-    public static TickHandler instance() {
-        return INSTANCE;
     }
 
     public Map<Integer, PlayerColor> getPlayerColors() {

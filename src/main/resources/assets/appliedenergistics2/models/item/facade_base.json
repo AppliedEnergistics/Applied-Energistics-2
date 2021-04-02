@@ -16,24 +16,12 @@
       "from": [7.0, 7.0, 2.0],
       "to": [9.0, 9.0, 10.0],
       "faces": {
-        "north": {
-          "texture": "#anchor"
-        },
-        "east": {
-          "texture": "#anchor"
-        },
-        "south": {
-          "texture": "#anchor"
-        },
-        "west": {
-          "texture": "#anchor"
-        },
-        "up": {
-          "texture": "#anchor"
-        },
-        "down": {
-          "texture": "#anchor"
-        }
+        "north": { "texture": "#anchor" },
+        "east": { "texture": "#anchor" },
+        "south": { "texture": "#anchor" },
+        "west": { "texture": "#anchor" },
+        "up": { "texture": "#anchor" },
+        "down": { "texture": "#anchor" }
       }
     }
   ]

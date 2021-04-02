@@ -36,6 +36,7 @@ import net.minecraft.world.World;
 import appeng.core.AELog;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 
 public class EraserItem extends AEBaseItem implements AEToolItem {
 
@@ -62,7 +63,7 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
         }
 
         final Block state = world.getBlockState(pos).getBlock();
-        final boolean bulk = player.isSneaking();
+        final boolean bulk = InteractionUtil.isInAlternateUseMode(player);
         final Queue<BlockPos> next = new ArrayDeque<>();
         final Set<BlockPos> closed = new HashSet<>();
         final Set<Block> commonBlocks = this.getCommonBlocks();
@@ -102,7 +103,7 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
 
         AELog.info("Delete " + blocks + " blocks");
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(world.isRemote());
     }
 
     private boolean isInsideBox(BlockPos pos, BlockPos origin) {

@@ -34,7 +34,6 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -45,6 +44,7 @@ import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.ISecurityRegistry;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 
 public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     public BiometricCardItem(Properties properties) {
@@ -53,7 +53,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        if (p.isCrouching()) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
             this.encode(p.getHeldItem(hand), p);
             p.swingArm(hand);
             return ActionResult.resultSuccess(p.getHeldItem(hand));
@@ -62,18 +62,16 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
         return ActionResult.resultPass(p.getHeldItem(hand));
     }
 
-    // FIXME FABRIC: Validate that this actually works about as well as the forge
-    // hook does
     @Override
-    public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity user, LivingEntity target,
-            Hand hand) {
-        if (target instanceof PlayerEntity && !user.isCrouching()) {
-            if (user.isCreative()) {
-                stack = user.getHeldItem(hand);
+    public ActionResultType itemInteractionForEntity(ItemStack is, final PlayerEntity player, final LivingEntity target,
+            final Hand hand) {
+        if (target instanceof PlayerEntity && !InteractionUtil.isInAlternateUseMode(player)) {
+            if (player.isCreative()) {
+                is = player.getHeldItem(hand);
             }
-            this.encode(stack, (PlayerEntity) target);
-            user.swingArm(hand);
-            return ActionResultType.SUCCESS;
+            this.encode(is, (PlayerEntity) target);
+            player.swingArm(hand);
+            return ActionResultType.func_233537_a_(player.getEntityWorld().isRemote());
         }
         return ActionResultType.PASS;
     }
@@ -81,7 +79,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     @Override
     public ITextComponent getDisplayName(final ItemStack is) {
         final GameProfile username = this.getProfile(is);
-        return username != null ? super.getDisplayName(is).copyRaw().appendString(" - " + username.getName())
+        return username != null ? super.getDisplayName(is).deepCopy().appendString(" - " + username.getName())
                 : super.getDisplayName(is);
     }
 
@@ -164,13 +162,14 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
         if (perms.isEmpty()) {
             lines.add(new TranslationTextComponent(GuiText.NoPermissions.getLocal()));
         } else {
-            IFormattableTextComponent msg = null;
+            ITextComponent msg = null;
 
             for (final SecurityPermissions sp : perms) {
                 if (msg == null) {
                     msg = new TranslationTextComponent(sp.getTranslatedName());
                 } else {
-                    msg = msg.appendString(", ").append(new TranslationTextComponent(sp.getTranslatedName()));
+                    msg = msg.deepCopy().appendString(", ")
+                            .append(new TranslationTextComponent(sp.getTranslatedName()));
                 }
             }
             lines.add(msg);

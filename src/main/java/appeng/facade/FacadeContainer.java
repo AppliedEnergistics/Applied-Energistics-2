@@ -21,7 +21,6 @@ package appeng.facade;
 import java.io.IOException;
 import java.util.Optional;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;

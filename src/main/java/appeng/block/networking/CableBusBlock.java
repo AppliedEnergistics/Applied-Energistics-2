@@ -131,6 +131,11 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
+    public void onNeighborChange(BlockState state, IWorldReader w, BlockPos pos, BlockPos neighbor) {
+        this.cb(w, pos).onNeighborChanged(w, pos, neighbor);
+    }
+
+    @Override
     public int getWeakPower(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
         return this.cb(w, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
         // IS

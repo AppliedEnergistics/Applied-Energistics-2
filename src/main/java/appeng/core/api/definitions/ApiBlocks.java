@@ -104,8 +104,14 @@ import appeng.client.render.tesr.ChestTileEntityRenderer;
 import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.DriveLedTileEntityRenderer;
 import appeng.client.render.tesr.SkyChestTESR;
-import appeng.debug.*;
+import appeng.debug.ChunkLoaderBlock;
+import appeng.debug.ChunkLoaderTileEntity;
+import appeng.debug.CubeGeneratorBlock;
+import appeng.debug.CubeGeneratorTileEntity;
+import appeng.debug.ItemGenBlock;
 import appeng.debug.ItemGenTileEntity;
+import appeng.debug.PhantomNodeBlock;
+import appeng.debug.PhantomNodeTileEntity;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.AEStairsBlock;
 import appeng.decorative.solid.ChargedQuartzOreBlock;
@@ -126,16 +132,32 @@ import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 import appeng.tile.grindstone.CrankTileEntity;
 import appeng.tile.grindstone.GrinderTileEntity;
-import appeng.tile.misc.*;
+import appeng.tile.misc.CellWorkbenchTileEntity;
+import appeng.tile.misc.ChargerTileEntity;
+import appeng.tile.misc.CondenserTileEntity;
+import appeng.tile.misc.InscriberTileEntity;
+import appeng.tile.misc.InterfaceTileEntity;
+import appeng.tile.misc.LightDetectorTileEntity;
+import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.tile.misc.QuartzGrowthAcceleratorTileEntity;
 import appeng.tile.misc.SecurityStationTileEntity;
-import appeng.tile.networking.*;
+import appeng.tile.misc.SkyCompassTileEntity;
+import appeng.tile.misc.VibrationChamberTileEntity;
+import appeng.tile.networking.CableBusTESR;
+import appeng.tile.networking.CableBusTileEntity;
+import appeng.tile.networking.ControllerTileEntity;
 import appeng.tile.networking.CreativeEnergyCellTileEntity;
+import appeng.tile.networking.DenseEnergyCellTileEntity;
+import appeng.tile.networking.EnergyAcceptorTileEntity;
+import appeng.tile.networking.EnergyCellTileEntity;
+import appeng.tile.networking.WirelessTileEntity;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
 import appeng.tile.spatial.SpatialPylonTileEntity;
-import appeng.tile.storage.*;
 import appeng.tile.storage.ChestTileEntity;
+import appeng.tile.storage.DriveTileEntity;
+import appeng.tile.storage.IOPortTileEntity;
 import appeng.tile.storage.SkyChestTileEntity;
 
 /**
@@ -214,10 +236,10 @@ public final class ApiBlocks implements IBlocks {
     private final IBlockDefinition chiseledQuartzSlab;
     private final IBlockDefinition quartzPillarSlab;
 
-    private IBlockDefinition itemGen;
-    private IBlockDefinition chunkLoader;
-    private IBlockDefinition phantomNode;
-    private IBlockDefinition cubeGenerator;
+    private final IBlockDefinition itemGen;
+    private final IBlockDefinition chunkLoader;
+    private final IBlockDefinition phantomNode;
+    private final IBlockDefinition cubeGenerator;
     private IBlockDefinition energyGenerator;
 
     private static final FabricBlockSettings QUARTZ_PROPERTIES = (FabricBlockSettings) defaultProps(Material.ROCK)
@@ -225,13 +247,6 @@ public final class ApiBlocks implements IBlocks {
 
     private static final FabricBlockSettings SKYSTONE_PROPERTIES = (FabricBlockSettings) defaultProps(Material.ROCK)
             .hardnessAndResistance(50, 150);
-
-    private static FabricBlockSettings glassProps() {
-        return (FabricBlockSettings) defaultProps(Material.GLASS).sound(SoundType.GLASS).notSolid()
-                .setAllowsSpawn((state, world, pos, type) -> false).notSolid()
-                .setSuffocates((state, world, pos) -> false)
-                .setBlocksVision((state, world, pos) -> false);
-    }
 
     public ApiBlocks(FeatureFactory registry) {
         this.quartzOre = registry.block("quartz_ore", () -> new QuartzOreBlock(QUARTZ_PROPERTIES))
@@ -254,7 +269,7 @@ public final class ApiBlocks implements IBlocks {
 
         AbstractBlock.IExtendedPositionPredicate<EntityType<?>> neverAllowSpawn = (p1, p2, p3, p4) -> false;
         this.quartzGlass = registry.features(AEFeature.QUARTZ_GLASS).block("quartz_glass", () -> {
-            return new QuartzGlassBlock(glassProps().allowsSpawning(neverAllowSpawn));
+            return new QuartzGlassBlock(defaultProps(Material.GLASS).notSolid().setAllowsSpawn(neverAllowSpawn));
         }).rendering(new BlockRenderingCustomizer() {
             @Override
             @Environment(EnvType.CLIENT)
@@ -264,7 +279,8 @@ public final class ApiBlocks implements IBlocks {
         }).build();
         this.quartzVibrantGlass = deco
                 .block("quartz_vibrant_glass",
-                        () -> new QuartzLampBlock(glassProps().lightLevel(15).setAllowsSpawn(neverAllowSpawn)))
+                        () -> new QuartzLampBlock(defaultProps(Material.GLASS).setLightLevel(b -> 15).notSolid()
+                                .setAllowsSpawn(neverAllowSpawn)))
                 .addFeatures(AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS)
                 .rendering(new BlockRenderingCustomizer() {
                     @Override
@@ -376,7 +392,7 @@ public final class ApiBlocks implements IBlocks {
         this.tinyTNT = registry
                 .block("tiny_tnt",
                         () -> new TinyTNTBlock(
-                                defaultProps(Material.TNT).sound(SoundType.PLANT).zeroHardnessAndResistance()))
+                                defaultProps(Material.TNT).sound(SoundType.GROUND).hardnessAndResistance(0).notSolid()))
                 .features(AEFeature.TINY_TNT).bootstrap((block, item) -> (IInitComponent) () -> DispenserBlock
                         .registerDispenseBehavior(item, new TinyTNTDispenseItemBehavior()))
                 .build();
@@ -566,33 +582,38 @@ public final class ApiBlocks implements IBlocks {
 
         this.skyStoneStairs = deco
                 .block("sky_stone_stairs",
-                        () -> new AEStairsBlock(this.skyStoneBlock().block().getDefaultState(), SKYSTONE_PROPERTIES))
+                        () -> new AEStairsBlock(this.skyStoneBlock().block()::getDefaultState, SKYSTONE_PROPERTIES))
                 .addFeatures(AEFeature.SKY_STONE).build();
-        this.smoothSkyStoneStairs = deco.block("smooth_sky_stone_stairs",
-                () -> new AEStairsBlock(this.smoothSkyStoneBlock().block().getDefaultState(), SKYSTONE_PROPERTIES))
+        this.smoothSkyStoneStairs = deco
+                .block("smooth_sky_stone_stairs",
+                        () -> new AEStairsBlock(this.smoothSkyStoneBlock().block()::getDefaultState,
+                                SKYSTONE_PROPERTIES))
                 .addFeatures(AEFeature.SKY_STONE).build();
         this.skyStoneBrickStairs = deco
                 .block("sky_stone_brick_stairs",
-                        () -> new AEStairsBlock(this.skyStoneBrick().block().getDefaultState(), SKYSTONE_PROPERTIES))
+                        () -> new AEStairsBlock(this.skyStoneBrick().block()::getDefaultState, SKYSTONE_PROPERTIES))
                 .addFeatures(AEFeature.SKY_STONE).build();
-        this.skyStoneSmallBrickStairs = deco.block("sky_stone_small_brick_stairs",
-                () -> new AEStairsBlock(this.skyStoneSmallBrick().block().getDefaultState(), SKYSTONE_PROPERTIES))
+        this.skyStoneSmallBrickStairs = deco
+                .block("sky_stone_small_brick_stairs",
+                        () -> new AEStairsBlock(this.skyStoneSmallBrick().block()::getDefaultState,
+                                SKYSTONE_PROPERTIES))
                 .addFeatures(AEFeature.SKY_STONE).build();
 
         this.fluixStairs = deco
                 .block("fluix_stairs",
-                        () -> new AEStairsBlock(this.fluixBlock().block().getDefaultState(), QUARTZ_PROPERTIES))
+                        () -> new AEStairsBlock(this.fluixBlock().block()::getDefaultState, QUARTZ_PROPERTIES))
                 .addFeatures(AEFeature.FLUIX).build();
         this.quartzStairs = deco
                 .block("quartz_stairs",
-                        () -> new AEStairsBlock(this.quartzBlock().block().getDefaultState(), QUARTZ_PROPERTIES))
+                        () -> new AEStairsBlock(this.quartzBlock().block()::getDefaultState, QUARTZ_PROPERTIES))
                 .addFeatures(AEFeature.CERTUS).build();
-        this.chiseledQuartzStairs = deco.block("chiseled_quartz_stairs",
-                () -> new AEStairsBlock(this.chiseledQuartzBlock().block().getDefaultState(), QUARTZ_PROPERTIES))
+        this.chiseledQuartzStairs = deco
+                .block("chiseled_quartz_stairs",
+                        () -> new AEStairsBlock(this.chiseledQuartzBlock().block()::getDefaultState, QUARTZ_PROPERTIES))
                 .addFeatures(AEFeature.CERTUS).build();
         this.quartzPillarStairs = deco
                 .block("quartz_pillar_stairs",
-                        () -> new AEStairsBlock(this.quartzPillar().block().getDefaultState(), QUARTZ_PROPERTIES))
+                        () -> new AEStairsBlock(this.quartzPillar().block()::getDefaultState, QUARTZ_PROPERTIES))
                 .addFeatures(AEFeature.CERTUS).build();
 
         this.multiPart = registry.block("cable_bus", CableBusBlock::new).rendering(new CableBusRendering())
