@@ -172,7 +172,7 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
     }
 
     private void fireOnChangeInventory(int slot, InvOperation op, ItemStack removed, ItemStack inserted) {
-        if (this.te != null && Platform.isServer() && !this.dirtyFlag) {
+        if (this.te != null && !this.te.isRemote() && !this.dirtyFlag) {
             this.dirtyFlag = true;
             this.te.onChangeInventory(this, slot, op, removed, inserted);
             this.te.saveChanges();
