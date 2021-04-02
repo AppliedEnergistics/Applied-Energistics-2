@@ -387,29 +387,13 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 			{
 				if( !itemstack.isEmpty() )
 				{
-					Set<IItemHandler> visitedInterfaces = new HashSet<>();
 					for( final Slot dr : this.drag_click )
 					{
-						IItemHandler interfaceHandler = ( (SlotDisconnected) slot ).getSlot().getInventory();
-						if (visitedInterfaces.contains( interfaceHandler )) break;
-						visitedInterfaces.add( interfaceHandler );
-						boolean canInsert = true;
-						for( int s = 0; s < interfaceHandler.getSlots(); s++ )
+						if( slot.getStack().isEmpty() )
 						{
-							if( ItemStack.areItemStacksEqual( interfaceHandler.getStackInSlot( s ), itemstack ) )
-							{
-								canInsert = false;
-								break;
-							}
-						}
-						if( canInsert )
-						{
-							if( slot.getStack().isEmpty() )
-							{
-								InventoryAction action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
-								final PacketInventoryAction p = new PacketInventoryAction( action, dr.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
-								NetworkHandler.instance().sendToServer( p );
-							}
+							InventoryAction action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
+							final PacketInventoryAction p = new PacketInventoryAction( action, dr.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
+							NetworkHandler.instance().sendToServer( p );
 						}
 					}
 				}
@@ -538,23 +522,12 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 				case PICKUP: // pickup / set-down.
 					if( slot.getStack().isEmpty() && !player.inventory.getItemStack().isEmpty() )
 					{
-						boolean canInsert = true;
-						IItemHandler interfaceHandler = ( (SlotDisconnected) slot ).getSlot().getInventory();
-						for( int s = 0; s < interfaceHandler.getSlots(); s++ )
-						{
-							if( ItemStack.areItemStacksEqual( interfaceHandler.getStackInSlot( s ), player.inventory.getItemStack() ) )
-							{
-								canInsert = false;
-								break;
-							}
-						}
-						if( canInsert )
-						{
-							action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
-						}
-						break;
+						action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
 					}
-					if( !slot.getStack().isEmpty() && player.inventory.getItemStack().getCount() <= 1 ) action = InventoryAction.PICKUP_OR_SET_DOWN;
+					if( !slot.getStack().isEmpty() && player.inventory.getItemStack().getCount() <= 1 )
+					{
+						action = InventoryAction.PICKUP_OR_SET_DOWN;
+					}
 					break;
 				case QUICK_MOVE:
 					action = ( mouseButton == 1 ) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;

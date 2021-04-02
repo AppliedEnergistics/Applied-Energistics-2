@@ -215,35 +215,48 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			final IItemHandler theSlot = new WrapperFilteredItemHandler( new WrapperRangeItemHandler( inv.server, slot, slot + 1 ), new PatternSlotFilter() );
 			final InventoryAdaptor interfaceSlot = new AdaptorItemHandler( theSlot );
 
-			switch( action )
+			IItemHandler interfaceHandler = inv.server;
+			boolean canInsert = true;
+
+			switch ( action )
 			{
 				case PICKUP_OR_SET_DOWN:
-
 					if( hasItemInHand )
 					{
-						ItemStack inSlot = theSlot.getStackInSlot( 0 );
-						if( inSlot.isEmpty() )
+						for( int s = 0; s < interfaceHandler.getSlots(); s++ )
 						{
-							player.inventory.setItemStack( interfaceSlot.addItems( player.inventory.getItemStack() ) );
-						}
-						else
-						{
-							inSlot = inSlot.copy();
-							final ItemStack inHand = player.inventory.getItemStack().copy();
-
-							ItemHandlerUtil.setStackInSlot( theSlot, 0, ItemStack.EMPTY );
-							player.inventory.setItemStack( ItemStack.EMPTY );
-
-							player.inventory.setItemStack( interfaceSlot.addItems( inHand.copy() ) );
-
-							if( player.inventory.getItemStack().isEmpty() )
+							if( Platform.itemComparisons().isSameItem( interfaceHandler.getStackInSlot( s ), player.inventory.getItemStack() ) )
 							{
-								player.inventory.setItemStack( inSlot );
+								canInsert = false;
+								break;
+							}
+						}
+						if( canInsert )
+						{
+							ItemStack inSlot = theSlot.getStackInSlot( 0 );
+							if( inSlot.isEmpty() )
+							{
+								player.inventory.setItemStack( interfaceSlot.addItems( player.inventory.getItemStack() ) );
 							}
 							else
 							{
-								player.inventory.setItemStack( inHand );
-								ItemHandlerUtil.setStackInSlot( theSlot, 0, inSlot );
+								inSlot = inSlot.copy();
+								final ItemStack inHand = player.inventory.getItemStack().copy();
+
+								ItemHandlerUtil.setStackInSlot( theSlot, 0, ItemStack.EMPTY );
+								player.inventory.setItemStack( ItemStack.EMPTY );
+
+								player.inventory.setItemStack( interfaceSlot.addItems( inHand.copy() ) );
+
+								if( player.inventory.getItemStack().isEmpty() )
+								{
+									player.inventory.setItemStack( inSlot );
+								}
+								else
+								{
+									player.inventory.setItemStack( inHand );
+									ItemHandlerUtil.setStackInSlot( theSlot, 0, inSlot );
+								}
 							}
 						}
 					}
@@ -254,17 +267,27 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 
 					break;
 				case SPLIT_OR_PLACE_SINGLE:
-
 					if( hasItemInHand )
 					{
-						ItemStack extra = playerHand.removeItems( 1, ItemStack.EMPTY, null );
-						if( !extra.isEmpty() && !interfaceSlot.containsItems())
+						for( int s = 0; s < interfaceHandler.getSlots(); s++ )
 						{
-							extra = interfaceSlot.addItems( extra );
+							if( Platform.itemComparisons().isSameItem( interfaceHandler.getStackInSlot( s ), player.inventory.getItemStack() ) )
+							{
+								canInsert = false;
+								break;
+							}
 						}
-						if( !extra.isEmpty() )
+						if( canInsert )
 						{
-							playerHand.addItems( extra );
+							ItemStack extra = playerHand.removeItems( 1, ItemStack.EMPTY, null );
+							if( !extra.isEmpty() && !interfaceSlot.containsItems() )
+							{
+								extra = interfaceSlot.addItems( extra );
+							}
+							if( !extra.isEmpty() )
+							{
+								playerHand.addItems( extra );
+							}
 						}
 					}
 					else if( !is.isEmpty() )
