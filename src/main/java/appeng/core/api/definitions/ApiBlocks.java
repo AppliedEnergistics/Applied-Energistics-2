@@ -246,8 +246,7 @@ public final class ApiBlocks implements IBlocks {
             .hardnessAndResistance(3, 5);
 
     private static final AbstractBlock.Properties SKYSTONE_PROPERTIES = defaultProps(Material.ROCK)
-            .hardnessAndResistance(50,
-                    150);
+            .hardnessAndResistance(50, 150);
 
     public ApiBlocks(FeatureFactory registry) {
         this.quartzOre = registry.block("quartz_ore", () -> new QuartzOreBlock(QUARTZ_PROPERTIES))

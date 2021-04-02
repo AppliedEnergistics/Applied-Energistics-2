@@ -18,13 +18,10 @@
 
 package appeng.block.misc;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.VibrationChamberContainer;
-import appeng.core.AEConfig;
-import appeng.tile.misc.VibrationChamberTileEntity;
-import appeng.util.InteractionUtil;
+import java.util.Random;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -40,8 +37,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-import java.util.Random;
+import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.VibrationChamberContainer;
+import appeng.core.AEConfig;
+import appeng.tile.misc.VibrationChamberTileEntity;
+import appeng.util.InteractionUtil;
 
 public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChamberTileEntity> {
 
@@ -66,7 +68,7 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
 
     @Override
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-                                        final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return ActionResultType.PASS;
         }
