@@ -108,7 +108,6 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
         final WrapperSupplierItemHandler upgradeInventory = new WrapperSupplierItemHandler(
                 this::getCellUpgradeInventory);
-        // null, 3 * 8 );
 
         int offset = 0;
         final int y = 29;
