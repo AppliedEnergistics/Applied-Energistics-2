@@ -46,7 +46,7 @@ import appeng.api.util.INetworkToolAgent;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.NetworkStatusContainer;
+import appeng.container.me.NetworkStatusContainer;
 import appeng.container.implementations.NetworkToolContainer;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;

@@ -153,8 +153,10 @@ public class Platform {
      * @return formatted long value
      */
     public static String formatPowerLong(final long n, final boolean isRate) {
-        double p = ((double) n) / 100;
+        return formatPower(((double) n) / 100, isRate);
+    }
 
+    public static String formatPower(double p, boolean isRate) {
         final PowerUnits displayUnits = AEConfig.instance().getSelectedPowerUnit();
         p = PowerUnits.AE.convertTo(displayUnits, p);
 

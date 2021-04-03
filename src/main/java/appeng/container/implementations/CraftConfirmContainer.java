@@ -190,14 +190,10 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
                         }
                     }
 
-                    for (final Object g : this.listeners) {
-                        if (g instanceof PlayerEntity) {
-                            NetworkHandler.instance().sendTo(a, (ServerPlayerEntity) g);
-                            NetworkHandler.instance().sendTo(b, (ServerPlayerEntity) g);
-                            if (c != null) {
-                                NetworkHandler.instance().sendTo(c, (ServerPlayerEntity) g);
-                            }
-                        }
+                    sendPacketToClient(a);
+                    sendPacketToClient(b);
+                    if (c != null) {
+                        sendPacketToClient(c);
                     }
                 } catch (final IOException e) {
                     // :P

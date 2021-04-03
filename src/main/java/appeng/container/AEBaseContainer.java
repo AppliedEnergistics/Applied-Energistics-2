@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import appeng.core.sync.BasePacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -991,6 +992,14 @@ public abstract class AEBaseContainer extends Container {
      */
     protected boolean isServer() {
         return !isClient();
+    }
+
+    protected final void sendPacketToClient(BasePacket packet) {
+        for (IContainerListener c : this.listeners) {
+            if (c instanceof ServerPlayerEntity) {
+                NetworkHandler.instance().sendTo(packet, (ServerPlayerEntity) c);
+            }
+        }
     }
 
 }

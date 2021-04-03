@@ -39,7 +39,7 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.implementations.CraftConfirmScreen;
 import appeng.client.gui.implementations.CraftingCPUScreen;
-import appeng.client.gui.implementations.NetworkStatusScreen;
+import appeng.client.gui.me.NetworkStatusScreen;
 import appeng.client.gui.me.items.MEMonitorableScreen;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -101,10 +101,6 @@ public class MEInventoryUpdatePacket extends BasePacket {
 
         if (gs instanceof MEMonitorableScreen) {
             ((MEMonitorableScreen<?>) gs).postUpdate(this.list);
-        }
-
-        if (gs instanceof NetworkStatusScreen) {
-            ((NetworkStatusScreen) gs).postUpdate(this.list);
         }
     }
 

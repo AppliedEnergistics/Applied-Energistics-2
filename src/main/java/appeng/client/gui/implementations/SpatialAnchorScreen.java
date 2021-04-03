@@ -61,25 +61,25 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
         }
 
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchor.text()).getString(), 8, 6,
-                4210752);
+                COLOR_DARK_GRAY);
 
         String usedPower = GuiText.SpatialAnchorUsedPower
                 .text(Platform.formatPowerLong(this.container.powerConsumption * 100, true)).getString();
-        this.font.drawString(matrixStack, usedPower, 13, 21, 4210752);
+        this.font.drawString(matrixStack, usedPower, 13, 21, COLOR_DARK_GRAY);
         this.font.drawString(matrixStack,
-                GuiText.SpatialAnchorLoadedChunks.text(this.container.loadedChunks).getString(), 13, 31, 4210752);
+                GuiText.SpatialAnchorLoadedChunks.text(this.container.loadedChunks).getString(), 13, 31, COLOR_DARK_GRAY);
 
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchorStatistics.text()).getString(), 8,
-                56, 4210752);
+                56, COLOR_DARK_GRAY);
 
         this.font.drawString(matrixStack,
                 GuiText.SpatialAnchorAllLoaded.text(this.container.allLoadedChunks, this.container.allLoadedWorlds)
                         .getString(),
-                13, 71, 4210752);
+                13, 71, COLOR_DARK_GRAY);
 
         this.font.drawString(matrixStack,
                 GuiText.SpatialAnchorAll.text(this.container.allChunks, this.container.allWorlds).getString(), 13,
-                81, 4210752);
+                81, COLOR_DARK_GRAY);
     }
 
     @Override

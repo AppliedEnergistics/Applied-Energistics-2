@@ -68,7 +68,7 @@ public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContaine
             final int mouseY) {
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
         this.font.drawString(matrixStack, GuiText.CraftingTerminal.getLocal(), 8,
-                this.ySize - 96 + 1 - this.getReservedSpace(), 4210752);
+                this.ySize - 96 + 1 - this.getReservedSpace(), COLOR_DARK_GRAY);
     }
 
     @Override

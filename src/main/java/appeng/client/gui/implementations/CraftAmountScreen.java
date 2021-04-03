@@ -74,7 +74,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrices, GuiText.SelectAmount.text().getString(), 8, 6, 4210752);
+        this.font.drawString(matrices, GuiText.SelectAmount.text().getString(), 8, 6, COLOR_DARK_GRAY);
     }
 
     @Override

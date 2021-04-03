@@ -33,7 +33,10 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
     private final String displayName;
     private final String searchName;
 
-    // Identifier for this interface on the server-side
+    /**
+     * Identifier for this interface on the server-side.
+     * See {@link appeng.container.implementations.InterfaceTerminalContainer}
+     */
     private final long serverId;
 
     // The client-side representation of the machine's inventory, which is only used for display purposes
@@ -73,7 +76,4 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
         return inventory;
     }
 
-    public boolean matchesSearch(String searchFilterLowerCase) {
-        return this.searchName.contains(searchFilterLowerCase);
-    }
 }
