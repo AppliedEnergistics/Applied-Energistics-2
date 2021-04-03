@@ -150,11 +150,9 @@ task generateTestRunSettings {
 
         Properties p = new Properties()
         // For required variables, check the IDE run settings
-        ["MOD_CLASSES", "FORGE_VERSION", "MC_VERSION", "MCP_VERSION"].each {
+        ["FORGE_VERSION", "MC_VERSION", "MCP_VERSION"].each {
             p[it] = runClient.environment[it]
         }
-        // Ensure MOD_CLASSES also includes the test classes since they need to go through the transforming class-loader too
-        p["MOD_CLASSES"] += ";appliedenergistics2%%${sourceSets.test.java.outputDir.absolutePath}"
         p["WORKING_DIR"] = runClient.workingDir.absolutePath
         f.withOutputStream {p.store(it, "") }
     }

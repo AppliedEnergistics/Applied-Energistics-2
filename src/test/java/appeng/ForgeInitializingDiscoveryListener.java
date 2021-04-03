@@ -1,13 +1,6 @@
 package appeng;
 
 import cpw.mods.modlauncher.Launcher;
-import net.minecraft.util.registry.Bootstrap;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoader;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.ModWorkManager;
-import net.minecraftforge.fml.loading.FMLLoader;
-import org.assertj.core.util.Lists;
 import org.junit.platform.engine.DiscoverySelector;
 import org.junit.platform.engine.SelectorResolutionResult;
 import org.junit.platform.engine.UniqueId;
@@ -18,9 +11,13 @@ import org.junit.platform.launcher.LauncherDiscoveryRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
-public class LauncherInstrumentation implements LauncherDiscoveryListener {
+/**
+ * This is a discovery listener only to get control before any of the actual discovery process is being run.
+ * JUnit 5 will explicitly use the thread context class-loader to load test classes, which gives us the
+ * opportunity to set up FML and then let JUnit load test classes using the transforming class loader.
+ */
+public class ForgeInitializingDiscoveryListener implements LauncherDiscoveryListener {
 
     @Override
     public void launcherDiscoveryStarted(LauncherDiscoveryRequest request) {
@@ -38,14 +35,15 @@ public class LauncherInstrumentation implements LauncherDiscoveryListener {
         }
 
         System.setProperty("fml.earlyprogresswindow", "false");
-        System.setProperty("MOD_CLASSES", p.getProperty("MOD_CLASSES"));
-        System.setProperty("forge.logging.console.level", "debug");
+        System.setProperty("forge.logging.console.level", "info");
 
-        Launcher.main("-launchTarget", "junit",
+        Launcher.main(
+                "-launchTarget", "junit",
                 "-gameDir", p.getProperty("WORKING_DIR"),
                 "-fml.forgeVersion", p.getProperty("FORGE_VERSION"),
                 "-fml.mcVersion", p.getProperty("MC_VERSION"),
-                "-fml.mcpVersion", p.getProperty("MCP_VERSION"));
+                "-fml.mcpVersion", p.getProperty("MCP_VERSION")
+        );
     }
 
     @Override
