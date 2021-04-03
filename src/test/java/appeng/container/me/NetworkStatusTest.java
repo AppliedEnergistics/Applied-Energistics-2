@@ -14,22 +14,24 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.crafting.CraftingJob;
+import appeng.hooks.ticking.TickHandler;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.helpers.MachineSource;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import com.google.common.util.concurrent.MoreExecutors;
-import com.mojang.datafixers.DataFixer;
-import com.mojang.datafixers.DataFixerBuilder;
+import appeng.util.item.ItemList;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.DimensionSavedDataManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
@@ -46,37 +48,31 @@ import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @MinecraftTest
 @MockitoSettings
 class NetworkStatusTest {
-
-    public static final DataFixer NOOP_DATA_FIXER = new DataFixerBuilder(0).build(MoreExecutors.directExecutor());
 
     @TempDir
     File tempDir;
 
     private static MockedStatic<Platform> platformMock;
 
+    private TestServer server;
     private ServerWorld overworld;
 
     @BeforeEach
-    void setupPlatform() {
+    void setupPlatform() throws Exception {
         platformMock = Mockito.mockStatic(Platform.class);
         platformMock.when(Platform::isServer).thenReturn(true);
         platformMock.when(Platform::assertServerThread).then(invocation -> null);
 //        platformMock.when(Platform::hasClientClasses).thenReturn(true);
 
-        overworld = mock(ServerWorld.class);
-        when(overworld.getDimensionKey()).thenReturn(ServerWorld.OVERWORLD);
+        server = TestServer.create(tempDir.toPath());
+        overworld = server.getWorld(ServerWorld.OVERWORLD);
 
-        DimensionSavedDataManager savedData = new DimensionSavedDataManager(tempDir, NOOP_DATA_FIXER);
-        when(overworld.getSavedData()).thenReturn(savedData);
-
-        MinecraftServer serverMock = mock(MinecraftServer.class);
-        when(serverMock.getWorld(overworld.getDimensionKey())).thenReturn(overworld);
-        WorldData.onServerStarting(serverMock);
+        TickHandler.instance();
+        WorldData.onServerStarting(server);
 
     }
 
@@ -87,8 +83,16 @@ class NetworkStatusTest {
 
     @Test
     void testCreateStatus() throws Throwable {
+
         FakeMachine machine = new FakeMachine();
         Grid grid = Grid.create(new GridNode(machine));
+
+        Block iface = Api.instance().definitions().blocks().iface().block();
+        overworld.setBlockState(BlockPos.ZERO, iface.getDefaultState());
+        server.tick();
+
+        TileEntity ifaceTe = overworld.getTileEntity(BlockPos.ZERO);
+
         IActionSource actionSrc = new MachineSource(machine);
 
         ICraftingCallback callback = mock(ICraftingCallback.class);
@@ -107,13 +111,9 @@ class NetworkStatusTest {
             throw jobException.get();
         }
 
-//        when(grid.getCache(IEnergyGrid.class)).thenReturn(energyGrid);
-//        when(grid.getMachinesClasses()).thenReturn(new ReadOnlyCollection<>(Lists.newArrayList(InterfaceTileEntity.class, InterfacePart.class)));
-//        MachineSet interfaceBlockSet = new MachineSet(InterfaceTileEntity.class);
-//        when(grid.getMachines(InterfacePart.class)).thenReturn(interfaceBlockSet);
-//        when(grid.getMachines(InterfaceTileEntity.class)).thenReturn(interfacePartSet);
-
-//        NetworkStatus.fromGrid(grid);
+        ItemList il = new ItemList();
+        job.populatePlan(il);
+        System.out.println();
 
     }
 
@@ -196,5 +196,6 @@ class NetworkStatusTest {
             return getGridNode(AEPartLocation.INTERNAL);
         }
     }
+
 
 }

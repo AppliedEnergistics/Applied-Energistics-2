@@ -3,6 +3,8 @@ package appeng;
 import appeng.core.AppEng;
 import appeng.core.RegistrationTestHelper;
 import net.minecraft.util.registry.Bootstrap;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.EventBus;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.ModWorkManager;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +38,8 @@ public class MinecraftTestExtension implements BeforeAllCallback {
         });
 
         RegistrationTestHelper.setupInternals();
+
+        MinecraftForge.EVENT_BUS.start();
     }
 
 }
