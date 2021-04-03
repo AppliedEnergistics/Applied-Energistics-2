@@ -1,5 +1,7 @@
 package appeng;
 
+import appeng.core.AppEng;
+import appeng.core.RegistrationTestHelper;
 import net.minecraft.util.registry.Bootstrap;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.ModWorkManager;
@@ -29,8 +31,11 @@ public class MinecraftTestExtension implements BeforeAllCallback {
         Bootstrap.register();
 
         LOGGER.info("Initializing Mods");
-        ModLoader.get().gatherAndInitializeMods(ModWorkManager.syncExecutor(), ModWorkManager.parallelExecutor(), () -> {
+        ModLoader modLoader = ModLoader.get();
+        modLoader.gatherAndInitializeMods(ModWorkManager.syncExecutor(), ModWorkManager.parallelExecutor(), () -> {
         });
+
+        RegistrationTestHelper.setupInternals();
     }
 
 }
