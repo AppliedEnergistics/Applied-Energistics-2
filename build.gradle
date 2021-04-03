@@ -77,10 +77,13 @@ dependencies {
     }
 
     // unit test dependencies
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.0-M1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.0-M1")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.8.0-M1")
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:3.8.0")
+    testImplementation("org.mockito:mockito-inline:3.8.0")
 
     // Annotation Processors
     annotationProcessor 'org.spongepowered:mixin:0.8:processor'
@@ -131,10 +134,33 @@ sourceSets {
         }
     }
     test {
+        resources {
+            srcDir "${project.buildDir}/generated/test"
+        }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }
 }
+
+task generateTestRunSettings {
+    doLast {
+        // Copy required environment variables from runClient task
+        def f = file("${project.buildDir}/generated/test/appeng_test.properties")
+        f.parentFile.mkdirs()
+
+        Properties p = new Properties()
+        // For required variables, check the IDE run settings
+        ["MOD_CLASSES", "FORGE_VERSION", "MC_VERSION", "MCP_VERSION"].each {
+            p[it] = runClient.environment[it]
+        }
+        // Ensure MOD_CLASSES also includes the test classes since they need to go through the transforming class-loader too
+        p["MOD_CLASSES"] += ";appliedenergistics2%%${sourceSets.test.java.outputDir.absolutePath}"
+        p["WORKING_DIR"] = runClient.workingDir.absolutePath
+        f.withOutputStream {p.store(it, "") }
+    }
+}
+
+compileTestJava.dependsOn generateTestRunSettings
 
 configurations {
     apiCompile.extendsFrom(compile)
