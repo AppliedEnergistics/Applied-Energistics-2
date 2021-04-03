@@ -27,20 +27,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.InventoryActionPacket;
-import appeng.helpers.DualityInterface;
-import appeng.helpers.InventoryAction;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.inventory.container.ClickType;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -62,6 +58,10 @@ import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.helpers.DualityInterface;
+import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 
 public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalContainer> {

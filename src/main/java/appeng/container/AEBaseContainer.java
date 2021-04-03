@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import appeng.core.sync.BasePacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -65,6 +64,7 @@ import appeng.container.slot.PlayerHotBarSlot;
 import appeng.container.slot.PlayerInvSlot;
 import appeng.core.AELog;
 import appeng.core.Api;
+import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.TargetItemStackPacket;

@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import appeng.core.sync.packets.NetworkStatusPacket;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.core.sync.packets.AssemblerAnimationPacket;
@@ -34,15 +33,16 @@ import appeng.core.sync.packets.ConfigButtonPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.CraftRequestPacket;
 import appeng.core.sync.packets.FluidSlotPacket;
+import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.ItemTransitionEffectPacket;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.core.sync.packets.LightningPacket;
 import appeng.core.sync.packets.MEFluidInventoryUpdatePacket;
-import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.core.sync.packets.MatterCannonPacket;
 import appeng.core.sync.packets.MockExplosionPacket;
+import appeng.core.sync.packets.NetworkStatusPacket;
 import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.core.sync.packets.PatternSlotPacket;
@@ -108,8 +108,7 @@ public class BasePacketHandler {
 
         PACKET_FLUID_TANK(FluidSlotPacket.class, FluidSlotPacket::new),
 
-        NETWORK_STATUS(NetworkStatusPacket.class, NetworkStatusPacket::new)
-        ;
+        NETWORK_STATUS(NetworkStatusPacket.class, NetworkStatusPacket::new);
 
         private final Function<PacketBuffer, BasePacket> factory;
 

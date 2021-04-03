@@ -67,7 +67,8 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
                 .text(Platform.formatPowerLong(this.container.powerConsumption * 100, true)).getString();
         this.font.drawString(matrixStack, usedPower, 13, 21, COLOR_DARK_GRAY);
         this.font.drawString(matrixStack,
-                GuiText.SpatialAnchorLoadedChunks.text(this.container.loadedChunks).getString(), 13, 31, COLOR_DARK_GRAY);
+                GuiText.SpatialAnchorLoadedChunks.text(this.container.loadedChunks).getString(), 13, 31,
+                COLOR_DARK_GRAY);
 
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchorStatistics.text()).getString(), 8,
                 56, COLOR_DARK_GRAY);

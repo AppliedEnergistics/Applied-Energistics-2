@@ -1,5 +1,15 @@
 package appeng.container.me;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridHost;
@@ -7,17 +17,10 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Contains statistics about an ME network and its machines.
+ * 
  * @see appeng.client.gui.me.NetworkStatusScreen
  */
 public class NetworkStatus {

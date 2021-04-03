@@ -1,8 +1,10 @@
 package appeng.client.gui;
 
-import appeng.core.AppEng;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Rectangle2d;
@@ -13,11 +15,13 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
-import org.lwjgl.opengl.GL11;
+
+import appeng.core.AppEng;
 
 public final class Blitter {
 
-    private static final ResourceLocation ICON_SPRITESHEET = new ResourceLocation(AppEng.MOD_ID, "textures/guis/states.png");
+    private static final ResourceLocation ICON_SPRITESHEET = new ResourceLocation(AppEng.MOD_ID,
+            "textures/guis/states.png");
 
     // This assumption is obviously bogus, but currently all textures are this size,
     // and it's impossible to get the texture size from an already loaded texture.

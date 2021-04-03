@@ -20,13 +20,14 @@ package appeng.client.gui.me.interfaceterminal;
 
 import javax.annotation.Nonnull;
 
-import appeng.helpers.DualityInterface;
-import appeng.tile.inventory.AppEngInternalInventory;
 import net.minecraft.util.text.ITextComponent;
 
+import appeng.helpers.DualityInterface;
+import appeng.tile.inventory.AppEngInternalInventory;
+
 /**
- * This class is used on the client-side to represent an interface and it's inventory as it is shown
- * in the {@link InterfaceTerminalScreen}'s table.
+ * This class is used on the client-side to represent an interface and it's inventory as it is shown in the
+ * {@link InterfaceTerminalScreen}'s table.
  */
 public class InterfaceRecord implements Comparable<InterfaceRecord> {
 
@@ -34,8 +35,8 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
     private final String searchName;
 
     /**
-     * Identifier for this interface on the server-side.
-     * See {@link appeng.container.implementations.InterfaceTerminalContainer}
+     * Identifier for this interface on the server-side. See
+     * {@link appeng.container.implementations.InterfaceTerminalContainer}
      */
     private final long serverId;
 

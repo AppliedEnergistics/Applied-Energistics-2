@@ -18,6 +18,18 @@
 
 package appeng.client.gui.me;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -32,16 +44,6 @@ import appeng.container.me.NetworkStatus;
 import appeng.container.me.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> implements ISortSource {
 
@@ -56,7 +58,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
             .src(0, 0, 195, 153);
 
     public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
-                               ITextComponent title) {
+            ITextComponent title) {
         super(container, playerInventory, title);
         final Scrollbar scrollbar = new Scrollbar();
 
@@ -106,13 +108,13 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
 
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-                       float partialTicks) {
+            float partialTicks) {
         BACKGROUND.dest(offsetX, offsetY).blit(matrices, getBlitOffset());
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         this.font.drawString(matrixStack, GuiText.NetworkDetails.getLocal(), 8, 6, COLOR_DARK_GRAY);
 
         this.font.drawString(matrixStack,
@@ -168,7 +170,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
 
                 tooltip.add(GuiText.Installed.withSuffix(": " + entry.getCount()));
                 if (entry.getIdlePowerUsage() > 0) {
-                    tooltip.add(GuiText.EnergyDrain.withSuffix(": " + Platform.formatPower(entry.getIdlePowerUsage(), true)));
+                    tooltip.add(GuiText.EnergyDrain
+                            .withSuffix(": " + Platform.formatPower(entry.getIdlePowerUsage(), true)));
                 }
 
                 toolPosX = x * sectionLength + xo + sectionLength - 8;

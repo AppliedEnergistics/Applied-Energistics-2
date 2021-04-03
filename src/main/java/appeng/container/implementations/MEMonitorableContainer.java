@@ -18,6 +18,20 @@
 
 package appeng.container.implementations;
 
+import java.io.IOException;
+import java.nio.BufferOverflowException;
+
+import javax.annotation.Nonnull;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
@@ -61,18 +75,6 @@ import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-
-import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.nio.BufferOverflowException;
 
 public class MEMonitorableContainer extends AEBaseContainer
         implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack> {
@@ -115,7 +117,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     public MEMonitorableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
-                                  final ITerminalHost monitorable, final boolean bindInventory) {
+            final ITerminalHost monitorable, final boolean bindInventory) {
         super(containerType, id, ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null,
                 monitorable instanceof IPart ? (IPart) monitorable : null,
                 monitorable instanceof IGuiItemObject ? (IGuiItemObject) monitorable : null);
@@ -362,7 +364,7 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     @Override
     public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
-                           final IActionSource source) {
+            final IActionSource source) {
         for (final IAEItemStack is : change) {
             this.items.add(is);
         }

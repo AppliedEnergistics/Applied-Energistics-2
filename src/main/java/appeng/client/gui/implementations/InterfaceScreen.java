@@ -71,7 +71,8 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
             this.interfaceMode.setState(((InterfaceContainer) this.cvb).getInterfaceTerminalMode() == YesNo.YES);
         }
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Interface.text()).getString(), 8, 6, COLOR_DARK_GRAY);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Interface.text()).getString(), 8, 6,
+                COLOR_DARK_GRAY);
 
         this.font.drawString(matrixStack, GuiText.Config.getLocal(), 8, 6 + 11 + 7, COLOR_DARK_GRAY);
         this.font.drawString(matrixStack, GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, COLOR_DARK_GRAY);

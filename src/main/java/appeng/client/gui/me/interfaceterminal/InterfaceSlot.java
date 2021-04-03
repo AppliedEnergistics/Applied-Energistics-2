@@ -18,14 +18,14 @@
 
 package appeng.client.gui.me.interfaceterminal;
 
-import appeng.container.slot.AppEngSlot;
-import appeng.items.misc.EncodedPatternItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
+import appeng.container.slot.AppEngSlot;
+import appeng.items.misc.EncodedPatternItem;
+
 /**
- * This slot is used in the {@link InterfaceTerminalScreen}
- * to interact with the internal inventory of interfaces.
+ * This slot is used in the {@link InterfaceTerminalScreen} to interact with the internal inventory of interfaces.
  */
 public class InterfaceSlot extends AppEngSlot {
 

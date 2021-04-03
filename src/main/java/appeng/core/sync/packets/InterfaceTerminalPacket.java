@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -29,6 +28,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 

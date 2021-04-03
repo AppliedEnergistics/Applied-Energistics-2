@@ -1,14 +1,16 @@
 package appeng.core.sync.packets;
 
-import appeng.client.gui.me.NetworkStatusScreen;
-import appeng.container.me.NetworkStatus;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+
+import appeng.client.gui.me.NetworkStatusScreen;
+import appeng.container.me.NetworkStatus;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.INetworkInfo;
 
 public class NetworkStatusPacket extends BasePacket {
 
