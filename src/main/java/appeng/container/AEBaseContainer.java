@@ -64,6 +64,7 @@ import appeng.container.slot.PlayerHotBarSlot;
 import appeng.container.slot.PlayerInvSlot;
 import appeng.core.AELog;
 import appeng.core.Api;
+import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.TargetItemStackPacket;
@@ -991,6 +992,14 @@ public abstract class AEBaseContainer extends Container {
      */
     protected boolean isServer() {
         return !isClient();
+    }
+
+    protected final void sendPacketToClient(BasePacket packet) {
+        for (IContainerListener c : this.listeners) {
+            if (c instanceof ServerPlayerEntity) {
+                NetworkHandler.instance().sendTo(packet, (ServerPlayerEntity) c);
+            }
+        }
     }
 
 }

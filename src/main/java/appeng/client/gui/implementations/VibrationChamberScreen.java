@@ -54,8 +54,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
         this.font.drawString(matrices, this.getGuiDisplayName(GuiText.VibrationChamber.text()).getString(), 8, 6,
-                4210752);
-        this.font.drawString(matrices, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+                COLOR_DARK_GRAY);
+        this.font.drawString(matrices, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
 
         this.pb.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
                 * this.container.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));

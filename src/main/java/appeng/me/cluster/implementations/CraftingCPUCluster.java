@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
+import com.google.common.collect.Lists;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

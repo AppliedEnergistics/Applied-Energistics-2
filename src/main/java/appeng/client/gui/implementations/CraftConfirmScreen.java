@@ -164,7 +164,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         final String byteUsed = NumberFormat.getInstance().format(BytesUsed);
         final String Add = BytesUsed > 0 ? (byteUsed + ' ' + GuiText.BytesUsed.getLocal())
                 : GuiText.CalculatingWait.getLocal();
-        this.font.drawString(matrixStack, GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752);
+        this.font.drawString(matrixStack, GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, COLOR_DARK_GRAY);
 
         String dsp = null;
 
@@ -178,7 +178,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         }
 
         final int offset = (219 - this.font.getStringWidth(dsp)) / 2;
-        this.font.drawString(matrixStack, dsp, offset, 165, 4210752);
+        this.font.drawString(matrixStack, dsp, offset, 165, COLOR_DARK_GRAY);
 
         final int sectionLength = 67;
 
@@ -234,7 +234,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                     final int w = 4 + this.font.getStringWidth(str);
                     this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
-                            (y * offY + yo + 6 - negY + downY) * 2, 4210752);
+                            (y * offY + yo + 6 - negY + downY) * 2, COLOR_DARK_GRAY);
 
                     if (this.tooltip == z - viewStart) {
                         lineList.add(GuiText.FromStorage.getLocal() + ": " + Long.toString(stored.getStackSize()));
@@ -257,7 +257,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                     final int w = 4 + this.font.getStringWidth(str);
                     this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
-                            (y * offY + yo + 6 - negY + downY) * 2, 4210752);
+                            (y * offY + yo + 6 - negY + downY) * 2, COLOR_DARK_GRAY);
 
                     if (this.tooltip == z - viewStart) {
                         lineList.add(GuiText.Missing.getLocal() + ": " + Long.toString(missingStack.getStackSize()));
@@ -280,7 +280,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                     final int w = 4 + this.font.getStringWidth(str);
                     this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
-                            (y * offY + yo + 6 - negY + downY) * 2, 4210752);
+                            (y * offY + yo + 6 - negY + downY) * 2, COLOR_DARK_GRAY);
 
                     if (this.tooltip == z - viewStart) {
                         lineList.add(GuiText.ToCraft.getLocal() + ": " + Long.toString(pendingStack.getStackSize()));

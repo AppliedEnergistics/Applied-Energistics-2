@@ -1,8 +1,10 @@
 package appeng.client.gui;
 
-import appeng.core.AppEng;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Rectangle2d;
@@ -13,11 +15,13 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
-public final class BlitBuilder {
+import appeng.core.AppEng;
 
-    private static final ResourceLocation ICON_SPRITESHEET = new ResourceLocation(AppEng.MOD_ID, "textures/guis/states.png");
+public final class Blitter {
+
+    private static final ResourceLocation ICON_SPRITESHEET = new ResourceLocation(AppEng.MOD_ID,
+            "textures/guis/states.png");
 
     // This assumption is obviously bogus, but currently all textures are this size,
     // and it's impossible to get the texture size from an already loaded texture.
@@ -34,12 +38,12 @@ public final class BlitBuilder {
     private Rectangle2d srcRect;
     private Rectangle2d destRect = new Rectangle2d(0, 0, 0, 0);
 
-    private BlitBuilder(ResourceLocation texture) {
+    private Blitter(ResourceLocation texture) {
         this.texture = texture;
     }
 
-    public static BlitBuilder texture(String file) {
-        return new BlitBuilder(new ResourceLocation(AppEng.MOD_ID, "textures/" + file));
+    public static Blitter texture(String file) {
+        return new Blitter(new ResourceLocation(AppEng.MOD_ID, "textures/" + file));
     }
 
     /**
@@ -47,19 +51,27 @@ public final class BlitBuilder {
      *
      * @param iconIndex The index of the icon in the sprite-sheet, starting at 0, in right-then-down order.
      */
-    public static BlitBuilder icon(int iconIndex) {
+    public static Blitter icon(int iconIndex) {
         // The icon sprite-sheet is 16x16 icons of 16x16 pixels
         int iconY = iconIndex / 16;
         int iconX = iconIndex - iconY * 16;
 
-        return new BlitBuilder(ICON_SPRITESHEET)
+        return new Blitter(ICON_SPRITESHEET)
                 .src(iconX * 16, iconY * 16, 16, 16);
+    }
+
+    public int getSrcWidth() {
+        return srcRect == null ? destRect.getWidth() : srcRect.getWidth();
+    }
+
+    public int getSrcHeight() {
+        return srcRect == null ? destRect.getHeight() : srcRect.getHeight();
     }
 
     /**
      * Use the given rectangle from the texture (in pixels assuming a 256x256 texture size).
      */
-    public BlitBuilder src(int x, int y, int w, int h) {
+    public Blitter src(int x, int y, int w, int h) {
         this.srcRect = new Rectangle2d(x, y, w, h);
         return this;
     }
@@ -67,14 +79,14 @@ public final class BlitBuilder {
     /**
      * Use the given rectangle from the texture (in pixels assuming a 256x256 texture size).
      */
-    public BlitBuilder src(Rectangle2d rect) {
+    public Blitter src(Rectangle2d rect) {
         return src(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 
     /**
      * Draw into the rectangle defined by the given coordinates.
      */
-    public BlitBuilder dest(int x, int y, int w, int h) {
+    public Blitter dest(int x, int y, int w, int h) {
         this.destRect = new Rectangle2d(x, y, w, h);
         return this;
     }
@@ -82,30 +94,30 @@ public final class BlitBuilder {
     /**
      * Draw at the given x,y coordinate and use the source rectangle size as the destination rectangle size.
      */
-    public BlitBuilder dest(int x, int y) {
+    public Blitter dest(int x, int y) {
         return dest(x, y, 0, 0);
     }
 
     /**
      * Draw into the given rectangle.
      */
-    public BlitBuilder dest(Rectangle2d rect) {
+    public Blitter dest(Rectangle2d rect) {
         return dest(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 
-    public BlitBuilder color(float r, float g, float b) {
+    public Blitter color(float r, float g, float b) {
         this.r = (int) (MathHelper.clamp(r, 0, 1) * 255);
         this.g = (int) (MathHelper.clamp(g, 0, 1) * 255);
         this.b = (int) (MathHelper.clamp(b, 0, 1) * 255);
         return this;
     }
 
-    public BlitBuilder opacity(float a) {
+    public Blitter opacity(float a) {
         this.a = (int) (MathHelper.clamp(a, 0, 1) * 255);
         return this;
     }
 
-    public BlitBuilder color(float r, float g, float b, float a) {
+    public Blitter color(float r, float g, float b, float a) {
         return color(r, g, b).opacity(a);
     }
 

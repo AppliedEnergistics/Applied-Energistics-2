@@ -20,8 +20,6 @@ package appeng.container.slot;
 
 import javax.annotation.Nonnull;
 
-import appeng.client.gui.me.interfaceterminal.InterfaceSlot;
-import appeng.core.AELog;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
@@ -31,7 +29,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.client.gui.me.interfaceterminal.InterfaceSlot;
 import appeng.container.AEBaseContainer;
+import appeng.core.AELog;
 import appeng.util.helpers.ItemHandlerUtil;
 
 public class AppEngSlot extends Slot {
@@ -178,8 +178,8 @@ public class AppEngSlot extends Slot {
     }
 
     /**
-     * This method can be overridden in a subclass to show a specific item stack in the UI when this slot is
-     * being rendered.
+     * This method can be overridden in a subclass to show a specific item stack in the UI when this slot is being
+     * rendered.
      */
     public ItemStack getDisplayStack() {
         return this.itemHandler.getStackInSlot(this.invSlot);
@@ -218,8 +218,8 @@ public class AppEngSlot extends Slot {
     }
 
     /**
-     * Indicate that this slot is currently being rendered, which is used to provide a slot with the
-     * ability to return a different stack for rendering purposes by overriding {@link #getDisplayStack()}.
+     * Indicate that this slot is currently being rendered, which is used to provide a slot with the ability to return a
+     * different stack for rendering purposes by overriding {@link #getDisplayStack()}.
      */
     public void setRendering(final boolean rendering) {
         this.rendering = rendering;
@@ -266,8 +266,8 @@ public class AppEngSlot extends Slot {
     }
 
     /**
-     * Override in subclasses to customize the validation state of a slot, which is used to draw
-     * a red backdrop for invalid slots. Please note that the return value is cached.
+     * Override in subclasses to customize the validation state of a slot, which is used to draw a red backdrop for
+     * invalid slots. Please note that the return value is cached.
      *
      * @return True if the current state of the slot is valid, false otherwise.
      * @see #resetCachedValidation()

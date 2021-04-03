@@ -87,7 +87,7 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
             final int mouseY) {
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
         this.font.drawString(matrixStack, GuiText.SecurityCardEditor.getLocal(), 8,
-                this.ySize - 96 + 1 - this.getReservedSpace(), 4210752);
+                this.ySize - 96 + 1 - this.getReservedSpace(), COLOR_DARK_GRAY);
     }
 
     @Override

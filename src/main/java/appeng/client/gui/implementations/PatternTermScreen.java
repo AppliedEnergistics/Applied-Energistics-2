@@ -129,7 +129,7 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
 
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
         this.font.drawString(matrixStack, GuiText.PatternTerminal.getLocal(), 8,
-                this.ySize - 96 + 2 - this.getReservedSpace(), 4210752);
+                this.ySize - 96 + 2 - this.getReservedSpace(), COLOR_DARK_GRAY);
     }
 
     @Override

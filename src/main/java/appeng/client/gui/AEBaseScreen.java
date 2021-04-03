@@ -18,26 +18,23 @@
 
 package appeng.client.gui;
 
-import appeng.client.gui.widgets.CustomSlotWidget;
-import appeng.client.gui.widgets.ITickingWidget;
-import appeng.client.gui.widgets.ITooltip;
-import appeng.client.gui.widgets.Scrollbar;
-import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.CraftingTermSlot;
-import appeng.container.slot.FakeSlot;
-import appeng.container.slot.IOptionalSlot;
-import appeng.container.slot.PatternTermSlot;
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.InventoryActionPacket;
-import appeng.core.sync.packets.SwapSlotsPacket;
-import appeng.helpers.InventoryAction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -55,20 +52,27 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import appeng.client.gui.widgets.CustomSlotWidget;
+import appeng.client.gui.widgets.ITickingWidget;
+import appeng.client.gui.widgets.ITooltip;
+import appeng.client.gui.widgets.Scrollbar;
+import appeng.container.AEBaseContainer;
+import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.CraftingTermSlot;
+import appeng.container.slot.FakeSlot;
+import appeng.container.slot.IOptionalSlot;
+import appeng.container.slot.PatternTermSlot;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.core.sync.packets.SwapSlotsPacket;
+import appeng.helpers.InventoryAction;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
 
-    public static final int COLOR_DARK_GRAY = 4210752;
+    public static final int COLOR_DARK_GRAY = 0x404040;
 
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
@@ -116,7 +120,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     protected void drawGuiSlot(MatrixStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
-                               float partialTicks) {
+            float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.getTooltipAreaX();
             final int top = slot.getTooltipAreaY();
@@ -198,7 +202,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
-                                                         final int y) {
+            final int y) {
         final int ox = this.guiLeft; // (width - xSize) / 2;
         final int oy = this.guiTop; // (height - ySize) / 2;
 
@@ -301,8 +305,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     @Override
-    protected void handleMouseClick(final Slot slot, final int slotIdx, final int mouseButton,
-                                    final ClickType clickType) {
+    protected void handleMouseClick(@Nullable Slot slot, final int slotIdx, final int mouseButton,
+            final ClickType clickType) {
         if (slot instanceof FakeSlot) {
             final InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                     : InventoryAction.PICKUP_OR_SET_DOWN;
@@ -342,14 +346,15 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             return;
         }
 
-        if (InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
+        if (slot != null &&
+                InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
             int slotNum = slot.slotNumber;
             final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
             NetworkHandler.instance().sendToServer(p);
             return;
         }
 
-        if (!this.disableShiftClick && hasShiftDown() && mouseButton == 0) {
+        if (slot != null && !this.disableShiftClick && hasShiftDown() && mouseButton == 0) {
             this.disableShiftClick = true;
 
             if (this.dbl_whichItem.isEmpty() || this.bl_clicked != slot
@@ -436,7 +441,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     public abstract void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-                                float partialTicks);
+            float partialTicks);
 
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
@@ -490,7 +495,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         // or it requests the icon to be always drawn
         if ((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled()) {
             if (s.getIcon() >= 0) {
-                BlitBuilder.icon(s.getIcon())
+                Blitter.icon(s.getIcon())
                         .dest(s.xPos, s.yPos)
                         .opacity(s.getOpacityOfIcon())
                         .blit(matrices, getBlitOffset());

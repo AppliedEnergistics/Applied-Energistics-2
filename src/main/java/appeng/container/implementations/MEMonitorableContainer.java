@@ -204,12 +204,7 @@ public class MEMonitorableContainer extends AEBaseContainer
 
                 if (sideLocal != sideRemote) {
                     this.clientCM.putSetting(set, sideLocal);
-                    for (final IContainerListener crafter : this.listeners) {
-                        if (crafter instanceof ServerPlayerEntity) {
-                            NetworkHandler.instance().sendTo(new ConfigValuePacket(set.name(), sideLocal.name()),
-                                    (ServerPlayerEntity) crafter);
-                        }
-                    }
+                    sendPacketToClient(new ConfigValuePacket(set.name(), sideLocal.name()));
                 }
             }
 
@@ -232,11 +227,7 @@ public class MEMonitorableContainer extends AEBaseContainer
                     if (!piu.isEmpty()) {
                         this.items.resetStatus();
 
-                        for (final Object c : this.listeners) {
-                            if (c instanceof PlayerEntity) {
-                                NetworkHandler.instance().sendTo(piu, (ServerPlayerEntity) c);
-                            }
-                        }
+                        sendPacketToClient(piu);
                     }
                 } catch (final IOException e) {
                     AELog.debug(e);

@@ -22,7 +22,6 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;
@@ -43,7 +42,6 @@ import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.core.Api;
-import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -112,12 +110,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
             this.getMonitor().removeListener(this);
         }
 
-        for (final Object g : this.listeners) {
-            if (g instanceof PlayerEntity) {
-                NetworkHandler.instance().sendTo(new ConfigValuePacket("CraftingStatus", "Clear"),
-                        (ServerPlayerEntity) g);
-            }
-        }
+        sendPacketToClient(new ConfigValuePacket("CraftingStatus", "Clear"));
 
         if (c instanceof CraftingCPUCluster) {
             this.monitor = (CraftingCPUCluster) c;
@@ -180,20 +173,16 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
 
                 this.list.resetStatus();
 
-                for (final Object g : this.listeners) {
-                    if (g instanceof PlayerEntity) {
-                        if (!a.isEmpty()) {
-                            NetworkHandler.instance().sendTo(a, (ServerPlayerEntity) g);
-                        }
+                if (!a.isEmpty()) {
+                    sendPacketToClient(a);
+                }
 
-                        if (!b.isEmpty()) {
-                            NetworkHandler.instance().sendTo(b, (ServerPlayerEntity) g);
-                        }
+                if (!b.isEmpty()) {
+                    sendPacketToClient(b);
+                }
 
-                        if (!c.isEmpty()) {
-                            NetworkHandler.instance().sendTo(c, (ServerPlayerEntity) g);
-                        }
-                    }
+                if (!c.isEmpty()) {
+                    sendPacketToClient(c);
                 }
             } catch (final IOException e) {
                 // :P
