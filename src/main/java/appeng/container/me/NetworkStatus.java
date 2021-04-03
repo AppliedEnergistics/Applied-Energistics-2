@@ -57,7 +57,7 @@ public class NetworkStatus {
                     }
 
                     machineEntry.count++;
-                    machineEntry.idlePowerUsage += machineEntry.getIdlePowerUsage();
+                    machineEntry.idlePowerUsage += blk.getIdlePowerUsage();
                 }
             }
         }
