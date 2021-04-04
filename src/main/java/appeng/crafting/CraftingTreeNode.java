@@ -18,14 +18,6 @@
 
 package appeng.crafting;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
-import net.minecraft.world.World;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -36,6 +28,12 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
+import com.google.common.collect.Lists;
+import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class CraftingTreeNode {
 
@@ -60,7 +58,7 @@ public class CraftingTreeNode {
     private boolean sim;
 
     public CraftingTreeNode(final ICraftingGrid cc, final CraftingJob job, final IAEItemStack wat,
-            final CraftingTreeProcess par, final int slot, final int depth) {
+                            final CraftingTreeProcess par, final int slot, final int depth) {
         this.what = wat;
         this.parent = par;
         this.slot = slot;
@@ -300,7 +298,7 @@ public class CraftingTreeNode {
     }
 
     public void setJob(final MECraftingInventory storage, final CraftingCPUCluster craftingCPUCluster,
-            final IActionSource src) throws CraftBranchFailure {
+                       final IActionSource src) throws CraftBranchFailure {
         for (final IAEItemStack i : this.used) {
             final IAEItemStack ex = storage.extractItems(i, Actionable.MODULATE, src);
 

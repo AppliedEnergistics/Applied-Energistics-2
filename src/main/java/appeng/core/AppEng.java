@@ -180,15 +180,7 @@ public final class AppEng {
         return this.registration.advancementTriggers;
     }
 
-    private void startService(final String serviceName, final Thread thread) {
-        thread.setName(serviceName);
-        thread.setPriority(Thread.MIN_PRIORITY);
-
-        AELog.info("Starting " + serviceName);
-        thread.start();
-    }
-
-    private void registerNetworkHandler() {
+    static void registerNetworkHandler() {
         final Stopwatch start = Stopwatch.createStarted();
         AELog.info("Post Initialization ( started )");
 
