@@ -19,8 +19,17 @@ import java.util.Properties;
  */
 public class ForgeInitializingDiscoveryListener implements LauncherDiscoveryListener {
 
+	private static boolean initialized;
+	
     @Override
     public void launcherDiscoveryStarted(LauncherDiscoveryRequest request) {
+    	
+    	synchronized(ForgeInitializingDiscoveryListener.class) { 
+    	
+    	if (initialized) {
+    		return;
+    	}
+    	initialized = true;
 
         // This is generated in Gradle and contains the same variables that would be passed to
         // runClient as environment variables otherwise, plus the working directory.
@@ -35,7 +44,7 @@ public class ForgeInitializingDiscoveryListener implements LauncherDiscoveryList
         }
 
         System.setProperty("fml.earlyprogresswindow", "false");
-        System.setProperty("forge.logging.console.level", "info");
+        System.setProperty("forge.logging.console.level", "debug");
 
         Launcher.main(
                 "-launchTarget", "junit",
@@ -44,6 +53,7 @@ public class ForgeInitializingDiscoveryListener implements LauncherDiscoveryList
                 "-fml.mcVersion", p.getProperty("MC_VERSION"),
                 "-fml.mcpVersion", p.getProperty("MCP_VERSION")
         );
+    	}
     }
 
     @Override

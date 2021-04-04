@@ -7,7 +7,18 @@ import net.minecraftforge.userdev.FMLUserdevLaunchProvider;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.assertj.core.util.Lists;
+import org.junit.platform.console.options.CommandLineOptions;
+import org.junit.platform.console.options.Details;
+import org.junit.platform.console.tasks.ConsoleTestExecutor;
+import org.junit.platform.launcher.Launcher;
+import org.junit.platform.launcher.LauncherDiscoveryRequest;
+import org.junit.platform.launcher.TestPlan;
+import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
+import org.junit.platform.launcher.core.LauncherFactory;
+import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,11 +28,13 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import static net.minecraftforge.fml.Logging.CORE;
+import static org.junit.platform.engine.discovery.ClassNameFilter.includeClassNamePatterns;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPackage;
 
 /**
  * This launch service will set up the classpath for loading mods correctly.
  */
-public class TestLaunchHandlerService extends FMLUserdevLaunchProvider implements ILaunchHandlerService {
+public class TestLauncherLaunchTarget extends FMLUserdevLaunchProvider implements ILaunchHandlerService {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -43,6 +56,18 @@ public class TestLaunchHandlerService extends FMLUserdevLaunchProvider implement
             launchClassLoader.addTargetPackageFilter(s -> !s.startsWith("org.junit."));
 
             Thread.currentThread().setContextClassLoader(launchClassLoader.getInstance());
+
+            LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
+                    .selectors(selectPackage("appeng"))
+                    .filters(includeClassNamePatterns(".*Test"))
+                    .build();
+
+            CommandLineOptions options = new CommandLineOptions();
+            options.setSelectedPackages(Lists.newArrayList("appeng"));
+
+            options.setDetails(Details.TREE);
+            ConsoleTestExecutor consoleTestExecutor = new ConsoleTestExecutor(options);
+            consoleTestExecutor.execute(new PrintWriter(System.out));
             return null;
         };
     }

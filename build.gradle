@@ -80,6 +80,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.0-M1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.0-M1")
     testImplementation("org.junit.platform:junit-platform-launcher:1.8.0-M1")
+    testImplementation("org.junit.platform:junit-platform-console:1.8.0-M1")
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:3.8.0")
@@ -166,6 +167,7 @@ configurations {
 
 test {
     useJUnitPlatform()
+    scanForTestClasses = false
 }
 
 ////////////////////
@@ -213,8 +215,29 @@ minecraft {
                 }
             }
         }
+        test {
+            parent server
+            property 'forge.logging.console.level', 'info'
+            workingDirectory project.file('run-tests')
+            environment 'target', 'junit'
+            ideaModule "${project.name}.test"
+            sources sourceSets.test
+            main "appeng.TestLauncher"
+            forceExit false
+            mods {
+                appliedenergistics2 {
+                    source sourceSets.main
+                    source sourceSets.test
+                    source sourceSets.api
+                }
+            }
+        }
     }
 }
+
+//afterEvaluate {
+//    runTest.runtimeClasspath += sourceSets.test.output.classesDirs
+//}
 
 ///////////
 // Mixins
