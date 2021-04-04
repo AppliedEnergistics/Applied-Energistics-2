@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public class TestLauncher {
-    public static void main(String... args) throws InterruptedException {
+    public static void main(String... args) {
         final String markerselection = System.getProperty("forge.logging.markers", "");
         Arrays.stream(markerselection.split(",")).forEach(marker -> System.setProperty("forge.logging.marker." + marker.toLowerCase(Locale.ROOT), "ACCEPT"));
         System.setProperty("fml.earlyprogresswindow", "false");

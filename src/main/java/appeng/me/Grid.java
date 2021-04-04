@@ -191,7 +191,8 @@ public class Grid implements IGrid {
         gridNode.getGridProxy().gridChanged();
     }
 
-    // TODO 1.17: Breaking chance, should just iface.cast (no unchecked cast), and take Class<C>
+    // TODO 1.17: Breaking change, should just iface.cast (no unchecked cast), and take Class<C>
+    // TODO 1.17: Breaking change, should throw if the interface is unknown
     @Override
     @SuppressWarnings("unchecked")
     public <C extends IGridCache> C getCache(final Class<? extends IGridCache> iface) {

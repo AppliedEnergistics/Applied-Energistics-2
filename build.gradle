@@ -143,31 +143,14 @@ sourceSets {
     }
 }
 
-task generateTestRunSettings {
-    doLast {
-        // Copy required environment variables from runClient task
-        def f = file("${project.buildDir}/generated/test/appeng_test.properties")
-        f.parentFile.mkdirs()
-
-        Properties p = new Properties()
-        // For required variables, check the IDE run settings
-        ["FORGE_VERSION", "MC_VERSION", "MCP_VERSION"].each {
-            p[it] = runClient.environment[it]
-        }
-        p["WORKING_DIR"] = runClient.workingDir.absolutePath
-        f.withOutputStream {p.store(it, "") }
-    }
-}
-
-compileTestJava.dependsOn generateTestRunSettings
-
 configurations {
     apiCompile.extendsFrom(compile)
 }
 
 test {
-    useJUnitPlatform()
-    scanForTestClasses = false
+    useJUnitPlatform {
+        excludeTags 'realgame'
+    }
 }
 
 ////////////////////
@@ -224,6 +207,7 @@ minecraft {
             sources sourceSets.test
             main "appeng.TestLauncher"
             forceExit false
+            jvmArgs "-ea"
             mods {
                 appliedenergistics2 {
                     source sourceSets.main

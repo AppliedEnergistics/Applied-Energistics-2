@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.CraftingInventory;
@@ -812,11 +813,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     public ICraftingLink submitJob(final IGrid g, final ICraftingJob job, final IActionSource src,
             final ICraftingRequester requestingMachine) {
-        if (!this.tasks.isEmpty() || !this.waitingFor.isEmpty()) {
-            return null;
-        }
+        Preconditions.checkArgument(job instanceof CraftingJob, "Only our own crafting jobs are supported");
 
-        if (!(job instanceof CraftingJob)) {
+        if (!this.tasks.isEmpty() || !this.waitingFor.isEmpty()) {
             return null;
         }
 

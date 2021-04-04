@@ -17,6 +17,7 @@ import org.junit.platform.launcher.TestPlan;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
+import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -63,11 +64,18 @@ public class TestLauncherLaunchTarget extends FMLUserdevLaunchProvider implement
                     .build();
 
             CommandLineOptions options = new CommandLineOptions();
+            // See @MinecraftTest
+            options.setIncludedTagExpressions(Lists.newArrayList("realgame"));
             options.setSelectedPackages(Lists.newArrayList("appeng"));
 
-            options.setDetails(Details.TREE);
+            options.setDetails(Details.FLAT);
             ConsoleTestExecutor consoleTestExecutor = new ConsoleTestExecutor(options);
-            consoleTestExecutor.execute(new PrintWriter(System.out));
+            TestExecutionSummary summary = consoleTestExecutor.execute(new PrintWriter(System.out));
+            if (summary.getTotalFailureCount() > 0) {
+                System.exit(-1);
+            } else {
+                System.exit(0);
+            }
             return null;
         };
     }
