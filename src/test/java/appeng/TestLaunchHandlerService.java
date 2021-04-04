@@ -8,9 +8,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,14 +57,9 @@ public class TestLaunchHandlerService extends FMLUserdevLaunchProvider implement
         // Collect every file system folder that is currently on the classpath, which normally corresponds
         // to the compiler output path for the IDE or Gradle.
         List<Path> folders = new ArrayList<>();
-        URLClassLoader classLoader = (URLClassLoader) getClass().getClassLoader();
-        for (URL url : classLoader.getURLs()) {
-            Path path;
-            try {
-                path = Paths.get(url.toURI());
-            } catch (URISyntaxException e) {
-                continue;
-            }
+        String[] cpElements = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
+        for (String cpElement : cpElements) {
+            Path path = Paths.get(cpElement);
 
             if (Files.isDirectory(path)) {
                 folders.add(path);

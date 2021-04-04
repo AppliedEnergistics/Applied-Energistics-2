@@ -145,6 +145,9 @@ class TestServer extends MinecraftServer {
         init();
     }
 
+    /**
+     * Copied from IntegratedServer
+     */
     @Override
     protected boolean init() {
         this.setOnlineMode(true);

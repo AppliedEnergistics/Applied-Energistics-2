@@ -1,39 +1,26 @@
 package appeng.container.me;
 
 import appeng.MinecraftTest;
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.GridNotification;
-import appeng.api.networking.IGridBlock;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCallback;
-import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.crafting.CraftingJob;
 import appeng.hooks.ticking.TickHandler;
-import appeng.me.Grid;
-import appeng.me.GridNode;
 import appeng.me.helpers.MachineSource;
+import appeng.tile.misc.InterfaceTileEntity;
+import appeng.tile.networking.CreativeEnergyCellTileEntity;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,11 +29,11 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import javax.annotation.Nonnull;
 import java.io.File;
-import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 
 @MinecraftTest
@@ -63,8 +50,9 @@ class NetworkStatusTest {
 
     @BeforeEach
     void setupPlatform() throws Exception {
-        platformMock = Mockito.mockStatic(Platform.class);
+        platformMock = Mockito.mockStatic(Platform.class, CALLS_REAL_METHODS);
         platformMock.when(Platform::isServer).thenReturn(true);
+        platformMock.when(Platform::isClient).thenReturn(false);
         platformMock.when(Platform::assertServerThread).then(invocation -> null);
 //        platformMock.when(Platform::hasClientClasses).thenReturn(true);
 
@@ -84,16 +72,31 @@ class NetworkStatusTest {
     @Test
     void testCreateStatus() throws Throwable {
 
-        FakeMachine machine = new FakeMachine();
-        Grid grid = Grid.create(new GridNode(machine));
-
-        Block iface = Api.instance().definitions().blocks().iface().block();
-        overworld.setBlockState(BlockPos.ZERO, iface.getDefaultState());
+        overworld.setBlockState(
+                BlockPos.ZERO,
+                Api.instance().definitions().blocks().iface().block().getDefaultState()
+        );
+        overworld.setBlockState(
+                BlockPos.ZERO.add(1, 0, 0),
+                Api.instance().definitions().blocks().energyCellCreative().block().getDefaultState()
+        );
         server.tick();
 
-        TileEntity ifaceTe = overworld.getTileEntity(BlockPos.ZERO);
+        InterfaceTileEntity ifaceTe = (InterfaceTileEntity) overworld.getTileEntity(BlockPos.ZERO);
+        CreativeEnergyCellTileEntity cell = (CreativeEnergyCellTileEntity) overworld.getTileEntity(BlockPos.ZERO.add(1, 0, 0));
 
-        IActionSource actionSrc = new MachineSource(machine);
+        ICraftingRecipe recipe = (ICraftingRecipe) server.getRecipeManager().getRecipe(new ResourceLocation("minecraft:hopper"))
+                .orElseThrow(() -> new RuntimeException("Missing hopper recipe"));
+        ItemStack encodedPattern = Api.instance().crafting().encodeCraftingPattern(null, recipe, new ItemStack[]{
+                new ItemStack(Items.IRON_INGOT), ItemStack.EMPTY, new ItemStack(Items.IRON_INGOT),
+                new ItemStack(Items.IRON_INGOT), new ItemStack(Items.CHEST), new ItemStack(Items.IRON_INGOT),
+                ItemStack.EMPTY, new ItemStack(Items.IRON_INGOT), ItemStack.EMPTY
+        }, new ItemStack(Items.HOPPER), false);
+        assertTrue(ifaceTe.getInventoryByName("patterns").insertItem(0, encodedPattern, false).isEmpty());
+        server.tick();
+
+        IActionSource actionSrc = new MachineSource(ifaceTe);
+        IGrid grid = ifaceTe.getProxy().getGrid();
 
         ICraftingCallback callback = mock(ICraftingCallback.class);
         IAEItemStack what = AEItemStack.fromItemStack(new ItemStack(Items.HOPPER));
@@ -116,86 +119,5 @@ class NetworkStatusTest {
         System.out.println();
 
     }
-
-    static class FakeMachine implements IGridBlock, IGridHost, IActionHost {
-
-        @Override
-        public double getIdlePowerUsage() {
-            return 0;
-        }
-
-        @Nonnull
-        @Override
-        public EnumSet<GridFlags> getFlags() {
-            return EnumSet.noneOf(GridFlags.class);
-        }
-
-        @Override
-        public boolean isWorldAccessible() {
-            return false;
-        }
-
-        @Nonnull
-        @Override
-        public DimensionalCoord getLocation() {
-            return null;
-        }
-
-        @Nonnull
-        @Override
-        public AEColor getGridColor() {
-            return AEColor.TRANSPARENT;
-        }
-
-        @Override
-        public void onGridNotification(@Nonnull GridNotification notification) {
-
-        }
-
-        @Nonnull
-        @Override
-        public EnumSet<Direction> getConnectableSides() {
-            return EnumSet.noneOf(Direction.class);
-        }
-
-        @Nonnull
-        @Override
-        public IGridHost getMachine() {
-            return this;
-        }
-
-        @Override
-        public void gridChanged() {
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack getMachineRepresentation() {
-            return new ItemStack(Items.ACACIA_BOAT);
-        }
-
-        @Nullable
-        @Override
-        public IGridNode getGridNode(@NotNull AEPartLocation dir) {
-            return null;
-        }
-
-        @NotNull
-        @Override
-        public AECableType getCableConnectionType(@NotNull AEPartLocation dir) {
-            return AECableType.NONE;
-        }
-
-        @Override
-        public void securityBreak() {
-        }
-
-        @Nullable
-        @Override
-        public IGridNode getActionableNode() {
-            return getGridNode(AEPartLocation.INTERNAL);
-        }
-    }
-
 
 }
