@@ -42,7 +42,6 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.core.AEConfig;
-import appeng.tile.AEBaseTileEntity;
 import appeng.tile.misc.VibrationChamberTileEntity;
 import appeng.util.InteractionUtil;
 
@@ -91,39 +90,37 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             return;
         }
 
-        final AEBaseTileEntity tile = this.getTileEntity(w, pos);
-        if (tile instanceof VibrationChamberTileEntity) {
-            final VibrationChamberTileEntity tc = (VibrationChamberTileEntity) tile;
-            if (tc.isOn) {
-                double f1 = pos.getX() + 0.5F;
-                double f2 = pos.getY() + 0.5F;
-                double f3 = pos.getZ() + 0.5F;
+        final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
+        if (tc != null && tc.isOn) {
+            double f1 = pos.getX() + 0.5F;
+            double f2 = pos.getY() + 0.5F;
+            double f3 = pos.getZ() + 0.5F;
 
-                final Direction forward = tc.getForward();
-                final Direction up = tc.getUp();
+            final Direction forward = tc.getForward();
+            final Direction up = tc.getUp();
 
-                final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
-                final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
-                final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
+            // Cross-Product of forward/up directional vector
+            final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
+            final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
+            final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
 
-                f1 += forward.getXOffset() * 0.6;
-                f2 += forward.getYOffset() * 0.6;
-                f3 += forward.getZOffset() * 0.6;
+            f1 += forward.getXOffset() * 0.6;
+            f2 += forward.getYOffset() * 0.6;
+            f3 += forward.getZOffset() * 0.6;
 
-                final double ox = r.nextDouble();
-                final double oy = r.nextDouble() * 0.2f;
+            final double ox = r.nextDouble();
+            final double oy = r.nextDouble() * 0.2f;
 
-                f1 += up.getXOffset() * (-0.3 + oy);
-                f2 += up.getYOffset() * (-0.3 + oy);
-                f3 += up.getZOffset() * (-0.3 + oy);
+            f1 += up.getXOffset() * (-0.3 + oy);
+            f2 += up.getYOffset() * (-0.3 + oy);
+            f3 += up.getZOffset() * (-0.3 + oy);
 
-                f1 += west_x * (0.3 * ox - 0.15);
-                f2 += west_y * (0.3 * ox - 0.15);
-                f3 += west_z * (0.3 * ox - 0.15);
+            f1 += west_x * (0.3 * ox - 0.15);
+            f2 += west_y * (0.3 * ox - 0.15);
+            f3 += west_z * (0.3 * ox - 0.15);
 
-                w.addParticle(ParticleTypes.SMOKE, f1, f2, f3, 0.0D, 0.0D, 0.0D);
-                w.addParticle(ParticleTypes.FLAME, f1, f2, f3, 0.0D, 0.0D, 0.0D);
-            }
+            w.addParticle(ParticleTypes.SMOKE, f1, f2, f3, 0.0D, 0.0D, 0.0D);
+            w.addParticle(ParticleTypes.FLAME, f1, f2, f3, 0.0D, 0.0D, 0.0D);
         }
     }
 }

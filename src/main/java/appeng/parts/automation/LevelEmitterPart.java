@@ -74,7 +74,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.LevelEmitterContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.parts.PartModel;
@@ -124,7 +123,6 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     private double centerY;
     private double centerZ;
 
-    @Reflected
     public LevelEmitterPart(final ItemStack is) {
         super(is);
 

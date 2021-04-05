@@ -66,11 +66,9 @@ import appeng.core.AppEng;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
-import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
@@ -94,7 +92,6 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
 
     private final DualityInterface duality = new DualityInterface(this.getProxy(), this);
 
-    @Reflected
     public InterfacePart(final ItemStack is) {
         super(is);
     }

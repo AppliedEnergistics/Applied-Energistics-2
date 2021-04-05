@@ -134,20 +134,19 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         this.bindTexture(this.getBackground());
         final int x_width = 197;
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, x_width, 18, getBlitOffset());
+        blit(matrices, offsetX, offsetY, 0, 0, x_width, 18);
 
         for (int x = 0; x < 6; x++) {
-            GuiUtils.drawTexturedModalRect(offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18, getBlitOffset());
+            blit(matrices, offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18);
         }
 
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY + 16 + 6 * 18, 0, 106 - 18 - 18, x_width, 99 + 77,
-                getBlitOffset());
+        blit(matrices, offsetX, offsetY + 16 + 6 * 18, 0, 106 - 18 - 18, x_width, 99 + 77);
 
         if (this.searchField != null) {
-            this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
+            this.searchField.render(matrices, mouseX, mouseY, partialTicks);
         }
     }
 

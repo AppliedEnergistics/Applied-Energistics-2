@@ -23,7 +23,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.ActionItems;
@@ -67,52 +66,42 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
         this.handleButtonVisibility();
 
         this.bindTexture(this.getBackground());
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, 211 - 34, this.ySize, getBlitOffset());
+        blit(matrixStack, offsetX, offsetY, 0, 0, 211 - 34, this.ySize);
         if (this.drawUpgrades()) {
             if (this.container.availableUpgrades() <= 8) {
-                GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY, 177, 0, 35,
-                        7 + this.container.availableUpgrades() * 18, getBlitOffset());
-                GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY + (7 + (this.container.availableUpgrades()) * 18),
-                        177, 151, 35, 7, getBlitOffset());
+                blit(matrixStack, offsetX + 177, offsetY, 177, 0, 35, 7 + this.container.availableUpgrades() * 18);
+                blit(matrixStack, offsetX + 177, offsetY + (7 + (this.container.availableUpgrades()) * 18), 177, 151,
+                        35, 7);
             } else if (this.container.availableUpgrades() <= 16) {
-                GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18, getBlitOffset());
-                GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY + (7 + (8) * 18), 177, 151, 35, 7,
-                        getBlitOffset());
+                blit(matrixStack, offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18);
+                blit(matrixStack, offsetX + 177, offsetY + (7 + (8) * 18), 177, 151, 35, 7);
 
                 final int dx = this.container.availableUpgrades() - 8;
-                GuiUtils.drawTexturedModalRect(offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18,
-                        getBlitOffset());
+                blit(matrixStack, offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18);
                 if (dx == 8) {
-                    GuiUtils.drawTexturedModalRect(offsetX + 177 + 27, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7,
-                            getBlitOffset());
+                    blit(matrixStack, offsetX + 177 + 27, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7);
                 } else {
-                    GuiUtils.drawTexturedModalRect(offsetX + 177 + 27 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151,
-                            35 - 8, 7, getBlitOffset());
+                    blit(matrixStack, offsetX + 177 + 27 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151, 35 - 8, 7);
                 }
             } else {
-                GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18, getBlitOffset());
-                GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY + (7 + (8) * 18), 177, 151, 35, 7,
-                        getBlitOffset());
+                blit(matrixStack, offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18);
+                blit(matrixStack, offsetX + 177, offsetY + (7 + (8) * 18), 177, 151, 35, 7);
 
-                GuiUtils.drawTexturedModalRect(offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + 8 * 18,
-                        getBlitOffset());
-                GuiUtils.drawTexturedModalRect(offsetX + 177 + 27, offsetY + (7 + (8) * 18), 186, 151, 35 - 8, 7,
-                        getBlitOffset());
+                blit(matrixStack, offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + 8 * 18);
+                blit(matrixStack, offsetX + 177 + 27, offsetY + (7 + (8) * 18), 186, 151, 35 - 8, 7);
 
                 final int dx = this.container.availableUpgrades() - 16;
-                GuiUtils.drawTexturedModalRect(offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18,
-                        getBlitOffset());
+                blit(matrixStack, offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18);
                 if (dx == 8) {
-                    GuiUtils.drawTexturedModalRect(offsetX + 177 + 27 + 18, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8,
-                            7, getBlitOffset());
+                    blit(matrixStack, offsetX + 177 + 27 + 18, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7);
                 } else {
-                    GuiUtils.drawTexturedModalRect(offsetX + 177 + 27 + 18 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151,
-                            35 - 8, 7, getBlitOffset());
+                    blit(matrixStack, offsetX + 177 + 27 + 18 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151, 35 - 8,
+                            7);
                 }
             }
         }
         if (this.hasToolbox()) {
-            GuiUtils.drawTexturedModalRect(offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68, getBlitOffset());
+            blit(matrixStack, offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68);
         }
     }
 

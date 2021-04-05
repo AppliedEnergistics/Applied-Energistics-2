@@ -32,7 +32,6 @@ import appeng.api.parts.IPartModel;
 import appeng.container.implementations.CraftingTermContainer;
 import appeng.container.implementations.MEMonitorableContainer;
 import appeng.core.AppEng;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -51,7 +50,6 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
 
     private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 
-    @Reflected
     public CraftingTerminalPart(final ItemStack is) {
         super(is);
     }

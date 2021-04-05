@@ -30,7 +30,6 @@ import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CraftAmountContainer;
-import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
@@ -134,10 +133,10 @@ public class InventoryActionPacket extends BasePacket {
     @Override
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         if (this.action == InventoryAction.UPDATE_HAND) {
-            if (this.slotItem == null) {
-                AppEng.proxy.getPlayers().get(0).inventory.setItemStack(ItemStack.EMPTY);
+            if (this.slotItem != null) {
+                player.inventory.setItemStack(this.slotItem.createItemStack());
             } else {
-                AppEng.proxy.getPlayers().get(0).inventory.setItemStack(this.slotItem.createItemStack());
+                player.inventory.setItemStack(ItemStack.EMPTY);
             }
         }
     }

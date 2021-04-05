@@ -40,7 +40,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.BasicStatePart;
@@ -69,7 +68,6 @@ public class ToggleBusPart extends BasicStatePart {
     private IGridConnection connection;
     private boolean hasRedstone = false;
 
-    @Reflected
     public ToggleBusPart(final ItemStack is) {
         super(is);
 

@@ -35,7 +35,6 @@ import appeng.container.implementations.MEMonitorableContainer;
 import appeng.container.implementations.PatternTermContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -60,7 +59,6 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     private boolean craftingMode = true;
     private boolean substitute = false;
 
-    @Reflected
     public PatternTerminalPart(final ItemStack is) {
         super(is);
     }

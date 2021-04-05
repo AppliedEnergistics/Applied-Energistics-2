@@ -52,9 +52,7 @@ public class EnergyWatcher implements IEnergyWatcher {
     public boolean add(final double amount) {
         final EnergyThreshold eh = new EnergyThreshold(amount, this);
 
-        if (this.myInterests.contains(eh))
-
-        {
+        if (this.myInterests.contains(eh)) {
             return false;
         }
 

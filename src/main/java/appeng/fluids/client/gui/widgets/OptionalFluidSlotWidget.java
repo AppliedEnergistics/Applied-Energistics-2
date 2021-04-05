@@ -18,9 +18,8 @@
 
 package appeng.fluids.client.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.slot.IOptionalSlotHost;
@@ -58,15 +57,15 @@ public class OptionalFluidSlotWidget extends FluidSlotWidget {
     }
 
     @Override
-    public void drawBackground(int guileft, int guitop, int currentZIndex) {
+    public void drawBackground(MatrixStack matrices, int guileft, int guitop, int currentZIndex) {
         RenderSystem.enableBlend();
         if (this.isSlotEnabled()) {
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         } else {
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.4F);
         }
-        GuiUtils.drawTexturedModalRect(guileft + this.getTooltipAreaX() - 1, guitop + this.getTooltipAreaY() - 1,
-                this.srcX - 1, this.srcY - 1, this.getTooltipAreaWidth() + 2, this.getTooltipAreaHeight() + 2,
-                currentZIndex);
+        blit(matrices, guileft + this.getTooltipAreaX() - 1, guitop + this.getTooltipAreaY() - 1, currentZIndex,
+                this.srcX - 1,
+                this.srcY - 1, this.getTooltipAreaWidth() + 2, this.getTooltipAreaHeight() + 2, 256, 256);
     }
 }

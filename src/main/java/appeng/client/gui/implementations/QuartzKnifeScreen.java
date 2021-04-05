@@ -27,7 +27,6 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
@@ -68,11 +67,11 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.bindTexture("guis/quartzknife.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
-        this.name.render(matrixStack, mouseX, mouseY, partialTicks);
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
+        this.name.render(matrices, mouseX, mouseY, partialTicks);
     }
 
     @Override

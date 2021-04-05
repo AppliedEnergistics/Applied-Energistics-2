@@ -29,7 +29,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public class ToggleButton extends Button implements ITooltip {
     public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
@@ -62,13 +61,13 @@ public class ToggleButton extends Button implements ITooltip {
             final int iconIndex = this.getIconIndex();
 
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            Minecraft.getInstance().textureManager.bindTexture(TEXTURE_STATES);
+            Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE_STATES);
 
             final int uv_y = iconIndex / 16;
             final int uv_x = iconIndex - uv_y * 16;
 
-            GuiUtils.drawTexturedModalRect(this.x, this.y, 256 - 16, 256 - 16, 16, 16, 0);
-            GuiUtils.drawTexturedModalRect(this.x, this.y, uv_x * 16, uv_y * 16, 16, 16, 0);
+            blit(matrixStack, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
+            blit(matrixStack, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
         }
     }
 

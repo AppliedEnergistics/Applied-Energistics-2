@@ -28,7 +28,6 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.features.AEFeature;
 import appeng.core.AppEng;
-import appeng.core.features.MaterialStackSrc;
 import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.SingularityEntity;
 
@@ -122,8 +121,6 @@ public enum MaterialType {
     private final Set<AEFeature> features;
     private final ResourceLocation registryName;
     private Item itemInstance;
-    // stack!
-    private MaterialStackSrc stackSrc;
     private String oreName;
     private Class<? extends Entity> droppedEntity;
     private boolean isRegistered = false;
@@ -158,10 +155,6 @@ public enum MaterialType {
         return this.features;
     }
 
-    public String getOreName() {
-        return this.oreName;
-    }
-
     boolean hasCustomEntity() {
         return this.droppedEntity != null;
     }
@@ -184,14 +177,6 @@ public enum MaterialType {
 
     public void setItemInstance(final Item itemInstance) {
         this.itemInstance = itemInstance;
-    }
-
-    public MaterialStackSrc getStackSrc() {
-        return this.stackSrc;
-    }
-
-    public void setStackSrc(final MaterialStackSrc stackSrc) {
-        this.stackSrc = stackSrc;
     }
 
     public String getId() {

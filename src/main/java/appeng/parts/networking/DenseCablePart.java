@@ -23,7 +23,6 @@ import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -31,11 +30,8 @@ import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.helpers.Reflected;
-import appeng.util.Platform;
 
 public abstract class DenseCablePart extends CablePart {
-    @Reflected
     public DenseCablePart(final ItemStack is) {
         super(is);
 

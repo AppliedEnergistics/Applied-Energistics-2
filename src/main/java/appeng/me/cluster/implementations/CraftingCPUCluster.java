@@ -379,9 +379,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             final Collection<CraftingWatcher> list = sg.getInterestManager().get(diff);
 
             if (!list.isEmpty()) {
-                for (final CraftingWatcher iw : list)
-
-                {
+                for (final CraftingWatcher iw : list) {
                     iw.getHost().onRequestChange(sg, diff);
                 }
             }

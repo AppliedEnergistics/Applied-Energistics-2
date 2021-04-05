@@ -27,7 +27,6 @@ import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.FeatureFactory;
 import appeng.core.AEConfig;
-import appeng.core.features.MaterialStackSrc;
 import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.SingularityEntity;
 import appeng.items.materials.MaterialItem;
@@ -201,7 +200,6 @@ public final class ApiMaterials implements IMaterials {
             enabled = enabled && AEConfig.instance().isFeatureEnabled(f);
         }
 
-        mat.setStackSrc(new MaterialStackSrc(mat, enabled));
         mat.setItemInstance(def.item());
         mat.markReady();
         return def;

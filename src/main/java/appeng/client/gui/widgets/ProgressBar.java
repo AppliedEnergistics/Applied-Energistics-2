@@ -25,7 +25,6 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
@@ -58,7 +57,7 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, final int par2, final int par3, final float partial) {
+    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             Minecraft.getInstance().getTextureManager().bindTexture(this.texture);
             final int max = this.source.getMaxProgress();
@@ -66,12 +65,11 @@ public class ProgressBar extends Widget implements ITooltip {
 
             if (this.layout == Direction.VERTICAL) {
                 final int diff = this.height - (max > 0 ? (this.height * current) / max : 0);
-                GuiUtils.drawTexturedModalRect(this.x, this.y + diff, this.fill_u, this.fill_v + diff, this.width,
-                        this.height - diff, 0);
+                blit(matrices, this.x, this.y + diff, this.fill_u, this.fill_v + diff, this.width,
+                        this.height - diff);
             } else {
                 final int diff = this.width - (max > 0 ? (this.width * current) / max : 0);
-                GuiUtils.drawTexturedModalRect(this.x, this.y, this.fill_u + diff, this.fill_v, this.width - diff,
-                        this.height, 0);
+                blit(matrices, this.x, this.y, this.fill_u + diff, this.fill_v, this.width - diff, this.height);
             }
         }
     }
