@@ -91,6 +91,13 @@ public class GuiFluidLevelEmitter extends GuiUpgradeable
 	}
 
 	@Override
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		if( isPointInRegion( 24, 43,89,this.fontRenderer.FONT_HEIGHT,mouseX,mouseY ) ) drawTooltip( mouseX - guiLeft - 7, mouseY - guiTop + 25, "Amount in millibuckets" );
+		super.drawFG( offsetX, offsetY, mouseX, mouseY );
+	}
+
+	@Override
 	protected boolean drawUpgrades()
 	{
 		return false;
