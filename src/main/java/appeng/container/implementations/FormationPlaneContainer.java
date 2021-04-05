@@ -79,17 +79,7 @@ public class FormationPlaneContainer extends UpgradeableContainer {
             }
         }
 
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 2, 187,
-                8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 3, 187,
-                8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 4, 187,
-                8 + 18 * 4, this.getPlayerInventory())).setNotDraggable());
+        this.setupUpgrades();
     }
 
     @Override

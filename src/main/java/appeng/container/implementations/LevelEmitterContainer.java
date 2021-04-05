@@ -33,7 +33,6 @@ import appeng.api.config.YesNo;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
-import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.parts.automation.LevelEmitterPart;
@@ -90,23 +89,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
 
     @Override
     protected void setupConfig() {
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
-        if (this.availableUpgrades() > 0) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
-                    this.getPlayerInventory())).setNotDraggable());
-        }
-        if (this.availableUpgrades() > 1) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187,
-                    8 + 18, this.getPlayerInventory())).setNotDraggable());
-        }
-        if (this.availableUpgrades() > 2) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 2, 187,
-                    8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
-        }
-        if (this.availableUpgrades() > 3) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 3, 187,
-                    8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
-        }
+        this.setupUpgrades();
 
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
         final int y = 40;
