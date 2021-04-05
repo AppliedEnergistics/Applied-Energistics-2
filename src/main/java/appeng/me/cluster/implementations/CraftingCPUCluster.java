@@ -777,6 +777,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
+    /**
+     * Tries to dump all locally stored items back into the storage network.
+     */
     private void storeItems() {
         final IGrid g = this.getGrid();
 
@@ -788,20 +791,21 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         final IMEInventory<IAEItemStack> ii = sg
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
-        for (IAEItemStack is : this.inventory.getItemList()) {
-            is = this.inventory.extractItems(is.copy(), Actionable.MODULATE, this.machineSrc);
+        IItemList<IAEItemStack> itemList = this.inventory.getItemList();
+        for (IAEItemStack is : itemList) {
+            this.postChange(is, this.machineSrc);
+            IAEItemStack remainder = ii.injectItems(is.copy(), Actionable.MODULATE, this.machineSrc);
 
-            if (is != null) {
-                this.postChange(is, this.machineSrc);
-                is = ii.injectItems(is, Actionable.MODULATE, this.machineSrc);
-            }
-
-            if (is != null) {
-                this.inventory.injectItems(is, Actionable.MODULATE, this.machineSrc);
+            // The network was unable to receive all of the items, i.e. no or not enough storage space left
+            if (remainder != null) {
+                is.setStackSize(remainder.getStackSize());
+            } else {
+                is.reset();
             }
         }
 
-        if (this.inventory.getItemList().isEmpty()) {
+        // If everything got moved back to the network. Reset.
+        if (itemList.isEmpty()) {
             this.inventory = new MECraftingInventory();
         }
 
