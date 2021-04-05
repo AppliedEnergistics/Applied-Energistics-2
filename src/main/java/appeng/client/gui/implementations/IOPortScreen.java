@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -36,12 +37,14 @@ import appeng.core.localization.GuiText;
 
 public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/io_port.png")
+            .src(0, 0, 211, 166);
+
     private SettingToggleButton<FullnessMode> fullMode;
     private SettingToggleButton<OperationMode> operationMode;
 
     public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 166;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -66,15 +69,15 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
 
         if (this.redstoneMode != null) {
-            this.redstoneMode.set(this.cvb.getRedStoneMode());
+            this.redstoneMode.set(this.container.getRedStoneMode());
         }
 
         if (this.operationMode != null) {
-            this.operationMode.set(((IOPortContainer) this.cvb).getOperationMode());
+            this.operationMode.set(this.container.getOperationMode());
         }
 
         if (this.fullMode != null) {
-            this.fullMode.set(((IOPortContainer) this.cvb).getFullMode());
+            this.fullMode.set(this.container.getFullMode());
         }
     }
 
@@ -90,11 +93,6 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
 
         definitions.blocks().drive().maybeStack(1)
                 .ifPresent(driveStack -> this.drawItem(offsetX + 94 + 8, offsetY + 17, driveStack));
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/io_port.png";
     }
 
 }

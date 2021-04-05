@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -38,11 +39,14 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/interface.png")
+            .src(0, 0, 211, 197);
+
     private SettingToggleButton<YesNo> blockMode;
     private ToggleButton interfaceMode;
 
     public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, BACKGROUND);
         this.ySize = 211;
     }
 
@@ -64,11 +68,11 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
         if (this.blockMode != null) {
-            this.blockMode.set(((InterfaceContainer) this.cvb).getBlockingMode());
+            this.blockMode.set(this.container.getBlockingMode());
         }
 
         if (this.interfaceMode != null) {
-            this.interfaceMode.setState(((InterfaceContainer) this.cvb).getInterfaceTerminalMode() == YesNo.YES);
+            this.interfaceMode.setState(this.container.getInterfaceTerminalMode() == YesNo.YES);
         }
 
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Interface.text()).getString(), 8, 6,
@@ -79,11 +83,6 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
         this.font.drawString(matrixStack, GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, COLOR_DARK_GRAY);
 
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/interface.png";
     }
 
     private void openPriorityGui() {

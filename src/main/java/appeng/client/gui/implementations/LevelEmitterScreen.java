@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -38,12 +39,15 @@ import appeng.core.localization.GuiText;
 
 public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/lvlemitter.png")
+            .src(0, 0, 211, 184);
+
     private NumberEntryWidget level;
     private SettingToggleButton<LevelType> levelMode;
     private SettingToggleButton<YesNo> craftingMode;
 
     public LevelEmitterScreen(LevelEmitterContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -92,11 +96,11 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
 
         if (this.craftingMode != null) {
-            this.craftingMode.set(this.cvb.getCraftingMode());
+            this.craftingMode.set(this.container.getCraftingMode());
         }
 
         if (this.levelMode != null) {
-            LevelType currentLevelMode = ((LevelEmitterContainer) this.cvb).getLevelMode();
+            LevelType currentLevelMode = this.container.getLevelMode();
             this.levelMode.set(currentLevelMode);
 
             if (notCraftingMode) {
@@ -119,11 +123,6 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     protected void handleButtonVisibility() {
         this.craftingMode.setVisibility(this.bc.getInstalledUpgrades(Upgrades.CRAFTING) > 0);
         this.fuzzyMode.setVisibility(this.bc.getInstalledUpgrades(Upgrades.FUZZY) > 0);
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/lvlemitter.png";
     }
 
     @Override

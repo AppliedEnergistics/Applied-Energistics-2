@@ -18,6 +18,7 @@
 
 package appeng.fluids.client.gui;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -49,13 +50,16 @@ import appeng.fluids.util.IAEFluidTank;
  * @since rv6 22/05/2018
  */
 public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusContainer> {
+
+    private static final Blitter BACKGROUND = Blitter.texture("guis/storagebus.png")
+            .src(0, 0, 211, 251);
+
     private SettingToggleButton<AccessRestriction> rwMode;
     private SettingToggleButton<StorageFilter> storageFilter;
 
     public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 251;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -107,21 +111,16 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
                 COLOR_DARK_GRAY);
 
         if (this.fuzzyMode != null) {
-            this.fuzzyMode.set(this.cvb.getFuzzyMode());
+            this.fuzzyMode.set(this.container.getFuzzyMode());
         }
 
         if (this.storageFilter != null) {
-            this.storageFilter.set(((FluidStorageBusContainer) this.cvb).getStorageFilter());
+            this.storageFilter.set(this.container.getStorageFilter());
         }
 
         if (this.rwMode != null) {
-            this.rwMode.set(((FluidStorageBusContainer) this.cvb).getReadWriteMode());
+            this.rwMode.set(this.container.getReadWriteMode());
         }
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/storagebus.png";
     }
 
     private void partition() {

@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -34,12 +35,14 @@ import appeng.core.localization.GuiText;
 
 public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssemblerContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/molecular_assembler.png")
+            .src(0, 0, 211, 197);
+
     private ProgressBar pb;
 
     public MolecularAssemblerScreen(MolecularAssemblerContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 197;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -71,11 +74,6 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
         this.pb.x = 148 + this.guiLeft;
         this.pb.y = 48 + this.guiTop;
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/molecular_assembler.png";
     }
 
     @Override

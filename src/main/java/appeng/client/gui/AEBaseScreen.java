@@ -18,29 +18,33 @@
 
 package appeng.client.gui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
+import appeng.client.gui.widgets.CustomSlotWidget;
+import appeng.client.gui.widgets.ITickingWidget;
+import appeng.client.gui.widgets.ITooltip;
+import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.VerticalButtonBar;
+import appeng.container.AEBaseContainer;
+import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.CraftingTermSlot;
+import appeng.container.slot.FakeSlot;
+import appeng.container.slot.IOptionalSlot;
+import appeng.container.slot.PatternTermSlot;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.core.sync.packets.SwapSlotsPacket;
+import appeng.helpers.InventoryAction;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import org.lwjgl.glfw.GLFW;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.util.InputMappings;
@@ -54,27 +58,22 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.glfw.GLFW;
 
-import appeng.client.gui.widgets.CustomSlotWidget;
-import appeng.client.gui.widgets.ITickingWidget;
-import appeng.client.gui.widgets.ITooltip;
-import appeng.client.gui.widgets.Scrollbar;
-import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.CraftingTermSlot;
-import appeng.container.slot.FakeSlot;
-import appeng.container.slot.IOptionalSlot;
-import appeng.container.slot.PatternTermSlot;
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.InventoryActionPacket;
-import appeng.core.sync.packets.SwapSlotsPacket;
-import appeng.helpers.InventoryAction;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
 
     public static final int COLOR_DARK_GRAY = 0x404040;
+
+    private final VerticalButtonBar verticalButtonBar = new VerticalButtonBar();
 
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
@@ -90,12 +89,20 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         super(container, playerInventory, title);
     }
 
+    @Override
+    protected void init() {
+        super.init();
+        this.verticalButtonBar.reset(guiLeft, guiTop);
+    }
+
     private List<Slot> getInventorySlots() {
         return this.container.inventorySlots;
     }
 
     @Override
     public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        this.verticalButtonBar.layout();
+
         super.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
@@ -119,10 +126,15 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 this.drawTooltip(matrixStack, (ITooltip) c, mouseX, mouseY);
             }
         }
+
+        List<Rectangle2d> exclusionZones = getExclusionZones();
+        for (Rectangle2d rectangle2d : exclusionZones) {
+            fillRect(matrixStack, rectangle2d, 0x7f00FF00);
+        }
     }
 
     protected void drawGuiSlot(MatrixStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
-            float partialTicks) {
+                               float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.getTooltipAreaX();
             final int top = slot.getTooltipAreaY();
@@ -204,7 +216,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
-            final int y) {
+                                                         final int y) {
         final int ox = this.guiLeft; // (width - xSize) / 2;
         final int oy = this.guiTop; // (height - ySize) / 2;
 
@@ -214,13 +226,20 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         for (final Slot slot : slots) {
             if (slot instanceof IOptionalSlot) {
                 final IOptionalSlot optionalSlot = (IOptionalSlot) slot;
+                // If a slot is optional and doesn't currently render, we still need to provide a background for it
                 if (optionalSlot.isRenderDisabled()) {
                     final AppEngSlot aeSlot = (AppEngSlot) slot;
+
+                    // If the slot is disabled, shade the background overlay
                     if (!aeSlot.isSlotEnabled()) {
                         RenderSystem.enableBlend();
+                        RenderSystem.color4f(1, 1, 1, 0.4f);
                     }
                     blit(matrixStack, ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1,
                             optionalSlot.getSourceY() - 1, 18, 18);
+                    if (!aeSlot.isSlotEnabled()) {
+                        RenderSystem.color4f(1, 1, 1, 1);
+                    }
                 }
             }
         }
@@ -308,7 +327,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected void handleMouseClick(@Nullable Slot slot, final int slotIdx, final int mouseButton,
-            final ClickType clickType) {
+                                    final ClickType clickType) {
         if (slot instanceof FakeSlot) {
             final InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                     : InventoryAction.PICKUP_OR_SET_DOWN;
@@ -443,7 +462,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     public abstract void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-            float partialTicks);
+                                float partialTicks);
 
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
@@ -559,12 +578,31 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     /**
+     * Adds a button to the vertical toolbar to the left of the screen and returns that button to the caller.
+     * The button will automatically be positioned. This needs to be repeated everytime {@link #init()} is called.
+     */
+    protected final <B extends Button> B addToLeftToolbar(B button) {
+        addButton(button);
+        verticalButtonBar.add(button);
+        return button;
+    }
+
+    /**
      * Returns rectangles in UI-space that define areas of the screen occluded by this GUI, in addition to the rectangle
      * defined by [guiLeft, guiTop, xSize, ySize], which is assumed to be occluded. This is used for moving JEI items
      * out of the way.
      */
     public List<Rectangle2d> getExclusionZones() {
-        return Collections.emptyList();
+        Rectangle2d toolbarBounds = verticalButtonBar.getBoundingRectangle();
+        List<Rectangle2d> result = new ArrayList<>(2);
+        if (toolbarBounds.getWidth() > 0 && toolbarBounds.getHeight() > 0) {
+            result.add(toolbarBounds);
+        }
+        return result;
+    }
+
+    protected void fillRect(MatrixStack matrices, Rectangle2d rect, int color) {
+        fill(matrices, rect.getX(), rect.getY(), rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight(), color);
     }
 
 }

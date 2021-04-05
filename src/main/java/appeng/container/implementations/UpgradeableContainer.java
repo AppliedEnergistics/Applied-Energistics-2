@@ -18,10 +18,12 @@
 
 package appeng.container.implementations;
 
+import appeng.container.slot.AppEngSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -52,6 +54,10 @@ import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.NetworkToolItem;
 import appeng.parts.automation.ExportBusPart;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class UpgradeableContainer extends AEBaseContainer implements IOptionalSlotHost {
 
     public static ContainerType<UpgradeableContainer> TYPE;
@@ -78,6 +84,10 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     public SchedulingMode schedulingMode = SchedulingMode.DEFAULT;
     private int tbSlot;
     private NetworkToolViewer tbInventory;
+
+    // We automatically reposition theses slots on the client-side to fit the respective textures
+    private final List<AppEngSlot> upgradeSlots = new ArrayList<>();
+    private final List<AppEngSlot> toolboxSlots = new ArrayList<>();
 
     public UpgradeableContainer(int id, final PlayerInventory ip, final IUpgradeableHost te) {
         this(TYPE, id, ip, te);
@@ -123,12 +133,13 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
         }
 
         if (this.hasToolbox()) {
-            for (int v = 0; v < 3; v++) {
-                for (int u = 0; u < 3; u++) {
-                    this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES,
-                            this.tbInventory.getInternalInventory(), u + v * 3, 186 + u * 18,
-                            this.getHeight() - 82 + v * 18, this.getPlayerInventory())).setPlayerSide());
-                }
+            for (int i = 0; i < 9; i++) {
+                RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES,
+                        this.tbInventory.getInternalInventory(), i, 0, 0, this.getPlayerInventory());
+                // The toolbox is in the network tool that is part of the player inventory
+                slot.setPlayerSide();
+                toolboxSlots.add(slot);
+                this.addSlot(slot);
             }
         }
 
@@ -168,24 +179,19 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
     protected void setupUpgrades() {
         final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
-        if (this.availableUpgrades() > 0) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
-                    this.getPlayerInventory())).setNotDraggable());
-        }
-        if (this.availableUpgrades() > 1) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187,
-                    8 + 18, this.getPlayerInventory())).setNotDraggable());
-        }
-        if (this.availableUpgrades() > 2) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 2, 187,
-                    8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
-        }
-        if (this.availableUpgrades() > 3) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 3, 187,
-                    8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
+
+        for (int i = 0; i < availableUpgrades(); i++) {
+            RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, i, 0, 0,
+                    this.getPlayerInventory());
+            slot.setNotDraggable();
+            upgradeSlots.add(slot);
+            this.addSlot(slot);
         }
     }
 
+    /**
+     * Indicates whether capacity upgrades can be used to increase the number of filter slots in this UI.
+     */
     protected boolean supportCapacity() {
         return true;
     }
@@ -297,4 +303,13 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     protected IUpgradeableHost getUpgradeable() {
         return this.upgradeable;
     }
+
+    public List<AppEngSlot> getUpgradeSlots() {
+        return Collections.unmodifiableList(upgradeSlots);
+    }
+
+    public List<AppEngSlot> getToolboxSlots() {
+        return Collections.unmodifiableList(toolboxSlots);
+    }
+
 }

@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -43,20 +44,22 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
 
     private ToggleButton copyMode;
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/cellworkbench.png")
+            .src(0, 0, 211 - 34, 251);
+
     public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 251;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
     protected void addButtons() {
-        this.fuzzyMode = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
+        this.fuzzyMode = this.addToLeftToolbar(new SettingToggleButton<>(0, 0,
                 Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
-        this.addButton(
-                new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, act1 -> action("Partition")));
-        this.addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, act -> action("Clear")));
-        this.copyMode = this.addButton(new ToggleButton(this.guiLeft - 18, this.guiTop + 48, 11 * 16 + 5, 12 * 16 + 5,
+        this.addToLeftToolbar(
+                new ActionButton(0, 0, ActionItems.WRENCH, act -> action("Partition")));
+        this.addToLeftToolbar(new ActionButton(0, 0, ActionItems.CLOSE, act -> action("Clear")));
+        this.copyMode = this.addToLeftToolbar(new ToggleButton(0, 0, 11 * 16 + 5, 12 * 16 + 5,
                 GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal(), act -> action("CopyMode")));
     }
 
@@ -65,9 +68,11 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
             final int mouseY, float partialTicks) {
         this.handleButtonVisibility();
 
-        this.bindTexture(this.getBackground());
-        blit(matrixStack, offsetX, offsetY, 0, 0, 211 - 34, this.ySize);
-        if (this.drawUpgrades()) {
+        BACKGROUND
+                .dest(offsetX, offsetY)
+                .blit(matrixStack, getBlitOffset());
+
+        if (this.container.availableUpgrades() > 0) {
             if (this.container.availableUpgrades() <= 8) {
                 blit(matrixStack, offsetX + 177, offsetY, 177, 0, 35, 7 + this.container.availableUpgrades() * 18);
                 blit(matrixStack, offsetX + 177, offsetY + (7 + (this.container.availableUpgrades()) * 18), 177, 151,
@@ -100,7 +105,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
                 }
             }
         }
-        if (this.hasToolbox()) {
+        if (container.hasToolbox()) {
             blit(matrixStack, offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68);
         }
     }
@@ -120,16 +125,6 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
             }
         }
         this.fuzzyMode.setVisibility(hasFuzzy);
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/cellworkbench.png";
-    }
-
-    @Override
-    protected boolean drawUpgrades() {
-        return this.container.availableUpgrades() > 0;
     }
 
     @Override

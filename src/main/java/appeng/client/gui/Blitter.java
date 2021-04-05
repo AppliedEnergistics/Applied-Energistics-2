@@ -1,10 +1,8 @@
 package appeng.client.gui;
 
+import appeng.core.AppEng;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Rectangle2d;
@@ -15,8 +13,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
-
-import appeng.core.AppEng;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Utility class for drawing rectangular textures in the UI.
@@ -30,10 +27,14 @@ public final class Blitter {
     // and it's impossible to get the texture size from an already loaded texture.
     // The coordinates will still be correct when a resource pack provides bigger textures as long
     // as each texture element is still positioned at the same relative position
-    private static final float TEXTURE_WIDTH = 256;
-    private static final float TEXTURE_HEIGHT = 256;
+    public static final int DEFAULT_TEXTURE_WIDTH = 256;
+    public static final int DEFAULT_TEXTURE_HEIGHT = 256;
 
     private final ResourceLocation texture;
+    // This texture size is only used to convert the source rectangle into uv coordinates (which are [0,1] and work
+    // with textures of any size at runtime).
+    private final int referenceWidth;
+    private final int referenceHeight;
     private int r = 255;
     private int g = 255;
     private int b = 255;
@@ -41,12 +42,24 @@ public final class Blitter {
     private Rectangle2d srcRect;
     private Rectangle2d destRect = new Rectangle2d(0, 0, 0, 0);
 
-    private Blitter(ResourceLocation texture) {
+    private Blitter(ResourceLocation texture, int referenceWidth, int referenceHeight) {
         this.texture = texture;
+        this.referenceWidth = referenceWidth;
+        this.referenceHeight = referenceHeight;
     }
 
+    /**
+     * Creates a blitter where the source rectangle is in relation to a 256x256 pixel texture.
+     */
     public static Blitter texture(String file) {
-        return new Blitter(new ResourceLocation(AppEng.MOD_ID, "textures/" + file));
+        return texture(file, DEFAULT_TEXTURE_WIDTH, DEFAULT_TEXTURE_HEIGHT);
+    }
+
+    /**
+     * Creates a blitter where the source rectangle is in relation to a texture of the given size.
+     */
+    public static Blitter texture(String file, int referenceWidth, int referenceHeight) {
+        return new Blitter(new ResourceLocation(AppEng.MOD_ID, "textures/" + file), referenceWidth, referenceHeight);
     }
 
     /**
@@ -59,8 +72,19 @@ public final class Blitter {
         int iconY = iconIndex / 16;
         int iconX = iconIndex - iconY * 16;
 
-        return new Blitter(ICON_SPRITESHEET)
+        return new Blitter(ICON_SPRITESHEET, DEFAULT_TEXTURE_WIDTH, DEFAULT_TEXTURE_HEIGHT)
                 .src(iconX * 16, iconY * 16, 16, 16);
+    }
+
+    public Blitter copy() {
+        Blitter result = new Blitter(texture, referenceWidth, referenceHeight);
+        result.srcRect = srcRect;
+        result.destRect = destRect;
+        result.r = r;
+        result.g = g;
+        result.b = b;
+        result.a = a;
+        return result;
     }
 
     public int getSrcWidth() {
@@ -108,6 +132,20 @@ public final class Blitter {
         return dest(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 
+    public Rectangle2d getDestRect() {
+        int x = destRect.getX();
+        int y = destRect.getY();
+        int w = 0, h = 0;
+        if (destRect.getWidth() != 0 && destRect.getHeight() != 0) {
+            w = destRect.getWidth();
+            h = destRect.getHeight();
+        } else if (srcRect != null) {
+            w = srcRect.getWidth();
+            h = srcRect.getHeight();
+        }
+        return new Rectangle2d(x, y, w, h);
+    }
+
     public Blitter color(float r, float g, float b) {
         this.r = (int) (MathHelper.clamp(r, 0, 1) * 255);
         this.g = (int) (MathHelper.clamp(g, 0, 1) * 255);
@@ -134,10 +172,10 @@ public final class Blitter {
             minU = minV = 0;
             maxU = maxV = 1;
         } else {
-            minU = srcRect.getX() / TEXTURE_WIDTH;
-            minV = srcRect.getY() / TEXTURE_HEIGHT;
-            maxU = (srcRect.getX() + srcRect.getWidth()) / TEXTURE_WIDTH;
-            maxV = (srcRect.getY() + srcRect.getHeight()) / TEXTURE_HEIGHT;
+            minU = srcRect.getX() / (float) referenceWidth;
+            minV = srcRect.getY() / (float) referenceHeight;
+            maxU = (srcRect.getX() + srcRect.getWidth()) / (float) referenceWidth;
+            maxV = (srcRect.getY() + srcRect.getHeight()) / (float) referenceHeight;
         }
 
         // It's possible to not set a destination rectangle size, in which case the

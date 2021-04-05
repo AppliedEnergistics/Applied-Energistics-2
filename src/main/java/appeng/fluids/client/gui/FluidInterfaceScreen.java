@@ -18,6 +18,7 @@
 
 package appeng.fluids.client.gui;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -36,10 +37,13 @@ import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.util.IAEFluidTank;
 
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContainer> {
+
+    private static final Blitter BACKGROUND = Blitter.texture("guis/interfacefluid.png")
+            .src(0, 0, 211, 231);
+
     public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 231;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -73,18 +77,8 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
-        this.bindTexture("guis/interfacefluid.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
-
     private void openPriorityGui() {
         NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
-    @Override
-    protected boolean drawUpgrades() {
-        return false;
-    }
 }

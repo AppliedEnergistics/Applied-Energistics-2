@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -37,12 +38,14 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/storagebus.png")
+            .src(0, 0, 211 - 34, 251);
+
     private SettingToggleButton<YesNo> placeMode;
 
     public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 251;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -52,11 +55,11 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
         this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
+        this.addToLeftToolbar(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
-        this.addButton(this.placeMode);
-        this.addButton(this.fuzzyMode);
+        this.addToLeftToolbar(this.placeMode);
+        this.addToLeftToolbar(this.fuzzyMode);
     }
 
     @Override
@@ -67,17 +70,12 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
 
         if (this.fuzzyMode != null) {
-            this.fuzzyMode.set(this.cvb.getFuzzyMode());
+            this.fuzzyMode.set(this.container.getFuzzyMode());
         }
 
         if (this.placeMode != null) {
-            this.placeMode.set(((FormationPlaneContainer) this.cvb).getPlaceMode());
+            this.placeMode.set(this.container.getPlaceMode());
         }
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/storagebus.png";
     }
 
     private void openPriorityGui() {
