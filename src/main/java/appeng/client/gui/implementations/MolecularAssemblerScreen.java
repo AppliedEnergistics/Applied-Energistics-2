@@ -18,7 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,6 +26,7 @@ import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.client.gui.widgets.ServerSettingToggleButton;

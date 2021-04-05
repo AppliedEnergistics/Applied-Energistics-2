@@ -18,7 +18,6 @@
 
 package appeng.fluids.client.gui;
 
-import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,6 +25,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.client.gui.implementations.UpgradeableScreen;

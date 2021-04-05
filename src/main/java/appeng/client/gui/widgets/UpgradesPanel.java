@@ -1,12 +1,14 @@
 package appeng.client.gui.widgets;
 
+import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.client.renderer.Rectangle2d;
+
 import appeng.client.gui.Blitter;
 import appeng.client.gui.Rects;
 import appeng.container.slot.AppEngSlot;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Rectangle2d;
-
-import java.util.List;
 
 /**
  * A panel that can draw a dynamic number of upgrade slots in a vertical layout.
@@ -86,8 +88,7 @@ public final class UpgradesPanel {
                     rightEdge,
                     offsetY + y,
                     fullColWidth,
-                    PADDING * 2 + MAX_ROWS * SLOT_SIZE
-            ), margin));
+                    PADDING * 2 + MAX_ROWS * SLOT_SIZE), margin));
             rightEdge += fullColWidth;
         }
 
@@ -99,8 +100,7 @@ public final class UpgradesPanel {
                     offsetY + y,
                     // We need to add padding in case there's no full column that already includes it
                     SLOT_SIZE + ((fullCols > 0) ? 0 : PADDING * 2),
-                    PADDING * 2 + remaining * SLOT_SIZE
-            ), margin));
+                    PADDING * 2 + remaining * SLOT_SIZE), margin));
         }
 
     }
@@ -115,7 +115,7 @@ public final class UpgradesPanel {
     }
 
     private static void drawSlot(MatrixStack matrices, int zIndex, int x, int y,
-                                 boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
+            boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
         int srcX = PADDING;
         int srcY = PADDING;
         int srcWidth = SLOT_SIZE;
@@ -144,8 +144,8 @@ public final class UpgradesPanel {
     }
 
     /**
-     * We need this function since the cell workbench can dynamically change how many upgrade slots are active
-     * based on the cell in the workbench.
+     * We need this function since the cell workbench can dynamically change how many upgrade slots are active based on
+     * the cell in the workbench.
      */
     private int getUpgradeSlotCount() {
         int count = 0;

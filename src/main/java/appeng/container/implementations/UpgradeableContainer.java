@@ -18,7 +18,10 @@
 
 package appeng.container.implementations;
 
-import appeng.container.slot.AppEngSlot;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -45,6 +48,7 @@ import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalFakeSlot;
@@ -53,10 +57,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.NetworkToolItem;
 import appeng.parts.automation.ExportBusPart;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class UpgradeableContainer extends AEBaseContainer implements IOptionalSlotHost {
 
@@ -181,7 +181,8 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
         final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
 
         for (int i = 0; i < availableUpgrades(); i++) {
-            RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, i, 0, 0,
+            RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades,
+                    i, 0, 0,
                     this.getPlayerInventory());
             slot.setNotDraggable();
             upgradeSlots.add(slot);

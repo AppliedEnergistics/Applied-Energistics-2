@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import appeng.client.gui.Blitter;
 import com.google.common.base.Joiner;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -44,6 +43,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.container.implementations.CraftingCPUContainer;

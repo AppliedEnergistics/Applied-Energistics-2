@@ -18,6 +18,14 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
@@ -35,12 +43,6 @@ import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.localization.GuiText;
 import appeng.parts.automation.ExportBusPart;
 import appeng.parts.automation.ImportBusPart;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
-import java.util.List;
 
 public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
 
@@ -103,7 +105,7 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         this.font.drawString(matrixStack, this.getGuiDisplayName(this.getName().text()).getString(), 8, 6,
                 COLOR_DARK_GRAY);
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
@@ -127,7 +129,7 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
 
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-                       float partialTicks) {
+            float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         this.handleButtonVisibility();

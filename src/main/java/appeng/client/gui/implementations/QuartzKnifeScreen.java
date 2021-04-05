@@ -18,7 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import org.lwjgl.glfw.GLFW;
@@ -31,6 +30,7 @@ import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;

@@ -17,8 +17,7 @@ public final class Rects {
                 rect.getX() - amount,
                 rect.getY() - amount,
                 rect.getWidth() + 2 * amount,
-                rect.getHeight() + 2 * amount
-        );
+                rect.getHeight() + 2 * amount);
     }
 
     public static Rectangle2d move(Rectangle2d rect, int x, int y) {
@@ -26,8 +25,7 @@ public final class Rects {
                 rect.getX() + x,
                 rect.getY() + y,
                 rect.getWidth(),
-                rect.getHeight()
-        );
+                rect.getHeight());
     }
 
 }

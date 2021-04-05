@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import appeng.client.gui.Blitter;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -50,6 +49,7 @@ import appeng.api.config.TerminalStyle;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;

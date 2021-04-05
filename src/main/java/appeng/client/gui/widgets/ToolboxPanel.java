@@ -1,12 +1,14 @@
 package appeng.client.gui.widgets;
 
+import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.client.renderer.Rectangle2d;
+
 import appeng.client.gui.Blitter;
 import appeng.client.gui.Rects;
 import appeng.container.slot.AppEngSlot;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Rectangle2d;
-
-import java.util.List;
 
 /**
  * A 3x3 toolbox panel attached to the player inventory.
@@ -35,8 +37,7 @@ public class ToolboxPanel {
 
     public void addExclusionZones(int offsetX, int offsetY, List<Rectangle2d> zones) {
         zones.add(Rects.expand(
-                new Rectangle2d(offsetX + x, offsetY + y, BACKGROUND.getSrcWidth(), BACKGROUND.getSrcHeight())
-                , 2));
+                new Rectangle2d(offsetX + x, offsetY + y, BACKGROUND.getSrcWidth(), BACKGROUND.getSrcHeight()), 2));
     }
 
     public void setPos(int x, int y) {
@@ -48,8 +49,7 @@ public class ToolboxPanel {
     public void draw(MatrixStack matrices, int blitOffset, int offsetX, int offsetY) {
         BACKGROUND.dest(
                 offsetX + x,
-                offsetY + y
-        ).blit(matrices, blitOffset);
+                offsetY + y).blit(matrices, blitOffset);
     }
 
     private void positionToolboxSlots() {

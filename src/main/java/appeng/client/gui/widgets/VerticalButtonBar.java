@@ -1,11 +1,12 @@
 package appeng.client.gui.widgets;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.Rectangle2d;
-
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.Rectangle2d;
 
 /**
  * A stacked button panel on the left or right side of our UIs.
@@ -60,13 +61,12 @@ public class VerticalButtonBar {
                 boundX,
                 boundY,
                 maxWidth + 2 * MARGIN,
-                currentY + MARGIN - boundY
-        );
+                currentY + MARGIN - boundY);
     }
 
     /**
-     * Called when the parent UI is repositioned or resized. All buttons need to be re-added since
-     * Vanilla clears the widgets when this happens.
+     * Called when the parent UI is repositioned or resized. All buttons need to be re-added since Vanilla clears the
+     * widgets when this happens.
      */
     public void reset(int originX, int originY) {
         this.originX = originX;

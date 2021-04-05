@@ -18,13 +18,13 @@
 
 package appeng.client.gui.implementations;
 
-import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.implementations.NetworkToolContainer;
 import appeng.core.localization.GuiText;

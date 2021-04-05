@@ -29,14 +29,14 @@ public interface IOptionalSlot {
     }
 
     /**
-     * @return The x-position in the screen's background image that should be used to draw this optional slot.
-     * A 18x18 pixel source rectangle will be used.
+     * @return The x-position in the screen's background image that should be used to draw this optional slot. A 18x18
+     *         pixel source rectangle will be used.
      */
     int getSourceX();
 
     /**
-     * @return The y-position in the screen's background image that should be used to draw this optional slot.
-     * A 18x18 pixel source rectangle will be used.
+     * @return The y-position in the screen's background image that should be used to draw this optional slot. A 18x18
+     *         pixel source rectangle will be used.
      */
     int getSourceY();
 }

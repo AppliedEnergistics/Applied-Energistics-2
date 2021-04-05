@@ -114,8 +114,9 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
                 getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
         offset += 20;
 
-        this.sortDirBox = this.addToLeftToolbar(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_DIRECTION,
-                getSortDir(), this::toggleServerSetting));
+        this.sortDirBox = this
+                .addToLeftToolbar(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_DIRECTION,
+                        getSortDir(), this::toggleServerSetting));
 
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLS; x++) {
