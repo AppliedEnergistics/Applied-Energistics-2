@@ -23,10 +23,10 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 
 import appeng.api.exceptions.FailedConnectionException;
@@ -73,13 +73,13 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void readFromNBT(final CompoundTag extra) {
+    public void readFromNBT(final CompoundNBT extra) {
         super.readFromNBT(extra);
         this.outerProxy.readFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(final CompoundTag extra) {
+    public void writeToNBT(final CompoundNBT extra) {
         super.writeToNBT(extra);
         this.outerProxy.writeToNBT(extra);
     }
@@ -114,7 +114,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
         super.setPartHostInfo(side, host, tile);
         this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
     }
@@ -201,8 +201,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
                         connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, Api.instance()
                                 .grid().createGridConnection(this.outerProxy.getNode(), me.outerProxy.getNode())));
                     } catch (final FailedConnectionException e) {
-                        final BlockEntity start = this.getTile();
-                        final BlockEntity end = me.getTile();
+                        final TileEntity start = this.getTile();
+                        final TileEntity end = me.getTile();
 
                         AELog.debug(e);
 

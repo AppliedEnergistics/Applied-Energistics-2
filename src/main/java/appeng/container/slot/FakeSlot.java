@@ -30,31 +30,31 @@ public class FakeSlot extends AppEngSlot {
     }
 
     @Override
-    public ItemStack onTakeItem(final PlayerEntity par1PlayerEntity, final ItemStack par2ItemStack) {
+    public ItemStack onTake(final PlayerEntity par1PlayerEntity, final ItemStack par2ItemStack) {
         return par2ItemStack;
     }
 
     @Override
-    public ItemStack takeStack(final int par1) {
+    public ItemStack decrStackSize(final int par1) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canInsert(final ItemStack stack) {
+    public boolean isItemValid(final ItemStack stack) {
         return false;
     }
 
     @Override
-    public void setStack(ItemStack is) {
+    public void putStack(ItemStack is) {
         if (!is.isEmpty()) {
             is = is.copy();
         }
 
-        super.setStack(is);
+        super.putStack(is);
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity player) {
+    public boolean canTakeStack(final PlayerEntity player) {
         return false;
     }
 }

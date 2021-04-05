@@ -25,12 +25,12 @@ import java.util.Map.Entry;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
@@ -53,7 +53,7 @@ import appeng.items.misc.EncodedPatternItem;
 import appeng.parts.misc.InterfacePart;
 import appeng.parts.reporting.InterfaceTerminalPart;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.misc.InterfaceBlockEntity;
+import appeng.tile.misc.InterfaceTileEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorFixedInv;
@@ -61,12 +61,12 @@ import appeng.util.inv.WrapperCursorItemHandler;
 
 public final class InterfaceTerminalContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<InterfaceTerminalContainer> TYPE;
+    public static ContainerType<InterfaceTerminalContainer> TYPE;
 
     private static final ContainerHelper<InterfaceTerminalContainer, InterfaceTerminalPart> helper = new ContainerHelper<>(
             InterfaceTerminalContainer::new, InterfaceTerminalPart.class, SecurityPermissions.BUILD);
 
-    public static InterfaceTerminalContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static InterfaceTerminalContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -82,7 +82,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     private final Map<IInterfaceHost, InvTracker> diList = new HashMap<>();
     private final Map<Long, InvTracker> byId = new HashMap<>();
     private IGrid grid;
-    private CompoundTag data = new CompoundTag();
+    private CompoundNBT data = new CompoundNBT();
 
     public InterfaceTerminalContainer(int id, final PlayerInventory ip, final InterfaceTerminalPart anchor) {
         super(TYPE, id, ip, anchor);
@@ -91,16 +91,16 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             this.grid = anchor.getActionableNode().getGrid();
         }
 
-        this.bindPlayerInventory(ip, 0, 222 - /* height of player inventory */82);
+        this.bindPlayerInventory(ip, 0, 0);
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         if (isClient()) {
             return;
         }
 
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
 
         if (this.grid == null) {
             return;
@@ -113,7 +113,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         if (host != null) {
             final IGridNode agn = host.getActionableNode();
             if (agn != null && agn.isActive()) {
-                for (final IGridNode gn : this.grid.getMachines(InterfaceBlockEntity.class)) {
+                for (final IGridNode gn : this.grid.getMachines(InterfaceTileEntity.class)) {
                     if (gn.isActive()) {
                         final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
                         if (ih.getInterfaceDuality().getConfigManager()
@@ -182,7 +182,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                 // :P
             }
 
-            this.data = new CompoundTag();
+            this.data = new CompoundNBT();
         }
     }
 
@@ -191,7 +191,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         final InvTracker inv = this.byId.get(id);
         if (inv != null) {
             final ItemStack is = inv.server.getInvStack(slot);
-            final boolean hasItemInHand = !player.inventory.getCursorStack().isEmpty();
+            final boolean hasItemInHand = !player.inventory.getItemStack().isEmpty();
 
             final InventoryAdaptor playerHand = new AdaptorFixedInv(new WrapperCursorItemHandler(player.inventory));
 
@@ -207,20 +207,20 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                     if (hasItemInHand) {
                         ItemStack inSlot = theSlot.get();
                         if (inSlot.isEmpty()) {
-                            player.inventory.setCursorStack(theSlot.insert(player.inventory.getCursorStack()));
+                            player.inventory.setItemStack(theSlot.insert(player.inventory.getItemStack()));
                         } else {
                             inSlot = inSlot.copy();
-                            final ItemStack inHand = player.inventory.getCursorStack().copy();
+                            final ItemStack inHand = player.inventory.getItemStack().copy();
 
                             theSlot.set(ItemStack.EMPTY);
-                            player.inventory.setCursorStack(ItemStack.EMPTY);
+                            player.inventory.setItemStack(ItemStack.EMPTY);
 
-                            player.inventory.setCursorStack(theSlot.insert(inHand.copy()));
+                            player.inventory.setItemStack(theSlot.insert(inHand.copy()));
 
-                            if (player.inventory.getCursorStack().isEmpty()) {
-                                player.inventory.setCursorStack(inSlot);
+                            if (player.inventory.getItemStack().isEmpty()) {
+                                player.inventory.setItemStack(inSlot);
                             } else {
-                                player.inventory.setCursorStack(inHand);
+                                player.inventory.setItemStack(inHand);
                                 theSlot.set(inSlot);
                             }
                         }
@@ -260,14 +260,15 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
                     final InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor(player);
                     for (int x = 0; x < inv.server.getSlotCount(); x++) {
-                        ItemHandlerUtil.setStackInSlot(inv.server, x, playerInvAd.addItems(inv.server.getInvStack(x)));
+                        ItemHandlerUtil.setStackInSlot(inv.server, x,
+                                playerInvAd.addItems(inv.server.getInvStack(x)));
                     }
 
                     break;
                 case CREATIVE_DUPLICATE:
 
-                    if (player.isCreative() && !hasItemInHand) {
-                        player.inventory.setCursorStack(is.isEmpty() ? ItemStack.EMPTY : is.copy());
+                    if (player.abilities.isCreativeMode && !hasItemInHand) {
+                        player.inventory.setItemStack(is.isEmpty() ? ItemStack.EMPTY : is.copy());
                     }
 
                     break;
@@ -283,7 +284,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         return !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem;
     }
 
-    private void regenList(final CompoundTag data) {
+    private void regenList(final CompoundNBT data) {
         this.byId.clear();
         this.diList.clear();
 
@@ -291,7 +292,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         if (host != null) {
             final IGridNode agn = host.getActionableNode();
             if (agn != null && agn.isActive()) {
-                for (final IGridNode gn : this.grid.getMachines(InterfaceBlockEntity.class)) {
+                for (final IGridNode gn : this.grid.getMachines(InterfaceTileEntity.class)) {
                     final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
                     final DualityInterface dual = ih.getInterfaceDuality();
                     if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
@@ -327,20 +328,20 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             return true;
         }
 
-        return !ItemStack.areEqual(a, b);
+        return !ItemStack.areItemStacksEqual(a, b);
     }
 
-    private void addItems(final CompoundTag data, final InvTracker inv, final int offset, final int length) {
+    private void addItems(final CompoundNBT data, final InvTracker inv, final int offset, final int length) {
         final String name = '=' + Long.toString(inv.which, Character.MAX_RADIX);
-        final CompoundTag tag = data.getCompound(name);
+        final CompoundNBT tag = data.getCompound(name);
 
         if (tag.isEmpty()) {
             tag.putLong("sortBy", inv.sortBy);
-            tag.putString("un", Text.Serializer.toJson(inv.name));
+            tag.putString("un", ITextComponent.Serializer.toJson(inv.name));
         }
 
         for (int x = 0; x < length; x++) {
-            final CompoundTag itemNBT = new CompoundTag();
+            final CompoundNBT itemNBT = new CompoundNBT();
 
             final ItemStack is = inv.server.getInvStack(x + offset);
 
@@ -348,7 +349,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             ItemHandlerUtil.setStackInSlot(inv.client, x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
 
             if (!is.isEmpty()) {
-                is.toTag(itemNBT);
+                is.write(itemNBT);
             }
 
             tag.put(Integer.toString(x + offset), itemNBT);
@@ -361,11 +362,11 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
         private final long sortBy;
         private final long which = autoBase++;
-        private final Text name;
+        private final ITextComponent name;
         private final FixedItemInv client;
         private final FixedItemInv server;
 
-        public InvTracker(final DualityInterface dual, final FixedItemInv patterns, final Text name) {
+        public InvTracker(final DualityInterface dual, final FixedItemInv patterns, final ITextComponent name) {
             this.server = patterns;
             this.client = new AppEngInternalInventory(null, this.server.getSlotCount());
             this.name = name;

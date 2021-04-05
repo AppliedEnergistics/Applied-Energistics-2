@@ -25,13 +25,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.world.IWorld;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
@@ -40,7 +40,7 @@ import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
-import appeng.tile.storage.SkyChestBlockEntity;
+import appeng.tile.storage.SkyChestTileEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorFixedInv;
@@ -57,7 +57,7 @@ public final class MeteoritePlacer {
     private final BlockState skyStone;
     private final Item skyStoneItem;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
-    private final WorldAccess world;
+    private final IWorld world;
     private final Fallout type;
     private final BlockPos pos;
     private final int x;
@@ -71,9 +71,9 @@ public final class MeteoritePlacer {
     private final CraterType craterType;
     private final boolean pureCrater;
     private final boolean craterLake;
-    private final BlockBox boundingBox;
+    private final MutableBoundingBox boundingBox;
 
-    public MeteoritePlacer(WorldAccess world, PlacedMeteoriteSettings settings, BlockBox boundingBox) {
+    public MeteoritePlacer(IWorld world, PlacedMeteoriteSettings settings, MutableBoundingBox boundingBox) {
         this.boundingBox = boundingBox;
         this.world = world;
         this.pos = settings.getPos();
@@ -186,8 +186,8 @@ public final class MeteoritePlacer {
             }
         }
 
-        for (final Object o : world.getEntitiesByClass(ItemEntity.class,
-                new Box(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)), null)) {
+        for (final Object o : world.getEntitiesWithinAABB(ItemEntity.class,
+                new AxisAlignedBB(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)))) {
             final Entity e = (Entity) o;
             e.remove();
         }
@@ -204,7 +204,7 @@ public final class MeteoritePlacer {
         if (AEConfig.instance().isFeatureEnabled(AEFeature.SPAWN_PRESSES_IN_METEORITES)) {
             this.putter.put(world, pos, this.skyChestDefinition.block().getDefaultState());
 
-            final SkyChestBlockEntity te = (SkyChestBlockEntity) world.getBlockEntity(pos);
+            final SkyChestTileEntity te = (SkyChestTileEntity) world.getTileEntity(pos);
             InventoryAdaptor ap = null;
             if (te != null) {
                 ap = new AdaptorFixedInv(te.getInternalInventory());
@@ -343,7 +343,7 @@ public final class MeteoritePlacer {
 
                     // TODO reconsider
                     if (state.getMaterial().isReplaceable()) {
-                        if (!world.isAir(blockPosUp)) {
+                        if (!world.isAirBlock(blockPosUp)) {
                             final BlockState stateUp = world.getBlockState(blockPosUp);
                             world.setBlockState(blockPos, stateUp, 3);
                         } else if (randomShit < 100 * this.crater) {
@@ -366,7 +366,7 @@ public final class MeteoritePlacer {
                         }
                     } else {
                         // decay.
-                        if (world.isAir(blockPosUp)) {
+                        if (world.isAirBlock(blockPosUp)) {
                             if (Math.random() > 0.4) {
                                 final double dx = i - x;
                                 final double dy = j - y;
@@ -416,7 +416,7 @@ public final class MeteoritePlacer {
         }
     }
 
-    private Fallout getFallout(WorldAccess w, BlockPos pos, FalloutMode mode) {
+    private Fallout getFallout(IWorld w, BlockPos pos, FalloutMode mode) {
         switch (mode) {
             case SAND:
                 return new FalloutSand(w, pos, this.putter, this.skyStone);

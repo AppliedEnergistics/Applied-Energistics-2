@@ -30,7 +30,7 @@ import appeng.api.features.ILocatable;
 
 /**
  * Input Event:
- * <p>
+ *
  * Used to Notify the Location Registry of objects, and their availability.
  */
 public interface LocatableEventAnnounce {
@@ -44,7 +44,7 @@ public interface LocatableEventAnnounce {
 
     void onLocatableAnnounce(final ILocatable target, final LocatableEvent change);
 
-    enum LocatableEvent {
+    public enum LocatableEvent {
         /**
          * Adds the locatable to the registry
          */

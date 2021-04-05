@@ -19,11 +19,11 @@
 package appeng.spatial;
 
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeEffects;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
+import net.minecraft.world.biome.BiomeAmbience;
+import net.minecraft.world.biome.BiomeGenerationSettings;
+import net.minecraft.world.biome.MobSpawnInfo;
+import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
+import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 
 /**
  * The single biome used within the spatial storage world.
@@ -31,13 +31,14 @@ import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 public class SpatialStorageBiome {
 
     public static final Biome INSTANCE = new Biome.Builder()
-            .generationSettings(new GenerationSettings.Builder()
-                    .surfaceBuilder(new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_CONFIG))
+            .withGenerationSettings(new BiomeGenerationSettings.Builder().withSurfaceBuilder(
+                    new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_STONE_GRAVEL_CONFIG))
                     .build())
-            .precipitation(Biome.Precipitation.NONE).category(Biome.Category.NONE).depth(0).scale(1)
+            .precipitation(Biome.RainType.NONE).category(Biome.Category.NONE).depth(0).scale(1)
             // Copied from the vanilla void biome
-            .temperature(0.5F).downfall(0.5F).effects(new BiomeEffects.Builder().waterColor(4159204)
-                    .waterFogColor(329011).fogColor(0).skyColor(0x111111).build())
-            .spawnSettings(new SpawnSettings.Builder().creatureSpawnProbability(0).build()).build();
+            .temperature(0.5F).downfall(0.5F)
+            .setEffects(new BiomeAmbience.Builder().setWaterColor(4159204).setWaterFogColor(329011).setFogColor(0)
+                    .withSkyColor(0x111111).build())
+            .withMobSpawnSettings(new MobSpawnInfo.Builder().withCreatureSpawnProbability(0).copy()).build();
 
 }

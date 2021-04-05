@@ -5,16 +5,16 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
+import net.minecraft.item.crafting.Ingredient;
 
 @Mixin(Ingredient.class)
 public interface IngredientAccessor {
 
     // Temporary fix for https://github.com/SpongePowered/Mixin/issues/430
-    @Invoker("cacheMatchingStacks")
+    @Invoker("determineMatchingStacks")
     void appeng_cacheMatchingStacks();
 
-    @Accessor
-    ItemStack[] getMatchingStacks();
+    @Accessor("matchingStacks")
+    ItemStack[] appeng_getMatchingStacks();
 
 }

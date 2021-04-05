@@ -20,12 +20,12 @@ package appeng.integration.modules.waila.part;
 
 import java.util.List;
 
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import mcp.mobius.waila.api.IDataAccessor;
@@ -47,22 +47,22 @@ public abstract class BasePartWailaDataProvider implements IPartWailaDataProvide
     }
 
     @Override
-    public void appendHead(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
+    public void appendHead(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
             final IPluginConfig config) {
     }
 
     @Override
-    public void appendBody(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
+    public void appendBody(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
             final IPluginConfig config) {
     }
 
     @Override
-    public void appendTail(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
+    public void appendTail(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
             final IPluginConfig config) {
     }
 
     @Override
-    public void appendServerData(ServerPlayerEntity player, IPart part, BlockEntity te, CompoundTag tag, World world,
+    public void appendServerData(ServerPlayerEntity player, IPart part, TileEntity te, CompoundNBT tag, World world,
             BlockPos pos) {
     }
 }

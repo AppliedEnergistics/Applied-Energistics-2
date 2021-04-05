@@ -23,8 +23,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.PersistentState;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.storage.WorldSavedData;
 
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -35,7 +35,7 @@ import appeng.me.GridStorage;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class StorageData extends PersistentState implements IWorldGridStorageData {
+final class StorageData extends WorldSavedData implements IWorldGridStorageData {
 
     public static final String NAME = AppEng.MOD_ID + "_storage";
 
@@ -62,6 +62,7 @@ final class StorageData extends PersistentState implements IWorldGridStorageData
      * lazy loading, can load any id, even ones that don't exist anymore.
      *
      * @param storageID ID of grid storage
+     *
      * @return corresponding grid storage
      */
     @Override
@@ -96,13 +97,13 @@ final class StorageData extends PersistentState implements IWorldGridStorageData
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void read(CompoundNBT tag) {
 
         nextGridId = tag.getLong(TAG_NEXT_ID);
 
         // Load serialized grid storage
-        CompoundTag storageTag = tag.getCompound(TAG_STORAGE);
-        for (String storageIdStr : storageTag.getKeys()) {
+        CompoundNBT storageTag = tag.getCompound(TAG_STORAGE);
+        for (String storageIdStr : storageTag.keySet()) {
             long storageId;
             try {
                 storageId = Long.parseLong(storageIdStr);
@@ -114,21 +115,21 @@ final class StorageData extends PersistentState implements IWorldGridStorageData
         }
 
         // Load ordered values map
-        CompoundTag orderedValuesTag = tag.getCompound(TAG_ORDERED_VALUES);
+        CompoundNBT orderedValuesTag = tag.getCompound(TAG_ORDERED_VALUES);
         this.orderedValues.clear();
-        for (String key : orderedValuesTag.getKeys()) {
+        for (String key : orderedValuesTag.keySet()) {
             this.orderedValues.put(key, orderedValuesTag.getInt(key));
         }
 
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundNBT write(CompoundNBT tag) {
 
         tag.putLong(TAG_NEXT_ID, nextGridId);
 
         // Save serialized grid storage
-        CompoundTag storageTag = new CompoundTag();
+        CompoundNBT storageTag = new CompoundNBT();
         for (Map.Entry<Long, GridStorage> entry : storage.entrySet()) {
 
             GridStorage gridStorage = entry.getValue();
@@ -147,7 +148,7 @@ final class StorageData extends PersistentState implements IWorldGridStorageData
         tag.put(TAG_STORAGE, storageTag);
 
         // Save ordered values
-        CompoundTag orderedValuesTag = new CompoundTag();
+        CompoundNBT orderedValuesTag = new CompoundNBT();
         for (Map.Entry<String, Integer> entry : orderedValues.entrySet()) {
             orderedValuesTag.putInt(entry.getKey(), entry.getValue());
         }

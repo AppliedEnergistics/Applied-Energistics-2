@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,10 +25,10 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.Direction;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -44,7 +44,7 @@ public class FacadeBakedItemModel extends ForwardingBakedModel {
     private final FacadeBuilder facadeBuilder;
     private final Int2ObjectMap<Mesh> cache = new Int2ObjectArrayMap<>();
 
-    public FacadeBakedItemModel(BakedModel baseModel, FacadeBuilder facadeBuilder) {
+    public FacadeBakedItemModel(IBakedModel baseModel, FacadeBuilder facadeBuilder) {
         this.wrapped = baseModel;
         this.facadeBuilder = facadeBuilder;
     }
@@ -65,7 +65,7 @@ public class FacadeBakedItemModel extends ForwardingBakedModel {
         FacadeItem itemFacade = (FacadeItem) stack.getItem();
         ItemStack textureItem = itemFacade.getTextureItem(stack);
 
-        int itemId = Item.getRawId(textureItem.getItem());
+        int itemId = Item.getIdFromItem(textureItem.getItem());
         int hash = Objects.hash(itemId, textureItem.getTag());
         Mesh mesh = this.cache.get(hash);
         if (mesh == null) {

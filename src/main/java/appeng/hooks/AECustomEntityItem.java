@@ -1,9 +1,9 @@
 package appeng.hooks;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 
 public interface AECustomEntityItem {
 

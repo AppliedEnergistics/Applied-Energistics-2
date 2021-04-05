@@ -28,10 +28,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
@@ -49,9 +49,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     private final AESharedItemStack sharedStack;
 
     @Environment(EnvType.CLIENT)
-    private Text displayName;
+    private ITextComponent displayName;
     @Environment(EnvType.CLIENT)
-    private List<Text> tooltip;
+    private List<ITextComponent> tooltip;
 
     private AEItemStack(final AEItemStack is) {
         this.setStackSize(is.getStackSize());
@@ -76,12 +76,12 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         return new AEItemStack(AEItemStackRegistry.getRegisteredStack(stack), stack.getCount());
     }
 
-    public static IAEItemStack fromNBT(final CompoundTag i) {
+    public static IAEItemStack fromNBT(final CompoundNBT i) {
         if (i == null) {
             return null;
         }
 
-        final ItemStack itemstack = ItemStack.fromTag(i.getCompound(NBT_ITEMSTACK));
+        final ItemStack itemstack = ItemStack.read(i.getCompound(NBT_ITEMSTACK));
         if (itemstack.isEmpty()) {
             return null;
         }
@@ -94,9 +94,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public void writeToNBT(final CompoundTag i) {
-        final CompoundTag itemStack = new CompoundTag();
-        this.getDefinition().toTag(itemStack);
+    public void writeToNBT(final CompoundNBT i) {
+        final CompoundNBT itemStack = new CompoundNBT();
+        this.getDefinition().write(itemStack);
 
         i.put(NBT_ITEMSTACK, itemStack);
         i.putLong(NBT_STACKSIZE, this.getStackSize());
@@ -104,7 +104,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         i.putBoolean(NBT_CRAFTABLE, this.isCraftable());
     }
 
-    public static AEItemStack fromPacket(final PacketByteBuf buffer) {
+    public static AEItemStack fromPacket(final PacketBuffer buffer) {
         final boolean isCraftable = buffer.readBoolean();
         final long stackSize = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
@@ -121,7 +121,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public void writeToPacket(final PacketByteBuf buffer) {
+    public void writeToPacket(final PacketBuffer buffer) {
         buffer.writeBoolean(this.isCraftable());
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
@@ -159,7 +159,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @Override
     public ItemStack createItemStack() {
-        return Platform.copyStackWithSize(this.getDefinition(), (int) Math.min(Integer.MAX_VALUE, this.getStackSize()));
+        int size = (int) Math.min(Integer.MAX_VALUE, this.getStackSize());
+        if (size != 0) {
+            ItemStack result = this.getDefinition().copy();
+            result.setCount(size);
+            return result;
+        } else {
+            return ItemStack.EMPTY;
+        }
     }
 
     @Override
@@ -189,7 +196,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         int oldSize = otherStack.getCount();
 
         otherStack.setCount(1);
-        boolean ret = ItemStack.areEqual(this.getDefinition(), otherStack);
+        boolean ret = ItemStack.areItemStacksEqual(this.getDefinition(), otherStack);
         otherStack.setCount(oldSize);
 
         return ret;
@@ -211,17 +218,18 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         return false;
     }
 
+    @Override
     public boolean equals(final ItemStack is) {
         return this.isSameType(is);
     }
 
     @Override
     public String toString() {
-        return this.getStackSize() + "x" + Registry.ITEM.getId(this.getDefinition().getItem());
+        return this.getStackSize() + "x" + Registry.ITEM.getKey(this.getDefinition().getItem());
     }
 
     @Environment(EnvType.CLIENT)
-    public List<Text> getToolTip() {
+    public List<ITextComponent> getToolTip() {
         if (this.tooltip == null) {
             this.tooltip = Platform.getTooltip(this.asItemStackRepresentation());
         }
@@ -229,7 +237,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Environment(EnvType.CLIENT)
-    public Text getDisplayName() {
+    public ITextComponent getDisplayName() {
         if (this.displayName == null) {
             this.displayName = Platform.getItemDisplayName(this.asItemStackRepresentation());
         }
@@ -238,7 +246,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @Environment(EnvType.CLIENT)
     public String getModID() {
-        return Registry.ITEM.getId(this.getDefinition().getItem()).getNamespace();
+        return Registry.ITEM.getKey(this.getDefinition().getItem()).getNamespace();
     }
 
     @Override

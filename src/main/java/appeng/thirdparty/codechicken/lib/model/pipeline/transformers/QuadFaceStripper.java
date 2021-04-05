@@ -18,13 +18,13 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import static net.minecraft.util.math.Direction.AxisDirection.POSITIVE;
+import static net.minecraft.util.Direction.AxisDirection.POSITIVE;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.AxisDirection;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.AxisDirection;
+import net.minecraft.util.math.AxisAlignedBB;
 
 /**
  * This transformer strips quads that are on faces. Simply set the bounds for the faces, and the strip mask.
@@ -33,14 +33,14 @@ import net.minecraft.util.math.Direction.AxisDirection;
  */
 public class QuadFaceStripper implements RenderContext.QuadTransform {
 
-    private Box bounds;
+    private AxisAlignedBB bounds;
     private int mask;
 
     QuadFaceStripper() {
         super();
     }
 
-    public QuadFaceStripper(Box bounds, int mask) {
+    public QuadFaceStripper(AxisAlignedBB bounds, int mask) {
         this.bounds = bounds;
         this.mask = mask;
     }
@@ -51,7 +51,7 @@ public class QuadFaceStripper implements RenderContext.QuadTransform {
      *
      * @param bounds The bounds.
      */
-    public void setBounds(Box bounds) {
+    public void setBounds(AxisAlignedBB bounds) {
         this.bounds = bounds;
     }
 
@@ -72,7 +72,7 @@ public class QuadFaceStripper implements RenderContext.QuadTransform {
         // If the bit for this quad is set, then check if we should strip.
         Direction face = quad.nominalFace();
         if ((this.mask & (1 << face.ordinal())) != 0) {
-            AxisDirection dir = face.getDirection();
+            AxisDirection dir = face.getAxisDirection();
             switch (face.getAxis()) {
                 case X: {
                     float bound = (float) (dir == POSITIVE ? this.bounds.maxX : this.bounds.minX);

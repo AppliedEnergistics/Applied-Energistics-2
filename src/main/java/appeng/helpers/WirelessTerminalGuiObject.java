@@ -45,7 +45,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.Api;
-import appeng.tile.networking.WirelessBlockEntity;
+import appeng.tile.networking.WirelessTileEntity;
 
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
 
@@ -244,7 +244,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                 return false;
             }
 
-            final IMachineSet tw = this.targetGrid.getMachines(WirelessBlockEntity.class);
+            final IMachineSet tw = this.targetGrid.getMachines(WirelessTileEntity.class);
 
             this.myWap = null;
 
@@ -267,9 +267,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         final DimensionalCoord dc = wap.getLocation();
 
         if (dc.getWorld() == this.myPlayer.world) {
-            final double offX = dc.x - this.myPlayer.getX();
-            final double offY = dc.y - this.myPlayer.getY();
-            final double offZ = dc.z - this.myPlayer.getZ();
+            final double offX = dc.x - this.myPlayer.getPosX();
+            final double offY = dc.y - this.myPlayer.getPosY();
+            final double offZ = dc.z - this.myPlayer.getPosZ();
 
             final double r = offX * offX + offY * offY + offZ * offZ;
             if (r < rangeLimit && this.sqRange > r) {

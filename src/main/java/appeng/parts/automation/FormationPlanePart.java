@@ -23,24 +23,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AutomaticItemPlacementContext;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -144,14 +145,14 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.Config.readFromNBT(data, "config");
         this.updateHandler();
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         this.Config.writeToNBT(data, "config");
     }
@@ -177,8 +178,8 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
-        if (Platform.isServer()) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
@@ -206,27 +207,22 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final ItemStack is = input.createItemStack();
         final Item i = is.getItem();
 
-        long maxStorage = Math.min(input.getStackSize(), is.getMaxCount());
+        long maxStorage = Math.min(input.getStackSize(), is.getMaxStackSize());
         boolean worked = false;
 
-        final BlockEntity te = this.getHost().getTile();
+        final TileEntity te = this.getHost().getTile();
         final World w = te.getWorld();
-        if (!(w instanceof ServerWorld)) {
-            return input;
-        }
-        ServerWorld serverWorld = (ServerWorld) w;
-
         final AEPartLocation side = this.getSide();
 
         final BlockPos placePos = te.getPos().offset(side.getFacing());
 
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES) {
-                final PlayerEntity player = FakePlayer.getOrCreate(serverWorld);
+                final PlayerEntity player = FakePlayer.getOrCreate((ServerWorld) w);
                 Platform.configurePlayer(player, side, this.getTile());
                 // Seems to work without...
                 // Hand hand = player.getActiveHand();
-                // player.setStackInHand(hand, is);
+                // player.setHeldItem(hand, is);
 
                 maxStorage = is.getCount();
                 worked = true;
@@ -237,7 +233,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                     PlaneDirectionalPlaceContext context = new PlaneDirectionalPlaceContext(w, player, placePos,
                             lookDirection, is, lookDirection.getOpposite());
 
-                    i.useOnBlock(context);
+                    i.onItemUse(context);
                     maxStorage -= is.getCount();
 
                 } else {
@@ -245,7 +241,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 }
 
                 // Seems to work without... Safe keeping
-                // player.setStackInHand(hand, ItemStack.EMPTY);
+                // player.setHeldItem(hand, ItemStack.EMPTY);
             } else {
                 final int sum = this.countEntitesAround(w, placePos);
 
@@ -255,7 +251,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
                     if (type == Actionable.MODULATE) {
                         is.setCount((int) maxStorage);
-                        if (!spawnItemEntity(serverWorld, te, side, is)) {
+                        if (!spawnItemEntity((ServerWorld) w, te, side, is)) {
                             // revert in case something prevents spawning.
                             worked = false;
                         }
@@ -279,7 +275,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         return input;
     }
 
-    private static boolean spawnItemEntity(ServerWorld w, BlockEntity te, AEPartLocation side, ItemStack is) {
+    private static boolean spawnItemEntity(ServerWorld w, TileEntity te, AEPartLocation side, ItemStack is) {
         // The center of the block the plane is located in
         final double centerX = te.getPos().getX() + .5;
         final double centerY = te.getPos().getY();
@@ -330,11 +326,11 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final double absoluteZ = centerZ + offsetZ;
 
         // Set to correct position and slow the motion down a bit
-        entity.updatePosition(absoluteX, absoluteY, absoluteZ);
-        entity.setVelocity(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
+        entity.setPosition(absoluteX, absoluteY, absoluteZ);
+        entity.setMotion(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
 
         // Try to spawn it and destroy it in case it's not possible
-        if (!w.spawnEntity(entity)) {
+        if (!w.addEntity(entity)) {
             entity.remove();
             return false;
         }
@@ -362,50 +358,50 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType() {
+    public ContainerType<?> getContainerType() {
         return FormationPlaneContainer.TYPE;
     }
 
     private int countEntitesAround(World world, BlockPos pos) {
-        final Box t = new Box(pos).expand(8);
-        final List<Entity> list = world.getEntitiesByClass(Entity.class, t, null);
+        final AxisAlignedBB t = new AxisAlignedBB(pos).grow(8);
+        final List<Entity> list = world.getEntitiesWithinAABB(Entity.class, t);
 
         return list.size();
     }
 
     /**
-     * A custom {@link AutomaticItemPlacementContext} which also accepts a player needed various blocks like seeds.
+     * A custom {@link DirectionalPlaceContext} which also accepts a player needed various blocks like seeds.
      * <p>
-     * Also removed {@link AutomaticItemPlacementContext#canReplaceExisting} as this can cause a
+     * Also removed {@link DirectionalPlaceContext#replacingClickedOnBlock} as this can cause a
      * {@link StackOverflowError} for certain replaceable blocks.
      */
-    private static class PlaneDirectionalPlaceContext extends ItemPlacementContext {
+    private static class PlaneDirectionalPlaceContext extends BlockItemUseContext {
         private final Direction lookDirection;
 
         public PlaneDirectionalPlaceContext(World world, PlayerEntity player, BlockPos pos, Direction lookDirection,
                 ItemStack itemStack, Direction facing) {
             super(world, player, Hand.MAIN_HAND, itemStack,
-                    new BlockHitResult(Vec3d.ofBottomCenter(pos), facing, pos, false));
+                    new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), facing, pos, false));
             this.lookDirection = lookDirection;
         }
 
         @Override
-        public BlockPos getBlockPos() {
-            return this.getHitResult().getBlockPos();
+        public BlockPos getPos() {
+            return this.func_242401_i().getPos();
         }
 
         @Override
         public boolean canPlace() {
-            return this.getWorld().getBlockState(this.getHitResult().getBlockPos()).canReplace(this);
+            return getWorld().getBlockState(this.getPos()).isReplaceable(this);
         }
 
         @Override
-        public Direction getPlayerLookDirection() {
+        public Direction getNearestLookingDirection() {
             return Direction.DOWN;
         }
 
         @Override
-        public Direction[] getPlacementDirections() {
+        public Direction[] getNearestLookingDirections() {
             switch (this.lookDirection) {
                 case DOWN:
                 default:
@@ -430,18 +426,18 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         }
 
         @Override
-        public Direction getPlayerFacing() {
-            return this.lookDirection.getAxis() == Direction.Axis.Y ? Direction.NORTH : this.lookDirection;
+        public Direction getPlacementHorizontalFacing() {
+            return this.lookDirection.getAxis() == Axis.Y ? Direction.NORTH : this.lookDirection;
         }
 
         @Override
-        public boolean shouldCancelInteraction() {
+        public boolean hasSecondaryUseForPlayer() {
             return false;
         }
 
         @Override
-        public float getPlayerYaw() {
-            return (float) (this.lookDirection.getHorizontal() * 90);
+        public float getPlacementYaw() {
+            return this.lookDirection.getHorizontalIndex() * 90;
         }
     }
 }

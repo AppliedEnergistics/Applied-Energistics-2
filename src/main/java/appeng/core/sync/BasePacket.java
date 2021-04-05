@@ -21,10 +21,10 @@ package appeng.core.sync;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.Packet;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketDirection;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
@@ -34,16 +34,16 @@ import appeng.core.sync.network.INetworkInfo;
 public abstract class BasePacket {
 
     /**
-     * Sadly {@link PacketByteBuf#readString()} gets inlined by Proguard which means it's not available on the Server.
+     * Sadly {@link PacketBuffer#readString()} gets inlined by Proguard which means it's not available on the Server.
      * This field has the default string length that is used for writeString, which then also should be used for
      * readString when it has no special length requirements.
      */
     public static final int MAX_STRING_LENGTH = 32767;
 
     // KEEP THIS SHORT. It's serialized as a string!
-    public static final Identifier CHANNEL = new Identifier("ae2:m");
+    public static final ResourceLocation CHANNEL = new ResourceLocation("ae2:m");
 
-    private PacketByteBuf p;
+    private PacketBuffer p;
 
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         throw new UnsupportedOperationException(
@@ -59,12 +59,12 @@ public abstract class BasePacket {
                 "This packet ( " + this.getPacketID() + " does not implement a client side handler.");
     }
 
-    protected void configureWrite(final PacketByteBuf data) {
+    protected void configureWrite(final PacketBuffer data) {
         data.capacity(data.readableBytes());
         this.p = data;
     }
 
-    public Packet<?> toPacket(NetworkSide direction) {
+    public IPacket<?> toPacket(PacketDirection direction) {
         if (this.p.array().length > 2 * 1024 * 1024) // 2k walking room :)
         {
             throw new IllegalArgumentException(
@@ -75,7 +75,7 @@ public abstract class BasePacket {
             AELog.info(this.getClass().getName() + " : " + p.readableBytes());
         }
 
-        if (direction == NetworkSide.SERVERBOUND) {
+        if (direction == PacketDirection.SERVERBOUND) {
             return ClientSidePacketRegistry.INSTANCE.toPacket(CHANNEL, this.p);
         } else {
             return ServerSidePacketRegistry.INSTANCE.toPacket(CHANNEL, this.p);

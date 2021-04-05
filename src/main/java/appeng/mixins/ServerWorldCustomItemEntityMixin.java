@@ -5,10 +5,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.hooks.AECustomEntityItem;
 
@@ -20,11 +20,11 @@ import appeng.hooks.AECustomEntityItem;
 public class ServerWorldCustomItemEntityMixin {
 
     @SuppressWarnings("ConstantConditions")
-    @ModifyVariable(method = { "spawnEntity" }, at = @At("HEAD"), argsOnly = true)
+    @ModifyVariable(method = { "addEntity" }, at = @At("HEAD"), argsOnly = true)
     public Entity onSpawnEntity(Entity entity) {
         if (entity instanceof ItemEntity) {
             ItemEntity itemEntity = (ItemEntity) entity;
-            ItemStack stack = itemEntity.getStack();
+            ItemStack stack = itemEntity.getItem();
             if (stack == null) {
                 return entity;
             }

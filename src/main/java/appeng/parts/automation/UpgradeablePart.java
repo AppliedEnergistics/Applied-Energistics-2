@@ -107,14 +107,14 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     }
 
     @Override
-    public void readFromNBT(final net.minecraft.nbt.CompoundTag extra) {
+    public void readFromNBT(final net.minecraft.nbt.CompoundNBT extra) {
         super.readFromNBT(extra);
         this.manager.readFromNBT(extra);
         this.upgrades.readFromNBT(extra, "upgrades");
     }
 
     @Override
-    public void writeToNBT(final net.minecraft.nbt.CompoundTag extra) {
+    public void writeToNBT(final net.minecraft.nbt.CompoundNBT extra) {
         super.writeToNBT(extra);
         this.manager.writeToNBT(extra);
         this.upgrades.writeToNBT(extra, "upgrades");

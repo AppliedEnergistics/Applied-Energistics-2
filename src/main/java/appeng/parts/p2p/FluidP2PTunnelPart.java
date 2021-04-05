@@ -20,11 +20,11 @@ package appeng.parts.p2p;
 
 import java.util.List;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Attribute;
@@ -72,7 +72,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
     }
 
     @Override
-    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (this.isOutput()) {
             final FluidP2PTunnelPart in = this.getInput();
             if (in != null) {
@@ -100,7 +100,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
     private <T> T getAttachedAttribute(Attribute<T> attribute, T defaultValue) {
         T result = null;
         if (this.isActive()) {
-            final BlockEntity self = this.getTile();
+            final TileEntity self = this.getTile();
             Direction direction = this.getSide().getFacing();
             BlockPos targetPos = self.getPos().offset(direction);
             World world = self.getWorld();

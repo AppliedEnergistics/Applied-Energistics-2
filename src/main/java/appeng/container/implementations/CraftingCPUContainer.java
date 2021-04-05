@@ -22,11 +22,11 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -47,21 +47,21 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.tile.crafting.CraftingTileEntity;
 
 public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
-    public static ScreenHandlerType<CraftingCPUContainer> TYPE;
+    public static ContainerType<CraftingCPUContainer> TYPE;
 
-    private static final ContainerHelper<CraftingCPUContainer, CraftingBlockEntity> helper = new ContainerHelper<>(
-            CraftingCPUContainer::new, CraftingBlockEntity.class, SecurityPermissions.CRAFT)
+    private static final ContainerHelper<CraftingCPUContainer, CraftingTileEntity> helper = new ContainerHelper<>(
+            CraftingCPUContainer::new, CraftingTileEntity.class, SecurityPermissions.CRAFT)
                     .withContainerTitle(craftingTileEntity -> {
                         // Use the cluster's custom name instead of the right-clicked block entities one
                         CraftingCPUCluster cluster = craftingTileEntity.getCluster();
                         if (cluster != null && cluster.getName() != null) {
                             return cluster.getName();
                         }
-                        return LiteralText.EMPTY;
+                        return StringTextComponent.EMPTY;
                     });
 
     private final IItemList<IAEItemStack> list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
@@ -72,11 +72,11 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     @GuiSync(0)
     public long eta = -1;
 
-    private CraftingCPUContainer(int id, final PlayerInventory ip, final CraftingBlockEntity te) {
+    private CraftingCPUContainer(int id, final PlayerInventory ip, final CraftingTileEntity te) {
         this(TYPE, id, ip, te);
     }
 
-    public CraftingCPUContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip, final Object te) {
+    public CraftingCPUContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final Object te) {
         super(containerType, id, ip, te);
         final IActionHost host = (IActionHost) (te instanceof IActionHost ? te : null);
 
@@ -86,8 +86,8 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
             this.network = null;
         }
 
-        if (te instanceof CraftingBlockEntity) {
-            this.setCPU(((CraftingBlockEntity) te).getCluster());
+        if (te instanceof CraftingTileEntity) {
+            this.setCPU(((CraftingTileEntity) te).getCluster());
         }
 
         if (this.getNetwork() == null && isServer()) {
@@ -95,7 +95,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
         }
     }
 
-    public static CraftingCPUContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static CraftingCPUContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -112,7 +112,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
             this.getMonitor().removeListener(this);
         }
 
-        for (final Object g : this.getListeners()) {
+        for (final Object g : this.listeners) {
             if (g instanceof PlayerEntity) {
                 NetworkHandler.instance().sendTo(new ConfigValuePacket("CraftingStatus", "Clear"),
                         (ServerPlayerEntity) g);
@@ -139,24 +139,24 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     }
 
     @Override
-    public void removeListener(final ScreenHandlerListener c) {
+    public void removeListener(final IContainerListener c) {
         super.removeListener(c);
 
-        if (this.getListeners().isEmpty() && this.getMonitor() != null) {
+        if (this.listeners.isEmpty() && this.getMonitor() != null) {
             this.getMonitor().removeListener(this);
         }
     }
 
     @Override
-    public void close(final PlayerEntity player) {
-        super.close(player);
+    public void onContainerClosed(final PlayerEntity player) {
+        super.onContainerClosed(player);
         if (this.getMonitor() != null) {
             this.getMonitor().removeListener(this);
         }
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         if (isServer() && this.getMonitor() != null && !this.list.isEmpty()) {
             try {
                 if (this.getEstimatedTime() >= 0) {
@@ -180,7 +180,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
 
                 this.list.resetStatus();
 
-                for (final Object g : this.getListeners()) {
+                for (final Object g : this.listeners) {
                     if (g instanceof PlayerEntity) {
                         if (!a.isEmpty()) {
                             NetworkHandler.instance().sendTo(a, (ServerPlayerEntity) g);
@@ -199,7 +199,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
                 // :P
             }
         }
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     @Override

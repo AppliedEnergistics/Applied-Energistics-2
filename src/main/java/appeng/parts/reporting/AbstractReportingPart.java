@@ -20,16 +20,18 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
-import net.minecraft.block.entity.BlockEntity;
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.IPowerChannelState;
@@ -43,14 +45,14 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
-import appeng.util.Platform;
+import appeng.util.InteractionUtil;
 
 /**
  * The most basic class for any part reporting information, like terminals or monitors. This can also include basic
  * panels which just provide light.
- * <p>
+ *
  * It deals with the most basic functionalities like network data, grid registration or the rotation of the actual part.
- * <p>
+ *
  * The direct abstract subclasses are usually a better entry point for adding new concrete ones. But this might be an
  * ideal starting point to completely new type, which does not resemble any existing one.
  *
@@ -103,7 +105,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
@@ -111,19 +113,19 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.spin = data.getByte("spin");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         data.putByte("spin", this.getSpin());
     }
 
     @Override
-    public void writeToStream(final PacketByteBuf data) throws IOException {
+    public void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         this.clientFlags = this.getSpin() & 3;
 
@@ -148,7 +150,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public boolean readFromStream(final PacketByteBuf data) throws IOException {
+    public boolean readFromStream(final PacketBuffer data) throws IOException {
         super.readFromStream(data);
         final int oldFlags = this.getClientFlags();
         final int oldOpacity = this.opacity;
@@ -169,30 +171,12 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
-        final BlockEntity te = this.getTile();
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+        final TileEntity te = this.getTile();
 
-        if (Platform.isWrench(player, player.inventory.getMainHandStack(), te.getPos())) {
-            if (Platform.isServer()) {
-                if (this.getSpin() > 3) {
-                    this.spin = 0;
-                }
-
-                switch (this.getSpin()) {
-                    case 0:
-                        this.spin = 1;
-                        break;
-                    case 1:
-                        this.spin = 3;
-                        break;
-                    case 2:
-                        this.spin = 0;
-                        break;
-                    case 3:
-                        this.spin = 2;
-                        break;
-                }
-
+        if (InteractionUtil.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
+            if (!isRemote()) {
+                this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
                 this.saveChanges();
             }
@@ -207,7 +191,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
 
-        final byte rotation = (byte) (MathHelper.floor((player.yaw * 4F) / 360F + 2.5D) & 3);
+        final byte rotation = (byte) (MathHelper.floor((player.rotationYaw * 4F) / 360F + 2.5D) & 3);
         if (side == AEPartLocation.UP) {
             this.spin = rotation;
         } else if (side == AEPartLocation.DOWN) {
@@ -215,9 +199,9 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         }
     }
 
-    private final int blockLight(final int emit) {
+    private int blockLight(final int emit) {
         if (this.opacity < 0) {
-            final BlockEntity te = this.getTile();
+            final TileEntity te = this.getTile();
             World world = te.getWorld();
             BlockPos pos = te.getPos().offset(this.getSide().getFacing());
             this.opacity = 255 - world.getBlockState(pos).getOpacity(world, pos);
@@ -229,7 +213,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     @Override
     public final boolean isPowered() {
         try {
-            if (Platform.isServer()) {
+            if (!isRemote()) {
                 return this.getProxy().getEnergy().isNetworkPowered();
             } else {
                 return ((this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG);
@@ -258,6 +242,12 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         } else {
             return offModels;
         }
+    }
+
+    @Override
+    @Nullable
+    public Object getModelData() {
+        return new ReportingModelData(getSpin());
     }
 
     public final int getClientFlags() {

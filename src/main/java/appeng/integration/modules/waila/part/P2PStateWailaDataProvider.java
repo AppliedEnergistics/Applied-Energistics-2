@@ -22,12 +22,12 @@ import java.util.List;
 
 import com.google.common.collect.Iterators;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import mcp.mobius.waila.api.IDataAccessor;
@@ -59,10 +59,10 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider {
      * @param config   config settings
      */
     @Override
-    public void appendBody(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
+    public void appendBody(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
             final IPluginConfig config) {
         if (part instanceof P2PTunnelPart) {
-            CompoundTag nbtData = accessor.getServerData();
+            CompoundNBT nbtData = accessor.getServerData();
             if (nbtData.contains(TAG_P2P_STATE)) {
                 int[] stateArr = nbtData.getIntArray(TAG_P2P_STATE);
                 if (stateArr.length == 2) {
@@ -71,10 +71,10 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider {
 
                     switch (state) {
                         case STATE_UNLINKED:
-                            tooltip.add(WailaText.P2PUnlinked.text());
+                            tooltip.add(WailaText.P2PUnlinked.textComponent());
                             break;
                         case STATE_OUTPUT:
-                            tooltip.add(WailaText.P2POutput.text());
+                            tooltip.add(WailaText.P2POutput.textComponent());
                             break;
                         case STATE_INPUT:
                             tooltip.add(getOutputText(outputs));
@@ -84,13 +84,13 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider {
 
                 final short freq = nbtData.getShort(TAG_P2P_FREQUENCY);
                 final String freqTooltip = Platform.p2p().toHexString(freq);
-                tooltip.add(new TranslatableText("gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip));
+                tooltip.add(new TranslationTextComponent("gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip));
             }
         }
     }
 
     @Override
-    public void appendServerData(ServerPlayerEntity player, IPart part, BlockEntity te, CompoundTag tag, World world,
+    public void appendServerData(ServerPlayerEntity player, IPart part, TileEntity te, CompoundNBT tag, World world,
             BlockPos pos) {
         if (part instanceof P2PTunnelPart) {
             final P2PTunnelPart<?> tunnel = (P2PTunnelPart<?>) part;
@@ -134,11 +134,11 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider {
         }
     }
 
-    private static Text getOutputText(int outputs) {
+    private static ITextComponent getOutputText(int outputs) {
         if (outputs <= 1) {
-            return WailaText.P2PInputOneOutput.text();
+            return WailaText.P2PInputOneOutput.textComponent();
         } else {
-            return WailaText.P2PInputManyOutputs.text(outputs);
+            return WailaText.P2PInputManyOutputs.textComponent(outputs);
         }
     }
 

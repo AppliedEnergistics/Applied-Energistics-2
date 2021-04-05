@@ -53,8 +53,8 @@ public class ItemHandlerUtil {
     }
 
     public static void copy(final CraftingInventory from, final FixedItemInv to, boolean deepCopy) {
-        for (int i = 0; i < Math.min(from.size(), to.getSlotCount()); ++i) {
-            setStackInSlot(to, i, deepCopy ? from.getStack(i).copy() : from.getStack(i));
+        for (int i = 0; i < Math.min(from.getSizeInventory(), to.getSlotCount()); ++i) {
+            setStackInSlot(to, i, deepCopy ? from.getStackInSlot(i).copy() : from.getStackInSlot(i));
         }
     }
 }

@@ -21,8 +21,8 @@ package appeng.integration.modules.jei;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.LanguageMap;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -41,19 +41,19 @@ class InscriberRecipeCategory implements RecipeCategory<InscriberRecipeWrapper> 
     private static final int SLOT_INPUT_BOTTOM = 2;
     private static final int SLOT_OUTPUT = 3;
 
-    static final Identifier UID = new Identifier(AppEng.MOD_ID, "appliedenergistics2.inscriber");
+    static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "appliedenergistics2.inscriber");
 
     private final String localizedName;
 
     private final EntryStack icon;
 
     public InscriberRecipeCategory() {
-        this.localizedName = Language.getInstance().get("block.appliedenergistics2.inscriber");
+        this.localizedName = LanguageMap.getInstance().func_230503_a_("block.appliedenergistics2.inscriber");
         this.icon = EntryStack.create(Api.INSTANCE.definitions().blocks().inscriber().stack(1));
     }
 
     @Override
-    public Identifier getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return UID;
     }
 
@@ -69,7 +69,7 @@ class InscriberRecipeCategory implements RecipeCategory<InscriberRecipeWrapper> 
 
     @Override
     public List<Widget> setupDisplay(InscriberRecipeWrapper recipeDisplay, Rectangle bounds) {
-        Identifier location = new Identifier(AppEng.MOD_ID, "textures/guis/inscriber.png");
+        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/inscriber.png");
 
         List<Widget> widgets = new ArrayList<>();
         widgets.add(Widgets.createTexturedWidget(location, bounds.x, bounds.y, 44, 15, 97, 64));

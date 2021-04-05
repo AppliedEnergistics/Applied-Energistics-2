@@ -20,13 +20,11 @@ package appeng.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.AffineTransformation;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3f;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
@@ -45,11 +43,11 @@ public class StackSizeRenderer {
     private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
     private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
-    public void renderStackSize(TextRenderer fontRenderer, IAEItemStack aeStack, int xPos, int yPos) {
+    public void renderStackSize(FontRenderer fontRenderer, IAEItemStack aeStack, int xPos, int yPos) {
         if (aeStack != null) {
             if (aeStack.getStackSize() == 0 && aeStack.isCraftable()) {
-                final Text craftLabelText = AEConfig.instance().isUseLargeFonts() ? GuiText.LargeFontCraft.text()
-                        : GuiText.SmallFontCraft.text();
+                final String craftLabelText = AEConfig.instance().isUseLargeFonts() ? GuiText.LargeFontCraft.getLocal()
+                        : GuiText.SmallFontCraft.getLocal();
 
                 renderSizeLabel(fontRenderer, xPos, yPos, craftLabelText);
             }
@@ -57,29 +55,29 @@ public class StackSizeRenderer {
             if (aeStack.getStackSize() > 0) {
                 final String stackSize = this.getToBeRenderedStackSize(aeStack.getStackSize());
 
-                renderSizeLabel(fontRenderer, xPos, yPos, new LiteralText(stackSize));
+                renderSizeLabel(fontRenderer, xPos, yPos, stackSize);
             }
 
         }
     }
 
-    public static void renderSizeLabel(TextRenderer fontRenderer, float xPos, float yPos, Text text) {
+    public static void renderSizeLabel(FontRenderer fontRenderer, float xPos, float yPos, String text) {
 
         final float scaleFactor = AEConfig.instance().isUseLargeFonts() ? 0.85f : 0.5f;
         final float inverseScaleFactor = 1.0f / scaleFactor;
         final int offset = AEConfig.instance().isUseLargeFonts() ? 0 : -1;
 
-        AffineTransformation tm = new AffineTransformation(new Vector3f(0, 0, 300), // Taken from
-                // ItemRenderer.renderItemOverlayIntoGUI
+        TransformationMatrix tm = new TransformationMatrix(new Vector3f(0, 0, 300), // Taken from
+                                                                                    // ItemRenderer.renderItemOverlayIntoGUI
                 null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
 
         RenderSystem.disableBlend();
-        final int X = (int) ((xPos + offset + 16.0f - fontRenderer.getWidth(text) * scaleFactor) * inverseScaleFactor);
+        final int X = (int) ((xPos + offset + 16.0f - fontRenderer.getStringWidth(text) * scaleFactor)
+                * inverseScaleFactor);
         final int Y = (int) ((yPos + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
-        VertexConsumerProvider.Immediate buffer = VertexConsumerProvider
-                .immediate(Tessellator.getInstance().getBuffer());
-        fontRenderer.draw(text, X, Y, 16777215, true, tm.getMatrix(), buffer, false, 0, 15728880);
-        buffer.draw();
+        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+        fontRenderer.renderString(text, X, Y, 16777215, true, tm.getMatrix(), buffer, false, 0, 15728880);
+        buffer.finish();
         RenderSystem.enableBlend();
     }
 

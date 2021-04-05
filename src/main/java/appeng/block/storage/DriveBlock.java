@@ -20,42 +20,42 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.DriveContainer;
-import appeng.tile.storage.DriveBlockEntity;
-import appeng.util.Platform;
+import appeng.tile.storage.DriveTileEntity;
+import appeng.util.InteractionUtil;
 
-public class DriveBlock extends AEBaseTileBlock<DriveBlockEntity> {
+public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
 
     public DriveBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.IRON));
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (p.isInSneakingPose()) {
-            return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
+            return ActionResultType.PASS;
         }
 
-        final DriveBlockEntity tg = this.getBlockEntity(w, pos);
+        final DriveTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
-        return ActionResult.PASS;
+        return ActionResultType.PASS;
     }
 }

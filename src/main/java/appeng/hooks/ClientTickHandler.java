@@ -6,7 +6,7 @@ import java.util.Map;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.client.AppEngClient;
@@ -33,7 +33,7 @@ public class ClientTickHandler extends TickHandler {
         return super.getPlayerColors();
     }
 
-    private void onBeforeClientTick(MinecraftClient client) {
+    private void onBeforeClientTick(Minecraft client) {
         this.tickColors(this.cliPlayerColors);
         final CableRenderMode currentMode = Api.instance().partHelper().getCableRenderMode();
         if (currentMode != this.crm) {

@@ -130,6 +130,8 @@ public interface IBlocks {
 
     ITileDefinition spatialIOPort();
 
+    ITileDefinition spatialAnchor();
+
     /*
      * Bus / cables
      */

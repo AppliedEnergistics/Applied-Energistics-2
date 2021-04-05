@@ -29,8 +29,9 @@ import appeng.api.config.FuzzyMode;
 
 /**
  * Represents a list of items in AE.
- * <p>
+ *
  * Don't Implement.
+ *
  */
 public interface IItemContainer<T extends IAEStack<T>> {
 
@@ -43,6 +44,7 @@ public interface IItemContainer<T extends IAEStack<T>> {
 
     /**
      * @param i compared item
+     *
      * @return a stack equivalent to the stack passed in, but with the correct stack size information, or null if its
      *         not present
      */
@@ -50,6 +52,7 @@ public interface IItemContainer<T extends IAEStack<T>> {
 
     /**
      * @param input compared item
+     *
      * @return a list of relevant fuzzy matched stacks
      */
     Collection<T> findFuzzy(T input, FuzzyMode fuzzy);

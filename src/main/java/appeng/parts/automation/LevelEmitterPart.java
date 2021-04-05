@@ -21,16 +21,16 @@ package appeng.parts.automation;
 import java.util.Collection;
 import java.util.Random;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -86,15 +86,19 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider {
 
     @PartModels
-    public static final Identifier MODEL_BASE_OFF = new Identifier(AppEng.MOD_ID, "part/level_emitter_base_off");
+    public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_base_off");
     @PartModels
-    public static final Identifier MODEL_BASE_ON = new Identifier(AppEng.MOD_ID, "part/level_emitter_base_on");
+    public static final ResourceLocation MODEL_BASE_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_base_on");
     @PartModels
-    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID, "part/level_emitter_status_off");
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_status_off");
     @PartModels
-    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID, "part/level_emitter_status_on");
+    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/level_emitter_status_on");
     @PartModels
-    public static final Identifier MODEL_STATUS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/level_emitter_status_has_channel");
 
     public static final PartModel MODEL_OFF_OFF = new PartModel(MODEL_BASE_OFF, MODEL_STATUS_OFF);
@@ -151,7 +155,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         final boolean isOn = this.isLevelEmitterOn();
         if (this.prevState != isOn) {
             this.getHost().markForUpdate();
-            final BlockEntity te = this.getHost().getTile();
+            final TileEntity te = this.getHost().getTile();
             this.prevState = isOn;
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos().offset(this.getSide().getFacing()));
@@ -160,7 +164,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     // TODO: Make private again
     public boolean isLevelEmitterOn() {
-        if (Platform.isClient()) {
+        if (isRemote()) {
             return (this.getClientFlags() & FLAG_ON) == FLAG_ON;
         }
 
@@ -380,7 +384,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void randomDisplayTick(final World world, final BlockPos pos, final Random r) {
+    public void animateTick(final World world, final BlockPos pos, final Random r) {
         if (this.isLevelEmitterOn()) {
             final AEPartLocation d = this.getSide();
 
@@ -388,7 +392,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
             final double d1 = d.yOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
             final double d2 = d.zOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
 
-            world.addParticle(DustParticleEffect.RED, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
+            world.addParticle(RedstoneParticleData.REDSTONE_DUST, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
                     0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D);
         }
     }
@@ -399,8 +403,8 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
-        if (Platform.isServer()) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(LevelEmitterContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
@@ -432,7 +436,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.lastReportedValue = data.getLong("lastReportedValue");
         this.reportingValue = data.getLong("reportingValue");
@@ -441,7 +445,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         data.putLong("lastReportedValue", this.lastReportedValue);
         data.putLong("reportingValue", this.reportingValue);

@@ -18,10 +18,11 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.widgets.ActionButton;
@@ -34,21 +35,21 @@ import appeng.helpers.InventoryAction;
 
 public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContainer> {
 
-    public CraftingTermScreen(CraftingTermContainer container, PlayerInventory playerInventory, Text title) {
+    public CraftingTermScreen(CraftingTermContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.setReservedSpace(73);
     }
 
     private void clear() {
         Slot s = null;
-        for (final Object j : this.handler.slots) {
+        for (final Object j : this.container.inventorySlots) {
             if (j instanceof CraftingMatrixSlot) {
                 s = (Slot) j;
             }
         }
 
         if (s != null) {
-            final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, s.id, 0);
+            final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, s.slotNumber, 0);
             NetworkHandler.instance().sendToServer(p);
         }
     }
@@ -57,15 +58,16 @@ public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContaine
     public void init() {
         super.init();
         ActionButton clearBtn = this.addButton(
-                new ActionButton(this.x + 92, this.y + this.backgroundHeight - 156, ActionItems.STASH, btn -> clear()));
+                new ActionButton(this.guiLeft + 92, this.guiTop + this.ySize - 156, ActionItems.STASH, btn -> clear()));
         clearBtn.setHalfSize(true);
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
-        this.textRenderer.draw(matrices, GuiText.CraftingTerminal.text(), 8,
-                this.backgroundHeight - 96 + 1 - this.getReservedSpace(), 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
+        this.font.drawString(matrixStack, GuiText.CraftingTerminal.getLocal(), 8,
+                this.ySize - 96 + 1 - this.getReservedSpace(), 4210752);
     }
 
     @Override

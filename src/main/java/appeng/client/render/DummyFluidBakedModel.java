@@ -28,15 +28,15 @@ import javax.annotation.Nullable;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.IBlockDisplayReader;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
@@ -45,7 +45,7 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
  * @version rv6 - 2018-01-22
  * @since rv6 2018-01-22
  */
-public class DummyFluidBakedModel implements BakedModel, FabricBakedModel {
+public class DummyFluidBakedModel implements IBakedModel, FabricBakedModel {
 
     private final FluidVolume volume;
 
@@ -59,7 +59,7 @@ public class DummyFluidBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
         // Not used as an item model
     }
@@ -75,12 +75,12 @@ public class DummyFluidBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
@@ -90,23 +90,23 @@ public class DummyFluidBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getSprite() {
+    public TextureAtlasSprite getParticleTexture() {
         return null;
     }
 
     @Override
-    public ModelTransformation getTransformation() {
+    public ItemCameraTransforms getItemCameraTransforms() {
         return null;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 
 }

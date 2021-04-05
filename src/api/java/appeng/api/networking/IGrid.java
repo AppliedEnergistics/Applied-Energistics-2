@@ -30,7 +30,7 @@ import appeng.api.util.IReadOnlyCollection;
 
 /**
  * Gives you access to Grid based information.
- * <p>
+ *
  * Don't Implement.
  */
 public interface IGrid {
@@ -39,6 +39,7 @@ public interface IGrid {
      * Get Access to various grid modules
      *
      * @param iface face
+     *
      * @return the IGridCache you requested.
      */
     @Nonnull
@@ -48,6 +49,7 @@ public interface IGrid {
      * Post an event into the network event bus.
      *
      * @param ev - event to post
+     *
      * @return returns ev back to original poster
      */
     @Nonnull
@@ -57,6 +59,7 @@ public interface IGrid {
      * Post an event into the network event bus, but direct it at a single node.
      *
      * @param ev event to post
+     *
      * @return returns ev back to original poster
      */
     @Nonnull
@@ -75,6 +78,7 @@ public interface IGrid {
      * Get machines on the network.
      *
      * @param gridHostClass class of the grid host
+     *
      * @return IMachineSet of all nodes belonging to hosts of specified class.
      */
     @Nonnull

@@ -19,10 +19,10 @@
 package appeng.items.tools.powered;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Box;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import appeng.api.config.Actionable;
 import appeng.core.AEConfig;
@@ -33,17 +33,17 @@ import appeng.util.Platform;
 
 public class ChargedStaffItem extends AEBasePoweredItem {
 
-    public ChargedStaffItem(Item.Settings props) {
+    public ChargedStaffItem(Item.Properties props) {
         super(AEConfig.instance().getChargedStaffBattery(), props);
     }
 
     @Override
-    public boolean postHit(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
+    public boolean hitEntity(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
         if (this.getAECurrentPower(item) > 300) {
             this.extractAEPower(item, 300, Actionable.MODULATE);
-            if (Platform.isServer()) {
+            if (!target.world.isRemote()) {
                 for (int x = 0; x < 2; x++) {
-                    final Box entityBoundingBox = target.getBoundingBox();
+                    final AxisAlignedBB entityBoundingBox = target.getBoundingBox();
                     final float dx = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minX);
                     final float dy = (float) (Platform.getRandomFloat() * target.getHeight() + entityBoundingBox.minY);
                     final float dz = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minZ);
@@ -51,7 +51,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
                             new LightningPacket(dx, dy, dz));
                 }
             }
-            target.damage(DamageSource.MAGIC, 6);
+            target.attackEntityFrom(DamageSource.MAGIC, 6);
             return true;
         }
 

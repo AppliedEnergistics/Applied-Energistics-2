@@ -20,8 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -30,16 +30,16 @@ import appeng.container.ContainerLocator;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.grindstone.GrinderBlockEntity;
+import appeng.tile.grindstone.GrinderTileEntity;
 
 public class GrinderContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<GrinderContainer> TYPE;
+    public static ContainerType<GrinderContainer> TYPE;
 
-    private static final ContainerHelper<GrinderContainer, GrinderBlockEntity> helper = new ContainerHelper<>(
-            GrinderContainer::new, GrinderBlockEntity.class);
+    private static final ContainerHelper<GrinderContainer, GrinderTileEntity> helper = new ContainerHelper<>(
+            GrinderContainer::new, GrinderTileEntity.class);
 
-    public static GrinderContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static GrinderContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -47,7 +47,7 @@ public class GrinderContainer extends AEBaseContainer {
         return helper.open(player, locator);
     }
 
-    public GrinderContainer(int id, final PlayerInventory ip, final GrinderBlockEntity grinder) {
+    public GrinderContainer(int id, final PlayerInventory ip, final GrinderTileEntity grinder) {
         super(TYPE, id, ip, grinder, null);
 
         FixedItemInv inv = grinder.getInternalInventory();

@@ -29,9 +29,9 @@ import appeng.api.storage.IStorageChannel;
 
 /**
  * Represents a list of items in AE.
- * <p>
+ *
  * Don't Implement.
- * <p>
+ *
  * Construct with - For items: Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class).createList() - For
  * fluids: Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class).createList() - Replace with the
  * corresponding {@link IStorageChannel} type for non native channels

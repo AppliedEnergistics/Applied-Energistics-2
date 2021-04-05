@@ -23,65 +23,65 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.stats.AeStats;
-import appeng.tile.AEBaseBlockEntity;
-import appeng.tile.grindstone.CrankBlockEntity;
+import appeng.tile.AEBaseTileEntity;
+import appeng.tile.grindstone.CrankTileEntity;
 import appeng.util.FakePlayer;
 
-public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
+public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
 
-    public CrankBlock(Settings props) {
+    public CrankBlock(Properties props) {
         super(props);
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (FakePlayer.isFakePlayer(player) || player == null) {
             this.dropCrank(w, pos);
-            return ActionResult.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
-        final CrankBlockEntity tile = this.getBlockEntity(w, pos);
+        final CrankTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
             if (tile.power()) {
                 AeStats.TurnedCranks.addToPlayer(player, 1);
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
-        return ActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     private void dropCrank(final World world, final BlockPos pos) {
-        world.breakBlock(pos, true);
-        world.updateListeners(pos, this.getDefaultState(), world.getBlockState(pos), 3);
+        world.destroyBlock(pos, true);
+        world.notifyBlockUpdate(pos, this.getDefaultState(), world.getBlockState(pos), 3);
     }
 
     @Override
-    public void onPlaced(final World world, final BlockPos pos, final BlockState state, final LivingEntity placer,
-            final ItemStack stack) {
-        final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
+    public void onBlockPlacedBy(final World world, final BlockPos pos, final BlockState state,
+            final LivingEntity placer, final ItemStack stack) {
+        final AEBaseTileEntity tile = this.getTileEntity(world, pos);
         if (tile != null) {
             final Direction mnt = this.findCrankable(world, pos);
             Direction forward = Direction.UP;
@@ -95,13 +95,12 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
     }
 
     @Override
-    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward,
-            final Direction up) {
-        final BlockEntity te = w.getBlockEntity(pos);
-        return !(te instanceof CrankBlockEntity) || this.isCrankable(w, pos, up.getOpposite());
+    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
+        final TileEntity te = w.getTileEntity(pos);
+        return !(te instanceof CrankTileEntity) || this.isCrankable(w, pos, up.getOpposite());
     }
 
-    private Direction findCrankable(final BlockView world, final BlockPos pos) {
+    private Direction findCrankable(final IBlockReader world, final BlockPos pos) {
         for (final Direction dir : Direction.values()) {
             if (this.isCrankable(world, pos, dir)) {
                 return dir;
@@ -110,9 +109,9 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
         return null;
     }
 
-    private boolean isCrankable(final BlockView world, final BlockPos pos, final Direction offset) {
+    private boolean isCrankable(final IBlockReader world, final BlockPos pos, final Direction offset) {
         final BlockPos o = pos.offset(offset);
-        final BlockEntity te = world.getBlockEntity(o);
+        final TileEntity te = world.getTileEntity(o);
 
         return te instanceof ICrankable && ((ICrankable) te).canCrankAttach(offset.getOpposite());
     }
@@ -123,9 +122,9 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
+        final AEBaseTileEntity tile = this.getTileEntity(world, pos);
         if (tile != null) {
             if (!this.isCrankable(world, pos, tile.getUp().getOpposite())) {
                 this.dropCrank(world, pos);
@@ -136,28 +135,28 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
     }
 
     @Override
-    public boolean canPlaceAt(BlockState state, WorldView w, BlockPos pos) {
+    public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos) {
         return this.findCrankable(w, pos) != null;
     }
 
-    private Direction getUp(BlockView world, BlockPos pos) {
-        CrankBlockEntity crank = getBlockEntity(world, pos);
+    private Direction getUp(IBlockReader world, BlockPos pos) {
+        CrankTileEntity crank = getTileEntity(world, pos);
         return crank != null ? crank.getUp() : null;
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         Direction up = getUp(world, pos);
 
         if (up == null) {
             return VoxelShapes.empty();
         } else {
             // FIXME: Cache per direction, and build it 'precise', not just from AABB
-            final double xOff = -0.15 * up.getOffsetX();
-            final double yOff = -0.15 * up.getOffsetY();
-            final double zOff = -0.15 * up.getOffsetZ();
-            return VoxelShapes
-                    .cuboid(new Box(xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85));
+            final double xOff = -0.15 * up.getXOffset();
+            final double yOff = -0.15 * up.getYOffset();
+            final double zOff = -0.15 * up.getZOffset();
+            return VoxelShapes.create(
+                    new AxisAlignedBB(xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85));
         }
 
     }

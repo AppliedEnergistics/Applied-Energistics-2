@@ -20,24 +20,24 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.slot.NormalSlot;
-import appeng.tile.storage.SkyChestBlockEntity;
+import appeng.tile.storage.SkyChestTileEntity;
 
 public class SkyChestContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<SkyChestContainer> TYPE;
+    public static ContainerType<SkyChestContainer> TYPE;
 
-    private static final ContainerHelper<SkyChestContainer, SkyChestBlockEntity> helper = new ContainerHelper<>(
-            SkyChestContainer::new, SkyChestBlockEntity.class);
+    private static final ContainerHelper<SkyChestContainer, SkyChestTileEntity> helper = new ContainerHelper<>(
+            SkyChestContainer::new, SkyChestTileEntity.class);
 
-    private final SkyChestBlockEntity chest;
+    private final SkyChestTileEntity chest;
 
-    public SkyChestContainer(int id, final PlayerInventory ip, final SkyChestBlockEntity chest) {
+    public SkyChestContainer(int id, final PlayerInventory ip, final SkyChestTileEntity chest) {
         super(TYPE, id, ip, chest, null);
         this.chest = chest;
 
@@ -52,7 +52,7 @@ public class SkyChestContainer extends AEBaseContainer {
         this.bindPlayerInventory(ip, 0, 195 - /* height of player inventory */82);
     }
 
-    public static SkyChestContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static SkyChestContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -61,8 +61,8 @@ public class SkyChestContainer extends AEBaseContainer {
     }
 
     @Override
-    public void close(final PlayerEntity par1PlayerEntity) {
-        super.close(par1PlayerEntity);
+    public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
+        super.onContainerClosed(par1PlayerEntity);
         this.chest.closeInventory(par1PlayerEntity);
     }
 }

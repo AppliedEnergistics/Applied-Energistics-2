@@ -22,9 +22,9 @@ import java.util.Iterator;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.network.PacketBuffer;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -50,12 +50,12 @@ import appeng.util.iterators.NullIterator;
 
 public class StorageBusContainer extends UpgradeableContainer {
 
-    public static ScreenHandlerType<StorageBusContainer> TYPE;
+    public static ContainerType<StorageBusContainer> TYPE;
 
     private static final ContainerHelper<StorageBusContainer, StorageBusPart> helper = new ContainerHelper<>(
             StorageBusContainer::new, StorageBusPart.class, SecurityPermissions.BUILD);
 
-    public static StorageBusContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static StorageBusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -121,7 +121,7 @@ public class StorageBusContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -144,7 +144,7 @@ public class StorageBusContainer extends UpgradeableContainer {
 
     public void clear() {
         ItemHandlerUtil.clear(this.getUpgradeable().getInventoryByName("config"));
-        this.sendContentUpdates();
+        this.detectAndSendChanges();
     }
 
     public void partition() {
@@ -169,7 +169,7 @@ public class StorageBusContainer extends UpgradeableContainer {
             }
         }
 
-        this.sendContentUpdates();
+        this.detectAndSendChanges();
     }
 
     public AccessRestriction getReadWriteMode() {

@@ -18,12 +18,13 @@
 
 package appeng.fluids.client.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
@@ -34,20 +35,20 @@ import appeng.client.gui.widgets.ITooltip;
 import appeng.fluids.util.IAEFluidTank;
 
 @Environment(EnvType.CLIENT)
-public class FluidTankWidget extends AbstractButtonWidget implements ITooltip {
+public class FluidTankWidget extends Widget implements ITooltip {
     private final IAEFluidTank tank;
     private final int slot;
 
     public FluidTankWidget(IAEFluidTank tank, int slot, int x, int y, int w, int h) {
-        super(x, y, w, h, LiteralText.EMPTY);
+        super(x, y, w, h, StringTextComponent.EMPTY);
         this.tank = tank;
         this.slot = slot;
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            fill(matrices, this.x, this.y, this.x + this.width, this.y + this.height,
+            fill(matrixStack, this.x, this.y, this.x + this.width, this.y + this.height,
                     AEColor.GRAY.blackVariant | 0xFF000000);
 
             final IAEFluidStack fluidStack = this.tank.getFluidInSlot(this.slot);
@@ -83,15 +84,15 @@ public class FluidTankWidget extends AbstractButtonWidget implements ITooltip {
     }
 
     @Override
-    public Text getTooltipMessage() {
+    public ITextComponent getTooltipMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
-            Text desc = fluid.getFluidStack().getName();
+            ITextComponent desc = fluid.getFluidStack().getName();
             String amountToText = fluid.getStackSize() + "mB";
 
-            return desc.copy().append("\n").append(amountToText);
+            return desc.copyRaw().appendString("\n").appendString(amountToText);
         }
-        return LiteralText.EMPTY;
+        return StringTextComponent.EMPTY;
     }
 
     @Override

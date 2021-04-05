@@ -20,7 +20,7 @@ package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -35,7 +35,7 @@ import appeng.core.Api;
 import appeng.me.cache.helpers.ConnectionWrapper;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements ILocatable, IAECluster {
@@ -44,17 +44,17 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private final BlockPos boundsMax;
     private boolean isDestroyed = false;
     private boolean updateStatus = true;
-    private QuantumBridgeBlockEntity[] Ring;
+    private QuantumBridgeTileEntity[] Ring;
     private boolean registered = false;
     private ConnectionWrapper connection;
     private long thisSide;
     private long otherSide;
-    private QuantumBridgeBlockEntity center;
+    private QuantumBridgeTileEntity center;
 
     public QuantumCluster(final BlockPos min, final BlockPos max) {
         this.boundsMin = min.toImmutable();
         this.boundsMax = max.toImmutable();
-        this.setRing(new QuantumBridgeBlockEntity[8]);
+        this.setRing(new QuantumBridgeTileEntity[8]);
     }
 
 // FIXME FABRIC   No similar event available. Possibly chunk???
@@ -159,10 +159,10 @@ public class QuantumCluster implements ILocatable, IAECluster {
                 // In future versions, we might actually want to delay the entire registration
                 // until the center
                 // tile begins ticking normally.
-                if (theWorld.isChunkLoaded(qc.center.getPos())) {
-                    final World cur = theWorld.getServer().getWorld(theWorld.getRegistryKey());
+                if (theWorld.isBlockLoaded(qc.center.getPos())) {
+                    final World cur = theWorld.getServer().getWorld(theWorld.getDimensionKey());
 
-                    final BlockEntity te = theWorld.getBlockEntity(qc.center.getPos());
+                    final TileEntity te = theWorld.getTileEntity(qc.center.getPos());
                     return te != qc.center || theWorld != cur;
                 } else {
                     AELog.warn("Found a registered QNB with serial %s whose chunk seems to be unloaded: %s", qe, qc);
@@ -225,24 +225,24 @@ public class QuantumCluster implements ILocatable, IAECluster {
 
             this.center.updateStatus(null, (byte) -1, this.isUpdateStatus());
 
-            for (final QuantumBridgeBlockEntity r : this.getRing()) {
+            for (final QuantumBridgeTileEntity r : this.getRing()) {
                 r.updateStatus(null, (byte) -1, this.isUpdateStatus());
             }
 
             this.center = null;
-            this.setRing(new QuantumBridgeBlockEntity[8]);
+            this.setRing(new QuantumBridgeTileEntity[8]);
         } finally {
             MBCalculator.setModificationInProgress(null);
         }
     }
 
     @Override
-    public Iterator<QuantumBridgeBlockEntity> getTiles() {
+    public Iterator<QuantumBridgeTileEntity> getTiles() {
         return new ChainedIterator<>(this.getRing()[0], this.getRing()[1], this.getRing()[2], this.getRing()[3],
                 this.getRing()[4], this.getRing()[5], this.getRing()[6], this.getRing()[7], this.center);
     }
 
-    public boolean isCorner(final QuantumBridgeBlockEntity tileQuantumBridge) {
+    public boolean isCorner(final QuantumBridgeTileEntity tileQuantumBridge) {
         return this.getRing()[0] == tileQuantumBridge || this.getRing()[2] == tileQuantumBridge
                 || this.getRing()[4] == tileQuantumBridge || this.getRing()[6] == tileQuantumBridge;
     }
@@ -252,11 +252,11 @@ public class QuantumCluster implements ILocatable, IAECluster {
         return this.thisSide;
     }
 
-    public QuantumBridgeBlockEntity getCenter() {
+    public QuantumBridgeTileEntity getCenter() {
         return this.center;
     }
 
-    void setCenter(final QuantumBridgeBlockEntity c) {
+    void setCenter(final QuantumBridgeTileEntity c) {
         this.registered = true;
         // FIXME FABRIC -> onWorldUnload event
         // FIXME FABRI MinecraftForge.EVENT_BUS.register(this);
@@ -271,11 +271,11 @@ public class QuantumCluster implements ILocatable, IAECluster {
         this.updateStatus = updateStatus;
     }
 
-    QuantumBridgeBlockEntity[] getRing() {
+    QuantumBridgeTileEntity[] getRing() {
         return this.Ring;
     }
 
-    private void setRing(final QuantumBridgeBlockEntity[] ring) {
+    private void setRing(final QuantumBridgeTileEntity[] ring) {
         this.Ring = ring;
     }
 

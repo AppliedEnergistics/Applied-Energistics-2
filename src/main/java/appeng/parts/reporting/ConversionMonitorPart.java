@@ -21,12 +21,12 @@ package appeng.parts.reporting;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -44,6 +44,7 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.PartModel;
+import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -51,14 +52,15 @@ import appeng.util.item.AEItemStack;
 public class ConversionMonitorPart extends AbstractMonitorPart {
 
     @PartModels
-    public static final Identifier MODEL_OFF = new Identifier(AppEng.MOD_ID, "part/conversion_monitor_off");
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/conversion_monitor_off");
     @PartModels
-    public static final Identifier MODEL_ON = new Identifier(AppEng.MOD_ID, "part/conversion_monitor_on");
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/conversion_monitor_on");
     @PartModels
-    public static final Identifier MODEL_LOCKED_OFF = new Identifier(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_LOCKED_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/conversion_monitor_locked_off");
     @PartModels
-    public static final Identifier MODEL_LOCKED_ON = new Identifier(AppEng.MOD_ID, "part/conversion_monitor_locked_on");
+    public static final ResourceLocation MODEL_LOCKED_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/conversion_monitor_locked_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
@@ -73,8 +75,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     @Override
-    public boolean onPartActivate(PlayerEntity player, Hand hand, Vec3d pos) {
-        if (Platform.isClient()) {
+    public boolean onPartActivate(PlayerEntity player, Hand hand, Vector3d pos) {
+        if (isRemote()) {
             return true;
         }
 
@@ -86,11 +88,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return false;
         }
 
-        final ItemStack eq = player.getStackInHand(hand);
+        final ItemStack eq = player.getHeldItem(hand);
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
-            } else if (Platform.isWrench(player, eq, this.getLocation().getPos())
+            } else if (InteractionUtil.isWrench(player, eq, this.getLocation().getPos())
                     && (this.getDisplayed() == null || !this.getDisplayed().equals(eq))) {
                 // wrench it
                 return super.onPartActivate(player, hand, pos);
@@ -107,8 +109,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     @Override
-    public boolean onClicked(PlayerEntity player, Hand hand, Vec3d pos) {
-        if (Platform.isClient()) {
+    public boolean onClicked(PlayerEntity player, Hand hand, Vector3d pos) {
+        if (isRemote()) {
             return true;
         }
 
@@ -121,15 +123,15 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         }
 
         if (this.getDisplayed() != null) {
-            this.extractItem(player, this.getDisplayed().getDefinition().getMaxCount());
+            this.extractItem(player, this.getDisplayed().getDefinition().getMaxStackSize());
         }
 
         return true;
     }
 
     @Override
-    public boolean onShiftClicked(PlayerEntity player, Hand hand, Vec3d pos) {
-        if (Platform.isClient()) {
+    public boolean onShiftClicked(PlayerEntity player, Hand hand, Vector3d pos) {
+        if (isRemote()) {
             return true;
         }
 
@@ -176,11 +178,10 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                     }
                 }
             } else {
-                final IAEItemStack input = AEItemStack.fromItemStack(player.getStackInHand(hand));
+                final IAEItemStack input = AEItemStack.fromItemStack(player.getHeldItem(hand));
                 final IAEItemStack failedToInsert = Platform.poweredInsert(energy, cell, input,
                         new PlayerSource(player, this));
-                player.setStackInHand(hand,
-                        failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
+                player.setHeldItem(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
             }
         } catch (final GridAccessException e) {
             // :P
@@ -208,13 +209,13 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                     final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(player);
                     newItems = adaptor.addItems(newItems);
                     if (!newItems.isEmpty()) {
-                        final BlockEntity te = this.getTile();
+                        final TileEntity te = this.getTile();
                         final List<ItemStack> list = Collections.singletonList(newItems);
                         Platform.spawnDrops(player.world, te.getPos().offset(this.getSide().getFacing()), list);
                     }
 
-                    if (player.currentScreenHandler != null) {
-                        player.currentScreenHandler.sendContentUpdates();
+                    if (player.openContainer != null) {
+                        player.openContainer.detectAndSendChanges();
                     }
                 }
             } catch (final GridAccessException e) {

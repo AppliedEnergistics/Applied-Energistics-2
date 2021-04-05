@@ -144,8 +144,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
                     // Heuristic for simulation: looping in case of simulations is pointless, since the state of the
                     // underlying inventory does not change after a simulated extraction. To still support inventories
                     // that report stacks that are larger than maxStackSize, we use this heuristic
-                    if (simulate && extracted.getCount() == extracted.getMaxCount()
-                            && remainingCurrentSlot > extracted.getMaxCount()) {
+                    if (simulate && extracted.getCount() == extracted.getMaxStackSize()
+                            && remainingCurrentSlot > extracted.getMaxStackSize()) {
                         extracted.setCount(remainingCurrentSlot);
                     }
 
@@ -153,7 +153,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
                     if (gathered.isEmpty()) {
                         gathered = extracted;
                     } else {
-                        gathered.increment(extracted.getCount());
+                        gathered.grow(extracted.getCount());
                     }
                     remainingCurrentSlot -= extracted.getCount();
                 }

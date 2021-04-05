@@ -20,41 +20,41 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.tile.misc.CellWorkbenchBlockEntity;
-import appeng.util.Platform;
+import appeng.tile.misc.CellWorkbenchTileEntity;
+import appeng.util.InteractionUtil;
 
-public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchBlockEntity> {
+public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity> {
 
     public CellWorkbenchBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.IRON));
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (p.isInSneakingPose()) {
-            return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
+            return ActionResultType.PASS;
         }
 
-        final CellWorkbenchBlockEntity tg = this.getBlockEntity(w, pos);
+        final CellWorkbenchTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 CellWorkbenchContainer.open(p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
-        return ActionResult.PASS;
+        return ActionResultType.PASS;
     }
 }

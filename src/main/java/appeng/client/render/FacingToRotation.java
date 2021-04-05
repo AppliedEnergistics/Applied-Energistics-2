@@ -20,19 +20,20 @@ package appeng.client.render;
 
 import java.util.Locale;
 
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.util.math.Vector4f;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3i;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.util.Direction;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.util.math.vector.Vector4f;
 
 /**
  * TODO: Removed useless stuff.
  */
-public enum FacingToRotation implements StringIdentifiable {
+public enum FacingToRotation implements IStringSerializable {
 
     // DUNSWE
     // @formatter:off
@@ -67,10 +68,10 @@ public enum FacingToRotation implements StringIdentifiable {
     FacingToRotation(Vector3f rot) {
         this.rot = rot;
         this.mat = new Matrix4f();
-        this.mat.loadIdentity();
-        this.mat.multiply(xRot = Vector3f.POSITIVE_X.getDegreesQuaternion(rot.getX()));
-        this.mat.multiply(yRot = Vector3f.POSITIVE_Y.getDegreesQuaternion(rot.getY()));
-        this.mat.multiply(zRot = Vector3f.POSITIVE_Z.getDegreesQuaternion(rot.getZ()));
+        this.mat.setIdentity();
+        this.mat.mul(xRot = Vector3f.XP.rotationDegrees(rot.getX()));
+        this.mat.mul(yRot = Vector3f.YP.rotationDegrees(rot.getY()));
+        this.mat.mul(zRot = Vector3f.ZP.rotationDegrees(rot.getZ()));
         this.combinedRotation = new Quaternion(rot.getX(), rot.getY(), rot.getZ(), true);
     }
 
@@ -87,16 +88,16 @@ public enum FacingToRotation implements StringIdentifiable {
     }
 
     public void push(MatrixStack mStack) {
-        mStack.multiply(xRot);
-        mStack.multiply(yRot);
-        mStack.multiply(zRot);
+        mStack.rotate(xRot);
+        mStack.rotate(yRot);
+        mStack.rotate(zRot);
     }
 
     public Direction rotate(Direction facing) {
-        Vec3i dir = facing.getVector();
+        Vector3i dir = facing.getDirectionVec();
         Vector4f vec = new Vector4f(dir.getX(), dir.getY(), dir.getZ(), 1);
         vec.transform(mat);
-        return Direction.getFacing(vec.getX(), vec.getY(), vec.getZ());
+        return Direction.getFacingFromVector(vec.getX(), vec.getY(), vec.getZ());
     }
 
     public Direction resultingRotate(Direction facing) {
@@ -113,7 +114,7 @@ public enum FacingToRotation implements StringIdentifiable {
     }
 
     @Override
-    public String asString() {
+    public String getString() {
         return name().toLowerCase(Locale.ROOT);
     }
 }

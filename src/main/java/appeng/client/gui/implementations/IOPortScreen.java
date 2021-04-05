@@ -18,9 +18,10 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
@@ -38,29 +39,30 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     private SettingToggleButton<FullnessMode> fullMode;
     private SettingToggleButton<OperationMode> operationMode;
 
-    public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, Text title) {
+    public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.backgroundHeight = 166;
+        this.ySize = 166;
     }
 
     @Override
     protected void addButtons() {
-        this.fullMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8, Settings.FULLNESS_MODE,
+        this.fullMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.FULLNESS_MODE,
                 FullnessMode.EMPTY);
-        this.operationMode = new ServerSettingToggleButton<>(this.x + 80, this.y + 17, Settings.OPERATION_MODE,
-                OperationMode.EMPTY);
+        this.operationMode = new ServerSettingToggleButton<>(this.guiLeft + 80, this.guiTop + 17,
+                Settings.OPERATION_MODE, OperationMode.EMPTY);
 
         this.addButton(this.operationMode);
         this.addButton(this.fullMode);
-        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.REDSTONE_CONTROLLED,
-                RedstoneMode.IGNORE);
+        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addButton(this.redstoneMode);
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.IOPort.text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.IOPort.text()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
         if (this.redstoneMode != null) {
             this.redstoneMode.set(this.cvb.getRedStoneMode());
@@ -76,9 +78,9 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
+        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         final IDefinitions definitions = Api.instance().definitions();
 

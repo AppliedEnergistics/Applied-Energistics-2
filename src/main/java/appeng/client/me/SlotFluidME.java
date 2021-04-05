@@ -21,17 +21,17 @@ package appeng.client.me;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.fluids.container.slots.IMEFluidSlot;
 
 public class SlotFluidME extends Slot implements IMEFluidSlot {
 
-    private static final Inventory EMPTY_INVENTORY = new SimpleInventory(0);
+    private static final IInventory EMPTY_INVENTORY = new Inventory(0);
 
     private final InternalFluidSlotME slot;
 
@@ -49,7 +49,7 @@ public class SlotFluidME extends Slot implements IMEFluidSlot {
     }
 
     @Override
-    public boolean canInsert(ItemStack stack) {
+    public boolean isItemValid(final ItemStack stack) {
         return false;
     }
 
@@ -60,7 +60,7 @@ public class SlotFluidME extends Slot implements IMEFluidSlot {
     }
 
     @Override
-    public boolean hasStack() {
+    public boolean getHasStack() {
         if (this.slot.hasPower()) {
             return this.getAEFluidStack() != null;
         }
@@ -68,23 +68,23 @@ public class SlotFluidME extends Slot implements IMEFluidSlot {
     }
 
     @Override
-    public void setStack(final ItemStack stack) {
+    public void putStack(final ItemStack stack) {
 
     }
 
     @Override
-    public int getMaxItemCount() {
+    public int getSlotStackLimit() {
         return 0;
     }
 
     @Nonnull
     @Override
-    public ItemStack takeStack(final int par1) {
+    public ItemStack decrStackSize(final int par1) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canTakeItems(final PlayerEntity player) {
+    public boolean canTakeStack(final PlayerEntity player) {
         return false;
     }
 }

@@ -56,18 +56,18 @@ import appeng.util.EnumCycler;
 
 public final class AEConfig {
 
-    public final ClientConfig clientConfig;
+    public final ClientConfig CLIENT;
     public final ConfigFileManager clientConfigManager;
-    public final CommonConfig commonConfig;
+    public final CommonConfig COMMON;
     public final ConfigFileManager commonConfigManager;
 
     AEConfig(File configDir) {
         ConfigSection clientRoot = ConfigSection.createRoot();
-        clientConfig = new ClientConfig(clientRoot);
+        CLIENT = new ClientConfig(clientRoot);
         clientConfigManager = createConfigFileManager(clientRoot, configDir, "appliedenergistics2/client.json");
 
         ConfigSection commonRoot = ConfigSection.createRoot();
-        commonConfig = new CommonConfig(commonRoot);
+        COMMON = new CommonConfig(commonRoot);
         commonConfigManager = createConfigFileManager(commonRoot, configDir, "appliedenergistics2/common.json");
 
         syncClientConfig();
@@ -156,51 +156,50 @@ public final class AEConfig {
     public static final double TUNNEL_POWER_LOSS = 0.05;
 
     private void syncClientConfig() {
-        this.disableColoredCableRecipesInJEI = clientConfig.disableColoredCableRecipesInJEI.get();
-        this.enableEffects = clientConfig.enableEffects.get();
-        this.useLargeFonts = clientConfig.useLargeFonts.get();
-        this.useColoredCraftingStatus = clientConfig.useColoredCraftingStatus.get();
+        this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
+        this.enableEffects = CLIENT.enableEffects.get();
+        this.useLargeFonts = CLIENT.useLargeFonts.get();
+        this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
 
         for (int btnNum = 0; btnNum < 4; btnNum++) {
-            this.craftByStacks[btnNum] = clientConfig.craftByStacks.get(btnNum).get();
-            this.priorityByStacks[btnNum] = clientConfig.priorityByStacks.get(btnNum).get();
-            this.levelByStacks[btnNum] = clientConfig.levelByStacks.get(btnNum).get();
+            this.craftByStacks[btnNum] = CLIENT.craftByStacks.get(btnNum).get();
+            this.priorityByStacks[btnNum] = CLIENT.priorityByStacks.get(btnNum).get();
+            this.levelByStacks[btnNum] = CLIENT.levelByStacks.get(btnNum).get();
         }
     }
 
     private void syncCommonConfig() {
-        PowerUnits.EU.conversionRatio = commonConfig.powerRatioIc2.get();
-        PowerUnits.TR.conversionRatio = commonConfig.powerRatioTechReborn.get();
-        PowerMultiplier.CONFIG.multiplier = commonConfig.powerUsageMultiplier.get();
+        PowerUnits.EU.conversionRatio = COMMON.powerRatioIc2.get();
+        PowerUnits.TR.conversionRatio = COMMON.powerRatioTechReborn.get();
+        PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
 
-        CondenserOutput.MATTER_BALLS.requiredPower = commonConfig.condenserMatterBallsPower.get();
-        CondenserOutput.SINGULARITY.requiredPower = commonConfig.condenserSingularityPower.get();
+        CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
+        CondenserOutput.SINGULARITY.requiredPower = COMMON.condenserSingularityPower.get();
 
-        this.oreDoublePercentage = (float) commonConfig.oreDoublePercentage.get();
+        this.oreDoublePercentage = (float) COMMON.oreDoublePercentage.get();
 
-        this.wirelessBaseCost = commonConfig.wirelessBaseCost.get();
-        this.wirelessCostMultiplier = commonConfig.wirelessCostMultiplier.get();
-        this.wirelessBaseRange = commonConfig.wirelessBaseRange.get();
-        this.wirelessBoosterRangeMultiplier = commonConfig.wirelessBoosterRangeMultiplier.get();
-        this.wirelessBoosterExp = commonConfig.wirelessBoosterExp.get();
-        this.wirelessHighWirelessCount = commonConfig.wirelessHighWirelessCount.get();
-        this.wirelessTerminalDrainMultiplier = commonConfig.wirelessTerminalDrainMultiplier.get();
+        this.wirelessBaseCost = COMMON.wirelessBaseCost.get();
+        this.wirelessCostMultiplier = COMMON.wirelessCostMultiplier.get();
+        this.wirelessBaseRange = COMMON.wirelessBaseRange.get();
+        this.wirelessBoosterRangeMultiplier = COMMON.wirelessBoosterRangeMultiplier.get();
+        this.wirelessBoosterExp = COMMON.wirelessBoosterExp.get();
+        this.wirelessHighWirelessCount = COMMON.wirelessHighWirelessCount.get();
+        this.wirelessTerminalDrainMultiplier = COMMON.wirelessTerminalDrainMultiplier.get();
 
-        this.formationPlaneEntityLimit = commonConfig.formationPlaneEntityLimit.get();
+        this.formationPlaneEntityLimit = COMMON.formationPlaneEntityLimit.get();
 
-        this.wirelessTerminalBattery = commonConfig.wirelessTerminalBattery.get();
-        this.chargedStaffBattery = commonConfig.chargedStaffBattery.get();
-        this.entropyManipulatorBattery = commonConfig.entropyManipulatorBattery.get();
-        this.portableCellBattery = commonConfig.portableCellBattery.get();
-        this.colorApplicatorBattery = commonConfig.colorApplicatorBattery.get();
-        this.matterCannonBattery = commonConfig.matterCannonBattery.get();
+        this.wirelessTerminalBattery = COMMON.wirelessTerminalBattery.get();
+        this.chargedStaffBattery = COMMON.chargedStaffBattery.get();
+        this.entropyManipulatorBattery = COMMON.entropyManipulatorBattery.get();
+        this.portableCellBattery = COMMON.portableCellBattery.get();
+        this.colorApplicatorBattery = COMMON.colorApplicatorBattery.get();
+        this.matterCannonBattery = COMMON.matterCannonBattery.get();
 
         this.featureFlags.clear();
 
         for (final AEFeature feature : AEFeature.values()) {
             if (feature.isVisible() && feature.isConfig()) {
-                if (commonConfig.enabledFeatures.containsKey(feature)
-                        && commonConfig.enabledFeatures.get(feature).get()) {
+                if (COMMON.enabledFeatures.containsKey(feature) && COMMON.enabledFeatures.get(feature).get()) {
                     this.featureFlags.add(feature);
                 }
             } else {
@@ -209,17 +208,17 @@ public final class AEConfig {
         }
 
         for (final TickRates tr : TickRates.values()) {
-            tr.setMin(commonConfig.tickRateMin.get(tr).get());
-            tr.setMax(commonConfig.tickRateMin.get(tr).get());
+            tr.setMin(COMMON.tickRateMin.get(tr).get());
+            tr.setMax(COMMON.tickRateMin.get(tr).get());
         }
 
-        this.spatialPowerMultiplier = commonConfig.spatialPowerMultiplier.get();
-        this.spatialPowerExponent = commonConfig.spatialPowerExponent.get();
-        this.spatialBlockTags = commonConfig.spatialBlockTags.get();
+        this.spatialPowerMultiplier = COMMON.spatialPowerMultiplier.get();
+        this.spatialPowerExponent = COMMON.spatialPowerExponent.get();
+        this.spatialBlockTags = COMMON.spatialBlockTags.get();
 
-        this.craftingCalculationTimePerTick = commonConfig.craftingCalculationTimePerTick.get();
+        this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
 
-        this.removeCrashingItemsOnLoad = commonConfig.removeCrashingItemsOnLoad.get();
+        this.removeCrashingItemsOnLoad = COMMON.removeCrashingItemsOnLoad.get();
     }
 
     public static AEConfig instance() {
@@ -249,23 +248,23 @@ public final class AEConfig {
     }
 
     public YesNo getSearchTooltips() {
-        return clientConfig.searchTooltips.get();
+        return CLIENT.searchTooltips.get();
     }
 
     public TerminalStyle getTerminalStyle() {
-        return clientConfig.terminalStyle.get();
+        return CLIENT.terminalStyle.get();
     }
 
     public void setTerminalStyle(TerminalStyle setting) {
-        clientConfig.terminalStyle.set(setting);
+        CLIENT.terminalStyle.set(setting);
     }
 
     public SearchBoxMode getTerminalSearchMode() {
-        return clientConfig.terminalSearchMode.get();
+        return CLIENT.terminalSearchMode.get();
     }
 
     public void setTerminalSearchMode(SearchBoxMode setting) {
-        clientConfig.terminalSearchMode.set(setting);
+        CLIENT.terminalSearchMode.set(setting);
     }
 
     public void save() {
@@ -291,14 +290,14 @@ public final class AEConfig {
     }
 
     public PowerUnits getSelectedPowerUnit() {
-        return this.clientConfig.selectedPowerUnit.get();
+        return this.CLIENT.selectedPowerUnit.get();
     }
 
     @SuppressWarnings("unchecked")
     public void nextPowerUnit(final boolean backwards) {
         PowerUnits selectedPowerUnit = EnumCycler.rotateEnum(getSelectedPowerUnit(), backwards,
                 (EnumSet<PowerUnits>) Settings.POWER_UNITS.getPossibleValues());
-        clientConfig.selectedPowerUnit.set(selectedPowerUnit);
+        CLIENT.selectedPowerUnit.set(selectedPowerUnit);
     }
 
     // Getters
@@ -371,36 +370,36 @@ public final class AEConfig {
     }
 
     public double getPowerTransactionLimitTechReborn() {
-        return commonConfig.powerTransactionLimitTechReborn.get();
+        return COMMON.powerTransactionLimitTechReborn.get();
     }
 
     public float getSpawnChargedChance() {
-        return (float) commonConfig.spawnChargedChance.get();
+        return (float) COMMON.spawnChargedChance.get();
     }
 
     public int getQuartzOresPerCluster() {
-        return commonConfig.quartzOresPerCluster.get();
+        return COMMON.quartzOresPerCluster.get();
     }
 
     public int getQuartzOresClusterAmount() {
-        return commonConfig.quartzOresClusterAmount.get();
+        return COMMON.quartzOresClusterAmount.get();
     }
 
     public List<String> getMeteoriteBiomeBlacklist() {
-        return commonConfig.meteoriteBiomeBlacklist.get();
+        return COMMON.meteoriteBiomeBlacklist.get();
     }
 
     public List<String> getQuartzOreBiomeBlacklist() {
-        return commonConfig.quartzOreBiomeBlacklist.get();
+        return COMMON.quartzOreBiomeBlacklist.get();
     }
 
     @Nullable
     public String getImprovedFluidTag() {
-        return Strings.emptyToNull(commonConfig.improvedFluidTag.get());
+        return Strings.emptyToNull(COMMON.improvedFluidTag.get());
     }
 
     public float getImprovedFluidMultiplier() {
-        return (float) commonConfig.improvedFluidMultiplier.get();
+        return (float) COMMON.improvedFluidMultiplier.get();
     }
 
     // Setters keep visibility as low as possible.

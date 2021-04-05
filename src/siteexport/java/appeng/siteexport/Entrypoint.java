@@ -3,6 +3,7 @@ package appeng.siteexport;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -10,15 +11,14 @@ import org.lwjgl.opengl.GL12;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.definitions.IDefinitions;
 import appeng.core.Api;
@@ -32,11 +32,11 @@ public class Entrypoint implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-            client.currentScreen = new Screen(Text.of("DUMMY")) {
+            client.currentScreen = new Screen(ITextComponent.getTextComponentOrEmpty("DUMMY")) {
                 @Override
                 protected void init() {
                     while (true) {
-                        runExport(client);
+                        runExport(minecraft);
                     }
 //                    client.getWindow().close();
                 }
@@ -44,7 +44,7 @@ public class Entrypoint implements ClientModInitializer {
         });
     }
 
-    private void runExport(MinecraftClient client) {
+    private void runExport(Minecraft client) {
 
         // Set up GL state for GUI rendering
         RenderSystem.matrixMode(GL12.GL_PROJECTION);
@@ -53,19 +53,19 @@ public class Entrypoint implements ClientModInitializer {
         RenderSystem.matrixMode(GL12.GL_MODELVIEW);
         RenderSystem.loadIdentity();
         RenderSystem.translatef(0.0F, 0.0F, -2000.0F);
-        DiffuseLighting.enableGuiDepthLighting();
+        RenderHelper.setupGui3DDiffuseLighting();
         MatrixStack matrixStack = new MatrixStack();
 
         IDefinitions definitions = Api.instance().definitions();
 
         NativeImage nativeImage = new NativeImage(FB_WIDTH, FB_HEIGHT, true);
         Framebuffer fb = new Framebuffer(FB_WIDTH, FB_HEIGHT, true, false);
-        fb.setClearColor(0, 0, 0, 0);
-        fb.clear(false);
+        fb.setFramebufferColor(0, 0, 0, 0);
+        fb.framebufferClear(false);
 
         // Iterate over all Applied Energistics items
-        DefaultedList<ItemStack> stacks = DefaultedList.of();
-        CreativeTab.INSTANCE.appendStacks(stacks);
+        NonNullList<ItemStack> stacks = NonNullList.create();
+        CreativeTab.INSTANCE.fill(stacks);
 
         // Compute the square grid size needed to have enough cells for the number of
         // items we
@@ -84,16 +84,16 @@ public class Entrypoint implements ClientModInitializer {
         int idx = 0;
         for (ItemStack stack : stacks) {
             // Render the item normally
-            fb.beginWrite(true);
+            fb.bindFramebuffer(true);
             GlStateManager.clear(GL12.GL_COLOR_BUFFER_BIT | GL12.GL_DEPTH_BUFFER_BIT, false);
-            client.getItemRenderer().renderInGui(stack, 0, 0);
-            fb.endWrite();
+            client.getItemRenderer().renderItemAndEffectIntoGuiWithoutEntity(stack, 0, 0);
+            fb.unbindFramebuffer();
 
             // Load the rendered item back into CPU memory
-            fb.beginRead();
-            nativeImage.loadFromTextureImage(0, false);
-            nativeImage.mirrorVertically();
-            fb.endRead();
+            fb.bindFramebufferTexture();
+            nativeImage.downloadFromTexture(0, false);
+            nativeImage.flip();
+            fb.unbindFramebufferTexture();
 
             // Copy it to the sprite-sheet
             int xIdx = idx % s;
@@ -103,7 +103,7 @@ public class Entrypoint implements ClientModInitializer {
             idx++;
             for (int y = 0; y < FB_HEIGHT; y++) {
                 for (int x = 0; x < FB_WIDTH; x++) {
-                    result.setPixelColor(xOut + x, yOut + y, nativeImage.getPixelColor(x, y));
+                    result.setPixelRGBA(xOut + x, yOut + y, nativeImage.getPixelRGBA(x, y));
                 }
             }
 
@@ -112,7 +112,7 @@ public class Entrypoint implements ClientModInitializer {
         }
 
         try {
-            result.writeFile(Paths.get("item_sheet.png"));
+            result.write(Paths.get("item_sheet.png"));
             indexWriter.write(Paths.get("item_sheet.json"));
         } catch (IOException e) {
             e.printStackTrace();
@@ -120,7 +120,7 @@ public class Entrypoint implements ClientModInitializer {
 
         nativeImage.close();
         result.close();
-        fb.delete();
+        fb.deleteFramebuffer();
 
     }
 }

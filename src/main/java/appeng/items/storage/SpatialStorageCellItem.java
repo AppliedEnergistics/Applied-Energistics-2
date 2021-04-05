@@ -25,14 +25,14 @@ import java.util.Locale;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.util.WorldCoord;
@@ -54,18 +54,18 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     private final int maxRegion;
 
-    public SpatialStorageCellItem(Settings props, final int spatialScale) {
+    public SpatialStorageCellItem(Properties props, final int spatialScale) {
         super(props);
         this.maxRegion = spatialScale;
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
-            final TooltipContext advancedTooltips) {
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
-            lines.add(GuiText.Unformatted.text().copy().formatted(Formatting.ITALIC));
+            lines.add(GuiText.Unformatted.text().deepCopy().mergeStyle(TextFormatting.ITALIC));
             lines.add(GuiText.SpatialCapacity.text(maxRegion, maxRegion, maxRegion));
             return;
         }
@@ -75,7 +75,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         String serialNumber = String.format(Locale.ROOT, "SP-%04d", plotId);
         lines.add(GuiText.SerialNumber.text(serialNumber));
 
-        CompoundTag tag = stack.getTag();
+        CompoundNBT tag = stack.getTag();
         if (tag != null && tag.contains(TAG_PLOT_SIZE, NbtType.LONG)) {
             BlockPos size = BlockPos.fromLong(tag.getLong(TAG_PLOT_SIZE));
             lines.add(GuiText.StoredSize.text(size.getX(), size.getY(), size.getZ()));
@@ -94,7 +94,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @Override
     public int getAllocatedPlotId(final ItemStack is) {
-        final CompoundTag c = is.getTag();
+        final CompoundNBT c = is.getTag();
         if (c != null && c.contains(TAG_PLOT_ID)) {
             try {
                 int plotId = c.getInt(TAG_PLOT_ID);
@@ -142,8 +142,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
 
         // Store some information about this transition in the plot
-        TransitionInfo info = new TransitionInfo(w.getRegistryKey().getValue(), min.getBlockPos(), max.getBlockPos(),
-                Instant.now());
+        TransitionInfo info = new TransitionInfo(w.getDimensionKey().getLocation(), min.getBlockPos(),
+                max.getBlockPos(), Instant.now());
         manager.setLastTransition(plot.getId(), info);
 
         try {
@@ -165,8 +165,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     public void setStoredDimension(final ItemStack is, int plotId, BlockPos size) {
-        final CompoundTag c = is.getOrCreateTag();
+        final CompoundNBT c = is.getOrCreateTag();
         c.putInt(TAG_PLOT_ID, plotId);
-        c.putLong(TAG_PLOT_SIZE, size.asLong());
+        c.putLong(TAG_PLOT_SIZE, size.toLong());
     }
 }

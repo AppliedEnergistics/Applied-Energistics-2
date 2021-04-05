@@ -22,31 +22,31 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.NonNullList;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEMaterials;
-import appeng.tile.networking.EnergyCellBlockEntity;
+import appeng.tile.networking.EnergyCellTileEntity;
 
-public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellBlockEntity> {
+public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
 
     public static final int MAX_FULLNESS = 4;
 
-    public static final IntProperty ENERGY_STORAGE = IntProperty.of("fullness", 0, MAX_FULLNESS);
+    public static final IntegerProperty ENERGY_STORAGE = IntegerProperty.create("fullness", 0, MAX_FULLNESS);
 
     public EnergyCellBlock() {
         super(defaultProps(AEMaterials.GLASS));
     }
 
     @Override
-    public void addStacksForDisplay(ItemGroup group, DefaultedList<ItemStack> itemStacks) {
-        super.addStacksForDisplay(group, itemStacks);
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+        super.fillItemGroup(group, itemStacks);
 
         final ItemStack charged = new ItemStack(this, 1);
-        final CompoundTag tag = charged.getOrCreateTag();
+        final CompoundNBT tag = charged.getOrCreateTag();
         tag.putDouble("internalCurrentPower", this.getMaxPower());
         tag.putDouble("internalMaxPower", this.getMaxPower());
 
@@ -58,8 +58,8 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellBlockEntity> {
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(ENERGY_STORAGE);
     }
 

@@ -19,25 +19,26 @@
 package appeng.debug;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.MeteoritePlacer;
@@ -48,19 +49,19 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
 
     private static final String MODE_TAG = "mode";
 
-    public MeteoritePlacerItem(Settings properties) {
+    public MeteoritePlacerItem(Properties properties) {
         super(properties);
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        if (world.isClient()) {
-            return TypedActionResult.pass(player.getStackInHand(hand));
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+        if (world.isRemote()) {
+            return ActionResult.resultPass(player.getHeldItem(hand));
         }
 
-        if (player.isSneaking()) {
-            final ItemStack itemStack = player.getStackInHand(hand);
-            final CompoundTag tag = itemStack.getOrCreateTag();
+        if (InteractionUtil.isInAlternateUseMode(player)) {
+            final ItemStack itemStack = player.getHeldItem(hand);
+            final CompoundNBT tag = itemStack.getOrCreateTag();
 
             if (tag.contains(MODE_TAG)) {
                 final byte mode = tag.getByte("mode");
@@ -71,29 +72,29 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
 
             CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
-            player.sendSystemMessage(new LiteralText(craterType.name()), Util.NIL_UUID);
+            player.sendMessage(new StringTextComponent(craterType.name()), Util.DUMMY_UUID);
 
-            return TypedActionResult.success(itemStack);
+            return ActionResult.resultSuccess(itemStack);
         }
 
-        return super.use(world, player, hand);
+        return super.onItemRightClick(world, player, hand);
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
-        if (context.getWorld().isClient()) {
-            return ActionResult.PASS;
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        if (context.getWorld().isRemote()) {
+            return ActionResultType.PASS;
         }
 
         ServerPlayerEntity player = (ServerPlayerEntity) context.getPlayer();
         ServerWorld world = (ServerWorld) context.getWorld();
-        BlockPos pos = context.getBlockPos();
+        BlockPos pos = context.getPos();
 
         if (player == null) {
-            return ActionResult.PASS;
+            return ActionResultType.PASS;
         }
 
-        CompoundTag tag = stack.getOrCreateTag();
+        CompoundNBT tag = stack.getOrCreateTag();
         if (!tag.contains(MODE_TAG)) {
             tag.putByte(MODE_TAG, (byte) CraterType.NORMAL.ordinal());
         }
@@ -108,31 +109,31 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
                 pureCrater, false);
 
         if (spawned == null) {
-            player.sendMessage(new LiteralText("Un-suitable Location."), false);
-            return ActionResult.FAIL;
+            player.sendMessage(new StringTextComponent("Un-suitable Location."), Util.DUMMY_UUID);
+            return ActionResultType.FAIL;
         }
 
         // Since we don't know yet if the meteorite will be underground or not,
         // we have to assume maximum size
         int range = (int) Math.ceil((coreRadius * 2 + 5) * 5f);
 
-        BlockBox boundingBox = new BlockBox(pos.getX() - range, pos.getY(), pos.getZ() - range, pos.getX() + range,
-                pos.getY(), pos.getZ() + range);
+        MutableBoundingBox boundingBox = new MutableBoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
+                pos.getX() + range, pos.getY(), pos.getZ() + range);
 
         final MeteoritePlacer placer = new MeteoritePlacer(world, spawned, boundingBox);
         placer.place();
 
-        player.sendMessage(new LiteralText("Spawned at y=" + spawned.getPos().getY() + " range=" + range
-                + " biomeCategory=" + world.getBiome(pos).getCategory()), false);
+        player.sendMessage(new StringTextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
+                + " biomeCategory=" + world.getBiome(pos).getCategory()), Util.DUMMY_UUID);
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this
         // is a debug tool, we'll not care about being terribly efficient here
-        ChunkPos.stream(new ChunkPos(spawned.getPos()), 2).forEach(cp -> {
-            WorldChunk c = world.getChunk(cp.x, cp.z);
-            player.networkHandler.sendPacket(new ChunkDataS2CPacket(c, 65535)); // 65535 == full chunk
+        ChunkPos.getAllInBox(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
+            Chunk c = world.getChunk(cp.x, cp.z);
+            player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
         });
 
-        return ActionResult.SUCCESS;
+        return ActionResultType.func_233537_a_(world.isRemote());
     }
 }

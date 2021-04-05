@@ -1,9 +1,27 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.fluids.util;
 
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 
 import alexiil.mc.lib.attributes.ListenerRemovalToken;
 import alexiil.mc.lib.attributes.ListenerToken;
@@ -73,7 +91,7 @@ public class AEFluidInventory implements IAEFluidTank {
     }
 
     private void onContentChanged(final int slot) {
-        if (this.handler != null && Platform.isServer()) {
+        if (this.handler != null && !this.handler.isRemote()) {
             this.handler.onFluidInventoryChanged(this, slot);
         }
     }
@@ -182,16 +200,16 @@ public class AEFluidInventory implements IAEFluidTank {
         return amount;
     }
 
-    public void writeToNBT(final CompoundTag data, final String name) {
-        final CompoundTag c = new CompoundTag();
+    public void writeToNBT(final CompoundNBT data, final String name) {
+        final CompoundNBT c = new CompoundNBT();
         this.writeToNBT(c);
         data.put(name, c);
     }
 
-    private void writeToNBT(final CompoundTag target) {
+    private void writeToNBT(final CompoundNBT target) {
         for (int x = 0; x < this.fluids.length; x++) {
             try {
-                final CompoundTag c = new CompoundTag();
+                final CompoundNBT c = new CompoundNBT();
 
                 if (this.fluids[x] != EMPTY_AE_FLUIDSTACK) {
                     this.fluids[x].writeToNBT(c);
@@ -203,17 +221,17 @@ public class AEFluidInventory implements IAEFluidTank {
         }
     }
 
-    public void readFromNBT(final CompoundTag data, final String name) {
-        final CompoundTag c = data.getCompound(name);
+    public void readFromNBT(final CompoundNBT data, final String name) {
+        final CompoundNBT c = data.getCompound(name);
         if (!c.isEmpty()) {
             this.readFromNBT(c);
         }
     }
 
-    private void readFromNBT(final CompoundTag target) {
+    private void readFromNBT(final CompoundNBT target) {
         for (int x = 0; x < this.fluids.length; x++) {
             try {
-                final CompoundTag c = target.getCompound("#" + x);
+                final CompoundNBT c = target.getCompound("#" + x);
 
                 if (!c.isEmpty()) {
                     this.fluids[x] = AEFluidStack.fromNBT(c);

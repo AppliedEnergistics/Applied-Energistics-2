@@ -21,8 +21,8 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.BasePacket;
@@ -33,7 +33,7 @@ public class ProgressBarPacket extends BasePacket {
     private final short id;
     private final long value;
 
-    public ProgressBarPacket(final PacketByteBuf stream) {
+    public ProgressBarPacket(final PacketBuffer stream) {
         this.id = stream.readShort();
         this.value = stream.readLong();
     }
@@ -43,7 +43,7 @@ public class ProgressBarPacket extends BasePacket {
         this.id = (short) shortID;
         this.value = value;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeShort(shortID);
@@ -54,7 +54,7 @@ public class ProgressBarPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final ScreenHandler c = player.currentScreenHandler;
+        final Container c = player.openContainer;
         if (c instanceof AEBaseContainer) {
             ((AEBaseContainer) c).updateFullProgressBar(this.id, this.value);
         }
@@ -62,7 +62,7 @@ public class ProgressBarPacket extends BasePacket {
 
     @Override
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final ScreenHandler c = player.currentScreenHandler;
+        final Container c = player.openContainer;
         if (c instanceof AEBaseContainer) {
             ((AEBaseContainer) c).updateFullProgressBar(this.id, this.value);
         }

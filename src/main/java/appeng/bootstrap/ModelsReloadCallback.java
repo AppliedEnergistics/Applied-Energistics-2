@@ -4,8 +4,8 @@ import java.util.Map;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.util.ResourceLocation;
 
 @FunctionalInterface
 public interface ModelsReloadCallback {
@@ -17,6 +17,6 @@ public interface ModelsReloadCallback {
                 }
             });
 
-    void onModelsReloaded(Map<Identifier, BakedModel> loadedModels);
+    void onModelsReloaded(Map<ResourceLocation, IBakedModel> loadedModels);
 
 }

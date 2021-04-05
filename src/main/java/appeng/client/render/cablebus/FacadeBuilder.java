@@ -39,21 +39,21 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.ModelRotation;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.ModelRotation;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.IBlockDisplayReader;
 
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.core.Api;
@@ -77,32 +77,75 @@ public class FacadeBuilder {
     public static final double THICK_THICKNESS = 2D / 16D;
     public static final double THIN_THICKNESS = 1D / 16D;
 
-    public static final Box[] THICK_FACADE_BOXES = new Box[] { new Box(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
-            new Box(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0), new Box(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),
-            new Box(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0), new Box(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),
-            new Box(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
+    public static final AxisAlignedBB[] THICK_FACADE_BOXES = new AxisAlignedBB[] {
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
+            new AxisAlignedBB(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0),
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),
+            new AxisAlignedBB(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0),
+            new AxisAlignedBB(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),
+            new AxisAlignedBB(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
-    public static final Box[] THIN_FACADE_BOXES = new Box[] { new Box(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
-            new Box(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0), new Box(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),
-            new Box(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0), new Box(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
-            new Box(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
+    public static final AxisAlignedBB[] THIN_FACADE_BOXES = new AxisAlignedBB[] {
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
+            new AxisAlignedBB(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0),
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),
+            new AxisAlignedBB(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0),
+            new AxisAlignedBB(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
+            new AxisAlignedBB(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
+
+    // Pre-rotated transparent facade quads
+    private final Map<Direction, Mesh> transparentFacadeQuads;
 
     private final Map<Direction, Mesh> cableAnchorStilts;
 
-    public FacadeBuilder(ModelLoader modelLoader) {
+    public FacadeBuilder(ModelBakery modelLoader, @Nullable IBakedModel transparentFacadeModel) {
         cableAnchorStilts = buildCableAnchorStems(modelLoader);
+
+        // Pre-rotate the transparent facade model to all possible sides so that we can
+        // add it quicker later.
+        this.transparentFacadeQuads = new EnumMap<>(Direction.class);
+        // This can be null for item models.
+        if (transparentFacadeModel != null) {
+            List<BakedQuad> partQuads = transparentFacadeModel.getQuads(null, null, new Random());
+
+            for (Direction facing : Direction.values()) {
+                MeshBuilder meshBuilder = renderer.meshBuilder();
+                QuadEmitter emitter = meshBuilder.getEmitter();
+
+                // Rotate quads accordingly
+                RenderContext.QuadTransform rotator = QuadRotator.get(facing, Direction.UP);
+
+                for (BakedQuad quad : partQuads) {
+                    emitter.fromVanilla(quad.getVertexData(), 0, false);
+                    emitter.cullFace(null);
+                    emitter.nominalFace(quad.getFace());
+                    if (!rotator.transform(emitter)) {
+                        continue;
+                    }
+                    emitter.emit();
+                }
+
+                this.transparentFacadeQuads.put(facing, meshBuilder.build());
+            }
+        } else {
+            // This constructor is used for item models where transparent facades are not a
+            // concern
+            for (Direction facing : Direction.values()) {
+                this.transparentFacadeQuads.put(facing, renderer.meshBuilder().build());
+            }
+        }
     }
 
     /**
      * Build a map of pre-rotated cable anchor stilts, which are the shortened cable anchors that will still be visible
      * for facades attached to a cable.
      */
-    private Map<Direction, Mesh> buildCableAnchorStems(ModelLoader modelLoader) {
+    private Map<Direction, Mesh> buildCableAnchorStems(ModelBakery modelLoader) {
         Map<Direction, Mesh> stems = new EnumMap<>(Direction.class);
 
-        List<BakedModel> cableAnchorParts = new ArrayList<>();
-        for (Identifier model : CableAnchorPart.FACADE_MODELS.getModels()) {
-            BakedModel cableAnchor = modelLoader.bake(model, ModelRotation.X0_Y0);
+        List<IBakedModel> cableAnchorParts = new ArrayList<>();
+        for (ResourceLocation model : CableAnchorPart.FACADE_MODELS.getModels()) {
+            IBakedModel cableAnchor = modelLoader.bake(model, ModelRotation.X0_Y0);
             cableAnchorParts.add(cableAnchor);
         }
 
@@ -113,7 +156,7 @@ public class FacadeBuilder {
             MeshBuilder meshBuilder = renderer.meshBuilder();
             QuadEmitter emitter = meshBuilder.getEmitter();
 
-            for (BakedModel model : cableAnchorParts) {
+            for (IBakedModel model : cableAnchorParts) {
                 for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
                     Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
                     List<BakedQuad> quads = model.getQuads(null, cullFace, new Random());
@@ -136,14 +179,14 @@ public class FacadeBuilder {
     }
 
     public Mesh getFacadeMesh(CableBusRenderState renderState, Supplier<Random> rand,
-            Function<Identifier, BakedModel> modelLookup) {
+            Function<ResourceLocation, IBakedModel> modelLookup) {
         boolean transparent = Api.instance().partHelper().getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
-        List<Box> partBoxes = renderState.getBoundingBoxes();
+        List<AxisAlignedBB> partBoxes = renderState.getBoundingBoxes();
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
-        BlockRenderView parentWorld = renderState.getWorld();
+        IBlockDisplayReader parentWorld = renderState.getWorld();
         BlockPos pos = renderState.getPos();
-        BlockColors blockColors = MinecraftClient.getInstance().getBlockColors();
+        BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         boolean thinFacades = isUseThinFacades(partBoxes);
 
         MeshBuilder meshBuilder = renderer.meshBuilder();
@@ -155,10 +198,21 @@ public class FacadeBuilder {
             FacadeRenderState facadeRenderState = entry.getValue();
             boolean renderStilt = !sidesWithParts.contains(side);
             if (renderStilt) {
-                cableAnchorStilts.get(entry.getKey()).forEach(quad -> {
+                cableAnchorStilts.get(side).forEach(quad -> {
                     quad.copyTo(emitter);
                     emitter.emit();
                 });
+            }
+
+            // When we're forcing transparent facades, add a "border" model that indicates
+            // where the facade is,
+            // But otherwise skip the rest.
+            if (transparent) {
+                transparentFacadeQuads.get(side).forEach(quad -> {
+                    quad.copyTo(emitter);
+                    emitter.emit();
+                });
+                continue;
             }
 
             BlockState blockState = facadeRenderState.getSourceBlock();
@@ -170,8 +224,8 @@ public class FacadeBuilder {
 // FIXME FABRIC               }
 // FIXME FABRIC            }
 
-            Box fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
-            Box facadeBox = fullBounds;
+            AxisAlignedBB fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
+            AxisAlignedBB facadeBox = fullBounds;
             // If we are a transparent facade, we need to modify out BB.
             if (facadeRenderState.isTransparent()) {
                 double offset = thinFacades ? THIN_THICKNESS : THICK_THICKNESS;
@@ -227,11 +281,11 @@ public class FacadeBuilder {
             }
 
             AEAxisAlignedBB cutOutBox = getCutOutBox(facadeBox, partBoxes);
-            List<Box> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
-            BlockRenderView facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
+            List<AxisAlignedBB> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
+            IBlockDisplayReader facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
 
-            BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
-            BakedModel model = dispatcher.getModel(blockState);
+            BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
+            IBakedModel model = dispatcher.getModelForState(blockState);
 
             QuadFaceStripper faceStripper = new QuadFaceStripper(fullBounds, facadeMask);
             // Setup the kicker.
@@ -251,12 +305,12 @@ public class FacadeBuilder {
                     QuadTinter quadTinter = null;
 
                     // Prebake the color tint into the quad
-                    if (quad.getColorIndex() != -1) {
+                    if (quad.getTintIndex() != -1) {
                         quadTinter = new QuadTinter(
-                                blockColors.getColor(blockState, facadeAccess, pos, quad.getColorIndex()));
+                                blockColors.getColor(blockState, facadeAccess, pos, quad.getTintIndex()));
                     }
 
-                    for (Box box : holeStrips) {
+                    for (AxisAlignedBB box : holeStrips) {
                         emitter.fromVanilla(quad.getVertexData(), 0, false);
                         // Keep the cull-face for faces that are flush with the outer block-face on the
                         // side the facade is attached to, but clear it for anything that faces inwards
@@ -309,7 +363,8 @@ public class FacadeBuilder {
         MeshBuilder meshBuilder = renderer.meshBuilder();
         QuadEmitter emitter = meshBuilder.getEmitter();
 
-        BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(textureItem, null, null);
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(textureItem, null,
+                null);
         List<BakedQuad> modelQuads = model.getQuads(null, null, new Random());
 
         // FIXME BakedPipeline pipeline = this.pipelines.get();
@@ -322,7 +377,7 @@ public class FacadeBuilder {
 
         QuadReInterpolator interpolator = new QuadReInterpolator();
 
-        ItemColors itemColors = ((MinecraftClientAccessor) MinecraftClient.getInstance()).getItemColors();
+        ItemColors itemColors = ((MinecraftClientAccessor) Minecraft.getInstance()).getItemColors();
         QuadClamper clamper = new QuadClamper(THICK_FACADE_BOXES[side.ordinal()]);
 
         for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
@@ -333,8 +388,8 @@ public class FacadeBuilder {
                 QuadTinter quadTinter = null;
 
                 // Prebake the color tint into the quad
-                if (quad.getColorIndex() != -1) {
-                    quadTinter = new QuadTinter(itemColors.getColorMultiplier(textureItem, quad.getColorIndex()));
+                if (quad.getTintIndex() != -1) {
+                    quadTinter = new QuadTinter(itemColors.getColor(textureItem, quad.getTintIndex()));
                 }
 
                 emitter.fromVanilla(quad.getVertexData(), 0, false);
@@ -395,9 +450,9 @@ public class FacadeBuilder {
      * that intersect with the facade's bounding box. This AABB will need to be "cut out" when the facade is rendered.
      */
     @Nullable
-    private static AEAxisAlignedBB getCutOutBox(Box facadeBox, List<Box> partBoxes) {
+    private static AEAxisAlignedBB getCutOutBox(AxisAlignedBB facadeBox, List<AxisAlignedBB> partBoxes) {
         AEAxisAlignedBB b = null;
-        for (Box bb : partBoxes) {
+        for (AxisAlignedBB bb : partBoxes) {
             if (bb.intersects(facadeBox)) {
                 if (b == null) {
                     b = AEAxisAlignedBB.fromBounds(bb);
@@ -421,36 +476,37 @@ public class FacadeBuilder {
      * @param fb   The Facade's box.
      * @param hole The hole to 'cut'.
      * @param axis The axis the facade is on.
+     *
      * @return The box segments.
      */
-    private static List<Box> getBoxes(Box fb, AEAxisAlignedBB hole, Axis axis) {
+    private static List<AxisAlignedBB> getBoxes(AxisAlignedBB fb, AEAxisAlignedBB hole, Axis axis) {
         if (hole == null) {
             return Collections.singletonList(fb);
         }
-        List<Box> boxes = new ArrayList<>();
+        List<AxisAlignedBB> boxes = new ArrayList<>();
         switch (axis) {
             case Y:
-                boxes.add(new Box(fb.minX, fb.minY, fb.minZ, hole.minX, fb.maxY, fb.maxZ));
-                boxes.add(new Box(hole.maxX, fb.minY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, hole.minX, fb.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(hole.maxX, fb.minY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
-                boxes.add(new Box(hole.minX, fb.minY, fb.minZ, hole.maxX, fb.maxY, hole.minZ));
-                boxes.add(new Box(hole.minX, fb.minY, hole.maxZ, hole.maxX, fb.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(hole.minX, fb.minY, fb.minZ, hole.maxX, fb.maxY, hole.minZ));
+                boxes.add(new AxisAlignedBB(hole.minX, fb.minY, hole.maxZ, hole.maxX, fb.maxY, fb.maxZ));
 
                 break;
             case Z:
-                boxes.add(new Box(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
-                boxes.add(new Box(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
-                boxes.add(new Box(fb.minX, hole.minY, fb.minZ, hole.minX, hole.maxY, fb.maxZ));
-                boxes.add(new Box(hole.maxX, hole.minY, fb.minZ, fb.maxX, hole.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, hole.minY, fb.minZ, hole.minX, hole.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(hole.maxX, hole.minY, fb.minZ, fb.maxX, hole.maxY, fb.maxZ));
 
                 break;
             case X:
-                boxes.add(new Box(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
-                boxes.add(new Box(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
-                boxes.add(new Box(fb.minX, hole.minY, fb.minZ, fb.maxX, hole.maxY, hole.minZ));
-                boxes.add(new Box(fb.minX, hole.minY, hole.maxZ, fb.maxX, hole.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, hole.minY, fb.minZ, fb.maxX, hole.maxY, hole.minZ));
+                boxes.add(new AxisAlignedBB(fb.minX, hole.minY, hole.maxZ, fb.maxX, hole.maxY, fb.maxZ));
                 break;
             default:
                 // should never happen.
@@ -464,11 +520,11 @@ public class FacadeBuilder {
      * Determines if any of the part's bounding boxes intersects with the outside 2 voxel wide layer. If so, we should
      * use thinner facades (1 voxel deep).
      */
-    private static boolean isUseThinFacades(List<Box> partBoxes) {
+    private static boolean isUseThinFacades(List<AxisAlignedBB> partBoxes) {
         final double min = 2.0 / 16.0;
         final double max = 14.0 / 16.0;
 
-        for (Box bb : partBoxes) {
+        for (AxisAlignedBB bb : partBoxes) {
             int o = 0;
             o += bb.maxX > max ? 1 : 0;
             o += bb.maxY > max ? 1 : 0;

@@ -23,13 +23,13 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
@@ -57,7 +57,7 @@ public class ClickPacket extends BasePacket {
     private Hand hand;
     private final boolean leftClick;
 
-    public ClickPacket(final PacketByteBuf stream) {
+    public ClickPacket(final PacketBuffer stream) {
         this.x = stream.readInt();
         this.y = stream.readInt();
         this.z = stream.readInt();
@@ -75,14 +75,14 @@ public class ClickPacket extends BasePacket {
     }
 
     // API for when a block was right clicked
-    public ClickPacket(ItemUsageContext context) {
-        this(context.getBlockPos(), context.getSide(), context.getBlockPos().getX(), context.getBlockPos().getY(),
-                context.getBlockPos().getZ(), context.getHand());
+    public ClickPacket(ItemUseContext context) {
+        this(context.getPos(), context.getFace(), context.getPos().getX(), context.getPos().getY(),
+                context.getPos().getZ(), context.getHand());
     }
 
     // API for when an item in hand was right-clicked, with no block context
     public ClickPacket(Hand hand) {
-        this(BlockPos.ORIGIN, null, 0, 0, 0, hand);
+        this(BlockPos.ZERO, null, 0, 0, 0, hand);
     }
 
     private ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
@@ -93,7 +93,7 @@ public class ClickPacket extends BasePacket {
     public ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
             final Hand hand, boolean leftClick) {
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(this.x = pos.getX());
@@ -122,7 +122,7 @@ public class ClickPacket extends BasePacket {
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final BlockPos pos = new BlockPos(this.x, this.y, this.z);
 
-        final ItemStack is = player.getStackInHand(hand);
+        final ItemStack is = player.getHeldItem(hand);
         final IItems items = Api.instance().definitions().items();
         final IComparableDefinition maybeMemoryCard = items.memoryCard();
         final IComparableDefinition maybeColorApplicator = items.colorApplicator();
@@ -131,7 +131,7 @@ public class ClickPacket extends BasePacket {
             final Block block = player.world.getBlockState(pos).getBlock();
             if (block instanceof CableBusBlock) {
                 ((CableBusBlock) block).onBlockClickPacket(player.world, pos, player, this.hand,
-                        new Vec3d(this.hitX, this.hitY, this.hitZ));
+                        new Vector3d(this.hitX, this.hitY, this.hitZ));
             }
         } else {
             if (!is.isEmpty()) {
@@ -140,8 +140,8 @@ public class ClickPacket extends BasePacket {
 
                     if (hasBlockContext()) {
                         // Reconstruct an item use context
-                        ItemUsageContext useContext = new ItemUsageContext(player, hand,
-                                new BlockHitResult(new Vec3d(hitX, hitY, hitZ), side, pos, false));
+                        ItemUseContext useContext = new ItemUseContext(player, hand,
+                                new BlockRayTraceResult(new Vector3d(hitX, hitY, hitZ), side, pos, false));
                         tnt.serverSideToolLogic(useContext);
                     } else {
                         ContainerOpener.openContainer(NetworkToolContainer.TYPE, player,
@@ -153,7 +153,9 @@ public class ClickPacket extends BasePacket {
                     final IMemoryCard mem = (IMemoryCard) is.getItem();
                     mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
                     is.setTag(null);
-                } else if (maybeColorApplicator.isSameAs(is)) {
+                }
+
+                else if (maybeColorApplicator.isSameAs(is)) {
                     final ColorApplicatorItem mem = (ColorApplicatorItem) is.getItem();
                     mem.cycleColors(is, mem.getColor(is), 1);
                 }

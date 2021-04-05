@@ -20,7 +20,7 @@ package appeng.integration.modules.waila.part;
 
 import java.util.List;
 
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
 
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
@@ -46,7 +46,7 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
      * @param config   config settings
      */
     @Override
-    public void appendBody(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
+    public void appendBody(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
             final IPluginConfig config) {
         if (part instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) part;
@@ -62,13 +62,13 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
      * @param isPowered if part is powered
      * @return tooltip of the state
      */
-    private Text getToolTip(final boolean isActive, final boolean isPowered) {
+    private ITextComponent getToolTip(final boolean isActive, final boolean isPowered) {
         if (isActive && isPowered) {
-            return WailaText.DeviceOnline.text();
+            return WailaText.DeviceOnline.textComponent();
         } else if (isPowered) {
-            return WailaText.DeviceMissingChannel.text();
+            return WailaText.DeviceMissingChannel.textComponent();
         } else {
-            return WailaText.DeviceOffline.text();
+            return WailaText.DeviceOffline.textComponent();
         }
     }
 }

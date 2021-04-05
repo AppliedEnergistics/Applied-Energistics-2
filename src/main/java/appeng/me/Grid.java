@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 import appeng.api.networking.IGrid;
@@ -47,8 +48,25 @@ public class Grid implements IGrid {
     private int priority; // how import is this network?
     private GridStorage myStorage;
 
-    public Grid(final GridNode center) {
-        this.pivot = center;
+    /**
+     * Creates a new grid, sends the necessary events, and registers it to the tickhandler or other objects.
+     *
+     * @param center the pivot point of the new grid
+     * @return
+     */
+    public static Grid create(GridNode center) {
+        Grid grid = new Grid(center);
+
+        grid.postEvent(new MENetworkPostCacheConstruction());
+
+        TickHandler.instance().addNetwork(grid);
+        center.setGrid(grid);
+
+        return grid;
+    }
+
+    private Grid(final GridNode center) {
+        this.pivot = Objects.requireNonNull(center);
 
         final Map<Class<? extends IGridCache>, IGridCache> myCaches = Api.instance().registries().gridCache()
                 .createCacheInstance(this);
@@ -61,11 +79,6 @@ public class Grid implements IGrid {
             this.eventBus.readClass(key, valueClass);
             this.caches.put(key, new GridCacheWrapper(value));
         }
-
-        this.postEvent(new MENetworkPostCacheConstruction());
-
-        TickHandler.instance().addNetwork(this);
-        center.setGrid(this);
     }
 
     int getPriority() {

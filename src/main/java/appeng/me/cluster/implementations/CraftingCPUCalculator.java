@@ -20,7 +20,7 @@ package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -31,11 +31,11 @@ import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.util.AEPartLocation;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.tile.crafting.CraftingTileEntity;
 
-public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, CraftingCPUCluster> {
+public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, CraftingCPUCluster> {
 
-    public CraftingCPUCalculator(final CraftingBlockEntity t) {
+    public CraftingCPUCalculator(final CraftingTileEntity t) {
         super(t);
     }
 
@@ -65,15 +65,15 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     public boolean verifyInternalStructure(final World w, final BlockPos min, final BlockPos max) {
         boolean storage = false;
 
-        for (BlockPos blockPos : BlockPos.iterate(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(blockPos);
+        for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getTileEntity(blockPos);
 
             if (te == null || !te.isValid()) {
                 return false;
             }
 
-            if (!storage && te instanceof CraftingBlockEntity) {
-                storage = ((CraftingBlockEntity) te).getStorageBytes() > 0;
+            if (!storage && te instanceof CraftingTileEntity) {
+                storage = ((CraftingTileEntity) te).getStorageBytes() > 0;
             }
         }
 
@@ -82,15 +82,15 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
 
     @Override
     public void updateTiles(final CraftingCPUCluster c, final World w, final BlockPos min, final BlockPos max) {
-        for (BlockPos blockPos : BlockPos.iterate(min, max)) {
-            final CraftingBlockEntity te = (CraftingBlockEntity) w.getBlockEntity(blockPos);
+        for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
+            final CraftingTileEntity te = (CraftingTileEntity) w.getTileEntity(blockPos);
             te.updateStatus(c);
             c.addTile(te);
         }
 
         c.done();
 
-        final Iterator<CraftingBlockEntity> i = c.getTiles();
+        final Iterator<CraftingTileEntity> i = c.getTiles();
         while (i.hasNext()) {
             final IGridHost gh = i.next();
             final IGridNode n = gh.getGridNode(AEPartLocation.INTERNAL);
@@ -105,7 +105,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     }
 
     @Override
-    public boolean isValidTile(final BlockEntity te) {
-        return te instanceof CraftingBlockEntity;
+    public boolean isValidTile(final TileEntity te) {
+        return te instanceof CraftingTileEntity;
     }
 }

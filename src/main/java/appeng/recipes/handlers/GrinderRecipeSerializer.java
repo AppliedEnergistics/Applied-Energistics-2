@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.recipes.handlers;
 
 import java.util.ArrayList;
@@ -11,17 +29,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.core.AEConfig;
 import appeng.core.sync.BasePacket;
 
-public class GrinderRecipeSerializer implements RecipeSerializer<GrinderRecipe> {
+public class GrinderRecipeSerializer implements IRecipeSerializer<GrinderRecipe> {
 
     public static final GrinderRecipeSerializer INSTANCE = new GrinderRecipeSerializer();
 
@@ -29,18 +47,18 @@ public class GrinderRecipeSerializer implements RecipeSerializer<GrinderRecipe> 
     }
 
     @Override
-    public GrinderRecipe read(Identifier recipeId, JsonObject json) {
-        String group = JsonHelper.getString(json, "group", "");
-        JsonObject inputObj = JsonHelper.getObject(json, "input");
-        Ingredient ingredient = Ingredient.fromJson(inputObj);
+    public GrinderRecipe read(ResourceLocation recipeId, JsonObject json) {
+        String group = JSONUtils.getString(json, "group", "");
+        JsonObject inputObj = JSONUtils.getJsonObject(json, "input");
+        Ingredient ingredient = Ingredient.deserialize(inputObj);
         int ingredientCount = 1;
         if (inputObj.has("count")) {
             ingredientCount = inputObj.get("count").getAsInt();
         }
 
-        JsonObject result = JsonHelper.getObject(json, "result");
-        ItemStack primaryResult = ShapedRecipe.getItemStack(JsonHelper.getObject(result, "primary"));
-        JsonArray optionalResultsJson = JsonHelper.getArray(result, "optional", null);
+        JsonObject result = JSONUtils.getJsonObject(json, "result");
+        ItemStack primaryResult = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(result, "primary"));
+        JsonArray optionalResultsJson = JSONUtils.getJsonArray(result, "optional", null);
         List<GrinderOptionalResult> optionalResults = Collections.emptyList();
         if (optionalResultsJson != null) {
             optionalResults = new ArrayList<>(optionalResultsJson.size());
@@ -48,24 +66,24 @@ public class GrinderRecipeSerializer implements RecipeSerializer<GrinderRecipe> 
                 if (!optionalResultJson.isJsonObject()) {
                     throw new IllegalStateException("Entry in optional result list should be an object.");
                 }
-                ItemStack optionalResultItem = ShapedRecipe.getItemStack(optionalResultJson.getAsJsonObject());
-                float optionalChance = JsonHelper.getFloat(optionalResultJson.getAsJsonObject(), "percentageChance",
+                ItemStack optionalResultItem = ShapedRecipe.deserializeItem(optionalResultJson.getAsJsonObject());
+                float optionalChance = JSONUtils.getFloat(optionalResultJson.getAsJsonObject(), "percentageChance",
                         AEConfig.instance().getOreDoublePercentage()) / 100.0f;
                 optionalResults.add(new GrinderOptionalResult(optionalChance, optionalResultItem));
             }
         }
 
-        int turns = JsonHelper.getInt(json, "turns", 8);
+        int turns = JSONUtils.getInt(json, "turns", 8);
 
         return new GrinderRecipe(recipeId, group, ingredient, ingredientCount, primaryResult, turns, optionalResults);
     }
 
     @Nullable
     @Override
-    public GrinderRecipe read(Identifier recipeId, PacketByteBuf buffer) {
+    public GrinderRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
 
         String group = buffer.readString(BasePacket.MAX_STRING_LENGTH);
-        Ingredient ingredient = Ingredient.fromPacket(buffer);
+        Ingredient ingredient = Ingredient.read(buffer);
         int ingredientCount = buffer.readVarInt();
         ItemStack result = buffer.readItemStack();
         int turns = buffer.readVarInt();
@@ -81,11 +99,11 @@ public class GrinderRecipeSerializer implements RecipeSerializer<GrinderRecipe> 
     }
 
     @Override
-    public void write(PacketByteBuf buffer, GrinderRecipe recipe) {
+    public void write(PacketBuffer buffer, GrinderRecipe recipe) {
         buffer.writeString(recipe.getGroup());
         recipe.getIngredient().write(buffer);
         buffer.writeVarInt(recipe.getIngredientCount());
-        buffer.writeItemStack(recipe.getOutput());
+        buffer.writeItemStack(recipe.getRecipeOutput());
         buffer.writeVarInt(recipe.getTurns());
         List<GrinderOptionalResult> optionalResults = recipe.getOptionalResults();
         buffer.writeVarInt(optionalResults.size());

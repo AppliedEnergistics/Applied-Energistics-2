@@ -22,21 +22,22 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.config.FuzzyMode;
 
 /**
  * A helper class for comparing {@link Item}, {@link ItemStack} or NBT
+ *
  */
 public class ItemComparisonHelper {
 
     /**
      * Compare the two {@link ItemStack}s based on the same {@link Item} and damage value.
-     * <p>
+     *
      * In case of the item being damageable, only the {@link Item} will be considered. If not it will also compare both
      * damage values.
-     * <p>
+     *
      * Ignores NBT.
      *
      * @return true, if both are equal.
@@ -47,7 +48,7 @@ public class ItemComparisonHelper {
 
     /**
      * Compares two {@link ItemStack} and their NBT tag for equality.
-     * <p>
+     *
      * Use this when a precise check is required and the same item is required. Not just something with different NBT
      * tags.
      *
@@ -86,14 +87,6 @@ public class ItemComparisonHelper {
                 return (percentDamagedOfA > mode.breakPoint) == (percentDamagedOfB > mode.breakPoint);
             }
         }
-// FIXME
-//		final OreReference aOR = OreHelper.INSTANCE.getOre( a ).orElse( null );
-//		final OreReference bOR = OreHelper.INSTANCE.getOre( b ).orElse( null );
-//
-//		if( OreHelper.INSTANCE.sameOre( aOR, bOR ) )
-//		{
-//			return true;
-//		}
 
         return a.isItemEqual(b);
     }
@@ -103,7 +96,7 @@ public class ItemComparisonHelper {
      * then the vanilla version which likes to fail when NBT Compound data changes order, it is pretty expensive
      * performance wise, so try an use shared tag compounds as long as the system remains in AE.
      */
-    public boolean isNbtTagEqual(final CompoundTag left, final CompoundTag right) {
+    public boolean isNbtTagEqual(final CompoundNBT left, final CompoundNBT right) {
         if (left == right) {
             return true;
         }

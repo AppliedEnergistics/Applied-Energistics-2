@@ -25,10 +25,10 @@ import java.util.Optional;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -122,21 +122,21 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.setOutput(data.getBoolean("output"));
         this.freq = data.getShort("freq");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         data.putBoolean("output", this.isOutput());
         data.putShort("freq", this.getFrequency());
     }
 
     @Override
-    public boolean readFromStream(PacketByteBuf data) throws IOException {
+    public boolean readFromStream(PacketBuffer data) throws IOException {
         final boolean c = super.readFromStream(data);
         final short oldf = this.freq;
         this.freq = data.readShort();
@@ -144,7 +144,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public void writeToStream(PacketByteBuf data) throws IOException {
+    public void writeToStream(PacketBuffer data) throws IOException {
         super.writeToStream(data);
         data.writeShort(this.getFrequency());
     }
@@ -160,8 +160,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
-        if (Platform.isClient()) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+        if (isRemote()) {
             return true;
         }
 
@@ -169,14 +169,14 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             return false;
         }
 
-        final ItemStack is = player.getStackInHand(hand);
+        final ItemStack is = player.getHeldItem(hand);
 
         final TunnelType tt = Api.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             final IMemoryCard mc = (IMemoryCard) is.getItem();
-            final CompoundTag data = mc.getData(is);
+            final CompoundNBT data = mc.getData(is);
 
-            final ItemStack newType = ItemStack.fromTag(data);
+            final ItemStack newType = ItemStack.read(data);
             final short freq = data.getShort("freq");
 
             if (!newType.isEmpty()) {
@@ -269,15 +269,15 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
-        final ItemStack is = player.inventory.getMainHandStack();
+    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+        final ItemStack is = player.inventory.getCurrentItem();
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
-            if (Platform.isClient()) {
+            if (isRemote()) {
                 return true;
             }
 
             final IMemoryCard mc = (IMemoryCard) is.getItem();
-            final CompoundTag data = mc.getData(is);
+            final CompoundNBT data = mc.getData(is);
             final short storedFrequency = data.getShort("freq");
 
             short newFreq = this.getFrequency();
@@ -301,7 +301,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             final ItemStack p2pItem = this.getItemStack(PartItemStack.WRENCH);
             final String type = p2pItem.getTranslationKey();
 
-            p2pItem.toTag(data);
+            p2pItem.write(data);
             data.putShort("freq", this.getFrequency());
 
             final AEColor[] colors = Platform.p2p().toColors(this.getFrequency());

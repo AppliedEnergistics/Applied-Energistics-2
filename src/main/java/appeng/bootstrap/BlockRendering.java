@@ -24,10 +24,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.Block;
-import net.minecraft.client.color.block.BlockColorProvider;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.RenderTypeComponent;
@@ -35,37 +35,37 @@ import appeng.client.render.model.AutoRotatingBakedModel;
 
 class BlockRendering implements IBlockRendering {
 
-    private final Identifier id;
+    private final ResourceLocation id;
 
     @Environment(EnvType.CLIENT)
-    private BiFunction<Identifier, BakedModel, BakedModel> modelCustomizer;
+    private BiFunction<ResourceLocation, IBakedModel, IBakedModel> modelCustomizer;
 
     @Environment(EnvType.CLIENT)
-    private BlockColorProvider blockColor;
+    private IBlockColor blockColor;
 
     @Environment(EnvType.CLIENT)
-    private RenderLayer renderType;
+    private RenderType renderType;
 
-    public BlockRendering(Identifier id) {
+    public BlockRendering(ResourceLocation id) {
         this.id = id;
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IBlockRendering modelCustomizer(BiFunction<Identifier, BakedModel, BakedModel> customizer) {
+    public IBlockRendering modelCustomizer(BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer) {
         this.modelCustomizer = customizer;
         return this;
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public IBlockRendering blockColor(BlockColorProvider blockColor) {
+    public IBlockRendering blockColor(IBlockColor blockColor) {
         this.blockColor = blockColor;
         return this;
     }
 
     @Override
-    public IBlockRendering renderType(RenderLayer type) {
+    public IBlockRendering renderType(RenderType type) {
         this.renderType = type;
         return this;
     }
@@ -74,7 +74,7 @@ class BlockRendering implements IBlockRendering {
         if (this.modelCustomizer != null) {
             factory.addModelOverride(id.getPath(), this.modelCustomizer);
         } else if (block instanceof AEBaseTileBlock) {
-            // This is a default rotating model if the base-block uses an AE block entity
+            // This is a default rotating model if the base-block uses an AE tile entity
             // which exposes UP/FRONT as
             // extended props
             factory.addModelOverride(id.getPath(), (l, m) -> new AutoRotatingBakedModel(m));

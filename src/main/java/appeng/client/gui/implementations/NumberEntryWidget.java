@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.gui.implementations;
 
 import java.util.ArrayList;
@@ -6,14 +24,15 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
@@ -25,12 +44,13 @@ import appeng.core.AEConfig;
  * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
  * number in fixed intervals.
  */
-public class NumberEntryWidget extends DrawableHelper {
+public class NumberEntryWidget extends AbstractGui {
 
-    private static final Text INVALID_NUMBER = new TranslatableText("gui.appliedenergistics2.validation.InvalidNumber");
+    private static final ITextComponent INVALID_NUMBER = new TranslationTextComponent(
+            "gui.appliedenergistics2.validation.InvalidNumber");
     private static final String NUMBER_LESS_THAN_MIN_VALUE = "gui.appliedenergistics2.validation.NumberLessThanMinValue";
-    private static final Text PLUS = Text.of("+");
-    private static final Text MINUS = Text.of("-");
+    private static final ITextComponent PLUS = new StringTextComponent("+");
+    private static final ITextComponent MINUS = new StringTextComponent("-");
     private static final int TEXT_COLOR_ERROR = 0xFF1900;
     private static final int TEXT_COLOR_NORMAL = 0xFFFFFF;
 
@@ -41,7 +61,7 @@ public class NumberEntryWidget extends DrawableHelper {
 
     private final ConfirmableTextField textField;
     private final NumberEntryType type;
-    private List<ButtonWidget> buttons;
+    private List<Button> buttons;
     private long minValue;
     private ValidationIcon validationIcon;
 
@@ -59,17 +79,18 @@ public class NumberEntryWidget extends DrawableHelper {
         this.y = y;
         this.type = type;
 
-        TextRenderer font = parent.getClient().textRenderer;
-        int inputX = parent.getX() + x;
-        int inputY = parent.getY() + y;
-        this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.fontHeight, LiteralText.EMPTY);
-        this.textField.setDrawsBackground(false);
-        this.textField.setMaxLength(16);
-        this.textField.setEditableColor(TEXT_COLOR_NORMAL);
+        FontRenderer font = parent.getMinecraft().fontRenderer;
+        int inputX = parent.getGuiLeft() + x;
+        int inputY = parent.getGuiTop() + y;
+        this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.FONT_HEIGHT,
+                StringTextComponent.EMPTY);
+        this.textField.setEnableBackgroundDrawing(false);
+        this.textField.setMaxStringLength(16);
+        this.textField.setTextColor(TEXT_COLOR_NORMAL);
         this.textField.setVisible(true);
-        this.textField.setTextFieldFocused(true);
-        parent.setInitialFocus(this.textField);
-        this.textField.setChangedListener(text -> {
+        this.textField.setFocused2(true);
+        parent.setFocusedDefault(this.textField);
+        this.textField.setResponder(text -> {
             validate();
             if (onChange != null) {
                 this.onChange.run();
@@ -93,13 +114,13 @@ public class NumberEntryWidget extends DrawableHelper {
     }
 
     public void setActive(boolean active) {
-        this.textField.active = active;
+        this.textField.setEnabled(active);
         this.buttons.forEach(b -> b.active = active);
     }
 
     public void setTextFieldBounds(int x, int y, int width) {
-        this.textField.x = parent.getX() + x;
-        this.textField.y = parent.getY() + y;
+        this.textField.x = parent.getGuiLeft() + x;
+        this.textField.y = parent.getGuiTop() + y;
         this.textField.setWidth(width);
     }
 
@@ -108,22 +129,22 @@ public class NumberEntryWidget extends DrawableHelper {
         validate();
     }
 
-    public void addButtons(Consumer<Element> addChildren, Consumer<ButtonWidget> addButton) {
+    public void addButtons(Consumer<IGuiEventListener> addChildren, Consumer<Button> addButton) {
         final int[] steps = AEConfig.instance().getNumberEntrySteps(type);
         int a = steps[0];
         int b = steps[1];
         int c = steps[2];
         int d = steps[3];
 
-        int left = parent.getX() + x;
-        int top = parent.getY() + y;
+        int left = parent.getGuiLeft() + x;
+        int top = parent.getGuiTop() + y;
 
-        List<ButtonWidget> buttons = new ArrayList<>(9);
+        List<Button> buttons = new ArrayList<>(9);
 
-        buttons.add(new ButtonWidget(left, top, 22, 20, makeLabel(PLUS, a), btn -> addQty(a)));
-        buttons.add(new ButtonWidget(left + 28, top, 28, 20, makeLabel(PLUS, b), btn -> addQty(b)));
-        buttons.add(new ButtonWidget(left + 62, top, 32, 20, makeLabel(PLUS, c), btn -> addQty(c)));
-        buttons.add(new ButtonWidget(left + 100, top, 38, 20, makeLabel(PLUS, d), btn -> addQty(d)));
+        buttons.add(new Button(left, top, 22, 20, makeLabel(PLUS, a), btn -> addQty(a)));
+        buttons.add(new Button(left + 28, top, 28, 20, makeLabel(PLUS, b), btn -> addQty(b)));
+        buttons.add(new Button(left + 62, top, 32, 20, makeLabel(PLUS, c), btn -> addQty(c)));
+        buttons.add(new Button(left + 100, top, 38, 20, makeLabel(PLUS, d), btn -> addQty(d)));
 
         // Need to add these now for sensible tab-order
         buttons.forEach(addButton);
@@ -131,10 +152,10 @@ public class NumberEntryWidget extends DrawableHelper {
         // Placing this here will give a sensible tab order
         addChildren.accept(this.textField);
 
-        buttons.add(new ButtonWidget(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-a)));
-        buttons.add(new ButtonWidget(left + 28, top + 42, 28, 20, makeLabel(MINUS, b), btn -> addQty(-b)));
-        buttons.add(new ButtonWidget(left + 62, top + 42, 32, 20, makeLabel(MINUS, c), btn -> addQty(-c)));
-        buttons.add(new ButtonWidget(left + 100, top + 42, 38, 20, makeLabel(MINUS, d), btn -> addQty(-d)));
+        buttons.add(new Button(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-a)));
+        buttons.add(new Button(left + 28, top + 42, 28, 20, makeLabel(MINUS, b), btn -> addQty(-b)));
+        buttons.add(new Button(left + 62, top + 42, 32, 20, makeLabel(MINUS, c), btn -> addQty(-c)));
+        buttons.add(new Button(left + 100, top + 42, 38, 20, makeLabel(MINUS, d), btn -> addQty(-d)));
 
         // This element is not focusable
         if (!hideValidationIcon) {
@@ -188,8 +209,8 @@ public class NumberEntryWidget extends DrawableHelper {
 
     public void setValue(long value) {
         this.textField.setText(String.valueOf(Math.max(minValue, value)));
-        this.textField.setCursorToEnd();
-        this.textField.setSelectionStart(0);
+        this.textField.setCursorPositionEnd();
+        this.textField.setSelectionPos(0);
         validate();
     }
 
@@ -202,28 +223,28 @@ public class NumberEntryWidget extends DrawableHelper {
     }
 
     private void validate() {
-        List<Text> validationErrors = new ArrayList<>();
+        List<ITextComponent> validationErrors = new ArrayList<>();
 
         String text = textField.getText().trim();
         try {
             long value = Long.parseLong(text, 10);
             if (value < minValue) {
-                validationErrors.add(new TranslatableText(NUMBER_LESS_THAN_MIN_VALUE, minValue));
+                validationErrors.add(new TranslationTextComponent(NUMBER_LESS_THAN_MIN_VALUE, minValue));
             }
         } catch (NumberFormatException ignored) {
             validationErrors.add(INVALID_NUMBER);
         }
 
         boolean valid = validationErrors.isEmpty();
-        this.textField.setEditableColor(valid ? TEXT_COLOR_NORMAL : TEXT_COLOR_ERROR);
+        this.textField.setTextColor(valid ? TEXT_COLOR_NORMAL : TEXT_COLOR_ERROR);
         if (this.validationIcon != null) {
             this.validationIcon.setValid(valid);
             this.validationIcon.setTooltip(validationErrors);
         }
     }
 
-    private Text makeLabel(Text prefix, int amount) {
-        return prefix.copy().append(String.valueOf(amount));
+    private ITextComponent makeLabel(ITextComponent prefix, int amount) {
+        return prefix.copyRaw().appendString(String.valueOf(amount));
     }
 
     public void setHideValidationIcon(boolean hideValidationIcon) {

@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
@@ -33,9 +33,11 @@ import appeng.parts.PartModel;
  */
 public class PlaneModels {
 
-    public static final Identifier MODEL_CHASSIS_OFF = new Identifier(AppEng.MOD_ID, "part/transition_plane_off");
-    public static final Identifier MODEL_CHASSIS_ON = new Identifier(AppEng.MOD_ID, "part/transition_plane_on");
-    public static final Identifier MODEL_CHASSIS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_CHASSIS_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/transition_plane_off");
+    public static final ResourceLocation MODEL_CHASSIS_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/transition_plane_on");
+    public static final ResourceLocation MODEL_CHASSIS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/transition_plane_has_channel");
 
     private final IPartModel modelOff;
@@ -45,8 +47,8 @@ public class PlaneModels {
     private final IPartModel modelHasChannel;
 
     public PlaneModels(String planeOffLocation, String planeOnLocation) {
-        Identifier planeOff = new Identifier(AppEng.MOD_ID, planeOffLocation);
-        Identifier planeOn = new Identifier(AppEng.MOD_ID, planeOnLocation);
+        ResourceLocation planeOff = new ResourceLocation(AppEng.MOD_ID, planeOffLocation);
+        ResourceLocation planeOn = new ResourceLocation(AppEng.MOD_ID, planeOnLocation);
 
         this.modelOff = new PartModel(MODEL_CHASSIS_OFF, planeOff);
         this.modelOn = new PartModel(MODEL_CHASSIS_ON, planeOff);

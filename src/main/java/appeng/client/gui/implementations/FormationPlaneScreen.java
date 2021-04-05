@@ -18,9 +18,10 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -38,28 +39,32 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
 
     private SettingToggleButton<YesNo> placeMode;
 
-    public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory, Text title) {
+    public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
-        this.backgroundHeight = 251;
+        this.ySize = 251;
     }
 
     @Override
     protected void addButtons() {
-        this.placeMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.PLACE_BLOCK, YesNo.YES);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.FUZZY_MODE,
+        this.placeMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.PLACE_BLOCK,
+                YesNo.YES);
+        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(), this.itemRenderer,
-                btn -> openPriorityGui()));
+        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
+                this.itemRenderer, btn -> openPriorityGui()));
 
         this.addButton(this.placeMode);
         this.addButton(this.fuzzyMode);
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.FormationPlane.text()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.FormationPlane.text()).getString(), 8, 6,
+                4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.cvb.getFuzzyMode());

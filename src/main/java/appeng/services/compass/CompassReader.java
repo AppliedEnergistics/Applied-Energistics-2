@@ -23,7 +23,7 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 
 public final class CompassReader {
     private final Map<Long, CompassRegion> regions = new HashMap<>(100);

@@ -21,11 +21,11 @@ package appeng.server.subcommands;
 import com.mojang.brigadier.context.CommandContext;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
@@ -41,7 +41,7 @@ public class ChunkLogger implements ISubCommand {
     // here
     private boolean listenerRegistered = false;
 
-    private void onChunkLoadEvent(ServerWorld world, WorldChunk chunk) {
+    private void onChunkLoadEvent(ServerWorld world, Chunk chunk) {
         if (!this.enabled) {
             return;
         }
@@ -49,7 +49,7 @@ public class ChunkLogger implements ISubCommand {
         this.displayStack();
     }
 
-    private void onChunkUnloadEvent(ServerWorld world, WorldChunk chunk) {
+    private void onChunkUnloadEvent(ServerWorld world, Chunk chunk) {
         if (!this.enabled) {
             return;
         }
@@ -72,8 +72,8 @@ public class ChunkLogger implements ISubCommand {
     }
 
     @Override
-    public synchronized void call(final MinecraftServer srv, final CommandContext<ServerCommandSource> data,
-            final ServerCommandSource sender) {
+    public synchronized void call(final MinecraftServer srv, final CommandContext<CommandSource> data,
+            final CommandSource sender) {
         this.enabled = !this.enabled;
 
         if (this.enabled) {
@@ -83,9 +83,9 @@ public class ChunkLogger implements ISubCommand {
                 this.listenerRegistered = true;
             }
 
-            sender.sendFeedback(new TranslatableText("commands.ae2.ChunkLoggerOn"), true);
+            sender.sendFeedback(new TranslationTextComponent("commands.ae2.ChunkLoggerOn"), true);
         } else {
-            sender.sendFeedback(new TranslatableText("commands.ae2.ChunkLoggerOff"), true);
+            sender.sendFeedback(new TranslationTextComponent("commands.ae2.ChunkLoggerOff"), true);
         }
     }
 }

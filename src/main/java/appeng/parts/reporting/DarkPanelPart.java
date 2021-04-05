@@ -19,7 +19,7 @@
 package appeng.parts.reporting;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
@@ -29,9 +29,9 @@ import appeng.parts.PartModel;
 public class DarkPanelPart extends AbstractPanelPart {
 
     @PartModels
-    public static final Identifier MODEL_OFF = new Identifier(AppEng.MOD_ID, "part/monitor_dark_off");
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/monitor_dark_off");
     @PartModels
-    public static final Identifier MODEL_ON = new Identifier(AppEng.MOD_ID, "part/monitor_dark_on");
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/monitor_dark_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON);

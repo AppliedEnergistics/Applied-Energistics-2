@@ -1,14 +1,34 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.fluids.client.gui.widgets;
 
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Set;
 
-import net.minecraft.client.MinecraftClient;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.GroupedFluidInvView;
@@ -33,7 +53,8 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public void drawContent(final MinecraftClient mc, final int mouseX, final int mouseY, final float partialTicks) {
+    public void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
+            final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
             // The tooltip area coincides with the area of the slot
@@ -47,7 +68,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
 
     @Override
     public boolean canClick(final PlayerEntity player) {
-        final ItemStack mouseStack = player.inventory.getCursorStack();
+        final ItemStack mouseStack = player.inventory.getItemStack();
         return mouseStack.isEmpty() || FluidAttributes.EXTRACTABLE.getFirstOrNull(mouseStack) != null;
     }
 
@@ -67,12 +88,12 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public Text getTooltipMessage() {
+    public ITextComponent getTooltipMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
             return fluid.getFluidStack().getName();
         }
-        return LiteralText.EMPTY;
+        return StringTextComponent.EMPTY;
     }
 
     @Override

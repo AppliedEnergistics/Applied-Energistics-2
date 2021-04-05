@@ -30,7 +30,7 @@ public class WrapperInvItemHandler extends InventoryFixedWrapper {
     }
 
     @Override
-    public boolean canPlayerUse(PlayerEntity player) {
+    public boolean isUsableByPlayer(PlayerEntity player) {
         return false;
     }
 

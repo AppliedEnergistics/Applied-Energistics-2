@@ -18,7 +18,7 @@
 
 package appeng.container.slot;
 
-import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -28,7 +28,7 @@ import appeng.util.inv.WrapperInvItemHandler;
 
 public class CraftingMatrixSlot extends AppEngSlot {
     private final AEBaseContainer c;
-    private final Inventory wrappedInventory;
+    private final IInventory wrappedInventory;
 
     public CraftingMatrixSlot(final AEBaseContainer c, final FixedItemInv inv, final int invSlot, final int x,
             final int y) {
@@ -40,13 +40,13 @@ public class CraftingMatrixSlot extends AppEngSlot {
     @Override
     public void clearStack() {
         super.clearStack();
-        this.c.onContentChanged(this.wrappedInventory);
+        this.c.onCraftMatrixChanged(this.wrappedInventory);
     }
 
     @Override
-    public void setStack(final ItemStack par1ItemStack) {
-        super.setStack(par1ItemStack);
-        this.c.onContentChanged(this.wrappedInventory);
+    public void putStack(final ItemStack par1ItemStack) {
+        super.putStack(par1ItemStack);
+        this.c.onCraftMatrixChanged(this.wrappedInventory);
     }
 
     @Override
@@ -55,9 +55,9 @@ public class CraftingMatrixSlot extends AppEngSlot {
     }
 
     @Override
-    public ItemStack takeStack(final int par1) {
-        final ItemStack is = super.takeStack(par1);
-        this.c.onContentChanged(this.wrappedInventory);
+    public ItemStack decrStackSize(final int par1) {
+        final ItemStack is = super.decrStackSize(par1);
+        this.c.onCraftMatrixChanged(this.wrappedInventory);
         return is;
     }
 }

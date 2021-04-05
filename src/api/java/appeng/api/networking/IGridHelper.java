@@ -38,11 +38,12 @@ public interface IGridHelper {
 
     /**
      * Create a grid node for your {@link IGridHost}
-     * <p>
+     *
      * The passed {@link IGridBlock} represents the definition for properties like connectable sides. Refer to its
      * documentation for further details.
      *
      * @param block grid block
+     *
      * @return grid node of block
      */
     @Nonnull
@@ -50,11 +51,12 @@ public interface IGridHelper {
 
     /**
      * Create a direct connection between two {@link IGridNode}.
-     * <p>
+     *
      * This will be considered as having a distance of 1, regardless of the location of both nodes.
      *
      * @param a to be connected gridnode
      * @param b to be connected gridnode
+     *
      * @throws appeng.api.exceptions.FailedConnectionException
      */
     @Nonnull

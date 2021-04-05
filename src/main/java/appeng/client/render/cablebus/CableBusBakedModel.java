@@ -44,25 +44,26 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.MissingSprite;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.IBlockDisplayReader;
 
 import appeng.api.parts.IDynamicPartBakedModel;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.parts.reporting.ReportingModelData;
 
 @Environment(EnvType.CLIENT)
-public class CableBusBakedModel implements BakedModel, FabricBakedModel {
+public class CableBusBakedModel implements IBakedModel, FabricBakedModel {
 
     private static final Mesh EMPTY_MESH = consumer -> {
     };
@@ -72,18 +73,34 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     // The number of meshes overall that will be cached
     private static final int CACHE_MESH_COUNT = 100;
 
+    /**
+     * Lookup table to match the spin of a part with an up direction.
+     *
+     * DUNSWE for the facing index, 4 spin values per facing.
+     *
+     */
+    private static final Direction[] SPIN_TO_DIRECTION = new Direction[] {
+            Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
+            Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, // UP
+            Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST, // NORTH
+            Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST, // SOUTH
+            Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH, // WEST
+            Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH // EAST
+    };
+
     private final LoadingCache<CableBusRenderState, Mesh> cableModelCache;
 
     private final CableBuilder cableBuilder;
 
     private final FacadeBuilder facadeBuilder;
 
-    private final Map<Identifier, BakedModel> partModels;
+    private final Map<ResourceLocation, IBakedModel> partModels;
 
-    private final Sprite particleTexture;
+    private final TextureAtlasSprite particleTexture;
 
-    CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<Identifier, BakedModel> partModels,
-            Sprite particleTexture) {
+    CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
+            Map<ResourceLocation, IBakedModel> partModels,
+            TextureAtlasSprite particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.partModels = partModels;
@@ -104,7 +121,7 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
         // This model will only ever be used for blocks
     }
 
-    private CableBusRenderState getRenderState(BlockRenderView blockView, BlockPos pos) {
+    private CableBusRenderState getRenderState(IBlockDisplayReader blockView, BlockPos pos) {
 
         RenderAttachedBlockView renderAttachedBlockView = (RenderAttachedBlockView) blockView;
         Object renderAttachment = renderAttachedBlockView.getBlockEntityRenderAttachment(pos);
@@ -116,7 +133,7 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
 
         CableBusRenderState renderState = getRenderState(blockView, pos);
@@ -140,14 +157,16 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
 
             Object partModelData = renderState.getPartModelData().get(facing);
 
-            for (Identifier model : partModel.getModels()) {
-                BakedModel bakedModel = this.partModels.get(model);
+            for (ResourceLocation model : partModel.getModels()) {
+                IBakedModel bakedModel = this.partModels.get(model);
 
                 if (bakedModel == null) {
                     throw new IllegalStateException("Trying to use an unregistered part model: " + model);
                 }
 
-                context.pushTransform(QuadRotator.get(facing, Direction.UP));
+                Direction spinDirection = getPartSpin(facing, partModelData);
+
+                context.pushTransform(QuadRotator.get(facing, spinDirection));
                 if (bakedModel instanceof IDynamicPartBakedModel) {
                     ((IDynamicPartBakedModel) bakedModel).emitQuads(blockView, state, pos, randomSupplier, context,
                             facing, partModelData);
@@ -189,6 +208,15 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
         final AECableType secondType = sides.get(firstSide.getOpposite());
 
         return firstType == secondType && cableType == firstType && cableType == secondType;
+    }
+
+    private static Direction getPartSpin(Direction facing, Object partModelData) {
+        if (partModelData instanceof ReportingModelData) {
+            byte spin = ((ReportingModelData) partModelData).getSpin();
+            return SPIN_TO_DIRECTION[facing.ordinal() * 4 + spin];
+        }
+
+        return Direction.UP;
     }
 
     private Mesh buildCableModel(CableBusRenderState renderState) {
@@ -301,11 +329,11 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     /**
      * Gets a list of texture sprites appropriate for particles (digging, etc.) given the render state for a cable bus.
      */
-    public List<Sprite> getParticleTextures(CableBusRenderState renderState) {
+    public List<TextureAtlasSprite> getParticleTextures(CableBusRenderState renderState) {
         CableCoreType coreType = CableCoreType.fromCableType(renderState.getCableType());
         AEColor cableColor = renderState.getCableColor();
 
-        List<Sprite> result = new ArrayList<>();
+        List<TextureAtlasSprite> result = new ArrayList<>();
 
         if (coreType != null) {
             result.add(this.cableBuilder.getCoreTexture(coreType, cableColor));
@@ -315,14 +343,14 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
         for (Direction side : renderState.getAttachments().keySet()) {
             IPartModel partModel = renderState.getAttachments().get(side);
 
-            for (Identifier model : partModel.getModels()) {
-                BakedModel bakedModel = this.partModels.get(model);
+            for (ResourceLocation model : partModel.getModels()) {
+                IBakedModel bakedModel = this.partModels.get(model);
 
                 if (bakedModel == null) {
                     throw new IllegalStateException("Trying to use an unregistered part model: " + model);
                 }
 
-                Sprite particleTexture = bakedModel.getSprite();
+                TextureAtlasSprite particleTexture = bakedModel.getParticleTexture();
 
                 // If a part sub-model has no particle texture (indicated by it being the
                 // missing texture),
@@ -336,17 +364,17 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
         return result;
     }
 
-    private boolean isMissingTexture(Sprite particleTexture) {
-        return particleTexture instanceof MissingSprite;
+    private boolean isMissingTexture(TextureAtlasSprite particleTexture) {
+        return particleTexture instanceof MissingTextureSprite;
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         return true;
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
@@ -356,23 +384,23 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getSprite() {
+    public TextureAtlasSprite getParticleTexture() {
         return this.particleTexture;
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return ModelTransformation.NONE;
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return ItemCameraTransforms.DEFAULT;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 
     @Override

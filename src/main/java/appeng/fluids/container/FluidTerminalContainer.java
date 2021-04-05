@@ -26,11 +26,11 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
@@ -90,12 +90,12 @@ import appeng.util.Platform;
 public class FluidTerminalContainer extends AEBaseContainer
         implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEFluidStack> {
 
-    public static ScreenHandlerType<FluidTerminalContainer> TYPE;
+    public static ContainerType<FluidTerminalContainer> TYPE;
 
     private static final ContainerHelper<FluidTerminalContainer, ITerminalHost> helper = new ContainerHelper<>(
             FluidTerminalContainer::new, ITerminalHost.class, SecurityPermissions.BUILD);
 
-    public static FluidTerminalContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static FluidTerminalContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -175,27 +175,27 @@ public class FluidTerminalContainer extends AEBaseContainer
 
     @Override
     public void onListUpdate() {
-        for (final ScreenHandlerListener c : this.getListeners()) {
+        for (final IContainerListener c : this.listeners) {
             this.queueInventory(c);
         }
     }
 
     @Override
-    public void addListener(ScreenHandlerListener listener) {
+    public void addListener(IContainerListener listener) {
         super.addListener(listener);
 
         this.queueInventory(listener);
     }
 
     @Override
-    public void close(final PlayerEntity player) {
-        super.close(player);
+    public void onContainerClosed(final PlayerEntity player) {
+        super.onContainerClosed(player);
         if (this.monitor != null) {
             this.monitor.removeListener(this);
         }
     }
 
-    private void queueInventory(final ScreenHandlerListener c) {
+    private void queueInventory(final IContainerListener c) {
         if (isServer() && c instanceof PlayerEntity && this.monitor != null) {
             try {
                 MEFluidInventoryUpdatePacket piu = new MEFluidInventoryUpdatePacket();
@@ -250,7 +250,7 @@ public class FluidTerminalContainer extends AEBaseContainer
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         if (isServer()) {
             if (this.monitor != this.terminal
                     .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class))) {
@@ -263,7 +263,7 @@ public class FluidTerminalContainer extends AEBaseContainer
 
                 if (sideLocal != sideRemote) {
                     this.clientCM.putSetting(set, sideLocal);
-                    for (final ScreenHandlerListener crafter : this.getListeners()) {
+                    for (final IContainerListener crafter : this.listeners) {
                         if (crafter instanceof ServerPlayerEntity) {
                             NetworkHandler.instance().sendTo(new ConfigValuePacket(set.name(), sideLocal.name()),
                                     (ServerPlayerEntity) crafter);
@@ -291,7 +291,7 @@ public class FluidTerminalContainer extends AEBaseContainer
                     if (!piu.isEmpty()) {
                         this.fluids.resetStatus();
 
-                        for (final Object c : this.getListeners()) {
+                        for (final Object c : this.listeners) {
                             if (c instanceof PlayerEntity) {
                                 NetworkHandler.instance().sendTo(piu, (ServerPlayerEntity) c);
                             }
@@ -303,7 +303,7 @@ public class FluidTerminalContainer extends AEBaseContainer
             }
             this.updatePowerStatus();
 
-            super.sendContentUpdates();
+            super.detectAndSendChanges();
         }
     }
 
@@ -314,7 +314,7 @@ public class FluidTerminalContainer extends AEBaseContainer
             return;
         }
 
-        final ItemStack held = player.inventory.getCursorStack();
+        final ItemStack held = player.inventory.getItemStack();
         if (held.getCount() != 1) {
             // only support stacksize 1 for now
             return;
@@ -371,7 +371,7 @@ public class FluidTerminalContainer extends AEBaseContainer
                         held, volumeOverflow);
             }
 
-            player.inventory.setCursorStack(container.get());
+            player.inventory.setItemStack(container.get());
             this.updateHeld(player);
         } else if (action == InventoryAction.EMPTY_ITEM) {
             Ref<ItemStack> container = new Ref<>(held);
@@ -415,10 +415,10 @@ public class FluidTerminalContainer extends AEBaseContainer
 
             if (notInserted != null && notInserted.getStackSize() > 0) {
                 AELog.error("Fluid item [%s] reported a different possible amount to drain than it actually provided.",
-                        held.getName());
+                        held.getDisplayName());
             }
 
-            player.inventory.setCursorStack(container.get());
+            player.inventory.setItemStack(container.get());
             this.updateHeld(player);
         }
     }

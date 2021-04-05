@@ -20,9 +20,9 @@ package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.Box;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 
 /**
  * This transformer simply clamps the vertices inside the provided box. You probably want to Re-Interpolate the UV's,
@@ -32,11 +32,11 @@ import net.minecraft.util.math.MathHelper;
  */
 public class QuadClamper implements RenderContext.QuadTransform {
 
-    private final Box clampBounds;
+    private final AxisAlignedBB clampBounds;
 
     private final Vector3f pos = new Vector3f();
 
-    public QuadClamper(Box clampBounds) {
+    public QuadClamper(AxisAlignedBB clampBounds) {
         this.clampBounds = clampBounds;
     }
 
@@ -63,7 +63,7 @@ public class QuadClamper implements RenderContext.QuadTransform {
         return !flag1 && !flag2;
     }
 
-    private void clamp(MutableQuadView quad, Box bb) {
+    private void clamp(MutableQuadView quad, AxisAlignedBB bb) {
         for (int i = 0; i < 4; i++) {
             quad.copyPos(i, pos);
             pos.set((float) MathHelper.clamp(pos.getX(), bb.minX, bb.maxX),

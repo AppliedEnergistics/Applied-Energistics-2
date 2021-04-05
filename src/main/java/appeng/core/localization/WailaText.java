@@ -18,9 +18,9 @@
 
 package appeng.core.localization;
 
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum WailaText {
     Crafting,
@@ -44,19 +44,19 @@ public enum WailaText {
     }
 
     public String getLocal() {
-        return text().getString();
+        return I18n.format(this.getTranslationKey());
     }
 
     public String getTranslationKey() {
         return this.root + '.' + this.toString();
     }
 
-    public Text text() {
-        return new TranslatableText(this.root + '.' + this.toString());
+    public ITextComponent textComponent() {
+        return new TranslationTextComponent(this.root + '.' + this.toString());
     }
 
-    public MutableText text(Object... args) {
-        return new TranslatableText(this.root + '.' + this.toString(), args);
+    public ITextComponent textComponent(Object... args) {
+        return new TranslationTextComponent(this.root + '.' + this.toString(), args);
     }
 
 }

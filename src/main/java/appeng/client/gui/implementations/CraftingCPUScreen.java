@@ -23,15 +23,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Joiner;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -86,13 +88,13 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
             .createList();
 
     private List<IAEItemStack> visual = new ArrayList<>();
-    private ButtonWidget cancel;
+    private Button cancel;
     private int tooltip = -1;
 
-    public CraftingCPUScreen(T container, PlayerInventory playerInventory, Text title) {
+    public CraftingCPUScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.backgroundHeight = GUI_HEIGHT;
-        this.backgroundWidth = GUI_WIDTH;
+        this.ySize = GUI_HEIGHT;
+        this.xSize = GUI_WIDTH;
 
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
@@ -113,7 +115,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     public void init() {
         super.init();
         this.setScrollBar();
-        this.cancel = new ButtonWidget(this.x + CANCEL_LEFT_OFFSET, this.y + this.backgroundHeight - CANCEL_TOP_OFFSET,
+        this.cancel = new Button(this.guiLeft + CANCEL_LEFT_OFFSET, this.guiTop + this.ySize - CANCEL_TOP_OFFSET,
                 CANCEL_WIDTH, CANCEL_HEIGHT, GuiText.Cancel.text(), btn -> cancel());
         this.addButton(this.cancel);
     }
@@ -126,11 +128,11 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     }
 
     @Override
-    public void render(MatrixStack matrices, final int mouseX, final int mouseY, final float btn) {
+    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
         this.cancel.active = !this.visual.isEmpty();
 
-        final int gx = (this.width - this.backgroundWidth) / 2;
-        final int gy = (this.height - this.backgroundHeight) / 2;
+        final int gx = (this.width - this.xSize) / 2;
+        final int gy = (this.height - this.ySize) / 2;
 
         this.tooltip = -1;
 
@@ -156,30 +158,31 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
             }
         }
 
-        super.render(matrices, mouseX, mouseY, btn);
+        super.render(matrixStack, mouseX, mouseY, btn);
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        Text title = this.getGuiDisplayName(GuiText.CraftingStatus.text());
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        String title = this.getGuiDisplayName(GuiText.CraftingStatus.text()).getString();
 
-        if (this.handler.getEstimatedTime() > 0 && !this.visual.isEmpty()) {
-            final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(this.handler.getEstimatedTime(),
+        if (this.container.getEstimatedTime() > 0 && !this.visual.isEmpty()) {
+            final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(this.container.getEstimatedTime(),
                     TimeUnit.NANOSECONDS);
             final String etaTimeText = DurationFormatUtils.formatDuration(etaInMilliseconds,
-                    GuiText.ETAFormat.text().getString());
-            title = title.copy().append(" - " + etaTimeText);
+                    GuiText.ETAFormat.getLocal());
+            title += " - " + etaTimeText;
         }
 
-        this.textRenderer.draw(matrices, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR);
+        this.font.drawString(matrixStack, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR);
 
         int x = 0;
         int y = 0;
         final int viewStart = this.getScrollBar().getCurrentScroll() * 3;
         final int viewEnd = viewStart + 3 * 6;
 
-        List<Text> dspToolTip = new ArrayList<>();
-        final List<Text> lineList = new ArrayList<>();
+        String dspToolTip = "";
+        final List<String> lineList = new ArrayList<>();
         int toolPosX = 0;
         int toolPosY = 0;
 
@@ -217,7 +220,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                             | BACKGROUND_ALPHA;
                     final int startX = (x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET) * 2;
                     final int startY = ((y * offY + ITEMSTACK_TOP_OFFSET) - 3) * 2;
-                    fill(matrices, startX, startY, startX + (SECTION_LENGTH * 2), startY + (offY * 2) - 2, bgColor);
+                    fill(matrixStack, startX, startY, startX + (SECTION_LENGTH * 2), startY + (offY * 2) - 2, bgColor);
                 }
 
                 final int negY = ((lines - 1) * 5) / 2;
@@ -226,14 +229,14 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 if (stored != null && stored.getStackSize() > 0) {
                     final String str = GuiText.Stored.getLocal() + ": "
                             + converter.toWideReadableForm(stored.getStackSize());
-                    final int w = 4 + this.textRenderer.getWidth(str);
-                    this.textRenderer.draw(matrices, str,
+                    final int w = 4 + this.font.getStringWidth(str);
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
                                     * 2),
                             (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
 
                     if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.Stored.withSuffix(": " + stored.getStackSize()));
+                        lineList.add(GuiText.Stored.getLocal() + ": " + Long.toString(stored.getStackSize()));
                     }
 
                     downY += 5;
@@ -242,15 +245,15 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 if (activeStack != null && activeStack.getStackSize() > 0) {
                     final String str = GuiText.Crafting.getLocal() + ": "
                             + converter.toWideReadableForm(activeStack.getStackSize());
-                    final int w = 4 + this.textRenderer.getWidth(str);
+                    final int w = 4 + this.font.getStringWidth(str);
 
-                    this.textRenderer.draw(matrices, str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
                                     * 2),
                             (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
 
                     if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.Crafting.withSuffix(": " + activeStack.getStackSize()));
+                        lineList.add(GuiText.Crafting.getLocal() + ": " + Long.toString(activeStack.getStackSize()));
                     }
 
                     downY += 5;
@@ -259,15 +262,15 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 if (pendingStack != null && pendingStack.getStackSize() > 0) {
                     final String str = GuiText.Scheduled.getLocal() + ": "
                             + converter.toWideReadableForm(pendingStack.getStackSize());
-                    final int w = 4 + this.textRenderer.getWidth(str);
+                    final int w = 4 + this.font.getStringWidth(str);
 
-                    this.textRenderer.draw(matrices, str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
                                     * 2),
                             (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
 
                     if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.Scheduled.withSuffix(": " + pendingStack.getStackSize()));
+                        lineList.add(GuiText.Scheduled.getLocal() + ": " + Long.toString(pendingStack.getStackSize()));
                     }
                 }
 
@@ -278,10 +281,10 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 final ItemStack is = refStack.asItemStackRepresentation();
 
                 if (this.tooltip == z - viewStart) {
-                    dspToolTip.add(Platform.getItemDisplayName(refStack));
+                    dspToolTip = Platform.getItemDisplayName(refStack).getString();
 
                     if (lineList.size() > 0) {
-                        dspToolTip.addAll(lineList);
+                        dspToolTip = dspToolTip + '\n' + Joiner.on("\n").join(lineList);
                     }
 
                     toolPosX = x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 8;
@@ -300,15 +303,15 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
         }
 
         if (this.tooltip >= 0 && !dspToolTip.isEmpty()) {
-            this.drawTooltip(matrices, toolPosX, toolPosY + 10, dspToolTip);
+            this.drawTooltip(matrixStack, toolPosX, toolPosY + 10, new StringTextComponent(dspToolTip));
         }
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.bindTexture("guis/craftingcpu.png");
-        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 
     public void postUpdate(final List<IAEItemStack> list, final byte ref) {

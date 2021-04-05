@@ -30,22 +30,23 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
@@ -60,12 +61,13 @@ public interface IPart extends ICustomCableConnection {
     /**
      * get an ItemStack that represents the bus, should contain the settings for whatever, can also be used in
      * conjunction with removePart to take a part off and drop it or something.
-     * <p>
+     *
      * This is used to drop the bus, and to save the bus, when saving the bus, wrenched is false, and writeToNBT will be
      * called to save important details about the part, if the part is wrenched include in your NBT Data any settings
      * you might want to keep around, you can restore those settings when constructing your part.
      *
      * @param type , what kind of ItemStack to return?
+     *
      * @return item of part
      */
     ItemStack getItemStack(PartItemStack type);
@@ -75,7 +77,7 @@ public interface IPart extends ICustomCableConnection {
      * {@link #requireDynamicRender()} in order for this method to be called.
      */
     @Environment(EnvType.CLIENT)
-    default void renderDynamic(float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffers,
+    default void renderDynamic(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers,
             int combinedLightIn, int combinedOverlayIn) {
     }
 
@@ -102,14 +104,14 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param data to be written nbt data
      */
-    void writeToNBT(CompoundTag data);
+    void writeToNBT(CompoundNBT data);
 
     /**
      * Read the previously written NBT Data. this is the mirror for writeToNBT
      *
      * @param data to be read nbt data
      */
-    void readFromNBT(CompoundTag data);
+    void readFromNBT(CompoundNBT data);
 
     /**
      * @return get the amount of light produced by the bus
@@ -120,6 +122,7 @@ public interface IPart extends ICustomCableConnection {
      * does this part act like a ladder?
      *
      * @param entity climbing entity
+     *
      * @return true if entity can climb
      */
     boolean isLadder(LivingEntity entity);
@@ -127,7 +130,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * a block around the bus's host has been changed.
      */
-    void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor);
+    void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor);
 
     /**
      * @return output redstone on facing side
@@ -143,23 +146,26 @@ public interface IPart extends ICustomCableConnection {
      * write data to bus packet.
      *
      * @param data to be written data
+     *
      * @throws IOException
      */
-    void writeToStream(PacketByteBuf data) throws IOException;
+    void writeToStream(PacketBuffer data) throws IOException;
 
     /**
      * read data from bus packet.
      *
      * @param data to be read data
+     *
      * @return true will re-draw the part.
+     *
      * @throws IOException
      */
-    boolean readFromStream(PacketByteBuf data) throws IOException;
+    boolean readFromStream(PacketBuffer data) throws IOException;
 
     /**
      * get the Grid Node for the Bus, be sure your IGridBlock is NOT isWorldAccessible, if it is your going to cause
      * crashes.
-     * <p>
+     *
      * or null if you don't have a grid node.
      *
      * @return grid node
@@ -195,9 +201,9 @@ public interface IPart extends ICustomCableConnection {
      * called by the Part host to keep your part informed.
      *
      * @param host part side
-     * @param tile block entity of part
+     * @param tile tile entity of part
      */
-    void setPartHostInfo(AEPartLocation side, IPartHost host, BlockEntity tile);
+    void setPartHostInfo(AEPartLocation side, IPartHost host, TileEntity tile);
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -205,9 +211,10 @@ public interface IPart extends ICustomCableConnection {
      * @param player right clicking player
      * @param hand   hand used
      * @param pos    position of block
+     *
      * @return if your activate method performed something.
      */
-    boolean onActivate(PlayerEntity player, Hand hand, Vec3d pos);
+    boolean onActivate(PlayerEntity player, Hand hand, Vector3d pos);
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -215,31 +222,34 @@ public interface IPart extends ICustomCableConnection {
      * @param player shift right clicking player
      * @param hand   hand used
      * @param pos    position of block
+     *
      * @return if your activate method performed something, you should use false unless you really need it.
      */
-    boolean onShiftActivate(PlayerEntity player, Hand hand, Vec3d pos);
+    boolean onShiftActivate(PlayerEntity player, Hand hand, Vector3d pos);
 
     /**
-     * Called when you left click the part, very similar to Block.onBlockBreakStart
+     * Called when you left click the part, very similar to Block.onBlockClicked
      *
      * @param player left clicking player
      * @param hand   hand used
      * @param pos    position of block
+     *
      * @return if your activate method performed something, you should use false unless you really need it.
      */
-    default boolean onClicked(PlayerEntity player, Hand hand, Vec3d pos) {
+    default boolean onClicked(PlayerEntity player, Hand hand, Vector3d pos) {
         return false;
     }
 
     /**
-     * Called when you shift-left click the part, very similar to Block.onBlockBreakStart
+     * Called when you shift-left click the part, very similar to Block.onBlockClicked
      *
      * @param player shift-left clicking player
      * @param hand   hand used
      * @param pos    position of block
+     *
      * @return if your activate method performed something, you should use false unless you really need it.
      */
-    default boolean onShiftClicked(PlayerEntity player, Hand hand, Vec3d pos) {
+    default boolean onShiftClicked(PlayerEntity player, Hand hand, Vector3d pos) {
         return false;
     }
 
@@ -260,13 +270,13 @@ public interface IPart extends ICustomCableConnection {
     float getCableConnectionLength(AECableType cable);
 
     /**
-     * same as Block.randomDisplayTick, for but parts.
+     * same as Block.animateTick, for but parts.
      *
      * @param world world of block
      * @param pos   location of block
      * @param r     random
      */
-    void randomDisplayTick(World world, BlockPos pos, Random r);
+    void animateTick(World world, BlockPos pos, Random r);
 
     /**
      * Called when placed in the world by a player, this happens before addWorld.
@@ -279,10 +289,11 @@ public interface IPart extends ICustomCableConnection {
 
     /**
      * Used to determine which parts can be placed on what cables.
-     * <p>
+     *
      * Dense cables are not allowed for functional (getGridNode returns a node) parts. Doing so will result in crashes.
      *
      * @param what placed part
+     *
      * @return true if the part can be placed on this support.
      */
     boolean canBePlacedOn(BusSupport what);
@@ -345,7 +356,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param section The crash report section the information will be added to.
      */
-    default void addEntityCrashInfo(CrashReportSection section) {
+    default void addEntityCrashInfo(final CrashReportCategory section) {
     }
 
 }

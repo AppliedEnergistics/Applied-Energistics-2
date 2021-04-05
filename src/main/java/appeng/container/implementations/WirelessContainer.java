@@ -20,8 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
@@ -29,16 +29,16 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AEConfig;
-import appeng.tile.networking.WirelessBlockEntity;
+import appeng.tile.networking.WirelessTileEntity;
 
 public class WirelessContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<WirelessContainer> TYPE;
+    public static ContainerType<WirelessContainer> TYPE;
 
-    private static final ContainerHelper<WirelessContainer, WirelessBlockEntity> helper = new ContainerHelper<>(
-            WirelessContainer::new, WirelessBlockEntity.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<WirelessContainer, WirelessTileEntity> helper = new ContainerHelper<>(
+            WirelessContainer::new, WirelessTileEntity.class, SecurityPermissions.BUILD);
 
-    public static WirelessContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static WirelessContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -52,7 +52,7 @@ public class WirelessContainer extends AEBaseContainer {
     @GuiSync(2)
     public long drain = 0;
 
-    public WirelessContainer(int id, final PlayerInventory ip, final WirelessBlockEntity te) {
+    public WirelessContainer(int id, final PlayerInventory ip, final WirelessTileEntity te) {
         super(TYPE, id, ip, te, null);
 
         this.addSlot(this.boosterSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.RANGE_BOOSTER,
@@ -62,13 +62,13 @@ public class WirelessContainer extends AEBaseContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         final int boosters = this.boosterSlot.getStack().isEmpty() ? 0 : this.boosterSlot.getStack().getCount();
 
         this.setRange((long) (10 * AEConfig.instance().wireless_getMaxRange(boosters)));
         this.setDrain((long) (100 * AEConfig.instance().wireless_getPowerDrain(boosters)));
 
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     public long getRange() {

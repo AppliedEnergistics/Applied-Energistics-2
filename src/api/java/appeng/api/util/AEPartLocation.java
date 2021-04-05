@@ -18,7 +18,7 @@
 
 package appeng.api.util;
 
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.Direction;
 
 /**
  * Stand in for previous Forge Direction, Several uses of this class are simply legacy where as some uses of this class

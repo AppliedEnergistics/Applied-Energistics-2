@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -43,7 +43,7 @@ public class CraftRequestPacket extends BasePacket {
     private final long amount;
     private final boolean heldShift;
 
-    public CraftRequestPacket(final PacketByteBuf stream) {
+    public CraftRequestPacket(final PacketBuffer stream) {
         this.heldShift = stream.readBoolean();
         this.amount = stream.readLong();
     }
@@ -52,7 +52,7 @@ public class CraftRequestPacket extends BasePacket {
         this.amount = craftAmt;
         this.heldShift = shift;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeBoolean(shift);
@@ -63,8 +63,8 @@ public class CraftRequestPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        if (player.currentScreenHandler instanceof CraftAmountContainer) {
-            final CraftAmountContainer cca = (CraftAmountContainer) player.currentScreenHandler;
+        if (player.openContainer instanceof CraftAmountContainer) {
+            final CraftAmountContainer cca = (CraftAmountContainer) player.openContainer;
             final Object target = cca.getTarget();
             if (target instanceof IActionHost) {
                 final IActionHost ah = (IActionHost) target;
@@ -90,11 +90,11 @@ public class CraftRequestPacket extends BasePacket {
                     if (locator != null) {
                         ContainerOpener.openContainer(CraftConfirmContainer.TYPE, player, locator);
 
-                        if (player.currentScreenHandler instanceof CraftConfirmContainer) {
-                            final CraftConfirmContainer ccc = (CraftConfirmContainer) player.currentScreenHandler;
+                        if (player.openContainer instanceof CraftConfirmContainer) {
+                            final CraftConfirmContainer ccc = (CraftConfirmContainer) player.openContainer;
                             ccc.setAutoStart(this.heldShift);
                             ccc.setJob(futureJob);
-                            cca.sendContentUpdates();
+                            cca.detectAndSendChanges();
                         }
                     }
                 } catch (final Throwable e) {

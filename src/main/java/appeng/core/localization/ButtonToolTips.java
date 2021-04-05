@@ -18,9 +18,9 @@
 
 package appeng.core.localization;
 
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum ButtonToolTips {
     PowerUnits, IOMode, CondenserOutput, RedstoneMode, MatchingFuzzy,
@@ -69,20 +69,22 @@ public enum ButtonToolTips {
 
     SchedulingMode, SchedulingModeDefault, SchedulingModeRoundRobin, SchedulingModeRandom,
 
-    FilterMode, FilterModeKeep, FilterModeClear;
+    FilterMode, FilterModeKeep, FilterModeClear,
 
-    private final TranslatableText text;
+    OverlayMode, OverlayModeYes, OverlayModeNo;
+
+    private final TranslationTextComponent text;
 
     ButtonToolTips() {
-        this.text = new TranslatableText("gui.tooltips.appliedenergistics2." + this.name());
+        this.text = new TranslationTextComponent("gui.tooltips.appliedenergistics2." + this.name());
     }
 
-    public Text text() {
+    public ITextComponent text() {
         return text;
     }
 
-    public MutableText text(Object... args) {
-        return new TranslatableText(text.getKey(), args);
+    public IFormattableTextComponent text(Object... args) {
+        return new TranslationTextComponent(text.getKey(), args);
     }
 
 }

@@ -20,8 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -33,16 +33,16 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.misc.CondenserBlockEntity;
+import appeng.tile.misc.CondenserTileEntity;
 
 public class CondenserContainer extends AEBaseContainer implements IProgressProvider {
 
-    public static ScreenHandlerType<CondenserContainer> TYPE;
+    public static ContainerType<CondenserContainer> TYPE;
 
-    private static final ContainerHelper<CondenserContainer, CondenserBlockEntity> helper = new ContainerHelper<>(
-            CondenserContainer::new, CondenserBlockEntity.class);
+    private static final ContainerHelper<CondenserContainer, CondenserTileEntity> helper = new ContainerHelper<>(
+            CondenserContainer::new, CondenserTileEntity.class);
 
-    private final CondenserBlockEntity condenser;
+    private final CondenserTileEntity condenser;
     @GuiSync(0)
     public long requiredEnergy = 0;
     @GuiSync(1)
@@ -50,7 +50,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
     @GuiSync(2)
     public CondenserOutput output = CondenserOutput.TRASH;
 
-    public CondenserContainer(int id, final PlayerInventory ip, final CondenserBlockEntity condenser) {
+    public CondenserContainer(int id, final PlayerInventory ip, final CondenserTileEntity condenser) {
         super(TYPE, id, ip, condenser, null);
         this.condenser = condenser;
 
@@ -65,7 +65,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
         this.bindPlayerInventory(ip, 0, 197 - /* height of player inventory */82);
     }
 
-    public static CondenserContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static CondenserContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -74,7 +74,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         if (isServer()) {
             final double maxStorage = this.condenser.getStorage();
             final double requiredEnergy = this.condenser.getRequiredPower();
@@ -84,7 +84,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
             this.output = (CondenserOutput) this.condenser.getConfigManager().getSetting(Settings.CONDENSER_OUTPUT);
         }
 
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     @Override

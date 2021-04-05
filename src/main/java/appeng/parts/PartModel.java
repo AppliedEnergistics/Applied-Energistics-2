@@ -22,36 +22,36 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 
 public class PartModel implements IPartModel {
     private final boolean isSolid;
 
-    private final List<Identifier> resources;
+    private final List<ResourceLocation> resources;
 
-    public PartModel(Identifier resource) {
+    public PartModel(ResourceLocation resource) {
         this(true, resource);
     }
 
-    public PartModel(Identifier... resources) {
+    public PartModel(ResourceLocation... resources) {
         this(true, resources);
     }
 
-    public PartModel(boolean isSolid, Identifier resource) {
+    public PartModel(boolean isSolid, ResourceLocation resource) {
         this(isSolid, ImmutableList.of(resource));
     }
 
-    public PartModel(boolean isSolid, Identifier... resources) {
+    public PartModel(boolean isSolid, ResourceLocation... resources) {
         this(isSolid, ImmutableList.copyOf(resources));
     }
 
-    public PartModel(List<Identifier> resources) {
+    public PartModel(List<ResourceLocation> resources) {
         this(true, resources);
     }
 
-    public PartModel(boolean isSolid, List<Identifier> resources) {
+    public PartModel(boolean isSolid, List<ResourceLocation> resources) {
         this.isSolid = isSolid;
         this.resources = resources;
     }
@@ -62,7 +62,7 @@ public class PartModel implements IPartModel {
     }
 
     @Override
-    public List<Identifier> getModels() {
+    public List<ResourceLocation> getModels() {
         return this.resources;
     }
 

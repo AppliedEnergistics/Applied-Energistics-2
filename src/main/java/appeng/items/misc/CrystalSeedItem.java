@@ -28,25 +28,25 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.FluidTags;
-import net.minecraft.tag.Tag;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.core.AEConfig;
@@ -74,16 +74,17 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
     /**
      * The item to convert to, when growth finishes.
      */
-    private final ItemConvertible grownItem;
+    private final IItemProvider grownItem;
 
-    private final Tag<Fluid> improvedFluidTag;
+    private final ITag<Fluid> improvedFluidTag;
 
-    public CrystalSeedItem(Settings properties, ItemConvertible grownItem) {
+    public CrystalSeedItem(Properties properties, IItemProvider grownItem) {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
 
         String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
-        this.improvedFluidTag = improvedFluidTagName != null ? TagRegistry.fluid(new Identifier(improvedFluidTagName))
+        this.improvedFluidTag = improvedFluidTagName != null
+                ? TagRegistry.fluid(new ResourceLocation(improvedFluidTagName))
                 : null;
     }
 
@@ -100,7 +101,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
     }
 
     public static int getGrowthTicks(final ItemStack is) {
-        CompoundTag tag = is.getTag();
+        CompoundNBT tag = is.getTag();
         return tag != null ? tag.getInt(TAG_GROWTH_TICKS) : 0;
     }
 
@@ -114,40 +115,40 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
 
         // Check for the improved fluid tag and return the improved multiplier
         FluidState fluidState = state.getFluidState();
-        if (improvedFluidTag != null && fluidState.isIn(improvedFluidTag)) {
+        if (improvedFluidTag != null && fluidState.isTagged(improvedFluidTag)) {
             return AEConfig.instance().getImprovedFluidMultiplier();
         }
 
         // Check for the normal supported fluid
-        if (world != null && world.getRegistryKey() == World.NETHER) {
+        if (world != null && world.getDimensionKey() == World.THE_NETHER) {
             // In the nether, use Lava as the "normal" fluid
-            return fluidState.isIn(FluidTags.LAVA) ? 1 : 0;
+            return fluidState.isTagged(FluidTags.LAVA) ? 1 : 0;
         } else {
-            return fluidState.isIn(FluidTags.WATER) ? 1 : 0;
+            return fluidState.isTagged(FluidTags.WATER) ? 1 : 0;
         }
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
-            final TooltipContext advancedTooltips) {
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
         lines.add(ButtonToolTips.DoesntDespawn.text());
         lines.add(getGrowthTooltipItem(stack));
 
-        super.appendTooltip(stack, world, lines, advancedTooltips);
+        super.addInformation(stack, world, lines, advancedTooltips);
     }
 
-    public Text getGrowthTooltipItem(ItemStack stack) {
+    public ITextComponent getGrowthTooltipItem(ItemStack stack) {
         final int progress = getGrowthTicks(stack);
-        return new LiteralText(Math.round(100 * progress / (float) GROWTH_TICKS_REQUIRED) + "%");
+        return new StringTextComponent(Math.round(100 * progress / (float) GROWTH_TICKS_REQUIRED) + "%");
     }
 
     @Override
     public Entity replaceItemEntity(ServerWorld world, ItemEntity itemEntity, ItemStack itemStack) {
-        final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, itemEntity.getX(), itemEntity.getY(),
-                itemEntity.getZ(), itemStack);
+        final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, itemEntity.getPosX(), itemEntity.getPosY(),
+                itemEntity.getPosZ(), itemStack);
 
-        egc.setVelocity(itemEntity.getVelocity());
+        egc.setMotion(itemEntity.getMotion());
 
         // Cannot read the pickup delay of the original item, so we
         // use the pickup delay used for items dropped by a player instead
@@ -157,8 +158,8 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
     }
 
     @Override
-    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> items) {
-        if (this.isIn(group)) {
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.isInGroup(group)) {
             // lvl 0
             items.add(new ItemStack(this, 1));
             // one tick before maturity

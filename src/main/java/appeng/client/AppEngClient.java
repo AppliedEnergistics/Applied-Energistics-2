@@ -21,17 +21,18 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.render.entity.ItemEntityRenderer;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.api.parts.CableRenderMode;
@@ -164,7 +165,7 @@ public final class AppEngClient extends AppEngBase {
 
     private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
 
-    private final MinecraftClient client;
+    private final Minecraft client;
 
     private IntegratedServer server = null;
 
@@ -181,7 +182,7 @@ public final class AppEngClient extends AppEngBase {
     public AppEngClient() {
         super();
 
-        client = MinecraftClient.getInstance();
+        client = Minecraft.getInstance();
         networkHandler = new ClientNetworkHandler();
         tickHandler = new ClientTickHandler();
 
@@ -224,7 +225,7 @@ public final class AppEngClient extends AppEngBase {
 
     @Override
     public boolean isOnServerThread() {
-        return server != null && server.isOnThread();
+        return server != null && server.isOnExecutionThread();
     }
 
     @Override
@@ -239,7 +240,7 @@ public final class AppEngClient extends AppEngBase {
 
     @Override
     public boolean shouldAddParticles(Random r) {
-        switch (client.options.particles) {
+        switch (client.gameSettings.particles) {
             default:
             case ALL:
                 return true;
@@ -251,8 +252,8 @@ public final class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public HitResult getRTR() {
-        return client.crosshairTarget;
+    public RayTraceResult getRTR() {
+        return client.objectMouseOver;
     }
 
     @Override
@@ -266,7 +267,7 @@ public final class AppEngClient extends AppEngBase {
             return super.getCableRenderMode();
         }
 
-        final MinecraftClient mc = MinecraftClient.getInstance();
+        final Minecraft mc = Minecraft.getInstance();
         final PlayerEntity player = mc.player;
 
         return this.getCableRenderModeForPlayer(player);
@@ -279,13 +280,14 @@ public final class AppEngClient extends AppEngBase {
 
         final PlayerEntity player = client.player;
 
-        final int x = (int) player.getX();
-        final int y = (int) player.getY();
-        final int z = (int) player.getZ();
+        final int x = (int) player.getPosX();
+        final int y = (int) player.getPosY();
+        final int z = (int) player.getPosZ();
 
         final int range = 16 * 16;
 
-        client.worldRenderer.scheduleBlockRenders(x - range, y - range, z - range, x + range, y + range, z + range);
+        client.worldRenderer.markBlockRangeForRenderUpdate(x - range, y - range, z - range, x + range, y + range,
+                z + range);
     }
 
     @Override
@@ -294,8 +296,10 @@ public final class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public boolean isActionKey(@Nonnull ActionKey key, int keyCode, int scanCode) {
-        return this.bindings.get(key).matchesKey(keyCode, scanCode);
+    public boolean isActionKey(@Nonnull ActionKey key, InputMappings.Input input) {
+        KeyBinding binding = this.bindings.get(key);
+
+        return !binding.isInvalid() && binding.matchesKey(input.getKeyCode(), -1);
     }
 
     protected void registerParticleRenderers() {
@@ -314,7 +318,7 @@ public final class AppEngClient extends AppEngBase {
 
         registry.register(TinyTNTPrimedEntity.TYPE, (dispatcher, context) -> new TinyTNTPrimedRenderer(dispatcher));
 
-        EntityRendererRegistry.Factory itemEntityFactory = (dispatcher, context) -> new ItemEntityRenderer(dispatcher,
+        EntityRendererRegistry.Factory itemEntityFactory = (dispatcher, context) -> new ItemRenderer(dispatcher,
                 context.getItemRenderer());
         registry.register(SingularityEntity.TYPE, itemEntityFactory);
         registry.register(GrowingCrystalEntity.TYPE, itemEntityFactory);
@@ -328,7 +332,7 @@ public final class AppEngClient extends AppEngBase {
                 .forEachRemaining(IItemColorRegistrationComponent::register);
     }
 
-    protected void onModelsReloaded(Map<Identifier, BakedModel> loadedModels) {
+    protected void onModelsReloaded(Map<ResourceLocation, IBakedModel> loadedModels) {
         // TODO: Do not use the internal API
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
         definitions.getRegistry().getBootstrapComponents(IModelBakeComponent.class)
@@ -336,17 +340,17 @@ public final class AppEngClient extends AppEngBase {
     }
 
     public void registerTextures() {
-        Stream<Collection<SpriteIdentifier>> sprites = Stream.of(SkyChestTESR.SPRITES, InscriberTESR.SPRITES);
+        Stream<Collection<RenderMaterial>> sprites = Stream.of(SkyChestTESR.SPRITES, InscriberTESR.SPRITES);
 
         // Group every needed sprite by atlas, since every atlas has their own event
-        Map<Identifier, List<SpriteIdentifier>> groupedByAtlas = sprites.flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(SpriteIdentifier::getAtlasId));
+        Map<ResourceLocation, List<RenderMaterial>> groupedByAtlas = sprites.flatMap(Collection::stream)
+                .collect(Collectors.groupingBy(RenderMaterial::getAtlasLocation));
 
         // Register to the stitch event for each atlas
-        for (Map.Entry<Identifier, List<SpriteIdentifier>> entry : groupedByAtlas.entrySet()) {
+        for (Map.Entry<ResourceLocation, List<RenderMaterial>> entry : groupedByAtlas.entrySet()) {
             ClientSpriteRegistryCallback.event(entry.getKey()).register((spriteAtlasTexture, registry) -> {
-                for (SpriteIdentifier spriteIdentifier : entry.getValue()) {
-                    registry.register(spriteIdentifier.getTextureId());
+                for (RenderMaterial spriteIdentifier : entry.getValue()) {
+                    registry.register(spriteIdentifier.getTextureLocation());
                 }
             });
         }
@@ -361,7 +365,7 @@ public final class AppEngClient extends AppEngBase {
             return (modelIdentifier, modelProviderContext) -> {
                 if (MolecularAssemblerRenderer.LIGHTS_MODEL.equals(modelIdentifier)) {
                     return modelProviderContext
-                            .loadModel(new Identifier(modelIdentifier.getNamespace(), modelIdentifier.getPath()));
+                            .loadModel(new ResourceLocation(modelIdentifier.getNamespace(), modelIdentifier.getPath()));
                 }
                 return null;
             };
@@ -414,13 +418,13 @@ public final class AppEngClient extends AppEngBase {
     }
 
     private static void addPlaneModel(String planeName, String frontTexture) {
-        Identifier frontTextureId = AppEng.makeId(frontTexture);
-        Identifier sidesTextureId = AppEng.makeId("part/plane_sides");
-        Identifier backTextureId = AppEng.makeId("part/transition_plane_back");
+        ResourceLocation frontTextureId = AppEng.makeId(frontTexture);
+        ResourceLocation sidesTextureId = AppEng.makeId("part/plane_sides");
+        ResourceLocation backTextureId = AppEng.makeId("part/transition_plane_back");
         addBuiltInModel(planeName, () -> new PlaneModel(frontTextureId, sidesTextureId, backTextureId));
     }
 
-    private static <T extends UnbakedModel> void addBuiltInModel(String id, Supplier<T> modelFactory) {
+    private static <T extends IUnbakedModel> void addBuiltInModel(String id, Supplier<T> modelFactory) {
         ModelLoadingRegistry.INSTANCE
                 .registerResourceProvider(resourceManager -> new SimpleModelLoader<>(AppEng.makeId(id), modelFactory));
     }

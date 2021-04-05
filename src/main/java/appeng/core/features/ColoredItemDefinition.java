@@ -19,9 +19,9 @@
 package appeng.core.features;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
@@ -51,7 +51,7 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition {
     }
 
     @Override
-    public Class<? extends BlockEntity> entity(final AEColor color) {
+    public Class<? extends TileEntity> entity(final AEColor color) {
         return null;
     }
 

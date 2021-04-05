@@ -76,9 +76,7 @@ Our authoritative Maven repository is Github Packages, which you can also use in
 [requires special setup](https://docs.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages#authenticating-to-github-packages) 
 to authenticate with your personal access token.
 
-AE2 is also available without authentication from Modmaven. 
-
-You can use the following snippet as example on how to add a repository to your gradle build file.
+AE2 is also available without authentication from Modmaven. You can use the following snippet as example on how to add a repository to your gradle build file.
 
     repositories {
         maven {

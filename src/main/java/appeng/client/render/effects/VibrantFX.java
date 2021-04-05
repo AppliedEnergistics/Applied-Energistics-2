@@ -20,44 +20,44 @@ package appeng.client.render.effects;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.client.particle.SpriteBillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particles.BasicParticleType;
 
 @Environment(EnvType.CLIENT)
-public class VibrantFX extends SpriteBillboardParticle {
+public class VibrantFX extends SpriteTexturedParticle {
 
-    public VibrantFX(ClientWorld world, final double x, final double y, final double z, final double par8,
-            final double par10, final double par12, SpriteProvider sprite) {
-        super(world, x, y, z, par8, par10, par12);
-        final float f = this.random.nextFloat() * 0.1F + 0.8F;
-        this.colorRed = f * 0.7f;
-        this.colorGreen = f * 0.89f;
-        this.colorBlue = f * 0.9f;
-        this.setSprite(sprite);
-        this.setBoundingBoxSpacing(0.04F, 0.04F);
-        this.scale *= this.random.nextFloat() * 0.6F + 1.9F;
-        this.velocityX = 0.0D;
-        this.velocityY = 0.0D;
-        this.velocityZ = 0.0D;
-        this.prevPosX = this.x;
-        this.prevPosY = this.y;
-        this.prevPosZ = this.z;
+    public VibrantFX(final ClientWorld par1World, final double x, final double y, final double z, final double par8,
+            final double par10, final double par12, IAnimatedSprite sprite) {
+        super(par1World, x, y, z, par8, par10, par12);
+        final float f = this.rand.nextFloat() * 0.1F + 0.8F;
+        this.particleRed = f * 0.7f;
+        this.particleGreen = f * 0.89f;
+        this.particleBlue = f * 0.9f;
+        this.selectSpriteRandomly(sprite);
+        this.setSize(0.04F, 0.04F);
+        this.particleScale *= this.rand.nextFloat() * 0.6F + 1.9F;
+        this.motionX = 0.0D;
+        this.motionY = 0.0D;
+        this.motionZ = 0.0D;
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
         this.maxAge = (int) (20.0D / (Math.random() * 0.8D + 0.1D));
     }
 
     @Override
-    public ParticleTextureSheet getType() {
+    public IParticleRenderType getRenderType() {
         // FIXME Might be PARTICLE_SHEET_LIT
-        return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
+        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
-    public int getColorMultiplier(final float par1) {
+    public int getBrightnessForRender(final float par1) {
         // This just means full brightness
         return 15 << 20 | 15 << 4;
     }
@@ -67,30 +67,30 @@ public class VibrantFX extends SpriteBillboardParticle {
      */
     @Override
     public void tick() {
-        this.prevPosX = this.x;
-        this.prevPosY = this.y;
-        this.prevPosZ = this.z;
-        // this.moveEntity(this.velocityX, this.velocityY, this.velocityZ);
-        this.scale *= 0.95;
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+        // this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.particleScale *= 0.95;
 
-        if (this.maxAge <= 0 || this.scale < 0.1) {
-            this.markDead();
+        if (this.maxAge <= 0 || this.particleScale < 0.1) {
+            this.setExpired();
         }
         this.maxAge--;
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<DefaultParticleType> {
-        private final SpriteProvider spriteSet;
+    public static class Factory implements IParticleFactory<BasicParticleType> {
+        private final IAnimatedSprite spriteSet;
 
-        public Factory(SpriteProvider spriteSet) {
+        public Factory(IAnimatedSprite spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(DefaultParticleType effect, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            return new VibrantFX(world, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
+            return new VibrantFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }
 

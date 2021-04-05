@@ -31,6 +31,7 @@ public interface IUpgradeModule {
 
     /**
      * @param itemstack item with potential upgrades
+     *
      * @return null, or a valid upgrade type.
      */
     Upgrades getType(ItemStack itemstack);

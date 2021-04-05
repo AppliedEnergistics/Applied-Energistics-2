@@ -23,30 +23,38 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SkyChestContainer;
-import appeng.tile.storage.SkyChestBlockEntity;
-import appeng.util.Platform;
+import appeng.tile.storage.SkyChestTileEntity;
 
-public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
+public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implements IWaterLoggable {
 
     private static final double AABB_OFFSET_BOTTOM = 0.00;
     private static final double AABB_OFFSET_SIDES = 0.06;
@@ -56,10 +64,12 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
     // direction
     private static final Map<Direction, VoxelShape> SHAPES = new EnumMap<>(Direction.class);
 
+    private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+
     static {
         for (Direction up : Direction.values()) {
-            Box aabb = computeAABB(up);
-            SHAPES.put(up, VoxelShapes.cuboid(aabb));
+            AxisAlignedBB aabb = computeAABB(up);
+            SHAPES.put(up, VoxelShapes.create(aabb));
         }
     }
 
@@ -67,13 +77,18 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
         STONE, BLOCK
     }
 
-    ;
-
     public final SkyChestType type;
 
-    public SkyChestBlock(final SkyChestType type, Settings props) {
+    public SkyChestBlock(final SkyChestType type, Properties props) {
         super(props);
         this.type = type;
+        setDefaultState(getDefaultState().with(WATERLOGGED, false));
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(WATERLOGGED);
     }
 
     @Override
@@ -82,52 +97,79 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
     }
 
     @Override
-    public boolean isTranslucent(BlockState state, BlockView reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
         return true;
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (Platform.isServer()) {
-            SkyChestBlockEntity tile = getBlockEntity(w, pos);
-            if (tile == null) {
-                return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (!w.isRemote()) {
+            SkyChestTileEntity tile = getTileEntity(w, pos);
+            if (tile != null) {
+                ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
             }
-
-            ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResultType.func_233537_a_(w.isRemote());
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
-        final SkyChestBlockEntity sk = this.getBlockEntity(worldIn, pos);
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        final SkyChestTileEntity sk = this.getTileEntity(worldIn, pos);
         Direction up = sk != null ? sk.getUp() : Direction.UP;
         return SHAPES.get(up);
     }
 
-    private static Box computeAABB(Direction up) {
-        final double offsetX = up.getOffsetX() == 0 ? AABB_OFFSET_SIDES : 0.0;
-        final double offsetY = up.getOffsetY() == 0 ? AABB_OFFSET_SIDES : 0.0;
-        final double offsetZ = up.getOffsetZ() == 0 ? AABB_OFFSET_SIDES : 0.0;
+    private static AxisAlignedBB computeAABB(Direction up) {
+        final double offsetX = up.getXOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
+        final double offsetY = up.getYOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
+        final double offsetZ = up.getZOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
 
         // for x/z top and bottom is swapped
         final double minX = Math.max(0.0,
-                offsetX + (up.getOffsetX() < 0 ? AABB_OFFSET_BOTTOM : (up.getOffsetX() * AABB_OFFSET_TOP)));
+                offsetX + (up.getXOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getXOffset() * AABB_OFFSET_TOP)));
         final double minY = Math.max(0.0,
-                offsetY + (up.getOffsetY() < 0 ? AABB_OFFSET_TOP : (up.getOffsetY() * AABB_OFFSET_BOTTOM)));
+                offsetY + (up.getYOffset() < 0 ? AABB_OFFSET_TOP : (up.getYOffset() * AABB_OFFSET_BOTTOM)));
         final double minZ = Math.max(0.0,
-                offsetZ + (up.getOffsetZ() < 0 ? AABB_OFFSET_BOTTOM : (up.getOffsetZ() * AABB_OFFSET_TOP)));
+                offsetZ + (up.getZOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getZOffset() * AABB_OFFSET_TOP)));
 
         final double maxX = Math.min(1.0,
-                1.0 - offsetX - (up.getOffsetX() < 0 ? AABB_OFFSET_TOP : (up.getOffsetX() * AABB_OFFSET_BOTTOM)));
+                1.0 - offsetX - (up.getXOffset() < 0 ? AABB_OFFSET_TOP : (up.getXOffset() * AABB_OFFSET_BOTTOM)));
         final double maxY = Math.min(1.0,
-                1.0 - offsetY - (up.getOffsetY() < 0 ? AABB_OFFSET_BOTTOM : (up.getOffsetY() * AABB_OFFSET_TOP)));
+                1.0 - offsetY - (up.getYOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getYOffset() * AABB_OFFSET_TOP)));
         final double maxZ = Math.min(1.0,
-                1.0 - offsetZ - (up.getOffsetZ() < 0 ? AABB_OFFSET_TOP : (up.getOffsetZ() * AABB_OFFSET_BOTTOM)));
+                1.0 - offsetZ - (up.getZOffset() < 0 ? AABB_OFFSET_TOP : (up.getZOffset() * AABB_OFFSET_BOTTOM)));
 
-        return new Box(minX, minY, minZ, maxX, maxY, maxZ);
+        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        BlockPos pos = context.getPos();
+        FluidState fluidState = context.getWorld().getFluidState(pos);
+        BlockState blockState = this.getDefaultState()
+                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+
+        return blockState;
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState blockState) {
+        return blockState.get(WATERLOGGED).booleanValue()
+                ? Fluids.WATER.getStillFluidState(false)
+                : super.getFluidState(blockState);
+    }
+
+    @Override
+    public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
+            BlockPos currentPos, BlockPos facingPos) {
+        if (blockState.get(WATERLOGGED)) {
+            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickRate(world));
+        }
+
+        return super.updatePostPlacement(blockState, facing, facingState, world, currentPos, facingPos);
     }
 }

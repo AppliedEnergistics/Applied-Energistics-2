@@ -26,12 +26,12 @@ package appeng.api.util;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.util.DyeColor;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.item.DyeColor;
 
 /**
  * List of all colors supported by AE, their names, and various colors for display.
- * <p>
+ *
  * Should be the same order as Dyes, excluding Transparent.
  */
 public enum AEColor {
@@ -74,25 +74,25 @@ public enum AEColor {
             PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK);
 
     /**
-     * The {@link BakedQuad#getColorIndex() tint index} that can normally be used to get the {@link #blackVariant dark
+     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #blackVariant dark
      * variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_DARK = 1;
 
     /**
-     * The {@link BakedQuad#getColorIndex() tint index} that can normally be used to get the {@link #mediumVariant
-     * medium variant} of the apprioriate AE color.
+     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #mediumVariant medium
+     * variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_MEDIUM = 2;
 
     /**
-     * The {@link BakedQuad#getColorIndex() tint index} that can normally be used to get the {@link #whiteVariant bright
+     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #whiteVariant bright
      * variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_BRIGHT = 3;
 
     /**
-     * The {@link BakedQuad#getColorIndex() tint index} that can normally be used to get a color between the
+     * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get a color between the
      * {@link #mediumVariant medium} and {@link #whiteVariant bright variant} of the apprioriate AE color.
      */
     public static final int TINTINDEX_MEDIUM_BRIGHT = 4;
@@ -140,7 +140,7 @@ public enum AEColor {
     /**
      * Will return a variant of this color based on the given tint index.
      *
-     * @param tintIndex A tint index as it can be used for {@link BakedQuad#getColorIndex()}.
+     * @param tintIndex A tint index as it can be used for {@link BakedQuad#getTintIndex()}.
      * @return The appropriate color variant, or -1.
      */
     public int getVariantByTintIndex(int tintIndex) {

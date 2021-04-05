@@ -21,7 +21,7 @@ package appeng.worldgen.meteorite.fallout;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.IWorld;
 
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
@@ -30,8 +30,7 @@ public class FalloutSnow extends FalloutCopy {
     private static final double ICE_THRESHOLD = 0.5;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutSnow(final WorldAccess w, BlockPos pos, final MeteoriteBlockPutter putter,
-            final BlockState skyStone) {
+    public FalloutSnow(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
         super(w, pos, putter, skyStone);
         this.putter = putter;
     }
@@ -42,7 +41,7 @@ public class FalloutSnow extends FalloutCopy {
     }
 
     @Override
-    public void getOther(final WorldAccess w, BlockPos pos, final double a) {
+    public void getOther(final IWorld w, BlockPos pos, final double a) {
         if (a > SNOW_THRESHOLD) {
             this.putter.put(w, pos, Blocks.SNOW.getDefaultState());
         } else if (a > ICE_THRESHOLD) {

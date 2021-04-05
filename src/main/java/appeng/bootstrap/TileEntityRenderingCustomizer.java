@@ -18,13 +18,13 @@
 
 package appeng.bootstrap;
 
-import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.AEBaseTileEntity;
 
 /**
  * A callback that allows the rendering of a block entity to be customized. Sadly this class is required and no lambdas
  * can be used due to them not being able to be annotated with @OnlyIn(CLIENT).
  */
-public interface TileEntityRenderingCustomizer<T extends AEBaseBlockEntity> {
+public interface TileEntityRenderingCustomizer<T extends AEBaseTileEntity> {
 
     /**
      * Declared as a default method because we will carve out the implementations that override this method on the

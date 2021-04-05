@@ -18,16 +18,16 @@
 
 package appeng.core.localization;
 
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum GuiText {
     inventory("container"), // mc's default Inventory localization.
 
     Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, SkyChest,
 
-    VibrationChamber, SpatialIOPort, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
+    VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
 
     Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ImportBusFluids, ExportBus,
     ExportBusFluids,
@@ -46,6 +46,11 @@ public enum GuiText {
 
     // spatial
     SpatialCapacity, StoredSize, Unformatted, SerialNumber,
+
+    // spatial anchor
+
+    SpatialAnchorUsedPower, SpatialAnchorLoadedChunks,
+    SpatialAnchorStatistics, SpatialAnchorAll, SpatialAnchorAllLoaded,
 
     CopyMode, CopyModeDesc, PatternTerminal, FluidTerminal,
 
@@ -86,16 +91,16 @@ public enum GuiText {
 
     private final String root;
 
-    private final Text text;
+    private final ITextComponent text;
 
     GuiText() {
         this.root = "gui.appliedenergistics2";
-        this.text = new TranslatableText(getTranslationKey());
+        this.text = new TranslationTextComponent(getTranslationKey());
     }
 
     GuiText(final String r) {
         this.root = r;
-        this.text = new TranslatableText(getTranslationKey());
+        this.text = new TranslationTextComponent(getTranslationKey());
     }
 
     public String getLocal() {
@@ -106,20 +111,20 @@ public enum GuiText {
         return this.root + '.' + this.toString();
     }
 
-    public Text text() {
+    public ITextComponent text() {
         return text;
     }
 
-    public MutableText withSuffix(String text) {
-        return text().copy().append(text);
+    public IFormattableTextComponent withSuffix(String text) {
+        return text().deepCopy().appendString(text);
     }
 
-    public MutableText withSuffix(Text text) {
-        return text().copy().append(text);
+    public IFormattableTextComponent withSuffix(ITextComponent text) {
+        return text().deepCopy().append(text);
     }
 
-    public MutableText text(Object... args) {
-        return new TranslatableText(getTranslationKey(), args);
+    public IFormattableTextComponent text(Object... args) {
+        return new TranslationTextComponent(getTranslationKey(), args);
     }
 
 }

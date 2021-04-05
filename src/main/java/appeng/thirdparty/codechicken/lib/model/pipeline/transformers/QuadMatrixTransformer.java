@@ -20,10 +20,10 @@ package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.util.math.Vector4f;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
 
 /**
  * Created by covers1624 on 2/6/20.
@@ -33,7 +33,7 @@ public class QuadMatrixTransformer implements RenderContext.QuadTransform {
 
     static {
         identity = new Matrix4f();
-        identity.loadIdentity();
+        identity.setIdentity();
     }
 
     private final Vector3f storage3 = new Vector3f();
@@ -74,7 +74,7 @@ public class QuadMatrixTransformer implements RenderContext.QuadTransform {
                 quad.normal(i, storage.getX(), storage.getY(), storage.getZ());
 
                 if (i == 0) {
-                    Direction face = Direction.getFacing(storage.getX(), storage.getY(), storage.getZ());
+                    Direction face = Direction.getFacingFromVector(storage.getX(), storage.getY(), storage.getZ());
                     quad.nominalFace(face);
                     quad.cullFace(face);
                 }

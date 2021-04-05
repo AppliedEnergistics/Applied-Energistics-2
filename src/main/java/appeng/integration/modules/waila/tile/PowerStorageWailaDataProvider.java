@@ -20,10 +20,10 @@ package appeng.integration.modules.waila.tile;
 
 import java.util.List;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
@@ -45,7 +45,7 @@ import appeng.util.Platform;
  */
 public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
     /**
-     * Power key used for the transferred {@link net.minecraft.nbt.CompoundTag}
+     * Power key used for the transferred {@link net.minecraft.nbt.CompoundNBT}
      */
     private static final String ID_CURRENT_POWER = "currentPower";
 
@@ -57,21 +57,21 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
      * <p/>
      * The cache will be updated from the server.
      */
-    private final Object2LongMap<BlockEntity> cache = new Object2LongOpenHashMap<>();
+    private final Object2LongMap<TileEntity> cache = new Object2LongOpenHashMap<>();
 
     @Override
-    public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
         // Removes RF tooltip on WAILA 1.5.9+
         // FIXME ( (ITaggedList<String, String>) tooltip ).removeEntries(
         // "RFEnergyStorage" );
 
-        final BlockEntity te = accessor.getBlockEntity();
+        final TileEntity te = accessor.getBlockEntity();
         if (te instanceof IAEPowerStorage) {
             final IAEPowerStorage storage = (IAEPowerStorage) te;
 
             final double maxPower = storage.getAEMaxPower();
             if (maxPower > 0) {
-                final CompoundTag tag = accessor.getServerData();
+                final CompoundNBT tag = accessor.getServerData();
 
                 final long internalCurrentPower = this.getInternalCurrentPower(tag, te);
 
@@ -81,8 +81,8 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
                     final String formatCurrentPower = Platform.formatPowerLong(internalCurrentPower, false);
                     final String formatMaxPower = Platform.formatPowerLong(internalMaxPower, false);
 
-                    tooltip.add(WailaText.Contains.text().copy()
-                            .append(": " + formatCurrentPower + " / " + formatMaxPower));
+                    tooltip.add(WailaText.Contains.textComponent().copyRaw()
+                            .appendString(": " + formatCurrentPower + " / " + formatMaxPower));
                 }
             }
         }
@@ -91,8 +91,8 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
     /**
      * Called on server to transfer information from server to client.
      * <p/>
-     * If the {@link net.minecraft.block.entity.BlockEntity} is a {@link IAEPowerStorage}, it writes the power
-     * information to the {@code #tag} using the {@code #ID_CURRENT_POWER} key.
+     * If the {@link net.minecraft.tileentity.TileEntity} is a {@link IAEPowerStorage}, it writes the power information
+     * to the {@code #tag} using the {@code #ID_CURRENT_POWER} key.
      *
      * @param serverPlayerEntity player looking at the power storage
      * @param te                 power storage
@@ -100,7 +100,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
      * @param world              world of the power storage
      */
     @Override
-    public void appendServerData(CompoundTag tag, ServerPlayerEntity serverPlayerEntity, World world, BlockEntity te) {
+    public void appendServerData(CompoundNBT tag, ServerPlayerEntity serverPlayerEntity, World world, TileEntity te) {
         if (te instanceof IAEPowerStorage) {
             final IAEPowerStorage storage = (IAEPowerStorage) te;
 
@@ -122,7 +122,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
      * @param tag tag maybe containing the channel information
      * @return used channels on the cable
      */
-    private long getInternalCurrentPower(final CompoundTag tag, final BlockEntity te) {
+    private long getInternalCurrentPower(final CompoundNBT tag, final TileEntity te) {
         final long internalCurrentPower;
 
         if (tag.contains(ID_CURRENT_POWER)) {

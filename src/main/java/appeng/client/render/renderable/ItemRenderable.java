@@ -22,31 +22,32 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.render.model.json.Transformation;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
-public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
+public class ItemRenderable<T extends TileEntity> implements Renderable<T> {
 
-    private final Function<T, Pair<ItemStack, Transformation>> f;
+    private final Function<T, Pair<ItemStack, ItemTransformVec3f>> f;
 
-    public ItemRenderable(Function<T, Pair<ItemStack, Transformation>> f) {
+    public ItemRenderable(Function<T, Pair<ItemStack, ItemTransformVec3f>> f) {
         this.f = f;
     }
 
     @Override
-    public void renderTileEntityAt(T te, float partialTicks, net.minecraft.client.util.math.MatrixStack matrixStack,
-            VertexConsumerProvider buffers, int combinedLight, int combinedOverlay) {
-        Pair<ItemStack, Transformation> pair = this.f.apply(te);
+    public void renderTileEntityAt(T te, float partialTicks, com.mojang.blaze3d.matrix.MatrixStack matrixStack,
+            IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
+        Pair<ItemStack, ItemTransformVec3f> pair = this.f.apply(te);
         if (pair != null && pair.getLeft() != null) {
             matrixStack.push();
             if (pair.getRight() != null) {
                 pair.getRight().apply(false, matrixStack); // FIXME: check left handed
             }
-            MinecraftClient.getInstance().getItemRenderer().renderItem(pair.getLeft(), ModelTransformation.Mode.GROUND,
+            Minecraft.getInstance().getItemRenderer().renderItem(pair.getLeft(),
+                    ItemCameraTransforms.TransformType.GROUND,
                     combinedLight, combinedOverlay, matrixStack, buffers);
             matrixStack.pop();
         }

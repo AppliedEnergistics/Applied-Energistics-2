@@ -34,6 +34,7 @@ import net.minecraft.world.World;
  */
 public interface IGuiItem {
     /**
+     *
      * @param is                  The item used to open the container.
      * @param playerInventorySlot The slot in the player's inventory the item is in.
      * @param world               The world the player is in.

@@ -20,10 +20,10 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -41,16 +41,16 @@ import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
-import appeng.tile.crafting.MolecularAssemblerBlockEntity;
+import appeng.tile.crafting.MolecularAssemblerTileEntity;
 
 public class MolecularAssemblerContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static ScreenHandlerType<MolecularAssemblerContainer> TYPE;
+    public static ContainerType<MolecularAssemblerContainer> TYPE;
 
-    private static final ContainerHelper<MolecularAssemblerContainer, MolecularAssemblerBlockEntity> helper = new ContainerHelper<>(
-            MolecularAssemblerContainer::new, MolecularAssemblerBlockEntity.class);
+    private static final ContainerHelper<MolecularAssemblerContainer, MolecularAssemblerTileEntity> helper = new ContainerHelper<>(
+            MolecularAssemblerContainer::new, MolecularAssemblerTileEntity.class);
 
-    public static MolecularAssemblerContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static MolecularAssemblerContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -59,19 +59,19 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     }
 
     private static final int MAX_CRAFT_PROGRESS = 100;
-    private final MolecularAssemblerBlockEntity tma;
+    private final MolecularAssemblerTileEntity tma;
     @GuiSync(4)
     public int craftProgress = 0;
 
     private Slot encodedPatternSlot;
 
-    public MolecularAssemblerContainer(int id, final PlayerInventory ip, final MolecularAssemblerBlockEntity te) {
+    public MolecularAssemblerContainer(int id, final PlayerInventory ip, final MolecularAssemblerTileEntity te) {
         super(TYPE, id, ip, te);
         this.tma = te;
     }
 
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
-        final FixedItemInv mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
+        final FixedItemInv mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
 
         final ItemStack is = mac.getInvStack(10);
         if (is.isEmpty()) {
@@ -79,7 +79,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         }
 
         if (is.getItem() instanceof EncodedPatternItem) {
-            final World w = this.getBlockEntity().getWorld();
+            final World w = this.getTileEntity().getWorld();
             final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
             if (ph.isCraftable()) {
                 return ph.isValidItemForSlot(slotIndex, i, w);
@@ -99,7 +99,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         int offX = 29;
         int offY = 30;
 
-        final FixedItemInv mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
+        final FixedItemInv mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
@@ -144,7 +144,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -172,7 +172,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
 
         // If the pattern changes, the crafting grid slots lose validity
         if (s == encodedPatternSlot) {
-            for (Slot otherSlot : slots) {
+            for (Slot otherSlot : inventorySlots) {
                 if (otherSlot != s && otherSlot instanceof AppEngSlot) {
                     ((AppEngSlot) otherSlot).setIsValid(AppEngSlot.CalculatedValidity.NotAvailable);
                 }

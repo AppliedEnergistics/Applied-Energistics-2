@@ -24,15 +24,17 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.GroupedFluidInv;
 
@@ -68,6 +70,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.fluids.container.FluidStorageBusContainer;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
@@ -89,17 +92,18 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @since rv6 22/05/2018
  */
 public class FluidStorageBusPart extends SharedStorageBusPart
-        implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory {
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/fluid_storage_bus_base");
+        implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory, IConfigurableFluidInventory {
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
+            "part/fluid_storage_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/fluid_storage_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/fluid_storage_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/fluid_storage_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_has_channel"));
 
     private final IActionSource source;
     private final AEFluidInventory config = new AEFluidInventory(this, 63);
@@ -117,7 +121,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         this.source = new MachineSource(this);
     }
 
-    private IMEInventory<IAEFluidStack> getInventoryWrapper(BlockEntity target) {
+    private IMEInventory<IAEFluidStack> getInventoryWrapper(TileEntity target) {
         // Prioritize a handler to directly link to another ME network
         IStorageMonitorableAccessor accessor = MEAttributes
                 .getAttributeInFrontOfPart(MEAttributes.STORAGE_MONITORABLE_ACCESSOR, this);
@@ -190,8 +194,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     @Override
     protected void resetCache(final boolean fullReset) {
-        if (this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null
-                || this.getHost().getTile().getWorld().isClient) {
+        if (isRemote()) {
             return;
         }
 
@@ -209,8 +212,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
-        if (Platform.isServer()) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FluidStorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
@@ -224,13 +227,13 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.config.readFromNBT(data, "config");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         this.config.writeToNBT(data, "config");
     }
@@ -261,8 +264,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         final boolean wasSleeping = this.monitor == null;
 
         this.cached = true;
-        final BlockEntity self = this.getHost().getTile();
-        final BlockEntity target = self.getWorld().getBlockEntity(self.getPos().offset(this.getSide().getFacing()));
+        final TileEntity self = this.getHost().getTile();
+        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -338,7 +341,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         return this.handler;
     }
 
-    private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
+    private void checkInterfaceVsStorageBus(final TileEntity target, final AEPartLocation side) {
         IInterfaceHost achievement = null;
 
         if (target instanceof IInterfaceHost) {
@@ -353,10 +356,10 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         }
 
         if (achievement != null && achievement.getActionableNode() != null) {
-            // Platform.increaseStat( achievement.getActionableNode().getPlayerID(),
+            // Platform.addStat( achievement.getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement()
             // );
-            // Platform.increaseStat( getActionableNode().getPlayerID(),
+            // Platform.addStat( getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement() );
         }
     }
@@ -373,7 +376,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         return super.getCellArray(channel);
     }
 
-    private int createHandlerHash(BlockEntity target) {
+    private int createHandlerHash(TileEntity target) {
         if (target == null) {
             return 0;
         }
@@ -412,6 +415,14 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         return this.config;
     }
 
+    @Override
+    public FixedFluidInv getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
+    }
+
     @Nonnull
     @Override
     public IPartModel getStaticModels() {
@@ -430,7 +441,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType() {
+    public ContainerType<?> getContainerType() {
         return FluidStorageBusContainer.TYPE;
     }
 }

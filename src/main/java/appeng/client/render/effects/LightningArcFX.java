@@ -22,10 +22,10 @@ import java.util.Random;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.SpriteBillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.world.ClientWorld;
 
 @Environment(EnvType.CLIENT)
@@ -37,9 +37,9 @@ public class LightningArcFX extends LightningFX {
     private final double ry;
     private final double rz;
 
-    public LightningArcFX(ClientWorld world, final double x, final double y, final double z, final double ex,
+    public LightningArcFX(final ClientWorld w, final double x, final double y, final double z, final double ex,
             final double ey, final double ez, final double r, final double g, final double b) {
-        super(world, x, y, z, r, g, b, 6);
+        super(w, x, y, z, r, g, b, 6);
 
         this.rx = ex - x;
         this.ry = ey - y;
@@ -67,19 +67,19 @@ public class LightningArcFX extends LightningFX {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<LightningArcParticleData> {
-        private final SpriteProvider spriteSet;
+    public static class Factory implements IParticleFactory<LightningArcParticleData> {
+        private final IAnimatedSprite spriteSet;
 
-        public Factory(SpriteProvider spriteSet) {
+        public Factory(IAnimatedSprite spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(LightningArcParticleData effect, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(LightningArcParticleData data, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            SpriteBillboardParticle lightningFX = new LightningArcFX(world, x, y, z, effect.target.x, effect.target.y,
-                    effect.target.z, 0, 0, 0);
-            lightningFX.setSprite(this.spriteSet);
+            SpriteTexturedParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
+                    data.target.z, 0, 0, 0);
+            lightningFX.selectSpriteRandomly(this.spriteSet);
             return lightningFX;
         }
     }

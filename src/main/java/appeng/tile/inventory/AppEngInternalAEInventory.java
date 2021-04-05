@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 
 import alexiil.mc.lib.attributes.ListenerRemovalToken;
 import alexiil.mc.lib.attributes.ListenerToken;
@@ -64,16 +64,16 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
         return this.inv[var1];
     }
 
-    public void writeToNBT(final CompoundTag data, final String name) {
-        final CompoundTag c = new CompoundTag();
+    public void writeToNBT(final CompoundNBT data, final String name) {
+        final CompoundNBT c = new CompoundNBT();
         this.writeToNBT(c);
         data.put(name, c);
     }
 
-    private void writeToNBT(final CompoundTag target) {
+    private void writeToNBT(final CompoundNBT target) {
         for (int x = 0; x < this.size; x++) {
             try {
-                final CompoundTag c = new CompoundTag();
+                final CompoundNBT c = new CompoundNBT();
 
                 if (this.inv[x] != null) {
                     this.inv[x].writeToNBT(c);
@@ -85,17 +85,17 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
         }
     }
 
-    public void readFromNBT(final CompoundTag data, final String name) {
-        final CompoundTag c = data.getCompound(name);
+    public void readFromNBT(final CompoundNBT data, final String name) {
+        final CompoundNBT c = data.getCompound(name);
         if (c != null) {
             this.readFromNBT(c);
         }
     }
 
-    private void readFromNBT(final CompoundTag target) {
+    private void readFromNBT(final CompoundNBT target) {
         for (int x = 0; x < this.size; x++) {
             try {
-                final CompoundTag c = target.getCompound("#" + x);
+                final CompoundNBT c = target.getCompound("#" + x);
 
                 if (c != null) {
                     this.inv[x] = AEItemStack.fromNBT(c);
@@ -107,7 +107,7 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
     }
 
     protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
-        return Math.min(this.getMaxAmount(slot, stack), stack.getMaxCount());
+        return Math.min(this.getMaxAmount(slot, stack), stack.getMaxStackSize());
     }
 
     @Override
@@ -135,13 +135,13 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
         ItemStack newStack = to.copy();
         InvOperation op = InvOperation.SET;
 
-        if (ItemStack.areItemsEqual(oldStack, newStack)) {
+        if (ItemStack.areItemsEqualIgnoreDurability(oldStack, newStack)) {
             if (newStack.getCount() > oldStack.getCount()) {
-                newStack.decrement(oldStack.getCount());
+                newStack.shrink(oldStack.getCount());
                 oldStack = ItemStack.EMPTY;
                 op = InvOperation.INSERT;
             } else {
-                oldStack.decrement(newStack.getCount());
+                oldStack.shrink(newStack.getCount());
                 newStack = ItemStack.EMPTY;
                 op = InvOperation.EXTRACT;
             }
@@ -172,7 +172,7 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
     }
 
     private void fireOnChangeInventory(int slot, InvOperation op, ItemStack removed, ItemStack inserted) {
-        if (this.te != null && Platform.isServer() && !this.dirtyFlag) {
+        if (this.te != null && !this.te.isRemote() && !this.dirtyFlag) {
             this.dirtyFlag = true;
             this.te.onChangeInventory(this, slot, op, removed, inserted);
             this.te.saveChanges();

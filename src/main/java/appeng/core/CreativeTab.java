@@ -24,7 +24,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.NonNullList;
 
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
@@ -50,11 +50,11 @@ public final class CreativeTab {
 
     private static void fill(List<ItemStack> items) {
         for (IItemDefinition itemDef : itemDefs) {
-            itemDef.item().appendStacks(INSTANCE, new ListWrapper(items));
+            itemDef.item().fillItemGroup(INSTANCE, new ListWrapper(items));
         }
     }
 
-    private static class ListWrapper extends DefaultedList<ItemStack> {
+    private static class ListWrapper extends NonNullList<ItemStack> {
 
         public ListWrapper(List<ItemStack> items) {
             super(items, ItemStack.EMPTY);

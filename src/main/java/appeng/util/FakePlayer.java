@@ -7,10 +7,10 @@ import java.util.WeakHashMap;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.ServerPlayerInteractionManager;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class FakePlayer extends ServerPlayerEntity {
     private static final WeakHashMap<World, FakePlayer> FAKE_PLAYERS = new WeakHashMap<>();
@@ -19,7 +19,7 @@ public class FakePlayer extends ServerPlayerEntity {
             "[AppEng2]");
 
     private FakePlayer(ServerWorld world) {
-        super(world.getServer(), world, PROFILE, new ServerPlayerInteractionManager(world));
+        super(world.getServer(), world, PROFILE, new PlayerInteractionManager(world));
     }
 
     /**

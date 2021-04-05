@@ -18,21 +18,21 @@
 
 package appeng.client.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.text.StringTextComponent;
 
 /**
  * A modified version of the Minecraft text field. You can initialize it over the full element span. The mouse click
  * area is increased to the full element subtracted with the defined padding.
- * <p>
+ *
  * The rendering does pay attention to the size of the '_' caret.
  */
 public class AETextField extends TextFieldWidget {
@@ -50,31 +50,18 @@ public class AETextField extends TextFieldWidget {
      * @param width        absolute width
      * @param height       absolute height
      */
-    public AETextField(final TextRenderer fontRenderer, final int xPos, final int yPos, final int width,
+    public AETextField(final FontRenderer fontRenderer, final int xPos, final int yPos, final int width,
             final int height) {
-        super(fontRenderer, xPos + PADDING, yPos + PADDING, width - 2 * PADDING - (int) fontRenderer.getWidth("_"),
-                height - 2 * PADDING, LiteralText.EMPTY);
+        super(fontRenderer, xPos + PADDING, yPos + PADDING,
+                width - 2 * PADDING - fontRenderer.getStringWidth("_"), height - 2 * PADDING,
+                StringTextComponent.EMPTY);
 
-        this._fontPad = (int) fontRenderer.getWidth("_");
-    }
-
-    @Override
-    public boolean mouseClicked(final double xPos, final double yPos, final int button) {
-        if (!super.mouseClicked(xPos, yPos, button)) {
-            return false;
-        }
-
-        final boolean requiresFocus = this.isMouseOver(xPos, yPos);
-        if (!this.isFocused()) {
-            this.setFocused(requiresFocus);
-        }
-
-        return true;
+        this._fontPad = fontRenderer.getStringWidth("_");
     }
 
     public void selectAll() {
-        this.setCursor(0);
-        this.setSelectionEnd(getText().length());
+        this.setCursorPosition(0);
+        this.setSelectionPos(this.getMaxStringLength());
     }
 
     public void setSelectionColor(int color) {
@@ -82,23 +69,23 @@ public class AETextField extends TextFieldWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partial) {
-        if (this.isVisible()) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+        if (this.getVisible()) {
             if (this.isFocused()) {
-                fill(matrices, this.x - PADDING + 1, this.y - PADDING + 1,
+                fill(matrixStack, this.x - PADDING + 1, this.y - PADDING + 1,
                         this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
                         0xFF606060);
             } else {
-                fill(matrices, this.x - PADDING + 1, this.y - PADDING + 1,
+                fill(matrixStack, this.x - PADDING + 1, this.y - PADDING + 1,
                         this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
                         0xFFA8A8A8);
             }
-            super.renderButton(matrices, mouseX, mouseY, partial);
+            super.renderButton(matrixStack, mouseX, mouseY, partial);
         }
     }
 
     @Override
-    public void drawSelectionHighlight(int startX, int startY, int endX, int endY) {
+    public void drawSelectionBox(int startX, int startY, int endX, int endY) {
         if (!this.isFocused()) {
             return;
         }
@@ -140,20 +127,15 @@ public class AETextField extends TextFieldWidget {
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(7, VertexFormats.POSITION);
-        bufferbuilder.vertex(startX, endY, 0.0D).next();
-        bufferbuilder.vertex(endX, endY, 0.0D).next();
-        bufferbuilder.vertex(endX, startY, 0.0D).next();
-        bufferbuilder.vertex(startX, startY, 0.0D).next();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferbuilder.pos(startX, endY, 0.0D).endVertex();
+        bufferbuilder.pos(endX, endY, 0.0D).endVertex();
+        bufferbuilder.pos(endX, startY, 0.0D).endVertex();
+        bufferbuilder.pos(startX, startY, 0.0D).endVertex();
         tessellator.draw();
         RenderSystem.disableColorLogicOp();
         RenderSystem.enableTexture();
         RenderSystem.color4f(1, 1, 1, 1);
-    }
-
-    @Override
-    public void setFocused(boolean focused) {
-        super.setFocused(focused);
     }
 
 }

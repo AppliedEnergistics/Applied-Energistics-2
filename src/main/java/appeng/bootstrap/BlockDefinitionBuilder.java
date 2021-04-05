@@ -34,7 +34,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 import appeng.api.definitions.IBlockDefinition;
@@ -55,7 +55,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
 
     private final FeatureFactory factory;
 
-    private final Identifier id;
+    private final ResourceLocation id;
 
     private final Supplier<? extends Block> blockSupplier;
 
@@ -69,7 +69,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
 
     private boolean disableItem = false;
 
-    private BiFunction<Block, Item.Settings, BlockItem> itemFactory;
+    private BiFunction<Block, Item.Properties, BlockItem> itemFactory;
 
     @Environment(EnvType.CLIENT)
     private BlockRendering blockRendering;
@@ -79,7 +79,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
 
     BlockDefinitionBuilder(FeatureFactory factory, String id, Supplier<? extends Block> blockSupplier) {
         this.factory = factory;
-        this.id = new Identifier(AppEng.MOD_ID, id);
+        this.id = new ResourceLocation(AppEng.MOD_ID, id);
         this.blockSupplier = blockSupplier;
 
         if (Platform.hasClientClasses()) {
@@ -123,7 +123,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
     }
 
     @Override
-    public IBlockBuilder item(BiFunction<Block, Item.Settings, BlockItem> factory) {
+    public IBlockBuilder item(BiFunction<Block, Item.Properties, BlockItem> factory) {
         this.itemFactory = factory;
         return this;
     }
@@ -206,7 +206,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
             return null;
         }
 
-        Item.Settings itemProperties = new Item.Settings();
+        Item.Properties itemProperties = new Item.Properties();
 
         if (itemGroup != null) {
             itemProperties.group(itemGroup);

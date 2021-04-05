@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.fluids.parts;
 
 import java.math.RoundingMode;
@@ -9,20 +27,21 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.block.FluidFillable;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.fluid.world.FluidWorldUtil;
@@ -47,6 +66,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.core.Api;
 import appeng.fluids.container.FluidFormationPlaneContainer;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidInventory;
@@ -59,7 +79,8 @@ import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
 import appeng.util.prioritylist.PrecisePriorityList;
 
-public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluidStack> implements IAEFluidInventory {
+public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluidStack>
+        implements IAEFluidInventory, IConfigurableFluidInventory {
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_formation_plane",
             "part/fluid_formation_plane_on");
 
@@ -94,7 +115,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
                 priorityList.add(is);
             }
         }
-        this.myHandler.setPartitionList(new PrecisePriorityList<>(priorityList));
+        this.myHandler.setPartitionList(new PrecisePriorityList<IAEFluidStack>(priorityList));
 
         try {
             this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
@@ -110,7 +131,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
             return input;
         }
 
-        final BlockEntity te = this.getHost().getTile();
+        final TileEntity te = this.getHost().getTile();
         final World w = te.getWorld();
         final AEPartLocation side = this.getSide();
         final BlockPos pos = te.getPos().offset(side.getFacing());
@@ -140,24 +161,32 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         }
     }
 
-    protected boolean isBlocking(BlockView w, BlockPos pos) {
+    protected boolean isBlocking(IBlockReader w, BlockPos pos) {
         // Mirror the restrictions from the fill method
         BlockState state = w.getBlockState(pos);
         Block block = state.getBlock();
-        return !state.isAir() && !(block instanceof FluidFillable) && !(block instanceof FluidBlock);
+        return !state.isAir() && !(block instanceof ILiquidContainer) && !(block instanceof FlowingFluidBlock);
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.config.readFromNBT(data, "config");
         this.updateHandler();
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         this.config.writeToNBT(data, "config");
+    }
+
+    @Override
+    public FixedFluidInv getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
     }
 
     @Override
@@ -172,8 +201,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
-        if (Platform.isServer()) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(FluidFormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
         }
 
@@ -217,7 +246,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType() {
+    public ContainerType<?> getContainerType() {
         return FluidFormationPlaneContainer.TYPE;
     }
 }

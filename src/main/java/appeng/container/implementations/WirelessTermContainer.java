@@ -20,8 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Util;
 
 import appeng.container.ContainerLocator;
@@ -31,12 +31,12 @@ import appeng.helpers.WirelessTerminalGuiObject;
 
 public class WirelessTermContainer extends MEPortableCellContainer {
 
-    public static ScreenHandlerType<WirelessTermContainer> TYPE;
+    public static ContainerType<WirelessTermContainer> TYPE;
 
     private static final ContainerHelper<WirelessTermContainer, WirelessTerminalGuiObject> helper = new ContainerHelper<>(
             WirelessTermContainer::new, WirelessTerminalGuiObject.class);
 
-    public static WirelessTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static WirelessTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -52,12 +52,12 @@ public class WirelessTermContainer extends MEPortableCellContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
-        super.sendContentUpdates();
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
 
         if (!this.wirelessTerminalGUIObject.rangeCheck()) {
             if (isServer() && this.isValidContainer()) {
-                this.getPlayerInv().player.sendSystemMessage(PlayerMessages.OutOfRange.get(), Util.NIL_UUID);
+                this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get(), Util.DUMMY_UUID);
             }
 
             this.setValidContainer(false);

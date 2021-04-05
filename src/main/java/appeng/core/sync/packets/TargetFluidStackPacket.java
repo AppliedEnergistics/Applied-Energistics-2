@@ -21,7 +21,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
@@ -37,7 +37,7 @@ import appeng.fluids.util.AEFluidStack;
 public class TargetFluidStackPacket extends BasePacket {
     private AEFluidStack stack;
 
-    public TargetFluidStackPacket(final PacketByteBuf stream) {
+    public TargetFluidStackPacket(final PacketBuffer stream) {
         try {
             if (stream.readableBytes() > 0) {
                 this.stack = (AEFluidStack) AEFluidStack.fromPacket(stream);
@@ -55,7 +55,7 @@ public class TargetFluidStackPacket extends BasePacket {
 
         this.stack = stack;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
         data.writeInt(this.getPacketID());
         if (stack != null) {
             try {
@@ -69,8 +69,8 @@ public class TargetFluidStackPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        if (player.currentScreenHandler instanceof FluidTerminalContainer) {
-            ((FluidTerminalContainer) player.currentScreenHandler).setTargetStack(this.stack);
+        if (player.openContainer instanceof FluidTerminalContainer) {
+            ((FluidTerminalContainer) player.openContainer).setTargetStack(this.stack);
         }
     }
 }

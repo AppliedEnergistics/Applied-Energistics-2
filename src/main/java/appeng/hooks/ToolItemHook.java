@@ -4,10 +4,10 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.ActionResult;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 /**
@@ -20,22 +20,22 @@ public class ToolItemHook {
         UseBlockCallback.EVENT.register(ToolItemHook::handleItemUse);
     }
 
-    private static ActionResult handleItemUse(PlayerEntity playerEntity, World world, Hand hand,
-            BlockHitResult blockHitResult) {
+    private static ActionResultType handleItemUse(PlayerEntity playerEntity, World world, Hand hand,
+            BlockRayTraceResult blockHitResult) {
 
         if (playerEntity.isSpectator()) {
-            return ActionResult.PASS;
+            return ActionResultType.PASS;
         }
 
-        ItemStack itemStack = playerEntity.getStackInHand(hand);
+        ItemStack itemStack = playerEntity.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (item instanceof AEToolItem) {
-            ItemUsageContext context = new ItemUsageContext(playerEntity, hand, blockHitResult);
+            ItemUseContext context = new ItemUseContext(playerEntity, hand, blockHitResult);
             AEToolItem toolItem = (AEToolItem) item;
             return toolItem.onItemUseFirst(itemStack, context);
         }
 
-        return ActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
 }

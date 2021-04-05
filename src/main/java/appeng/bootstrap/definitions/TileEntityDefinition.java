@@ -27,7 +27,7 @@ import net.minecraft.block.Block;
  */
 public class TileEntityDefinition {
 
-    // To be notified when a Block declares that it uses this block entity
+    // To be notified when a Block declares that it uses this tile entity
     private final Consumer<Block> addBlockListener;
 
     public TileEntityDefinition(Consumer<Block> addBlockListener) {

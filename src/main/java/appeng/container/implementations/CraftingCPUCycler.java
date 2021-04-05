@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.container.implementations;
 
 import java.util.ArrayList;
@@ -7,7 +25,7 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.text.LiteralText;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -75,7 +93,7 @@ class CraftingCPUCycler {
             for (int i = 0; i < this.cpus.size(); i++) {
                 CraftingCPURecord cpu = cpus.get(i);
                 if (cpu.getName() == null) {
-                    cpu.setName(new LiteralText("#" + (i + 1)));
+                    cpu.setName(new StringTextComponent("#" + (i + 1)));
                 }
             }
 

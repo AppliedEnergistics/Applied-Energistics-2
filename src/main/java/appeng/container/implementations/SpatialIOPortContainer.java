@@ -20,8 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -34,14 +34,14 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.spatial.SpatialIOPortBlockEntity;
+import appeng.tile.spatial.SpatialIOPortTileEntity;
 
 public class SpatialIOPortContainer extends AEBaseContainer {
 
-    public static ScreenHandlerType<SpatialIOPortContainer> TYPE;
+    public static ContainerType<SpatialIOPortContainer> TYPE;
 
-    private static final ContainerHelper<SpatialIOPortContainer, SpatialIOPortBlockEntity> helper = new ContainerHelper<>(
-            SpatialIOPortContainer::new, SpatialIOPortBlockEntity.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<SpatialIOPortContainer, SpatialIOPortTileEntity> helper = new ContainerHelper<>(
+            SpatialIOPortContainer::new, SpatialIOPortTileEntity.class, SecurityPermissions.BUILD);
 
     @GuiSync(0)
     public long currentPower;
@@ -61,7 +61,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     @GuiSync(33)
     public int zSize;
 
-    public SpatialIOPortContainer(int id, final PlayerInventory ip, final SpatialIOPortBlockEntity spatialIOPort) {
+    public SpatialIOPortContainer(int id, final PlayerInventory ip, final SpatialIOPortTileEntity spatialIOPort) {
         super(TYPE, id, ip, spatialIOPort, null);
 
         if (isServer()) {
@@ -76,7 +76,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
         this.bindPlayerInventory(ip, 0, 197 - /* height of player inventory */82);
     }
 
-    public static SpatialIOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static SpatialIOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -85,7 +85,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -117,7 +117,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
             }
         }
 
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     public long getCurrentPower() {

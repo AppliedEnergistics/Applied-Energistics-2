@@ -20,27 +20,27 @@ package appeng.client.render.effects;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.RedDustParticle;
-import net.minecraft.client.particle.SpriteProvider;
+import net.minecraft.client.particle.RedstoneParticle;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.RedstoneParticleData;
 
 @Environment(EnvType.CLIENT)
-public class ChargedOreFX extends RedDustParticle {
+public class ChargedOreFX extends RedstoneParticle {
 
-    private static final DustParticleEffect PARTICLE_DATA = new DustParticleEffect(0.21f, 0.61f, 1.0f, 1.0f);
+    private static final RedstoneParticleData PARTICLE_DATA = new RedstoneParticleData(0.21f, 0.61f, 1.0f, 1.0f);
 
-    private ChargedOreFX(ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
-            SpriteProvider spriteSet) {
-        super(world, x, y, z, xSpeed, ySpeed, zSpeed, PARTICLE_DATA, spriteSet);
+    private ChargedOreFX(ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
+            IAnimatedSprite spriteSet) {
+        super(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, PARTICLE_DATA, spriteSet);
     }
 
     @Override
-    public int getColorMultiplier(final float par1) {
-        int j1 = super.getColorMultiplier(par1);
+    public int getBrightnessForRender(final float par1) {
+        int j1 = super.getBrightnessForRender(par1);
         j1 = Math.max(j1 >> 20, j1 >> 4);
         j1 += 3;
         if (j1 > 15) {
@@ -50,17 +50,17 @@ public class ChargedOreFX extends RedDustParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<DefaultParticleType> {
-        private final SpriteProvider spriteSet;
+    public static class Factory implements IParticleFactory<BasicParticleType> {
+        private final IAnimatedSprite spriteSet;
 
-        public Factory(SpriteProvider p_i50477_1_) {
-            this.spriteSet = p_i50477_1_;
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(DefaultParticleType effect, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            return new ChargedOreFX(world, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
+            return new ChargedOreFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }
 }

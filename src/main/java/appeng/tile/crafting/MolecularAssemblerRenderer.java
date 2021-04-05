@@ -20,25 +20,26 @@ package appeng.tile.crafting;
 
 import java.util.Random;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 
@@ -50,26 +51,26 @@ import appeng.mixins.RenderPhaseMixin;
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
 @Environment(EnvType.CLIENT)
-public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAssemblerBlockEntity> {
+public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAssemblerTileEntity> {
 
-    public static final ModelIdentifier LIGHTS_MODEL = new ModelIdentifier(
+    public static final ModelResourceLocation LIGHTS_MODEL = new ModelResourceLocation(
             AppEng.makeId("block/molecular_assembler_lights"), "");
 
-    private static final RenderLayer MC_161917_RENDERTYPE_FIX = createRenderType();
+    private static final RenderType MC_161917_RENDERTYPE_FIX = createRenderType();
 
     private final Random particleRandom = new Random();
 
-    public MolecularAssemblerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
+    public MolecularAssemblerRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(MolecularAssemblerBlockEntity molecularAssembler, float partialTicks, MatrixStack ms,
-            VertexConsumerProvider bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, MatrixStack ms,
+            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
-            if (!MinecraftClient.getInstance().isPaused()) {
+            if (!Minecraft.getInstance().isGamePaused()) {
                 if (status.isExpired()) {
                     molecularAssembler.setAnimationStatus(null);
                 }
@@ -86,7 +87,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
         }
     }
 
-    private void renderPowerLight(MatrixStack ms, VertexConsumerProvider bufferIn, int combinedLightIn,
+    private void renderPowerLight(MatrixStack ms, IRenderTypeBuffer bufferIn, int combinedLightIn,
             int combinedOverlayIn) {
         // Render the translucent light overlay here instead of in the block, because
         // thanks to the following MC
@@ -94,28 +95,29 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
         // would also render as translucent,
         // even the fully transparent part)
         // https://bugs.mojang.com/browse/MC-161917
-        MinecraftClient minecraft = MinecraftClient.getInstance();
-        BakedModel lightsModel = minecraft.getBakedModelManager().getModel(LIGHTS_MODEL);
-        VertexConsumer buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
+        Minecraft minecraft = Minecraft.getInstance();
+        IBakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
+        IVertexBuilder buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
 
-        minecraft.getBlockRenderManager().getModelRenderer().render(ms.peek(), buffer, null, lightsModel, 1, 1, 1,
+        minecraft.getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(ms.getLast(), buffer,
+                null, lightsModel, 1, 1, 1,
                 combinedLightIn, combinedOverlayIn);
     }
 
-    private void renderStatus(MolecularAssemblerBlockEntity molecularAssembler, MatrixStack ms,
-            VertexConsumerProvider bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
+    private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, MatrixStack ms,
+            IRenderTypeBuffer bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getPos().getX() + 0.5f;
         double centerY = molecularAssembler.getPos().getY() + 0.5f;
         double centerZ = molecularAssembler.getPos().getZ() + 0.5f;
 
         // Spawn crafting FX that fly towards the block's center
-        MinecraftClient minecraft = MinecraftClient.getInstance();
+        Minecraft minecraft = Minecraft.getInstance();
         if (status.getTicksUntilParticles() <= 0) {
             status.setTicksUntilParticles(4);
 
             if (AppEng.instance().shouldAddParticles(particleRandom)) {
                 for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
-                    minecraft.particleManager.addParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
+                    minecraft.particles.addParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
                 }
             }
         }
@@ -132,26 +134,27 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
             ms.translate(0, -0.2f, 0);
         }
 
-        itemRenderer.renderItem(is, ModelTransformation.Mode.GROUND, combinedLightIn, OverlayTexture.DEFAULT_UV, ms,
-                bufferIn);
+        itemRenderer.renderItem(is, ItemCameraTransforms.TransformType.GROUND, combinedLightIn,
+                OverlayTexture.NO_OVERLAY, ms, bufferIn);
         ms.pop();
     }
 
     /**
      * See above for when this can be removed. It creates a RenderType that is equivalent to
-     * {@link RenderLayer#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of
-     * the rendered block model from occluding our particles.
+     * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of the
+     * rendered block model from occluding our particles.
      */
-    private static RenderLayer createRenderType() {
-        RenderPhase.Texture mipmapBlockAtlasTexture = new RenderPhase.Texture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+    private static RenderType createRenderType() {
+        RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
+                AtlasTexture.LOCATION_BLOCKS_TEXTURE,
                 false, true);
-        RenderPhase.Lightmap disableLightmap = new RenderPhase.Lightmap(false);
-        RenderLayer.MultiPhaseParameters glState = RenderLayer.MultiPhaseParameters.builder()
+        RenderState.LightmapState disableLightmap = new RenderState.LightmapState(false);
+        RenderType.State glState = RenderType.State.getBuilder()
                 .texture(mipmapBlockAtlasTexture).transparency(RenderPhaseMixin.getTranslucentTransparency())
-                .alpha(new RenderPhase.Alpha(0.05F)).lightmap(disableLightmap).build(true);
+                .alpha(new RenderState.AlphaState(0.05F)).lightmap(disableLightmap).build(true);
 
-        return RenderLayer.of("ae2_translucent_alphatest", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT, GL11.GL_QUADS,
-                256, glState);
+        return RenderType.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
+                GL11.GL_QUADS, 256, glState);
     }
 
 }

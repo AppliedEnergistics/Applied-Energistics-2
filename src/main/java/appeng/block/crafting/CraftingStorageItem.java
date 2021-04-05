@@ -24,7 +24,7 @@ import appeng.block.AEBaseBlockItem;
 
 public class CraftingStorageItem extends AEBaseBlockItem {
 
-    public CraftingStorageItem(Block id, Settings props) {
+    public CraftingStorageItem(Block id, Properties props) {
         super(id, props);
     }
 

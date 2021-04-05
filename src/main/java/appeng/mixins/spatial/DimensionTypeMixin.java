@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.mixins.spatial;
 
 import java.util.OptionalLong;
@@ -10,15 +28,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.tag.BlockTags;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.world.Dimension;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.DimensionSettings;
 
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
@@ -27,35 +45,39 @@ import appeng.spatial.SpatialStorageDimensionIds;
  * Adds the storage cell world dimension type as a built-in dimension type. This can be registered as a JSON file as
  * well, but doing so will trigger an experimental feature warning when the world is being loaded.
  */
-@Mixin(DimensionType.class)
+@Mixin(value = DimensionType.class)
 public class DimensionTypeMixin {
 
     @Invoker("<init>")
     static DimensionType create(OptionalLong fixedTime, boolean hasSkylight, boolean hasCeiling, boolean ultrawarm,
             boolean natural, double coordinateScale, boolean piglinSafe, boolean bedWorks, boolean respawnAnchorWorks,
-            boolean hasRaids, int logicalHeight, Identifier infiniburn, Identifier skyProperties, float ambientLight) {
+            boolean hasRaids, int logicalHeight, ResourceLocation infiniburn, ResourceLocation skyProperties,
+            float ambientLight) {
         throw new AssertionError();
     }
 
-    @Inject(method = "addRegistryDefaults", at = @At("TAIL"))
-    private static void addRegistryDefaults(DynamicRegistryManager.Impl registryTracker,
-            CallbackInfoReturnable<?> cir) {
+    @Inject(method = "registerTypes", at = @At("TAIL"))
+    private static void addRegistryDefaults(DynamicRegistries.Impl registryTracker, CallbackInfoReturnable<?> cir) {
         DimensionType dimensionType = create(OptionalLong.of(12000), false, false, false, false, 1.0, false, false,
-                false, false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), SpatialStorageDimensionIds.SKY_PROPERTIES_ID,
-                1.0f);
+                false, false, 256, BlockTags.INFINIBURN_OVERWORLD.getName(),
+                SpatialStorageDimensionIds.SKY_PROPERTIES_ID, 1.0f);
 
-        Registry.register(registryTracker.getDimensionTypes(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.getValue(),
+        Registry.register(registryTracker.func_230520_a_(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.getLocation(),
                 dimensionType);
     }
 
-    @Inject(method = "createDefaultDimensionOptions", at = @At("RETURN"))
+    /**
+     * Insert our custom dimension into the initial registry. <em>This is what will ultimately lead to the creation of a
+     * new World.</em>
+     */
+    @Inject(method = "getDefaultSimpleRegistry", at = @At("RETURN"))
     private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,
-            Registry<ChunkGeneratorSettings> chunkGeneratorSettings, long seed,
-            CallbackInfoReturnable<SimpleRegistry<DimensionOptions>> cir) {
-        SimpleRegistry<DimensionOptions> simpleregistry = cir.getReturnValue();
+            Registry<DimensionSettings> dimensionSettings, long seed,
+            CallbackInfoReturnable<SimpleRegistry<Dimension>> cir) {
+        SimpleRegistry<Dimension> simpleregistry = cir.getReturnValue();
 
-        simpleregistry.add(SpatialStorageDimensionIds.DIMENSION_ID, new DimensionOptions(() -> {
-            return dimensionTypes.get(SpatialStorageDimensionIds.DIMENSION_TYPE_ID);
+        simpleregistry.register(SpatialStorageDimensionIds.DIMENSION_ID, new Dimension(() -> {
+            return dimensionTypes.getOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID);
         }, new SpatialStorageChunkGenerator(biomes)), Lifecycle.stable());
 
     }

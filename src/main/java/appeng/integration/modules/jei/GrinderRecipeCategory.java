@@ -23,9 +23,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.LanguageMap;
+import net.minecraft.util.text.StringTextComponent;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -40,19 +40,19 @@ import appeng.core.AppEng;
 
 class GrinderRecipeCategory implements RecipeCategory<GrinderRecipeWrapper> {
 
-    public static final Identifier UID = new Identifier(AppEng.MOD_ID, "grinder");
+    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "grinder");
 
     private final String localizedName;
 
     private final EntryStack icon;
 
     public GrinderRecipeCategory() {
-        this.localizedName = Language.getInstance().get("block.appliedenergistics2.grindstone");
+        this.localizedName = LanguageMap.getInstance().func_230503_a_("block.appliedenergistics2.grindstone");
         this.icon = EntryStack.create(Api.INSTANCE.definitions().blocks().grindstone().stack(1));
     }
 
     @Override
-    public Identifier getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return GrinderRecipeCategory.UID;
     }
 
@@ -79,7 +79,7 @@ class GrinderRecipeCategory implements RecipeCategory<GrinderRecipeWrapper> {
     @Override
     public List<Widget> setupDisplay(GrinderRecipeWrapper recipe, Rectangle bounds) {
 
-        Identifier location = new Identifier(AppEng.MOD_ID, "textures/guis/grinder.png");
+        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/grinder.png");
         Widget background = Widgets.createTexturedWidget(location, bounds.x, bounds.y, 11, 16, 154, 70);
 
         List<Widget> widgets = new ArrayList<>();
@@ -103,7 +103,7 @@ class GrinderRecipeCategory implements RecipeCategory<GrinderRecipeWrapper> {
             double chance = outputChances.get(i);
             if (chance < 100) {
                 Point p = new Point(slot.getBounds().getCenterX(), slot.getBounds().getMaxY() + 2);
-                widgets.add(Widgets.createLabel(p, new LiteralText(df.format(chance) + "%")).shadow(false)
+                widgets.add(Widgets.createLabel(p, new StringTextComponent(df.format(chance) + "%")).shadow(false)
                         .color(Color.gray.getRGB()));
             }
             offset += 18;

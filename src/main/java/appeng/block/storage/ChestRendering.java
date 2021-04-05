@@ -20,7 +20,7 @@ package appeng.block.storage;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.renderer.RenderType;
 
 import appeng.api.util.AEColor;
 import appeng.bootstrap.BlockRenderingCustomizer;
@@ -34,7 +34,7 @@ public class ChestRendering extends BlockRenderingCustomizer {
     @Override
     @Environment(EnvType.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderLayer.getCutout());
+        rendering.renderType(RenderType.getCutout());
 
         // I checked, the ME chest doesn't keep its color in item form
         itemRendering.color(new StaticItemColor(AEColor.TRANSPARENT));

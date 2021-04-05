@@ -21,7 +21,7 @@ package appeng.parts.p2p;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
@@ -32,18 +32,21 @@ import appeng.parts.PartModel;
  */
 class P2PModels {
 
-    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID, "part/p2p/p2p_tunnel_status_off");
-    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID, "part/p2p/p2p_tunnel_status_on");
-    public static final Identifier MODEL_STATUS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/p2p/p2p_tunnel_status_off");
+    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/p2p/p2p_tunnel_status_on");
+    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/p2p/p2p_tunnel_status_has_channel");
-    public static final Identifier MODEL_FREQUENCY = new Identifier(AppEng.MOD_ID, "part/p2p/p2p_tunnel_frequency");
+    public static final ResourceLocation MODEL_FREQUENCY = new ResourceLocation(AppEng.MOD_ID,
+            "part/p2p/p2p_tunnel_frequency");
 
     private final IPartModel modelsOff;
     private final IPartModel modelsOn;
     private final IPartModel modelsHasChannel;
 
     public P2PModels(String frontModelPath) {
-        Identifier frontModel = new Identifier(AppEng.MOD_ID, frontModelPath);
+        ResourceLocation frontModel = new ResourceLocation(AppEng.MOD_ID, frontModelPath);
 
         this.modelsOff = new PartModel(MODEL_STATUS_OFF, MODEL_FREQUENCY, frontModel);
         this.modelsOn = new PartModel(MODEL_STATUS_ON, MODEL_FREQUENCY, frontModel);

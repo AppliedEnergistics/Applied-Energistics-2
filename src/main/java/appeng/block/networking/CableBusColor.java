@@ -23,30 +23,30 @@ import javax.annotation.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.color.block.BlockColorProvider;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.IBlockDisplayReader;
 
 import appeng.api.util.AEColor;
 import appeng.parts.CableBusContainer;
-import appeng.tile.networking.CableBusBlockEntity;
+import appeng.tile.networking.CableBusTileEntity;
 
 /**
  * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium variant) and 2 (bright variant).
  */
 @Environment(EnvType.CLIENT)
-public class CableBusColor implements BlockColorProvider {
+public class CableBusColor implements IBlockColor {
 
     @Override
-    public int getColor(BlockState state, @Nullable BlockRenderView worldIn, @Nullable BlockPos pos, int color) {
+    public int getColor(BlockState state, @Nullable IBlockDisplayReader worldIn, @Nullable BlockPos pos, int color) {
 
         AEColor busColor = AEColor.TRANSPARENT;
 
         if (worldIn != null && pos != null) {
-            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity instanceof CableBusBlockEntity) {
-                CableBusContainer container = ((CableBusBlockEntity) tileEntity).getCableBus();
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            if (tileEntity instanceof CableBusTileEntity) {
+                CableBusContainer container = ((CableBusTileEntity) tileEntity).getCableBus();
                 busColor = container.getColor();
             }
         }

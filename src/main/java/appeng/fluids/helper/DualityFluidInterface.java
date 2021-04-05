@@ -21,10 +21,12 @@ package appeng.fluids.helper;
 import java.math.RoundingMode;
 import java.util.Optional;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -70,7 +72,8 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 public class DualityFluidInterface
-        implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost {
+        implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost,
+        IConfigurableFluidInventory {
     public static final int NUMBER_OF_TANKS = 6;
     public static final int TANK_CAPACITY = 1000 * 4;
 
@@ -172,7 +175,7 @@ public class DualityFluidInterface
             }
         }
 
-        final BlockEntity te = this.iHost.getBlockEntity();
+        final TileEntity te = this.iHost.getTileEntity();
         if (te != null && te.getWorld() != null) {
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
         }
@@ -197,7 +200,12 @@ public class DualityFluidInterface
     }
 
     public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this.iHost.getBlockEntity());
+        return new DimensionalCoord(this.iHost.getTileEntity());
+    }
+
+    public void addAllAttributes(AttributeList<?> to) {
+        to.offer(this.tanks);
+        to.offer(this.accessor);
     }
 
     private boolean hasConfig() {
@@ -388,13 +396,19 @@ public class DualityFluidInterface
         this.priority = newValue;
     }
 
-    public void writeToNBT(final CompoundTag data) {
+    @Override
+    public boolean isRemote() {
+        World world = this.iHost.getTileEntity().getWorld();
+        return world == null || world.isRemote();
+    }
+
+    public void writeToNBT(final CompoundNBT data) {
         data.putInt("priority", this.priority);
         this.tanks.writeToNBT(data, "storage");
         this.config.writeToNBT(data, "config");
     }
 
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         this.config.readFromNBT(data, "config");
         this.tanks.readFromNBT(data, "storage");
         this.priority = data.getInt("priority");
@@ -482,22 +496,24 @@ public class DualityFluidInterface
     }
 
     @Override
+    public FixedFluidInv getFluidInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
+        return null;
+    }
+
+    @Override
     public int getInstalledUpgrades(Upgrades u) {
         return 0;
     }
 
     @Override
-    public BlockEntity getTile() {
-        return (BlockEntity) (this.iHost instanceof BlockEntity ? this.iHost : null);
+    public TileEntity getTile() {
+        return (TileEntity) (this.iHost instanceof TileEntity ? this.iHost : null);
     }
 
     @Override
     public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue) {
     }
-
-    public void addAllAttributes(AttributeList<?> to) {
-        to.offer(this.tanks);
-        to.offer(this.accessor);
-    }
-
 }

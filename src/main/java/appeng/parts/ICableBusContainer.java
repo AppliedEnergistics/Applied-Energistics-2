@@ -25,11 +25,11 @@ import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.parts.SelectedPart;
@@ -46,22 +46,22 @@ public interface ICableBusContainer {
 
     void onEntityCollision(Entity e);
 
-    boolean activate(PlayerEntity player, Hand hand, Vec3d vecFromPool);
+    boolean activate(PlayerEntity player, Hand hand, Vector3d vecFromPool);
 
-    boolean clicked(PlayerEntity player, Hand hand, Vec3d hitVec);
+    boolean clicked(PlayerEntity player, Hand hand, Vector3d hitVec);
 
-    void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor);
+    void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor);
 
     boolean isEmpty();
 
-    SelectedPart selectPart(Vec3d v3);
+    SelectedPart selectPart(Vector3d v3);
 
     boolean recolourBlock(Direction side, AEColor colour, PlayerEntity who);
 
     boolean isLadder(LivingEntity entity);
 
     @Environment(EnvType.CLIENT)
-    void randomDisplayTick(World world, BlockPos pos, Random r);
+    void animateTick(World world, BlockPos pos, Random r);
 
     int getLightValue();
 

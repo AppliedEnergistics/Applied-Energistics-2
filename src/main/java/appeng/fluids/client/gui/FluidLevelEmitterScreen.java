@@ -1,8 +1,27 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.fluids.client.gui;
 
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -18,7 +37,8 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
 
     private NumberEntryWidget level;
 
-    public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory, Text title) {
+    public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
     }
 
@@ -29,40 +49,40 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
         this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_FLUID_VOLUME);
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.addButtons(children::add, this::addButton);
-        this.level.setValue(handler.getReportingValue());
+        this.level.setValue(container.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
-        this.level.setOnConfirm(this::onClose);
+        this.level.setOnConfirm(this::closeScreen);
 
         this.changeFocus(true);
 
         final int y = 40;
         final int x = 80 + 57;
-        this.guiSlots.add(new FluidSlotWidget(this.handler.getFluidConfigInventory(), 0, 0, x, y));
+        this.guiSlots.add(new FluidSlotWidget(this.container.getFluidConfigInventory(), 0, 0, x, y));
     }
 
     private void saveReportingValue() {
-        this.level.getLongValue().ifPresent(handler::setReportingValue);
+        this.level.getLongValue().ifPresent(container::setReportingValue);
     }
 
     @Override
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.REDSTONE_EMITTER,
-                RedstoneMode.LOW_SIGNAL);
+        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+                Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
         this.addButton(this.redstoneMode);
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
-        this.level.render(matrices, mouseX, mouseY, partialTicks);
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
+        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
+        this.level.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY) {
-        super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
+    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
 
-        this.textRenderer.draw(matrices, GuiText.FluidLevelEmitterUnit.text(), 110, 44, COLOR_DARK_GRAY);
+        this.font.drawString(matrixStack, GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
     }
 
     @Override

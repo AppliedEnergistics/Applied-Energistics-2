@@ -7,18 +7,18 @@ import java.util.Set;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
-import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.placement.NoPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 
 import appeng.api.features.AEFeature;
 import appeng.mixins.feature.ConfiguredFeaturesAccessor;
@@ -65,15 +65,15 @@ public final class AppEngBootstrap {
         Set<String> quartzOreBiomeBlacklist = new HashSet<>(AEConfig.instance().getQuartzOreBiomeBlacklist());
 
         // Add features to all existing biomes
-        for (Map.Entry<RegistryKey<Biome>, Biome> entry : BuiltinRegistries.BIOME.getEntries()) {
-            Identifier id = entry.getKey().getValue();
+        for (Map.Entry<RegistryKey<Biome>, Biome> entry : WorldGenRegistries.BIOME.getEntries()) {
+            ResourceLocation id = entry.getKey().getLocation();
             Biome b = entry.getValue();
             addMeteoriteWorldGen(id, b, meteoriteBiomeBlacklist);
             addQuartzWorldGen(id, b, quartzOreFeature, chargedQuartzOreFeature, quartzOreBiomeBlacklist);
         }
 
         // Listen to added biomes for post-processing
-        RegistryEntryAddedCallback.event(BuiltinRegistries.BIOME).register((i, id, biome) -> {
+        RegistryEntryAddedCallback.event(WorldGenRegistries.BIOME).register((i, id, biome) -> {
             addMeteoriteWorldGen(id, biome, meteoriteBiomeBlacklist);
             addQuartzWorldGen(id, biome, quartzOreFeature, chargedQuartzOreFeature, quartzOreBiomeBlacklist);
         });
@@ -89,13 +89,13 @@ public final class AppEngBootstrap {
         // There's a bidirectional map in the Structure class itself primarily for the
         // purposes of NBT serialization
         StructureFeatureAccessor.register(MeteoriteStructure.ID.toString(), MeteoriteStructure.INSTANCE,
-                GenerationStep.Feature.TOP_LAYER_MODIFICATION);
+                GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
 
         ConfiguredStructureFeaturesAccessor.register(MeteoriteStructure.ID.toString(),
                 MeteoriteStructure.CONFIGURED_INSTANCE);
     }
 
-    private static void addMeteoriteWorldGen(Identifier id, Biome b, Set<String> biomeBlacklist) {
+    private static void addMeteoriteWorldGen(ResourceLocation id, Biome b, Set<String> biomeBlacklist) {
         if (!AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
             AELog.debug("Not generating meteorites in %s because the feature is disabled", id);
             return;
@@ -115,7 +115,7 @@ public final class AppEngBootstrap {
         modifier.addStructureFeature(MeteoriteStructure.CONFIGURED_INSTANCE);
     }
 
-    private static void addQuartzWorldGen(Identifier id, Biome b, ConfiguredFeature<?, ?> quartzOre,
+    private static void addQuartzWorldGen(ResourceLocation id, Biome b, ConfiguredFeature<?, ?> quartzOre,
             ConfiguredFeature<?, ?> chargedQuartz, Set<String> biomeBlacklist) {
         if (!AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
             AELog.debug("Not generating quartz-ore in %s because the feature is disabled", id);
@@ -133,10 +133,10 @@ public final class AppEngBootstrap {
         }
 
         BiomeModifier modifier = new BiomeModifier(b);
-        modifier.addFeature(GenerationStep.Feature.UNDERGROUND_ORES, quartzOre);
+        modifier.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, quartzOre);
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
-            modifier.addFeature(GenerationStep.Feature.UNDERGROUND_DECORATION, chargedQuartz);
+            modifier.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION, chargedQuartz);
         }
     }
 
@@ -148,12 +148,13 @@ public final class AppEngBootstrap {
     private static ConfiguredFeature<?, ?> registerQuartzOreFeature() {
         // Tell Minecraft about our configured quartz ore feature
         BlockState quartzOreState = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
-        return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(),
-                Feature.ORE
-                        .configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, quartzOreState,
+        return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(), Feature.ORE
+                .withConfiguration(
+                        new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
                                 AEConfig.instance().getQuartzOresPerCluster()))
-                        .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(12, 12, 72))).spreadHorizontally()
-                        .repeat(AEConfig.instance().getQuartzOresClusterAmount()));
+                .withPlacement(Placement.RANGE/* RANGE */.configure(new TopSolidRangeConfig(12, 12, 72)))
+                .square/* spreadHorizontally */()
+                .func_242731_b/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
     }
 
     private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {
@@ -165,13 +166,13 @@ public final class AppEngBootstrap {
                 .getDefaultState();
         return ConfiguredFeaturesAccessor.register(AppEng.makeId("charged_quartz_ore").toString(),
                 ChargedQuartzOreFeature.INSTANCE
-                        .configure(new ChargedQuartzOreConfig(quartzOreState, chargedQuartzOreState,
+                        .withConfiguration(new ChargedQuartzOreConfig(quartzOreState, chargedQuartzOreState,
                                 AEConfig.instance().getSpawnChargedChance()))
-                        .decorate(Decorator.NOPE.configure(NopeDecoratorConfig.INSTANCE)));
+                        .withPlacement(Placement.NOPE.configure(NoPlacementConfig.INSTANCE)));
     }
 
     private static void registerDimension() {
-        Registry.register(Registry.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+        Registry.register(Registry.CHUNK_GENERATOR_CODEC, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
                 SpatialStorageChunkGenerator.CODEC);
     }
 

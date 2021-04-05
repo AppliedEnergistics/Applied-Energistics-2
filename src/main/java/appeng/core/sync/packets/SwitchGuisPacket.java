@@ -21,10 +21,10 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Identifier;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 import appeng.container.AEBaseContainer;
@@ -35,31 +35,31 @@ import appeng.core.sync.network.INetworkInfo;
 
 public class SwitchGuisPacket extends BasePacket {
 
-    private final ScreenHandlerType<?> newGui;
+    private final ContainerType<?> newGui;
 
-    public SwitchGuisPacket(final PacketByteBuf stream) {
-        this.newGui = Registry.SCREEN_HANDLER.get(stream.readIdentifier());
+    public SwitchGuisPacket(final PacketBuffer stream) {
+        this.newGui = Registry.MENU.getOrDefault(stream.readResourceLocation());
     }
 
     // api
-    public SwitchGuisPacket(final ScreenHandlerType<?> newGui) {
+    public SwitchGuisPacket(final ContainerType<?> newGui) {
         this.newGui = newGui;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
-        Identifier newGuiId = Registry.SCREEN_HANDLER.getId(newGui);
+        ResourceLocation newGuiId = Registry.MENU.getKey(newGui);
         if (newGuiId == null) {
             throw new IllegalArgumentException("Unregistered screen handler: " + newGui);
         }
-        data.writeIdentifier(newGuiId);
+        data.writeResourceLocation(newGuiId);
 
         this.configureWrite(data);
     }
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final ScreenHandler c = player.currentScreenHandler;
+        final Container c = player.openContainer;
         if (c instanceof AEBaseContainer) {
             final AEBaseContainer bc = (AEBaseContainer) c;
             final ContainerLocator locator = bc.getLocator();

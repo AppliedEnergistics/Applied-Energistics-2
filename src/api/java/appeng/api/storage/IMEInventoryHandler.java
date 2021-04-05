@@ -47,6 +47,7 @@ public interface IMEInventoryHandler<T extends IAEStack<T>> extends IMEInventory
      * inventory prior to any non-prioritized inventories.
      *
      * @param input - item that might be added
+     *
      * @return if its prioritized
      */
     boolean isPrioritized(T input);
@@ -55,6 +56,7 @@ public interface IMEInventoryHandler<T extends IAEStack<T>> extends IMEInventory
      * determine if an item can be accepted and stored.
      *
      * @param input - item that might be added
+     *
      * @return if the item can be added
      */
     boolean canAccept(T input);
@@ -81,6 +83,7 @@ public interface IMEInventoryHandler<T extends IAEStack<T>> extends IMEInventory
      * ignored, this allows you to do that.
      *
      * @param i - pass number ( 1 or 2 )
+     *
      * @return true, if this inventory is valid for this pass.
      */
     boolean validForPass(int i);

@@ -20,25 +20,25 @@ package appeng.block.networking;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.block.material.Material;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.Direction;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.tile.networking.ControllerBlockEntity;
+import appeng.tile.networking.ControllerTileEntity;
 
-public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
+public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
 
-    public enum ControllerBlockState implements StringIdentifiable {
+    public enum ControllerBlockState implements IStringSerializable {
         offline, online, conflicted;
 
         @Override
-        public String asString() {
+        public String getString() {
             return this.name();
         }
 
@@ -49,31 +49,31 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
      * patterns for a controller that is enclosed by other controllers, and since they are always offline, they do not
      * have the usual sub-states.
      */
-    public enum ControllerRenderType implements StringIdentifiable {
+    public enum ControllerRenderType implements IStringSerializable {
         block, column_x, column_y, column_z, inside_a, inside_b;
 
         @Override
-        public String asString() {
+        public String getString() {
             return this.name();
         }
 
     }
 
-    public static final EnumProperty<ControllerBlockState> CONTROLLER_STATE = EnumProperty.of("state",
+    public static final EnumProperty<ControllerBlockState> CONTROLLER_STATE = EnumProperty.create("state",
             ControllerBlockState.class);
 
-    public static final EnumProperty<ControllerRenderType> CONTROLLER_TYPE = EnumProperty.of("type",
+    public static final EnumProperty<ControllerRenderType> CONTROLLER_TYPE = EnumProperty.create("type",
             ControllerRenderType.class);
 
     public ControllerBlock() {
-        super(defaultProps(Material.METAL).strength(6));
+        super(defaultProps(Material.IRON).hardnessAndResistance(6));
         this.setDefaultState(this.getDefaultState().with(CONTROLLER_STATE, ControllerBlockState.offline)
                 .with(CONTROLLER_TYPE, ControllerRenderType.block));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(CONTROLLER_STATE);
         builder.add(CONTROLLER_TYPE);
     }
@@ -84,8 +84,8 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
      * rudimentary connected texture feel for the controller based on how it is placed.
      */
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState,
-            WorldAccess world, BlockPos pos, BlockPos facingPos) {
+    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world,
+            BlockPos pos, BlockPos facingPos) {
 
         // FIXME: this might work, or might _NOT_ work, but needs to be investigated
 
@@ -97,12 +97,12 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
         int z = pos.getZ();
 
         // Detect whether controllers are on both sides of the x, y, and z axes
-        final boolean xx = this.getBlockEntity(world, x - 1, y, z) != null
-                && this.getBlockEntity(world, x + 1, y, z) != null;
-        final boolean yy = this.getBlockEntity(world, x, y - 1, z) != null
-                && this.getBlockEntity(world, x, y + 1, z) != null;
-        final boolean zz = this.getBlockEntity(world, x, y, z - 1) != null
-                && this.getBlockEntity(world, x, y, z + 1) != null;
+        final boolean xx = this.getTileEntity(world, x - 1, y, z) != null
+                && this.getTileEntity(world, x + 1, y, z) != null;
+        final boolean yy = this.getTileEntity(world, x, y - 1, z) != null
+                && this.getTileEntity(world, x, y + 1, z) != null;
+        final boolean zz = this.getTileEntity(world, x, y, z - 1) != null
+                && this.getTileEntity(world, x, y, z + 1) != null;
 
         if (xx && !yy && !zz) {
             type = ControllerRenderType.column_x;
@@ -128,9 +128,9 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final ControllerBlockEntity tc = this.getBlockEntity(world, pos);
+        final ControllerTileEntity tc = this.getTileEntity(world, pos);
         if (tc != null) {
             tc.onNeighborChange(false);
         }

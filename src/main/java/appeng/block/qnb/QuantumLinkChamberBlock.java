@@ -23,17 +23,17 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.client.EffectType;
@@ -42,8 +42,8 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.QNBContainer;
 import appeng.core.AppEng;
 import appeng.helpers.AEMaterials;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
-import appeng.util.Platform;
+import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.util.InteractionUtil;
 
 public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
@@ -51,8 +51,8 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
     static {
         final double onePixel = 2.0 / 16.0;
-        SHAPE = VoxelShapes
-                .cuboid(new Box(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+        SHAPE = VoxelShapes.create(
+                new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 
     public QuantumLinkChamberBlock() {
@@ -60,37 +60,39 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
-        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
+    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
+        final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
         if (bridge != null) {
             if (bridge.hasQES()) {
                 if (AppEng.instance().shouldAddParticles(rand)) {
                     AppEng.instance().spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5,
-                            pos.getZ() + 0.5, null);
+                            pos.getZ() + 0.5,
+                            null);
                 }
             }
         }
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (p.isInSneakingPose()) {
-            return ActionResult.PASS;
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (InteractionUtil.isInAlternateUseMode(p)) {
+            return ActionResultType.PASS;
         }
 
-        final QuantumBridgeBlockEntity tg = this.getBlockEntity(w, pos);
+        final QuantumBridgeTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (Platform.isServer()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResult.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
-        return ActionResult.PASS;
+
+        return ActionResultType.PASS;
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return SHAPE;
     }
 

@@ -22,17 +22,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemAttributes;
@@ -97,19 +97,19 @@ import appeng.util.prioritylist.PrecisePriorityList;
 public class StorageBusPart extends UpgradeablePart
         implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost {
 
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/storage_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_base");
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/storage_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_off"));
 
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/storage_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_on"));
 
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new Identifier(AppEng.MOD_ID, "part/storage_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_has_channel"));
 
     private final IActionSource mySrc;
     private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory(this, 63);
@@ -181,14 +181,14 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.Config.readFromNBT(data, "config");
         this.priority = data.getInt("priority");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         this.Config.writeToNBT(data, "config");
         data.putInt("priority", this.priority);
@@ -204,8 +204,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     private void resetCache(final boolean fullReset) {
-        if (this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null
-                || this.getHost().getTile().getWorld().isClient) {
+        if (isRemote()) {
             return;
         }
 
@@ -253,9 +252,9 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void onNeighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
-            final BlockEntity te = w.getBlockEntity(neighbor);
+            final TileEntity te = w.getTileEntity(neighbor);
 
             // In case the TE was destroyed, we have to do a full reset immediately.
             if (te == null) {
@@ -273,8 +272,8 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
-        if (Platform.isServer()) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+        if (!isRemote()) {
             ContainerOpener.openContainer(StorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
@@ -327,7 +326,7 @@ public class StorageBusPart extends UpgradeablePart
         }
     }
 
-    private IMEInventory<IAEItemStack> getInventoryWrapper(BlockEntity target) {
+    private IMEInventory<IAEItemStack> getInventoryWrapper(TileEntity target) {
 
         Direction targetSide = this.getSide().getFacing().getOpposite();
 
@@ -361,7 +360,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     // TODO, LazyOptionals are cacheable this might need changing?
-    private int createHandlerHash(BlockEntity target) {
+    private int createHandlerHash(TileEntity target) {
         if (target == null) {
             return 0;
         }
@@ -381,11 +380,11 @@ public class StorageBusPart extends UpgradeablePart
         return 0;
     }
 
-    private FixedItemInv getFixedItemInv(BlockEntity target, Direction targetSide) {
+    private FixedItemInv getFixedItemInv(TileEntity target, Direction targetSide) {
         return MEAttributes.getFirstAttributeOnSide(ItemAttributes.FIXED_INV, target, targetSide);
     }
 
-    private IStorageMonitorableAccessor getMeAccessor(BlockEntity target, Direction targetSide) {
+    private IStorageMonitorableAccessor getMeAccessor(TileEntity target, Direction targetSide) {
         return MEAttributes.getFirstAttributeOnSide(MEAttributes.STORAGE_MONITORABLE_ACCESSOR, target, targetSide);
     }
 
@@ -397,8 +396,8 @@ public class StorageBusPart extends UpgradeablePart
         final boolean wasSleeping = this.monitor == null;
 
         this.cached = true;
-        final BlockEntity self = this.getHost().getTile();
-        final BlockEntity target = self.getWorld().getBlockEntity(self.getPos().offset(this.getSide().getFacing()));
+        final TileEntity self = this.getHost().getTile();
+        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -480,7 +479,7 @@ public class StorageBusPart extends UpgradeablePart
         return this.handler;
     }
 
-    private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
+    private void checkInterfaceVsStorageBus(final TileEntity target, final AEPartLocation side) {
         IInterfaceHost achievement = null;
 
         if (target instanceof IInterfaceHost) {
@@ -495,10 +494,10 @@ public class StorageBusPart extends UpgradeablePart
         }
 
         if (achievement != null && achievement.getActionableNode() != null) {
-            // Platform.increaseStat( achievement.getActionableNode().getPlayerID(),
+            // Platform.addStat( achievement.getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement()
             // );
-            // Platform.increaseStat( getActionableNode().getPlayerID(),
+            // Platform.addStat( getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement() );
         }
     }
@@ -560,7 +559,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public ScreenHandlerType<?> getContainerType() {
+    public ContainerType<?> getContainerType() {
         return StorageBusContainer.TYPE;
     }
 }

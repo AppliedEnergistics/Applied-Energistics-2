@@ -24,9 +24,9 @@ import java.util.Map;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.BasePacket;
@@ -37,11 +37,11 @@ import appeng.fluids.util.AEFluidStack;
 public class FluidSlotPacket extends BasePacket {
     private final Map<Integer, IAEFluidStack> list;
 
-    public FluidSlotPacket(final PacketByteBuf stream) {
+    public FluidSlotPacket(final PacketBuffer stream) {
         this.list = new HashMap<>();
-        CompoundTag tag = stream.readCompoundTag();
+        CompoundNBT tag = stream.readCompoundTag();
 
-        for (final String key : tag.getKeys()) {
+        for (final String key : tag.keySet()) {
             this.list.put(Integer.parseInt(key), AEFluidStack.fromNBT(tag.getCompound(key)));
         }
     }
@@ -49,16 +49,16 @@ public class FluidSlotPacket extends BasePacket {
     // api
     public FluidSlotPacket(final Map<Integer, IAEFluidStack> list) {
         this.list = list;
-        final CompoundTag sendTag = new CompoundTag();
+        final CompoundNBT sendTag = new CompoundNBT();
         for (Map.Entry<Integer, IAEFluidStack> fs : list.entrySet()) {
-            final CompoundTag tag = new CompoundTag();
+            final CompoundNBT tag = new CompoundNBT();
             if (fs.getValue() != null) {
                 fs.getValue().writeToNBT(tag);
             }
             sendTag.put(fs.getKey().toString(), tag);
         }
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
         data.writeInt(this.getPacketID());
         data.writeCompoundTag(sendTag);
         this.configureWrite(data);
@@ -66,7 +66,7 @@ public class FluidSlotPacket extends BasePacket {
 
     @Override
     public void clientPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final ScreenHandler c = player.currentScreenHandler;
+        final Container c = player.openContainer;
         if (c instanceof IFluidSyncContainer) {
             ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
         }
@@ -74,7 +74,7 @@ public class FluidSlotPacket extends BasePacket {
 
     @Override
     public void serverPacketData(INetworkInfo manager, PlayerEntity player) {
-        final ScreenHandler c = player.currentScreenHandler;
+        final Container c = player.openContainer;
         if (c instanceof IFluidSyncContainer) {
             ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
         }

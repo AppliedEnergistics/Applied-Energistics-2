@@ -19,7 +19,7 @@
 package appeng.me.storage;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -123,7 +123,7 @@ public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventor
         return this.getWhitelist();
     }
 
-    CompoundTag openNbtData() {
+    CompoundNBT openNbtData() {
         return this.getCellInv().getItemStack().getOrCreateTag();
     }
 }

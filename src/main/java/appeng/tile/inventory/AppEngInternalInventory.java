@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -110,32 +110,33 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
     }
 
     protected void onContentsChanged(int slot, ItemStack previous, ItemStack current) {
-        if (this.getBlockEntity() != null && this.eventsEnabled() && !this.dirtyFlag) {
+        if (this.getTileEntity() != null && this.eventsEnabled() && !this.dirtyFlag) {
             this.dirtyFlag = true;
             ItemStack newStack = current.copy();
             ItemStack oldStack = previous;
             InvOperation op = InvOperation.SET;
 
-            if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.areItemsEqual(newStack, oldStack)) {
+            if (newStack.isEmpty() || oldStack.isEmpty()
+                    || ItemStack.areItemsEqualIgnoreDurability(newStack, oldStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
-                    newStack.decrement(oldStack.getCount());
+                    newStack.shrink(oldStack.getCount());
                     oldStack = ItemStack.EMPTY;
                     op = InvOperation.INSERT;
                 } else {
-                    oldStack.decrement(newStack.getCount());
+                    oldStack.shrink(newStack.getCount());
                     newStack = ItemStack.EMPTY;
                     op = InvOperation.EXTRACT;
                 }
             }
 
-            this.getBlockEntity().onChangeInventory(this, slot, op, oldStack, newStack);
-            this.getBlockEntity().saveChanges();
+            this.getTileEntity().onChangeInventory(this, slot, op, oldStack, newStack);
+            this.getTileEntity().saveChanges();
             this.dirtyFlag = false;
         }
     }
 
     protected boolean eventsEnabled() {
-        return Platform.isServer() || this.isEnableClientEvents();
+        return this.te != null && !this.te.isRemote() || this.isEnableClientEvents();
     }
 
     public void setMaxStackSize(final int slot, final int size) {
@@ -181,18 +182,18 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
         return true;
     }
 
-    public void writeToNBT(final CompoundTag data, final String name) {
+    public void writeToNBT(final CompoundNBT data, final String name) {
         data.put(name, this.toTag());
     }
 
-    public void readFromNBT(final CompoundTag data, final String name) {
-        final CompoundTag c = data.getCompound(name);
+    public void readFromNBT(final CompoundNBT data, final String name) {
+        final CompoundNBT c = data.getCompound(name);
         if (c != null) {
             this.readFromNBT(c);
         }
     }
 
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         this.fromTag(data);
     }
 
@@ -209,7 +210,7 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
         this.enableClientEvents = enableClientEvents;
     }
 
-    private IAEAppEngInventory getBlockEntity() {
+    private IAEAppEngInventory getTileEntity() {
         return this.te;
     }
 

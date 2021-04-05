@@ -24,13 +24,13 @@ import java.util.function.DoubleSupplier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.config.AccessRestriction;
@@ -45,7 +45,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     private static final String MAX_POWER_NBT_KEY = "internalMaxPower";
     private final DoubleSupplier powerCapacity;
 
-    public AEBasePoweredItem(final DoubleSupplier powerCapacity, Settings props) {
+    public AEBasePoweredItem(final DoubleSupplier powerCapacity, Properties props) {
         super(props);
         // FIXME this.setFull3D();
 
@@ -54,9 +54,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
-            final TooltipContext advancedTooltips) {
-        final CompoundTag tag = stack.getTag();
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        final CompoundNBT tag = stack.getTag();
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getAEMaxPower(stack);
 
@@ -66,10 +66,10 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
         final double percent = internalCurrentPower / internalMaxPower;
 
-        lines.add(GuiText.StoredEnergy.text().copy()
-                .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                .append(new TranslatableText(PowerUnits.AE.unlocalizedName))
-                .append(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
+        lines.add(GuiText.StoredEnergy.text().deepCopy()
+                .appendString(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+                .append(PowerUnits.AE.textComponent())
+                .appendString(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
     }
 
     @Override
@@ -78,12 +78,12 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> items) {
-        super.appendStacks(group, items);
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
 
-        if (this.isIn(group)) {
+        if (this.isInGroup(group)) {
             final ItemStack charged = new ItemStack(this, 1);
-            final CompoundTag tag = charged.getOrCreateTag();
+            final CompoundNBT tag = charged.getOrCreateTag();
             tag.putDouble(CURRENT_POWER_NBT_KEY, this.getAEMaxPower(charged));
             tag.putDouble(MAX_POWER_NBT_KEY, this.getAEMaxPower(charged));
 
@@ -115,7 +115,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         final double overflow = amount - required;
 
         if (mode == Actionable.MODULATE) {
-            final CompoundTag data = is.getOrCreateTag();
+            final CompoundNBT data = is.getOrCreateTag();
             final double toAdd = Math.min(amount, required);
 
             data.putDouble(CURRENT_POWER_NBT_KEY, currentStorage + toAdd);
@@ -130,7 +130,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         final double fulfillable = Math.min(amount, currentStorage);
 
         if (mode == Actionable.MODULATE) {
-            final CompoundTag data = is.getOrCreateTag();
+            final CompoundNBT data = is.getOrCreateTag();
 
             data.putDouble(CURRENT_POWER_NBT_KEY, currentStorage - fulfillable);
         }
@@ -145,7 +145,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @Override
     public double getAECurrentPower(final ItemStack is) {
-        final CompoundTag data = is.getOrCreateTag();
+        final CompoundNBT data = is.getOrCreateTag();
 
         return data.getDouble(CURRENT_POWER_NBT_KEY);
     }

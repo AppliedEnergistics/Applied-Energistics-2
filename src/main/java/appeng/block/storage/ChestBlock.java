@@ -22,16 +22,16 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.util.ActionResult;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -39,25 +39,26 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ChestContainer;
 import appeng.core.localization.PlayerMessages;
-import appeng.tile.storage.ChestBlockEntity;
+import appeng.tile.storage.ChestTileEntity;
+import appeng.util.InteractionUtil;
 
-public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
+public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
 
-    private final static BooleanProperty LIGHTS_ON = BooleanProperty.of("lights_on");
+    private final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
 
     public ChestBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.IRON));
         this.setDefaultState(this.getDefaultState().with(LIGHTS_ON, false));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(LIGHTS_ON);
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ChestBlockEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ChestTileEntity te) {
         DriveSlotState slotState = DriveSlotState.EMPTY;
 
         if (te.getCellCount() >= 1) {
@@ -72,26 +73,24 @@ public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        final ChestBlockEntity tg = this.getBlockEntity(w, pos);
-        if (tg != null && !p.isInSneakingPose()) {
-            if (w.isClient()) {
-                return ActionResult.SUCCESS;
-            }
-
-            if (hit.getSide() == tg.getUp()) {
-                if (!tg.openGui(p)) {
-                    p.sendSystemMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.NIL_UUID);
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        final ChestTileEntity tg = this.getTileEntity(w, pos);
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
+            if (!w.isRemote()) {
+                if (hit.getFace() == tg.getUp()) {
+                    if (!tg.openGui(p)) {
+                        p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.DUMMY_UUID);
+                    }
+                } else {
+                    ContainerOpener.openContainer(ChestContainer.TYPE, p,
+                            ContainerLocator.forTileEntitySide(tg, hit.getFace()));
                 }
-            } else {
-                ContainerOpener.openContainer(ChestContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
             }
 
-            return ActionResult.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
-        return ActionResult.PASS;
+        return ActionResultType.PASS;
     }
 }

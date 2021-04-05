@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
@@ -49,7 +49,7 @@ import appeng.parts.PartModel;
 public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
 
     @PartModels
-    private static final IPartModel MODELS = new PartModel(new Identifier(AppEng.MOD_ID, "part/quartz_fiber"));
+    private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/quartz_fiber"));
 
     private final AENetworkProxy outerProxy = new AENetworkProxy(this, "outer",
             this.getProxy().getMachineRepresentation(), true);
@@ -73,13 +73,13 @@ public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
     }
 
     @Override
-    public void readFromNBT(final CompoundTag extra) {
+    public void readFromNBT(final CompoundNBT extra) {
         super.readFromNBT(extra);
         this.outerProxy.readFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(final CompoundTag extra) {
+    public void writeToNBT(final CompoundNBT extra) {
         super.writeToNBT(extra);
         this.outerProxy.writeToNBT(extra);
     }
@@ -97,7 +97,7 @@ public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
         super.setPartHostInfo(side, host, tile);
         this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
     }

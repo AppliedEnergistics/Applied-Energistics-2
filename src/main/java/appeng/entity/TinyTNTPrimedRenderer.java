@@ -18,29 +18,33 @@
 
 package appeng.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.TntMinecartEntityRenderer;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.TNTMinecartRenderer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 
 @Environment(EnvType.CLIENT)
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
-    public TinyTNTPrimedRenderer(final EntityRenderDispatcher manager) {
+    public TinyTNTPrimedRenderer(final EntityRendererManager manager) {
         super(manager);
-        this.shadowRadius = 0.25F;
+        this.shadowSize = 0.25F;
     }
 
     @Override
     public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, MatrixStack mStack,
-            VertexConsumerProvider buffers, int packedLight) {
+            IRenderTypeBuffer buffers, int packedLight) {
+        final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
         mStack.push();
         mStack.translate(0, 0.25F, 0);
         float f2;
@@ -63,17 +67,18 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         }
 
         mStack.scale(0.5f, 0.5f, 0.5f);
-        mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
+        f2 = (1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
+        mStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
-        mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90.0F));
-        TntMinecartEntityRenderer.renderFlashingBlock(Blocks.TNT.getDefaultState(), mStack, buffers, packedLight,
+        mStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+        TNTMinecartRenderer.renderTntFlash(Blocks.TNT.getDefaultState(), mStack, buffers, packedLight,
                 tnt.getFuse() / 5 % 2 == 0);
         mStack.pop();
         super.render(tnt, entityYaw, partialTicks, mStack, buffers, packedLight);
     }
 
     @Override
-    public Identifier getTexture(final TinyTNTPrimedEntity entity) {
-        return SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE;
+    public ResourceLocation getEntityTexture(final TinyTNTPrimedEntity entity) {
+        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     }
 }

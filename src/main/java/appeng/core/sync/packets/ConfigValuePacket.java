@@ -20,12 +20,12 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 
 import appeng.api.config.FuzzyMode;
@@ -56,7 +56,7 @@ public class ConfigValuePacket extends BasePacket {
     private final String Name;
     private final String Value;
 
-    public ConfigValuePacket(final PacketByteBuf stream) {
+    public ConfigValuePacket(final PacketBuffer stream) {
         this.Name = stream.readString(MAX_STRING_LENGTH);
         this.Value = stream.readString(MAX_STRING_LENGTH);
     }
@@ -66,7 +66,7 @@ public class ConfigValuePacket extends BasePacket {
         this.Name = name;
         this.Value = value;
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
 
@@ -78,23 +78,24 @@ public class ConfigValuePacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final ScreenHandler c = player.currentScreenHandler;
-        if (this.Name.equals("Item") && ((!player.getStackInHand(Hand.MAIN_HAND).isEmpty()
-                && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem)
-                || (!player.getStackInHand(Hand.OFF_HAND).isEmpty()
-                        && player.getStackInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem))) {
+        final Container c = player.openContainer;
+
+        if (this.Name.equals("Item") && ((!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
+                && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem)
+                || (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
+                        && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem))) {
             final Hand hand;
-            if (!player.getStackInHand(Hand.MAIN_HAND).isEmpty()
-                    && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {
+            if (!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
+                    && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {
                 hand = Hand.MAIN_HAND;
-            } else if (!player.getStackInHand(Hand.OFF_HAND).isEmpty()
-                    && player.getStackInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
+            } else if (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
+                    && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
                 hand = Hand.OFF_HAND;
             } else {
                 return;
             }
 
-            final ItemStack is = player.getStackInHand(hand);
+            final ItemStack is = player.getHeldItem(hand);
             final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
             si.onWheel(is, this.Value.equals("WheelUp"));
         } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingCPUCyclingContainer) {
@@ -186,12 +187,12 @@ public class ConfigValuePacket extends BasePacket {
 
     @Override
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final ScreenHandler c = player.currentScreenHandler;
+        final Container c = player.openContainer;
 
         if (this.Name.startsWith("SyncDat.")) {
             ((AEBaseContainer) c).stringSync(Integer.parseInt(this.Name.substring(8)), this.Value);
         } else if (this.Name.equals("CraftingStatus") && this.Value.equals("Clear")) {
-            final Screen gs = MinecraftClient.getInstance().currentScreen;
+            final Screen gs = Minecraft.getInstance().currentScreen;
             if (gs instanceof CraftingCPUScreen) {
                 ((CraftingCPUScreen<?>) gs).clearItems();
             }

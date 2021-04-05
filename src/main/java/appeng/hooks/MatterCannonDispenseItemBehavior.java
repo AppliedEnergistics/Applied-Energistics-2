@@ -19,31 +19,31 @@
 package appeng.hooks;
 
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.dispenser.ItemDispenserBehavior;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPointer;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.util.AEPartLocation;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.util.FakePlayer;
 import appeng.util.Platform;
 
-public final class MatterCannonDispenseItemBehavior extends ItemDispenserBehavior {
+public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack dispenseSilently(final BlockPointer dispenser, ItemStack dispensedItem) {
+    protected ItemStack dispenseStack(final IBlockSource dispenser, ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
         if (i instanceof MatterCannonItem) {
             final Direction Direction = dispenser.getBlockState().get(DispenserBlock.FACING);
             AEPartLocation dir = AEPartLocation.INTERNAL;
             for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
-                if (Direction.getOffsetX() == d.xOffset && Direction.getOffsetY() == d.yOffset
-                        && Direction.getOffsetZ() == d.zOffset) {
+                if (Direction.getXOffset() == d.xOffset && Direction.getYOffset() == d.yOffset
+                        && Direction.getZOffset() == d.zOffset) {
                     dir = d;
                 }
             }
@@ -53,11 +53,11 @@ public final class MatterCannonDispenseItemBehavior extends ItemDispenserBehavio
             final World w = dispenser.getWorld();
             if (w instanceof ServerWorld) {
                 final PlayerEntity p = FakePlayer.getOrCreate((ServerWorld) w);
-                Platform.configurePlayer(p, dir, dispenser.getBlockEntity());
+                Platform.configurePlayer(p, dir, dispenser.getBlockTileEntity());
 
-                p.updatePosition(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
+                p.setPosition(p.getPosX() + dir.xOffset, p.getPosY() + dir.yOffset, p.getPosZ() + dir.zOffset);
 
-                dispensedItem = tm.use(w, p, null).getValue();
+                dispensedItem = tm.onItemRightClick(w, p, null).getResult();
             }
         }
         return dispensedItem;

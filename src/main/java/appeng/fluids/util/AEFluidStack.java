@@ -25,8 +25,8 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
@@ -80,8 +80,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         return new AEFluidStack(fluid, amount);
     }
 
-    public static IAEFluidStack fromNBT(final CompoundTag data) {
-        CompoundTag fluidId = data.getCompound(NBT_FLUID_ID);
+    public static IAEFluidStack fromNBT(final CompoundNBT data) {
+        CompoundNBT fluidId = data.getCompound(NBT_FLUID_ID);
         FluidKey fluid = FluidKey.fromTag(fluidId);
         if (fluid == FluidKeys.EMPTY) {
             return null;
@@ -106,7 +106,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         data.put(NBT_FLUID_ID, this.fluid.toTag());
         data.putLong(NBT_STACKSIZE, this.getStackSize());
         data.putLong(NBT_REQUESTABLE, this.getCountRequestable());
@@ -201,7 +201,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         return ItemStack.EMPTY;
     }
 
-    public static IAEFluidStack fromPacket(final PacketByteBuf buffer) {
+    public static IAEFluidStack fromPacket(final PacketBuffer buffer) {
         final boolean isCraftable = buffer.readBoolean();
 
         FluidKey fluid = FluidKey.fromTag(buffer.readCompoundTag());
@@ -215,7 +215,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     @Override
-    public void writeToPacket(final PacketByteBuf buffer) {
+    public void writeToPacket(final PacketBuffer buffer) {
         buffer.writeBoolean(this.isCraftable());
         buffer.writeCompoundTag(fluid.toTag());
         buffer.writeVarLong(this.getStackSize());

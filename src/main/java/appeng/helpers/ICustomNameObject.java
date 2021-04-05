@@ -18,11 +18,11 @@
 
 package appeng.helpers;
 
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
 
 public interface ICustomNameObject {
 
-    Text getCustomInventoryName();
+    ITextComponent getCustomInventoryName();
 
     boolean hasCustomInventoryName();
 }

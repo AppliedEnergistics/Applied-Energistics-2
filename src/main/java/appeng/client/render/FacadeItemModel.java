@@ -24,12 +24,12 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.core.AppEng;
@@ -41,20 +41,20 @@ import appeng.core.AppEng;
 public class FacadeItemModel implements BasicUnbakedModel {
 
     // We use this to get the default item transforms and make our lives easier
-    private static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "item/facade_base");
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/facade_base");
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
-        BakedModel bakedBaseModel = loader.bake(MODEL_BASE, rotationContainer);
-        FacadeBuilder facadeBuilder = new FacadeBuilder(loader);
+    public IBakedModel bakeModel(ModelBakery loader, Function<RenderMaterial, TextureAtlasSprite> textureGetter,
+            IModelTransform rotationContainer, ResourceLocation modelId) {
+        IBakedModel bakedBaseModel = loader.bake(MODEL_BASE, rotationContainer);
+        FacadeBuilder facadeBuilder = new FacadeBuilder(loader, null);
 
         return new FacadeBakedItemModel(bakedBaseModel, facadeBuilder);
     }
 
     @Override
-    public Collection<Identifier> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return Collections.singleton(MODEL_BASE);
     }
 }

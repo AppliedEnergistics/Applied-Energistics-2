@@ -20,9 +20,9 @@ package appeng.worldgen.meteorite.debug;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.WorldView;
+import net.minecraft.world.IWorldReader;
 
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
@@ -35,11 +35,11 @@ public class MeteoriteSpawner {
     public MeteoriteSpawner() {
     }
 
-    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(WorldView world, BlockPos startPos,
+    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(IWorldReader world, BlockPos startPos,
             float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
-        BlockPos.Mutable mutablePos = startPos.mutableCopy();
+        BlockPos.Mutable mutablePos = startPos.toMutable();
 
         mutablePos.move(Direction.DOWN, stepSize);
 
@@ -56,7 +56,7 @@ public class MeteoriteSpawner {
     }
 
     @Nullable
-    public PlacedMeteoriteSettings trySpawnMeteorite(WorldView world, BlockPos pos, float coreRadius,
+    public PlacedMeteoriteSettings trySpawnMeteorite(IWorldReader world, BlockPos pos, float coreRadius,
             CraterType craterType, boolean pureCrater) {
         if (!areSurroundingsSuitable(world, pos)) {
             return null;
@@ -79,18 +79,18 @@ public class MeteoriteSpawner {
         return new PlacedMeteoriteSettings(pos, coreRadius, craterType, null, pureCrater, craterLake);
     }
 
-    private static boolean isAirBelowSpawnPoint(WorldView w, BlockPos pos) {
-        BlockPos.Mutable testPos = pos.mutableCopy();
+    private static boolean isAirBelowSpawnPoint(IWorldReader w, BlockPos pos) {
+        BlockPos.Mutable testPos = pos.toMutable();
         for (int j = pos.getY() - 15; j < pos.getY() - 1; j++) {
             testPos.setY(j);
-            if (w.isAir(testPos)) {
+            if (w.isAirBlock(testPos)) {
                 return true;
             }
         }
         return false;
     }
 
-    private int countBlockWithSkyLight(WorldView w, BlockPos pos) {
+    private int countBlockWithSkyLight(IWorldReader w, BlockPos pos) {
         int skyMode = 0;
 
         BlockPos.Mutable testPos = new BlockPos.Mutable();
@@ -100,7 +100,7 @@ public class MeteoriteSpawner {
                 testPos.setY(j);
                 for (int k = pos.getZ() - 15; k < pos.getZ() + 15; k++) {
                     testPos.setZ(k);
-                    if (w.isSkyVisibleAllowingSea(testPos)) {
+                    if (w.canBlockSeeSky(testPos)) {
                         skyMode++;
                     }
                 }
@@ -109,7 +109,7 @@ public class MeteoriteSpawner {
         return skyMode;
     }
 
-    private boolean areSurroundingsSuitable(WorldView w, BlockPos pos) {
+    private boolean areSurroundingsSuitable(IWorldReader w, BlockPos pos) {
         int realValidBlocks = 0;
 
         BlockPos.Mutable testPos = new BlockPos.Mutable();

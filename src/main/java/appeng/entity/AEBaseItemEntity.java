@@ -22,10 +22,10 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.Packet;
-import net.minecraft.util.math.Box;
+import net.minecraft.network.IPacket;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import appeng.core.sync.packets.ICustomEntity;
@@ -40,18 +40,18 @@ public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEnti
     protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final World world, final double x,
             final double y, final double z, final ItemStack stack) {
         this(entityType, world);
-        this.updatePosition(x, y, z);
-        this.yaw = this.random.nextFloat() * 360.0F;
-        this.setVelocity(this.random.nextDouble() * 0.2D - 0.1D, 0.2D, this.random.nextDouble() * 0.2D - 0.1D);
-        this.setStack(stack);
+        this.setPosition(x, y, z);
+        this.rotationYaw = this.rand.nextFloat() * 360.0F;
+        this.setMotion(this.rand.nextDouble() * 0.2D - 0.1D, 0.2D, this.rand.nextDouble() * 0.2D - 0.1D);
+        this.setItem(stack);
     }
 
-    protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final Box region) {
-        return this.world.getOtherEntities(this, region);
+    protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final AxisAlignedBB region) {
+        return this.world.getEntitiesWithinAABBExcludingEntity(this, region);
     }
 
     @Override
-    public Packet<?> createSpawnPacket() {
+    public IPacket<?> createSpawnPacket() {
         return SpawnEntityPacket.create(this);
     }
 

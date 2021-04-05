@@ -1,28 +1,47 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.tesr;
 
 import java.util.List;
 import java.util.Random;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Quaternion;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -30,26 +49,26 @@ import appeng.api.features.InscriberProcessType;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberRecipe;
-import appeng.tile.misc.InscriberBlockEntity;
+import appeng.tile.misc.InscriberTileEntity;
 
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
  */
-public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntity> {
+public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity> {
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final SpriteIdentifier TEXTURE_INSIDE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "block/inscriber_inside"));
+    private static final RenderMaterial TEXTURE_INSIDE = new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
 
-    public static final ImmutableList<SpriteIdentifier> SPRITES = ImmutableList.of(TEXTURE_INSIDE);
+    public static final ImmutableList<RenderMaterial> SPRITES = ImmutableList.of(TEXTURE_INSIDE);
 
-    public InscriberTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
+    public InscriberTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(InscriberBlockEntity tile, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
+    public void render(InscriberTileEntity tile, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
             int combinedLight, int combinedOverlay) {
 
         // render inscriber
@@ -88,9 +107,9 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
         final float TwoPx = 2.0f / 16.0f;
         final float base = 0.4f;
 
-        final Sprite tas = TEXTURE_INSIDE.getSprite();
+        final TextureAtlasSprite tas = TEXTURE_INSIDE.getSprite();
 
-        VertexConsumer buffer = buffers.getBuffer(RenderLayer.getSolid());
+        IVertexBuilder buffer = buffers.getBuffer(RenderType.getSolid());
 
         // Bottom of Top Stamp
         addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 13, combinedOverlay, combinedLight, Direction.DOWN);
@@ -160,7 +179,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
                     // completing
                     // the press animation
                     renderPresses = ir.getProcessType() == InscriberProcessType.INSCRIBE;
-                    is = ir.getOutput().copy();
+                    is = ir.getRecipeOutput().copy();
                 }
             }
             this.renderItem(ms, is, 0.0f, buffers, combinedLight, combinedOverlay);
@@ -177,41 +196,42 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
         ms.pop();
     }
 
-    private static void addVertex(VertexConsumer vb, MatrixStack ms, Sprite sprite, float x, float y, float z,
-            double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
-        vb.vertex(ms.peek().getModel(), x, y, z);
+    private static void addVertex(IVertexBuilder vb, MatrixStack ms, TextureAtlasSprite sprite, float x, float y,
+            float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
+        vb.pos(ms.getLast().getMatrix(), x, y, z);
         vb.color(1.0f, 1.0f, 1.0f, 1.0f);
-        vb.texture(sprite.getFrameU(texU), sprite.getFrameV(texV));
+        vb.tex(sprite.getInterpolatedU(texU), sprite.getInterpolatedV(texV));
         vb.overlay(overlayUV);
-        vb.light(lightmapUV);
-        vb.normal(ms.peek().getNormal(), front.getOffsetX(), front.getOffsetY(), front.getOffsetZ());
-        vb.next();
+        vb.lightmap(lightmapUV);
+        vb.normal(ms.getLast().getNormal(), front.getXOffset(), front.getYOffset(), front.getZOffset());
+        vb.endVertex();
     }
 
-    private void renderItem(MatrixStack ms, final ItemStack stack, final float o, VertexConsumerProvider buffers,
+    private void renderItem(MatrixStack ms, final ItemStack stack, final float o, IRenderTypeBuffer buffers,
             int combinedLight, int combinedOverlay) {
         if (!stack.isEmpty()) {
             ms.push();
             // move to center
             ms.translate(0.5f, 0.5f + o, 0.5f);
-            ms.multiply(new Quaternion(90, 0, 0, true));
+            ms.rotate(new Quaternion(90, 0, 0, true));
             // set scale
             ms.scale(ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE);
 
-            ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+            ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
             // heuristic to scale items down much further than blocks,
             // the assumption here is that the generated item models will return their faces
             // for direction=null, while a block-model will have their faces for
             // cull-faces, but not direction=null
-            BakedModel model = itemRenderer.getModels().getModel(stack);
+            IBakedModel model = itemRenderer.getItemModelMesher().getItemModel(stack);
             List<BakedQuad> quads = model.getQuads(null, null, new Random());
             // Note: quads may be null for mods implementing FabricBakedModel without caring about getQuads.
             if (quads != null && !quads.isEmpty()) {
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
-            itemRenderer.renderItem(stack, ModelTransformation.Mode.FIXED, combinedLight, combinedOverlay, ms, buffers);
+            itemRenderer.renderItem(stack, ItemCameraTransforms.TransformType.FIXED, combinedLight, combinedOverlay, ms,
+                    buffers);
             ms.pop();
         }
     }

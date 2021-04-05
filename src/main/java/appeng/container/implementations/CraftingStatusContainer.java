@@ -20,9 +20,9 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.text.Text;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -33,12 +33,12 @@ import appeng.container.guisync.GuiSync;
 
 public class CraftingStatusContainer extends CraftingCPUContainer implements CraftingCPUCyclingContainer {
 
-    public static ScreenHandlerType<CraftingStatusContainer> TYPE;
+    public static ContainerType<CraftingStatusContainer> TYPE;
 
     private static final ContainerHelper<CraftingStatusContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftingStatusContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
-    public static CraftingStatusContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static CraftingStatusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -52,20 +52,20 @@ public class CraftingStatusContainer extends CraftingCPUContainer implements Cra
     public boolean noCPU = true;
 
     @GuiSync(7)
-    public Text cpuName;
+    public ITextComponent cpuName;
 
     public CraftingStatusContainer(int id, final PlayerInventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         IGrid network = this.getNetwork();
         if (isServer() && network != null) {
             cpuCycler.detectAndSendChanges(network);
         }
 
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     private boolean cpuMatches(final ICraftingCPU c) {

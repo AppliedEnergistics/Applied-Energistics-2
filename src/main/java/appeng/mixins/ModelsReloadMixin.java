@@ -7,17 +7,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.bootstrap.ModelsReloadCallback;
 
-@Mixin(ModelLoader.class)
+@Mixin(ModelBakery.class)
 public class ModelsReloadMixin {
 
-    @Inject(method = "getBakedModelMap", at = @At("RETURN"))
-    public void onGetBakedModelMap(CallbackInfoReturnable<Map<Identifier, BakedModel>> ci) {
+    @Inject(method = "getTopBakedModels", at = @At("RETURN"))
+    public void onGetBakedModelMap(CallbackInfoReturnable<Map<ResourceLocation, IBakedModel>> ci) {
         ModelsReloadCallback.EVENT.invoker().onModelsReloaded(ci.getReturnValue());
     }
 

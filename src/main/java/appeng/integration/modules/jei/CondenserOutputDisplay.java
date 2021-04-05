@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
@@ -14,7 +14,7 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.core.Api;
-import appeng.tile.misc.CondenserBlockEntity;
+import appeng.tile.misc.CondenserTileEntity;
 
 public class CondenserOutputDisplay implements RecipeDisplay {
 
@@ -41,7 +41,7 @@ public class CondenserOutputDisplay implements RecipeDisplay {
     }
 
     @Override
-    public Identifier getRecipeCategory() {
+    public ResourceLocation getRecipeCategory() {
         return CondenserCategory.UID;
     }
 
@@ -73,7 +73,7 @@ public class CondenserOutputDisplay implements RecipeDisplay {
     private void addViableComponent(CondenserOutput condenserOutput, List<EntryStack> viableComponents,
             ItemStack itemStack) {
         IStorageComponent comp = (IStorageComponent) itemStack.getItem();
-        int storage = comp.getBytes(itemStack) * CondenserBlockEntity.BYTE_MULTIPLIER;
+        int storage = comp.getBytes(itemStack) * CondenserTileEntity.BYTE_MULTIPLIER;
         if (storage >= condenserOutput.requiredPower) {
             viableComponents.add(EntryStack.create(itemStack));
         }

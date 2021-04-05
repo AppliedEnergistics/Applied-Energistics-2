@@ -20,71 +20,72 @@ package appeng.client.render.effects;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.client.particle.SpriteBillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particles.BasicParticleType;
 
 import appeng.api.util.AEPartLocation;
 
-public class MatterCannonFX extends SpriteBillboardParticle {
+public class MatterCannonFX extends SpriteTexturedParticle {
 
-    public MatterCannonFX(ClientWorld world, final double x, final double y, final double z, SpriteProvider sprite) {
-        super(world, x, y, z);
-        this.gravityStrength = 0;
-        this.colorBlue = 1;
-        this.colorGreen = 1;
-        this.colorRed = 1;
-        this.colorAlpha = 1.4f;
-        this.scale = 1.1f;
-        this.velocityX = 0.0f;
-        this.velocityY = 0.0f;
-        this.velocityZ = 0.0f;
-        this.setSprite(sprite);
+    public MatterCannonFX(final ClientWorld par1World, final double x, final double y, final double z,
+            IAnimatedSprite sprite) {
+        super(par1World, x, y, z);
+        this.particleGravity = 0;
+        this.particleBlue = 1;
+        this.particleGreen = 1;
+        this.particleRed = 1;
+        this.particleAlpha = 1.4f;
+        this.particleScale = 1.1f;
+        this.motionX = 0.0f;
+        this.motionY = 0.0f;
+        this.motionZ = 0.0f;
+        this.selectSpriteRandomly(sprite);
     }
 
     public void fromItem(final AEPartLocation d) {
-        this.scale *= 1.2f;
+        this.particleScale *= 1.2f;
     }
 
     @Override
-    public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
     public void tick() {
-        this.prevPosX = this.x;
-        this.prevPosY = this.y;
-        this.prevPosZ = this.z;
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
 
         if (this.age++ >= this.maxAge) {
-            this.markDead();
+            this.setExpired();
         }
 
-        this.velocityY -= 0.04D * this.gravityStrength;
-        this.move(this.velocityX, this.velocityY, this.velocityZ);
-        this.velocityX *= 0.9800000190734863D;
-        this.velocityY *= 0.9800000190734863D;
-        this.velocityZ *= 0.9800000190734863D;
+        this.motionY -= 0.04D * this.particleGravity;
+        this.move(this.motionX, this.motionY, this.motionZ);
+        this.motionX *= 0.9800000190734863D;
+        this.motionY *= 0.9800000190734863D;
+        this.motionZ *= 0.9800000190734863D;
 
-        this.scale *= 1.19f;
-        this.colorAlpha *= 0.59f;
+        this.particleScale *= 1.19f;
+        this.particleAlpha *= 0.59f;
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<DefaultParticleType> {
-        private final SpriteProvider spriteSet;
+    public static class Factory implements IParticleFactory<BasicParticleType> {
+        private final IAnimatedSprite spriteSet;
 
-        public Factory(SpriteProvider spriteSet) {
+        public Factory(IAnimatedSprite spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(DefaultParticleType effect, ClientWorld world, double x, double y, double z,
+        public Particle makeParticle(BasicParticleType data, ClientWorld world, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             return new MatterCannonFX(world, x, y, z, spriteSet);
         }

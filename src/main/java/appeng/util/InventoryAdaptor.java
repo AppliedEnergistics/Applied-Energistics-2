@@ -18,10 +18,10 @@
 
 package appeng.util;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 
 import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -39,7 +39,7 @@ import appeng.util.inv.ItemSlot;
  * import/export buses.
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
-    public static InventoryAdaptor getAdaptor(final BlockEntity te, final Direction d) {
+    public static InventoryAdaptor getAdaptor(final TileEntity te, final Direction d) {
         if (te == null) {
             return null;
         }

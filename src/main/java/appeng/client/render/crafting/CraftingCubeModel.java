@@ -23,13 +23,13 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.client.render.BasicUnbakedModel;
@@ -40,20 +40,20 @@ import appeng.core.AppEng;
  */
 public class CraftingCubeModel implements BasicUnbakedModel {
 
-    private final static SpriteIdentifier RING_CORNER = texture("ring_corner");
-    private final static SpriteIdentifier RING_SIDE_HOR = texture("ring_side_hor");
-    private final static SpriteIdentifier RING_SIDE_VER = texture("ring_side_ver");
-    private final static SpriteIdentifier UNIT_BASE = texture("unit_base");
-    private final static SpriteIdentifier LIGHT_BASE = texture("light_base");
-    private final static SpriteIdentifier ACCELERATOR_LIGHT = texture("accelerator_light");
-    private final static SpriteIdentifier STORAGE_1K_LIGHT = texture("1k_storage_light");
-    private final static SpriteIdentifier STORAGE_4K_LIGHT = texture("4k_storage_light");
-    private final static SpriteIdentifier STORAGE_16K_LIGHT = texture("16k_storage_light");
-    private final static SpriteIdentifier STORAGE_64K_LIGHT = texture("64k_storage_light");
-    private final static SpriteIdentifier MONITOR_BASE = texture("monitor_base");
-    private final static SpriteIdentifier MONITOR_LIGHT_DARK = texture("monitor_light_dark");
-    private final static SpriteIdentifier MONITOR_LIGHT_MEDIUM = texture("monitor_light_medium");
-    private final static SpriteIdentifier MONITOR_LIGHT_BRIGHT = texture("monitor_light_bright");
+    private final static RenderMaterial RING_CORNER = texture("ring_corner");
+    private final static RenderMaterial RING_SIDE_HOR = texture("ring_side_hor");
+    private final static RenderMaterial RING_SIDE_VER = texture("ring_side_ver");
+    private final static RenderMaterial UNIT_BASE = texture("unit_base");
+    private final static RenderMaterial LIGHT_BASE = texture("light_base");
+    private final static RenderMaterial ACCELERATOR_LIGHT = texture("accelerator_light");
+    private final static RenderMaterial STORAGE_1K_LIGHT = texture("1k_storage_light");
+    private final static RenderMaterial STORAGE_4K_LIGHT = texture("4k_storage_light");
+    private final static RenderMaterial STORAGE_16K_LIGHT = texture("16k_storage_light");
+    private final static RenderMaterial STORAGE_64K_LIGHT = texture("64k_storage_light");
+    private final static RenderMaterial MONITOR_BASE = texture("monitor_base");
+    private final static RenderMaterial MONITOR_LIGHT_DARK = texture("monitor_light_dark");
+    private final static RenderMaterial MONITOR_LIGHT_MEDIUM = texture("monitor_light_medium");
+    private final static RenderMaterial MONITOR_LIGHT_BRIGHT = texture("monitor_light_bright");
 
     private final AbstractCraftingUnitBlock.CraftingUnitType type;
 
@@ -62,7 +62,7 @@ public class CraftingCubeModel implements BasicUnbakedModel {
     }
 
     @Override
-    public Stream<SpriteIdentifier> getAdditionalTextures() {
+    public Stream<RenderMaterial> getAdditionalTextures() {
         return Stream.of(RING_CORNER, RING_SIDE_HOR, RING_SIDE_VER, UNIT_BASE, LIGHT_BASE, ACCELERATOR_LIGHT,
                 STORAGE_1K_LIGHT, STORAGE_4K_LIGHT, STORAGE_16K_LIGHT, STORAGE_64K_LIGHT, MONITOR_BASE,
                 MONITOR_LIGHT_DARK, MONITOR_LIGHT_MEDIUM, MONITOR_LIGHT_BRIGHT);
@@ -70,12 +70,12 @@ public class CraftingCubeModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
+    public IBakedModel bakeModel(ModelBakery loader, Function<RenderMaterial, TextureAtlasSprite> textureGetter,
+            IModelTransform rotationContainer, ResourceLocation modelId) {
         // Retrieve our textures and pass them on to the baked model
-        Sprite ringCorner = textureGetter.apply(RING_CORNER);
-        Sprite ringSideHor = textureGetter.apply(RING_SIDE_HOR);
-        Sprite ringSideVer = textureGetter.apply(RING_SIDE_VER);
+        TextureAtlasSprite ringCorner = textureGetter.apply(RING_CORNER);
+        TextureAtlasSprite ringSideHor = textureGetter.apply(RING_SIDE_HOR);
+        TextureAtlasSprite ringSideVer = textureGetter.apply(RING_SIDE_VER);
 
         switch (this.type) {
             case UNIT:
@@ -96,7 +96,7 @@ public class CraftingCubeModel implements BasicUnbakedModel {
         }
     }
 
-    private static Sprite getLightTexture(Function<SpriteIdentifier, Sprite> textureGetter,
+    private static TextureAtlasSprite getLightTexture(Function<RenderMaterial, TextureAtlasSprite> textureGetter,
             AbstractCraftingUnitBlock.CraftingUnitType type) {
         switch (type) {
             case ACCELERATOR:
@@ -114,8 +114,8 @@ public class CraftingCubeModel implements BasicUnbakedModel {
         }
     }
 
-    private static SpriteIdentifier texture(String name) {
-        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-                new Identifier(AppEng.MOD_ID, "block/crafting/" + name));
+    private static RenderMaterial texture(String name) {
+        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+                new ResourceLocation(AppEng.MOD_ID, "block/crafting/" + name));
     }
 }

@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.cablebus;
 
 import java.util.Random;
@@ -15,12 +33,12 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.IBlockDisplayReader;
 
 import appeng.api.parts.IDynamicPartBakedModel;
 import appeng.api.util.AEColor;
@@ -30,18 +48,19 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
 
     private final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
 
-    private final Sprite texture;
+    private final TextureAtlasSprite texture;
 
     private final static Cache<Long, Mesh> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
     private static final int[][] QUAD_OFFSETS = new int[][] { { 4, 10, 2 }, { 10, 10, 2 }, { 4, 4, 2 }, { 10, 4, 2 } };
 
-    public P2PTunnelFrequencyBakedModel(final Sprite texture) {
+    public P2PTunnelFrequencyBakedModel(final TextureAtlasSprite texture) {
         this.texture = texture;
     }
 
     @Override
-    public void emitQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier,
+    public void emitQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier,
             RenderContext context, Direction partSide, @Nullable Object modelData) {
         if (!(modelData instanceof Long)) {
             return;
@@ -55,8 +74,8 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return ModelTransformation.NONE;
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return ItemCameraTransforms.DEFAULT;
     }
 
     private Mesh createFrequencyMesh(final short frequency, final boolean active) {
@@ -73,7 +92,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
         for (int i = 0; i < 4; ++i) {
             final int[] offs = QUAD_OFFSETS[i];
             for (int j = 0; j < 4; ++j) {
-                final float[] cv = colors[j].dye.getColorComponents();
+                final float[] cv = colors[j].dye.getColorComponentValues();
                 if (active) {
                     cb.setColorRGB(cv[0], cv[1], cv[2]);
                 } else {
@@ -108,32 +127,32 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
     public boolean isSideLit() {
-        return false;
+        return false;// TODO
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return true;
     }
 
     @Override
-    public Sprite getSprite() {
+    public TextureAtlasSprite getParticleTexture() {
         return this.texture;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 }

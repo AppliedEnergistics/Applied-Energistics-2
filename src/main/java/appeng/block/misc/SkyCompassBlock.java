@@ -18,49 +18,49 @@
 
 package appeng.block.misc;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.tile.misc.SkyCompassBlockEntity;
+import appeng.tile.misc.SkyCompassTileEntity;
 
-public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
+public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
 
-    public SkyCompassBlock(Settings props) {
+    public SkyCompassBlock(AbstractBlock.Properties props) {
         super(props);
     }
 
     @Override
-    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward,
-            final Direction up) {
-        final SkyCompassBlockEntity sc = this.getBlockEntity(w, pos);
+    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
+        final SkyCompassTileEntity sc = this.getTileEntity(w, pos);
         if (sc != null) {
             return false;
         }
         return this.canPlaceAt(w, pos, forward.getOpposite());
     }
 
-    private boolean canPlaceAt(final BlockView w, final BlockPos pos, final Direction dir) {
+    private boolean canPlaceAt(final IBlockReader w, final BlockPos pos, final Direction dir) {
         final BlockPos test = pos.offset(dir);
         BlockState blockstate = w.getBlockState(test);
-        return blockstate.isSideSolidFullSquare(w, test, dir.getOpposite());
+        return blockstate.isSolidSide(w, test, dir.getOpposite());
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SkyCompassBlockEntity sc = this.getBlockEntity(world, pos);
+        final SkyCompassTileEntity sc = this.getTileEntity(world, pos);
         final Direction forward = sc.getForward();
         if (!this.canPlaceAt(world, pos, forward.getOpposite())) {
             this.dropTorch(world, pos);
@@ -69,12 +69,12 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
 
     private void dropTorch(final World w, final BlockPos pos) {
         final BlockState prev = w.getBlockState(pos);
-        w.breakBlock(pos, true);
-        w.updateListeners(pos, prev, w.getBlockState(pos), 3);
+        w.destroyBlock(pos, true);
+        w.notifyBlockUpdate(pos, prev, w.getBlockState(pos), 3);
     }
 
     @Override
-    public boolean canPlaceAt(BlockState state, WorldView w, BlockPos pos) {
+    public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos) {
         for (final Direction dir : Direction.values()) {
             if (this.canPlaceAt(w, pos, dir)) {
                 return true;
@@ -84,11 +84,11 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
 
         // TODO: This definitely needs to be memoized
 
-        final SkyCompassBlockEntity tile = this.getBlockEntity(w, pos);
+        final SkyCompassTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
 
@@ -140,19 +140,20 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
                     break;
             }
 
-            return VoxelShapes.cuboid(new Box(minX, minY, minZ, maxX, maxY, maxZ));
+            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
         }
         return VoxelShapes.empty();
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
+            ISelectionContext context) {
         return VoxelShapes.empty();
     }
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
 }

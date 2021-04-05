@@ -21,11 +21,11 @@ package appeng.parts.reporting;
 import java.util.List;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -51,7 +51,7 @@ import appeng.util.inv.InvOperation;
 
 /**
  * Anything resembling an network terminal with view cells can reuse this.
- * <p>
+ *
  * Note this applies only to terminals like the ME Terminal. It does not apply for more specialized terminals like the
  * Interface Terminal.
  *
@@ -91,30 +91,30 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.cm.readFromNBT(data);
         this.viewCell.readFromNBT(data, "viewCell");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(final CompoundNBT data) {
         super.writeToNBT(data);
         this.cm.writeToNBT(data);
         this.viewCell.writeToNBT(data, "viewCell");
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (!super.onPartActivate(player, hand, pos)) {
-            if (!player.world.isClient) {
+            if (!player.world.isRemote) {
                 ContainerOpener.openContainer(getContainerType(player), player, ContainerLocator.forPart(this));
             }
         }
         return true;
     }
 
-    public ScreenHandlerType<?> getContainerType(final PlayerEntity player) {
+    public ContainerType<?> getContainerType(final PlayerEntity player) {
         return MEMonitorableContainer.TYPE;
     }
 

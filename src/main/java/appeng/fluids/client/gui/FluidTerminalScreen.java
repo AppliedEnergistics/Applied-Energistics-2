@@ -24,14 +24,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import me.shedaniel.math.Rectangle;
 
@@ -82,36 +84,37 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     private SettingToggleButton<SortOrder> sortByBox;
     private SettingToggleButton<SortDir> sortDirBox;
 
-    public FluidTerminalScreen(FluidTerminalContainer container, PlayerInventory playerInventory, Text title) {
+    public FluidTerminalScreen(FluidTerminalContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
-        this.backgroundWidth = 185;
-        this.backgroundHeight = 222;
+        this.xSize = 185;
+        this.ySize = 222;
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
         this.repo = new FluidRepo(scrollbar, this);
         this.configSrc = container.getConfigManager();
-        this.handler.setGui(this);
+        this.container.setGui(this);
     }
 
     @Override
     public void init() {
-        this.x = (this.width - this.backgroundWidth) / 2;
-        this.y = (this.height - this.backgroundHeight) / 2;
+        this.guiLeft = (this.width - this.xSize) / 2;
+        this.guiTop = (this.height - this.ySize) / 2;
 
-        this.searchField = new AETextField(this.textRenderer, this.x + 80, this.y + 4, 90, 12);
-        this.searchField.setDrawsBackground(false);
-        this.searchField.setMaxLength(25);
-        this.searchField.setEditableColor(0xFFFFFF);
+        this.searchField = new AETextField(this.font, this.guiLeft + 80, this.guiTop + 4, 90, 12);
+        this.searchField.setEnableBackgroundDrawing(false);
+        this.searchField.setMaxStringLength(25);
+        this.searchField.setTextColor(0xFFFFFF);
         this.searchField.setSelectionColor(0xFF99FF99);
         this.searchField.setVisible(true);
 
-        int offset = this.y;
+        int offset = this.guiTop;
 
-        this.sortByBox = this.addButton(new SettingToggleButton<>(this.x - 18, offset, Settings.SORT_BY, getSortBy(),
-                Platform::isSortOrderAvailable, this::toggleServerSetting));
+        this.sortByBox = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_BY,
+                getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
         offset += 20;
 
-        this.sortDirBox = this.addButton(new SettingToggleButton<>(this.x - 18, offset, Settings.SORT_DIRECTION,
+        this.sortDirBox = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_DIRECTION,
                 getSortDir(), this::toggleServerSetting));
 
         for (int y = 0; y < ROWS; y++) {
@@ -119,30 +122,29 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
                 SlotFluidME slot = new SlotFluidME(new InternalFluidSlotME(this.repo, x + y * COLS,
                         GRID_OFFSET_X + x * 18, GRID_OFFSET_Y + y * 18));
                 this.getMeFluidSlots().add(slot);
-                this.handler.slots.add(slot);
+                this.container.inventorySlots.add(slot);
             }
         }
         this.setScrollBar();
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(new LiteralText(GuiText.FluidTerminal.getLocal())), 8,
-                6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+        this.font.drawString(matrixStack, GuiText.FluidTerminal.getLocal(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         this.bindTexture(this.getBackground());
         final int x_width = 197;
-        drawTexture(matrices, offsetX, offsetY, 0, 0, x_width, 18);
+        blit(matrices, offsetX, offsetY, 0, 0, x_width, 18);
 
         for (int x = 0; x < 6; x++) {
-            drawTexture(matrices, offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18);
+            blit(matrices, offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18);
         }
 
-        drawTexture(matrices, offsetX, offsetY + 16 + 6 * 18, 0, 106 - 18 - 18, x_width, 99 + 77);
+        blit(matrices, offsetX, offsetY + 16 + 6 * 18, 0, 106 - 18 - 18, x_width, 99 + 77);
 
         if (this.searchField != null) {
             this.searchField.render(matrices, mouseX, mouseY, partialTicks);
@@ -151,15 +153,15 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
     @Override
     public void tick() {
-        this.repo.setPower(this.handler.isPowered());
+        this.repo.setPower(this.container.isPowered());
         super.tick();
     }
 
     @Override
-    protected void drawMouseoverTooltip(MatrixStack matrices, int mouseX, int mouseY) {
+    protected void renderHoveredTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
         final Slot slot = this.getSlot(mouseX, mouseY);
 
-        if (slot instanceof IMEFluidSlot && slot.doDrawHoveringEffect()) {
+        if (slot instanceof IMEFluidSlot && slot.isEnabled()) {
             final IMEFluidSlot fluidSlot = (IMEFluidSlot) slot;
 
             if (fluidSlot.getAEFluidStack() != null && fluidSlot.shouldRenderAsFluid()) {
@@ -169,17 +171,17 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
                 final String modName = Platform.getModName(Platform.getModId(fluidStack));
 
-                final List<Text> list = new ArrayList<>();
+                final List<ITextComponent> list = new ArrayList<>();
                 list.add(fluidStack.getFluidStack().getName());
-                list.add(new LiteralText(formattedAmount));
-                list.add(new LiteralText(modName));
+                list.add(new StringTextComponent(formattedAmount));
+                list.add(new StringTextComponent(modName));
 
-                this.renderTooltip(matrices, list, mouseX, mouseY);
+                this.func_243308_b(matrixStack, list, mouseX, mouseY);
 
                 return;
             }
         }
-        super.drawMouseoverTooltip(matrices, mouseX, mouseY);
+        super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
 
     private <S extends Enum<S>> void toggleServerSetting(SettingToggleButton<S> btn, boolean backwards) {
@@ -189,29 +191,29 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     }
 
     @Override
-    protected void onMouseClick(Slot slot, int slotIdx, int mouseButton, SlotActionType clickType) {
+    protected void handleMouseClick(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
         if (slot instanceof SlotFluidME) {
             final SlotFluidME meSlot = (SlotFluidME) slot;
 
-            if (clickType == SlotActionType.PICKUP) {
+            if (clickType == ClickType.PICKUP) {
                 // TODO: Allow more options
-                if (mouseButton == 0 && meSlot.hasStack()) {
-                    this.handler.setTargetStack(meSlot.getAEFluidStack());
+                if (mouseButton == 0 && meSlot.getHasStack()) {
+                    this.container.setTargetStack(meSlot.getAEFluidStack());
                     AELog.debug("mouse0 GUI STACK SIZE %s", meSlot.getAEFluidStack().getStackSize());
                     NetworkHandler.instance()
-                            .sendToServer(new InventoryActionPacket(InventoryAction.FILL_ITEM, slot.id, 0));
+                            .sendToServer(new InventoryActionPacket(InventoryAction.FILL_ITEM, slot.slotNumber, 0));
                 } else {
-                    this.handler.setTargetStack(meSlot.getAEFluidStack());
+                    this.container.setTargetStack(meSlot.getAEFluidStack());
                     if (meSlot.getAEFluidStack() != null) {
                         AELog.debug("mouse1 GUI STACK SIZE %s", meSlot.getAEFluidStack().getStackSize());
                     }
                     NetworkHandler.instance()
-                            .sendToServer(new InventoryActionPacket(InventoryAction.EMPTY_ITEM, slot.id, 0));
+                            .sendToServer(new InventoryActionPacket(InventoryAction.EMPTY_ITEM, slot.slotNumber, 0));
                 }
             }
             return;
         }
-        super.onMouseClick(slot, slotIdx, mouseButton, clickType);
+        super.handleMouseClick(slot, slotIdx, mouseButton, clickType);
     }
 
     @Override
@@ -233,15 +235,17 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(keyCode, scanCode)) {
-            if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, keyCode, scanCode)) {
-                this.searchField.setFocused(!this.searchField.isFocused());
+        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+
+        if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
+            if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
+                this.searchField.setFocused2(!this.searchField.isFocused());
                 return true;
             }
 
             if (this.searchField.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.searchField.setFocused(false);
+                    this.searchField.setFocused2(false);
                     return true;
                 }
 
@@ -337,7 +341,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     @Override
     public List<Rectangle> getExclusionZones() {
         List<Rectangle> zones = super.getExclusionZones();
-        zones.add(new Rectangle(x - 18, y, 18, 40));
+        zones.add(new Rectangle(guiLeft - 18, guiTop, 18, 40));
         return zones;
     }
 

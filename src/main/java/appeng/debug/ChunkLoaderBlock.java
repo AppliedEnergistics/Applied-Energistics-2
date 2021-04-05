@@ -18,14 +18,14 @@
 
 package appeng.debug;
 
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 
 import appeng.block.AEBaseTileBlock;
 
-public class ChunkLoaderBlock extends AEBaseTileBlock<ChunkLoaderBlockEntity> {
+public class ChunkLoaderBlock extends AEBaseTileBlock<ChunkLoaderTileEntity> {
 
     public ChunkLoaderBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.IRON));
     }
 
 }

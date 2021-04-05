@@ -20,8 +20,8 @@ package appeng.helpers;
 
 import java.util.EnumSet;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.Direction;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.crafting.ICraftingProvider;
@@ -33,7 +33,7 @@ public interface IInterfaceHost extends ICraftingProvider, IUpgradeableHost, ICr
 
     EnumSet<Direction> getTargets();
 
-    BlockEntity getBlockEntity();
+    TileEntity getTileEntity();
 
     void saveChanges();
 }

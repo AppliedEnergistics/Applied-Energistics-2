@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.worldgen.meteorite;
 
 import java.util.Set;
@@ -7,45 +25,44 @@ import com.google.common.math.StatsAccumulator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.structure.StructureManager;
-import net.minecraft.structure.StructureStart;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockBox;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.Heightmap.Type;
+import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.Heightmap.Type;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.feature.structure.StructureStart;
+import net.minecraft.world.gen.feature.template.TemplateManager;
 
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
-public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig> {
+public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
 
-    private final Tag<Block> sandTag = BlockTags.getTagGroup().getTagOrEmpty(new Identifier("minecraft:sand"));
-    private final Tag<Block> terracottaTag = BlockTags.getTagGroup()
-            .getTagOrEmpty(new Identifier("c:terracotta_blocks"));
+    private final ITag<Block> sandTag = BlockTags.getCollection().getTagByID(new ResourceLocation("minecraft:sand"));
+    private final ITag<Block> terracottaTag = BlockTags.getCollection()
+            .getTagByID(new ResourceLocation("c:terracotta_blocks"));
 
-    public MeteoriteStructureStart(StructureFeature<DefaultFeatureConfig> feature, int chunkX, int chunkZ, BlockBox box,
+    public MeteoriteStructureStart(Structure<NoFeatureConfig> feature, int chunkX, int chunkZ, MutableBoundingBox box,
             int references, long seed) {
         super(feature, chunkX, chunkZ, box, references, seed);
     }
 
     @Override
-    public void init(DynamicRegistryManager dynamicRegistryManager, ChunkGenerator generator,
-            StructureManager structureManager, int chunkX, int chunkZ, Biome biome,
-            DefaultFeatureConfig featureConfig) {
-        final int centerX = chunkX * 16 + this.random.nextInt(16);
-        final int centerZ = chunkZ * 16 + this.random.nextInt(16);
-        final float meteoriteRadius = (this.random.nextFloat() * 6.0f) + 2;
+    public void func_230364_a_(DynamicRegistries dynamicRegistryManager, ChunkGenerator generator,
+            TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
+        final int centerX = chunkX * 16 + this.rand.nextInt(16);
+        final int centerZ = chunkZ * 16 + this.rand.nextInt(16);
+        final float meteoriteRadius = (this.rand.nextFloat() * 6.0f) + 2;
         final int yOffset = (int) Math.ceil(meteoriteRadius) + 1;
 
-        final Set<Biome> t2 = generator.getBiomeSource().getBiomesInArea(centerX, 0, centerZ, 0);
+        final Set<Biome> t2 = generator.getBiomeProvider().getBiomes(centerX, 0, centerZ, 0);
         final Biome spawnBiome = t2.stream().findFirst().orElse(biome);
 
         final boolean isOcean = spawnBiome.getCategory() == Category.OCEAN;
@@ -76,14 +93,14 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
 
         boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius);
         CraterType craterType = this.determineCraterType(spawnBiome);
-        boolean pureCrater = this.random.nextFloat() > .9f;
+        boolean pureCrater = this.rand.nextFloat() > .9f;
         FalloutMode fallout = getFalloutFromBaseBlock(
-                spawnBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial());
+                spawnBiome.getGenerationSettings().getSurfaceBuilderConfig().getTop());
 
-        children.add(
+        components.add(
                 new MeteoriteStructurePiece(actualPos, meteoriteRadius, craterType, fallout, pureCrater, craterLake));
 
-        this.setBoundingBoxFromChildren();
+        this.recalculateStructureSize();
     }
 
     /**
@@ -132,7 +149,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
         }
 
         // 50% chance for a special meteor
-        final boolean specialMeteor = random.nextFloat() > .5f;
+        final boolean specialMeteor = rand.nextFloat() > .5f;
 
         // Just a normal one
         if (!specialMeteor) {
@@ -143,7 +160,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
         if (temp >= 1) {
 
             // 50% chance to actually spawn as lava
-            final boolean lava = random.nextFloat() > .5f;
+            final boolean lava = rand.nextFloat() > .5f;
 
             switch (biome.getPrecipitation()) {
                 // No rainfall, only lava
@@ -152,7 +169,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
 
                 // 25% chance to convert a lava to obsidian
                 case RAIN:
-                    final boolean obsidian = random.nextFloat() > .75f;
+                    final boolean obsidian = rand.nextFloat() > .75f;
                     final CraterType alternativObsidian = obsidian ? CraterType.OBSIDIAN : CraterType.LAVA;
                     return lava ? alternativObsidian : CraterType.NORMAL;
 
@@ -165,9 +182,9 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
         // Temperate biomes. Water or maybe lava
         if (temp < 1 && temp >= 0.2) {
             // 75% chance to actually spawn with a crater lake
-            final boolean lake = random.nextFloat() > .25f;
+            final boolean lake = rand.nextFloat() > .25f;
             // 20% to spawn with lava
-            final boolean lava = random.nextFloat() > .8f;
+            final boolean lava = rand.nextFloat() > .8f;
 
             switch (biome.getPrecipitation()) {
                 // No rainfall, water how?
@@ -175,13 +192,13 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
                     return lava ? CraterType.LAVA : CraterType.NORMAL;
                 // Rainfall, can also turn lava to obsidian
                 case RAIN:
-                    final boolean obsidian = random.nextFloat() > .75f;
+                    final boolean obsidian = rand.nextFloat() > .75f;
                     final CraterType alternativObsidian = obsidian ? CraterType.OBSIDIAN : CraterType.LAVA;
                     final CraterType craterLake = lake ? CraterType.WATER : CraterType.NORMAL;
                     return lava ? alternativObsidian : craterLake;
                 // No lava, but snow
                 case SNOW:
-                    final boolean snow = random.nextFloat() > .75f;
+                    final boolean snow = rand.nextFloat() > .75f;
                     final CraterType water = lake ? CraterType.WATER : CraterType.NORMAL;
                     return snow ? CraterType.SNOW : water;
             }
@@ -191,11 +208,11 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
         // Cold biomes, Snow or Ice, maybe water and very rarely lava.
         if (temp < 0.2) {
             // 75% chance to actually spawn with a crater lake
-            final boolean lake = random.nextFloat() > .25f;
+            final boolean lake = rand.nextFloat() > .25f;
             // 5% to spawn with lava
-            final boolean lava = random.nextFloat() > .95f;
+            final boolean lava = rand.nextFloat() > .95f;
             // 75% chance to freeze
-            final boolean frozen = random.nextFloat() > .25f;
+            final boolean frozen = rand.nextFloat() > .25f;
 
             switch (biome.getPrecipitation()) {
                 // No rainfall, water how?

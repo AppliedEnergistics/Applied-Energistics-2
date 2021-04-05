@@ -20,29 +20,31 @@ package appeng.client.gui.widgets;
 
 import java.util.regex.Pattern;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
-public class ToggleButton extends ButtonWidget implements ITooltip {
-    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2", "textures/guis/states.png");
+public class ToggleButton extends Button implements ITooltip {
+    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
+            "textures/guis/states.png");
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
     private final int iconIdxOn;
     private final int iconIdxOff;
 
-    private final Text displayName;
-    private final Text displayHint;
+    private final String displayName;
+    private final String displayHint;
 
     private boolean isActive;
 
-    public ToggleButton(final int x, final int y, final int on, final int off, final Text displayName,
-            final Text displayHint, PressAction onPress) {
-        super(x, y, 16, 16, LiteralText.EMPTY, onPress);
+    public ToggleButton(final int x, final int y, final int on, final int off, final String displayName,
+            final String displayHint, IPressable onPress) {
+        super(x, y, 16, 16, StringTextComponent.EMPTY, onPress);
         this.iconIdxOn = on;
         this.iconIdxOff = off;
         this.displayName = displayName;
@@ -54,18 +56,18 @@ public class ToggleButton extends ButtonWidget implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, final int mouseX, final int mouseY, final float partial) {
+    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
         if (this.visible) {
             final int iconIndex = this.getIconIndex();
 
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE_STATES);
+            Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE_STATES);
 
             final int uv_y = iconIndex / 16;
             final int uv_x = iconIndex - uv_y * 16;
 
-            drawTexture(matrices, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
-            drawTexture(matrices, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
+            blit(matrixStack, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
+            blit(matrixStack, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
         }
     }
 
@@ -74,10 +76,17 @@ public class ToggleButton extends ButtonWidget implements ITooltip {
     }
 
     @Override
-    public Text getTooltipMessage() {
+    public ITextComponent getTooltipMessage() {
         if (this.displayName != null) {
-            String name = this.displayName.getString();
-            String value = this.displayHint.getString();
+            String name = I18n.format(this.displayName);
+            String value = I18n.format(this.displayHint);
+
+            if (name == null || name.isEmpty()) {
+                name = this.displayName;
+            }
+            if (value == null || value.isEmpty()) {
+                value = this.displayHint;
+            }
 
             value = PATTERN_NEW_LINE.matcher(value).replaceAll("\n");
             final StringBuilder sb = new StringBuilder(value);
@@ -90,9 +99,9 @@ public class ToggleButton extends ButtonWidget implements ITooltip {
                 sb.replace(i, i + 1, "\n");
             }
 
-            return new LiteralText(name + '\n' + sb);
+            return new StringTextComponent(name + '\n' + sb);
         }
-        return LiteralText.EMPTY;
+        return StringTextComponent.EMPTY;
     }
 
     @Override

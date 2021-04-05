@@ -18,79 +18,82 @@
 
 package appeng.block.crafting;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.util.ActionResult;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CraftingCPUContainer;
-import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.tile.crafting.CraftingTileEntity;
+import appeng.util.InteractionUtil;
 
-public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseTileBlock<T> {
-    public static final BooleanProperty FORMED = BooleanProperty.of("formed");
-    public static final BooleanProperty POWERED = BooleanProperty.of("powered");
+public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> extends AEBaseTileBlock<T> {
+    public static final BooleanProperty FORMED = BooleanProperty.create("formed");
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public final CraftingUnitType type;
 
-    public AbstractCraftingUnitBlock(Settings props, final CraftingUnitType type) {
+    public AbstractCraftingUnitBlock(AbstractBlock.Properties props, final CraftingUnitType type) {
         super(props);
         this.type = type;
         this.setDefaultState(getDefaultState().with(FORMED, false).with(POWERED, false));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
         builder.add(POWERED);
         builder.add(FORMED);
     }
 
     @Override
-    public void neighborUpdate(final BlockState state, final World worldIn, final BlockPos pos, final Block blockIn,
+    public void neighborChanged(final BlockState state, final World worldIn, final BlockPos pos, final Block blockIn,
             final BlockPos fromPos, boolean isMoving) {
-        final CraftingBlockEntity cp = this.getBlockEntity(worldIn, pos);
+        final CraftingTileEntity cp = this.getTileEntity(worldIn, pos);
         if (cp != null) {
             cp.updateMultiBlock(fromPos);
         }
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        final CraftingBlockEntity cp = this.getBlockEntity(w, pos);
+        final CraftingTileEntity cp = this.getTileEntity(w, pos);
         if (cp != null) {
             cp.breakCluster();
         }
 
-        super.onStateReplaced(state, w, pos, newState, isMoving);
+        super.onReplaced(state, w, pos, newState, isMoving);
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockHitResult hit) {
-        final CraftingBlockEntity tg = this.getBlockEntity(w, pos);
+    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
+            BlockRayTraceResult hit) {
+        final CraftingTileEntity tg = this.getTileEntity(w, pos);
 
-        if (tg != null && !p.isInSneakingPose() && tg.isFormed() && tg.isActive()) {
-            if (!w.isClient()) {
+        if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
+            if (!w.isRemote()) {
                 ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
 
-            return ActionResult.SUCCESS;
+            return ActionResultType.func_233537_a_(w.isRemote());
         }
 
-        return super.onUse(state, w, pos, p, hand, hit);
+        return super.onBlockActivated(state, w, pos, p, hand, hit);
     }
 
     public enum CraftingUnitType {

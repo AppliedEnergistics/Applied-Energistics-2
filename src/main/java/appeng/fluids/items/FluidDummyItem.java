@@ -20,8 +20,8 @@ package appeng.fluids.items;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
 
 import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
@@ -39,7 +39,7 @@ import appeng.items.AEBaseItem;
  */
 public class FluidDummyItem extends AEBaseItem {
 
-    public FluidDummyItem(Settings properties) {
+    public FluidDummyItem(Properties properties) {
         super(properties);
     }
 
@@ -53,7 +53,7 @@ public class FluidDummyItem extends AEBaseItem {
     }
 
     public FluidVolume getFluidStack(ItemStack is) {
-        CompoundTag tag = is.getTag();
+        CompoundNBT tag = is.getTag();
         if (tag != null) {
             return FluidVolume.fromTag(tag);
         }
@@ -64,14 +64,14 @@ public class FluidDummyItem extends AEBaseItem {
         if (fs.isEmpty()) {
             is.setTag(null);
         } else {
-            CompoundTag tag = new CompoundTag();
+            CompoundNBT tag = new CompoundNBT();
             fs.toTag(tag);
             is.setTag(tag);
         }
     }
 
     @Override
-    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> items) {
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
         // Don't show this item in CreativeTabs
     }
 }

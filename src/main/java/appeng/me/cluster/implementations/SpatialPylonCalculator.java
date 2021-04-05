@@ -18,17 +18,17 @@
 
 package appeng.me.cluster.implementations;
 
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.spatial.SpatialPylonBlockEntity;
+import appeng.tile.spatial.SpatialPylonTileEntity;
 
-public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity, SpatialPylonCluster> {
+public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity, SpatialPylonCluster> {
 
-    public SpatialPylonCalculator(final SpatialPylonBlockEntity t) {
+    public SpatialPylonCalculator(final SpatialPylonTileEntity t) {
         super(t);
     }
 
@@ -47,8 +47,8 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity
     @Override
     public boolean verifyInternalStructure(final World w, final BlockPos min, final BlockPos max) {
 
-        for (BlockPos p : BlockPos.iterate(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(p);
+        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getTileEntity(p);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -60,15 +60,15 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity
 
     @Override
     public void updateTiles(final SpatialPylonCluster c, final World w, final BlockPos min, final BlockPos max) {
-        for (BlockPos p : BlockPos.iterate(min, max)) {
-            final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) w.getBlockEntity(p);
+        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
+            final SpatialPylonTileEntity te = (SpatialPylonTileEntity) w.getTileEntity(p);
             te.updateStatus(c);
             c.getLine().add(te);
         }
     }
 
     @Override
-    public boolean isValidTile(final BlockEntity te) {
-        return te instanceof SpatialPylonBlockEntity;
+    public boolean isValidTile(final TileEntity te) {
+        return te instanceof SpatialPylonTileEntity;
     }
 }

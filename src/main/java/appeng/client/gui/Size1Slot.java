@@ -1,16 +1,30 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.gui;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.mojang.datafixers.util.Pair;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.Identifier;
 
 /**
  * A proxy for a slot that will always return an itemstack with size 1, if there is an item in the slot. Used to prevent
@@ -21,7 +35,7 @@ class Size1Slot extends Slot {
     private final Slot delegate;
 
     public Size1Slot(Slot delegate) {
-        super(delegate.inventory, -1, delegate.x, delegate.y);
+        super(delegate.inventory, delegate.slotIndex, delegate.xPos, delegate.yPos);
         this.delegate = delegate;
     }
 
@@ -39,41 +53,34 @@ class Size1Slot extends Slot {
     }
 
     @Override
-    public boolean hasStack() {
-        return this.delegate.hasStack();
+    public boolean getHasStack() {
+        return this.delegate.getHasStack();
     }
 
     @Override
-    public int getMaxItemCount() {
-        return this.delegate.getMaxItemCount();
+    public int getSlotStackLimit() {
+        return this.delegate.getSlotStackLimit();
     }
 
     @Override
-    public int getMaxItemCount(ItemStack stack) {
-        return this.delegate.getMaxItemCount(stack);
+    public int getItemStackLimit(ItemStack stack) {
+        return this.delegate.getItemStackLimit(stack);
     }
 
     @Override
-    public boolean canTakeItems(PlayerEntity playerIn) {
-        return this.delegate.canTakeItems(playerIn);
-    }
-
-    @Override
-    public void markDirty() {
-        delegate.markDirty();
+    public boolean canTakeStack(PlayerEntity playerIn) {
+        return this.delegate.canTakeStack(playerIn);
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    @Nullable
-    public Pair<Identifier, Identifier> getBackgroundSprite() {
-        return delegate.getBackgroundSprite();
+    public boolean isEnabled() {
+        return this.delegate.isEnabled();
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public boolean doDrawHoveringEffect() {
-        return delegate.doDrawHoveringEffect();
+    public void onSlotChanged() {
+        delegate.onSlotChanged();
     }
 
 }

@@ -19,15 +19,15 @@
 package appeng.bootstrap.components;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.minecraft.client.color.item.ItemColorProvider;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
 
 public class ItemColorComponent implements IItemColorRegistrationComponent {
     private final Item item;
 
-    private final ItemColorProvider itemColor;
+    private final IItemColor itemColor;
 
-    public ItemColorComponent(Item item, ItemColorProvider itemColor) {
+    public ItemColorComponent(Item item, IItemColor itemColor) {
         this.item = item;
         this.itemColor = itemColor;
     }

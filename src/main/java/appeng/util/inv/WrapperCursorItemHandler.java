@@ -29,8 +29,8 @@ public class WrapperCursorItemHandler extends DirectFixedItemInv {
         super(1);
 
         this.inv = PlayerInventory;
-        this.forceSetInvStack(0, PlayerInventory.getCursorStack());
-        setOwnerListener(view -> this.inv.setCursorStack(getInvStack(0)));
+        this.forceSetInvStack(0, PlayerInventory.getItemStack());
+        setOwnerListener(view -> this.inv.setItemStack(getInvStack(0)));
     }
 
 }

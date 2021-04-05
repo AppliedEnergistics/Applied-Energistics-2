@@ -18,7 +18,7 @@
 
 package appeng.block.networking;
 
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.renderer.RenderType;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
@@ -29,6 +29,6 @@ public class ControllerRendering extends BlockRenderingCustomizer {
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
         // Disables the default model rotator
         rendering.modelCustomizer((loc, model) -> model);
-        rendering.renderType(RenderLayer.getCutout());
+        rendering.renderType(RenderType.getCutout());
     }
 }

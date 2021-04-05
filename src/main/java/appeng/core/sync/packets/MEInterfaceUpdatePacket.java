@@ -24,11 +24,11 @@ import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.client.gui.implementations.InterfaceTerminalScreen;
 import appeng.core.sync.BasePacket;
@@ -37,19 +37,19 @@ import appeng.core.sync.network.INetworkInfo;
 public class MEInterfaceUpdatePacket extends BasePacket {
 
     // input.
-    private final CompoundTag in;
+    private final CompoundNBT in;
     // output...
-    private final PacketByteBuf data;
+    private final PacketBuffer data;
 
-    public MEInterfaceUpdatePacket(final PacketByteBuf stream) {
+    public MEInterfaceUpdatePacket(final PacketBuffer stream) {
         this.data = null;
         this.in = stream.readCompoundTag();
     }
 
     // api
-    public MEInterfaceUpdatePacket(final CompoundTag din) throws IOException {
+    public MEInterfaceUpdatePacket(final CompoundNBT din) throws IOException {
         this.in = null;
-        this.data = new PacketByteBuf(Unpooled.buffer(2048));
+        this.data = new PacketBuffer(Unpooled.buffer(2048));
         this.data.writeInt(this.getPacketID());
         this.data.writeCompoundTag(din);
         this.configureWrite(this.data);
@@ -58,7 +58,7 @@ public class MEInterfaceUpdatePacket extends BasePacket {
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Screen gs = MinecraftClient.getInstance().currentScreen;
+        final Screen gs = Minecraft.getInstance().currentScreen;
 
         if (gs instanceof InterfaceTerminalScreen) {
             ((InterfaceTerminalScreen) gs).postUpdate(this.in);

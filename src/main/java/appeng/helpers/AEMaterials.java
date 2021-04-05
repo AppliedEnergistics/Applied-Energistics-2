@@ -18,13 +18,35 @@
 
 package appeng.helpers;
 
-import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
-import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraft.block.material.PushReaction;
 
 public class AEMaterials {
 
-    public static final Material GLASS = new Material(MaterialColor.CLEAR, false, false, true, false, false, false,
-            PistonBehavior.NORMAL);
+    public static final Material GLASS = make(MaterialColor.AIR, false, false, true, false, false, false,
+            PushReaction.NORMAL);
+
+    public static final Material FIXTURE = make(MaterialColor.IRON, false, false, false, false, false, false,
+            PushReaction.DESTROY);
+
+    /**
+     * Small factory helper with named parameters.
+     *
+     * @param color
+     * @param isLiquid
+     * @param isSolid
+     * @param blocksMovement
+     * @param isOpaque
+     * @param requiresNoTool
+     * @param flammable
+     * @param replaceable
+     * @param pushReaction
+     * @return
+     */
+    private static Material make(MaterialColor color, boolean isLiquid, boolean isSolid, boolean blocksMovement,
+            boolean isOpaque, boolean flammable, boolean replaceable, PushReaction pushReaction) {
+        return new Material(color, isLiquid, isSolid, blocksMovement, isOpaque, flammable, replaceable, pushReaction);
+    }
 
 }

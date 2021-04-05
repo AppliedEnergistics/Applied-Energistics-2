@@ -20,15 +20,15 @@ package appeng.client.render;
 
 import java.util.Random;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Quaternion;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.vector.Quaternion;
 
 public class SpatialSkyRender {
 
@@ -46,10 +46,9 @@ public class SpatialSkyRender {
         return INSTANCE;
     }
 
-    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.IDENTITY,
-            new Quaternion(90.0F, 0.0F, 0.0F, true), new Quaternion(-90.0F, 0.0F, 0.0F, true),
-            new Quaternion(180.0F, 0.0F, 0.0F, true), new Quaternion(0.0F, 0.0F, 90.0F, true),
-            new Quaternion(0.0F, 0.0F, -90.0F, true), };
+    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.ONE, new Quaternion(90.0F, 0.0F, 0.0F, true),
+            new Quaternion(-90.0F, 0.0F, 0.0F, true), new Quaternion(180.0F, 0.0F, 0.0F, true),
+            new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
 
     public void render(MatrixStack matrixStack) {
         final long now = System.currentTimeMillis();
@@ -76,14 +75,14 @@ public class SpatialSkyRender {
         // The skybox is pitch black and untextured
         for (Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
             matrixStack.push();
-            matrixStack.multiply(rotation);
+            matrixStack.rotate(rotation);
 
             RenderSystem.disableTexture();
-            VertexBuffer.begin(GL11.GL_QUADS, VertexFormats.POSITION);
-            VertexBuffer.vertex(-100.0D, -100.0D, -100.0D).next();
-            VertexBuffer.vertex(-100.0D, -100.0D, 100.0D).next();
-            VertexBuffer.vertex(100.0D, -100.0D, 100.0D).next();
-            VertexBuffer.vertex(100.0D, -100.0D, -100.0D).next();
+            VertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+            VertexBuffer.pos(-100.0D, -100.0D, -100.0D).endVertex();
+            VertexBuffer.pos(-100.0D, -100.0D, 100.0D).endVertex();
+            VertexBuffer.pos(100.0D, -100.0D, 100.0D).endVertex();
+            VertexBuffer.pos(100.0D, -100.0D, -100.0D).endVertex();
             tessellator.draw();
             RenderSystem.enableTexture();
             matrixStack.pop();
@@ -115,7 +114,7 @@ public class SpatialSkyRender {
     private void renderTwinkles() {
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder vb = tessellator.getBuffer();
-        vb.begin(GL11.GL_QUADS, VertexFormats.POSITION);
+        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
         for (int i = 0; i < 50; ++i) {
             double iX = this.random.nextFloat() * 2.0F - 1.0F;
@@ -152,7 +151,7 @@ public class SpatialSkyRender {
                     final double d23 = d17 * d12 - d20 * d13;
                     final double d24 = d23 * d9 - d21 * d10;
                     final double d25 = d21 * d9 + d23 * d10;
-                    vb.vertex(x + d24, y + d22, z + d25).next();
+                    vb.pos(x + d24, y + d22, z + d25).endVertex();
                 }
             }
         }

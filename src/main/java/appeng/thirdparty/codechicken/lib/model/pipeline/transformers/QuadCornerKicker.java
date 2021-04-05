@@ -18,15 +18,15 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import static net.minecraft.util.math.Direction.AxisDirection.NEGATIVE;
-import static net.minecraft.util.math.Direction.AxisDirection.POSITIVE;
+import static net.minecraft.util.Direction.AxisDirection.NEGATIVE;
+import static net.minecraft.util.Direction.AxisDirection.POSITIVE;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.AxisDirection;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.AxisDirection;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.vector.Vector3i;
 
 /**
  * This transformer is a little complicated. Basically a Facade / Cover can use this to 'kick' the edges in of quads to
@@ -56,7 +56,7 @@ public class QuadCornerKicker implements RenderContext.QuadTransform {
 
     private int mySide;
     private int facadeMask;
-    private Box box;
+    private AxisAlignedBB box;
     private double thickness;
 
     public QuadCornerKicker() {
@@ -86,7 +86,7 @@ public class QuadCornerKicker implements RenderContext.QuadTransform {
      *
      * @param box The BoundingBox.
      */
-    public void setBox(Box box) {
+    public void setBox(AxisAlignedBB box) {
         this.box = box;
     }
 
@@ -113,7 +113,7 @@ public class QuadCornerKicker implements RenderContext.QuadTransform {
                             float z = quad.posByIndex(i, 2);
                             if (epsComp(x, corner.pX(this.box)) && epsComp(y, corner.pY(this.box))
                                     && epsComp(z, corner.pZ(this.box))) {
-                                Vec3i vec = Direction.values()[hoz].getVector();
+                                Vector3i vec = Direction.values()[hoz].getDirectionVec();
                                 x -= vec.getX() * this.thickness;
                                 y -= vec.getY() * this.thickness;
                                 z -= vec.getZ() * this.thickness;
@@ -163,15 +163,15 @@ public class QuadCornerKicker implements RenderContext.QuadTransform {
             return values()[sideMask[sideA] | sideMask[sideB] | sideMask[sideC]];
         }
 
-        public float pX(Box box) {
+        public float pX(AxisAlignedBB box) {
             return (float) (this.xAxis == NEGATIVE ? box.minX : box.maxX);
         }
 
-        public float pY(Box box) {
+        public float pY(AxisAlignedBB box) {
             return (float) (this.yAxis == NEGATIVE ? box.minY : box.maxY);
         }
 
-        public float pZ(Box box) {
+        public float pZ(AxisAlignedBB box) {
             return (float) (this.zAxis == NEGATIVE ? box.minZ : box.maxZ);
         }
     }

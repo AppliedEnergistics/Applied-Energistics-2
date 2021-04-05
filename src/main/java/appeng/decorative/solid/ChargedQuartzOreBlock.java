@@ -23,7 +23,7 @@ import java.util.Random;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -32,13 +32,13 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
 public class ChargedQuartzOreBlock extends QuartzOreBlock {
-    public ChargedQuartzOreBlock(Settings props) {
+    public ChargedQuartzOreBlock(Properties props) {
         super(props);
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -72,7 +72,7 @@ public class ChargedQuartzOreBlock extends QuartzOreBlock {
         }
 
         if (AppEng.instance().shouldAddParticles(r)) {
-            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
+            Minecraft.getInstance().particles.addParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
                     pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
         }
     }

@@ -20,10 +20,11 @@ package appeng.integration.modules.waila.part;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
@@ -43,10 +44,10 @@ public final class Tracer {
      * @param pos    pos of block
      * @return trace movement. Can be null
      */
-    public HitResult retraceBlock(final World world, final PlayerEntity player, BlockPos pos) {
+    public RayTraceResult retraceBlock(final World world, final PlayerEntity player, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
 
-        LookDirection playerRay = Platform.getPlayerRay(player);
-        return blockState.getCollisionShape(world, pos).raycast(playerRay.getA(), playerRay.getB(), pos);
+        LookDirection playerRay = InteractionUtil.getPlayerRay(player);
+        return blockState.getCollisionShape(world, pos).rayTrace(playerRay.getA(), playerRay.getB(), pos);
     }
 }

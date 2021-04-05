@@ -29,15 +29,16 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.core.Api;
 import appeng.server.ISubCommand;
@@ -56,20 +57,19 @@ public class TestOreGenCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<ServerCommandSource> data,
-            final ServerCommandSource sender) {
+    public void call(final MinecraftServer srv, final CommandContext<CommandSource> data, final CommandSource sender) {
 
         int radius = 1000;
 
         ServerWorld world;
         BlockPos center;
         try {
-            ServerPlayerEntity player = sender.getPlayer();
+            ServerPlayerEntity player = sender.asPlayer();
             world = player.getServerWorld();
-            center = new BlockPos(player.getX(), 0, player.getZ());
+            center = new BlockPos(player.getPosX(), 0, player.getPosZ());
         } catch (CommandSyntaxException e) {
-            world = srv.getOverworld();
-            center = world.getSpawnPos();
+            world = srv.getWorld(World.OVERWORLD);
+            center = world.getSpawnPoint();
         }
 
         ChunkPos tl = new ChunkPos(center.add(-radius, 0, -radius));
@@ -97,8 +97,8 @@ public class TestOreGenCommand implements ISubCommand {
         sendLine(sender, "  Sub-Type Count: %s", chargedCount);
     }
 
-    private void checkChunk(ServerCommandSource sender, ServerWorld world, ChunkPos cp, Stats stats) {
-        Chunk chunk = world.getChunk(cp.x, cp.z, ChunkStatus.FULL, false);
+    private void checkChunk(CommandSource sender, ServerWorld world, ChunkPos cp, Stats stats) {
+        IChunk chunk = world.getChunk(cp.x, cp.z, ChunkStatus.FULL, false);
         if (chunk == null) {
             sendLine(sender, "Skipping chunk %s", cp);
             return;
@@ -108,11 +108,11 @@ public class TestOreGenCommand implements ISubCommand {
 
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
         sendLine(sender, "Checking chunk %s", cp);
-        for (int x = cp.getStartX(); x <= cp.getEndX(); x++) {
+        for (int x = cp.getXStart(); x <= cp.getXEnd(); x++) {
             blockPos.setX(x);
-            for (int z = cp.getStartZ(); z <= cp.getEndZ(); z++) {
+            for (int z = cp.getZStart(); z <= cp.getZEnd(); z++) {
                 blockPos.setZ(z);
-                for (int y = 0; y < world.getHeight(); y++) {
+                for (int y = 0; y < world.func_234938_ad_(); y++) {
                     blockPos.setY(y);
                     BlockState state = chunk.getBlockState(blockPos);
                     if (state == quartzOre || state == chargedQuartzOre) {
@@ -129,8 +129,8 @@ public class TestOreGenCommand implements ISubCommand {
         stats.chunks.add(chunkStats);
     }
 
-    private static void sendLine(ServerCommandSource sender, String text, Object... args) {
-        sender.sendFeedback(new LiteralText(String.format(Locale.ROOT, text, args)), true);
+    private static void sendLine(CommandSource sender, String text, Object... args) {
+        sender.sendFeedback(new StringTextComponent(String.format(Locale.ROOT, text, args)), true);
     }
 
     private static class Stats {

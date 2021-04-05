@@ -29,12 +29,12 @@ import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.Packet;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketDirection;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.implementations.CraftConfirmScreen;
@@ -56,12 +56,12 @@ public class MEInventoryUpdatePacket extends BasePacket {
     private final byte ref;
 
     @Nullable
-    private final PacketByteBuf data;
+    private final PacketBuffer data;
 
     private int writtenBytes = 0;
     private boolean empty = true;
 
-    public MEInventoryUpdatePacket(final PacketByteBuf stream) {
+    public MEInventoryUpdatePacket(final PacketBuffer stream) {
         this.data = null;
         this.list = new ArrayList<>();
         this.ref = stream.readByte();
@@ -80,7 +80,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     // api
     public MEInventoryUpdatePacket(final byte ref) throws IOException {
         this.ref = ref;
-        this.data = new PacketByteBuf(Unpooled.buffer(OPERATION_BYTE_LIMIT));
+        this.data = new PacketBuffer(Unpooled.buffer(OPERATION_BYTE_LIMIT));
         this.data.writeInt(this.getPacketID());
         this.data.writeByte(this.ref);
         this.list = null;
@@ -89,7 +89,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Screen gs = MinecraftClient.getInstance().currentScreen;
+        final Screen gs = Minecraft.getInstance().currentScreen;
 
         if (gs instanceof CraftConfirmScreen) {
             ((CraftConfirmScreen) gs).postUpdate(this.list, this.ref);
@@ -110,13 +110,13 @@ public class MEInventoryUpdatePacket extends BasePacket {
 
     @Nullable
     @Override
-    public Packet<?> toPacket(NetworkSide direction) {
+    public IPacket<?> toPacket(PacketDirection direction) {
         this.configureWrite(this.data);
         return super.toPacket(direction);
     }
 
     public void appendItem(final IAEItemStack is) throws IOException, BufferOverflowException {
-        final PacketByteBuf tmp = new PacketByteBuf(Unpooled.buffer(OPERATION_BYTE_LIMIT));
+        final PacketBuffer tmp = new PacketBuffer(Unpooled.buffer(OPERATION_BYTE_LIMIT));
         is.writeToPacket(tmp);
 
         if (this.writtenBytes + tmp.readableBytes() > UNCOMPRESSED_PACKET_BYTE_LIMIT) {

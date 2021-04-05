@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import appeng.util.Platform;
 
@@ -39,14 +39,14 @@ public class InvalidPatternHelper {
     private final boolean canSubstitute;
 
     public InvalidPatternHelper(final ItemStack is) {
-        final CompoundTag encodedValue = is.getTag();
+        final CompoundNBT encodedValue = is.getTag();
 
         if (encodedValue == null) {
             throw new IllegalArgumentException("No pattern here!");
         }
 
-        final ListTag inTag = encodedValue.getList("in", 10);
-        final ListTag outTag = encodedValue.getList("out", 10);
+        final ListNBT inTag = encodedValue.getList("in", 10);
+        final ListNBT outTag = encodedValue.getList("out", 10);
         this.isCrafting = encodedValue.getBoolean("crafting");
 
         this.canSubstitute = this.isCrafting && encodedValue.getBoolean("substitute");
@@ -56,7 +56,7 @@ public class InvalidPatternHelper {
         }
 
         for (int i = 0; i < inTag.size(); i++) {
-            CompoundTag in = inTag.getCompound(i);
+            CompoundNBT in = inTag.getCompound(i);
 
             // skip empty slots in the crafting grid
             if (in.isEmpty()) {
@@ -90,8 +90,8 @@ public class InvalidPatternHelper {
 
         private ItemStack stack;
 
-        public PatternIngredient(CompoundTag tag) {
-            this.stack = ItemStack.fromTag(tag);
+        public PatternIngredient(CompoundNBT tag) {
+            this.stack = ItemStack.read(tag);
 
             if (this.stack.isEmpty()) {
                 this.id = tag.getString("id");
@@ -104,9 +104,9 @@ public class InvalidPatternHelper {
             return !this.stack.isEmpty();
         }
 
-        public Text getName() {
+        public ITextComponent getName() {
             return this.isValid() ? Platform.getItemDisplayName(this.stack)
-                    : new LiteralText(this.id + '@' + this.getDamage());
+                    : new StringTextComponent(this.id + '@' + this.getDamage());
         }
 
         public int getDamage() {
@@ -125,11 +125,11 @@ public class InvalidPatternHelper {
             return this.stack;
         }
 
-        public Text getFormattedToolTip() {
-            MutableText result = new LiteralText(this.getCount() + " ").append(this.getName());
+        public ITextComponent getFormattedToolTip() {
+            IFormattableTextComponent result = new StringTextComponent(this.getCount() + " ").append(this.getName());
 
             if (!this.isValid()) {
-                result.formatted(Formatting.RED);
+                result.mergeStyle(TextFormatting.RED);
             }
 
             return result;

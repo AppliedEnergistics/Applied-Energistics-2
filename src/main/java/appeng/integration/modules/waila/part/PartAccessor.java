@@ -20,11 +20,11 @@ package appeng.integration.modules.waila.part;
 
 import java.util.Optional;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
@@ -44,14 +44,14 @@ public final class PartAccessor {
      * You can derive the looked at {@link IPart} by doing that. If a facade is being looked at, it is defined as being
      * absent.
      *
-     * @param te  being looked at {@link BlockEntity}
+     * @param te  being looked at {@link TileEntity}
      * @param rtr type of ray-trace
      * @return maybe the looked at {@link IPart}
      */
-    public Optional<IPart> getMaybePart(final BlockEntity te, final HitResult rtr) {
-        if (te instanceof IPartHost && rtr instanceof BlockHitResult) {
-            BlockPos pos = ((BlockHitResult) rtr).getBlockPos();
-            final Vec3d position = rtr.getPos().add(-pos.getX(), -pos.getY(), -pos.getZ());
+    public Optional<IPart> getMaybePart(final TileEntity te, final RayTraceResult rtr) {
+        if (te instanceof IPartHost && rtr instanceof BlockRayTraceResult) {
+            BlockPos pos = ((BlockRayTraceResult) rtr).getPos();
+            final Vector3d position = rtr.getHitVec().add(-pos.getX(), -pos.getY(), -pos.getZ());
             final IPartHost host = (IPartHost) te;
             final SelectedPart sp = host.selectPart(position);
 

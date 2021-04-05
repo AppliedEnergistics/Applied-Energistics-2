@@ -18,7 +18,7 @@
 
 package appeng.crafting;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -36,7 +36,7 @@ public class CraftingLink implements ICraftingLink {
     private boolean done = false;
     private CraftingLinkNexus tie;
 
-    public CraftingLink(final CompoundTag data, final ICraftingRequester req) {
+    public CraftingLink(final CompoundNBT data, final ICraftingRequester req) {
         this.CraftID = data.getString("CraftID");
         this.setCanceled(data.getBoolean("canceled"));
         this.setDone(data.getBoolean("done"));
@@ -50,7 +50,7 @@ public class CraftingLink implements ICraftingLink {
         this.cpu = null;
     }
 
-    public CraftingLink(final CompoundTag data, final ICraftingCPU cpu) {
+    public CraftingLink(final CompoundNBT data, final ICraftingCPU cpu) {
         this.CraftID = data.getString("CraftID");
         this.setCanceled(data.getBoolean("canceled"));
         this.setDone(data.getBoolean("done"));
@@ -119,7 +119,7 @@ public class CraftingLink implements ICraftingLink {
     }
 
     @Override
-    public void writeToNBT(final CompoundTag tag) {
+    public void writeToNBT(final CompoundNBT tag) {
         tag.putString("CraftID", this.CraftID);
         tag.putBoolean("canceled", this.isCanceled());
         tag.putBoolean("done", this.isDone());

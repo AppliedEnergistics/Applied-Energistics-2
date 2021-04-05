@@ -23,8 +23,8 @@ import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.Identifier;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.util.ResourceLocation;
 
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.TransferRecipeDisplay;
@@ -43,11 +43,11 @@ class InscriberRecipeWrapper implements TransferRecipeDisplay {
 
     public InscriberRecipeWrapper(InscriberRecipe recipe) {
         this.recipe = recipe;
-        this.topOptional = CollectionUtils.map(recipe.getTopOptional().getMatchingStacksClient(), EntryStack::create);
-        this.middleInput = CollectionUtils.map(recipe.getMiddleInput().getMatchingStacksClient(), EntryStack::create);
-        this.bottomOptional = CollectionUtils.map(recipe.getBottomOptional().getMatchingStacksClient(),
+        this.topOptional = CollectionUtils.map(recipe.getTopOptional().getMatchingStacks(), EntryStack::create);
+        this.middleInput = CollectionUtils.map(recipe.getMiddleInput().getMatchingStacks(), EntryStack::create);
+        this.bottomOptional = CollectionUtils.map(recipe.getBottomOptional().getMatchingStacks(),
                 EntryStack::create);
-        this.output = EntryStack.create(recipe.getOutput());
+        this.output = EntryStack.create(recipe.getRecipeOutput());
     }
 
     @Override
@@ -66,12 +66,12 @@ class InscriberRecipeWrapper implements TransferRecipeDisplay {
     }
 
     @Override
-    public Identifier getRecipeCategory() {
+    public ResourceLocation getRecipeCategory() {
         return InscriberRecipeCategory.UID;
     }
 
     @Override
-    public Optional<Identifier> getRecipeLocation() {
+    public Optional<ResourceLocation> getRecipeLocation() {
         return Optional.of(recipe.getId());
     }
 
@@ -86,8 +86,8 @@ class InscriberRecipeWrapper implements TransferRecipeDisplay {
     }
 
     @Override
-    public List<List<EntryStack>> getOrganisedInputEntries(ContainerInfo<ScreenHandler> containerInfo,
-            ScreenHandler container) {
+    public List<List<EntryStack>> getOrganisedInputEntries(ContainerInfo<Container> containerInfo,
+            Container container) {
         return getInputEntries();
     }
 

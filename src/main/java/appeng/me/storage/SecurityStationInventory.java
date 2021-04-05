@@ -32,15 +32,15 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.me.GridAccessException;
-import appeng.tile.misc.SecurityStationBlockEntity;
+import appeng.tile.misc.SecurityStationTileEntity;
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
 
     private final IItemList<IAEItemStack> storedItems = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
-    private final SecurityStationBlockEntity securityTile;
+    private final SecurityStationTileEntity securityTile;
 
-    public SecurityStationInventory(final SecurityStationBlockEntity ts) {
+    public SecurityStationInventory(final SecurityStationTileEntity ts) {
         this.securityTile = ts;
     }
 

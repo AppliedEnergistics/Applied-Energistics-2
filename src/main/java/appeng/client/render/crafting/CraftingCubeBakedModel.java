@@ -30,15 +30,15 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.IBlockDisplayReader;
 
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.crafting.CraftingCubeModelData;
@@ -49,15 +49,15 @@ import appeng.util.Platform;
  * this base class handles adding the "ring" that frames the multi-block structure and delegates rendering of the
  * "inner" part of each block to the subclasses of this class.
  */
-abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
+abstract class CraftingCubeBakedModel implements IBakedModel, FabricBakedModel {
 
-    private final Sprite ringCorner;
+    private final TextureAtlasSprite ringCorner;
 
-    private final Sprite ringHor;
+    private final TextureAtlasSprite ringHor;
 
-    private final Sprite ringVer;
+    private final TextureAtlasSprite ringVer;
 
-    CraftingCubeBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer) {
+    CraftingCubeBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer) {
         this.ringCorner = ringCorner;
         this.ringHor = ringHor;
         this.ringVer = ringVer;
@@ -69,7 +69,7 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
         CraftingCubeModelData modelData = getModelData(blockView, pos);
         EnumSet<Direction> connections = modelData.getConnections();
@@ -128,8 +128,8 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return ModelTransformation.NONE;
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return ItemCameraTransforms.DEFAULT;
     }
 
     private void addRing(CubeBuilder builder, Direction side, EnumSet<Direction> connections) {
@@ -262,7 +262,7 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
 
     // Retrieve the cube connection state from the block state
     // If none is present, just assume there are no adjacent crafting cube blocks
-    private static CraftingCubeModelData getModelData(BlockRenderView blockRenderView, BlockPos pos) {
+    private static CraftingCubeModelData getModelData(IBlockDisplayReader blockRenderView, BlockPos pos) {
         if (!(blockRenderView instanceof RenderAttachedBlockView)) {
             return null;
         }
@@ -277,22 +277,22 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
             CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2);
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getSprite() {
+    public TextureAtlasSprite getParticleTexture() {
         return this.ringCorner;
     }
 
@@ -302,8 +302,8 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 
 }

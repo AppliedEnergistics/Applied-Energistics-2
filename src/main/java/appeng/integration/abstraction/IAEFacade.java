@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.IBlockReader;
 
 import team.chisel.ctm.api.IFacade;
 
@@ -35,17 +35,17 @@ import team.chisel.ctm.api.IFacade;
  */
 public interface IAEFacade extends IFacade {
 
-    BlockState getFacadeState(BlockView world, BlockPos pos, @Nullable Direction side);
+    BlockState getFacadeState(IBlockReader world, BlockPos pos, @Nullable Direction side);
 
     @Nonnull
     @Override
-    default BlockState getFacade(@Nonnull BlockView world, @Nonnull BlockPos pos, @Nullable Direction side) {
+    default BlockState getFacade(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nullable Direction side) {
         return getFacadeState(world, pos, side);
     }
 
     @Nonnull
     @Override
-    default BlockState getFacade(@Nonnull BlockView world, @Nonnull BlockPos pos, @Nullable Direction side,
+    default BlockState getFacade(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nullable Direction side,
             @Nonnull BlockPos connection) {
         return getFacadeState(world, pos, side);
     }

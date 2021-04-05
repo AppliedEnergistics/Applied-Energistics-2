@@ -23,9 +23,9 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
@@ -65,7 +65,7 @@ public class SyncData {
         return this.channel;
     }
 
-    public void tick(final ScreenHandlerListener c) {
+    public void tick(final IContainerListener c) {
 
         try {
             final Object val = this.getter.invoke(source);
@@ -78,12 +78,12 @@ public class SyncData {
 
     }
 
-    private void send(final ScreenHandlerListener o, Object val) {
-        if (fieldType.isAssignableFrom(Text.class)) {
+    private void send(final IContainerListener o, Object val) {
+        if (fieldType.isAssignableFrom(ITextComponent.class)) {
             if (o instanceof ServerPlayerEntity) {
                 String json = "";
                 if (val != null) {
-                    json = Text.Serializer.toJson((Text) val);
+                    json = ITextComponent.Serializer.toJson((ITextComponent) val);
                 }
                 NetworkHandler.instance().sendTo(new ConfigValuePacket("SyncDat." + this.channel, json),
                         (ServerPlayerEntity) o);
@@ -92,7 +92,7 @@ public class SyncData {
             return;
         }
 
-        // Types other than Text must be non-null
+        // Types other than ITextComponent must be non-null
         if (val == null) {
             return;
         }
@@ -103,16 +103,16 @@ public class SyncData {
                         (ServerPlayerEntity) o);
             }
         } else if (this.fieldType.isEnum()) {
-            o.onPropertyUpdate(this.source, this.channel, ((Enum<?>) val).ordinal());
+            o.sendWindowProperty(this.source, this.channel, ((Enum<?>) val).ordinal());
         } else if (val instanceof Long) {
             if (o instanceof ServerPlayerEntity) {
                 NetworkHandler.instance().sendTo(new ProgressBarPacket(this.channel, (Long) val),
                         (ServerPlayerEntity) o);
             }
         } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
-            o.onPropertyUpdate(this.source, this.channel, ((Boolean) val) ? 1 : 0);
+            o.sendWindowProperty(this.source, this.channel, ((Boolean) val) ? 1 : 0);
         } else if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
-            o.onPropertyUpdate(this.source, this.channel, (Integer) val);
+            o.sendWindowProperty(this.source, this.channel, (Integer) val);
         } else {
             throw new IllegalStateException("Unknown field type: " + fieldType);
         }
@@ -124,11 +124,11 @@ public class SyncData {
         try {
             final Object oldValue = this.getter.invoke(source);
             if (val instanceof String) {
-                if (this.fieldType.isAssignableFrom(Text.class)) {
+                if (this.fieldType.isAssignableFrom(ITextComponent.class)) {
                     String json = (String) val;
-                    Text text = null;
+                    ITextComponent text = null;
                     if (!json.isEmpty()) {
-                        text = Text.Serializer.fromJson((String) val);
+                        text = ITextComponent.Serializer.getComponentFromJson((String) val);
                     }
                     this.updateTextComponent(text);
                 } else {
@@ -150,7 +150,7 @@ public class SyncData {
         }
     }
 
-    private void updateTextComponent(final Text val) {
+    private void updateTextComponent(final ITextComponent val) {
         try {
             this.setter.invoke(source, val);
         } catch (Throwable e) {

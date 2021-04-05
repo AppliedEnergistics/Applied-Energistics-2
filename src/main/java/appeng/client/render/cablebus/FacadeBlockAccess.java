@@ -21,13 +21,13 @@ package appeng.client.render.cablebus;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.chunk.light.LightingProvider;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.level.ColorResolver;
+import net.minecraft.world.lighting.WorldLightManager;
 
 /**
  * This is used to retrieve the ExtendedState of a block for facade rendering. It fakes the block at BlockPos provided
@@ -35,14 +35,14 @@ import net.minecraft.world.level.ColorResolver;
  *
  * @author covers1624
  */
-public class FacadeBlockAccess implements BlockRenderView {
+public class FacadeBlockAccess implements IBlockDisplayReader {
 
-    private final BlockRenderView world;
+    private final IBlockDisplayReader world;
     private final BlockPos pos;
     private final Direction side;
     private final BlockState state;
 
-    public FacadeBlockAccess(BlockRenderView world, BlockPos pos, Direction side, BlockState state) {
+    public FacadeBlockAccess(IBlockDisplayReader world, BlockPos pos, Direction side, BlockState state) {
         this.world = world;
         this.pos = pos;
         this.side = side;
@@ -51,8 +51,8 @@ public class FacadeBlockAccess implements BlockRenderView {
 
     @Nullable
     @Override
-    public BlockEntity getBlockEntity(BlockPos pos) {
-        return this.world.getBlockEntity(pos);
+    public TileEntity getTileEntity(BlockPos pos) {
+        return this.world.getTileEntity(pos);
     }
 
     @Override
@@ -68,18 +68,19 @@ public class FacadeBlockAccess implements BlockRenderView {
         return world.getFluidState(pos);
     }
 
+    // This is for diffuse lighting
     @Override
-    public LightingProvider getLightingProvider() {
-        return world.getLightingProvider();
+    public float func_230487_a_(Direction p_230487_1_, boolean p_230487_2_) {
+        return world.func_230487_a_(p_230487_1_, p_230487_2_);
     }
 
     @Override
-    public float getBrightness(Direction direction, boolean shaded) {
-        return world.getBrightness(direction, shaded);
+    public WorldLightManager getLightManager() {
+        return world.getLightManager();
     }
 
     @Override
-    public int getColor(BlockPos pos, ColorResolver colorResolver) {
-        return world.getColor(pos, colorResolver);
+    public int getBlockColor(BlockPos blockPosIn, ColorResolver colorResolverIn) {
+        return world.getBlockColor(blockPosIn, colorResolverIn);
     }
 }

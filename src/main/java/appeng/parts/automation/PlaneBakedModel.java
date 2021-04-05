@@ -33,14 +33,14 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.IBlockDisplayReader;
 
 import appeng.api.parts.IDynamicPartBakedModel;
 import appeng.client.render.cablebus.CubeBuilder;
@@ -48,15 +48,15 @@ import appeng.client.render.cablebus.CubeBuilder;
 /**
  * Built-in model for annihilation planes that supports connected textures.
  */
-public class PlaneBakedModel implements BakedModel, IDynamicPartBakedModel {
+public class PlaneBakedModel implements IBakedModel, IDynamicPartBakedModel {
 
     private static final PlaneConnections DEFAULT_PERMUTATION = PlaneConnections.of(false, false, false, false);
 
-    private final Sprite frontTexture;
+    private final TextureAtlasSprite frontTexture;
 
     private final Map<PlaneConnections, Mesh> meshes;
 
-    PlaneBakedModel(Sprite frontTexture, Sprite sidesTexture, Sprite backTexture) {
+    PlaneBakedModel(TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture) {
         this.frontTexture = frontTexture;
 
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
@@ -86,7 +86,8 @@ public class PlaneBakedModel implements BakedModel, IDynamicPartBakedModel {
     }
 
     @Override
-    public void emitQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier,
+    public void emitQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier,
             RenderContext context, Direction partSide, @Nullable Object modelData) {
         PlaneConnections connections = DEFAULT_PERMUTATION;
 
@@ -98,8 +99,8 @@ public class PlaneBakedModel implements BakedModel, IDynamicPartBakedModel {
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return ModelTransformation.NONE;
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return ItemCameraTransforms.DEFAULT;
     }
 
     @Override
@@ -108,12 +109,12 @@ public class PlaneBakedModel implements BakedModel, IDynamicPartBakedModel {
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
@@ -123,17 +124,17 @@ public class PlaneBakedModel implements BakedModel, IDynamicPartBakedModel {
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getSprite() {
+    public TextureAtlasSprite getParticleTexture() {
         return this.frontTexture;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 }

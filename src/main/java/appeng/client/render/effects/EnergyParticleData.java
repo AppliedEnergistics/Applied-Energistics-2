@@ -23,13 +23,13 @@ import java.util.Locale;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
 
 import appeng.api.util.AEPartLocation;
 
-public class EnergyParticleData implements ParticleEffect {
+public class EnergyParticleData implements IParticleData {
 
     public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, AEPartLocation.INTERNAL);
 
@@ -42,9 +42,9 @@ public class EnergyParticleData implements ParticleEffect {
         this.direction = direction;
     }
 
-    public static final Factory<EnergyParticleData> DESERIALIZER = new Factory<EnergyParticleData>() {
+    public static final IDeserializer<EnergyParticleData> DESERIALIZER = new IDeserializer<EnergyParticleData>() {
         @Override
-        public EnergyParticleData read(ParticleType<EnergyParticleData> particleTypeIn, StringReader reader)
+        public EnergyParticleData deserialize(ParticleType<EnergyParticleData> particleTypeIn, StringReader reader)
                 throws CommandSyntaxException {
             reader.expect(' ');
             boolean forItem = reader.readBoolean();
@@ -54,7 +54,7 @@ public class EnergyParticleData implements ParticleEffect {
         }
 
         @Override
-        public EnergyParticleData read(ParticleType<EnergyParticleData> particleTypeIn, PacketByteBuf buffer) {
+        public EnergyParticleData read(ParticleType<EnergyParticleData> particleTypeIn, PacketBuffer buffer) {
             boolean forItem = buffer.readBoolean();
             AEPartLocation direction = AEPartLocation.values()[buffer.readByte()];
             return new EnergyParticleData(forItem, direction);
@@ -67,13 +67,13 @@ public class EnergyParticleData implements ParticleEffect {
     }
 
     @Override
-    public void write(PacketByteBuf buffer) {
+    public void write(PacketBuffer buffer) {
         buffer.writeBoolean(forItem);
         buffer.writeByte((byte) direction.ordinal());
     }
 
     @Override
-    public String asString() {
+    public String getParameters() {
         return String.format(Locale.ROOT, "%s %s", forItem ? "true" : "false",
                 direction.name().toLowerCase(Locale.ROOT));
     }

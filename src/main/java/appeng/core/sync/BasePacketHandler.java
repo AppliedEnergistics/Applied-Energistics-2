@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.core.sync.packets.AssemblerAnimationPacket;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
@@ -107,9 +107,9 @@ public class BasePacketHandler {
 
         SPAWN_ENTITY(SpawnEntityPacket.class, SpawnEntityPacket::new);
 
-        private final Function<PacketByteBuf, BasePacket> factory;
+        private final Function<PacketBuffer, BasePacket> factory;
 
-        PacketTypes(Class<? extends BasePacket> packetClass, Function<PacketByteBuf, BasePacket> factory) {
+        PacketTypes(Class<? extends BasePacket> packetClass, Function<PacketBuffer, BasePacket> factory) {
             this.factory = factory;
 
             REVERSE_LOOKUP.put(packetClass, this);
@@ -123,7 +123,7 @@ public class BasePacketHandler {
             return REVERSE_LOOKUP.get(c);
         }
 
-        public BasePacket parsePacket(final PacketByteBuf in) throws IllegalArgumentException {
+        public BasePacket parsePacket(final PacketBuffer in) throws IllegalArgumentException {
             return this.factory.apply(in);
         }
     }

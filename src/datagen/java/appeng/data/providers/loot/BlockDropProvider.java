@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.data.providers.loot;
 
 import java.io.IOException;
@@ -13,29 +31,29 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import net.minecraft.block.Block;
-import net.minecraft.data.DataCache;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.server.BlockLootTableGenerator;
+import net.minecraft.data.DirectoryCache;
+import net.minecraft.data.IDataProvider;
+import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.loot.ConstantLootTableRange;
-import net.minecraft.loot.LootManager;
+import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.ItemLootEntry;
+import net.minecraft.loot.LootEntry;
+import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.UniformLootTableRange;
-import net.minecraft.loot.condition.SurvivesExplosionLootCondition;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.entry.LeafEntry;
-import net.minecraft.loot.function.ApplyBonusLootFunction;
-import net.minecraft.loot.function.SetCountLootFunction;
-import net.minecraft.util.Identifier;
+import net.minecraft.loot.LootTableManager;
+import net.minecraft.loot.RandomValueRange;
+import net.minecraft.loot.conditions.SurvivesExplosion;
+import net.minecraft.loot.functions.ApplyBonus;
+import net.minecraft.loot.functions.SetCount;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 
 import appeng.core.AppEng;
 import appeng.data.providers.IAE2DataProvider;
 
-public class BlockDropProvider extends BlockLootTableGenerator implements IAE2DataProvider {
+public class BlockDropProvider extends BlockLootTables implements IAE2DataProvider {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -44,15 +62,17 @@ public class BlockDropProvider extends BlockLootTableGenerator implements IAE2Da
     private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
             .put(BLOCKS.matrixFrame().block(), $ -> LootTable.builder())
             .put(BLOCKS.quartzOre().block(),
-                    b -> dropsWithSilkTouch(BLOCKS.quartzOre().block(), applyExplosionDecay(BLOCKS.quartzOre().block(),
-                            ItemEntry.builder(MATERIALS.certusQuartzCrystal().item())
-                                    .apply(SetCountLootFunction.builder(UniformLootTableRange.between(1.0F, 2.0F)))
-                                    .apply(ApplyBonusLootFunction.uniformBonusCount(Enchantments.FORTUNE)))))
-            .put(BLOCKS.quartzOreCharged().block(), b -> dropsWithSilkTouch(BLOCKS.quartzOreCharged().block(),
-                    applyExplosionDecay(BLOCKS.quartzOreCharged().block(),
-                            ItemEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
-                                    .apply(SetCountLootFunction.builder(UniformLootTableRange.between(1.0F, 2.0F)))
-                                    .apply(ApplyBonusLootFunction.uniformBonusCount(Enchantments.FORTUNE)))))
+                    b -> droppingWithSilkTouch(BLOCKS.quartzOre().block(),
+                            withExplosionDecay(BLOCKS.quartzOre().block(),
+                                    ItemLootEntry.builder(MATERIALS.certusQuartzCrystal().item())
+                                            .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
+                                            .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
+            .put(BLOCKS.quartzOreCharged().block(),
+                    b -> droppingWithSilkTouch(BLOCKS.quartzOreCharged().block(),
+                            withExplosionDecay(BLOCKS.quartzOreCharged().block(),
+                                    ItemLootEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
+                                            .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
+                                            .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
             .build();
 
     public BlockDropProvider(Path outputFolder) {
@@ -60,37 +80,36 @@ public class BlockDropProvider extends BlockLootTableGenerator implements IAE2Da
     }
 
     @Override
-    public void run(DataCache cache) throws IOException {
+    public void act(@Nonnull DirectoryCache cache) throws IOException {
         for (Map.Entry<RegistryKey<Block>, Block> entry : Registry.BLOCK.getEntries()) {
             LootTable.Builder builder;
-            Identifier id = entry.getKey().getValue();
-            if (id.getNamespace().equals(AppEng.MOD_ID)) {
+            if (entry.getKey().getLocation().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                DataProvider.writeToPath(GSON, cache, toJson(builder), getPath(outputFolder, id));
+                IDataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, entry.getKey().getLocation()));
             }
         }
     }
 
     private LootTable.Builder defaultBuilder(Block block) {
-        LeafEntry.Builder<?> entry = ItemEntry.builder(block);
-        LootPool.Builder pool = LootPool.builder().rolls(ConstantLootTableRange.create(1)).with(entry)
-                .conditionally(SurvivesExplosionLootCondition.builder());
+        LootEntry.Builder<?> entry = ItemLootEntry.builder(block);
+        LootPool.Builder pool = LootPool.builder().rolls(ConstantRange.of(1)).addEntry(entry)
+                .acceptCondition(SurvivesExplosion.builder());
 
-        return LootTable.builder().pool(pool);
+        return LootTable.builder().addLootPool(pool);
     }
 
-    private Path getPath(Path root, Identifier id) {
+    private Path getPath(Path root, ResourceLocation id) {
         return root.resolve("data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json");
     }
 
     public JsonElement toJson(LootTable.Builder builder) {
-        return LootManager.toJson(finishBuilding(builder));
+        return LootTableManager.toJson(finishBuilding(builder));
     }
 
     @Nonnull
     public LootTable finishBuilding(LootTable.Builder builder) {
-        return builder.type(LootContextTypes.BLOCK).build();
+        return builder.setParameterSet(LootParameterSets.BLOCK).build();
     }
 
     @Nonnull

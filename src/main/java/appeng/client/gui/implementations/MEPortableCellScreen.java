@@ -19,13 +19,14 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.container.implementations.MEPortableCellContainer;
 
 public class MEPortableCellScreen extends MEMonitorableScreen<MEPortableCellContainer> {
 
-    public MEPortableCellScreen(MEPortableCellContainer container, PlayerInventory playerInventory, Text title) {
+    public MEPortableCellScreen(MEPortableCellContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
     }
 

@@ -18,7 +18,7 @@
 
 package appeng.worldgen.meteorite;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.worldgen.meteorite.fallout.FalloutMode;
@@ -70,8 +70,8 @@ public final class PlacedMeteoriteSettings {
         return craterLake;
     }
 
-    public CompoundTag write(CompoundTag tag) {
-        tag.putLong(Constants.TAG_POS, pos.asLong());
+    public CompoundNBT write(CompoundNBT tag) {
+        tag.putLong(Constants.TAG_POS, pos.toLong());
 
         tag.putFloat(Constants.TAG_RADIUS, meteoriteRadius);
         tag.putByte(Constants.TAG_CRATER, (byte) craterType.ordinal());
@@ -81,7 +81,7 @@ public final class PlacedMeteoriteSettings {
         return tag;
     }
 
-    public static PlacedMeteoriteSettings read(CompoundTag tag) {
+    public static PlacedMeteoriteSettings read(CompoundNBT tag) {
         BlockPos pos = BlockPos.fromLong(tag.getLong(Constants.TAG_POS));
         float meteoriteRadius = tag.getFloat(Constants.TAG_RADIUS);
         CraterType craterType = CraterType.values()[tag.getByte(Constants.TAG_CRATER)];

@@ -43,11 +43,11 @@ public class OptionalNormalSlot extends AppEngSlot implements IOptionalSlot {
 
     @Override
     public int getSourceX() {
-        return this.x;
+        return this.xPos;
     }
 
     @Override
     public int getSourceY() {
-        return this.y;
+        return this.yPos;
     }
 }

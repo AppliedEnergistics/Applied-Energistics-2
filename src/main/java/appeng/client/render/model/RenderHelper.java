@@ -24,9 +24,9 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 // TODO: Investigate use of CubeBuilder instead
 final class RenderHelper {
@@ -47,7 +47,7 @@ final class RenderHelper {
         for (Direction facing : Direction.values()) {
             List<Vector3f> corners;
 
-            float offset = (facing.getDirection() == Direction.AxisDirection.NEGATIVE) ? 0 : 1;
+            float offset = (facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) ? 0 : 1;
 
             switch (facing.getAxis()) {
                 default:
@@ -65,7 +65,7 @@ final class RenderHelper {
                     break;
             }
 
-            if (facing.getDirection() == Direction.AxisDirection.NEGATIVE) {
+            if (facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
                 corners = Lists.reverse(corners);
             }
 
@@ -75,15 +75,15 @@ final class RenderHelper {
         return result;
     }
 
-    private static Vec3d adjust(Vec3d vec, Direction.Axis axis, double delta) {
+    private static Vector3d adjust(Vector3d vec, Direction.Axis axis, double delta) {
         switch (axis) {
             default:
             case X:
-                return new Vec3d(vec.x + delta, vec.y, vec.z);
+                return new Vector3d(vec.x + delta, vec.y, vec.z);
             case Y:
-                return new Vec3d(vec.x, vec.y + delta, vec.z);
+                return new Vector3d(vec.x, vec.y + delta, vec.z);
             case Z:
-                return new Vec3d(vec.x, vec.y, vec.z + delta);
+                return new Vector3d(vec.x, vec.y, vec.z + delta);
         }
     }
 }

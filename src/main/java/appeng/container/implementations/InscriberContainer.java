@@ -20,10 +20,10 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.network.PacketBuffer;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -34,8 +34,8 @@ import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
-import appeng.tile.misc.InscriberBlockEntity;
 import appeng.tile.misc.InscriberRecipes;
+import appeng.tile.misc.InscriberTileEntity;
 
 /**
  * @author AlgorithmX2
@@ -45,12 +45,12 @@ import appeng.tile.misc.InscriberRecipes;
  */
 public class InscriberContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static ScreenHandlerType<InscriberContainer> TYPE;
+    public static ContainerType<InscriberContainer> TYPE;
 
-    private static final ContainerHelper<InscriberContainer, InscriberBlockEntity> helper = new ContainerHelper<>(
-            InscriberContainer::new, InscriberBlockEntity.class);
+    private static final ContainerHelper<InscriberContainer, InscriberTileEntity> helper = new ContainerHelper<>(
+            InscriberContainer::new, InscriberTileEntity.class);
 
-    public static InscriberContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static InscriberContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -58,7 +58,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
         return helper.open(player, locator);
     }
 
-    private final InscriberBlockEntity ti;
+    private final InscriberTileEntity ti;
 
     private final Slot top;
     private final Slot middle;
@@ -70,7 +70,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     @GuiSync(3)
     public int processingTime = -1;
 
-    public InscriberContainer(int id, final PlayerInventory ip, final InscriberBlockEntity te) {
+    public InscriberContainer(int id, final PlayerInventory ip, final InscriberTileEntity te) {
         super(TYPE, id, ip, te);
         this.ti = te;
 
@@ -116,7 +116,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.standardDetectAndSendChanges();
 
         if (isServer()) {

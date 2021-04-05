@@ -6,26 +6,26 @@ import java.util.function.Supplier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.BiomeGenerationSettings;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 /**
  * Allows the settings in a Biome's generation settings to be modified.
  */
-@Mixin(GenerationSettings.class)
+@Mixin(BiomeGenerationSettings.class)
 public interface GenerationSettingsAccessor {
 
-    @Accessor
+    @Accessor("features")
     List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures();
 
-    @Accessor
+    @Accessor("features")
     void setFeatures(List<List<Supplier<ConfiguredFeature<?, ?>>>> features);
 
-    @Accessor
-    List<Supplier<ConfiguredStructureFeature<?, ?>>> getStructureFeatures();
+    @Accessor("structures")
+    List<Supplier<StructureFeature<?, ?>>> getStructureFeatures();
 
-    @Accessor
-    void setStructureFeatures(List<Supplier<ConfiguredStructureFeature<?, ?>>> structureFeatures);
+    @Accessor("structures")
+    void setStructureFeatures(List<Supplier<StructureFeature<?, ?>>> structureFeatures);
 
 }

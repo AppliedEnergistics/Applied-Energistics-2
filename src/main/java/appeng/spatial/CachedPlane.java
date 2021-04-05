@@ -25,21 +25,21 @@ import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
-import net.minecraft.server.world.ServerChunkManager;
-import net.minecraft.server.world.ServerLightingProvider;
-import net.minecraft.server.world.ServerTickScheduler;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Tickable;
+import net.minecraft.network.play.server.SChunkDataPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ScheduledTick;
-import net.minecraft.world.TickScheduler;
+import net.minecraft.world.ITickList;
+import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.chunk.WorldChunk;
-import net.minecraft.world.chunk.light.LightingProvider;
+import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.lighting.WorldLightManager;
+import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.world.server.ServerTickList;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.ServerWorldLightManager;
 
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
@@ -58,10 +58,10 @@ public class CachedPlane {
     private final int y_offset;
     private final int z_offset;
     private final int y_size;
-    private final WorldChunk[][] myChunks;
+    private final Chunk[][] myChunks;
     private final Column[][] myColumns;
-    private final List<BlockEntity> tiles = new ArrayList<>();
-    private final List<ScheduledTick<Block>> ticks = new ArrayList<>();
+    private final List<TileEntity> tiles = new ArrayList<>();
+    private final List<NextTickListEntry<Block>> ticks = new ArrayList<>();
     private final ServerWorld world;
     private final IMovableRegistry reg = Api.instance().registries().movable();
     private final List<WorldCoord> updates = new ArrayList<>();
@@ -99,7 +99,7 @@ public class CachedPlane {
         final int cy_size = maxCY - minCY + 1;
         this.cz_size = maxCZ - minCZ + 1;
 
-        this.myChunks = new WorldChunk[this.cx_size][this.cz_size];
+        this.myChunks = new Chunk[this.cx_size][this.cz_size];
         this.myColumns = new Column[this.x_size][this.z_size];
 
         this.verticalBits = 0;
@@ -120,12 +120,12 @@ public class CachedPlane {
             for (int cz = 0; cz < this.cz_size; cz++) {
                 final List<BlockPos> deadTiles = new ArrayList<>();
 
-                final WorldChunk c = w.getChunk(minCX + cx, minCZ + cz);
+                final Chunk c = w.getChunk(minCX + cx, minCZ + cz);
                 this.myChunks[cx][cz] = c;
 
-                Set<BlockPos> blockEntityPositions = c.getBlockEntityPositions();
+                Set<BlockPos> blockEntityPositions = c.getTileEntitiesPos();
                 for (BlockPos tePOS : blockEntityPositions) {
-                    final BlockEntity te = c.getBlockEntity(tePOS);
+                    final TileEntity te = c.getTileEntity(tePOS);
                     if (te == null) {
                         continue;
                     }
@@ -150,31 +150,31 @@ public class CachedPlane {
                 }
 
                 for (final BlockPos cp : deadTiles) {
-                    c.removeBlockEntity(cp);
+                    c.removeTileEntity(cp);
                 }
 
-                final long gameTime = this.getWorld().getTime();
-                final TickScheduler<Block> pendingBlockTicks = this.getWorld().getBlockTickScheduler();
-                if (pendingBlockTicks instanceof ServerTickScheduler) {
-                    List<ScheduledTick<Block>> pending = ((ServerTickScheduler<Block>) pendingBlockTicks)
-                            .getScheduledTicksInChunk(c.getPos(), false, true);
-                    for (final ScheduledTick<Block> entry : pending) {
-                        final BlockPos tePOS = entry.pos;
+                final long gameTime = this.getWorld().getGameTime();
+                final ITickList<Block> pendingBlockTicks = this.getWorld().getPendingBlockTicks();
+                if (pendingBlockTicks instanceof ServerTickList) {
+                    List<NextTickListEntry<Block>> pending = ((ServerTickList<Block>) pendingBlockTicks)
+                            .getPending(c.getPos(), false, true);
+                    for (final NextTickListEntry<Block> entry : pending) {
+                        final BlockPos tePOS = entry.position;
                         if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
                                 && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
-                            this.ticks.add(new ScheduledTick<>(tePOS, entry.getObject(), entry.time - gameTime,
-                                    entry.priority));
+                            this.ticks.add(new NextTickListEntry<>(tePOS, entry.getTarget(),
+                                    entry.field_235017_b_ - gameTime, entry.priority));
                         }
                     }
                 }
             }
         }
 
-        for (final BlockEntity te : this.tiles) {
+        for (final TileEntity te : this.tiles) {
             try {
-                this.getWorld().blockEntities.remove(te);
-                if (te instanceof Tickable) {
-                    this.getWorld().tickingBlockEntities.remove(te);
+                this.getWorld().loadedTileEntityList.remove(te);
+                if (te instanceof ITickableTileEntity) {
+                    this.getWorld().tickableTileEntities.remove(te);
                 }
             } catch (final Exception e) {
                 AELog.debug(e);
@@ -182,7 +182,7 @@ public class CachedPlane {
         }
     }
 
-    private IMovableHandler getHandler(final BlockEntity te) {
+    private IMovableHandler getHandler(final TileEntity te) {
         final IMovableRegistry mr = Api.instance().registries().movable();
         return mr.getHandler(te);
     }
@@ -224,26 +224,26 @@ public class CachedPlane {
             long duration = endTime - startTime;
             AELog.info("Block Copy Time: " + duration);
 
-            for (final BlockEntity te : this.tiles) {
+            for (final TileEntity te : this.tiles) {
                 final BlockPos tePOS = te.getPos();
                 dst.addTile(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
                         te, this, mr);
             }
 
-            for (final BlockEntity te : dst.tiles) {
+            for (final TileEntity te : dst.tiles) {
                 final BlockPos tePOS = te.getPos();
                 this.addTile(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset, te,
                         dst, mr);
             }
 
-            for (final ScheduledTick<Block> entry : this.ticks) {
-                final BlockPos tePOS = entry.pos;
+            for (final NextTickListEntry<Block> entry : this.ticks) {
+                final BlockPos tePOS = entry.position;
                 dst.addTick(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
                         entry);
             }
 
-            for (final ScheduledTick<Block> entry : dst.ticks) {
-                final BlockPos tePOS = entry.pos;
+            for (final NextTickListEntry<Block> entry : dst.ticks) {
+                final BlockPos tePOS = entry.position;
                 this.addTick(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset,
                         entry);
             }
@@ -265,12 +265,13 @@ public class CachedPlane {
         }
     }
 
-    private void addTick(final int x, final int y, final int z, final ScheduledTick<Block> entry) {
+    private void addTick(final int x, final int y, final int z, final NextTickListEntry<Block> entry) {
         BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
-        this.world.getBlockTickScheduler().schedule(where, entry.getObject(), (int) entry.time, entry.priority);
+        this.world.getPendingBlockTicks().scheduleTick(where, entry.getTarget(), (int) entry.field_235017_b_,
+                entry.priority);
     }
 
-    private void addTile(final int x, final int y, final int z, final BlockEntity te,
+    private void addTile(final int x, final int y, final int z, final TileEntity te,
             final CachedPlane alternateDestination, final IMovableRegistry mr) {
         try {
             final Column c = this.myColumns[x][z];
@@ -287,9 +288,9 @@ public class CachedPlane {
                     final BlockPos pos = new BlockPos(x, y, z);
 
                     // attempt recovery...
-                    c.c.setBlockEntity(pos, te);
+                    c.c.addTileEntity(pos, te);
 
-                    this.world.updateListeners(pos, this.world.getBlockState(pos), this.world.getBlockState(pos), z);
+                    this.world.notifyBlockUpdate(pos, this.world.getBlockState(pos), this.world.getBlockState(pos), z);
                 }
 
                 mr.doneMoving(te);
@@ -303,15 +304,15 @@ public class CachedPlane {
 
     private void updateChunks() {
 
-        LightingProvider lightManager = world.getLightingProvider();
+        WorldLightManager lightManager = world.getLightManager();
 
         // update shit..
-        if (lightManager instanceof ServerLightingProvider) {
-            ServerLightingProvider serverLightManager = (ServerLightingProvider) lightManager;
+        if (lightManager instanceof ServerWorldLightManager) {
+            ServerWorldLightManager serverLightManager = (ServerWorldLightManager) lightManager;
             for (int x = 0; x < this.cx_size; x++) {
                 for (int z = 0; z < this.cz_size; z++) {
-                    final WorldChunk c = this.myChunks[x][z];
-                    serverLightManager.light(c, false);
+                    final Chunk c = this.myChunks[x][z];
+                    serverLightManager.lightChunk(c, false);
                     c.markDirty();
                 }
             }
@@ -321,20 +322,20 @@ public class CachedPlane {
         for (int x = 0; x < this.cx_size; x++) {
             for (int z = 0; z < this.cz_size; z++) {
 
-                final WorldChunk c = this.myChunks[x][z];
+                final Chunk c = this.myChunks[x][z];
 
                 WorldData.instance().compassData().service().updateArea((ServerWorld) this.getWorld(), c);
 
                 // FIXME this was sending chunks to players...
-                ChunkDataS2CPacket cdp = new ChunkDataS2CPacket(c, verticalBits);
-                world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(c.getPos(), false)
-                        .forEach(spe -> spe.networkHandler.sendPacket(cdp));
+                SChunkDataPacket cdp = new SChunkDataPacket(c, verticalBits);
+                world.getChunkProvider().chunkManager.getTrackingPlayers(c.getPos(), false)
+                        .forEach(spe -> spe.connection.sendPacket(cdp));
 
             }
         }
 
         // FIXME check if this makes any sense at all to send changes to players asap
-        ServerChunkManager serverChunkProvider = world.getChunkManager();
+        ServerChunkProvider serverChunkProvider = world.getChunkProvider();
         serverChunkProvider.tick(() -> false);
     }
 
@@ -361,7 +362,7 @@ public class CachedPlane {
             this.z = z;
             this.c = chunk;
 
-            final ChunkSection[] storage = this.c.getSectionArray();
+            final ChunkSection[] storage = this.c.getSections();
 
             // make sure storage exists before hand...
             for (int ay = 0; ay < chunkHeight; ay++) {
@@ -377,20 +378,20 @@ public class CachedPlane {
             if (data.state == CachedPlane.this.matrixBlockState) {
                 data.state = Blocks.AIR.getDefaultState();
             }
-            final ChunkSection[] storage = this.c.getSectionArray();
+            final ChunkSection[] storage = this.c.getSections();
             final ChunkSection extendedBlockStorage = storage[y >> 4];
             extendedBlockStorage.setBlockState(this.x, y & 15, this.z, data.state);
         }
 
         private void fillData(final int y, BlockStorageData data) {
-            final ChunkSection[] storage = this.c.getSectionArray();
+            final ChunkSection[] storage = this.c.getSections();
             final ChunkSection extendedblockstorage = storage[y >> 4];
 
             data.state = extendedblockstorage.getBlockState(this.x, y & 15, this.z);
         }
 
         private boolean doNotSkip(final int y) {
-            final ChunkSection[] storage = this.c.getSectionArray();
+            final ChunkSection[] storage = this.c.getSections();
             final ChunkSection extendedblockstorage = storage[y >> 4];
             if (CachedPlane.this.reg
                     .isBlacklisted(extendedblockstorage.getBlockState(this.x, y & 15, this.z).getBlock())) {

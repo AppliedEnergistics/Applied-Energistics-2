@@ -21,7 +21,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.util.AEColor;
 import appeng.core.sync.BasePacket;
@@ -35,7 +35,7 @@ public class PaintedEntityPacket extends BasePacket {
     private final int entityId;
     private int ticks;
 
-    public PaintedEntityPacket(final PacketByteBuf stream) {
+    public PaintedEntityPacket(final PacketBuffer stream) {
         this.entityId = stream.readInt();
         this.myColor = AEColor.values()[stream.readByte()];
         this.ticks = stream.readInt();
@@ -44,7 +44,7 @@ public class PaintedEntityPacket extends BasePacket {
     // api
     public PaintedEntityPacket(final int myEntity, final AEColor myColor, final int ticksLeft) {
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(this.entityId = myEntity);

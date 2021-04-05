@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.CondenserOutput;
@@ -224,10 +224,15 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.SchedulingModeRoundRobin);
             registerApp(16 * 15 + 2, Settings.SCHEDULING_MODE, SchedulingMode.RANDOM, ButtonToolTips.SchedulingMode,
                     ButtonToolTips.SchedulingModeRandom);
+
+            registerApp(16 * 15 + 3, Settings.OVERLAY_MODE, YesNo.NO, ButtonToolTips.OverlayMode,
+                    ButtonToolTips.OverlayModeNo);
+            registerApp(16 * 15 + 4, Settings.OVERLAY_MODE, YesNo.YES, ButtonToolTips.OverlayMode,
+                    ButtonToolTips.OverlayModeYes);
         }
     }
 
-    private static void onPress(ButtonWidget btn) {
+    private static void onPress(Button btn) {
         if (btn instanceof SettingToggleButton) {
             ((SettingToggleButton<?>) btn).triggerPress();
         }
@@ -237,7 +242,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         boolean backwards = false;
         // This isn't great, but we don't get any information about right-clicks
         // otherwise
-        Screen currentScreen = MinecraftClient.getInstance().currentScreen;
+        Screen currentScreen = Minecraft.getInstance().currentScreen;
         if (currentScreen instanceof AEBaseScreen) {
             backwards = ((AEBaseScreen<?>) currentScreen).isHandlingRightClick();
         }
@@ -245,7 +250,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     private static void registerApp(final int iconIndex, final Settings setting, final Enum<?> val,
-            final ButtonToolTips title, final Text hint) {
+            final ButtonToolTips title, final ITextComponent hint) {
         final ButtonAppearance a = new ButtonAppearance();
         a.displayName = title.text();
         a.displayValue = hint;
@@ -289,15 +294,15 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     @Override
-    public Text getTooltipMessage() {
-        Text displayName = null;
-        Text displayValue = null;
+    public ITextComponent getTooltipMessage() {
+        ITextComponent displayName = null;
+        ITextComponent displayValue = null;
 
         if (this.buttonSetting != null && this.currentValue != null) {
             final ButtonAppearance buttonAppearance = appearances
                     .get(new EnumPair(this.buttonSetting, this.currentValue));
             if (buttonAppearance == null) {
-                return new LiteralText("No Such Message");
+                return new StringTextComponent("No Such Message");
             }
 
             displayName = buttonAppearance.displayName;
@@ -323,9 +328,9 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                 sb.replace(i, i + 1, "\n");
             }
 
-            return new LiteralText(name + '\n' + sb);
+            return new StringTextComponent(name + '\n' + sb);
         }
-        return LiteralText.EMPTY;
+        return StringTextComponent.EMPTY;
     }
 
     public String getFillVar() {
@@ -366,7 +371,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
     private static class ButtonAppearance {
         public int index;
-        public Text displayName;
-        public Text displayValue;
+        public ITextComponent displayName;
+        public ITextComponent displayValue;
     }
 }

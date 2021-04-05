@@ -18,7 +18,7 @@
 
 package appeng.core.sync.network;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 
 import appeng.core.sync.BasePacket;

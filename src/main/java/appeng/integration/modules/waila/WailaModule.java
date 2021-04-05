@@ -22,24 +22,24 @@ import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
 
-import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.AEBaseTileEntity;
 
 public class WailaModule implements IWailaPlugin {
 
     public void register(final IRegistrar registrar) {
         final PartWailaDataProvider partHost = new PartWailaDataProvider();
 
-        registrar.registerStackProvider(partHost, AEBaseBlockEntity.class);
-        registrar.registerComponentProvider(partHost, TooltipPosition.HEAD, AEBaseBlockEntity.class);
-        registrar.registerComponentProvider(partHost, TooltipPosition.BODY, AEBaseBlockEntity.class);
-        registrar.registerComponentProvider(partHost, TooltipPosition.TAIL, AEBaseBlockEntity.class);
-        registrar.registerBlockDataProvider(partHost, AEBaseBlockEntity.class);
+        registrar.registerStackProvider(partHost, AEBaseTileEntity.class);
+        registrar.registerComponentProvider(partHost, TooltipPosition.HEAD, AEBaseTileEntity.class);
+        registrar.registerComponentProvider(partHost, TooltipPosition.BODY, AEBaseTileEntity.class);
+        registrar.registerComponentProvider(partHost, TooltipPosition.TAIL, AEBaseTileEntity.class);
+        registrar.registerBlockDataProvider(partHost, AEBaseTileEntity.class);
 
         final TileWailaDataProvider tile = new TileWailaDataProvider();
-        registrar.registerComponentProvider(tile, TooltipPosition.HEAD, AEBaseBlockEntity.class);
-        registrar.registerComponentProvider(tile, TooltipPosition.BODY, AEBaseBlockEntity.class);
-        registrar.registerComponentProvider(tile, TooltipPosition.TAIL, AEBaseBlockEntity.class);
-        registrar.registerBlockDataProvider(tile, AEBaseBlockEntity.class);
+        registrar.registerComponentProvider(tile, TooltipPosition.HEAD, AEBaseTileEntity.class);
+        registrar.registerComponentProvider(tile, TooltipPosition.BODY, AEBaseTileEntity.class);
+        registrar.registerComponentProvider(tile, TooltipPosition.TAIL, AEBaseTileEntity.class);
+        registrar.registerBlockDataProvider(tile, AEBaseTileEntity.class);
     }
 
 }

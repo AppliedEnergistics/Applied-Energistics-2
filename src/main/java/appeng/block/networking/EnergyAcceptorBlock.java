@@ -18,14 +18,14 @@
 
 package appeng.block.networking;
 
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.tile.networking.EnergyAcceptorBlockEntity;
+import appeng.tile.networking.EnergyAcceptorTileEntity;
 
-public class EnergyAcceptorBlock extends AEBaseTileBlock<EnergyAcceptorBlockEntity> {
+public class EnergyAcceptorBlock extends AEBaseTileBlock<EnergyAcceptorTileEntity> {
 
     public EnergyAcceptorBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.IRON));
     }
 }

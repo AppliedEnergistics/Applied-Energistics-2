@@ -27,8 +27,8 @@ import java.util.EnumSet;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.IWorld;
 
 import appeng.api.IAppEngApi;
 import appeng.api.util.AEPartLocation;
@@ -36,9 +36,9 @@ import appeng.api.util.IReadOnlyCollection;
 
 /**
  * Gives you a view into your Nodes connections and information.
- * <p>
+ *
  * updateState, getGrid, destroy are required to implement a proper IGridHost.
- * <p>
+ *
  * Don't Implement; Acquire from {@link IAppEngApi}.createGridNode
  */
 public interface IGridNode {
@@ -53,10 +53,10 @@ public interface IGridNode {
 
     /**
      * inform the node that your IGridBlock has changed its internal state, and force the node to update.
-     * <p>
-     * ALWAYS make sure that your block entity is in the world, and has its node properly saved to be returned from the
+     *
+     * ALWAYS make sure that your tile entity is in the world, and has its node properly saved to be returned from the
      * host before updating state,
-     * <p>
+     *
      * If your entity is not in the world, or if you IGridHost returns a different node for the same side you will
      * likely crash the game.
      */
@@ -88,7 +88,7 @@ public interface IGridNode {
      * @return the world the node is located in
      */
     @Nonnull
-    WorldAccess getWorld();
+    IWorld getWorld();
 
     /**
      * @return a set of the connected sides, INTERNAL represents an invisible connection
@@ -121,13 +121,13 @@ public interface IGridNode {
     /**
      * this should be called for each node you create, if you have a nodeData compound to load from, you can store all
      * your nods on a single compound using name.
-     * <p>
+     *
      * Important: You must call this before updateState.
      *
      * @param name     nbt name
      * @param nodeData to be loaded data
      */
-    void loadFromNBT(@Nonnull String name, @Nonnull CompoundTag nodeData);
+    void loadFromNBT(@Nonnull String name, @Nonnull CompoundNBT nodeData);
 
     /**
      * this should be called for each node you maintain, you can save all your nodes to the same tag with different
@@ -136,7 +136,7 @@ public interface IGridNode {
      * @param name     nbt name
      * @param nodeData to be saved data
      */
-    void saveToNBT(@Nonnull String name, @Nonnull CompoundTag nodeData);
+    void saveToNBT(@Nonnull String name, @Nonnull CompoundNBT nodeData);
 
     /**
      * @return if the node's channel requirements are currently met, use this for display purposes, use isActive for
@@ -148,6 +148,7 @@ public interface IGridNode {
      * see if this node has a certain flag
      *
      * @param flag flags
+     *
      * @return true if has flag
      */
     boolean hasFlag(@Nonnull GridFlags flag);

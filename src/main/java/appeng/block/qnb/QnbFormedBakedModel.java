@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.block.qnb;
 
 import java.util.EnumSet;
@@ -17,37 +35,38 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.IBlockDisplayReader;
 
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.Api;
 import appeng.core.AppEng;
 
-class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
+class QnbFormedBakedModel implements IBakedModel, FabricBakedModel {
 
-    private static final SpriteIdentifier TEXTURE_LINK = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "block/quantum_link"));
-    private static final SpriteIdentifier TEXTURE_RING = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "block/quantum_ring"));
-    private static final SpriteIdentifier TEXTURE_RING_LIGHT = new SpriteIdentifier(
-            SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier(AppEng.MOD_ID, "block/quantum_ring_light"));
-    private static final SpriteIdentifier TEXTURE_RING_LIGHT_CORNER = new SpriteIdentifier(
-            SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
-    private static final SpriteIdentifier TEXTURE_CABLE_GLASS = new SpriteIdentifier(
-            SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier(AppEng.MOD_ID, "part/cable/glass/transparent"));
-    private static final SpriteIdentifier TEXTURE_COVERED_CABLE = new SpriteIdentifier(
-            SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier(AppEng.MOD_ID, "part/cable/covered/transparent"));
+    private static final RenderMaterial TEXTURE_LINK = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "block/quantum_link"));
+    private static final RenderMaterial TEXTURE_RING = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring"));
+    private static final RenderMaterial TEXTURE_RING_LIGHT = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light"));
+    private static final RenderMaterial TEXTURE_RING_LIGHT_CORNER = new RenderMaterial(
+            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
+    private static final RenderMaterial TEXTURE_CABLE_GLASS = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "part/cable/glass/transparent"));
+    private static final RenderMaterial TEXTURE_COVERED_CABLE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation(AppEng.MOD_ID, "part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
     private static final float DEFAULT_RENDER_MAX = 14.0f;
@@ -58,18 +77,18 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
     private static final float CENTER_POWERED_RENDER_MIN = -0.01f;
     private static final float CENTER_POWERED_RENDER_MAX = 16.01f;
 
-    private final BakedModel baseModel;
+    private final IBakedModel baseModel;
 
     private final Block linkBlock;
 
-    private final Sprite linkTexture;
-    private final Sprite ringTexture;
-    private final Sprite glassCableTexture;
-    private final Sprite coveredCableTexture;
-    private final Sprite lightTexture;
-    private final Sprite lightCornerTexture;
+    private final TextureAtlasSprite linkTexture;
+    private final TextureAtlasSprite ringTexture;
+    private final TextureAtlasSprite glassCableTexture;
+    private final TextureAtlasSprite coveredCableTexture;
+    private final TextureAtlasSprite lightTexture;
+    private final TextureAtlasSprite lightCornerTexture;
 
-    public QnbFormedBakedModel(BakedModel baseModel, Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
+    public QnbFormedBakedModel(IBakedModel baseModel, Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
         this.baseModel = baseModel;
         this.linkTexture = bakedTextureGetter.apply(TEXTURE_LINK);
         this.ringTexture = bakedTextureGetter.apply(TEXTURE_RING);
@@ -91,7 +110,7 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
         QnbFormedState formedState = getState(blockView, pos);
 
@@ -109,7 +128,7 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
         return baseModel.getQuads(state, face, random);
     }
 
-    private static QnbFormedState getState(BlockRenderView view, BlockPos pos) {
+    private static QnbFormedState getState(IBlockDisplayReader view, BlockPos pos) {
         if (!(view instanceof RenderAttachedBlockView)) {
             return null;
         }
@@ -149,9 +168,9 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
                         // Offset the face by a slight amount so that it is drawn over the already drawn
                         // ring texture
                         // (avoids z-fighting)
-                        float xOffset = Math.abs(facing.getOffsetX() * 0.01f);
-                        float yOffset = Math.abs(facing.getOffsetY() * 0.01f);
-                        float zOffset = Math.abs(facing.getOffsetZ() * 0.01f);
+                        float xOffset = Math.abs(facing.getXOffset() * 0.01f);
+                        float yOffset = Math.abs(facing.getYOffset() * 0.01f);
+                        float zOffset = Math.abs(facing.getZOffset() * 0.01f);
 
                         builder.setDrawFaces(EnumSet.of(facing));
                         builder.addCube(DEFAULT_RENDER_MIN - xOffset, DEFAULT_RENDER_MIN - yOffset,
@@ -176,9 +195,9 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
                         // Offset the face by a slight amount so that it is drawn over the already drawn
                         // ring texture
                         // (avoids z-fighting)
-                        float xOffset = Math.abs(facing.getOffsetX() * 0.01f);
-                        float yOffset = Math.abs(facing.getOffsetY() * 0.01f);
-                        float zOffset = Math.abs(facing.getOffsetZ() * 0.01f);
+                        float xOffset = Math.abs(facing.getXOffset() * 0.01f);
+                        float yOffset = Math.abs(facing.getYOffset() * 0.01f);
+                        float zOffset = Math.abs(facing.getZOffset() * 0.01f);
 
                         builder.setDrawFaces(EnumSet.of(facing));
                         builder.addCube(-xOffset, -yOffset, -zOffset, 16 + xOffset, 16 + yOffset, 16 + zOffset);
@@ -188,7 +207,7 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
         }
     }
 
-    private void renderCableAt(CubeBuilder builder, float thickness, Sprite texture, float pull,
+    private void renderCableAt(CubeBuilder builder, float thickness, TextureAtlasSprite texture, float pull,
             Set<Direction> connections) {
         builder.setTexture(texture);
 
@@ -218,17 +237,17 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return ModelTransformation.NONE;
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return ItemCameraTransforms.DEFAULT;
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
-        return this.baseModel.useAmbientOcclusion();
+    public boolean isAmbientOcclusion() {
+        return this.baseModel.isAmbientOcclusion();
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return true;
     }
 
@@ -238,21 +257,21 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getSprite() {
-        return this.baseModel.getSprite();
+    public TextureAtlasSprite getParticleTexture() {
+        return this.baseModel.getParticleTexture();
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
+    public ItemOverrideList getOverrides() {
         return this.baseModel.getOverrides();
     }
 
-    public static List<SpriteIdentifier> getRequiredTextures() {
+    public static List<RenderMaterial> getRequiredTextures() {
         return ImmutableList.of(TEXTURE_LINK, TEXTURE_RING, TEXTURE_CABLE_GLASS, TEXTURE_COVERED_CABLE,
                 TEXTURE_RING_LIGHT, TEXTURE_RING_LIGHT_CORNER);
     }

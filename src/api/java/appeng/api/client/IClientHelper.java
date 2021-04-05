@@ -25,7 +25,7 @@ package appeng.api.client;
 
 import java.util.List;
 
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
@@ -37,11 +37,11 @@ public interface IClientHelper {
      * @param handler Cell handler.
      * @param lines   List of lines to add to.
      */
-    <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler, List<Text> lines);
+    <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler, List<ITextComponent> lines);
 
     /**
      * A helper to work with clientside related tasks for cells.
-     *
+     * 
      * @return
      */
     ICellModelRegistry cells();

@@ -1,0 +1,14 @@
+{
+  "type": "appliedenergistics2:entropy",
+  "mode": "cool",
+  "input": {
+    "block": {
+      "id": "minecraft:grass_block"
+    }
+  },
+  "output": {
+    "block": {
+      "id": "minecraft:dirt"
+    }
+  }
+}

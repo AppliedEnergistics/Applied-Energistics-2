@@ -26,8 +26,8 @@ package appeng.api.storage.data;
 import java.io.IOException;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
@@ -122,22 +122,23 @@ public interface IAEStack<T extends IAEStack<T>> {
     void decCountRequestable(long i);
 
     /**
-     * write to a CompoundTag.
+     * write to a CompoundNBT.
      *
      * @param i to be written data
      */
-    void writeToNBT(CompoundTag i);
+    void writeToNBT(CompoundNBT i);
 
     /**
      * Compare stacks using precise logic.
-     * <p>
+     *
      * a IAEItemStack to another AEItemStack or a ItemStack.
-     * <p>
+     *
      * or
-     * <p>
+     *
      * IAEFluidStack, FluidStack
      *
      * @param obj compared object
+     *
      * @return true if they are the same.
      */
     @Override
@@ -148,6 +149,7 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @param other The stack to compare.
      * @param mode  Which {@link FuzzyMode} should be used.
+     *
      * @return true if two stacks are equal based on AE Fuzzy Comparison.
      */
     boolean fuzzyComparison(T other, FuzzyMode mode);
@@ -156,9 +158,10 @@ public interface IAEStack<T extends IAEStack<T>> {
      * Slower for disk saving, but smaller/more efficient for packets.
      *
      * @param data to be written data
+     *
      * @throws IOException
      */
-    void writeToPacket(PacketByteBuf data);
+    void writeToPacket(PacketBuffer data);
 
     /**
      * Clone the Item / Fluid Stack

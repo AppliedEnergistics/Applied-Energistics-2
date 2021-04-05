@@ -44,7 +44,7 @@ public interface IBlockBuilder {
      */
     IBlockBuilder disableItem();
 
-    IBlockBuilder item(BiFunction<Block, Item.Settings, BlockItem> factory);
+    IBlockBuilder item(BiFunction<Block, Item.Properties, BlockItem> factory);
 
     <T extends IBlockDefinition> T build();
 }

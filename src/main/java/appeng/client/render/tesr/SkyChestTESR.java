@@ -19,70 +19,70 @@
 package appeng.client.render.tesr;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.Atlases;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
 import appeng.core.AppEng;
-import appeng.tile.storage.SkyChestBlockEntity;
+import appeng.tile.storage.SkyChestTileEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @Environment(EnvType.CLIENT)
-public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
+public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
 
-    public static final SpriteIdentifier TEXTURE_STONE = new SpriteIdentifier(TexturedRenderLayers.CHEST_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "models/skychest"));
-    public static final SpriteIdentifier TEXTURE_BLOCK = new SpriteIdentifier(TexturedRenderLayers.CHEST_ATLAS_TEXTURE,
-            new Identifier(AppEng.MOD_ID, "models/skyblockchest"));
+    public static final RenderMaterial TEXTURE_STONE = new RenderMaterial(Atlases.CHEST_ATLAS,
+            new ResourceLocation(AppEng.MOD_ID, "models/skychest"));
+    public static final RenderMaterial TEXTURE_BLOCK = new RenderMaterial(Atlases.CHEST_ATLAS,
+            new ResourceLocation(AppEng.MOD_ID, "models/skyblockchest"));
 
-    public static final ImmutableList<SpriteIdentifier> SPRITES = ImmutableList.of(TEXTURE_STONE, TEXTURE_BLOCK);
+    public static final ImmutableList<RenderMaterial> SPRITES = ImmutableList.of(TEXTURE_STONE, TEXTURE_BLOCK);
 
-    private final ModelPart singleLid;
-    private final ModelPart singleBottom;
-    private final ModelPart singleLatch;
+    private final ModelRenderer singleLid;
+    private final ModelRenderer singleBottom;
+    private final ModelRenderer singleLatch;
 
-    public SkyChestTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
+    public SkyChestTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
 
-        this.singleBottom = new ModelPart(64, 64, 0, 19);
-        this.singleBottom.addCuboid(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
-        this.singleLid = new ModelPart(64, 64, 0, 0);
-        this.singleLid.addCuboid(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
-        this.singleLid.pivotY = 10.0F;
-        this.singleLid.pivotZ = 1.0F;
-        this.singleLatch = new ModelPart(64, 64, 0, 0);
-        this.singleLatch.addCuboid(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
-        this.singleLatch.pivotY = 9.0F;
+        this.singleBottom = new ModelRenderer(64, 64, 0, 19);
+        this.singleBottom.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
+        this.singleLid = new ModelRenderer(64, 64, 0, 0);
+        this.singleLid.addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
+        this.singleLid.rotationPointY = 10.0F;
+        this.singleLid.rotationPointZ = 1.0F;
+        this.singleLatch = new ModelRenderer(64, 64, 0, 0);
+        this.singleLatch.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
+        this.singleLatch.rotationPointY = 9.0F;
     }
 
     @Override
-    public void render(SkyChestBlockEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
-            VertexConsumerProvider bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(SkyChestTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
+            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.push();
-        float f = tileEntityIn.getForward().asRotation();
+        float f = tileEntityIn.getForward().getHorizontalAngle();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
-        matrixStackIn.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-f));
+        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-f));
         matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 
-        float f1 = tileEntityIn.getAnimationProgress(partialTicks);
+        float f1 = tileEntityIn.getLidAngle(partialTicks);
         f1 = 1.0F - f1;
         f1 = 1.0F - f1 * f1 * f1;
-        SpriteIdentifier material = this.getMaterial(tileEntityIn);
-        VertexConsumer ivertexbuilder = material.getVertexConsumer(bufferIn, RenderLayer::getEntityCutout);
+        RenderMaterial material = this.getMaterial(tileEntityIn);
+        IVertexBuilder ivertexbuilder = material.getBuffer(bufferIn, RenderType::getEntityCutout);
         this.renderModels(matrixStackIn, ivertexbuilder, this.singleLid, this.singleLatch, this.singleBottom, f1,
                 combinedLightIn, combinedOverlayIn);
 
@@ -90,19 +90,20 @@ public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
     }
 
     // See ChestBlockEntityRenderer
-    private void renderModels(MatrixStack matrixStackIn, VertexConsumer bufferIn, ModelPart chestLid,
-            ModelPart chestLatch, ModelPart chestBottom, float lidAngle, int combinedLightIn, int combinedOverlayIn) {
-        chestLid.pitch = -(lidAngle * 1.5707964F);
-        chestLatch.pitch = chestLid.pitch;
+    private void renderModels(MatrixStack matrixStackIn, IVertexBuilder bufferIn, ModelRenderer chestLid,
+            ModelRenderer chestLatch, ModelRenderer chestBottom, float lidAngle, int combinedLightIn,
+            int combinedOverlayIn) {
+        chestLid.rotateAngleX = -(lidAngle * 1.5707964F);
+        chestLatch.rotateAngleX = chestLid.rotateAngleX;
         chestLid.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
         chestLatch.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
         chestBottom.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    protected SpriteIdentifier getMaterial(SkyChestBlockEntity tileEntity) {
+    protected RenderMaterial getMaterial(SkyChestTileEntity tileEntity) {
         SkyChestType type = SkyChestType.BLOCK;
         if (tileEntity.getWorld() != null) {
-            Block blockType = tileEntity.getCachedState().getBlock();
+            Block blockType = tileEntity.getBlockState().getBlock();
 
             if (blockType instanceof SkyChestBlock) {
                 type = ((SkyChestBlock) blockType).type;

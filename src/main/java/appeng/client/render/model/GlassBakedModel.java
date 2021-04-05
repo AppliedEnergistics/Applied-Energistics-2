@@ -38,64 +38,70 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.BlockView;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.world.IBlockReader;
 
 import appeng.decorative.solid.GlassState;
 import appeng.decorative.solid.QuartzGlassBlock;
 
-class GlassBakedModel implements BakedModel, FabricBakedModel {
+class GlassBakedModel implements IBakedModel, FabricBakedModel {
 
     private static final byte[][][] OFFSETS = generateOffsets();
 
     // Alternating textures based on position
-    static final SpriteIdentifier TEXTURE_A = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier("appliedenergistics2:block/glass/quartz_glass_a"));
-    static final SpriteIdentifier TEXTURE_B = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier("appliedenergistics2:block/glass/quartz_glass_b"));
-    static final SpriteIdentifier TEXTURE_C = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier("appliedenergistics2:block/glass/quartz_glass_c"));
-    static final SpriteIdentifier TEXTURE_D = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier("appliedenergistics2:block/glass/quartz_glass_d"));
+    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_A = new net.minecraft.client.renderer.model.RenderMaterial(
+            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_a"));
+    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_B = new net.minecraft.client.renderer.model.RenderMaterial(
+            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_b"));
+    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_C = new net.minecraft.client.renderer.model.RenderMaterial(
+            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_c"));
+    static final net.minecraft.client.renderer.model.RenderMaterial TEXTURE_D = new net.minecraft.client.renderer.model.RenderMaterial(
+            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_d"));
 
     // Frame texture
-    static final SpriteIdentifier[] TEXTURES_FRAME = generateTexturesFrame();
+    static final net.minecraft.client.renderer.model.RenderMaterial[] TEXTURES_FRAME = generateTexturesFrame();
     private final RenderMaterial material = RendererAccess.INSTANCE.getRenderer().materialFinder()
             .disableDiffuse(0, true).disableAo(0, true).disableColorIndex(0, true).blendMode(0, BlendMode.TRANSLUCENT)
             .find();
 
     // Generates the required textures for the frame
-    private static SpriteIdentifier[] generateTexturesFrame() {
+    private static net.minecraft.client.renderer.model.RenderMaterial[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
-                .map(s -> new Identifier("appliedenergistics2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, rl))
-                .toArray(SpriteIdentifier[]::new);
+                .map(s -> new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_frame" + s))
+                .map(rl -> new net.minecraft.client.renderer.model.RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+                        rl))
+                .toArray(net.minecraft.client.renderer.model.RenderMaterial[]::new);
     }
 
-    private final Sprite[] glassTextures;
+    private final TextureAtlasSprite[] glassTextures;
 
-    private final Sprite[] frameTextures;
+    private final TextureAtlasSprite[] frameTextures;
 
-    public GlassBakedModel(Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
-        this.glassTextures = new Sprite[] { bakedTextureGetter.apply(TEXTURE_A), bakedTextureGetter.apply(TEXTURE_B),
+    public GlassBakedModel(
+            Function<net.minecraft.client.renderer.model.RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
+        this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_A),
+                bakedTextureGetter.apply(TEXTURE_B),
                 bakedTextureGetter.apply(TEXTURE_C), bakedTextureGetter.apply(TEXTURE_D) };
 
         // The first frame texture would be empty, so we simply leave it set to null
         // here
-        this.frameTextures = new Sprite[16];
+        this.frameTextures = new TextureAtlasSprite[16];
         for (int i = 0; i < TEXTURES_FRAME.length; i++) {
             this.frameTextures[1 + i] = bakedTextureGetter.apply(TEXTURES_FRAME[i]);
         }
@@ -107,7 +113,7 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+    public void emitBlockQuads(IBlockDisplayReader blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
         final GlassState glassState = getGlassState(blockView, pos);
 
@@ -126,7 +132,7 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
             v /= 2;
         }
 
-        final Sprite glassTexture = this.glassTextures[texIdx];
+        final TextureAtlasSprite glassTexture = this.glassTextures[texIdx];
 
         QuadEmitter emitter = context.getEmitter();
 
@@ -144,7 +150,7 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
              * its filename to indicate this.
              */
             final int edgeBitmask = makeBitmask(glassState, side);
-            final Sprite sideSprite = this.frameTextures[edgeBitmask];
+            final TextureAtlasSprite sideSprite = this.frameTextures[edgeBitmask];
 
             if (sideSprite != null) {
                 this.emitQuad(emitter, side, corners, sideSprite, 0, 0);
@@ -164,8 +170,8 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public ModelTransformation getTransformation() {
-        return ModelTransformation.NONE;
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return ItemCameraTransforms.DEFAULT;
     }
 
     @Override
@@ -214,21 +220,22 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
         return bitmask;
     }
 
-    private void emitQuad(QuadEmitter emitter, Direction side, List<Vector3f> corners, Sprite sprite, float uOffset,
+    private void emitQuad(QuadEmitter emitter, Direction side, List<Vector3f> corners, TextureAtlasSprite sprite,
+            float uOffset,
             float vOffset) {
         this.emitQuad(emitter, side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
     private void emitQuad(QuadEmitter emitter, Direction side, Vector3f c1, Vector3f c2, Vector3f c3, Vector3f c4,
-            Sprite sprite, float uOffset, float vOffset) {
+            TextureAtlasSprite sprite, float uOffset, float vOffset) {
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7
-        float u1 = sprite.getFrameU(MathHelper.clamp(0 - uOffset, 0, 16));
-        float u2 = sprite.getFrameU(MathHelper.clamp(16 - uOffset, 0, 16));
-        float v1 = sprite.getFrameV(MathHelper.clamp(0 - vOffset, 0, 16));
-        float v2 = sprite.getFrameV(MathHelper.clamp(16 - vOffset, 0, 16));
+        float u1 = sprite.getInterpolatedU(MathHelper.clamp(0 - uOffset, 0, 16));
+        float u2 = sprite.getInterpolatedU(MathHelper.clamp(16 - uOffset, 0, 16));
+        float v1 = sprite.getInterpolatedV(MathHelper.clamp(0 - vOffset, 0, 16));
+        float v2 = sprite.getInterpolatedV(MathHelper.clamp(16 - vOffset, 0, 16));
 
         emitter.nominalFace(side);
         emitter.cullFace(side);
@@ -242,27 +249,27 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
+    public boolean isAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getSprite() {
+    public TextureAtlasSprite getParticleTexture() {
         return this.frameTextures[this.frameTextures.length - 1];
     }
 
@@ -280,7 +287,7 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Nonnull
-    private static GlassState getGlassState(BlockRenderView world, BlockPos pos) {
+    private static GlassState getGlassState(IBlockDisplayReader world, BlockPos pos) {
         EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
         // Test every direction for another glass block
         for (Direction facing : Direction.values()) {
@@ -292,7 +299,7 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
         return new GlassState(pos.getX(), pos.getY(), pos.getZ(), flushWith);
     }
 
-    private static boolean isGlassBlock(BlockView world, BlockPos pos, Direction facing) {
+    private static boolean isGlassBlock(IBlockReader world, BlockPos pos, Direction facing) {
         return world.getBlockState(pos.offset(facing)).getBlock() instanceof QuartzGlassBlock;
     }
 

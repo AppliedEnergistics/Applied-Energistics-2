@@ -22,21 +22,21 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -50,6 +50,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.hooks.AECustomEntityItem;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 import appeng.util.inv.AdaptorFixedInv;
 
@@ -65,21 +66,21 @@ public final class MaterialItem extends AEBaseItem
 
     private final MaterialType materialType;
 
-    public MaterialItem(Settings properties, MaterialType materialType) {
+    public MaterialItem(Properties properties, MaterialType materialType) {
         super(properties);
         this.materialType = materialType;
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
-            final TooltipContext advancedTooltips) {
-        super.appendTooltip(stack, world, lines, advancedTooltips);
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        super.addInformation(stack, world, lines, advancedTooltips);
 
         if (materialType == MaterialType.NAME_PRESS) {
-            final CompoundTag c = stack.getOrCreateTag();
+            final CompoundNBT c = stack.getOrCreateTag();
             if (c.contains(TAG_INSCRIBE_NAME)) {
-                lines.add(new LiteralText(c.getString(TAG_INSCRIBE_NAME)));
+                lines.add(new StringTextComponent(c.getString(TAG_INSCRIBE_NAME)));
             }
         }
 
@@ -110,20 +111,20 @@ public final class MaterialItem extends AEBaseItem
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        return super.use(world, user, hand);
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity user, Hand hand) {
+        return super.onItemRightClick(world, user, hand);
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         Hand hand = context.getHand();
-        if (player.isInSneakingPose()) {
-            final BlockEntity te = context.getWorld().getBlockEntity(context.getBlockPos());
+        if (InteractionUtil.isInAlternateUseMode(player)) {
+            final TileEntity te = context.getWorld().getTileEntity(context.getPos());
             FixedItemInv upgrades = null;
 
             if (te instanceof IPartHost) {
-                final SelectedPart sp = ((IPartHost) te).selectPart(context.getHitPos());
+                final SelectedPart sp = ((IPartHost) te).selectPart(context.getHitVec());
                 if (sp.part instanceof IUpgradeableHost) {
                     upgrades = ((ISegmentedInventory) sp.part).getInventoryByName("upgrades");
                 }
@@ -131,30 +132,30 @@ public final class MaterialItem extends AEBaseItem
                 upgrades = ((ISegmentedInventory) te).getInventoryByName("upgrades");
             }
 
-            if (upgrades != null && !player.getStackInHand(hand).isEmpty()
-                    && player.getStackInHand(hand).getItem() instanceof IUpgradeModule) {
-                final IUpgradeModule um = (IUpgradeModule) player.getStackInHand(hand).getItem();
-                final Upgrades u = um.getType(player.getStackInHand(hand));
+            if (upgrades != null && !player.getHeldItem(hand).isEmpty()
+                    && player.getHeldItem(hand).getItem() instanceof IUpgradeModule) {
+                final IUpgradeModule um = (IUpgradeModule) player.getHeldItem(hand).getItem();
+                final Upgrades u = um.getType(player.getHeldItem(hand));
 
                 if (u != null) {
-                    if (player.world.isClient) {
-                        return ActionResult.PASS;
+                    if (player.getEntityWorld().isRemote()) {
+                        return ActionResultType.PASS;
                     }
 
                     final InventoryAdaptor ad = new AdaptorFixedInv(upgrades);
-                    player.setStackInHand(hand, ad.addItems(player.getStackInHand(hand)));
-                    return ActionResult.SUCCESS;
+                    player.setHeldItem(hand, ad.addItems(player.getHeldItem(hand)));
+                    return ActionResultType.func_233537_a_(player.getEntityWorld().isRemote());
                 }
             }
         }
 
-        return ActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     @Override
-    public Entity replaceItemEntity(ServerWorld world, ItemEntity itemEntity, ItemStack itemStack) {
+    public Entity replaceItemEntity(ServerWorld w, ItemEntity location, ItemStack itemstack) {
         if (!materialType.hasCustomEntity()) {
-            return itemEntity;
+            return location;
         }
 
         final Class<? extends Entity> droppedEntity = materialType.getCustomEntityClass();
@@ -162,15 +163,15 @@ public final class MaterialItem extends AEBaseItem
 
         try {
             eqi = droppedEntity.getConstructor(World.class, double.class, double.class, double.class, ItemStack.class)
-                    .newInstance(world, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), itemStack);
+                    .newInstance(w, location.getPosX(), location.getPosY(), location.getPosZ(), itemstack);
         } catch (final Throwable t) {
             throw new IllegalStateException(t);
         }
 
-        eqi.setVelocity(itemEntity.getVelocity());
+        eqi.setMotion(location.getMotion());
 
         if (eqi instanceof ItemEntity) {
-            ((ItemEntity) eqi).setToDefaultPickupDelay();
+            ((ItemEntity) eqi).setDefaultPickupDelay();
         }
 
         return eqi;

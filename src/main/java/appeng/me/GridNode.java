@@ -26,12 +26,12 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
@@ -128,14 +128,14 @@ public class GridNode implements IGridNode, IPathItem {
         final GridSplitDetector gsd = new GridSplitDetector(this.getInternalGrid().getPivot());
         this.beginVisit(gsd);
         if (!gsd.isPivotFound()) {
-            final IGridVisitor gp = new GridPropagator(new Grid(this));
+            final IGridVisitor gp = new GridPropagator(Grid.create(this));
             this.beginVisit(gp);
         }
     }
 
     public Grid getInternalGrid() {
         if (this.myGrid == null) {
-            this.myGrid = new Grid(this);
+            this.myGrid = Grid.create(this);
         }
 
         return this.myGrid;
@@ -246,7 +246,7 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public WorldAccess getWorld() {
+    public IWorld getWorld() {
         return this.gridProxy.getLocation().getWorld();
     }
 
@@ -281,9 +281,9 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public void loadFromNBT(final String name, final CompoundTag nodeData) {
+    public void loadFromNBT(final String name, final CompoundNBT nodeData) {
         if (this.myGrid == null) {
-            final CompoundTag node = nodeData.getCompound(name);
+            final CompoundNBT node = nodeData.getCompound(name);
             this.playerID = node.getInt("p");
             this.setLastSecurityKey(node.getLong("k"));
 
@@ -296,9 +296,9 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public void saveToNBT(final String name, final CompoundTag nodeData) {
+    public void saveToNBT(final String name, final CompoundNBT nodeData) {
         if (this.myStorage != null) {
-            final CompoundTag node = new CompoundTag();
+            final CompoundNBT node = new CompoundNBT();
 
             node.putInt("p", this.playerID);
             node.putLong("k", this.getLastSecurityKey());
@@ -424,10 +424,10 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    private IGridHost findGridHost(final WorldAccess world, final int x, final int y, final int z) {
+    private IGridHost findGridHost(final IWorld world, final int x, final int y, final int z) {
         final BlockPos pos = new BlockPos(x, y, z);
-        if (world.isChunkLoaded(pos)) {
-            final BlockEntity te = world.getBlockEntity(pos);
+        if (world.isBlockLoaded(pos)) {
+            final TileEntity te = world.getTileEntity(pos);
             if (te instanceof IGridHost) {
                 return (IGridHost) te;
             }

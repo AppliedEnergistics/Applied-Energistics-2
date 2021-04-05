@@ -23,9 +23,9 @@ import java.util.Map;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
@@ -39,12 +39,12 @@ import appeng.fluids.util.IAEFluidTank;
 
 public class FluidInterfaceContainer extends FluidConfigurableContainer {
 
-    public static ScreenHandlerType<FluidInterfaceContainer> TYPE;
+    public static ContainerType<FluidInterfaceContainer> TYPE;
 
     private static final ContainerHelper<FluidInterfaceContainer, IFluidInterfaceHost> helper = new ContainerHelper<>(
             FluidInterfaceContainer::new, IFluidInterfaceHost.class, SecurityPermissions.BUILD);
 
-    public static FluidInterfaceContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static FluidInterfaceContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -77,14 +77,14 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void sendContentUpdates() {
+    public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            this.tankSync.sendDiff(this.getListeners());
+            this.tankSync.sendDiff(this.listeners);
         }
 
-        super.sendContentUpdates();
+        super.detectAndSendChanges();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void addListener(ScreenHandlerListener listener) {
+    public void addListener(IContainerListener listener) {
         super.addListener(listener);
         this.tankSync.sendFull(Collections.singleton(listener));
     }

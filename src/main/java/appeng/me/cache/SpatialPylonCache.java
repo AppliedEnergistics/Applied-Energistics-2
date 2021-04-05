@@ -33,8 +33,8 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.core.AEConfig;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
-import appeng.tile.spatial.SpatialIOPortBlockEntity;
-import appeng.tile.spatial.SpatialPylonBlockEntity;
+import appeng.tile.spatial.SpatialIOPortTileEntity;
+import appeng.tile.spatial.SpatialPylonTileEntity;
 
 public class SpatialPylonCache implements ISpatialCache {
 
@@ -44,7 +44,7 @@ public class SpatialPylonCache implements ISpatialCache {
     private DimensionalCoord captureMin;
     private DimensionalCoord captureMax;
     private boolean isValid = false;
-    private List<SpatialIOPortBlockEntity> ioPorts = new ArrayList<>();
+    private List<SpatialIOPortTileEntity> ioPorts = new ArrayList<>();
     private HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<>();
 
     public SpatialPylonCache(final IGrid g) {
@@ -61,14 +61,14 @@ public class SpatialPylonCache implements ISpatialCache {
         this.clusters = new HashMap<>();
         this.ioPorts = new ArrayList<>();
 
-        for (final IGridNode gm : grid.getMachines(SpatialIOPortBlockEntity.class)) {
-            this.ioPorts.add((SpatialIOPortBlockEntity) gm.getMachine());
+        for (final IGridNode gm : grid.getMachines(SpatialIOPortTileEntity.class)) {
+            this.ioPorts.add((SpatialIOPortTileEntity) gm.getMachine());
         }
 
-        final IReadOnlyCollection<IGridNode> set = grid.getMachines(SpatialPylonBlockEntity.class);
+        final IReadOnlyCollection<IGridNode> set = grid.getMachines(SpatialPylonTileEntity.class);
         for (final IGridNode gm : set) {
             if (gm.meetsChannelRequirements()) {
-                final SpatialPylonCluster c = ((SpatialPylonBlockEntity) gm.getMachine()).getCluster();
+                final SpatialPylonCluster c = ((SpatialPylonTileEntity) gm.getMachine()).getCluster();
                 if (c != null) {
                     this.clusters.put(c, c);
                 }

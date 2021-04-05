@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.bootstrap;
 
 import java.util.Collections;
@@ -6,8 +24,8 @@ import java.util.function.Consumer;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.registry.Registry;
 
 import appeng.api.features.AEFeature;
@@ -25,8 +43,8 @@ public class EntityBuilder<T extends Entity> {
 
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
-    public EntityBuilder(FeatureFactory factory, String id, EntityType.EntityFactory<T> entityFactory,
-            SpawnGroup classification) {
+    public EntityBuilder(FeatureFactory factory, String id, EntityType.IFactory<T> entityFactory,
+            EntityClassification classification) {
         this.factory = factory;
         this.id = id;
         this.builder = FabricEntityTypeBuilder.create(classification, entityFactory);

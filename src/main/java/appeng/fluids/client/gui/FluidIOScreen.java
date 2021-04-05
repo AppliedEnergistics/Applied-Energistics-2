@@ -19,7 +19,7 @@
 package appeng.fluids.client.gui;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.core.localization.GuiText;
@@ -36,7 +36,7 @@ import appeng.fluids.util.IAEFluidTank;
  */
 public class FluidIOScreen extends UpgradeableScreen<FluidIOContainer> {
 
-    public FluidIOScreen(FluidIOContainer container, PlayerInventory playerInventory, Text title) {
+    public FluidIOScreen(FluidIOContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
     }
 
@@ -44,20 +44,20 @@ public class FluidIOScreen extends UpgradeableScreen<FluidIOContainer> {
     public void init() {
         super.init();
 
-        final IAEFluidTank inv = this.handler.getFluidConfigInventory();
+        final IAEFluidTank inv = this.container.getFluidConfigInventory();
         final int y = 40;
         final int x = 80;
 
         this.guiSlots.add(new FluidSlotWidget(inv, 0, 0, x, y));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, handler, 1, 1, 1, x, y, -1, 0));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, handler, 2, 2, 1, x, y, 1, 0));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, handler, 3, 3, 1, x, y, 0, -1));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, handler, 4, 4, 1, x, y, 0, 1));
+        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 1, 1, 1, x, y, -1, 0));
+        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 2, 2, 1, x, y, 1, 0));
+        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 3, 3, 1, x, y, 0, -1));
+        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 4, 4, 1, x, y, 0, 1));
 
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, handler, 5, 5, 2, x, y, -1, -1));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, handler, 6, 6, 2, x, y, 1, -1));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, handler, 7, 7, 2, x, y, -1, 1));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, handler, 8, 8, 2, x, y, 1, 1));
+        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 5, 5, 2, x, y, -1, -1));
+        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 6, 6, 2, x, y, 1, -1));
+        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 7, 7, 2, x, y, -1, 1));
+        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 8, 8, 2, x, y, 1, 1));
     }
 
     @Override

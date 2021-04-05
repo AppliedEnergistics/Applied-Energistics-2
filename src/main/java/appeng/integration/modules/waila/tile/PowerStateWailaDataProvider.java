@@ -20,8 +20,8 @@ package appeng.integration.modules.waila.tile;
 
 import java.util.List;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.text.Text;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
@@ -40,8 +40,8 @@ import appeng.integration.modules.waila.BaseWailaDataProvider;
 public final class PowerStateWailaDataProvider extends BaseWailaDataProvider {
 
     @Override
-    public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
-        final BlockEntity te = accessor.getBlockEntity();
+    public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+        final TileEntity te = accessor.getBlockEntity();
 
         if (te instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) te;
@@ -50,11 +50,11 @@ public final class PowerStateWailaDataProvider extends BaseWailaDataProvider {
             final boolean isPowered = state.isPowered();
 
             if (isActive && isPowered) {
-                tooltip.add(WailaText.DeviceOnline.text());
+                tooltip.add(WailaText.DeviceOnline.textComponent());
             } else if (isPowered) {
-                tooltip.add(WailaText.DeviceMissingChannel.text());
+                tooltip.add(WailaText.DeviceMissingChannel.textComponent());
             } else {
-                tooltip.add(WailaText.DeviceOffline.text());
+                tooltip.add(WailaText.DeviceOffline.textComponent());
             }
         }
 

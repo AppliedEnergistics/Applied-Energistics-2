@@ -23,8 +23,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.definitions.ITileDefinition;
 import appeng.api.features.AEFeature;
@@ -40,7 +40,7 @@ public final class TileDefinition extends BlockDefinition implements ITileDefini
     }
 
     @Override
-    public Optional<? extends Class<? extends BlockEntity>> maybeEntity() {
-        return Optional.of(this.block.getBlockEntityClass());
+    public Optional<? extends Class<? extends TileEntity>> maybeEntity() {
+        return Optional.of(this.block.getTileEntityClass());
     }
 }

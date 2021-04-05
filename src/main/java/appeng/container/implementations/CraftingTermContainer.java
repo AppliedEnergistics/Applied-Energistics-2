@@ -21,12 +21,12 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -48,12 +48,12 @@ import appeng.util.inv.WrapperInvItemHandler;
 public class CraftingTermContainer extends MEMonitorableContainer
         implements IAEAppEngInventory, IContainerCraftingPacket {
 
-    public static ScreenHandlerType<CraftingTermContainer> TYPE;
+    public static ContainerType<CraftingTermContainer> TYPE;
 
     private static final ContainerHelper<CraftingTermContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftingTermContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
-    public static CraftingTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
+    public static CraftingTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -65,7 +65,7 @@ public class CraftingTermContainer extends MEMonitorableContainer
     private final AppEngInternalInventory output = new AppEngInternalInventory(this, 1);
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
     private final CraftingTermSlot outputSlot;
-    private Recipe<CraftingInventory> currentRecipe;
+    private IRecipe<CraftingInventory> currentRecipe;
 
     public CraftingTermContainer(int id, final PlayerInventory ip, final ITerminalHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
@@ -85,7 +85,7 @@ public class CraftingTermContainer extends MEMonitorableContainer
 
         this.bindPlayerInventory(ip, 0, 0);
 
-        this.onContentChanged(new WrapperInvItemHandler(crafting));
+        this.onCraftMatrixChanged(new WrapperInvItemHandler(crafting));
     }
 
     /**
@@ -93,25 +93,25 @@ public class CraftingTermContainer extends MEMonitorableContainer
      */
 
     @Override
-    public void onContentChanged(Inventory inventory) {
+    public void onCraftMatrixChanged(IInventory inventory) {
         final ContainerNull cn = new ContainerNull();
         final CraftingInventory ic = new CraftingInventory(cn, 3, 3);
 
         for (int x = 0; x < 9; x++) {
-            ic.setStack(x, this.craftingSlots[x].getStack());
+            ic.setInventorySlotContents(x, this.craftingSlots[x].getStack());
         }
 
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, this.getPlayerInv().player.world)) {
             World world = this.getPlayerInv().player.world;
-            this.currentRecipe = world.getRecipeManager().getFirstMatch(RecipeType.CRAFTING, ic, world).orElse(null);
+            this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
         }
 
         if (this.currentRecipe == null) {
-            this.outputSlot.setStack(ItemStack.EMPTY);
+            this.outputSlot.putStack(ItemStack.EMPTY);
         } else {
-            final ItemStack craftingResult = this.currentRecipe.craft(ic);
+            final ItemStack craftingResult = this.currentRecipe.getCraftingResult(ic);
 
-            this.outputSlot.setStack(craftingResult);
+            this.outputSlot.putStack(craftingResult);
         }
     }
 
@@ -139,7 +139,7 @@ public class CraftingTermContainer extends MEMonitorableContainer
         return true;
     }
 
-    public Recipe<CraftingInventory> getCurrentRecipe() {
+    public IRecipe<CraftingInventory> getCurrentRecipe() {
         return this.currentRecipe;
     }
 }

@@ -24,8 +24,8 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -54,7 +54,7 @@ public final class SpatialStoragePlotManager {
     }
 
     private SpatialStorageWorldData getWorldData() {
-        return getWorld().getChunkManager().getPersistentStateManager().getOrCreate(SpatialStorageWorldData::new,
+        return getWorld().getChunkProvider().getSavedData().getOrCreate(SpatialStorageWorldData::new,
                 SpatialStorageWorldData.ID);
     }
 
@@ -102,7 +102,7 @@ public final class SpatialStoragePlotManager {
             // This is slow, but it should usually be just an admin-command
             ServerWorld world = getWorld();
             BlockState matrixFrame = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
-            for (BlockPos blockPos : BlockPos.iterate(from, to)) {
+            for (BlockPos blockPos : BlockPos.getAllInBoxMutable(from, to)) {
                 world.setBlockState(blockPos, matrixFrame);
             }
         }

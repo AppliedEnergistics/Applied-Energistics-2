@@ -25,12 +25,12 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.client.render.BasicUnbakedModel;
 
@@ -39,21 +39,23 @@ import appeng.client.render.BasicUnbakedModel;
  */
 public class SkyCompassModel implements BasicUnbakedModel {
 
-    private static final Identifier MODEL_BASE = new Identifier("appliedenergistics2:block/sky_compass_base");
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
+            "appliedenergistics2:block/sky_compass_base");
 
-    private static final Identifier MODEL_POINTER = new Identifier("appliedenergistics2:block/sky_compass_pointer");
+    private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
+            "appliedenergistics2:block/sky_compass_pointer");
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
-        BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
-        BakedModel pointerModel = loader.bake(MODEL_POINTER, rotationContainer);
+    public IBakedModel bakeModel(ModelBakery loader, Function<RenderMaterial, TextureAtlasSprite> textureGetter,
+            IModelTransform rotationContainer, ResourceLocation modelId) {
+        IBakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
+        IBakedModel pointerModel = loader.bake(MODEL_POINTER, rotationContainer);
         return new SkyCompassBakedModel(baseModel, pointerModel);
     }
 
     @Override
-    public Collection<Identifier> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return ImmutableSet.of(MODEL_BASE, MODEL_POINTER);
     }
 

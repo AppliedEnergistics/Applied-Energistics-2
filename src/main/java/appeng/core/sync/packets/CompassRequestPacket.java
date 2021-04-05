@@ -21,8 +21,8 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.util.DimensionalCoord;
 import appeng.core.sync.BasePacket;
@@ -40,7 +40,7 @@ public class CompassRequestPacket extends BasePacket implements ICompassCallback
 
     private PlayerEntity talkBackTo;
 
-    public CompassRequestPacket(final PacketByteBuf stream) {
+    public CompassRequestPacket(final PacketBuffer stream) {
         this.attunement = stream.readLong();
         this.cx = stream.readInt();
         this.cz = stream.readInt();
@@ -50,7 +50,7 @@ public class CompassRequestPacket extends BasePacket implements ICompassCallback
     // api
     public CompassRequestPacket(final long attunement, final int cx, final int cz, final int cdy) {
 
-        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeLong(this.attunement = attunement);

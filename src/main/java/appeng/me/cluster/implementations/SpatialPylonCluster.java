@@ -27,14 +27,14 @@ import net.minecraft.world.World;
 
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.spatial.SpatialPylonBlockEntity;
+import appeng.tile.spatial.SpatialPylonTileEntity;
 
 public class SpatialPylonCluster implements IAECluster {
 
     private final World world;
     private final BlockPos boundsMin;
     private final BlockPos boundsMax;
-    private final List<SpatialPylonBlockEntity> line = new ArrayList<>();
+    private final List<SpatialPylonTileEntity> line = new ArrayList<>();
     private boolean isDestroyed = false;
 
     private Axis currentAxis = Axis.UNFORMED;
@@ -58,7 +58,7 @@ public class SpatialPylonCluster implements IAECluster {
 
     @Override
     public void updateStatus(final boolean updateGrid) {
-        for (final SpatialPylonBlockEntity r : this.getLine()) {
+        for (final SpatialPylonTileEntity r : this.getLine()) {
             r.recalculateDisplay();
         }
     }
@@ -78,7 +78,7 @@ public class SpatialPylonCluster implements IAECluster {
 
         MBCalculator.setModificationInProgress(this);
         try {
-            for (final SpatialPylonBlockEntity r : this.getLine()) {
+            for (final SpatialPylonTileEntity r : this.getLine()) {
                 r.updateStatus(null);
             }
         } finally {
@@ -87,7 +87,7 @@ public class SpatialPylonCluster implements IAECluster {
     }
 
     @Override
-    public Iterator<SpatialPylonBlockEntity> getTiles() {
+    public Iterator<SpatialPylonTileEntity> getTiles() {
         return this.getLine().iterator();
     }
 
@@ -125,7 +125,7 @@ public class SpatialPylonCluster implements IAECluster {
         return this.boundsMin;
     }
 
-    List<SpatialPylonBlockEntity> getLine() {
+    List<SpatialPylonTileEntity> getLine() {
         return this.line;
     }
 
