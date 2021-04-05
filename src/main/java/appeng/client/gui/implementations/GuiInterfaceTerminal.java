@@ -124,14 +124,6 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
-	protected boolean isPointInRegion( int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY )
-	{
-		if( searchFieldInputs.isMouseIn( pointX, pointY ) ) drawTooltip( pointX - guiLeft - offsetX, pointY - guiTop , "Inputs OR names" );
-		else if( searchFieldOutputs.isMouseIn( pointX, pointY ) ) drawTooltip( pointX - guiLeft - offsetX, pointY - guiTop, "Outputs OR names" );
-		return super.isPointInRegion( rectX, rectY, rectWidth, rectHeight, pointX, pointY );
-	}
-
-	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.buttonList.clear();
@@ -186,6 +178,10 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			}
 			offset += 18;
 		}
+
+		if( searchFieldInputs.isMouseIn( mouseX, mouseY ) ) drawTooltip( mouseX - guiLeft - offsetX, mouseY - guiTop, "Inputs OR names" );
+		else if( searchFieldOutputs.isMouseIn( mouseX, mouseY ) ) drawTooltip( mouseX - guiLeft - offsetX, mouseY - guiTop, "Outputs OR names" );
+
 	}
 
 	@Override
@@ -377,6 +373,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			// Shortcut to skip any filter if search term is ""/empty
 
 			boolean found = (searchFieldInputs.isEmpty() && searchFieldOutputs.isEmpty() && !partInterfaceTerminal.onlyInterfacesWithFreeSlots);
+			boolean interfaceHasFreeSlots = false;
 
 			// Search if the current inventory holds a pattern containing the search term.
 			if( !found )
@@ -389,25 +386,15 @@ public class GuiInterfaceTerminal extends AEBaseGui
 						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) );
 					else if( !searchFieldOutputs.isEmpty() )
 						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) );
+					// If only Interfaces with empty slots should be shown, check that here
+					if(itemStack.isEmpty())
+						interfaceHasFreeSlots = true;
 					if( found )
 					{
 						break;
 					}
 				}
-			} 
-
-			// If only Interfaces with empty slots should be shown, check that here
-			boolean interfaceHasFreeSlots = false;
-			if (partInterfaceTerminal.onlyInterfacesWithFreeSlots) {
-				for( final ItemStack itemStack : entry.getInventory() )
-				{
-					if(itemStack.isEmpty()){
-						interfaceHasFreeSlots = true;
-						break;
-					}
-				}
 			}
-
 			// if found, filter skipped or machine name matching the search term, add it
 			if( found || (entry.getName().toLowerCase().contains( searchFieldInputs ) && entry.getName().toLowerCase().contains( searchFieldOutputs )))
 			{
