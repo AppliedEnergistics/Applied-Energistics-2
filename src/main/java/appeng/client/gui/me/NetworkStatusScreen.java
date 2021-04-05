@@ -51,30 +51,19 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
     private NetworkStatus status = new NetworkStatus();
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/networkstatus.png")
-            .src(0, 0, 195, 153);
+    private static final Blitter BACKGROUND = Blitter.texture("guis/networkstatus.png").src(0, 0, 195, 153);
 
     public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        final Scrollbar scrollbar = new Scrollbar();
-
-        this.setScrollBar(scrollbar);
-        this.xSize = BACKGROUND.getSrcWidth();
-        this.ySize = BACKGROUND.getSrcHeight();
+        super(container, playerInventory, title, BACKGROUND);
+        this.setScrollBar(new Scrollbar());
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.addButton(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
-    }
-
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        BACKGROUND.dest(offsetX, offsetY).blit(matrices, getBlitOffset());
+        this.addToLeftToolbar(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
     }
 
     @Override

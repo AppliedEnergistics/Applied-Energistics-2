@@ -25,6 +25,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
@@ -38,12 +39,14 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/interface.png")
+            .src(0, 0, 176, 211);
+
     private SettingToggleButton<YesNo> blockMode;
     private ToggleButton interfaceMode;
 
     public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 211;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -51,24 +54,24 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
         this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
-        this.blockMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO);
-        this.addButton(this.blockMode);
+        this.blockMode = new ServerSettingToggleButton<>(0, 0, Settings.BLOCK, YesNo.NO);
+        this.addToLeftToolbar(this.blockMode);
 
-        this.interfaceMode = new ToggleButton(this.guiLeft - 18, this.guiTop + 26, 84, 85,
+        this.interfaceMode = new ToggleButton(0, 0, 84, 85,
                 GuiText.InterfaceTerminal.getLocal(), GuiText.InterfaceTerminalHint.getLocal(),
                 btn -> selectNextInterfaceMode());
-        this.addButton(this.interfaceMode);
+        this.addToLeftToolbar(this.interfaceMode);
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
         if (this.blockMode != null) {
-            this.blockMode.set(((InterfaceContainer) this.cvb).getBlockingMode());
+            this.blockMode.set(this.container.getBlockingMode());
         }
 
         if (this.interfaceMode != null) {
-            this.interfaceMode.setState(((InterfaceContainer) this.cvb).getInterfaceTerminalMode() == YesNo.YES);
+            this.interfaceMode.setState(this.container.getInterfaceTerminalMode() == YesNo.YES);
         }
 
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Interface.text()).getString(), 8, 6,
@@ -79,11 +82,6 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
         this.font.drawString(matrixStack, GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, COLOR_DARK_GRAY);
 
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/interface.png";
     }
 
     private void openPriorityGui() {

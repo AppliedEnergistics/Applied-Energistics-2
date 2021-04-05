@@ -18,8 +18,11 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -31,8 +34,11 @@ import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.client.gui.widgets.ToolboxPanel;
+import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.localization.GuiText;
 import appeng.parts.automation.ExportBusPart;
@@ -40,7 +46,17 @@ import appeng.parts.automation.ImportBusPart;
 
 public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
 
-    protected final UpgradeableContainer cvb;
+    // Margin used to position additional elements to the right of the UI
+    private static final int MARGIN = 2;
+
+    // Default background for import/export buses
+    public static final Blitter BACKGROUND = Blitter.texture("guis/bus.png")
+            .src(0, 0, 176, 184);
+
+    private final UpgradesPanel upgradesPanel;
+
+    private final ToolboxPanel toolboxPanel;
+
     protected final IUpgradeableHost bc;
 
     protected SettingToggleButton<RedstoneMode> redstoneMode;
@@ -48,17 +64,23 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     protected SettingToggleButton<YesNo> craftMode;
     protected SettingToggleButton<SchedulingMode> schedulingMode;
 
+    /**
+     * Used for simple import-/export buses
+     */
     public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.cvb = container;
-
-        this.bc = (IUpgradeableHost) container.getTarget();
-        this.xSize = this.hasToolbox() ? 246 : 211;
-        this.ySize = 184;
+        this(container, playerInventory, title, BACKGROUND);
     }
 
-    protected boolean hasToolbox() {
-        return (this.container).hasToolbox();
+    public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title, Blitter background) {
+        super(container, playerInventory, title, background);
+
+        this.bc = (IUpgradeableHost) container.getTarget();
+
+        this.xSize = background.getSrcWidth();
+        this.ySize = background.getSrcHeight();
+
+        upgradesPanel = new UpgradesPanel(xSize + MARGIN, 0, container.getUpgradeSlots());
+        toolboxPanel = new ToolboxPanel(xSize + MARGIN, ySize - 90, container.getToolboxSlots());
     }
 
     @Override
@@ -68,18 +90,17 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     }
 
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8,
-                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
-        addButton(this.redstoneMode);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE,
+        this.redstoneMode = new ServerSettingToggleButton<>(0, 0, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        addToLeftToolbar(this.redstoneMode);
+        this.fuzzyMode = new ServerSettingToggleButton<>(0, 0, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
-        addButton(this.fuzzyMode);
-        this.craftMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY,
+        addToLeftToolbar(this.fuzzyMode);
+        this.craftMode = new ServerSettingToggleButton<>(0, 0, Settings.CRAFT_ONLY,
                 YesNo.NO);
-        addButton(this.craftMode);
-        this.schedulingMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
+        addToLeftToolbar(this.craftMode);
+        this.schedulingMode = new ServerSettingToggleButton<>(0, 0,
                 Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
-        addButton(this.schedulingMode);
+        addToLeftToolbar(this.schedulingMode);
     }
 
     @Override
@@ -90,35 +111,33 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
 
         if (this.redstoneMode != null) {
-            this.redstoneMode.set(this.cvb.getRedStoneMode());
+            this.redstoneMode.set(this.container.getRedStoneMode());
         }
 
         if (this.fuzzyMode != null) {
-            this.fuzzyMode.set(this.cvb.getFuzzyMode());
+            this.fuzzyMode.set(this.container.getFuzzyMode());
         }
 
         if (this.craftMode != null) {
-            this.craftMode.set(this.cvb.getCraftingMode());
+            this.craftMode.set(this.container.getCraftingMode());
         }
 
         if (this.schedulingMode != null) {
-            this.schedulingMode.set(this.cvb.getSchedulingMode());
+            this.schedulingMode.set(this.container.getSchedulingMode());
         }
     }
 
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
+        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
+
         this.handleButtonVisibility();
 
-        this.bindTexture(this.getBackground());
-        blit(matrices, offsetX, offsetY, 0, 0, 211 - 34, this.ySize);
-        if (this.drawUpgrades()) {
-            blit(matrices, offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18);
-        }
-        if (this.hasToolbox()) {
-            blit(matrices, offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90,
-                    68, 68);
+        upgradesPanel.draw(matrices, getBlitOffset(), offsetX, offsetY);
+
+        if (container.hasToolbox()) {
+            toolboxPanel.draw(matrices, getBlitOffset(), offsetX, offsetY);
         }
     }
 
@@ -138,16 +157,19 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
         }
     }
 
-    protected String getBackground() {
-        return "guis/bus.png";
-    }
-
-    protected boolean drawUpgrades() {
-        return true;
-    }
-
     protected GuiText getName() {
         return this.bc instanceof ImportBusPart ? GuiText.ImportBus : GuiText.ExportBus;
     }
 
+    @Override
+    public List<Rectangle2d> getExclusionZones() {
+        List<Rectangle2d> rects = super.getExclusionZones();
+        if (container.hasToolbox()) {
+            toolboxPanel.addExclusionZones(guiLeft, guiTop, rects);
+        }
+
+        upgradesPanel.addExclusionZones(guiLeft, guiTop, rects);
+
+        return rects;
+    }
 }

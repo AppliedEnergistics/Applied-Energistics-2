@@ -26,6 +26,7 @@ import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
@@ -34,19 +35,21 @@ import appeng.core.localization.GuiText;
 
 public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssemblerContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/molecular_assembler.png")
+            .src(0, 0, 176, 197);
+
     private ProgressBar pb;
 
     public MolecularAssemblerScreen(MolecularAssemblerContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 197;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, "guis/molecular_assembler.png", 139, 36, 148, 201, 6, 18,
+        this.pb = new ProgressBar(this.container, "guis/molecular_assembler.png", 148, 48, 148, 201, 6, 18,
                 Direction.VERTICAL);
         this.addButton(this.pb);
     }
@@ -63,19 +66,6 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
             final int mouseY) {
         this.pb.setFullMsg(new StringTextComponent(this.container.getCurrentProgress() + "%"));
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
-    }
-
-    @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
-        this.pb.x = 148 + this.guiLeft;
-        this.pb.y = 48 + this.guiTop;
-        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/molecular_assembler.png";
     }
 
     @Override

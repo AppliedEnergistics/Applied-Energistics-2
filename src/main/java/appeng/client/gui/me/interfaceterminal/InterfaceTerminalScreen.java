@@ -49,6 +49,7 @@ import appeng.api.config.TerminalStyle;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -142,7 +143,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, null);
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
         this.xSize = GUI_WIDTH;

@@ -30,6 +30,7 @@ import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
@@ -38,11 +39,12 @@ import appeng.core.sync.packets.ConfigValuePacket;
 
 public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/quartzknife.png").src(0, 0, 176, 107);
+
     private TextFieldWidget name;
 
     public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 184;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -69,8 +71,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
-        this.bindTexture("guis/quartzknife.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
+        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.name.render(matrices, mouseX, mouseY, partialTicks);
     }
 

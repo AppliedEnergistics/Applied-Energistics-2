@@ -25,6 +25,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.client.gui.implementations.UpgradeableScreen;
@@ -35,11 +36,14 @@ import appeng.fluids.container.FluidLevelEmitterContainer;
 
 public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitterContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/lvlemitter.png")
+            .src(0, 0, 211, 197);
+
     private NumberEntryWidget level;
 
     public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -83,16 +87,6 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
 
         this.font.drawString(matrixStack, GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
-    }
-
-    @Override
-    protected boolean drawUpgrades() {
-        return false;
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/lvlemitter.png";
     }
 
     @Override

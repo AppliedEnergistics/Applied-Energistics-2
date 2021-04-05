@@ -87,7 +87,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
     public FluidTerminalScreen(FluidTerminalContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, null);
         this.xSize = 185;
         this.ySize = 222;
         final Scrollbar scrollbar = new Scrollbar();
@@ -110,12 +110,13 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
         int offset = this.guiTop;
 
-        this.sortByBox = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_BY,
+        this.sortByBox = this.addToLeftToolbar(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_BY,
                 getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
         offset += 20;
 
-        this.sortDirBox = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_DIRECTION,
-                getSortDir(), this::toggleServerSetting));
+        this.sortDirBox = this
+                .addToLeftToolbar(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_DIRECTION,
+                        getSortDir(), this::toggleServerSetting));
 
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLS; x++) {

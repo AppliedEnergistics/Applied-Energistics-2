@@ -122,8 +122,11 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         for (int zz = 0; zz < 3; zz++) {
             for (int z = 0; z < 8; z++) {
                 final int iSLot = zz * 8 + z;
-                this.addSlot(new OptionalRestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES,
-                        upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this.getPlayerInventory()));
+                OptionalRestrictedInputSlot slot = new OptionalRestrictedInputSlot(
+                        RestrictedInputSlot.PlacableItemType.UPGRADES,
+                        upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this.getPlayerInventory());
+                this.addSlot(slot);
+                upgradeSlots.add(slot);
             }
         }
     }

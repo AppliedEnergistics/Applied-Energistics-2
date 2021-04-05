@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.implementations.NetworkToolContainer;
 import appeng.core.localization.GuiText;
@@ -32,11 +33,12 @@ import appeng.core.sync.packets.ConfigValuePacket;
 
 public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/toolbox.png").src(0, 0, 176, 166);
+
     private ToggleButton tFacades;
 
     public NetworkToolScreen(NetworkToolContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 166;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -47,7 +49,7 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
                 GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal(),
                 btn -> toggleFacades());
 
-        this.addButton(this.tFacades);
+        addToLeftToolbar(this.tFacades);
     }
 
     private void toggleFacades() {
@@ -66,10 +68,4 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.bindTexture("guis/toolbox.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
 }

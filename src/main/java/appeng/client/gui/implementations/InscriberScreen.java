@@ -25,23 +25,20 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.InscriberContainer;
 import appeng.core.localization.GuiText;
 
-public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
+public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
+
+    private static final Blitter BACKGROUND = Blitter.texture("guis/inscriber.png").src(0, 0, 176, 176);
 
     private ProgressBar pb;
 
     public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 176;
-        this.xSize = this.hasToolbox() ? 246 : 211;
-    }
-
-    private boolean hasToolbox() {
-        return this.container.hasToolbox();
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -64,25 +61,4 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
                 COLOR_DARK_GRAY);
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.bindTexture("guis/inscriber.png");
-        this.pb.x = 135 + this.guiLeft;
-        this.pb.y = 39 + this.guiTop;
-
-        blit(matrices, offsetX, offsetY, 0, 0, 211 - 34, this.ySize);
-
-        if (this.drawUpgrades()) {
-            blit(matrices, offsetX + 177, offsetY, 177, 0, 35, 14 + this.container.availableUpgrades() * 18);
-        }
-        if (this.hasToolbox()) {
-            blit(matrices, offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90,
-                    68, 68);
-        }
-    }
-
-    private boolean drawUpgrades() {
-        return true;
-    }
 }

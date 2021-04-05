@@ -26,6 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -35,20 +36,20 @@ import appeng.util.Platform;
 
 public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/spatialanchor.png").src(0, 0, 100, 195);
+
     private SettingToggleButton<YesNo> overlayToggle;
 
     public SpatialAnchorScreen(SpatialAnchorContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 100;
-        this.xSize = 195;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
     public void init() {
         super.init();
-        this.addButton(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
-        this.addButton(this.overlayToggle = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+        this.addToLeftToolbar(CommonButtons.togglePowerUnit(0, 0));
+        this.addToLeftToolbar(this.overlayToggle = new ServerSettingToggleButton<>(0, 0,
                 Settings.OVERLAY_MODE, YesNo.NO));
     }
 
@@ -83,10 +84,4 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
                 81, COLOR_DARK_GRAY);
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
-        this.bindTexture("guis/spatialanchor.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
 }

@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.DriveContainer;
 import appeng.container.implementations.PriorityContainer;
@@ -33,9 +34,10 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class DriveScreen extends AEBaseScreen<DriveContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/drive.png").src(0, 0, 176, 199);
+
     public DriveScreen(DriveContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 199;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -59,10 +61,4 @@ public class DriveScreen extends AEBaseScreen<DriveContainer> {
                 COLOR_DARK_GRAY);
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
-        this.bindTexture("guis/drive.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
 }

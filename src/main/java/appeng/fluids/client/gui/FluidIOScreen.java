@@ -21,6 +21,7 @@ package appeng.fluids.client.gui;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+import appeng.client.gui.Blitter;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.core.localization.GuiText;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
@@ -37,7 +38,7 @@ import appeng.fluids.util.IAEFluidTank;
 public class FluidIOScreen extends UpgradeableScreen<FluidIOContainer> {
 
     public FluidIOScreen(FluidIOContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override

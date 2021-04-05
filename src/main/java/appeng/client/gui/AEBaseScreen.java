@@ -20,7 +20,6 @@ package appeng.client.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +40,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.util.InputMappings;
@@ -59,6 +59,7 @@ import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.CraftingTermSlot;
@@ -76,6 +77,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public static final int COLOR_DARK_GRAY = 0x404040;
 
+    private final VerticalButtonBar verticalButtonBar = new VerticalButtonBar();
+
+    @Nullable
+    private final Blitter background;
+
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
     private Scrollbar myScrollBar = null;
@@ -86,8 +92,20 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private boolean handlingRightClick;
     protected final List<CustomSlotWidget> guiSlots = new ArrayList<>();
 
-    public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title,
+            @Nullable Blitter background) {
         super(container, playerInventory, title);
+        this.background = background;
+        if (background != null) {
+            this.xSize = background.getSrcWidth();
+            this.ySize = background.getSrcHeight();
+        }
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        this.verticalButtonBar.reset(guiLeft, guiTop);
     }
 
     private List<Slot> getInventorySlots() {
@@ -96,6 +114,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        this.verticalButtonBar.layout();
+
         super.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
@@ -118,6 +138,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             if (c instanceof ITooltip) {
                 this.drawTooltip(matrixStack, (ITooltip) c, mouseX, mouseY);
             }
+        }
+
+        List<Rectangle2d> exclusionZones = getExclusionZones();
+        for (Rectangle2d rectangle2d : exclusionZones) {
+            fillRect(matrixStack, rectangle2d, 0x7f00FF00);
         }
     }
 
@@ -214,13 +239,20 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         for (final Slot slot : slots) {
             if (slot instanceof IOptionalSlot) {
                 final IOptionalSlot optionalSlot = (IOptionalSlot) slot;
+                // If a slot is optional and doesn't currently render, we still need to provide a background for it
                 if (optionalSlot.isRenderDisabled()) {
                     final AppEngSlot aeSlot = (AppEngSlot) slot;
+
+                    // If the slot is disabled, shade the background overlay
                     if (!aeSlot.isSlotEnabled()) {
                         RenderSystem.enableBlend();
+                        RenderSystem.color4f(1, 1, 1, 0.4f);
                     }
                     blit(matrixStack, ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1,
                             optionalSlot.getSourceY() - 1, 18, 18);
+                    if (!aeSlot.isSlotEnabled()) {
+                        RenderSystem.color4f(1, 1, 1, 1);
+                    }
                 }
             }
         }
@@ -442,8 +474,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return null;
     }
 
-    public abstract void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-            float partialTicks);
+    public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
+            float partialTicks) {
+        if (background != null) {
+            background.dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
+        }
+    }
 
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
@@ -559,12 +595,31 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     /**
+     * Adds a button to the vertical toolbar to the left of the screen and returns that button to the caller. The button
+     * will automatically be positioned. This needs to be repeated everytime {@link #init()} is called.
+     */
+    protected final <B extends Button> B addToLeftToolbar(B button) {
+        addButton(button);
+        verticalButtonBar.add(button);
+        return button;
+    }
+
+    /**
      * Returns rectangles in UI-space that define areas of the screen occluded by this GUI, in addition to the rectangle
      * defined by [guiLeft, guiTop, xSize, ySize], which is assumed to be occluded. This is used for moving JEI items
      * out of the way.
      */
     public List<Rectangle2d> getExclusionZones() {
-        return Collections.emptyList();
+        Rectangle2d toolbarBounds = verticalButtonBar.getBoundingRectangle();
+        List<Rectangle2d> result = new ArrayList<>(2);
+        if (toolbarBounds.getWidth() > 0 && toolbarBounds.getHeight() > 0) {
+            result.add(toolbarBounds);
+        }
+        return result;
+    }
+
+    protected void fillRect(MatrixStack matrices, Rectangle2d rect, int color) {
+        fill(matrices, rect.getX(), rect.getY(), rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight(), color);
     }
 
 }

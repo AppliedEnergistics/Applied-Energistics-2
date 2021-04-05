@@ -21,6 +21,7 @@ package appeng.fluids.client.gui;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+import appeng.client.gui.Blitter;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.PriorityContainer;
@@ -33,10 +34,13 @@ import appeng.fluids.container.FluidFormationPlaneContainer;
 import appeng.fluids.util.IAEFluidTank;
 
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneContainer> {
+
+    private static final Blitter BACKGROUND = Blitter.texture("guis/storagebus.png")
+            .src(0, 0, 211, 251);
+
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 251;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -68,11 +72,6 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
 
     private void openPriorityGui() {
         NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/storagebus.png";
     }
 
     @Override

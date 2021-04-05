@@ -26,6 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
@@ -35,11 +36,12 @@ import appeng.core.localization.GuiText;
 
 public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/condenser.png").src(0, 0, 176, 197);
+
     private SettingToggleButton<CondenserOutput> mode;
 
     public CondenserScreen(CondenserContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 197;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -66,11 +68,4 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
         this.mode.setFillVar(String.valueOf(this.container.getOutput().requiredPower));
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.bindTexture("guis/condenser.png");
-
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
 }

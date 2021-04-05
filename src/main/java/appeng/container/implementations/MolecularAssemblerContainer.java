@@ -80,7 +80,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         if (is.getItem() instanceof EncodedPatternItem) {
             final World w = this.getTileEntity().getWorld();
             final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
-            if (ph.isCraftable()) {
+            if (ph != null && ph.isCraftable()) {
                 return ph.isValidItemForSlot(slotIndex, i, w);
             }
         }
@@ -116,20 +116,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
                         offX, offY, this.getPlayerInventory()));
         this.addSlot(new OutputSlot(mac, 9, offX, offY + 32, -1));
 
-        offX = 122;
-        offY = 17;
-
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 2, 187,
-                8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 3, 187,
-                8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 4, 187,
-                8 + 18 * 4, this.getPlayerInventory())).setNotDraggable());
+        setupUpgrades();
     }
 
     @Override

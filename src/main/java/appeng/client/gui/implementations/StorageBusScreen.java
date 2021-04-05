@@ -28,6 +28,7 @@ import appeng.api.config.ActionItems;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
+import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -41,12 +42,14 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/storagebus.png")
+            .src(0, 0, 211 - 34, 251);
+
     private SettingToggleButton<AccessRestriction> rwMode;
     private SettingToggleButton<StorageFilter> storageFilter;
 
     public StorageBusScreen(StorageBusContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 251;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -76,21 +79,16 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
 
         if (this.fuzzyMode != null) {
-            this.fuzzyMode.set(this.cvb.getFuzzyMode());
+            this.fuzzyMode.set(this.container.getFuzzyMode());
         }
 
         if (this.storageFilter != null) {
-            this.storageFilter.set(((StorageBusContainer) this.cvb).getStorageFilter());
+            this.storageFilter.set(this.container.getStorageFilter());
         }
 
         if (this.rwMode != null) {
-            this.rwMode.set(((StorageBusContainer) this.cvb).getReadWriteMode());
+            this.rwMode.set(this.container.getReadWriteMode());
         }
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/storagebus.png";
     }
 
     private void partition() {

@@ -24,14 +24,16 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.container.implementations.GrinderContainer;
 import appeng.core.localization.GuiText;
 
 public class GrinderScreen extends AEBaseScreen<GrinderContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/grinder.png").src(0, 0, 176, 176);
+
     public GrinderScreen(GrinderContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 176;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -42,10 +44,4 @@ public class GrinderScreen extends AEBaseScreen<GrinderContainer> {
         this.font.drawString(matrices, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.bindTexture("guis/grinder.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
 }
