@@ -41,6 +41,9 @@ public interface IGrid {
      * @param iface face
      *
      * @return the IGridCache you requested.
+     *
+     *         TODO: 1.17 breaking change: throw if iface is not a registered grid cache to fulfil contract TODO: 1.17
+     *         breaking chance: make the parameter Class<C>
      */
     @Nonnull
     <C extends IGridCache> C getCache(@Nonnull Class<? extends IGridCache> iface);
@@ -51,6 +54,8 @@ public interface IGrid {
      * @param ev - event to post
      *
      * @return returns ev back to original poster
+     *
+     *         TODO: Breaking change in 1.17: T extends MENetworkEvent and return T
      */
     @Nonnull
     MENetworkEvent postEvent(@Nonnull MENetworkEvent ev);
@@ -60,7 +65,7 @@ public interface IGrid {
      *
      * @param ev event to post
      *
-     * @return returns ev back to original poster
+     * @return returns ev back to original poster TODO: Breaking change in 1.17: T extends MENetworkEvent and return T
      */
     @Nonnull
     MENetworkEvent postEventTo(@Nonnull IGridNode node, @Nonnull MENetworkEvent ev);

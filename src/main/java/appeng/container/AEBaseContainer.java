@@ -367,9 +367,7 @@ public abstract class AEBaseContainer extends Container {
                 }
             }
 
-            /**
-             * Handle Fake Slot Shift clicking.
-             */
+            // Handle Fake Slot Shift clicking.
             if (selectedSlots.isEmpty() && clickSlot.isPlayerSide()) {
                 if (!tis.isEmpty()) {
                     // target slots in the container...

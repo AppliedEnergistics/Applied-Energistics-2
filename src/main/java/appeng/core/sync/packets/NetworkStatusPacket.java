@@ -17,8 +17,7 @@ public class NetworkStatusPacket extends BasePacket {
     private final NetworkStatus status;
 
     public NetworkStatusPacket(PacketBuffer data) {
-        this.status = new NetworkStatus();
-        this.status.read(data);
+        this.status = NetworkStatus.read(data);
     }
 
     public NetworkStatusPacket(NetworkStatus status) {
@@ -35,7 +34,7 @@ public class NetworkStatusPacket extends BasePacket {
         final Screen gs = Minecraft.getInstance().currentScreen;
 
         if (gs instanceof NetworkStatusScreen) {
-            ((NetworkStatusScreen) gs).postUpdate(status);
+            ((NetworkStatusScreen) gs).processServerUpdate(status);
         }
     }
 

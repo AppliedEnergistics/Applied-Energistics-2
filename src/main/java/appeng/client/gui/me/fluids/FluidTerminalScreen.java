@@ -99,8 +99,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
     @Override
     public void init() {
-        this.guiLeft = (this.width - this.xSize) / 2;
-        this.guiTop = (this.height - this.ySize) / 2;
+        super.init();
 
         this.searchField = new AETextField(this.font, this.guiLeft + 80, this.guiTop + 4, 90, 12);
         this.searchField.setEnableBackgroundDrawing(false);

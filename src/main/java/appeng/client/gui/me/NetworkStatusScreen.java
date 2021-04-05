@@ -22,35 +22,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
-import appeng.client.gui.me.items.VirtualItemSlot;
 import appeng.client.gui.widgets.CommonButtons;
-import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.container.me.MachineGroup;
 import appeng.container.me.NetworkStatus;
 import appeng.container.me.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
-public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> implements ISortSource {
+public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
     private static final int ROWS = 4;
     private static final int COLUMNS = 5;
 
-    private int tooltip = -1;
+    // Origin of the machine table
+    private static final int TABLE_X = 14;
+    private static final int TABLE_Y = 41;
+
+    // Dimensions of each table cell
+    private static final int CELL_WIDTH = 30;
+    private static final int CELL_HEIGHT = 18;
 
     private NetworkStatus status = new NetworkStatus();
 
@@ -63,8 +60,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
         final Scrollbar scrollbar = new Scrollbar();
 
         this.setScrollBar(scrollbar);
-        this.ySize = BACKGROUND.getSrcWidth();
-        this.xSize = BACKGROUND.getSrcHeight();
+        this.xSize = BACKGROUND.getSrcWidth();
+        this.ySize = BACKGROUND.getSrcHeight();
     }
 
     @Override
@@ -72,38 +69,6 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
         super.init();
 
         this.addButton(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
-    }
-
-    @Override
-    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
-
-        final int gx = (this.width - this.xSize) / 2;
-        final int gy = (this.height - this.ySize) / 2;
-
-        this.tooltip = -1;
-
-        int y = 0;
-        int x = 0;
-        for (int i = 0; i <= ROWS * COLUMNS; i++) {
-            final int minX = gx + 14 + x * 31;
-            final int minY = gy + 41 + y * 18;
-
-            if (minX < mouseX && minX + 28 > mouseX) {
-                if (minY < mouseY && minY + 20 > mouseY) {
-                    this.tooltip = i;
-                    break;
-                }
-            }
-
-            x++;
-
-            if (x > 4) {
-                y++;
-                x = 0;
-            }
-        }
-
-        super.render(matrixStack, mouseX, mouseY, btn);
     }
 
     @Override
@@ -130,12 +95,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                 GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPower(status.getAveragePowerUsage(), true),
                 13, 143 - 20, COLOR_DARK_GRAY);
 
-        final int sectionLength = 30;
-
         int x = 0;
         int y = 0;
-        final int xo = 12;
-        final int yo = 42;
         final int viewStart = getScrollBar().getCurrentScroll() * COLUMNS;
         final int viewEnd = viewStart + COLUMNS * ROWS;
 
@@ -143,28 +104,23 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
         int toolPosX = 0;
         int toolPosY = 0;
 
-        List<NetworkStatus.MachineEntry> machines = status.getMachines();
+        List<MachineGroup> machines = status.getGroupedMachines();
         for (int i = viewStart; i < Math.min(viewEnd, machines.size()); i++) {
-            NetworkStatus.MachineEntry entry = machines.get(i);
+            MachineGroup entry = machines.get(i);
 
-            RenderSystem.pushMatrix();
-            RenderSystem.scalef(0.5f, 0.5f, 0.5f);
+            int cellX = TABLE_X + x * CELL_WIDTH;
+            int cellY = TABLE_Y + y * CELL_HEIGHT;
 
-            String str = Long.toString(entry.getCount());
-            if (entry.getCount() >= 10000) {
-                str = Long.toString(entry.getCount() / 1000) + 'k';
-            }
+            // Position the item with a margin of 1px to the right of the cell
+            int itemX = cellX + CELL_WIDTH - 17;
+            int itemY = cellY + 1;
 
-            final int w = this.font.getStringWidth(str);
-            this.font.drawString(matrixStack, str,
-                    (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * 18 + yo + 6) * 2,
-                    COLOR_DARK_GRAY);
+            drawMachineCount(matrixStack, itemX, cellY, entry.getCount());
 
-            RenderSystem.popMatrix();
-            final int posX = x * sectionLength + xo + sectionLength - 18;
-            final int posY = y * 18 + yo;
+            this.drawItem(itemX, itemY, entry.getDisplay());
 
-            if (this.tooltip == i - viewStart) {
+            // Update the tooltip based on the calculated cell rectangle and mouse position
+            if (isPointInRegion(cellX, cellY, CELL_WIDTH, CELL_HEIGHT, mouseX, mouseY)) {
                 tooltip = new ArrayList<>();
                 tooltip.add(entry.getDisplay().getDisplayName());
 
@@ -174,11 +130,11 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                             .withSuffix(": " + Platform.formatPower(entry.getIdlePowerUsage(), true)));
                 }
 
-                toolPosX = x * sectionLength + xo + sectionLength - 8;
-                toolPosY = y * 18 + yo;
+                // Hard to know why drawTooltip uses these offsets, it seems to be the center of the item stack (16x16)
+                // which leads to the tooltip being perfectly to the right of it.
+                toolPosX = itemX + 8;
+                toolPosY = itemY + 8;
             }
-
-            this.drawItem(posX, posY, entry.getDisplay());
 
             if (++x >= COLUMNS) {
                 y++;
@@ -187,65 +143,44 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
         }
 
         if (tooltip != null) {
-            this.drawTooltip(matrixStack, toolPosX, toolPosY + 10, tooltip);
+            this.drawTooltip(matrixStack, toolPosX, toolPosY, tooltip);
         }
     }
 
-    public void postUpdate(NetworkStatus status) {
+    // x,y is upper left corner of related machine icon (which is 16x16)
+    private void drawMachineCount(MatrixStack matrixStack, int x, int y, long count) {
+        String str;
+        if (count >= 10000) {
+            str = Long.toString(count / 1000) + 'k';
+        } else {
+            str = Long.toString(count);
+        }
+
+        // Keep in mind the text will be scaled down 50%
+        float textWidth = this.font.getStringWidth(str) / 2.0f;
+        float textHeight = this.font.FONT_HEIGHT / 2.0f;
+
+        // Draw the count at half-size
+        matrixStack.push();
+        matrixStack.translate(
+                x - 1 - textWidth,
+                y + (CELL_HEIGHT - textHeight) / 2.0f,
+                0);
+        matrixStack.scale(0.5f, 0.5f, 0.5f);
+        this.font.drawString(matrixStack, str, 0, 0, COLOR_DARK_GRAY);
+        matrixStack.pop();
+    }
+
+    public void processServerUpdate(NetworkStatus status) {
         this.status = status;
         this.setScrollBar();
     }
 
     private void setScrollBar() {
-        final int size = this.status.getMachines().size();
+        final int size = this.status.getGroupedMachines().size();
         this.getScrollBar().setTop(39).setLeft(175).setHeight(78);
         int overflowRows = (size + (COLUMNS - 1)) / COLUMNS - ROWS;
         this.getScrollBar().setRange(0, overflowRows, 1);
     }
 
-    @Override
-    protected void renderTooltip(MatrixStack matrixStack, final ItemStack stack, final int x, final int y) {
-        final Slot s = this.getSlot(x, y);
-
-        if (s instanceof VirtualItemSlot && !stack.isEmpty()) {
-            IAEItemStack myStack = null;
-
-            try {
-                final VirtualItemSlot theSlotField = (VirtualItemSlot) s;
-                myStack = theSlotField.getAEStack();
-            } catch (final Throwable ignore) {
-            }
-
-            if (myStack != null) {
-                List<ITextComponent> currentToolTip = getTooltipFromItem(stack);
-
-                while (currentToolTip.size() > 1) {
-                    currentToolTip.remove(1);
-                }
-
-                currentToolTip.add(GuiText.Installed.withSuffix(": " + (myStack.getStackSize())));
-                currentToolTip.add(GuiText.EnergyDrain
-                        .withSuffix(": " + Platform.formatPowerLong(myStack.getCountRequestable(), true)));
-
-                this.drawTooltip(matrixStack, x, y, currentToolTip);
-            }
-        }
-
-        super.renderTooltip(matrixStack, stack, x, y);
-    }
-
-    @Override
-    public SortOrder getSortBy() {
-        return SortOrder.NAME;
-    }
-
-    @Override
-    public SortDir getSortDir() {
-        return SortDir.ASCENDING;
-    }
-
-    @Override
-    public ViewItems getSortDisplay() {
-        return ViewItems.ALL;
-    }
 }

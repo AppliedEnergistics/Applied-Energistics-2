@@ -19,8 +19,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
 
 /**
- * Contains statistics about an ME network and its machines.
- * 
+ * Contains statistics about an ME network and the machines that form it.
+ *
  * @see appeng.client.gui.me.NetworkStatusScreen
  */
 public class NetworkStatus {
@@ -30,7 +30,7 @@ public class NetworkStatus {
     private double storedPower;
     private double maxStoredPower;
 
-    private List<MachineEntry> machines = Collections.emptyList();
+    private List<MachineGroup> groupedMachines = Collections.emptyList();
 
     public static NetworkStatus fromGrid(IGrid grid) {
         IEnergyGrid eg = grid.getCache(IEnergyGrid.class);
@@ -42,7 +42,8 @@ public class NetworkStatus {
         status.storedPower = eg.getStoredPower();
         status.maxStoredPower = eg.getMaxStoredPower();
 
-        Map<IAEItemStack, MachineEntry> machines = new HashMap<>();
+        // This is essentially a groupBy machineRepresentation + count, sum(idlePowerUsage)
+        Map<IAEItemStack, MachineGroup> groupedMachines = new HashMap<>();
         for (final Class<? extends IGridHost> machineClass : grid.getMachinesClasses()) {
             for (IGridNode machine : grid.getMachines(machineClass)) {
                 IGridBlock blk = machine.getGridBlock();
@@ -51,17 +52,17 @@ public class NetworkStatus {
                 if (ais != null) {
                     ais.setStackSize(1);
 
-                    MachineEntry machineEntry = machines.get(ais);
-                    if (machineEntry == null) {
-                        machines.put(ais, machineEntry = new MachineEntry(is));
+                    MachineGroup group = groupedMachines.get(ais);
+                    if (group == null) {
+                        groupedMachines.put(ais, group = new MachineGroup(is));
                     }
 
-                    machineEntry.count++;
-                    machineEntry.idlePowerUsage += blk.getIdlePowerUsage();
+                    group.setCount(group.getCount() + 1);
+                    group.setIdlePowerUsage(group.getIdlePowerUsage() + blk.getIdlePowerUsage());
                 }
             }
         }
-        status.machines = ImmutableList.copyOf(machines.values());
+        status.groupedMachines = ImmutableList.copyOf(groupedMachines.values());
 
         return status;
     }
@@ -82,73 +83,44 @@ public class NetworkStatus {
         return maxStoredPower;
     }
 
-    public List<MachineEntry> getMachines() {
-        return machines;
+    /**
+     * @return Machines grouped by their UI representation.
+     */
+    public List<MachineGroup> getGroupedMachines() {
+        return groupedMachines;
     }
 
-    public void read(PacketBuffer data) {
-        averagePowerInjection = data.readDouble();
-        averagePowerUsage = data.readDouble();
-        storedPower = data.readDouble();
-        maxStoredPower = data.readDouble();
+    /**
+     * Reads a network status previously written using {@link #write(PacketBuffer)}.
+     */
+    public static NetworkStatus read(PacketBuffer data) {
+        NetworkStatus status = new NetworkStatus();
+        status.averagePowerInjection = data.readDouble();
+        status.averagePowerUsage = data.readDouble();
+        status.storedPower = data.readDouble();
+        status.maxStoredPower = data.readDouble();
 
         int count = data.readVarInt();
-        ImmutableList.Builder<MachineEntry> machines = ImmutableList.builder();
+        ImmutableList.Builder<MachineGroup> machines = ImmutableList.builder();
         for (int i = 0; i < count; i++) {
-            machines.add(MachineEntry.read(data));
+            machines.add(MachineGroup.read(data));
         }
-        this.machines = machines.build();
+        status.groupedMachines = machines.build();
+
+        return status;
     }
 
+    /**
+     * Writes the contents of this object to a packet buffer. Use {@link #read(PacketBuffer)} to restore.
+     */
     public void write(PacketBuffer data) {
         data.writeDouble(averagePowerInjection);
         data.writeDouble(averagePowerUsage);
         data.writeDouble(storedPower);
         data.writeDouble(maxStoredPower);
-        data.writeVarInt(machines.size());
-        for (MachineEntry machine : machines) {
+        data.writeVarInt(groupedMachines.size());
+        for (MachineGroup machine : groupedMachines) {
             machine.write(data);
-        }
-    }
-
-    /**
-     * Reports statistics about a machine type in the network status.
-     */
-    public static class MachineEntry {
-        private final ItemStack display;
-
-        private double idlePowerUsage;
-
-        private int count;
-
-        public MachineEntry(ItemStack display) {
-            this.display = display;
-        }
-
-        public static MachineEntry read(PacketBuffer data) {
-            ItemStack stack = data.readItemStack();
-            MachineEntry entry = new MachineEntry(stack);
-            entry.idlePowerUsage = data.readDouble();
-            entry.count = data.readVarInt();
-            return entry;
-        }
-
-        public void write(PacketBuffer data) {
-            data.writeItemStack(display, true);
-            data.writeDouble(idlePowerUsage);
-            data.writeVarInt(count);
-        }
-
-        public ItemStack getDisplay() {
-            return display;
-        }
-
-        public double getIdlePowerUsage() {
-            return idlePowerUsage;
-        }
-
-        public int getCount() {
-            return count;
         }
     }
 
