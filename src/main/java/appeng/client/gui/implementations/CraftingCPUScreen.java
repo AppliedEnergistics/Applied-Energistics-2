@@ -131,17 +131,14 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
         this.cancel.active = !this.visual.isEmpty();
 
-        final int gx = (this.width - this.xSize) / 2;
-        final int gy = (this.height - this.ySize) / 2;
-
         this.tooltip = -1;
 
         final int offY = 23;
         int y = 0;
         int x = 0;
         for (int z = 0; z <= 4 * 5; z++) {
-            final int minX = gx + 9 + x * 67;
-            final int minY = gy + 22 + y * offY;
+            final int minX = guiLeft + 9 + x * 67;
+            final int minY = guiTop + 22 + y * offY;
 
             if (minX < mouseX && minX + 67 > mouseX) {
                 if (minY < mouseY && minY + offY - 2 > mouseY) {

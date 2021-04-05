@@ -18,6 +18,9 @@ import net.minecraft.util.math.vector.Matrix4f;
 
 import appeng.core.AppEng;
 
+/**
+ * Utility class for drawing rectangular textures in the UI.
+ */
 public final class Blitter {
 
     private static final ResourceLocation ICON_SPRITESHEET = new ResourceLocation(AppEng.MOD_ID,

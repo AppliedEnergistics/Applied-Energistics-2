@@ -20,11 +20,15 @@ package appeng.integration.modules.jei;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeManager;
@@ -34,7 +38,9 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.registration.IAdvancedRegistration;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -47,6 +53,7 @@ import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
+import appeng.client.gui.AEBaseScreen;
 import appeng.container.implementations.CraftingTermContainer;
 import appeng.container.implementations.PatternTermContainer;
 import appeng.core.AEConfig;
@@ -175,13 +182,27 @@ public class JEIPlugin implements IModPlugin {
             ItemStack cableAnchor = definitions.parts().cableAnchor().stack(1);
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
         }
+
+    }
+
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addGenericGuiContainerHandler(AEBaseScreen.class, new IGuiContainerHandler<ContainerScreen<?>>() {
+            @Override
+            public List<Rectangle2d> getGuiExtraAreas(ContainerScreen containerScreen) {
+                if (containerScreen instanceof AEBaseScreen) {
+                    return ((AEBaseScreen<?>) containerScreen).getExclusionZones();
+                } else {
+                    return Collections.emptyList();
+                }
+            }
+        });
     }
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
         JEIFacade.setInstance(new JeiRuntimeAdapter(jeiRuntime));
         this.hideDebugTools(jeiRuntime);
-
     }
 
     private void hideDebugTools(IJeiRuntime jeiRuntime) {

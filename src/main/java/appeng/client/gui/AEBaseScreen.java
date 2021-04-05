@@ -20,6 +20,7 @@ package appeng.client.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +41,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
@@ -554,6 +556,15 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      */
     public boolean isHandlingRightClick() {
         return handlingRightClick;
+    }
+
+    /**
+     * Returns rectangles in UI-space that define areas of the screen occluded by this GUI, in addition to the rectangle
+     * defined by [guiLeft, guiTop, xSize, ySize], which is assumed to be occluded. This is used for moving JEI items
+     * out of the way.
+     */
+    public List<Rectangle2d> getExclusionZones() {
+        return Collections.emptyList();
     }
 
 }
