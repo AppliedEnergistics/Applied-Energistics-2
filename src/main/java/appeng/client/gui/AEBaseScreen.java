@@ -75,6 +75,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     private final VerticalButtonBar verticalButtonBar = new VerticalButtonBar();
 
+    @Nullable
+    private final Blitter background;
+
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
     private Scrollbar myScrollBar = null;
@@ -85,8 +88,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private boolean handlingRightClick;
     protected final List<CustomSlotWidget> guiSlots = new ArrayList<>();
 
-    public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title, @Nullable Blitter background) {
         super(container, playerInventory, title);
+        this.background = background;
+        if (background != null) {
+            this.xSize = background.getSrcWidth();
+            this.ySize = background.getSrcHeight();
+        }
     }
 
     @Override
@@ -461,8 +469,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return null;
     }
 
-    public abstract void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-                                float partialTicks);
+    public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
+                                float partialTicks) {
+        if (background != null) {
+            background.dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
+        }
+    }
 
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {

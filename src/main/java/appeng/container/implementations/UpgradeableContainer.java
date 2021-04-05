@@ -86,8 +86,8 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     private NetworkToolViewer tbInventory;
 
     // We automatically reposition theses slots on the client-side to fit the respective textures
-    private final List<AppEngSlot> upgradeSlots = new ArrayList<>();
-    private final List<AppEngSlot> toolboxSlots = new ArrayList<>();
+    protected final List<AppEngSlot> upgradeSlots = new ArrayList<>();
+    protected final List<AppEngSlot> toolboxSlots = new ArrayList<>();
 
     public UpgradeableContainer(int id, final PlayerInventory ip, final IUpgradeableHost te) {
         this(TYPE, id, ip, te);

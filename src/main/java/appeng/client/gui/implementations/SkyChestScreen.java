@@ -18,39 +18,28 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Blitter;
 import appeng.container.implementations.SkyChestContainer;
-import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class SkyChestScreen extends AEBaseScreen<SkyChestContainer> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(AppEng.MOD_ID, "textures/guis/skychest.png");
+    private static final Blitter BACKGROUND = Blitter.texture("guis/skychest.png").src(0, 0, 176, 195);
 
     public SkyChestScreen(SkyChestContainer container, PlayerInventory playerInv, ITextComponent title) {
-        super(container, playerInv, title);
-        this.ySize = 195;
+        super(container, playerInv, title, BACKGROUND);
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+                       final int mouseY) {
         this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SkyChest.text()).getString(), 8, 8,
                 COLOR_DARK_GRAY);
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 2, COLOR_DARK_GRAY);
-    }
-
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        bindTexture(TEXTURE);
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 
 }

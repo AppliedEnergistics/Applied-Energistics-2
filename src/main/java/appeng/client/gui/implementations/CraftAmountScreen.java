@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.gui.widget.button.Button;
@@ -32,6 +33,9 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.CraftRequestPacket;
 
 public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
+
+    private static final Blitter BACKGROUND = Blitter.texture("guis/craft_amt.png").src(0, 0, 176, 107);
+
     private final AESubScreen subGui;
 
     private NumberEntryWidget amountToCraft;
@@ -39,7 +43,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     private Button next;
 
     public CraftAmountScreen(CraftAmountContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, BACKGROUND);
         this.subGui = new AESubScreen(this, container.getTarget());
     }
 
@@ -80,13 +84,10 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
+        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
+
         this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
-
-        this.bindTexture("guis/craft_amt.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-
         this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;
-
         this.amountToCraft.render(matrices, offsetX, offsetY, partialTicks);
     }
 

@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -31,16 +32,17 @@ import appeng.util.Platform;
 
 public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/spatialio.png").src(0, 0, 176, 197);
+
     public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 199;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
     public void init() {
         super.init();
-        this.addButton(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
+        this.addToLeftToolbar(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
     }
 
     @Override
@@ -72,10 +74,4 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.bindTexture("guis/spatialio.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
 }

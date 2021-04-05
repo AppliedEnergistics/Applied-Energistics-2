@@ -40,14 +40,13 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/interface.png")
-            .src(0, 0, 211, 197);
+            .src(0, 0, 176, 211);
 
     private SettingToggleButton<YesNo> blockMode;
     private ToggleButton interfaceMode;
 
     public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
-        this.ySize = 211;
     }
 
     @Override
@@ -55,13 +54,13 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
         this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
-        this.blockMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO);
-        this.addButton(this.blockMode);
+        this.blockMode = new ServerSettingToggleButton<>(0, 0, Settings.BLOCK, YesNo.NO);
+        this.addToLeftToolbar(this.blockMode);
 
-        this.interfaceMode = new ToggleButton(this.guiLeft - 18, this.guiTop + 26, 84, 85,
+        this.interfaceMode = new ToggleButton(0, 0, 84, 85,
                 GuiText.InterfaceTerminal.getLocal(), GuiText.InterfaceTerminalHint.getLocal(),
                 btn -> selectNextInterfaceMode());
-        this.addButton(this.interfaceMode);
+        this.addToLeftToolbar(this.interfaceMode);
     }
 
     @Override

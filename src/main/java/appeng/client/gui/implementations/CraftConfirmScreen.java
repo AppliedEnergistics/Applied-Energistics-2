@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import appeng.client.gui.Blitter;
 import com.google.common.base.Joiner;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -50,6 +51,8 @@ import appeng.util.Platform;
 
 public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/craftingreport.png").src(0, 0, 238, 206);
+
     private final AESubScreen subGui;
 
     private final int rows = 5;
@@ -68,13 +71,10 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     private int tooltip = -1;
 
     public CraftConfirmScreen(CraftConfirmContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, BACKGROUND);
         this.subGui = new AESubScreen(this, container.getTarget());
-        this.xSize = 238;
-        this.ySize = 206;
 
-        final Scrollbar scrollbar = new Scrollbar();
-        this.setScrollBar(scrollbar);
+        this.setScrollBar(new Scrollbar());
     }
 
     @Override
@@ -327,8 +327,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.setScrollBar();
-        this.bindTexture("guis/craftingreport.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
+        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
     }
 
     private void setScrollBar() {

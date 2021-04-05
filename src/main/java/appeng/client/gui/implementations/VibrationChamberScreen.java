@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -34,12 +35,13 @@ import appeng.tile.misc.VibrationChamberTileEntity;
 
 public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/vibchamber.png").src(0, 0, 176, 166);
+
     private ProgressBar pb;
 
     public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 166;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -63,19 +65,10 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
         if (this.container.getRemainingBurnTime() > 0) {
             final int i1 = this.container.getRemainingBurnTime() * 12 / 100;
             this.bindTexture("guis/vibchamber.png");
-            RenderSystem.color3f(1, 1, 1);
             final int l = -15;
             final int k = 25;
             blit(matrices, k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2);
         }
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.bindTexture("guis/vibchamber.png");
-        this.pb.x = 99 + this.guiLeft;
-        this.pb.y = 36 + this.guiTop;
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
 }

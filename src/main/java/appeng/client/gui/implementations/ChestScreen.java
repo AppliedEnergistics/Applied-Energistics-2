@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -33,9 +34,10 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class ChestScreen extends AEBaseScreen<ChestContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/chest.png").src(0, 0, 176, 166);
+
     public ChestScreen(ChestContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 166;
+        super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
@@ -59,10 +61,4 @@ public class ChestScreen extends AEBaseScreen<ChestContainer> {
                 COLOR_DARK_GRAY);
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.bindTexture("guis/chest.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
 }

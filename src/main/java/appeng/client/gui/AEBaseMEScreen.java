@@ -25,8 +25,8 @@ import appeng.container.AEBaseContainer;
 
 public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseScreen<T> {
 
-    public AEBaseMEScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
+    public AEBaseMEScreen(T container, PlayerInventory playerInventory, ITextComponent title, Blitter background) {
+        super(container, playerInventory, title, background);
     }
 
 }

@@ -19,7 +19,6 @@
 package appeng.client.gui.implementations;
 
 import appeng.client.gui.Blitter;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -42,10 +41,9 @@ import appeng.core.sync.packets.ConfigValuePacket;
 
 public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContainer> {
 
-    private ToggleButton copyMode;
+    private static final Blitter BACKGROUND = Blitter.texture("guis/cellworkbench.png").src(0, 0, 176, 251);
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/cellworkbench.png")
-            .src(0, 0, 211 - 34, 251);
+    private ToggleButton copyMode;
 
     public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
@@ -61,53 +59,6 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
         this.addToLeftToolbar(new ActionButton(0, 0, ActionItems.CLOSE, act -> action("Clear")));
         this.copyMode = this.addToLeftToolbar(new ToggleButton(0, 0, 11 * 16 + 5, 12 * 16 + 5,
                 GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal(), act -> action("CopyMode")));
-    }
-
-    @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
-        this.handleButtonVisibility();
-
-        BACKGROUND
-                .dest(offsetX, offsetY)
-                .blit(matrixStack, getBlitOffset());
-
-        if (this.container.availableUpgrades() > 0) {
-            if (this.container.availableUpgrades() <= 8) {
-                blit(matrixStack, offsetX + 177, offsetY, 177, 0, 35, 7 + this.container.availableUpgrades() * 18);
-                blit(matrixStack, offsetX + 177, offsetY + (7 + (this.container.availableUpgrades()) * 18), 177, 151,
-                        35, 7);
-            } else if (this.container.availableUpgrades() <= 16) {
-                blit(matrixStack, offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18);
-                blit(matrixStack, offsetX + 177, offsetY + (7 + (8) * 18), 177, 151, 35, 7);
-
-                final int dx = this.container.availableUpgrades() - 8;
-                blit(matrixStack, offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18);
-                if (dx == 8) {
-                    blit(matrixStack, offsetX + 177 + 27, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7);
-                } else {
-                    blit(matrixStack, offsetX + 177 + 27 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151, 35 - 8, 7);
-                }
-            } else {
-                blit(matrixStack, offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18);
-                blit(matrixStack, offsetX + 177, offsetY + (7 + (8) * 18), 177, 151, 35, 7);
-
-                blit(matrixStack, offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + 8 * 18);
-                blit(matrixStack, offsetX + 177 + 27, offsetY + (7 + (8) * 18), 186, 151, 35 - 8, 7);
-
-                final int dx = this.container.availableUpgrades() - 16;
-                blit(matrixStack, offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18);
-                if (dx == 8) {
-                    blit(matrixStack, offsetX + 177 + 27 + 18, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7);
-                } else {
-                    blit(matrixStack, offsetX + 177 + 27 + 18 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151, 35 - 8,
-                            7);
-                }
-            }
-        }
-        if (container.hasToolbox()) {
-            blit(matrixStack, offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68);
-        }
     }
 
     @Override

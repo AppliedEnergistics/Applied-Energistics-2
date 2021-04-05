@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import appeng.client.gui.Blitter;
 import com.google.common.base.Joiner;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -55,8 +56,7 @@ import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
 
 public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScreen<T> implements ISortSource {
-    private static final int GUI_HEIGHT = 184;
-    private static final int GUI_WIDTH = 238;
+    private static final Blitter BACKGROUND = Blitter.texture("guis/craftingcpu.png").src(0, 0, 238, 184);
 
     private static final int DISPLAYED_ROWS = 6;
 
@@ -92,9 +92,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     private int tooltip = -1;
 
     public CraftingCPUScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = GUI_HEIGHT;
-        this.xSize = GUI_WIDTH;
+        super(container, playerInventory, title, BACKGROUND);
 
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
@@ -302,13 +300,6 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
         if (this.tooltip >= 0 && !dspToolTip.isEmpty()) {
             this.drawTooltip(matrixStack, toolPosX, toolPosY + 10, new StringTextComponent(dspToolTip));
         }
-    }
-
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
-        this.bindTexture("guis/craftingcpu.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 
     public void postUpdate(final List<IAEItemStack> list, final byte ref) {

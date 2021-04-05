@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import appeng.client.gui.Blitter;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -142,7 +143,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, null);
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
         this.xSize = GUI_WIDTH;

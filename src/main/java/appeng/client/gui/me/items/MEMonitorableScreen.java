@@ -112,7 +112,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     private int currentMouseY = 0;
 
     public MEMonitorableScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, null);
 
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
@@ -214,32 +214,25 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         // extra slots : 72
         // slot 18
 
-        int offset = this.guiTop + 8;
-
         if (this.customSortOrder) {
-            this.sortByToggle = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_BY,
+            this.sortByToggle = this.addToLeftToolbar(new SettingToggleButton<>(0, 0, Settings.SORT_BY,
                     getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
-            offset += 20;
         }
 
         if (this.viewCell || this instanceof WirelessTermScreen) {
-            this.viewModeToggle = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset,
+            this.viewModeToggle = this.addButton(new SettingToggleButton<>(0, 0,
                     Settings.VIEW_MODE, getSortDisplay(), this::toggleServerSetting));
-            offset += 20;
         }
 
-        this.addButton(this.sortDirToggle = new SettingToggleButton<>(this.guiLeft - 18, offset,
+        this.addToLeftToolbar(this.sortDirToggle = new SettingToggleButton<>(0, 0,
                 Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
-        offset += 20;
 
         SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
-        this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SEARCH_MODE, searchMode,
+        this.addToLeftToolbar(new SettingToggleButton<>(0, 0, Settings.SEARCH_MODE, searchMode,
                 Platform::isSearchModeAvailable, this::toggleTerminalSearchMode));
 
-        offset += 20;
-
         if (!(this instanceof MEPortableCellScreen) || this instanceof WirelessTermScreen) {
-            this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, terminalStyle,
+            this.addToLeftToolbar(new SettingToggleButton<>(0, 0, Settings.TERMINAL_STYLE, terminalStyle,
                     this::toggleTerminalStyle));
         }
 

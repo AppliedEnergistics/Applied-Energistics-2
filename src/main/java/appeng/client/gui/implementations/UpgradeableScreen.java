@@ -51,8 +51,6 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     public static final Blitter BACKGROUND = Blitter.texture("guis/bus.png")
             .src(0, 0, 176, 184);
 
-    private final Blitter background;
-
     private final UpgradesPanel upgradesPanel;
 
     private final ToolboxPanel toolboxPanel;
@@ -72,8 +70,7 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     }
 
     public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title, Blitter background) {
-        super(container, playerInventory, title);
-        this.background = background;
+        super(container, playerInventory, title, background);
 
         this.bc = (IUpgradeableHost) container.getTarget();
 
@@ -131,11 +128,9 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
                        float partialTicks) {
+        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
+
         this.handleButtonVisibility();
-
-        fillRect(matrices, background.getDestRect(), 0xFFFFFFFF);
-
-        background.dest(offsetX, offsetY).blit(matrices, getBlitOffset());
 
         upgradesPanel.draw(matrices, getBlitOffset(), offsetX, offsetY);
 
@@ -170,9 +165,9 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
         if (container.hasToolbox()) {
             toolboxPanel.addExclusionZones(guiLeft, guiTop, rects);
         }
-        if (container.availableUpgrades() > 0) {
-            upgradesPanel.addExclusionZones(guiLeft, guiTop, rects);
-        }
+
+        upgradesPanel.addExclusionZones(guiLeft, guiTop, rects);
+
         return rects;
     }
 }

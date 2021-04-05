@@ -20,6 +20,7 @@ package appeng.client.gui.implementations;
 
 import java.util.OptionalInt;
 
+import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -32,17 +33,15 @@ import appeng.core.localization.GuiText;
 
 public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
+    private static final Blitter BACKGROUND = Blitter.texture("guis/priority.png").src(0, 0, 176, 107);
+
     private final AESubScreen subGui;
 
     private NumberEntryWidget priority;
 
     public PriorityScreen(PriorityContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, BACKGROUND);
         this.subGui = new AESubScreen(this, container.getPriorityHost());
-
-        // This is the effective size of the background image
-        xSize = 175;
-        ySize = 128;
     }
 
     @Override
@@ -82,8 +81,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
-        this.bindTexture("guis/priority.png");
-        blit(matrixStack, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
+        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         this.priority.render(matrixStack, mouseX, mouseY, partialTicks);
     }

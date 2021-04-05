@@ -32,7 +32,8 @@ public final class UpgradesPanel {
     }
 
     public void draw(MatrixStack matrices, int zIndex, int offsetX, int offsetY) {
-        if (upgradeSlots.isEmpty()) {
+        int slotCount = getUpgradeSlotCount();
+        if (slotCount <= 0) {
             return;
         }
 
@@ -40,7 +41,7 @@ public final class UpgradesPanel {
         int slotOriginX = offsetX + this.x + PADDING;
         int slotOriginY = offsetY + this.y + PADDING;
 
-        for (int i = 0; i < upgradeSlots.size(); i++) {
+        for (int i = 0; i < slotCount; i++) {
             // Unlike other UIs, this is drawn top-to-bottom,left-to-right
             int row = i % MAX_ROWS;
             int col = i / MAX_ROWS;
@@ -51,10 +52,10 @@ public final class UpgradesPanel {
             boolean borderLeft = col == 0;
             boolean borderTop = row == 0;
             // The panel can have a "jagged" edge if the number of slots is not divisible by MAX_ROWS
-            boolean lastSlot = i + 1 >= upgradeSlots.size();
+            boolean lastSlot = i + 1 >= slotCount;
             boolean lastRow = row + 1 >= MAX_ROWS;
             boolean borderBottom = lastRow || lastSlot;
-            boolean borderRight = i >= upgradeSlots.size() - MAX_ROWS;
+            boolean borderRight = i >= slotCount - MAX_ROWS;
 
             drawSlot(matrices, zIndex, x, y, borderLeft, borderTop, borderRight, borderBottom);
 
@@ -71,11 +72,13 @@ public final class UpgradesPanel {
      */
     public void addExclusionZones(int offsetX, int offsetY, List<Rectangle2d> zones) {
 
+        int slotCount = getUpgradeSlotCount();
+
         // Use a bit of a margin around the zone to avoid things looking too cramped
         final int margin = 2;
 
         // Add a single bounding rectangle for as many columns as are fully populated
-        int fullCols = upgradeSlots.size() / MAX_ROWS;
+        int fullCols = slotCount / MAX_ROWS;
         int rightEdge = offsetX + x;
         if (fullCols > 0) {
             int fullColWidth = PADDING * 2 + fullCols * SLOT_SIZE;
@@ -89,7 +92,7 @@ public final class UpgradesPanel {
         }
 
         // If there's a partially populated row at the end, add a smaller rectangle for it
-        int remaining = upgradeSlots.size() - fullCols * MAX_ROWS;
+        int remaining = slotCount - fullCols * MAX_ROWS;
         if (remaining > 0) {
             zones.add(Rects.expand(new Rectangle2d(
                     rightEdge,
@@ -140,15 +143,33 @@ public final class UpgradesPanel {
                 .blit(matrices, zIndex);
     }
 
-    private void layoutSlots() {
-       int slotOriginX = this.x + PADDING;
-       int slotOriginY = this.y + PADDING;
+    /**
+     * We need this function since the cell workbench can dynamically change how many upgrade slots are active
+     * based on the cell in the workbench.
+     */
+    private int getUpgradeSlotCount() {
+        int count = 0;
+        for (AppEngSlot slot : upgradeSlots) {
+            if (slot.isSlotEnabled()) {
+                count++;
+            }
+        }
+        return count;
+    }
 
-       for (AppEngSlot slot : upgradeSlots) {
-           slot.xPos = slotOriginX + 1;
-           slot.yPos = slotOriginY + 1;
-           slotOriginY += SLOT_SIZE;
-       }
+    private void layoutSlots() {
+        int slotOriginX = this.x + PADDING;
+        int slotOriginY = this.y + PADDING;
+
+        for (AppEngSlot slot : upgradeSlots) {
+            if (!slot.isEnabled()) {
+                continue;
+            }
+
+            slot.xPos = slotOriginX + 1;
+            slot.yPos = slotOriginY + 1;
+            slotOriginY += SLOT_SIZE;
+        }
     }
 
 }
