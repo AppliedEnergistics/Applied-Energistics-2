@@ -58,7 +58,7 @@ public interface IGridHost {
     AECableType getCableConnectionType(@Nonnull AEPartLocation dir);
 
     /**
-     * break this host, its violating security rules, just break your block, or part.
+     * break this host, it's violating security rules, just break your block, or part.
      */
     void securityBreak();
 }

@@ -70,7 +70,6 @@ import appeng.util.SettingsFrom;
 
 public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject {
 
-    private static final ThreadLocal<WeakReference<AEBaseTileEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
     private static final Map<Class<? extends TileEntity>, IStackSrc> ITEM_STACKS = new HashMap<>();
     private int renderFragment = 0;
     @Nullable
@@ -85,11 +84,6 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
 
     public static void registerTileItem(final Class<? extends TileEntity> c, final IStackSrc wat) {
         ITEM_STACKS.put(c, wat);
-    }
-
-    public boolean dropItems() {
-        final WeakReference<AEBaseTileEntity> what = DROP_NO_ITEMS.get();
-        return what == null || what.get() != this;
     }
 
     public boolean notLoaded() {
@@ -375,10 +369,6 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
 
     }
 
-    public void getNoDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
-
-    }
-
     /**
      * null means nothing to store...
      *
@@ -434,7 +424,6 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
 
     public void securityBreak() {
         this.world.destroyBlock(this.pos, true);
-        this.disableDrops();
     }
 
     /**
@@ -443,10 +432,6 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     public boolean isRemote() {
         World world = getWorld();
         return world == null || world.isRemote();
-    }
-
-    public void disableDrops() {
-        DROP_NO_ITEMS.set(new WeakReference<>(this));
     }
 
     public void saveChanges() {

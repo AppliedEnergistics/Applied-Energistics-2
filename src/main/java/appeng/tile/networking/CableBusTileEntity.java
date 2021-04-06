@@ -169,13 +169,9 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List drops) {
-        this.getCableBus().getDrops(drops);
-    }
-
-    @Override
-    public void getNoDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
-        this.getCableBus().getNoDrops(drops);
+    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+        // the parts and facades themselves are handled by CableBusBlock#getDrops
+        this.getCableBus().appendPartContentDrops(drops);
     }
 
     @Override

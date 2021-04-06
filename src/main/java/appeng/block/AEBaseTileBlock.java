@@ -122,11 +122,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         final AEBaseTileEntity te = this.getTileEntity(w, pos);
         if (te != null) {
             final ArrayList<ItemStack> drops = new ArrayList<>();
-            if (te.dropItems()) {
-                te.getDrops(w, pos, drops);
-            } else {
-                te.getNoDrops(w, pos, drops);
-            }
+            te.getDrops(w, pos, drops);
 
             // Cry ;_; ...
             Platform.spawnDrops(w, pos, drops);
