@@ -38,8 +38,10 @@ public class ConventionTagProvider extends TagProvider {
         addItemTag("certus_quartz_ores", BLOCKS.quartzOre(), BLOCKS.quartzOreCharged());
 
         addItemTag("iron_ingots", Items.IRON_INGOT);
+        addItemTag("iron_nuggets", Items.IRON_NUGGET);
         addItemTag("iron_ores", Items.IRON_ORE);
         addItemTag("gold_ingots", Items.GOLD_INGOT);
+        addItemTag("gold_nuggets", Items.GOLD_NUGGET);
         addItemTag("gold_ores", Items.GOLD_ORE);
         addItemTag("glowstone_dusts", Items.GLOWSTONE_DUST);
         addItemTag("wooden_rods", Items.STICK);
