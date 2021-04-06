@@ -31,8 +31,6 @@ import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.container.me.crafting.CraftAmountContainer;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.CraftRequestPacket;
 
 /**
  * When requesting to auto-craft, this dialog allows the player to enter the desired number of items to craft.
@@ -77,7 +75,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         if (amount <= 0) {
             return;
         }
-        NetworkHandler.instance().sendToServer(new CraftRequestPacket(amount, hasShiftDown()));
+        container.confirm(amount, hasShiftDown());
     }
 
     @Override

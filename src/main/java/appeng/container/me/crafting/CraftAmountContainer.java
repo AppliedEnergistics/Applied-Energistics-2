@@ -18,6 +18,8 @@
 
 package appeng.container.me.crafting;
 
+import java.util.concurrent.Future;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,14 +31,21 @@ import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.InaccessibleSlot;
+import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.me.helpers.PlayerSource;
 import appeng.tile.inventory.AppEngInternalInventory;
 
@@ -97,5 +106,61 @@ public class CraftAmountContainer extends AEBaseContainer {
 
     public void setItemToCraft(@Nonnull final IAEItemStack itemToCreate) {
         this.itemToCreate = itemToCreate;
+    }
+
+    /**
+     * Confirms the craft request. If called client-side, automatically sends a packet to the server to perform the
+     * action there instead.
+     *
+     * @param amount    The number of items to craft.
+     * @param autoStart Start crafting immediately when the planning is done.
+     */
+    public void confirm(int amount, boolean autoStart) {
+        if (!isServer()) {
+            NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, autoStart));
+            return;
+        }
+
+        final Object target = getTarget();
+        if (target instanceof IActionHost) {
+            final IActionHost ah = (IActionHost) target;
+            final IGridNode gn = ah.getActionableNode();
+            if (gn == null) {
+                return;
+            }
+
+            final IGrid g = gn.getGrid();
+            if (g == null || getItemToCraft() == null) {
+                return;
+            }
+
+            getItemToCraft().setStackSize(amount);
+
+            Future<ICraftingJob> futureJob = null;
+            try {
+                final ICraftingGrid cg = g.getCache(ICraftingGrid.class);
+                futureJob = cg.beginCraftingJob(getWorld(), getGrid(), getActionSrc(),
+                        getItemToCraft(), null);
+
+                final ContainerLocator locator = getLocator();
+                if (locator != null) {
+                    PlayerEntity player = getPlayerInv().player;
+                    ContainerOpener.openContainer(CraftConfirmContainer.TYPE, player, locator);
+
+                    if (player.openContainer instanceof CraftConfirmContainer) {
+                        final CraftConfirmContainer ccc = (CraftConfirmContainer) player.openContainer;
+                        ccc.setAutoStart(autoStart);
+                        ccc.setJob(futureJob);
+                        detectAndSendChanges();
+                    }
+                }
+            } catch (final Throwable e) {
+                if (futureJob != null) {
+                    futureJob.cancel(true);
+                }
+                AELog.info(e);
+            }
+        }
+
     }
 }

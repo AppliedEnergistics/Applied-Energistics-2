@@ -31,7 +31,7 @@ import appeng.core.sync.packets.CompassRequestPacket;
 import appeng.core.sync.packets.CompassResponsePacket;
 import appeng.core.sync.packets.ConfigButtonPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.core.sync.packets.CraftRequestPacket;
+import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.core.sync.packets.FluidSlotPacket;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.core.sync.packets.InventoryActionPacket;
@@ -98,7 +98,7 @@ public class BasePacketHandler {
 
         PACKET_TARGET_FLUID(TargetFluidStackPacket.class, TargetFluidStackPacket::new),
 
-        PACKET_CRAFTING_REQUEST(CraftRequestPacket.class, CraftRequestPacket::new),
+        PACKET_CRAFTING_REQUEST(ConfirmAutoCraftPacket.class, ConfirmAutoCraftPacket::new),
 
         PACKET_ASSEMBLER_ANIMATION(AssemblerAnimationPacket.class, AssemblerAnimationPacket::new),
 
