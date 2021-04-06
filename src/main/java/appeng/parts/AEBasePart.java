@@ -123,6 +123,11 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             this.host.removePart(this.side, false);
             Platform.spawnDrops(this.tile.getWorld(), this.tile.getPos(), items);
             this.is.setCount(0);
+
+            // If this was the last part to be broken, remove the host as well
+            if (getHost().isEmpty()) {
+                getHost().cleanup();
+            }
         }
     }
 
