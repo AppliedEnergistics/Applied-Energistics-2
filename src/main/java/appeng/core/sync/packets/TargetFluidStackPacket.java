@@ -23,10 +23,10 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 
+import appeng.container.me.fluids.FluidTerminalContainer;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.fluids.container.FluidTerminalContainer;
 import appeng.fluids.util.AEFluidStack;
 
 /**

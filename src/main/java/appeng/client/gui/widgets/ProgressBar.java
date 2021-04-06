@@ -18,7 +18,6 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.client.gui.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.gui.widget.Widget;
@@ -26,6 +25,7 @@ import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
+import appeng.client.gui.Blitter;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
 
@@ -42,7 +42,8 @@ public class ProgressBar extends Widget implements ITooltip {
         this(source, posX, posY, blitter, dir, null);
     }
 
-    public ProgressBar(final IProgressProvider source, final int posX, final int posY, Blitter blitter, final Direction dir, final ITextComponent title) {
+    public ProgressBar(final IProgressProvider source, final int posX, final int posY, Blitter blitter,
+            final Direction dir, final ITextComponent title) {
         super(posX, posY, blitter.getSrcWidth(), blitter.getSrcHeight(), StringTextComponent.EMPTY);
         this.source = source;
         this.blitter = blitter.copy();
@@ -52,8 +53,7 @@ public class ProgressBar extends Widget implements ITooltip {
                 blitter.getSrcX(),
                 blitter.getSrcY(),
                 blitter.getSrcWidth(),
-                blitter.getSrcHeight()
-        );
+                blitter.getSrcHeight());
     }
 
     @Override

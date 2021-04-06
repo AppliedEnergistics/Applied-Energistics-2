@@ -7,8 +7,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 
-import appeng.client.gui.me.NetworkStatusScreen;
-import appeng.container.me.NetworkStatus;
+import appeng.client.gui.me.networktool.NetworkStatusScreen;
+import appeng.container.me.networktool.NetworkStatus;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 

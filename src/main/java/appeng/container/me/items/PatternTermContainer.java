@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.container.me.items;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -48,6 +48,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerNull;
 import appeng.container.guisync.GuiSync;
+import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.FakeCraftingMatrixSlot;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalFakeSlot;

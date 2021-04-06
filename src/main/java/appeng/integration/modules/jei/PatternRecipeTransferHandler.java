@@ -27,7 +27,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
-import appeng.container.implementations.PatternTermContainer;
+import appeng.container.me.items.PatternTermContainer;
 
 public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternTermContainer> {
 

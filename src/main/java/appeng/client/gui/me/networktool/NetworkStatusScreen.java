@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.me;
+package appeng.client.gui.me.networktool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +30,9 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.Scrollbar;
-import appeng.container.me.MachineGroup;
-import appeng.container.me.NetworkStatus;
-import appeng.container.me.NetworkStatusContainer;
+import appeng.container.me.networktool.MachineGroup;
+import appeng.container.me.networktool.NetworkStatus;
+import appeng.container.me.networktool.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 

@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.client.gui.me.crafting;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -25,11 +25,16 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-import appeng.container.implementations.CraftingStatusContainer;
+import appeng.client.gui.implementations.AESubScreen;
+import appeng.container.me.crafting.CraftingStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 
+/**
+ * This specialized version of the {@link CraftingCPUScreen} allows a player to cycle through the CPUs that are
+ * currently working on crafting jobs, and see their crafting status.
+ */
 public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContainer> {
 
     private final AESubScreen subGui;

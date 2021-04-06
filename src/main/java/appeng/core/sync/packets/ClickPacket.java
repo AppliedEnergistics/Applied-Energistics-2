@@ -38,7 +38,7 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.block.networking.CableBusBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.NetworkToolContainer;
+import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -153,9 +153,7 @@ public class ClickPacket extends BasePacket {
                     final IMemoryCard mem = (IMemoryCard) is.getItem();
                     mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
                     is.setTag(null);
-                }
-
-                else if (maybeColorApplicator.isSameAs(is)) {
+                } else if (maybeColorApplicator.isSameAs(is)) {
                     final ColorApplicatorItem mem = (ColorApplicatorItem) is.getItem();
                     mem.cycleColors(is, mem.getColor(is), 1);
                 }

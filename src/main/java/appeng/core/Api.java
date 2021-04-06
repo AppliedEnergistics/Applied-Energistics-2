@@ -43,9 +43,9 @@ public final class Api implements IAppEngApi {
 
     /**
      * Use primarily to access the API.
-     *
+     * <p>
      * Using {@link IAppEngApi} intentionally to avoid using functionality not exposed by accident.
-     *
+     * <p>
      * In some cases we might have to access the API before it is announced via {@link AEAddon}, otherwise we could just
      * inject it into AE2 itself.
      */

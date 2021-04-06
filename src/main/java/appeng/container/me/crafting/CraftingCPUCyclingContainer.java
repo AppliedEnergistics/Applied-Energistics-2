@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.container.me.crafting;
 
 /**
  * Implemented on screens that show information about a crafting CPU and allow the CPU to be cycled. Is triggered by

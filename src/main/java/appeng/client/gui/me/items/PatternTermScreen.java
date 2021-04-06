@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.client.gui.me.items;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -29,7 +29,7 @@ import appeng.api.config.ActionItems;
 import appeng.client.gui.me.items.MEMonitorableScreen;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
-import appeng.container.implementations.PatternTermContainer;
+import appeng.container.me.items.PatternTermContainer;
 import appeng.container.slot.AppEngSlot;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;

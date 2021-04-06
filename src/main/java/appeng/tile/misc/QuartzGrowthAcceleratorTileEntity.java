@@ -33,7 +33,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTileEntity;
-import appeng.util.Platform;
 
 public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
         implements IPowerChannelState, ICrystalGrowthAccelerator {

@@ -39,7 +39,7 @@ import appeng.core.sync.packets.ConfigValuePacket;
 
 public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/quartzknife.png").src(0, 0, 176, 107);
+    private static final Blitter BACKGROUND = Blitter.texture("guis/quartzknife.png").src(0, 0, 176, 184);
 
     private TextFieldWidget name;
 

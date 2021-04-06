@@ -16,13 +16,12 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.client.gui.me.items;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.client.gui.me.items.MEMonitorableScreen;
-import appeng.container.implementations.MEPortableCellContainer;
+import appeng.container.me.items.MEPortableCellContainer;
 
 public class MEPortableCellScreen extends MEMonitorableScreen<MEPortableCellContainer> {
 

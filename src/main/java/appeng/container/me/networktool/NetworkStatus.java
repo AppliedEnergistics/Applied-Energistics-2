@@ -1,4 +1,4 @@
-package appeng.container.me;
+package appeng.container.me.networktool;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,12 +16,13 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.util.item.AEItemStack;
 
 /**
  * Contains statistics about an ME network and the machines that form it.
  *
- * @see appeng.client.gui.me.NetworkStatusScreen
+ * @see NetworkStatusScreen
  */
 public class NetworkStatus {
 

@@ -78,28 +78,19 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
     @Override
     public void detectAndSendChanges() {
-        final ItemStack currentItem = this.getPlayerInv().getCurrentItem();
-
-        if (currentItem != this.toolInv.getItemStack()) {
-            if (!currentItem.isEmpty()) {
-                if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem,
-                            this.toolInv.getItemStack());
-                } else {
-                    this.setValidContainer(false);
-                }
-            } else {
-                this.setValidContainer(false);
-            }
+        if (!ensureGuiItemIsInSlot(this.toolInv, this.getPlayerInv().currentItem)) {
+            this.setValidContainer(false);
+            return;
         }
 
         super.detectAndSendChanges();
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
-        if (this.inSlot.getStackInSlot(0) != null) {
-            par1PlayerEntity.dropItem(this.inSlot.getStackInSlot(0), false);
+    public void onContainerClosed(final PlayerEntity player) {
+        ItemStack item = this.inSlot.extractItem(0, Integer.MAX_VALUE, false);
+        if (!item.isEmpty()) {
+            player.dropItem(item, false);
         }
     }
 
@@ -147,19 +138,16 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         }
 
         private void makePlate() {
-            if (isServer()) {
-                if (!this.getItemHandler().extractItem(0, 1, false).isEmpty()) {
-                    final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
-                    final ItemStack before = item.copy();
-                    item.damageItem(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
-                        QuartzKnifeContainer.this.getPlayerInv().setInventorySlotContents(
-                                QuartzKnifeContainer.this.getPlayerInv().currentItem, ItemStack.EMPTY);
-                        MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(
-                                QuartzKnifeContainer.this.getPlayerInv().player, before, null));
-                    });
+            if (isServer() && !this.getItemHandler().extractItem(0, 1, false).isEmpty()) {
+                final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
+                final ItemStack before = item.copy();
+                PlayerInventory playerInv = QuartzKnifeContainer.this.getPlayerInv();
+                item.damageItem(1, playerInv.player, p -> {
+                    playerInv.setInventorySlotContents(playerInv.currentItem, ItemStack.EMPTY);
+                    MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(playerInv.player, before, null));
+                });
 
-                    QuartzKnifeContainer.this.detectAndSendChanges();
-                }
+                QuartzKnifeContainer.this.detectAndSendChanges();
             }
         }
     }

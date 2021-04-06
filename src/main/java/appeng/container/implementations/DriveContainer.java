@@ -47,9 +47,12 @@ public class DriveContainer extends AEBaseContainer {
         super(TYPE, id, ip, drive, null);
 
         for (int y = 0; y < 5; y++) {
+            int slotY = 14 + y * 18;
             for (int x = 0; x < 2; x++) {
+                int invSlot = x + y * 2;
+                int slotX = 71 + x * 18;
                 this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
-                        drive.getInternalInventory(), x + y * 2, 71 + x * 18, 14 + y * 18, this.getPlayerInventory()));
+                        drive.getInternalInventory(), invSlot, slotX, slotY, this.getPlayerInventory()));
             }
         }
 
