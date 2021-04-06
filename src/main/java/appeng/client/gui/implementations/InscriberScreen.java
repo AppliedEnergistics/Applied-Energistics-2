@@ -35,6 +35,8 @@ public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/inscriber.png").src(0, 0, 176, 176);
 
+    private static final Blitter PROGRESS_BAR = BACKGROUND.copy().src(135, 177, 6, 18);
+
     private ProgressBar pb;
 
     public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, ITextComponent title) {
@@ -45,7 +47,7 @@ public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL);
+        this.pb = new ProgressBar(this.container, this.guiLeft + 135, this.guiTop + 39, PROGRESS_BAR, Direction.VERTICAL);
         this.addButton(this.pb);
     }
 

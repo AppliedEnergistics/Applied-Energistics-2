@@ -54,8 +54,8 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
 
     @Override
     protected void addButtons() {
-        addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, btn -> clear()));
-        addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, btn -> partition()));
+        addToLeftToolbar(new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, btn -> clear()));
+        addToLeftToolbar(new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, btn -> partition()));
         this.rwMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
         this.storageFilter = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
@@ -66,9 +66,9 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
         this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
-        this.addButton(this.storageFilter);
-        this.addButton(this.fuzzyMode);
-        this.addButton(this.rwMode);
+        this.addToLeftToolbar(this.storageFilter);
+        this.addToLeftToolbar(this.fuzzyMode);
+        this.addToLeftToolbar(this.rwMode);
     }
 
     @Override
