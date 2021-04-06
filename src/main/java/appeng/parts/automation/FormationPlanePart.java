@@ -210,7 +210,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         long maxStorage = Math.min(input.getStackSize(), is.getMaxStackSize());
         boolean worked = false;
 
-        final TileEntity te = this.getHost().getTile();
+        final TileEntity te = this.getPartHost().getTile();
         final World w = te.getWorld();
         final AEPartLocation side = this.getSide();
 

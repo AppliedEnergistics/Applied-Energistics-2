@@ -150,8 +150,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             final ItemStack eq = player.getHeldItem(hand);
             this.configuredItem = AEItemStack.fromItemStack(eq);
             this.configureWatchers();
-            this.getHost().markForSave();
-            this.getHost().markForUpdate();
+            this.getPartHost().markForSave();
+            this.getPartHost().markForUpdate();
         } else {
             return super.onPartActivate(player, hand, pos);
         }
@@ -177,8 +177,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             this.isLocked = !this.isLocked;
             player.sendMessage((this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get(),
                     Util.DUMMY_UUID);
-            this.getHost().markForSave();
-            this.getHost().markForUpdate();
+            this.getPartHost().markForSave();
+            this.getPartHost().markForUpdate();
         }
 
         return true;
@@ -282,7 +282,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
             if (!humanReadableText.equals(this.lastHumanReadableText)) {
                 this.lastHumanReadableText = humanReadableText;
-                this.getHost().markForUpdate();
+                this.getPartHost().markForUpdate();
             }
         }
     }

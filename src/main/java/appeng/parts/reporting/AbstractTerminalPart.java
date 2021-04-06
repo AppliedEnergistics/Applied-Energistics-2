@@ -140,6 +140,6 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
-        this.getHost().markForSave();
+        this.getPartHost().markForSave();
     }
 }

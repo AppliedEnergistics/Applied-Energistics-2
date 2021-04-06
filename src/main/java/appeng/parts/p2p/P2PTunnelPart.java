@@ -185,9 +185,9 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                 if (newType.getItem() instanceof IPartItem) {
                     final IPart testPart = ((IPartItem<?>) newType.getItem()).createPart(newType);
                     if (testPart instanceof P2PTunnelPart) {
-                        this.getHost().removePart(this.getSide(), true);
-                        final AEPartLocation dir = this.getHost().addPart(newType, this.getSide(), player, hand);
-                        final IPart newBus = this.getHost().getPart(dir);
+                        this.getPartHost().removePart(this.getSide(), true);
+                        final AEPartLocation dir = this.getPartHost().addPart(newType, this.getSide(), player, hand);
+                        final IPart newBus = this.getPartHost().getPart(dir);
 
                         if (newBus instanceof P2PTunnelPart) {
                             final P2PTunnelPart<?> newTunnel = (P2PTunnelPart<?>) newBus;
@@ -258,9 +258,9 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                 final boolean oldOutput = this.isOutput();
                 final short myFreq = this.getFrequency();
 
-                this.getHost().removePart(this.getSide(), false);
-                final AEPartLocation dir = this.getHost().addPart(newType, this.getSide(), player, hand);
-                final IPart newBus = this.getHost().getPart(dir);
+                this.getPartHost().removePart(this.getSide(), false);
+                final AEPartLocation dir = this.getPartHost().addPart(newType, this.getSide(), player, hand);
+                final IPart newBus = this.getPartHost().getPart(dir);
 
                 if (newBus instanceof P2PTunnelPart) {
                     final P2PTunnelPart newTunnel = (P2PTunnelPart) newBus;
@@ -362,7 +362,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         final short oldf = this.freq;
         this.freq = freq;
         if (oldf != this.freq) {
-            this.getHost().markForUpdate();
+            this.getPartHost().markForUpdate();
         }
     }
 

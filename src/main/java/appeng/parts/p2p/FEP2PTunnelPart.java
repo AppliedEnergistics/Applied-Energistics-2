@@ -62,7 +62,7 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
 
     @Override
     public void onTunnelNetworkChange() {
-        this.getHost().notifyNeighbors();
+        this.getPartHost().notifyNeighbors();
     }
 
     private IEnergyStorage getAttachedEnergyStorage() {

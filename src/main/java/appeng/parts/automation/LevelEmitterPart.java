@@ -153,8 +153,8 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     private void updateState() {
         final boolean isOn = this.isLevelEmitterOn();
         if (this.prevState != isOn) {
-            this.getHost().markForUpdate();
-            final TileEntity te = this.getHost().getTile();
+            this.getPartHost().markForUpdate();
+            final TileEntity te = this.getPartHost().getTile();
             this.prevState = isOn;
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos().offset(this.getSide().getFacing()));

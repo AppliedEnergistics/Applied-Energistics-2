@@ -65,7 +65,7 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
             this.wasActive = currentActive;
             try {
                 this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
-                this.getHost().markForUpdate();
+                this.getPartHost().markForUpdate();
             } catch (final GridAccessException ignore) {
                 // :P
             }
@@ -111,7 +111,7 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
     @Override
     public void setPriority(final int newValue) {
         this.priority = newValue;
-        this.getHost().markForSave();
+        this.getPartHost().markForSave();
         this.resetCache(true);
     }
 
@@ -130,7 +130,7 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
     @Override
     public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
         this.resetCache(true);
-        this.getHost().markForSave();
+        this.getPartHost().markForSave();
     }
 
     @Override

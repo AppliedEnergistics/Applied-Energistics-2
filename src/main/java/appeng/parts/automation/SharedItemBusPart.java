@@ -71,7 +71,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         this.updateState();
-        if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
+        if (this.lastRedstone != this.getPartHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;
             if (this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE) {
                 this.doBusWork();
@@ -80,7 +80,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     protected InventoryAdaptor getHandler() {
-        final TileEntity self = this.getHost().getTile();
+        final TileEntity self = this.getPartHost().getTile();
         final TileEntity target = this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
 
         return InventoryAdaptor.getAdaptor(target, this.getSide().getFacing().getOpposite());
@@ -124,7 +124,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
      * @return true, if the the bus should do its work.
      */
     protected boolean canDoBusWork() {
-        final TileEntity self = this.getHost().getTile();
+        final TileEntity self = this.getPartHost().getTile();
         final BlockPos selfPos = self.getPos().offset(this.getSide().getFacing());
         final World world = self.getWorld();
 

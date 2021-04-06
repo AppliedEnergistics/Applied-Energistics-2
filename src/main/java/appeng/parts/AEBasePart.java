@@ -101,7 +101,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
                 || this.tile.getWorld().isRemote();
     }
 
-    public IPartHost getHost() {
+    @Override
+    public IPartHost getPartHost() {
         return this.host;
     }
 

@@ -48,6 +48,8 @@ import appeng.api.networking.IGridVisitor;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
@@ -594,7 +596,22 @@ public class GridNode implements IGridNode, IPathItem {
 
         @Override
         public Void call(final World world) throws Exception {
-            this.node.getMachine().securityBreak();
+            IGridHost host = this.node.getMachine();
+            IPartHost partHost = null;
+
+            if (host instanceof IPart) {
+                // Note: may be null during the 1.16 cycle, but should not be after that.
+                partHost = ((IPart) host).getPartHost();
+            }
+
+            host.securityBreak();
+
+            // If this was the last part cleanup the container
+            if (partHost != null) {
+                if (partHost.isEmpty()) {
+                    partHost.cleanup();
+                }
+            }
 
             return null;
         }

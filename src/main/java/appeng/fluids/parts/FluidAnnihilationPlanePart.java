@@ -127,14 +127,14 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     @MENetworkEventSubscribe
     public void chanRender(final MENetworkChannelsChanged c) {
         this.refresh();
-        this.getHost().markForUpdate();
+        this.getPartHost().markForUpdate();
     }
 
     @Override
     @MENetworkEventSubscribe
     public void powerRender(final MENetworkPowerStatusChange c) {
         this.refresh();
-        this.getHost().markForUpdate();
+        this.getPartHost().markForUpdate();
     }
 
     private TickRateModulation pickupFluid() {

@@ -47,7 +47,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 /**
  * The most basic class for any part reporting information, like terminals or monitors. This can also include basic
@@ -91,13 +90,13 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     @MENetworkEventSubscribe
     public final void bootingRender(final MENetworkBootingStatusChange c) {
         if (!this.isLightSource()) {
-            this.getHost().markForUpdate();
+            this.getPartHost().markForUpdate();
         }
     }
 
     @MENetworkEventSubscribe
     public final void powerRender(final MENetworkPowerStatusChange c) {
-        this.getHost().markForUpdate();
+        this.getPartHost().markForUpdate();
     }
 
     @Override
@@ -110,7 +109,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.opacity = -1;
-            this.getHost().markForUpdate();
+            this.getPartHost().markForUpdate();
         }
     }
 
@@ -179,7 +178,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         if (InteractionUtil.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
             if (!isRemote()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
-                this.getHost().markForUpdate();
+                this.getPartHost().markForUpdate();
                 this.saveChanges();
             }
             return true;

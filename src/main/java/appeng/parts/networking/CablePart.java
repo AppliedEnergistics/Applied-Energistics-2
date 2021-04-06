@@ -121,8 +121,8 @@ public class CablePart extends AEBasePart implements ICablePart {
                     return true;
                 }
 
-                this.getHost().removePart(AEPartLocation.INTERNAL, true);
-                this.getHost().addPart(newPart, AEPartLocation.INTERNAL, who, null);
+                this.getPartHost().removePart(AEPartLocation.INTERNAL, true);
+                this.getPartHost().addPart(newPart, AEPartLocation.INTERNAL, who, null);
                 return true;
             }
         }
@@ -140,7 +140,7 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     public void markForUpdate() {
-        this.getHost().markForUpdate();
+        this.getPartHost().markForUpdate();
     }
 
     @Override
@@ -149,7 +149,7 @@ public class CablePart extends AEBasePart implements ICablePart {
 
         bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
 
-        final IPartHost ph = this.getHost();
+        final IPartHost ph = this.getPartHost();
         if (ph != null) {
             for (final AEPartLocation dir : AEPartLocation.SIDE_LOCATIONS) {
                 final IPart p = ph.getPart(dir);
@@ -228,7 +228,7 @@ public class CablePart extends AEBasePart implements ICablePart {
         int[] channelsPerSide = new int[Direction.values().length];
 
         for (Direction thisSide : Direction.values()) {
-            final IPart part = this.getHost().getPart(thisSide);
+            final IPart part = this.getPartHost().getPart(thisSide);
             if (part != null) {
                 writeSide[thisSide.ordinal()] = true;
                 int channels = 0;
@@ -299,7 +299,7 @@ public class CablePart extends AEBasePart implements ICablePart {
                 // This works only because cables are always read *last* from the packet update
                 // for
                 // a cable bus
-                if (conOnSide || this.getHost().getPart(d) != null) {
+                if (conOnSide || this.getPartHost().getPart(d) != null) {
                     ch = (data.readByte()) & 0xFF;
                 }
 

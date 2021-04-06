@@ -165,7 +165,7 @@ public final class PlaneConnectionHelper {
     }
 
     private TileEntity getHostTileEntity() {
-        IPartHost host = part.getHost();
+        IPartHost host = part.getPartHost();
         if (host != null) {
             return host.getTile();
         }

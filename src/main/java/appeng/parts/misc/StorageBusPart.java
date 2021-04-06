@@ -141,7 +141,7 @@ public class StorageBusPart extends UpgradeablePart
             this.wasActive = currentActive;
             try {
                 this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
-                this.getHost().markForUpdate();
+                this.getPartHost().markForUpdate();
             } catch (final GridAccessException e) {
                 // :P
             }
@@ -161,7 +161,7 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
         this.resetCache(true);
-        this.getHost().markForSave();
+        this.getPartHost().markForSave();
     }
 
     @Override
@@ -396,7 +396,7 @@ public class StorageBusPart extends UpgradeablePart
         final boolean wasSleeping = this.monitor == null;
 
         this.cached = true;
-        final TileEntity self = this.getHost().getTile();
+        final TileEntity self = this.getPartHost().getTile();
         final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
         final int newHandlerHash = this.createHandlerHash(target);
 
@@ -521,7 +521,7 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public void setPriority(final int newValue) {
         this.priority = newValue;
-        this.getHost().markForSave();
+        this.getPartHost().markForSave();
         this.resetCache(true);
     }
 

@@ -46,7 +46,6 @@ import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeablePart;
-import appeng.util.Platform;
 
 /**
  * @author BrockWS
@@ -70,7 +69,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         this.updateState();
-        if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
+        if (this.lastRedstone != this.getPartHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;
             if (this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE) {
                 this.doBusWork();
@@ -107,7 +106,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     protected TileEntity getConnectedTE() {
-        TileEntity self = this.getHost().getTile();
+        TileEntity self = this.getPartHost().getTile();
         return this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
     }
 

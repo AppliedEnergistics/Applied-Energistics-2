@@ -65,7 +65,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
     @Override
     public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
         this.updateHandler();
-        this.getHost().markForSave();
+        this.getPartHost().markForSave();
     }
 
     public void stateChanged() {
@@ -73,7 +73,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
             this.updateHandler();
-            this.getHost().markForUpdate();
+            this.getPartHost().markForUpdate();
         }
     }
 
@@ -89,7 +89,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
-            final TileEntity te = this.getHost().getTile();
+            final TileEntity te = this.getPartHost().getTile();
             final AEPartLocation side = this.getSide();
 
             final BlockPos tePos = te.getPos().offset(side.getFacing());
@@ -135,7 +135,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
     @Override
     public void setPriority(final int newValue) {
         this.priority = newValue;
-        this.getHost().markForSave();
+        this.getPartHost().markForSave();
         this.updateHandler();
     }
 

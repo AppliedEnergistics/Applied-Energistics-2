@@ -173,6 +173,11 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
+    public IPartHost getPartHost() {
+        return host;
+    }
+
+    @Override
     public boolean onActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         return false;
     }

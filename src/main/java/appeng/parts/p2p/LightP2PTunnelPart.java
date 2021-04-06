@@ -121,7 +121,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (this.isOutput() && pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.opacity = -1;
-            this.getHost().markForUpdate();
+            this.getPartHost().markForUpdate();
         } else {
             this.doWork();
         }
@@ -138,7 +138,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     private void setLightLevel(final int out) {
         this.lastValue = out;
-        this.getHost().markForUpdate();
+        this.getPartHost().markForUpdate();
     }
 
     private int blockLight(final int emit) {
@@ -174,7 +174,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
             if (src != null && src.getProxy().isActive()) {
                 this.setLightLevel(src.lastValue);
             } else {
-                this.getHost().markForUpdate();
+                this.getPartHost().markForUpdate();
             }
         } else {
             this.doWork();

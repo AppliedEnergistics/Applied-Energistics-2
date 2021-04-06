@@ -129,7 +129,7 @@ public final class ContainerLocator {
     }
 
     public static ContainerLocator forPart(AEBasePart part) {
-        IPartHost host = part.getHost();
+        IPartHost host = part.getPartHost();
         DimensionalCoord pos = host.getLocation();
         return new ContainerLocator(Type.PART, -1, pos.getWorld(), pos.getBlockPos(), part.getSide());
     }

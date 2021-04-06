@@ -208,6 +208,15 @@ public interface IPart extends ICustomCableConnection {
     void setPartHostInfo(AEPartLocation side, IPartHost host, TileEntity tile);
 
     /**
+     * <b>Note: During the 1.16 cycle, the result may be null, do not rely on this information for now.
+     *
+     * @return the part host passed to this part by {@link #setPartHostInfo}.
+     */
+    default IPartHost getPartHost() {
+        return null;
+    }
+
+    /**
      * Called when you right click the part, very similar to Block.onActivateBlock
      *
      * @param player right clicking player

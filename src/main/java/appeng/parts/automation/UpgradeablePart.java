@@ -71,14 +71,14 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
                     return false;
 
                 case HIGH_SIGNAL:
-                    if (this.getHost().hasRedstone(this.getSide())) {
+                    if (this.getPartHost().hasRedstone(this.getSide())) {
                         return false;
                     }
 
                     break;
 
                 case LOW_SIGNAL:
-                    if (!this.getHost().hasRedstone(this.getSide())) {
+                    if (!this.getPartHost().hasRedstone(this.getSide())) {
                         return false;
                     }
 

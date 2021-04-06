@@ -115,11 +115,11 @@ public abstract class DenseCablePart extends CablePart {
 
     @MENetworkEventSubscribe
     public void channelUpdated(final MENetworkChannelsChanged c) {
-        this.getHost().markForUpdate();
+        this.getPartHost().markForUpdate();
     }
 
     @MENetworkEventSubscribe
     public void powerRender(final MENetworkPowerStatusChange c) {
-        this.getHost().markForUpdate();
+        this.getPartHost().markForUpdate();
     }
 }

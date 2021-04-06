@@ -44,12 +44,12 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
 
     @MENetworkEventSubscribe
     public void chanRender(final MENetworkChannelsChanged c) {
-        this.getHost().markForUpdate();
+        this.getPartHost().markForUpdate();
     }
 
     @MENetworkEventSubscribe
     public void powerRender(final MENetworkPowerStatusChange c) {
-        this.getHost().markForUpdate();
+        this.getPartHost().markForUpdate();
     }
 
     @Override
