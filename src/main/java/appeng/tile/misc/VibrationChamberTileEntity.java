@@ -268,7 +268,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
         this.burnTime = burnTime;
     }
 
-    private class FuelSlotFilter implements IAEItemFilter {
+    private static class FuelSlotFilter implements IAEItemFilter {
         @Override
         public boolean allowExtract(IItemHandler inv, int slot, int amount) {
             return ForgeHooks.getBurnTime(inv.getStackInSlot(slot)) == 0;

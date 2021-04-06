@@ -78,6 +78,9 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
         return this.burnSpeed;
     }
 
+    /**
+     * @return A percentage value [0,100] to indicate how much of the current fuel item still remains.
+     */
     public int getRemainingBurnTime() {
         return this.remainingBurnTime;
     }

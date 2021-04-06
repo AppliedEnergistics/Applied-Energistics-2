@@ -19,7 +19,6 @@
 package appeng.client.gui.implementations;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -36,6 +35,10 @@ import appeng.tile.misc.VibrationChamberTileEntity;
 public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContainer> {
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/vibchamber.png").src(0, 0, 176, 166);
+    // "Progress-bar" that indicates the energy generation rate
+    private static final Blitter GENERATION_RATE = BACKGROUND.copy().src(176, 14, 6, 18);
+    // Burn indicator similar to the "flame" in a vanilla furnace
+    private static final Blitter BURN_PROGRESS = BACKGROUND.copy().src(176, 0, 14, 13);
 
     private ProgressBar pb;
 
@@ -48,7 +51,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL);
+        this.pb = new ProgressBar(this.container, this.guiLeft + 99, this.guiTop + 36, GENERATION_RATE, Direction.VERTICAL);
         this.addButton(this.pb);
     }
 
@@ -62,12 +65,18 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
         this.pb.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
                 * this.container.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
 
+        // Show the flame "burning down" as we burn through an item of fuel
         if (this.container.getRemainingBurnTime() > 0) {
-            final int i1 = this.container.getRemainingBurnTime() * 12 / 100;
-            this.bindTexture("guis/vibchamber.png");
-            final int l = -15;
-            final int k = 25;
-            blit(matrices, k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2);
+            int f = this.container.getRemainingBurnTime() * BURN_PROGRESS.getSrcHeight() / 100;
+            BURN_PROGRESS.copy()
+                    .src(
+                            BURN_PROGRESS.getSrcX(),
+                            BURN_PROGRESS.getSrcY() + BURN_PROGRESS.getSrcHeight() - f,
+                            BURN_PROGRESS.getSrcWidth(),
+                            f
+                    )
+                    .dest(80, 20 + BURN_PROGRESS.getSrcHeight() - f)
+                    .blit(matrices, getBlitOffset());
         }
     }
 

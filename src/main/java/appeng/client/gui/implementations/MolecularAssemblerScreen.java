@@ -35,8 +35,8 @@ import appeng.core.localization.GuiText;
 
 public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssemblerContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/molecular_assembler.png")
-            .src(0, 0, 176, 197);
+    private static final Blitter BACKGROUND = Blitter.texture("guis/molecular_assembler.png").src(0, 0, 176, 197);
+    private static final Blitter PROGRESS_BAR = BACKGROUND.copy().src(148, 201, 6, 18);
 
     private ProgressBar pb;
 
@@ -49,8 +49,7 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, "guis/molecular_assembler.png", 148, 48, 148, 201, 6, 18,
-                Direction.VERTICAL);
+        this.pb = new ProgressBar(this.container, this.guiLeft + 148, this.guiTop + 48, PROGRESS_BAR, Direction.VERTICAL);
         this.addButton(this.pb);
     }
 
