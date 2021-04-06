@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -84,7 +82,7 @@ public abstract class AEBaseContainer extends Container {
     private final HashSet<Integer> locked = new HashSet<>();
     private final TileEntity tileEntity;
     private final IPart part;
-    private final IGuiItemObject obj;
+    private final IGuiItemObject guiItem;
     private final HashMap<Integer, SyncData> syncData = new HashMap<>();
     private boolean isContainerValid = true;
     private ContainerLocator locator;
@@ -104,7 +102,7 @@ public abstract class AEBaseContainer extends Container {
         this.invPlayer = ip;
         this.tileEntity = myTile;
         this.part = myPart;
-        this.obj = gio;
+        this.guiItem = gio;
         this.mySrc = new PlayerSource(ip.player, this.getActionHost());
         this.prepareSync();
     }
@@ -114,9 +112,9 @@ public abstract class AEBaseContainer extends Container {
         this.invPlayer = ip;
         this.tileEntity = anchor instanceof TileEntity ? (TileEntity) anchor : null;
         this.part = anchor instanceof IPart ? (IPart) anchor : null;
-        this.obj = anchor instanceof IGuiItemObject ? (IGuiItemObject) anchor : null;
+        this.guiItem = anchor instanceof IGuiItemObject ? (IGuiItemObject) anchor : null;
 
-        if (this.tileEntity == null && this.part == null && this.obj == null) {
+        if (this.tileEntity == null && this.part == null && this.guiItem == null) {
             throw new IllegalArgumentException("Must have a valid anchor, instead " + anchor + " in " + ip);
         }
 
@@ -126,8 +124,8 @@ public abstract class AEBaseContainer extends Container {
     }
 
     protected IActionHost getActionHost() {
-        if (this.obj instanceof IActionHost) {
-            return (IActionHost) this.obj;
+        if (this.guiItem instanceof IActionHost) {
+            return (IActionHost) this.guiItem;
         }
 
         if (this.tileEntity instanceof IActionHost) {
@@ -233,8 +231,8 @@ public abstract class AEBaseContainer extends Container {
         if (this.part != null) {
             return this.part;
         }
-        if (this.obj != null) {
-            return this.obj;
+        if (this.guiItem != null) {
+            return this.guiItem;
         }
         return null;
     }
