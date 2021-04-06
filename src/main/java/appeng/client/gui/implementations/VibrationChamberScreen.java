@@ -51,7 +51,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, this.guiLeft + 99, this.guiTop + 36, GENERATION_RATE, Direction.VERTICAL);
+        this.pb = new ProgressBar(this.container, this.guiLeft + 99, this.guiTop + 36, GENERATION_RATE,
+                Direction.VERTICAL);
         this.addButton(this.pb);
     }
 
@@ -73,8 +74,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
                             BURN_PROGRESS.getSrcX(),
                             BURN_PROGRESS.getSrcY() + BURN_PROGRESS.getSrcHeight() - f,
                             BURN_PROGRESS.getSrcWidth(),
-                            f
-                    )
+                            f)
                     .dest(80, 20 + BURN_PROGRESS.getSrcHeight() - f)
                     .blit(matrices, getBlitOffset());
         }

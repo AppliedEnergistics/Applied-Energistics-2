@@ -32,10 +32,9 @@ import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.WirelessTermContainer;
+import appeng.container.me.items.WirelessTermContainer;
 import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
-import appeng.util.Platform;
 
 public final class WirelessRegistry implements IWirelessTermRegistry {
     private final List<IWirelessTermHandler> handlers;

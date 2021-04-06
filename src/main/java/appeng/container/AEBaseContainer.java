@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -998,6 +1000,31 @@ public abstract class AEBaseContainer extends Container {
                 NetworkHandler.instance().sendTo(packet, (ServerPlayerEntity) c);
             }
         }
+    }
+
+    /**
+     * Ensures that the item stack referenced by a given GUI item object is still in the expected player inventory slot.
+     * If necessary, referential equality is restored by overwriting the item in the player inventory if it is equal to
+     * the expected item.
+     *
+     * @return True if {@link IGuiItemObject#getItemStack()} is still in the expected slot.
+     */
+    protected final boolean ensureGuiItemIsInSlot(IGuiItemObject guiObject, int slot) {
+        ItemStack expectedItem = guiObject.getItemStack();
+
+        ItemStack currentItem = this.getPlayerInv().getStackInSlot(slot);
+        if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
+            if (currentItem == expectedItem) {
+                return true;
+            } else if (ItemStack.areItemsEqual(expectedItem, currentItem)) {
+                // If the items are still equivalent, we just restore referential equality so that modifications
+                // to the GUI item are reflected in the slot
+                this.getPlayerInv().setInventorySlotContents(slot, expectedItem);
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

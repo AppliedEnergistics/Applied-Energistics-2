@@ -24,7 +24,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
@@ -47,7 +46,8 @@ public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, this.guiLeft + 135, this.guiTop + 39, PROGRESS_BAR, Direction.VERTICAL);
+        this.pb = new ProgressBar(this.container, this.guiLeft + 135, this.guiTop + 39, PROGRESS_BAR,
+                Direction.VERTICAL);
         this.addButton(this.pb);
     }
 

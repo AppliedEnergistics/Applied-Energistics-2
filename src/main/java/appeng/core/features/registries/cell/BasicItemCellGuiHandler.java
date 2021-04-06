@@ -31,7 +31,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.MEMonitorableContainer;
+import appeng.container.me.items.MEMonitorableContainer;
 import appeng.core.Api;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {

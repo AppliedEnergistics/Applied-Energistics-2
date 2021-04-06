@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.container.me.items;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -25,6 +25,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Util;
 
 import appeng.container.ContainerLocator;
+import appeng.container.implementations.ContainerHelper;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;

@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.container.me.networktool;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,6 +29,7 @@ import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.RestrictedInputSlot;
 
 public class NetworkToolContainer extends AEBaseContainer {
@@ -58,9 +59,12 @@ public class NetworkToolContainer extends AEBaseContainer {
         this.lockPlayerInventorySlot(ip.currentItem);
 
         for (int y = 0; y < 3; y++) {
+            int slotY = 19 + y * 18;
             for (int x = 0; x < 3; x++) {
+                int slotX = 62 + x * 18;
+                int invSlot = y * 3 + x;
                 this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, te.getInventory(),
-                        y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, this.getPlayerInventory())));
+                        invSlot, slotX, slotY, this.getPlayerInventory())));
             }
         }
 

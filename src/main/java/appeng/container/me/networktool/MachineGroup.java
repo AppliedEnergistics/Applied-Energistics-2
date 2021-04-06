@@ -1,4 +1,4 @@
-package appeng.container.me;
+package appeng.container.me.networktool;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;

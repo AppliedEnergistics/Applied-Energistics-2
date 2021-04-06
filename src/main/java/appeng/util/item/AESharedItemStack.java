@@ -38,7 +38,7 @@ final class AESharedItemStack {
 
     /**
      * A constructor to explicitly set the damage value and not fetch it from the {@link ItemStack}
-     * 
+     *
      * @param itemStack The {@link ItemStack} to filter
      * @param damage    The damage of the item
      */

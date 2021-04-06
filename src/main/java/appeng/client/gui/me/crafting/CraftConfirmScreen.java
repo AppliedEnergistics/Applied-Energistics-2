@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.client.gui.me.crafting;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -41,14 +41,19 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
+import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.widgets.Scrollbar;
-import appeng.container.implementations.CraftConfirmContainer;
+import appeng.container.me.crafting.CraftConfirmContainer;
 import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.util.Platform;
 
+/**
+ * This screen shows the computed crafting plan and allows the player to select a CPU on which it should be scheduled
+ * for crafting.
+ */
 public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/craftingreport.png").src(0, 0, 238, 206);

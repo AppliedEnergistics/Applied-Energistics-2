@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.container.me.crafting;
 
 import javax.annotation.Nonnull;
 
@@ -35,10 +35,14 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
+import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.me.helpers.PlayerSource;
 import appeng.tile.inventory.AppEngInternalInventory;
 
+/**
+ * @see appeng.client.gui.me.crafting.CraftAmountScreen
+ */
 public class CraftAmountContainer extends AEBaseContainer {
 
     public static ContainerType<CraftAmountContainer> TYPE;

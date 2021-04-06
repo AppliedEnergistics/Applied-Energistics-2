@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.container.me.crafting;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -30,7 +30,11 @@ import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.container.implementations.ContainerHelper;
 
+/**
+ * @see appeng.client.gui.me.crafting.CraftingStatusScreen
+ */
 public class CraftingStatusContainer extends CraftingCPUContainer implements CraftingCPUCyclingContainer {
 
     public static ContainerType<CraftingStatusContainer> TYPE;

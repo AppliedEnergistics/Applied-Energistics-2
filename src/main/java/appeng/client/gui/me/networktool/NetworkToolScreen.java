@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.client.gui.me.networktool;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -26,7 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ToggleButton;
-import appeng.container.implementations.NetworkToolContainer;
+import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;

@@ -63,6 +63,7 @@ import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.CraftingTermSlot;
+import appeng.container.slot.DisabledSlot;
 import appeng.container.slot.FakeSlot;
 import appeng.container.slot.IOptionalSlot;
 import appeng.container.slot.PatternTermSlot;
@@ -341,6 +342,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     @Override
     protected void handleMouseClick(@Nullable Slot slot, final int slotIdx, final int mouseButton,
             final ClickType clickType) {
+
+        // Do not allow clicks on disabled player inventory slots
+        if (slot instanceof DisabledSlot) {
+            return;
+        }
+
         if (slot instanceof FakeSlot) {
             final InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                     : InventoryAction.PICKUP_OR_SET_DOWN;

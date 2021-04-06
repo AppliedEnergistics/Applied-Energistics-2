@@ -42,8 +42,11 @@ public class SkyChestContainer extends AEBaseContainer {
         this.chest = chest;
 
         for (int y = 0; y < 4; y++) {
+            int slotY = 24 + 18 * y;
             for (int x = 0; x < 9; x++) {
-                this.addSlot(new NormalSlot(this.chest.getInternalInventory(), y * 9 + x, 8 + 18 * x, 24 + 18 * y));
+                int slotX = 8 + 18 * x;
+                int invSlot = y * 9 + x;
+                this.addSlot(new NormalSlot(this.chest.getInternalInventory(), invSlot, slotX, slotY));
             }
         }
 

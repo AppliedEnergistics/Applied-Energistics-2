@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.fluids.container;
+package appeng.container.me.fluids;
 
 import java.io.IOException;
 import java.nio.BufferOverflowException;

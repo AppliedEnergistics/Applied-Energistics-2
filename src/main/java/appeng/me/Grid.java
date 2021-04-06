@@ -50,7 +50,7 @@ public class Grid implements IGrid {
 
     /**
      * Creates a new grid, sends the necessary events, and registers it to the tickhandler or other objects.
-     * 
+     *
      * @param center the pivot point of the new grid
      * @return
      */

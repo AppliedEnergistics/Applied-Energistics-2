@@ -42,7 +42,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
-import appeng.container.implementations.CraftingTermContainer;
+import appeng.container.me.items.CraftingTermContainer;
 import appeng.core.Api;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.helpers.InventoryAction;

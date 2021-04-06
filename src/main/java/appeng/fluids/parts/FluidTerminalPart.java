@@ -24,8 +24,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
+import appeng.container.me.fluids.FluidTerminalContainer;
 import appeng.core.AppEng;
-import appeng.fluids.container.FluidTerminalContainer;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractTerminalPart;

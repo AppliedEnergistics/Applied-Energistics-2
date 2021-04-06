@@ -49,7 +49,8 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, this.guiLeft + 148, this.guiTop + 48, PROGRESS_BAR, Direction.VERTICAL);
+        this.pb = new ProgressBar(this.container, this.guiLeft + 148, this.guiTop + 48, PROGRESS_BAR,
+                Direction.VERTICAL);
         this.addButton(this.pb);
     }
 

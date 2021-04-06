@@ -16,18 +16,20 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.container.me.items;
+
+import java.util.Objects;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.container.ContainerLocator;
+import appeng.container.implementations.ContainerHelper;
 import appeng.container.interfaces.IInventorySlotAware;
 
 public class MEPortableCellContainer extends MEMonitorableContainer {
@@ -45,11 +47,10 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
         return helper.open(player, locator);
     }
 
-    private double powerMultiplier = 0.5;
-
-    private final IPortableCell civ;
-    private int ticks = 0;
+    private final IPortableCell cell;
     private final int slot;
+    private int ticks = 0;
+    private double powerMultiplier = 0.5;
 
     public MEPortableCellContainer(int id, final PlayerInventory ip, final IPortableCell monitorable) {
         this(TYPE, id, ip, monitorable);
@@ -58,37 +59,28 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
     protected MEPortableCellContainer(ContainerType<? extends MEPortableCellContainer> type, int id,
             final PlayerInventory ip, final IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
+        // Is the screen being opened a specific slot? If not, it must be for the currently held item
         if (monitorable instanceof IInventorySlotAware) {
-            final int slotIndex = ((IInventorySlotAware) monitorable).getInventorySlot();
-            this.lockPlayerInventorySlot(slotIndex);
-            this.slot = slotIndex;
+            this.slot = ((IInventorySlotAware) monitorable).getInventorySlot();
         } else {
-            this.slot = -1;
-            this.lockPlayerInventorySlot(ip.currentItem);
+            this.slot = ip.currentItem;
         }
-        this.civ = monitorable;
+        this.lockPlayerInventorySlot(this.slot);
+        this.cell = Objects.requireNonNull(monitorable);
         this.bindPlayerInventory(ip, 0, 0);
     }
 
     @Override
     public void detectAndSendChanges() {
-        final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem()
-                : this.getPlayerInv().getStackInSlot(this.slot);
-
-        if (this.civ == null || currentItem.isEmpty()) {
+        if (!ensureGuiItemIsInSlot(this.cell, this.slot)) {
             this.setValidContainer(false);
-        } else if (this.civ != null && !this.civ.getItemStack().isEmpty() && currentItem != this.civ.getItemStack()) {
-            if (ItemStack.areItemsEqual(this.civ.getItemStack(), currentItem)) {
-                this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.civ.getItemStack());
-            } else {
-                this.setValidContainer(false);
-            }
+            return;
         }
 
         // drain 1 ae t
         this.ticks++;
         if (this.ticks > 10) {
-            this.civ.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE,
+            this.cell.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE,
                     PowerMultiplier.CONFIG);
             this.ticks = 0;
         }

@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.container.me.items;
 
 import java.io.IOException;
 import java.nio.BufferOverflowException;
@@ -66,6 +66,7 @@ import appeng.api.util.IConfigurableObject;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AELog;
 import appeng.core.Api;

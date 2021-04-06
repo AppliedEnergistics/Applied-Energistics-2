@@ -16,14 +16,13 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.container.me.crafting;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;
@@ -51,9 +50,13 @@ import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.guisync.GuiSync;
+import appeng.container.implementations.ContainerHelper;
+import appeng.container.me.items.CraftingTermContainer;
+import appeng.container.me.items.MEMonitorableContainer;
+import appeng.container.me.items.PatternTermContainer;
+import appeng.container.me.items.WirelessTermContainer;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.helpers.PlayerSource;
@@ -61,6 +64,9 @@ import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.TerminalPart;
 
+/**
+ * @see appeng.client.gui.me.crafting.CraftConfirmScreen
+ */
 public class CraftConfirmContainer extends AEBaseContainer implements CraftingCPUCyclingContainer {
 
     public static ContainerType<CraftConfirmContainer> TYPE;

@@ -37,9 +37,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.gui.implementations.CraftConfirmScreen;
-import appeng.client.gui.implementations.CraftingCPUScreen;
-import appeng.client.gui.me.NetworkStatusScreen;
+import appeng.client.gui.me.crafting.CraftConfirmScreen;
+import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.client.gui.me.items.MEMonitorableScreen;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;

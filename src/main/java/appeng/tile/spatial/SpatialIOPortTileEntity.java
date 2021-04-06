@@ -47,7 +47,6 @@ import appeng.me.cache.SpatialPylonCache;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.IWorldCallable;
-import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;

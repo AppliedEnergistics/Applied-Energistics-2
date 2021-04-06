@@ -25,7 +25,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
-import appeng.container.implementations.CraftingTermContainer;
+import appeng.container.me.items.CraftingTermContainer;
 
 public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermContainer> {
 

@@ -32,10 +32,10 @@ import appeng.api.definitions.IParts;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.ChestContainer;
-import appeng.container.implementations.CraftingTermContainer;
-import appeng.container.implementations.MEMonitorableContainer;
-import appeng.container.implementations.PatternTermContainer;
-import appeng.container.implementations.WirelessTermContainer;
+import appeng.container.me.items.CraftingTermContainer;
+import appeng.container.me.items.MEMonitorableContainer;
+import appeng.container.me.items.PatternTermContainer;
+import appeng.container.me.items.WirelessTermContainer;
 import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
@@ -49,7 +49,7 @@ import appeng.tile.storage.ChestTileEntity;
 /**
  * Utility class for sub-screens of other containers that allow returning to the primary container UI.
  */
-final class AESubScreen {
+public final class AESubScreen {
 
     private final AEBaseScreen<?> gui;
     private final ContainerType<?> previousContainerType;

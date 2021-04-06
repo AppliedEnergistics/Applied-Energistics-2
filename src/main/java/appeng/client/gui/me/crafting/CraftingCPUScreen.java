@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.client.gui.me.crafting;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -46,7 +46,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
-import appeng.container.implementations.CraftingCPUContainer;
+import appeng.container.me.crafting.CraftingCPUContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.localization.GuiText;
@@ -55,6 +55,9 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
 
+/**
+ * This screen shows the current crafting job that a crafting CPU is working on (if any).
+ */
 public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScreen<T> implements ISortSource {
     private static final Blitter BACKGROUND = Blitter.texture("guis/craftingcpu.png").src(0, 0, 238, 184);
 
