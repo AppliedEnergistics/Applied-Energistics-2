@@ -16,14 +16,13 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.tile.crafting;
+package appeng.client.render.crafting;
 
 import java.util.Random;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -38,6 +37,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -47,6 +47,8 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
+import appeng.tile.crafting.AssemblerAnimationStatus;
+import appeng.tile.crafting.MolecularAssemblerTileEntity;
 
 /**
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
@@ -144,14 +146,15 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
      * This class gives us access to the protected RenderState.TRANSLUCENT_TRANSPARENCY field.
      */
     private static class RenderTypeAccess extends RenderType {
-        public RenderTypeAccess(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
+        public RenderTypeAccess(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
+                boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
             super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
         }
 
         /**
          * See above for when this can be removed. It creates a RenderType that is equivalent to
-         * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of the
-         * rendered block model from occluding our particles.
+         * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of
+         * the rendered block model from occluding our particles.
          */
         private static RenderType createRenderType() {
             RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
