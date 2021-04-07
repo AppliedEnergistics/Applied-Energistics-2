@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 
@@ -58,7 +59,10 @@ public interface IGridHost {
     AECableType getCableConnectionType(@Nonnull AEPartLocation dir);
 
     /**
-     * break this host, its violating security rules, just break your block, or part.
+     * Break this host, it's violating security rules, just break your block, or part.
+     *
+     * If it's a part, make sure to check if the host is empty using {@link IPartHost#isEmpty}, and if that's the case
+     * clean it up using {@link IPartHost#cleanup}.
      */
     void securityBreak();
 }
