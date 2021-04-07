@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import appeng.core.sync.packets.CraftConfirmPlanPacket;
+import appeng.core.sync.packets.RequestAutoCraftPacket;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.core.sync.packets.AssemblerAnimationPacket;
@@ -98,7 +100,9 @@ public class BasePacketHandler {
 
         PACKET_TARGET_FLUID(TargetFluidStackPacket.class, TargetFluidStackPacket::new),
 
-        PACKET_CRAFTING_REQUEST(ConfirmAutoCraftPacket.class, ConfirmAutoCraftPacket::new),
+        REQUEST_AUTO_CRAFT(RequestAutoCraftPacket.class, RequestAutoCraftPacket::new),
+
+        CONFIRM_AUTO_CRAFT(ConfirmAutoCraftPacket.class, ConfirmAutoCraftPacket::new),
 
         PACKET_ASSEMBLER_ANIMATION(AssemblerAnimationPacket.class, AssemblerAnimationPacket::new),
 
@@ -108,7 +112,9 @@ public class BasePacketHandler {
 
         PACKET_FLUID_TANK(FluidSlotPacket.class, FluidSlotPacket::new),
 
-        NETWORK_STATUS(NetworkStatusPacket.class, NetworkStatusPacket::new);
+        NETWORK_STATUS(NetworkStatusPacket.class, NetworkStatusPacket::new),
+
+        CRAFT_CONFIRM_PLAN(CraftConfirmPlanPacket.class, CraftConfirmPlanPacket::new);
 
         private final Function<PacketBuffer, BasePacket> factory;
 

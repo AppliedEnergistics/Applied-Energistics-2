@@ -188,7 +188,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
 
         final ReadableNumberConverter converter = ReadableNumberConverter.INSTANCE;
         for (int z = viewStart; z < Math.min(viewEnd, this.visual.size()); z++) {
-            final IAEItemStack refStack = this.visual.get(z);// repo.getReferenceItem( z );
+            final IAEItemStack refStack = this.visual.get(z);
             if (refStack != null) {
                 RenderSystem.pushMatrix();
                 RenderSystem.scalef(0.5f, 0.5f, 0.5f);

@@ -22,6 +22,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+import appeng.core.sync.packets.RequestAutoCraftPacket;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -368,11 +369,9 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
             // Move as many items of a single type as possible
             if (InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
-
                 this.container.setTargetStack(stack);
                 final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, -1, 0);
                 NetworkHandler.instance().sendToServer(p);
-                return;
             } else {
                 InventoryAction action = null;
 
@@ -383,7 +382,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
                         if (stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0
                                 && playerInventory.getItemStack().isEmpty()) {
-                            action = InventoryAction.AUTO_CRAFT;
+                            NetworkHandler.instance().sendToServer(new RequestAutoCraftPacket(stack));
+                            return;
                         }
 
                         break;
@@ -393,7 +393,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
                     case CLONE: // creative dupe:
                         if (stack != null && stack.isCraftable()) {
-                            action = InventoryAction.AUTO_CRAFT;
+                            NetworkHandler.instance().sendToServer(new RequestAutoCraftPacket(stack));
+                            return;
                         } else if (playerInventory.player.abilities.isCreativeMode) {
                             final IAEItemStack slotItem = ((VirtualItemSlot) slot).getAEStack();
                             if (slotItem != null) {
@@ -411,8 +412,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
                     final InventoryActionPacket p = new InventoryActionPacket(action, -1, 0);
                     NetworkHandler.instance().sendToServer(p);
                 }
-                return;
             }
+            return;
         }
 
         super.handleMouseClick(slot, slotIdx, mouseButton, clickType);
