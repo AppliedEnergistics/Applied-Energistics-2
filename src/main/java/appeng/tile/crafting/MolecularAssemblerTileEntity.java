@@ -60,6 +60,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.container.ContainerNull;
 import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;

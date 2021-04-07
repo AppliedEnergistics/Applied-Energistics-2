@@ -47,7 +47,6 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
-import appeng.tile.crafting.AssemblerAnimationStatus;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 
 /**
