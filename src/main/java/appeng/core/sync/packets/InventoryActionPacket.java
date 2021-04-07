@@ -27,9 +27,6 @@ import net.minecraft.network.PacketBuffer;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.me.crafting.CraftAmountContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
@@ -107,26 +104,7 @@ public class InventoryActionPacket extends BasePacket {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
         if (sender.openContainer instanceof AEBaseContainer) {
             final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
-            if (this.action == InventoryAction.AUTO_CRAFT) {
-                final ContainerLocator locator = baseContainer.getLocator();
-                if (locator != null) {
-                    ContainerOpener.openContainer(CraftAmountContainer.TYPE, player, locator);
-
-                    if (sender.openContainer instanceof CraftAmountContainer) {
-                        final CraftAmountContainer cca = (CraftAmountContainer) sender.openContainer;
-
-                        if (baseContainer.getTargetStack() != null) {
-                            cca.getCraftingItem().putStack(baseContainer.getTargetStack().asItemStackRepresentation());
-                            // This is the *actual* item that matters, not the display item above
-                            cca.setItemToCraft(baseContainer.getTargetStack());
-                        }
-
-                        cca.detectAndSendChanges();
-                    }
-                }
-            } else {
-                baseContainer.doAction(sender, this.action, this.slot, this.id);
-            }
+            baseContainer.doAction(sender, this.action, this.slot, this.id);
         }
     }
 

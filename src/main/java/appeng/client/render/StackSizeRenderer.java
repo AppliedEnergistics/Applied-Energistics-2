@@ -76,7 +76,7 @@ public class StackSizeRenderer {
                 * inverseScaleFactor);
         final int Y = (int) ((yPos + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
         IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-        fontRenderer.renderString(text, X, Y, 16777215, true, tm.getMatrix(), buffer, false, 0, 15728880);
+        fontRenderer.renderString(text, X, Y, 0xffffff, true, tm.getMatrix(), buffer, false, 0, 15728880);
         buffer.finish();
         RenderSystem.enableBlend();
     }

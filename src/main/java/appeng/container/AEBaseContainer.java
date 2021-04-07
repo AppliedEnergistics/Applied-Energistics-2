@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import appeng.container.me.crafting.CraftingPlanSummary;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -1024,5 +1025,4 @@ public abstract class AEBaseContainer extends Container {
 
         return false;
     }
-
 }

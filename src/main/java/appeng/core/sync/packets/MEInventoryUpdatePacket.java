@@ -90,10 +90,6 @@ public class MEInventoryUpdatePacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Screen gs = Minecraft.getInstance().currentScreen;
 
-        if (gs instanceof CraftConfirmScreen) {
-            ((CraftConfirmScreen) gs).postUpdate(this.list, this.ref);
-        }
-
         if (gs instanceof CraftingCPUScreen) {
             ((CraftingCPUScreen<?>) gs).postUpdate(this.list, this.ref);
         }

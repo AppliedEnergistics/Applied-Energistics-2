@@ -33,6 +33,7 @@ import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
@@ -197,7 +198,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private static final Style TOOLTIP_HEADER = Style.EMPTY.applyFormatting(TextFormatting.WHITE);
     private static final Style TOOLTIP_BODY = Style.EMPTY.applyFormatting(TextFormatting.GRAY);
 
-    protected void drawTooltip(MatrixStack matrices, int x, int y, List<ITextComponent> lines) {
+    public void drawTooltip(MatrixStack matrices, int x, int y, List<ITextComponent> lines) {
         if (lines.isEmpty()) {
             return;
         }
@@ -502,7 +503,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         getMinecraft().getTextureManager().bindTexture(loc);
     }
 
-    protected void drawItem(final int x, final int y, final ItemStack is) {
+    public void drawItem(final int x, final int y, final ItemStack is) {
         this.itemRenderer.zLevel = 100.0F;
 
         // FIXME I dont think this is needed anymore...

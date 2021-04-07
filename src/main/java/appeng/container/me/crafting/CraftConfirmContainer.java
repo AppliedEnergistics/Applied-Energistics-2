@@ -18,9 +18,9 @@
 
 package appeng.container.me.crafting;
 
-import java.io.IOException;
 import java.util.concurrent.Future;
 
+import appeng.core.sync.packets.CraftConfirmPlanPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -31,7 +31,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -40,12 +39,7 @@ import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
@@ -56,13 +50,13 @@ import appeng.container.me.items.MEMonitorableContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.container.me.items.WirelessTermContainer;
 import appeng.core.AELog;
-import appeng.core.Api;
-import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.TerminalPart;
+
+import javax.annotation.Nullable;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
@@ -88,12 +82,9 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
 
     private Future<ICraftingJob> job;
     private ICraftingJob result;
-    @GuiSync(0)
-    public long bytesUsed;
+
     @GuiSync(3)
     public boolean autoStart = false;
-    @GuiSync(4)
-    public boolean simulation = true;
 
     // Indicates whether any CPUs are available
     @GuiSync(6)
@@ -107,6 +98,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     public int cpuCoProcessors;
     @GuiSync(7)
     public ITextComponent cpuName;
+
+    private CraftingPlanSummary plan;
 
     public CraftConfirmContainer(int id, PlayerInventory ip, ITerminalHost te) {
         super(TYPE, id, ip, te);
@@ -130,80 +123,20 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
 
         super.detectAndSendChanges();
 
-        if (this.getJob() != null && this.getJob().isDone()) {
+        if (this.job != null && this.job.isDone()) {
             try {
-                this.result = this.getJob().get();
+                this.result = this.job.get();
 
                 if (!this.result.isSimulation()) {
-                    this.setSimulation(false);
                     if (this.isAutoStart()) {
                         this.startJob();
                         return;
                     }
-                } else {
-                    this.setSimulation(true);
                 }
 
-                try {
-                    final MEInventoryUpdatePacket a = new MEInventoryUpdatePacket((byte) 0);
-                    final MEInventoryUpdatePacket b = new MEInventoryUpdatePacket((byte) 1);
-                    final MEInventoryUpdatePacket c = this.result.isSimulation() ? new MEInventoryUpdatePacket((byte) 2)
-                            : null;
+                this.plan = CraftingPlanSummary.fromJob(getGrid(), getActionSrc(), this.result);
 
-                    final IItemList<IAEItemStack> plan = Api.instance().storage()
-                            .getStorageChannel(IItemStorageChannel.class).createList();
-                    this.result.populatePlan(plan);
-
-                    this.setUsedBytes(this.result.getByteTotal());
-
-                    for (final IAEItemStack out : plan) {
-
-                        IAEItemStack o = out.copy();
-                        o.reset();
-                        o.setStackSize(out.getStackSize());
-
-                        final IAEItemStack p = out.copy();
-                        p.reset();
-                        p.setStackSize(out.getCountRequestable());
-
-                        final IStorageGrid sg = this.getGrid().getCache(IStorageGrid.class);
-                        final IMEInventory<IAEItemStack> items = sg
-                                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-
-                        IAEItemStack m = null;
-                        if (c != null && this.result.isSimulation()) {
-                            m = o.copy();
-                            o = items.extractItems(o, Actionable.SIMULATE, this.getActionSource());
-
-                            if (o == null) {
-                                o = m.copy();
-                                o.setStackSize(0);
-                            }
-
-                            m.setStackSize(m.getStackSize() - o.getStackSize());
-                        }
-
-                        if (o.getStackSize() > 0) {
-                            a.appendItem(o);
-                        }
-
-                        if (p.getStackSize() > 0) {
-                            b.appendItem(p);
-                        }
-
-                        if (c != null && m != null && m.getStackSize() > 0) {
-                            c.appendItem(m);
-                        }
-                    }
-
-                    sendPacketToClient(a);
-                    sendPacketToClient(b);
-                    if (c != null) {
-                        sendPacketToClient(c);
-                    }
-                } catch (final IOException e) {
-                    // :P
-                }
+                sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (final Throwable e) {
                 this.getPlayerInv().player.sendMessage(new StringTextComponent("Error: " + e.toString()),
                         Util.DUMMY_UUID);
@@ -223,7 +156,10 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     private boolean cpuMatches(final ICraftingCPU c) {
-        return c.getAvailableStorage() >= this.getUsedBytes() && !c.isBusy();
+        if (this.plan == null) {
+            return true;
+        }
+        return c.getAvailableStorage() >= this.plan.getUsedBytes() && !c.isBusy();
     }
 
     public void startJob() {
@@ -246,7 +182,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
             originalGui = PatternTermContainer.TYPE;
         }
 
-        if (this.result != null && !this.isSimulation()) {
+        if (this.result != null && !this.result.isSimulation()) {
             final ICraftingGrid cc = this.getGrid().getCache(ICraftingGrid.class);
             final ICraftingLink g = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
             this.setAutoStart(false);
@@ -263,8 +199,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     @Override
     public void removeListener(final IContainerListener c) {
         super.removeListener(c);
-        if (this.getJob() != null) {
-            this.getJob().cancel(true);
+        if (this.job != null) {
+            this.job.cancel(true);
             this.setJob(null);
         }
     }
@@ -272,8 +208,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     @Override
     public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
         super.onContainerClosed(par1PlayerEntity);
-        if (this.getJob() != null) {
-            this.getJob().cancel(true);
+        if (this.job != null) {
+            this.job.cancel(true);
             this.setJob(null);
         }
     }
@@ -306,14 +242,6 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         this.autoStart = autoStart;
     }
 
-    public long getUsedBytes() {
-        return this.bytesUsed;
-    }
-
-    private void setUsedBytes(final long bytesUsed) {
-        this.bytesUsed = bytesUsed;
-    }
-
     public long getCpuAvailableBytes() {
         return this.cpuBytesAvail;
     }
@@ -330,19 +258,21 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         return this.noCPU;
     }
 
-    public boolean isSimulation() {
-        return this.simulation;
-    }
-
-    private void setSimulation(final boolean simulation) {
-        this.simulation = simulation;
-    }
-
-    private Future<ICraftingJob> getJob() {
-        return this.job;
-    }
-
     public void setJob(final Future<ICraftingJob> job) {
         this.job = job;
     }
+
+    /**
+     * @return The summary of the crafting plan. This is null as long as the plan has not yet finished
+     * computing, or it wasn't synced to the client yet.
+     */
+    @Nullable
+    public CraftingPlanSummary getPlan() {
+        return this.plan;
+    }
+
+    public void setPlan(CraftingPlanSummary plan) {
+        this.plan = plan;
+    }
+
 }
