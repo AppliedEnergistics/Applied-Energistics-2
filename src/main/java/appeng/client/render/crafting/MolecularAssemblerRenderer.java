@@ -90,10 +90,8 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
     private void renderPowerLight(MatrixStack ms, IRenderTypeBuffer bufferIn, int combinedLightIn,
             int combinedOverlayIn) {
-        // Render the translucent light overlay here instead of in the block, because
-        // thanks to the following MC
-        // bug, our particles would otherwise not be visible (because the glass pane
-        // would also render as translucent,
+        // Render the translucent light overlay here instead of in the block, because thanks to the following MC
+        // bug, our particles would otherwise not be visible (because the glass pane would also render as translucent,
         // even the fully transparent part)
         // https://bugs.mojang.com/browse/MC-161917
         // April 2021 update: the overlay is invisible in fabulous mode with the regular TRANSLUCENT render type,
