@@ -148,6 +148,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
         public RenderTypeAccess(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
                 boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
             super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
+            throw new IllegalStateException("This class must not be instantiated");
         }
 
         /**
