@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.tile.crafting;
+package appeng.client.render.crafting;
 
 import java.util.Random;
 
@@ -37,16 +37,17 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
+import appeng.tile.crafting.MolecularAssemblerTileEntity;
 
 /**
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
@@ -56,7 +57,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
     public static final ResourceLocation LIGHTS_MODEL = AppEng.makeId("block/molecular_assembler_lights");
 
-    private static final RenderType MC_161917_RENDERTYPE_FIX = createRenderType();
+    private static final RenderType MC_161917_RENDERTYPE_FIX = RenderTypeAccess.createRenderType();
 
     private final Random particleRandom = new Random();
 
@@ -89,12 +90,12 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
     private void renderPowerLight(MatrixStack ms, IRenderTypeBuffer bufferIn, int combinedLightIn,
             int combinedOverlayIn) {
-        // Render the translucent light overlay here instead of in the block, because
-        // thanks to the following MC
-        // bug, our particles would otherwise not be visible (because the glass pane
-        // would also render as translucent,
+        // Render the translucent light overlay here instead of in the block, because thanks to the following MC
+        // bug, our particles would otherwise not be visible (because the glass pane would also render as translucent,
         // even the fully transparent part)
         // https://bugs.mojang.com/browse/MC-161917
+        // April 2021 update: the overlay is invisible in fabulous mode with the regular TRANSLUCENT render type,
+        // probably due to alpha ordering issues, so we have to stick with this fix.
         Minecraft minecraft = Minecraft.getInstance();
         IBakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
         IVertexBuilder buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
@@ -142,19 +143,32 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
      * See above for when this can be removed. It creates a RenderType that is equivalent to
      * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of the
      * rendered block model from occluding our particles.
+     * <p>
+     * This class gives us access to the protected RenderState.TRANSLUCENT_TRANSPARENCY field.
      */
-    private static RenderType createRenderType() {
-        RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper
-                .getPrivateValue(RenderState.class, null, "field_228515_g_");
-        RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
-                AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
-        RenderState.LightmapState disableLightmap = new RenderState.LightmapState(false);
-        RenderType.State glState = RenderType.State.getBuilder().texture(mipmapBlockAtlasTexture)
-                .transparency(TRANSLUCENT_TRANSPARENCY).alpha(new RenderState.AlphaState(0.05F))
-                .lightmap(disableLightmap).build(true);
+    private static class RenderTypeAccess extends RenderType {
+        public RenderTypeAccess(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
+                boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
+            super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
+            throw new IllegalStateException("This class must not be instantiated");
+        }
 
-        return RenderType.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
-                GL11.GL_QUADS, 256, glState);
+        /**
+         * See above for when this can be removed. It creates a RenderType that is equivalent to
+         * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of
+         * the rendered block model from occluding our particles.
+         */
+        private static RenderType createRenderType() {
+            RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
+                    AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
+            RenderState.LightmapState disableLightmap = new RenderState.LightmapState(false);
+            RenderType.State glState = RenderType.State.getBuilder().texture(mipmapBlockAtlasTexture)
+                    .transparency(RenderState.TRANSLUCENT_TRANSPARENCY).alpha(new RenderState.AlphaState(0.05F))
+                    .lightmap(disableLightmap).build(true);
+
+            return RenderType.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
+                    GL11.GL_QUADS, 256, glState);
+        }
     }
 
 }

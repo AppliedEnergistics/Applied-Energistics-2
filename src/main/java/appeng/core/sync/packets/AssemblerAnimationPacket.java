@@ -28,9 +28,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
+import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.tile.crafting.AssemblerAnimationStatus;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 import appeng.util.item.AEItemStack;
 
