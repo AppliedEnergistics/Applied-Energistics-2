@@ -140,6 +140,10 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
     }
 
     /**
+     * See above for when this can be removed. It creates a RenderType that is equivalent to
+     * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of the
+     * rendered block model from occluding our particles.
+     * <p>
      * This class gives us access to the protected RenderState.TRANSLUCENT_TRANSPARENCY field.
      */
     private static class RenderTypeAccess extends RenderType {
