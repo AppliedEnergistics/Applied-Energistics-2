@@ -1,18 +1,24 @@
-package appeng.util.item;
+package appeng.container.me.common;
 
+import appeng.api.storage.data.IAEStack;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
-import appeng.api.storage.data.IAEStack;
-
+/**
+ * This utility class helps containers that need to send a list of information that is grouped by {@link appeng.api.storage.data.IAEItemStack}
+ * to the client and keep it updated, without having to resend the {@link appeng.api.storage.data.IAEItemStack} everytime.
+ * This can be especially important if the item stack is serialized using it's {@link ItemStack#getShareTag() share tag},
+ * which would not match the server-side stack if it's sent back, or that would group distinct server-side entries
+ * together on the client-side if their share tag was equal.
+ */
 public class IncrementalUpdateHelper<T extends IAEStack<T>> implements Iterable<T> {
 
     /**

@@ -43,7 +43,7 @@ import appeng.core.Api;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.CraftingTileEntity;
-import appeng.util.item.IncrementalUpdateHelper;
+import appeng.container.me.common.IncrementalUpdateHelper;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingCPUScreen
@@ -114,6 +114,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
         if (c instanceof CraftingCPUCluster) {
             this.cpu = (CraftingCPUCluster) c;
 
+            // Initially send all items as a full-update to the client when the CPU changes
             IItemList<IAEItemStack> allItems = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                     .createList();
             this.cpu.getListOfItem(allItems, CraftingItemList.ALL);
