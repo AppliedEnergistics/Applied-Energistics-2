@@ -14,8 +14,11 @@ import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.item.IncrementalUpdateHelper;
 
 /**
- * Describes a currently running crafting job. The update is always treated as incremental in the sense that the packet
- * can be used to update existing {@link CraftingStatusEntry}.
+ * Describes a currently running crafting job. A crafting status can either be a full update which replaces any
+ * previously kept state on the client ({@link #isFullStatus()}, or an incremental update, which uses previously sent
+ * {@link CraftingStatusEntry#getSerial() serials} to update entries on the client that were previously sent. To reduce
+ * the packet size for updates, the {@link CraftingStatusEntry#getItem() display item} for entries that were previously
+ * sent to the client are set to {@link ItemStack#EMPTY}.
  */
 public class CraftingStatus {
 
