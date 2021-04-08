@@ -64,7 +64,7 @@ public class CraftingStatusContainer extends CraftingCPUContainer implements Cra
 
     @Override
     public void detectAndSendChanges() {
-        IGrid network = this.getNetwork();
+        IGrid network = this.getGrid();
         if (isServer() && network != null) {
             cpuCycler.detectAndSendChanges(network);
         }

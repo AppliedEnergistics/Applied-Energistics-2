@@ -18,6 +18,17 @@
 
 package appeng.client.gui.me.crafting;
 
+import java.text.NumberFormat;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.implementations.AESubScreen;
@@ -27,14 +38,6 @@ import appeng.container.me.crafting.CraftingPlanSummary;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
-
-import java.text.NumberFormat;
 
 /**
  * This screen shows the computed crafting plan and allows the player to select a CPU on which it should be scheduled
@@ -45,7 +48,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     private static final Blitter BACKGROUND = Blitter.texture("guis/craftingreport.png").src(0, 0, 238, 206);
 
     private final AESubScreen subGui;
-    private final CraftingPlanTable table;
+    private final CraftConfirmTableRenderer table;
 
     private Button start;
     private Button selectCPU;
@@ -53,7 +56,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     public CraftConfirmScreen(CraftConfirmContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
         this.subGui = new AESubScreen(this, container.getTarget());
-        this.table = new CraftingPlanTable(this, 9, 19);
+        this.table = new CraftConfirmTableRenderer(this, 9, 19);
 
         this.setScrollBar(new Scrollbar());
     }
@@ -111,7 +114,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         String titleSuffix;
         CraftingPlanSummary plan = this.container.getPlan();
         if (plan == null) {
@@ -123,7 +126,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         this.font.drawString(matrixStack, GuiText.CraftingPlan.getLocal() + " - " + titleSuffix, 8, 7, COLOR_DARK_GRAY);
 
         if (plan != null) {
-            this.table.render(matrixStack, mouseX, mouseY, plan, getScrollBar().getCurrentScroll());
+            this.table.render(matrixStack, mouseX, mouseY, plan.getEntries(), getScrollBar().getCurrentScroll());
 
             // Show additional status about the selected CPU
             String cpuStatus;
@@ -132,7 +135,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
             } else {
                 cpuStatus = this.container.getCpuAvailableBytes() > 0
                         ? (GuiText.Bytes.getLocal() + ": " + this.container.getCpuAvailableBytes() + " : "
-                        + GuiText.CoProcessors.getLocal() + ": " + this.container.getCpuCoProcessors())
+                                + GuiText.CoProcessors.getLocal() + ": " + this.container.getCpuCoProcessors())
                         : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
             }
 
@@ -144,7 +147,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY, float partialTicks) {
+            final int mouseY, float partialTicks) {
         this.setScrollBar();
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
     }
@@ -154,7 +157,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         final int size = plan != null ? plan.getEntries().size() : 0;
 
         this.getScrollBar().setTop(19).setLeft(218).setHeight(114);
-        this.getScrollBar().setRange(0, CraftingPlanTable.getScrollableRows(size), 1);
+        this.getScrollBar().setRange(0, AbstractTableRenderer.getScrollableRows(size), 1);
     }
 
     @Override

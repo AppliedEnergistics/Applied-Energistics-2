@@ -1,24 +1,21 @@
 package appeng.client.gui.me.crafting;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.container.me.crafting.CraftingPlanSummary;
-import appeng.container.me.crafting.CraftingPlanSummaryEntry;
-import appeng.core.localization.GuiText;
-import appeng.util.ReadableNumberConverter;
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.client.gui.AEBaseScreen;
 
 /**
- * Renders the crafting job details in a 3x5 Grid
+ * Renders a 3x5 table where each cell displays an item and some text next to it.
  */
-public class CraftingPlanTable {
+public abstract class AbstractTableRenderer<T> {
 
     private static final int WIDTH = 203;
     private static final int HEIGHT = 137;
@@ -37,13 +34,13 @@ public class CraftingPlanTable {
     private static final float TEXT_SCALE = 0.5f;
     private static final float INV_TEXT_SCALE = 2.0f;
 
-    private final AEBaseScreen<?> screen;
+    protected final AEBaseScreen<?> screen;
     private final FontRenderer fontRenderer;
     private final float lineHeight;
     private final int x;
     private final int y;
 
-    public CraftingPlanTable(AEBaseScreen<?> screen, int x, int y) {
+    public AbstractTableRenderer(AEBaseScreen<?> screen, int x, int y) {
         this.screen = screen;
         this.x = x;
         this.y = y;
@@ -51,9 +48,7 @@ public class CraftingPlanTable {
         this.lineHeight = this.fontRenderer.FONT_HEIGHT * TEXT_SCALE;
     }
 
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, CraftingPlanSummary plan, int scrollOffset) {
-        List<CraftingPlanSummaryEntry> entries = plan.getEntries();
-
+    public final void render(MatrixStack matrixStack, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
         mouseX -= screen.getGuiLeft();
         mouseY -= screen.getGuiTop();
 
@@ -68,30 +63,17 @@ public class CraftingPlanTable {
                     break;
                 }
 
-                CraftingPlanSummaryEntry entry = entries.get(i);
+                T entry = entries.get(i);
 
                 int cellX = x + col * (CELL_WIDTH + CELL_BORDER);
                 int cellY = y + row * (CELL_HEIGHT + CELL_BORDER);
 
-                List<String> lines = new ArrayList<>(3);
-
-                if (entry.getStoredAmount() > 0) {
-                    String str = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getStoredAmount());
-                    str = GuiText.FromStorage.getLocal() + ": " + str;
-                    lines.add(str);
+                int background = getEntryBackgroundColor(entry);
+                if (background != 0) {
+                    AbstractGui.fill(matrixStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, background);
                 }
 
-                if (entry.getMissingAmount() > 0) {
-                    String str = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getMissingAmount());
-                    str = GuiText.Missing.text().getString() + ": " + str;
-                    lines.add(str);
-                }
-
-                if (entry.getCraftAmount() > 0) {
-                    String str = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getCraftAmount());
-                    str = GuiText.ToCraft.getLocal() + ": " + str;
-                    lines.add(str);
-                }
+                List<String> lines = getEntryDescription(entry);
 
                 float textHeight = lines.size() * lineHeight;
                 if (lines.size() > 1) {
@@ -114,18 +96,19 @@ public class CraftingPlanTable {
                 }
                 matrixStack.pop();
 
-                final ItemStack is = entry.getItem();
+                ItemStack is = getEntryItem(entry);
 
                 int itemY = cellY + (CELL_HEIGHT - 16) / 2;
                 screen.drawItem(itemX, itemY, is);
 
-                if (entry.getMissingAmount() > 0) {
-                    AbstractGui.fill(matrixStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, 0x1AFF0000);
+                int overlay = getEntryOverlayColor(entry);
+                if (overlay != 0) {
+                    AbstractGui.fill(matrixStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, overlay);
                 }
 
                 if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH) {
                     if (mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT) {
-                        tooltipLines = getTooltipLines(entry);
+                        tooltipLines = getEntryTooltip(entry);
                         tooltipX = cellX + CELL_WIDTH - 8;
                         tooltipY = itemY + 8;
                     }
@@ -138,22 +121,6 @@ public class CraftingPlanTable {
         }
     }
 
-    private List<ITextComponent> getTooltipLines(CraftingPlanSummaryEntry entry) {
-        List<ITextComponent> lines = new ArrayList<>(screen.getTooltipFromItem(entry.getItem()));
-
-        if (entry.getStoredAmount() > 0) {
-            lines.add(GuiText.FromStorage.withSuffix(": " + entry.getStoredAmount()));
-        }
-        if (entry.getMissingAmount() > 0) {
-            lines.add(GuiText.Missing.withSuffix(": " + entry.getMissingAmount()));
-        }
-        if (entry.getCraftAmount() > 0) {
-            lines.add(GuiText.ToCraft.withSuffix(": " + entry.getCraftAmount()));
-        }
-
-        return lines;
-    }
-
     /**
      * @return The number of rows that are off-screen given a number of entries.
      */
@@ -161,5 +128,33 @@ public class CraftingPlanTable {
         return (size + COLS - 1) / COLS - ROWS;
     }
 
-}
+    /**
+     * Implement in subclass to determine the text to show next to an entry.
+     */
+    protected abstract List<String> getEntryDescription(T entry);
 
+    /**
+     * Get the item to show for an entry.
+     */
+    protected abstract ItemStack getEntryItem(T entry);
+
+    /**
+     * Get the tooltip lines to show for an entry.
+     */
+    protected abstract List<ITextComponent> getEntryTooltip(T entry);
+
+    /**
+     * Override and return a color to draw a colored rectangle behind an entry. Return 0 to not draw a rectangle.
+     */
+    protected int getEntryBackgroundColor(T entry) {
+        return 0;
+    }
+
+    /**
+     * Override and return a color to draw a colored rectangle above an entry. Return 0 to not draw a rectangle.
+     */
+    protected int getEntryOverlayColor(T entry) {
+        return 0;
+    }
+
+}

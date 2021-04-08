@@ -19,54 +19,35 @@
 package appeng.client.gui.me.crafting;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Joiner;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
-import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.container.me.crafting.CraftingCPUContainer;
-import appeng.core.AEConfig;
-import appeng.core.Api;
+import appeng.container.me.crafting.CraftingStatus;
+import appeng.container.me.crafting.CraftingStatusEntry;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.util.Platform;
-import appeng.util.ReadableNumberConverter;
 
 /**
  * This screen shows the current crafting job that a crafting CPU is working on (if any).
  */
-public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScreen<T> implements ISortSource {
+public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScreen<T> {
     private static final Blitter BACKGROUND = Blitter.texture("guis/craftingcpu.png").src(0, 0, 238, 184);
-
-    private static final int DISPLAYED_ROWS = 6;
-
-    private static final int TEXT_COLOR = 0x404040;
-    private static final int BACKGROUND_ALPHA = 0x5A000000;
-
-    private static final int SECTION_LENGTH = 67;
 
     private static final int SCROLLBAR_TOP = 19;
     private static final int SCROLLBAR_LEFT = 218;
@@ -80,32 +61,19 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     private static final int TITLE_TOP_OFFSET = 7;
     private static final int TITLE_LEFT_OFFSET = 8;
 
-    private static final int ITEMSTACK_LEFT_OFFSET = 9;
-    private static final int ITEMSTACK_TOP_OFFSET = 22;
+    private final CraftingStatusTableRenderer table;
 
-    private IItemList<IAEItemStack> storage = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
-            .createList();
-    private IItemList<IAEItemStack> active = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
-            .createList();
-    private IItemList<IAEItemStack> pending = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
-            .createList();
-
-    private List<IAEItemStack> visual = new ArrayList<>();
     private Button cancel;
-    private int tooltip = -1;
+
+    private CraftingStatus status;
 
     public CraftingCPUScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
 
+        this.table = new CraftingStatusTableRenderer(this, 9, 19);
+
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
-    }
-
-    public void clearItems() {
-        this.storage = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-        this.active = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-        this.pending = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-        this.visual = new ArrayList<>();
     }
 
     private void cancel() {
@@ -122,39 +90,19 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     }
 
     private void setScrollBar() {
-        final int size = this.visual.size();
+        final int size = this.status != null ? this.status.getEntries().size() : 0;
 
         this.getScrollBar().setTop(SCROLLBAR_TOP).setLeft(SCROLLBAR_LEFT).setHeight(SCROLLBAR_HEIGHT);
-        this.getScrollBar().setRange(0, (size + 2) / 3 - DISPLAYED_ROWS, 1);
+        this.getScrollBar().setRange(0, CraftingStatusTableRenderer.getScrollableRows(size), 1);
+    }
+
+    private List<CraftingStatusEntry> getVisualEntries() {
+        return this.status != null ? status.getEntries() : Collections.emptyList();
     }
 
     @Override
     public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
-        this.cancel.active = !this.visual.isEmpty();
-
-        this.tooltip = -1;
-
-        final int offY = 23;
-        int y = 0;
-        int x = 0;
-        for (int z = 0; z <= 4 * 5; z++) {
-            final int minX = guiLeft + 9 + x * 67;
-            final int minY = guiTop + 22 + y * offY;
-
-            if (minX < mouseX && minX + 67 > mouseX) {
-                if (minY < mouseY && minY + offY - 2 > mouseY) {
-                    this.tooltip = z;
-                    break;
-                }
-            }
-
-            x++;
-
-            if (x > 2) {
-                y++;
-                x = 0;
-            }
-        }
+        this.cancel.active = !getVisualEntries().isEmpty();
 
         super.render(matrixStack, mouseX, mouseY, btn);
     }
@@ -164,260 +112,62 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
             final int mouseY) {
         String title = this.getGuiDisplayName(GuiText.CraftingStatus.text()).getString();
 
-        if (this.container.getEstimatedTime() > 0 && !this.visual.isEmpty()) {
-            final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(this.container.getEstimatedTime(),
-                    TimeUnit.NANOSECONDS);
+        if (status == null) {
+            return;
+        }
+
+        this.table.render(matrixStack, mouseX, mouseY, status.getEntries(), getScrollBar().getCurrentScroll());
+
+        final long elapsedTime = status.getElapsedTime();
+        final double remainingItems = status.getRemainingItemCount();
+        final double startItems = status.getStartItemCount();
+        final long eta = (long) (elapsedTime / Math.max(1d, (startItems - remainingItems))
+                * remainingItems);
+
+        if (eta > 0 && !getVisualEntries().isEmpty()) {
+            final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(eta, TimeUnit.NANOSECONDS);
             final String etaTimeText = DurationFormatUtils.formatDuration(etaInMilliseconds,
                     GuiText.ETAFormat.getLocal());
             title += " - " + etaTimeText;
         }
 
-        this.font.drawString(matrixStack, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR);
+        this.font.drawString(matrixStack, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, COLOR_DARK_GRAY);
 
-        int x = 0;
-        int y = 0;
-        final int viewStart = this.getScrollBar().getCurrentScroll() * 3;
-        final int viewEnd = viewStart + 3 * 6;
-
-        String dspToolTip = "";
-        final List<String> lineList = new ArrayList<>();
-        int toolPosX = 0;
-        int toolPosY = 0;
-
-        final int offY = 23;
-
-        final ReadableNumberConverter converter = ReadableNumberConverter.INSTANCE;
-        for (int z = viewStart; z < Math.min(viewEnd, this.visual.size()); z++) {
-            final IAEItemStack refStack = this.visual.get(z);
-            if (refStack != null) {
-                RenderSystem.pushMatrix();
-                RenderSystem.scalef(0.5f, 0.5f, 0.5f);
-
-                final IAEItemStack stored = this.storage.findPrecise(refStack);
-                final IAEItemStack activeStack = this.active.findPrecise(refStack);
-                final IAEItemStack pendingStack = this.pending.findPrecise(refStack);
-
-                int lines = 0;
-
-                if (stored != null && stored.getStackSize() > 0) {
-                    lines++;
-                }
-                boolean active = false;
-                if (activeStack != null && activeStack.getStackSize() > 0) {
-                    lines++;
-                    active = true;
-                }
-                boolean scheduled = false;
-                if (pendingStack != null && pendingStack.getStackSize() > 0) {
-                    lines++;
-                    scheduled = true;
-                }
-
-                if (AEConfig.instance().isUseColoredCraftingStatus() && (active || scheduled)) {
-                    final int bgColor = (active ? AEColor.GREEN.blackVariant : AEColor.YELLOW.blackVariant)
-                            | BACKGROUND_ALPHA;
-                    final int startX = (x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET) * 2;
-                    final int startY = ((y * offY + ITEMSTACK_TOP_OFFSET) - 3) * 2;
-                    fill(matrixStack, startX, startY, startX + (SECTION_LENGTH * 2), startY + (offY * 2) - 2, bgColor);
-                }
-
-                final int negY = ((lines - 1) * 5) / 2;
-                int downY = 0;
-
-                if (stored != null && stored.getStackSize() > 0) {
-                    final String str = GuiText.Stored.getLocal() + ": "
-                            + converter.toWideReadableForm(stored.getStackSize());
-                    final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(matrixStack, str,
-                            (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
-                                    * 2),
-                            (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
-
-                    if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.Stored.getLocal() + ": " + Long.toString(stored.getStackSize()));
-                    }
-
-                    downY += 5;
-                }
-
-                if (activeStack != null && activeStack.getStackSize() > 0) {
-                    final String str = GuiText.Crafting.getLocal() + ": "
-                            + converter.toWideReadableForm(activeStack.getStackSize());
-                    final int w = 4 + this.font.getStringWidth(str);
-
-                    this.font.drawString(matrixStack, str,
-                            (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
-                                    * 2),
-                            (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
-
-                    if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.Crafting.getLocal() + ": " + Long.toString(activeStack.getStackSize()));
-                    }
-
-                    downY += 5;
-                }
-
-                if (pendingStack != null && pendingStack.getStackSize() > 0) {
-                    final String str = GuiText.Scheduled.getLocal() + ": "
-                            + converter.toWideReadableForm(pendingStack.getStackSize());
-                    final int w = 4 + this.font.getStringWidth(str);
-
-                    this.font.drawString(matrixStack, str,
-                            (int) ((x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - (w * 0.5))
-                                    * 2),
-                            (y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY) * 2, TEXT_COLOR);
-
-                    if (this.tooltip == z - viewStart) {
-                        lineList.add(GuiText.Scheduled.getLocal() + ": " + Long.toString(pendingStack.getStackSize()));
-                    }
-                }
-
-                RenderSystem.popMatrix();
-                final int posX = x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19;
-                final int posY = y * offY + ITEMSTACK_TOP_OFFSET;
-
-                final ItemStack is = refStack.asItemStackRepresentation();
-
-                if (this.tooltip == z - viewStart) {
-                    dspToolTip = Platform.getItemDisplayName(refStack).getString();
-
-                    if (lineList.size() > 0) {
-                        dspToolTip = dspToolTip + '\n' + Joiner.on("\n").join(lineList);
-                    }
-
-                    toolPosX = x * (1 + SECTION_LENGTH) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 8;
-                    toolPosY = y * offY + ITEMSTACK_TOP_OFFSET;
-                }
-
-                this.drawItem(posX, posY, is);
-
-                x++;
-
-                if (x > 2) {
-                    y++;
-                    x = 0;
-                }
-            }
-        }
-
-        if (this.tooltip >= 0 && !dspToolTip.isEmpty()) {
-            this.drawTooltip(matrixStack, toolPosX, toolPosY + 10, new StringTextComponent(dspToolTip));
-        }
     }
 
-    public void postUpdate(final List<IAEItemStack> list, final byte ref) {
-        switch (ref) {
-            case 0:
-                for (final IAEItemStack l : list) {
-                    this.handleInput(this.storage, l);
-                }
-                break;
-
-            case 1:
-                for (final IAEItemStack l : list) {
-                    this.handleInput(this.active, l);
-                }
-                break;
-
-            case 2:
-                for (final IAEItemStack l : list) {
-                    this.handleInput(this.pending, l);
-                }
-                break;
-        }
-
-        for (final IAEItemStack l : list) {
-            final long amt = this.getTotal(l);
-
-            if (amt <= 0) {
-                this.deleteVisualStack(l);
-            } else {
-                final IAEItemStack is = this.findVisualStack(l);
-                is.setStackSize(amt);
+    public void postUpdate(CraftingStatus status) {
+        if (this.status == null || status.isFullStatus()) {
+            this.status = status;
+        } else {
+            Map<Long, CraftingStatusEntry> entries = new LinkedHashMap<>(this.status.getEntries().size());
+            for (CraftingStatusEntry entry : this.status.getEntries()) {
+                entries.put(entry.getSerial(), entry);
             }
+
+            for (CraftingStatusEntry entry : status.getEntries()) {
+                CraftingStatusEntry existingEntry = entries.get(entry.getSerial());
+                if (existingEntry != null) {
+                    entries.put(entry.getSerial(), new CraftingStatusEntry(
+                            existingEntry.getSerial(),
+                            existingEntry.getItem(),
+                            entry.getStoredAmount(),
+                            entry.getActiveAmount(),
+                            entry.getPendingAmount()));
+                } else {
+                    entries.put(entry.getSerial(), entry);
+                }
+            }
+
+            List<CraftingStatusEntry> sortedEntries = new ArrayList<>(entries.values());
+            this.status = new CraftingStatus(
+                    true,
+                    status.getElapsedTime(),
+                    status.getRemainingItemCount(),
+                    status.getStartItemCount(),
+                    sortedEntries);
         }
 
         this.setScrollBar();
     }
 
-    private void handleInput(final IItemList<IAEItemStack> s, final IAEItemStack l) {
-        IAEItemStack a = s.findPrecise(l);
-
-        if (l.getStackSize() <= 0) {
-            if (a != null) {
-                a.reset();
-            }
-        } else {
-            if (a == null) {
-                s.add(l.copy());
-                a = s.findPrecise(l);
-            }
-
-            if (a != null) {
-                a.setStackSize(l.getStackSize());
-            }
-        }
-    }
-
-    private long getTotal(final IAEItemStack is) {
-        final IAEItemStack a = this.storage.findPrecise(is);
-        final IAEItemStack b = this.active.findPrecise(is);
-        final IAEItemStack c = this.pending.findPrecise(is);
-
-        long total = 0;
-
-        if (a != null) {
-            total += a.getStackSize();
-        }
-
-        if (b != null) {
-            total += b.getStackSize();
-        }
-
-        if (c != null) {
-            total += c.getStackSize();
-        }
-
-        return total;
-    }
-
-    private void deleteVisualStack(final IAEItemStack l) {
-        final Iterator<IAEItemStack> i = this.visual.iterator();
-
-        while (i.hasNext()) {
-            final IAEItemStack o = i.next();
-            if (o.equals(l)) {
-                i.remove();
-                return;
-            }
-        }
-    }
-
-    private IAEItemStack findVisualStack(final IAEItemStack l) {
-        for (final IAEItemStack o : this.visual) {
-            if (o.equals(l)) {
-                return o;
-            }
-        }
-
-        final IAEItemStack stack = l.copy();
-        this.visual.add(stack);
-
-        return stack;
-    }
-
-    @Override
-    public SortOrder getSortBy() {
-        return SortOrder.NAME;
-    }
-
-    @Override
-    public SortDir getSortDir() {
-        return SortDir.ASCENDING;
-    }
-
-    @Override
-    public ViewItems getSortDisplay() {
-        return ViewItems.ALL;
-    }
 }

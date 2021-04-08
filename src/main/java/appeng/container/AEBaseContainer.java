@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import appeng.container.me.crafting.CraftingPlanSummary;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -55,6 +54,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.me.items.VirtualItemSlot;
 import appeng.container.guisync.GuiSync;
 import appeng.container.guisync.SyncData;
+import appeng.container.me.crafting.CraftingPlanSummary;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.CraftingMatrixSlot;
 import appeng.container.slot.CraftingTermSlot;
