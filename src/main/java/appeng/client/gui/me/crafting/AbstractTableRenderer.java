@@ -73,23 +73,23 @@ public abstract class AbstractTableRenderer<T> {
                     AbstractGui.fill(matrixStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, background);
                 }
 
-                List<String> lines = getEntryDescription(entry);
+                List<ITextComponent> lines = getEntryDescription(entry);
 
+                // Compute the full height of the text block to center it vertically
                 float textHeight = lines.size() * lineHeight;
                 if (lines.size() > 1) {
                     textHeight += (lines.size() - 1) * LINE_SPACING;
                 }
-
-                int rightEdge = cellX + CELL_WIDTH;
-                // Center text vertically
-                int itemX = rightEdge - 19;
                 float textY = Math.round(cellY + (CELL_HEIGHT - textHeight) / 2.0f);
+
+                // Position the item at the right side of the cell with a 3px margin
+                int itemX = cellX + CELL_WIDTH - 19;
 
                 matrixStack.push();
                 matrixStack.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
-                for (String line : lines) {
-                    final int w = fontRenderer.getStringWidth(line);
-                    fontRenderer.drawString(matrixStack, line,
+                for (ITextComponent line : lines) {
+                    final int w = fontRenderer.getStringPropertyWidth(line);
+                    fontRenderer.func_243248_b(matrixStack, line,
                             (int) ((itemX - 2 - (w * TEXT_SCALE)) * INV_TEXT_SCALE),
                             textY * INV_TEXT_SCALE, AEBaseScreen.COLOR_DARK_GRAY);
                     textY += lineHeight + LINE_SPACING;
@@ -131,7 +131,7 @@ public abstract class AbstractTableRenderer<T> {
     /**
      * Implement in subclass to determine the text to show next to an entry.
      */
-    protected abstract List<String> getEntryDescription(T entry);
+    protected abstract List<ITextComponent> getEntryDescription(T entry);
 
     /**
      * Get the item to show for an entry.

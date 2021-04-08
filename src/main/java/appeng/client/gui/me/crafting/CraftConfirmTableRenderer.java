@@ -18,24 +18,21 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
     }
 
     @Override
-    protected List<String> getEntryDescription(CraftingPlanSummaryEntry entry) {
-        List<String> lines = new ArrayList<>(3);
+    protected List<ITextComponent> getEntryDescription(CraftingPlanSummaryEntry entry) {
+        List<ITextComponent> lines = new ArrayList<>(3);
         if (entry.getStoredAmount() > 0) {
-            String str = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getStoredAmount());
-            str = GuiText.FromStorage.getLocal() + ": " + str;
-            lines.add(str);
+            String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getStoredAmount());
+            lines.add(GuiText.FromStorage.text(amount));
         }
 
         if (entry.getMissingAmount() > 0) {
-            String str = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getMissingAmount());
-            str = GuiText.Missing.text().getString() + ": " + str;
-            lines.add(str);
+            String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getMissingAmount());
+            lines.add(GuiText.Missing.text(amount));
         }
 
         if (entry.getCraftAmount() > 0) {
-            String str = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getCraftAmount());
-            str = GuiText.ToCraft.getLocal() + ": " + str;
-            lines.add(str);
+            String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getCraftAmount());
+            lines.add(GuiText.ToCraft.text(amount));
         }
         return lines;
     }
@@ -49,14 +46,15 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
     protected List<ITextComponent> getEntryTooltip(CraftingPlanSummaryEntry entry) {
         List<ITextComponent> lines = new ArrayList<>(screen.getTooltipFromItem(entry.getItem()));
 
+        // The tooltip compares the unabbreviated amounts
         if (entry.getStoredAmount() > 0) {
-            lines.add(GuiText.FromStorage.withSuffix(": " + entry.getStoredAmount()));
+            lines.add(GuiText.FromStorage.text(entry.getStoredAmount()));
         }
         if (entry.getMissingAmount() > 0) {
-            lines.add(GuiText.Missing.withSuffix(": " + entry.getMissingAmount()));
+            lines.add(GuiText.Missing.text(entry.getMissingAmount()));
         }
         if (entry.getCraftAmount() > 0) {
-            lines.add(GuiText.ToCraft.withSuffix(": " + entry.getCraftAmount()));
+            lines.add(GuiText.ToCraft.text(entry.getCraftAmount()));
         }
 
         return lines;

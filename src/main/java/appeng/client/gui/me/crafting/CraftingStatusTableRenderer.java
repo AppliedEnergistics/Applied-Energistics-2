@@ -1,17 +1,16 @@
 package appeng.client.gui.me.crafting;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.container.me.crafting.CraftingStatusEntry;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.ReadableNumberConverter;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingStatusEntry> {
 
@@ -22,24 +21,21 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
     }
 
     @Override
-    protected List<String> getEntryDescription(CraftingStatusEntry entry) {
-        List<String> lines = new ArrayList<>(3);
+    protected List<ITextComponent> getEntryDescription(CraftingStatusEntry entry) {
+        List<ITextComponent> lines = new ArrayList<>(3);
         if (entry.getStoredAmount() > 0) {
-            String str = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getStoredAmount());
-            str = GuiText.FromStorage.getLocal() + ": " + str;
-            lines.add(str);
+            String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getStoredAmount());
+            lines.add(GuiText.FromStorage.text(amount));
         }
 
         if (entry.getActiveAmount() > 0) {
-            String str = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getActiveAmount());
-            str = GuiText.Crafting.text().getString() + ": " + str;
-            lines.add(str);
+            String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getActiveAmount());
+            lines.add(GuiText.Crafting.text(amount));
         }
 
         if (entry.getPendingAmount() > 0) {
-            String str = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getPendingAmount());
-            str = GuiText.Scheduled.getLocal() + ": " + str;
-            lines.add(str);
+            String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getPendingAmount());
+            lines.add(GuiText.Scheduled.text(amount));
         }
         return lines;
     }
@@ -53,14 +49,15 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
     protected List<ITextComponent> getEntryTooltip(CraftingStatusEntry entry) {
         List<ITextComponent> lines = new ArrayList<>(screen.getTooltipFromItem(entry.getItem()));
 
+        // The tooltip compares the unabbreviated amounts
         if (entry.getStoredAmount() > 0) {
-            lines.add(GuiText.FromStorage.withSuffix(": " + entry.getStoredAmount()));
+            lines.add(GuiText.FromStorage.text(entry.getStoredAmount()));
         }
         if (entry.getActiveAmount() > 0) {
-            lines.add(GuiText.Crafting.withSuffix(": " + entry.getActiveAmount()));
+            lines.add(GuiText.Crafting.text(entry.getActiveAmount()));
         }
         if (entry.getPendingAmount() > 0) {
-            lines.add(GuiText.Scheduled.withSuffix(": " + entry.getPendingAmount()));
+            lines.add(GuiText.Scheduled.text(entry.getPendingAmount()));
         }
 
         return lines;
