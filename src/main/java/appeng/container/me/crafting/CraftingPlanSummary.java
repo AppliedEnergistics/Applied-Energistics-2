@@ -1,5 +1,11 @@
 package appeng.container.me.crafting;
 
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.network.PacketBuffer;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingJob;
@@ -10,10 +16,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.network.PacketBuffer;
-
-import java.util.List;
 
 /**
  * A crafting plan intended to be sent to the client.
@@ -77,7 +79,8 @@ public class CraftingPlanSummary {
 
     /**
      * Creates a plan summary from the given planning result.
-     * @param grid The grid used to determine the amount of items already stored.
+     * 
+     * @param grid         The grid used to determine the amount of items already stored.
      * @param actionSource The action source used to determine the amount of items already stored.
      */
     public static CraftingPlanSummary fromJob(IGrid grid, IActionSource actionSource, ICraftingJob job) {
@@ -109,8 +112,7 @@ public class CraftingPlanSummary {
                     out.asItemStackRepresentation(),
                     missingAmount,
                     storedAmount,
-                    craftAmount
-            ));
+                    craftAmount));
 
         }
 

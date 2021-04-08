@@ -191,11 +191,6 @@ public class ConfigValuePacket extends BasePacket {
 
         if (this.Name.startsWith("SyncDat.")) {
             ((AEBaseContainer) c).stringSync(Integer.parseInt(this.Name.substring(8)), this.Value);
-        } else if (this.Name.equals("CraftingStatus") && this.Value.equals("Clear")) {
-            final Screen gs = Minecraft.getInstance().currentScreen;
-            if (gs instanceof CraftingCPUScreen) {
-                ((CraftingCPUScreen<?>) gs).clearItems();
-            }
         } else if (c instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
 

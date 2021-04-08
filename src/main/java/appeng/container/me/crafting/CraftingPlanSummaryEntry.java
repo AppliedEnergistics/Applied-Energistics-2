@@ -4,8 +4,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 /**
- * Describes an entry in the crafting plan which describes how many items of one type are missing, already stored in
- * the network, or have to be crafted.
+ * Describes an entry in the crafting plan which describes how many items of one type are missing, already stored in the
+ * network, or have to be crafted.
  */
 public class CraftingPlanSummaryEntry {
     private final ItemStack item;

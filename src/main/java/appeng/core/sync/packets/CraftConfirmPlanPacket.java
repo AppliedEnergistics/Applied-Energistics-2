@@ -1,15 +1,18 @@
 package appeng.core.sync.packets;
 
+import io.netty.buffer.Unpooled;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
+
 import appeng.container.me.crafting.CraftConfirmContainer;
 import appeng.container.me.crafting.CraftingPlanSummary;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import io.netty.buffer.Unpooled;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
 
 /**
- * Transfers a {@link CraftingPlanSummary} to the client for a {@link appeng.container.me.crafting.CraftConfirmContainer}
+ * Transfers a {@link CraftingPlanSummary} to the client for a
+ * {@link appeng.container.me.crafting.CraftConfirmContainer}
  */
 public class CraftConfirmPlanPacket extends BasePacket {
     private final CraftingPlanSummary plan;

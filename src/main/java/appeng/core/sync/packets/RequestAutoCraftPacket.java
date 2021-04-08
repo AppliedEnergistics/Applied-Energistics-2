@@ -1,5 +1,11 @@
 package appeng.core.sync.packets;
 
+import io.netty.buffer.Unpooled;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -8,14 +14,10 @@ import appeng.container.me.crafting.CraftAmountContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
-import io.netty.buffer.Unpooled;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
 
 /**
- * This packet opens the {@link appeng.client.gui.me.crafting.CraftAmountScreen} to initiate
- * auto-crafting while a {@link appeng.client.gui.me.items.MEMonitorableScreen} is open.
+ * This packet opens the {@link appeng.client.gui.me.crafting.CraftAmountScreen} to initiate auto-crafting while a
+ * {@link appeng.client.gui.me.items.MEMonitorableScreen} is open.
  */
 public class RequestAutoCraftPacket extends BasePacket {
 

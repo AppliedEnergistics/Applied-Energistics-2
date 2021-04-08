@@ -22,7 +22,6 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-import appeng.core.sync.packets.RequestAutoCraftPacket;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -71,6 +70,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.core.sync.packets.RequestAutoCraftPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
 import appeng.helpers.WirelessTerminalGuiObject;

@@ -20,7 +20,8 @@ package appeng.container.me.crafting;
 
 import java.util.concurrent.Future;
 
-import appeng.core.sync.packets.CraftConfirmPlanPacket;
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -50,13 +51,12 @@ import appeng.container.me.items.MEMonitorableContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.container.me.items.WirelessTermContainer;
 import appeng.core.AELog;
+import appeng.core.sync.packets.CraftConfirmPlanPacket;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.TerminalPart;
-
-import javax.annotation.Nullable;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
@@ -263,8 +263,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     /**
-     * @return The summary of the crafting plan. This is null as long as the plan has not yet finished
-     * computing, or it wasn't synced to the client yet.
+     * @return The summary of the crafting plan. This is null as long as the plan has not yet finished computing, or it
+     *         wasn't synced to the client yet.
      */
     @Nullable
     public CraftingPlanSummary getPlan() {
