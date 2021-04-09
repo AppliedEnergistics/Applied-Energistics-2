@@ -316,6 +316,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             this.markForUpdate();
             this.markForSave();
             this.partChanged();
+
+            // Cleanup the cable bus once it is no longer containing any parts.
+            // Also only when the cable bus actually exists, otherwise it might perform a cleanup during initialization.
+            if (this.isInWorld() && this.isEmpty()) {
+                this.cleanup();
+            }
         }
     }
 

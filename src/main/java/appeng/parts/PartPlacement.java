@@ -106,20 +106,18 @@ public class PartPlacement {
                         final SelectedPart sp = selectPart(player, host,
                                 mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
 
+                        // SelectedPart contains either a facade or a part. Never both.
                         if (sp.part != null) {
                             is.add(sp.part.getItemStack(PartItemStack.WRENCH));
                             sp.part.getDrops(is, true);
                             host.removePart(sp.side, false);
                         }
 
+                        // A facade cannot exist without a cable part, no host cleanup needed.
                         if (sp.facade != null) {
                             is.add(sp.facade.getItemStack());
                             host.getFacadeContainer().removeFacade(host, sp.side);
                             Platform.notifyBlocksOfNeighbors(world, pos);
-                        }
-
-                        if (host.isEmpty()) {
-                            host.cleanup();
                         }
 
                         if (!is.isEmpty()) {
