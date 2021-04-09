@@ -92,7 +92,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
         final IStorageGrid sg = grid.getCache(IStorageGrid.class);
         this.original = new MECraftingInventory(
                 sg.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)), actionSrc,
-                false, false, false);
+                false, false);
 
         // This call is recursive and will build the entire tree.
         this.tree = new CraftingTreeNode(cc, this, what, null, -1, 0);
@@ -157,10 +157,10 @@ public class CraftingJob implements Runnable, ICraftingJob {
 
     private void calculateCrafting() throws CraftBranchFailure, InterruptedException {
         final Stopwatch timer = Stopwatch.createStarted();
-        final MECraftingInventory craftingInventory = new MECraftingInventory(this.original, true, false, true);
+        final MECraftingInventory craftingInventory = new MECraftingInventory(this.original, true, false);
         craftingInventory.ignore(this.output);
 
-        this.availableCheck = new MECraftingInventory(this.original, false, false, false);
+        this.availableCheck = new MECraftingInventory(this.original, false, false);
 
         this.getTree().request(craftingInventory, this.output.getStackSize(), this.actionSrc);
         this.getTree().dive(this);

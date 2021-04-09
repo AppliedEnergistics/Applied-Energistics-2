@@ -829,7 +829,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         final IStorageGrid sg = g.getCache(IStorageGrid.class);
         final IMEInventory<IAEItemStack> storage = sg
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-        final MECraftingInventory ci = new MECraftingInventory(storage, true, false, false);
+        final MECraftingInventory ci = new MECraftingInventory(storage, true, false);
 
         try {
             this.waitingFor.resetStatus();

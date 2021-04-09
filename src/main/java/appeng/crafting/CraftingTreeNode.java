@@ -245,7 +245,7 @@ public class CraftingTreeNode {
             for (final CraftingTreeProcess pro : this.nodes) {
                 try {
                     while (pro.possible && l > 0) {
-                        final MECraftingInventory subInv = new MECraftingInventory(inv, true, true, true);
+                        final MECraftingInventory subInv = new MECraftingInventory(inv, true, true);
                         pro.request(subInv, 1, src);
 
                         this.what.setStackSize(l);
