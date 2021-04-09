@@ -18,6 +18,7 @@
 
 package appeng.client.gui.me.items;
 
+import appeng.client.gui.me.common.Repo;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -45,6 +46,37 @@ public class VirtualItemSlot extends ClientReadOnlySlot {
         return null;
     }
 
+    public Repo.Entry<IAEItemStack> getEntry() {
+        if (this.repo.hasPower()) {
+            return this.repo.getEntry(this.offset);
+        }
+        return null;
+    }
+
+    /**
+     * @see IAEItemStack#getStackSize()
+     */
+    public long getStoredAmount() {
+        Repo.Entry<?> entry = getEntry();
+        return entry != null ? entry.getStoredAmount() : 0;
+    }
+
+    /**
+     * @see IAEItemStack#getCountRequestable()
+     */
+    public long getRequestableAmount() {
+        Repo.Entry<?> entry = getEntry();
+        return entry != null ? entry.getRequestableAmount() : 0;
+    }
+
+    /**
+     * @see IAEItemStack#isCraftable()
+     */
+    public boolean isCraftable() {
+        Repo.Entry<?> entry = getEntry();
+        return entry != null && entry.isCraftable();
+    }
+
     @Override
     public ItemStack getStack() {
         IAEItemStack aeStack = this.getAEStack();
@@ -56,7 +88,7 @@ public class VirtualItemSlot extends ClientReadOnlySlot {
 
     @Override
     public boolean getHasStack() {
-        return getAEStack() != null;
+        return getEntry() != null;
     }
 
 }

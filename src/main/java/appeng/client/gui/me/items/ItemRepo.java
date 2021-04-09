@@ -22,12 +22,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import appeng.container.me.items.GridInventoryEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.widgets.IScrollSource;
@@ -39,8 +39,13 @@ import appeng.util.item.AEItemStack;
 public class ItemRepo extends Repo<IAEItemStack> {
 
     public ItemRepo(IScrollSource src, ISortSource sortSrc) {
-        super(IItemStorageChannel.class, src, sortSrc);
+        super(src, sortSrc);
         setSynchronizeWithJEI(true);
+    }
+
+    @Override
+    protected IAEItemStack createFromNetwork(GridInventoryEntry networkEntry) {
+        return AEItemStack.fromItemStack(networkEntry.getItem());
     }
 
     public void setViewCell(final ItemStack[] list) {

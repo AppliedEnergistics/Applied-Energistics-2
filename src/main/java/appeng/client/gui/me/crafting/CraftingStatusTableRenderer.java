@@ -1,16 +1,17 @@
 package appeng.client.gui.me.crafting;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.container.me.crafting.CraftingStatusEntry;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.ReadableNumberConverter;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingStatusEntry> {
 

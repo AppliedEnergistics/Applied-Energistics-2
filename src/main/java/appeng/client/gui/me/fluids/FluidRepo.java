@@ -23,17 +23,25 @@ import java.util.regex.Pattern;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
+import appeng.container.me.items.GridInventoryEntry;
 import appeng.util.Platform;
+
+import javax.annotation.Nullable;
 
 class FluidRepo extends Repo<IAEFluidStack> {
 
     public FluidRepo(IScrollSource src, ISortSource sortSrc) {
-        super(IFluidStorageChannel.class, src, sortSrc);
+        super(src, sortSrc);
+    }
+
+    @Nullable
+    @Override
+    protected IAEFluidStack createFromNetwork(GridInventoryEntry networkEntry) {
+        return null; // TODO
     }
 
     @Override

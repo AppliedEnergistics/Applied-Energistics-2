@@ -18,20 +18,6 @@
 
 package appeng.container.me.items;
 
-import java.io.IOException;
-import java.nio.BufferOverflowException;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
@@ -67,18 +53,29 @@ import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerHelper;
+import appeng.container.me.common.IMEInteractionHandler;
+import appeng.container.me.common.IncrementalUpdateHelper;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
+import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+
+import javax.annotation.Nonnull;
 
 public class MEMonitorableContainer extends AEBaseContainer
-        implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack> {
+        implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack>, IMEInteractionHandler {
 
     public static ContainerType<MEMonitorableContainer> TYPE;
 
@@ -95,12 +92,10 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     private final RestrictedInputSlot[] cellView = new RestrictedInputSlot[5];
     private final IMEMonitor<IAEItemStack> monitor;
-    private final IItemList<IAEItemStack> items = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
-            .createList();
     private final IConfigManager clientCM;
     private final ITerminalHost host;
     @GuiSync(99)
-    public boolean canAccessViewCells = false;
+    public boolean canAccessViewCells;
     @GuiSync(98)
     public boolean hasPower = false;
     /**
@@ -113,17 +108,19 @@ public class MEMonitorableContainer extends AEBaseContainer
     private IConfigManager serverCM;
     private IGridNode networkNode;
 
+    private final IncrementalUpdateHelper<IAEItemStack> updateHelper = new IncrementalUpdateHelper<>();
+
     public MEMonitorableContainer(int id, final PlayerInventory ip, final ITerminalHost monitorable) {
         this(TYPE, id, ip, monitorable, true);
     }
 
     public MEMonitorableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
-            final ITerminalHost monitorable, final boolean bindInventory) {
-        super(containerType, id, ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null,
-                monitorable instanceof IPart ? (IPart) monitorable : null,
-                monitorable instanceof IGuiItemObject ? (IGuiItemObject) monitorable : null);
+                                  final ITerminalHost host, final boolean bindInventory) {
+        super(containerType, id, ip, host instanceof TileEntity ? (TileEntity) host : null,
+                host instanceof IPart ? (IPart) host : null,
+                host instanceof IGuiItemObject ? (IGuiItemObject) host : null);
 
-        this.host = monitorable;
+        this.host = host;
         this.clientCM = new ConfigManager(this);
 
         this.clientCM.registerSetting(Settings.SORT_BY, SortOrder.NAME);
@@ -131,25 +128,25 @@ public class MEMonitorableContainer extends AEBaseContainer
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         if (isServer()) {
-            this.serverCM = monitorable.getConfigManager();
+            this.serverCM = host.getConfigManager();
 
-            this.monitor = monitorable
+            this.monitor = host
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
 
                 this.setCellInventory(this.monitor);
 
-                if (monitorable instanceof IPortableCell) {
-                    this.setPowerSource((IEnergySource) monitorable);
-                } else if (monitorable instanceof IMEChest) {
-                    this.setPowerSource((IEnergySource) monitorable);
-                } else if (monitorable instanceof IGridHost || monitorable instanceof IActionHost) {
+                if (host instanceof IPortableCell) {
+                    this.setPowerSource((IEnergySource) host);
+                } else if (host instanceof IMEChest) {
+                    this.setPowerSource((IEnergySource) host);
+                } else if (host instanceof IGridHost || host instanceof IActionHost) {
                     final IGridNode node;
-                    if (monitorable instanceof IGridHost) {
-                        node = ((IGridHost) monitorable).getGridNode(AEPartLocation.INTERNAL);
-                    } else if (monitorable instanceof IActionHost) {
-                        node = ((IActionHost) monitorable).getActionableNode();
+                    if (host instanceof IGridHost) {
+                        node = ((IGridHost) host).getGridNode(AEPartLocation.INTERNAL);
+                    } else if (host instanceof IActionHost) {
+                        node = ((IActionHost) host).getActionableNode();
                     } else {
                         node = null;
                     }
@@ -170,10 +167,10 @@ public class MEMonitorableContainer extends AEBaseContainer
         }
 
         this.canAccessViewCells = false;
-        if (monitorable instanceof IViewCellStorage) {
+        if (host instanceof IViewCellStorage) {
             for (int y = 0; y < 5; y++) {
                 this.cellView[y] = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.VIEW_CELL,
-                        ((IViewCellStorage) monitorable).getViewCellStorage(), y, 206, y * 18 + 8,
+                        ((IViewCellStorage) host).getViewCellStorage(), y, 206, y * 18 + 8,
                         this.getPlayerInventory());
                 this.cellView[y].setAllowEdit(this.canAccessViewCells);
                 this.addSlot(this.cellView[y]);
@@ -209,30 +206,25 @@ public class MEMonitorableContainer extends AEBaseContainer
                 }
             }
 
-            if (!this.items.isEmpty()) {
+            if (this.updateHelper.hasChanges()) {
                 try {
-                    final IItemList<IAEItemStack> monitorCache = this.monitor.getStorageList();
+                    MEInventoryUpdatePacket.Builder builder = MEInventoryUpdatePacket
+                            .builder(this.updateHelper.isFullUpdate());
 
-                    final MEInventoryUpdatePacket piu = new MEInventoryUpdatePacket();
-
-                    for (final IAEItemStack is : this.items) {
-                        final IAEItemStack send = monitorCache.findPrecise(is);
-                        if (send == null) {
-                            is.setStackSize(0);
-                            piu.appendItem(is);
-                        } else {
-                            piu.appendItem(send);
-                        }
+                    IItemList<IAEItemStack> storageList = monitor.getStorageList();
+                    if (this.updateHelper.isFullUpdate()) {
+                        builder.addFull(updateHelper, storageList);
+                    } else {
+                        builder.addChanges(updateHelper, storageList);
                     }
 
-                    if (!piu.isEmpty()) {
-                        this.items.resetStatus();
+                    builder.buildAndSend(this::sendPacketToClient);
 
-                        sendPacketToClient(piu);
-                    }
-                } catch (final IOException e) {
-                    AELog.debug(e);
+                } catch (Exception e) {
+                    AELog.warn(e, "Failed to send incremental inventory update to client");
                 }
+
+                updateHelper.commitChanges();
             }
 
             this.updatePowerStatus();
@@ -280,13 +272,6 @@ public class MEMonitorableContainer extends AEBaseContainer
         super.onUpdate(field, oldValue, newValue);
     }
 
-    @Override
-    public void addListener(final IContainerListener c) {
-        super.addListener(c);
-
-        this.queueInventory(c);
-    }
-
     private void updateActiveCraftingJobs() {
         IGridNode hostNode = networkNode;
         if (hostNode == null) {
@@ -317,30 +302,6 @@ public class MEMonitorableContainer extends AEBaseContainer
         this.activeCraftingJobs = activeJobs;
     }
 
-    private void queueInventory(final IContainerListener c) {
-        if (isServer() && c instanceof PlayerEntity && this.monitor != null) {
-            try {
-                MEInventoryUpdatePacket piu = new MEInventoryUpdatePacket();
-                final IItemList<IAEItemStack> monitorCache = this.monitor.getStorageList();
-
-                for (final IAEItemStack send : monitorCache) {
-                    try {
-                        piu.appendItem(send);
-                    } catch (final BufferOverflowException boe) {
-                        NetworkHandler.instance().sendTo(piu, (ServerPlayerEntity) c);
-
-                        piu = new MEInventoryUpdatePacket();
-                        piu.appendItem(send);
-                    }
-                }
-
-                NetworkHandler.instance().sendTo(piu, (ServerPlayerEntity) c);
-            } catch (final IOException e) {
-                AELog.debug(e);
-            }
-        }
-    }
-
     @Override
     public void removeListener(final IContainerListener c) {
         super.removeListener(c);
@@ -365,16 +326,17 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     @Override
     public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
-            final IActionSource source) {
+                           final IActionSource source) {
         for (final IAEItemStack is : change) {
-            this.items.add(is);
+            this.updateHelper.addChange(is);
         }
     }
 
     @Override
     public void onListUpdate() {
-        for (final IContainerListener c : this.listeners) {
-            this.queueInventory(c);
+        if (isServer()) {
+            // This is handled like a full update
+            this.updateHelper.clear();
         }
     }
 
@@ -403,6 +365,11 @@ public class MEMonitorableContainer extends AEBaseContainer
         return list;
     }
 
+    @Override
+    public void handleInteraction(long serial, InventoryAction action) {
+
+    }
+
     public RestrictedInputSlot getCellViewSlot(final int index) {
         return this.cellView[index];
     }
@@ -422,4 +389,5 @@ public class MEMonitorableContainer extends AEBaseContainer
     public void setGui(@Nonnull final IConfigManagerHost gui) {
         this.gui = gui;
     }
+
 }

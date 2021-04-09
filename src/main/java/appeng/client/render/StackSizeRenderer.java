@@ -43,21 +43,16 @@ public class StackSizeRenderer {
     private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
     private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
-    public void renderStackSize(FontRenderer fontRenderer, IAEItemStack aeStack, int xPos, int yPos) {
-        if (aeStack != null) {
-            if (aeStack.getStackSize() == 0 && aeStack.isCraftable()) {
-                final String craftLabelText = AEConfig.instance().isUseLargeFonts() ? GuiText.LargeFontCraft.getLocal()
-                        : GuiText.SmallFontCraft.getLocal();
+    public void renderStackSize(FontRenderer fontRenderer, long stackSize, boolean craftable, int xPos, int yPos) {
+        if (stackSize == 0 && craftable) {
+            final String craftLabelText = AEConfig.instance().isUseLargeFonts() ? GuiText.LargeFontCraft.getLocal()
+                    : GuiText.SmallFontCraft.getLocal();
 
-                renderSizeLabel(fontRenderer, xPos, yPos, craftLabelText);
-            }
+            renderSizeLabel(fontRenderer, xPos, yPos, craftLabelText);
+        }
 
-            if (aeStack.getStackSize() > 0) {
-                final String stackSize = this.getToBeRenderedStackSize(aeStack.getStackSize());
-
-                renderSizeLabel(fontRenderer, xPos, yPos, stackSize);
-            }
-
+        if (stackSize > 0) {
+            renderSizeLabel(fontRenderer, xPos, yPos, this.getToBeRenderedStackSize(stackSize));
         }
     }
 
