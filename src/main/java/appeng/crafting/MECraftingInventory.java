@@ -50,27 +50,6 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
         this.target = null;
     }
 
-    public MECraftingInventory(final MECraftingInventory parent) {
-        this.target = parent;
-        this.logExtracted = parent.logExtracted;
-        this.logInjections = parent.logInjections;
-
-        if (this.logExtracted) {
-            this.extractedCache = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-        } else {
-            this.extractedCache = null;
-        }
-
-        if (this.logInjections) {
-            this.injectedCache = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-        } else {
-            this.injectedCache = null;
-        }
-
-        this.localCache = this.target.getAvailableItems(new ItemListIgnoreCrafting<>(
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList()));
-    }
-
     public MECraftingInventory(final IMEMonitor<IAEItemStack> target, final IActionSource src,
                                final boolean logExtracted, final boolean logInjections) {
         this.target = target;
