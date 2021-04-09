@@ -131,6 +131,10 @@ public class BasePacketHandler {
             return (values())[id];
         }
 
+        public int getPacketId() {
+            return ordinal();
+        }
+
         static PacketTypes getID(final Class<? extends BasePacket> c) {
             return REVERSE_LOOKUP.get(c);
         }

@@ -10,8 +10,8 @@ import net.minecraft.network.PacketBuffer;
 
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.container.me.common.IncrementalUpdateHelper;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
 
 /**
  * Describes a currently running crafting job. A crafting status can either be a full update which replaces any

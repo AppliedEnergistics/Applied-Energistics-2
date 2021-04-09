@@ -39,11 +39,11 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.implementations.ContainerHelper;
+import appeng.container.me.common.IncrementalUpdateHelper;
 import appeng.core.Api;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.CraftingTileEntity;
-import appeng.container.me.common.IncrementalUpdateHelper;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingCPUScreen
