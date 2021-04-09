@@ -40,7 +40,12 @@ public interface ICraftingProviderHelper {
     void addCraftingOption(ICraftingMedium medium, ICraftingPatternDetails api);
 
     /**
-     * Set an item can Emitable
+     * Set the passed stack to be "emittable".
+     * The crafting system does not attempt to craft emittable items,
+     * and assumes that they will be provided to the system when their crafting is requested,
+     * i.e. when {@link ICraftingGrid#isRequesting} is {@code true}.
+     *
+     * This is used by level emitters when the "Emit redstone to craft item" option is enabled.
      */
     void setEmitable(IAEItemStack what);
 }

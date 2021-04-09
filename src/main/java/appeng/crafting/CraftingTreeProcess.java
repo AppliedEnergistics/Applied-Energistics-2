@@ -48,10 +48,14 @@ public class CraftingTreeProcess {
     private final Map<CraftingTreeNode, Long> nodes = new HashMap<>();
     private final int depth;
     boolean possible = true;
-    private World world;
+    private final World world;
     private long crafts = 0;
     private boolean containerItems;
     private boolean limitQty;
+    /**
+     * If true, this means that this crafting recipe needs to be re-simulate every time because it's too custom
+     * for us to assume anything about it.
+     */
     private boolean fullSimulation;
     private long bytes = 0;
 
@@ -61,93 +65,108 @@ public class CraftingTreeProcess {
         this.details = details;
         this.job = job;
         this.depth = depth;
-        final World world = job.getWorld();
+        this.world = job.getWorld();
 
         if (details.isCraftable()) {
-            final IAEItemStack[] list = details.getSparseInputs();
+            gatherCraftingChildren(cc);
+        } else {
+            gatherProcessingChildren(cc);
+        }
+    }
 
-            final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
-            final IAEItemStack[] is = details.getSparseInputs();
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                ic.setInventorySlotContents(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
+    private void gatherCraftingChildren(ICraftingGrid cc) {
+        final IAEItemStack[] list = details.getSparseInputs();
+
+        // Fill the inventory with inputs, and throw the crafting event to detect handlers tampering with the inputs.
+        // FIXME CRAFTING this looks hacky and is probably broken with custom recipe types
+        final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
+        final IAEItemStack[] is = details.getSparseInputs();
+        for (int x = 0; x < ic.getSizeInventory(); x++) {
+            ic.setInventorySlotContents(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
+        }
+
+        BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) world),
+                details.getOutput(ic, world), ic);
+
+        // Enable full simulation if the handler tampered with the inputs (I think).
+        // FIXME CRAFTING I wonder why exactly this was added, and if it's necessary to support it at all.
+        for (int x = 0; x < ic.getSizeInventory(); x++) {
+            final ItemStack g = ic.getStackInSlot(x);
+            if (!g.isEmpty() && g.getCount() > 1) {
+                this.fullSimulation = true;
             }
+        }
 
-            BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) world),
-                    details.getOutput(ic, world), ic);
+        // Inspect pattern for limitQty and containerItems
+        updateLimitQuantityAndContainerItems();
 
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                final ItemStack g = ic.getStackInSlot(x);
-                if (!g.isEmpty() && g.getCount() > 1) {
-                    this.fullSimulation = true;
-                }
-            }
-
-            for (final IAEItemStack part : details.getInputs()) {
-                final ItemStack g = part.createItemStack();
-
-                boolean isAnInput = false;
-                for (final IAEItemStack a : details.getOutputs()) {
-                    if (!g.isEmpty() && a != null && a.equals(g)) {
-                        isAnInput = true;
-                    }
-                }
-
-                if (isAnInput) {
-                    this.limitQty = true;
-                }
-
-                if (g.getItem().hasContainerItem(g)) {
-                    this.limitQty = this.containerItems = true;
-                }
-            }
-
-            final boolean complicated = false;
-
-            if (this.containerItems || complicated) {
-                for (int x = 0; x < list.length; x++) {
-                    final IAEItemStack part = list[x];
-                    if (part != null) {
-                        this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, x, depth + 1),
-                                part.getStackSize());
-                    }
-                }
-            } else {
-                // this is minor different then below, this slot uses the pattern, but kinda
-                // fudges it.
-                for (final IAEItemStack part : details.getInputs()) {
-                    for (int x = 0; x < list.length; x++) {
-                        final IAEItemStack comparePart = list[x];
-                        if (part != null && part.equals(comparePart)) {
-                            // use the first slot...
-                            this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, x, depth + 1),
-                                    part.getStackSize());
-                            break;
-                        }
-                    }
+        // Add children
+        // FIXME CRAFTING what's the difference between these two branches?
+        if (this.containerItems) {
+            for (int x = 0; x < list.length; x++) {
+                final IAEItemStack part = list[x];
+                if (part != null) {
+                    this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, x, depth + 1),
+                            part.getStackSize());
                 }
             }
         } else {
+            // this is minor different then below, this slot uses the pattern, but kinda
+            // fudges it.
             for (final IAEItemStack part : details.getInputs()) {
-                final ItemStack g = part.createItemStack();
-
-                boolean isAnInput = false;
-                for (final IAEItemStack a : details.getOutputs()) {
-                    if (!g.isEmpty() && a != null && a.equals(g)) {
-                        isAnInput = true;
+                for (int x = 0; x < list.length; x++) {
+                    final IAEItemStack comparePart = list[x];
+                    if (part != null && part.equals(comparePart)) {
+                        // use the first slot...
+                        this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, x, depth + 1),
+                                part.getStackSize());
+                        break;
                     }
                 }
-
-                if (isAnInput) {
-                    this.limitQty = true;
-                }
-            }
-
-            for (final IAEItemStack part : details.getInputs()) {
-                this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, -1, depth + 1), part.getStackSize());
             }
         }
     }
 
+    private void gatherProcessingChildren(ICraftingGrid cc) {
+        updateLimitQuantityAndContainerItems();
+
+        for (final IAEItemStack part : details.getInputs()) {
+            this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, -1, depth + 1), part.getStackSize());
+        }
+    }
+
+    /**
+     * Set {@link #limitQty} to true if some inputs are also outputs.
+     * For crafting recipes, also update {@link #limitQty} and {@link #containerItems} if this pattern contains
+     * container items.
+     */
+    private void updateLimitQuantityAndContainerItems() {
+        for (final IAEItemStack part : details.getInputs()) {
+            final ItemStack g = part.createItemStack();
+
+            boolean isAnInput = false;
+            for (final IAEItemStack a : details.getOutputs()) {
+                if (!g.isEmpty() && a != null && a.equals(g)) {
+                    isAnInput = true;
+                }
+            }
+
+            if (isAnInput) {
+                this.limitQty = true;
+            }
+
+            if (details.isCraftable()) {
+                // Also check for container items if this is a crafting pattern
+                if (g.getItem().hasContainerItem(g)) {
+                    this.limitQty = this.containerItems = true;
+                }
+            }
+        }
+    }
+
+    /**
+     * @see CraftingTreeNode#notRecursive
+     */
     boolean notRecursive(final ICraftingPatternDetails details) {
         return this.parent == null || this.parent.notRecursive(details);
     }
@@ -173,6 +192,8 @@ public class CraftingTreeProcess {
                 ic.setInventorySlotContents(entry.getKey().getSlot(), stack.createItemStack());
             }
 
+            // FIXME CRAFTING world was null here because it was never set and it worked,
+            // FIXME CRAFTING so is passing the world useful?
             BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) this.world),
                     this.details.getOutput(ic, this.world), ic);
 
@@ -248,12 +269,12 @@ public class CraftingTreeProcess {
         throw new IllegalStateException("Crafting Tree construction failed.");
     }
 
-    void setSimulate() {
+    void resetForSimulation() {
         this.crafts = 0;
         this.bytes = 0;
 
         for (final CraftingTreeNode pro : this.nodes.keySet()) {
-            pro.setSimulate();
+            pro.resetForSimulation();
         }
     }
 

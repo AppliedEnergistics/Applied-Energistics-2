@@ -25,6 +25,7 @@ package appeng.api.networking.crafting;
 
 import java.util.concurrent.Future;
 
+import appeng.api.networking.IGridHost;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
@@ -35,18 +36,36 @@ import appeng.api.networking.IGridCache;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
 
+import javax.annotation.Nullable;
+
+/**
+ * Provides network-wide crafting behavior.
+ *
+ * Will automatically perform actions for {@link IGridHost}s implementing the following interfaces:
+ * <ul>
+ *     <li>{@link ICraftingWatcherHost}s can listen to the crafting status of some items.</li>
+ *     <li>{@link ICraftingRequester}s can request crafting jobs to be performed.</li>
+ *     <li>{@link ICraftingProvider}s can register patterns and "emittable" items.</li>
+ *     <li>It is <b>not possible</b> to register crafting CPUs with the API at moment.</li>
+ * </ul>
+ */
 public interface ICraftingGrid extends IGridCache {
 
     /**
+     * Attempt to return patterns in this grid that produce the passed stack.
+     *
+     * If none could be found, and the passed {@link ICraftingPatternDetails} is a nonnull crafting pattern,
+     * attempt to return patterns for a substitute input of the passed pattern at the passed slot.
+     *
      * @param whatToCraft requested craft
-     * @param world       crafting world
-     * @param slot        slot index
      * @param details     pattern details
+     * @param slot        slot index, ignored if {@code details} is null
+     * @param world       crafting world, ignored if {@code details} is null
      *
      * @return a collection of crafting patterns for the item in question.
      */
     ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack whatToCraft,
-            ICraftingPatternDetails details, int slot, World world);
+            @Nullable ICraftingPatternDetails details, int slot, World world);
 
     /**
      * Begin calculating a crafting job.
@@ -91,6 +110,7 @@ public interface ICraftingGrid extends IGridCache {
      * @param what to be requested item
      *
      * @return true if the item can be requested via a crafting emitter.
+     * @see ICraftingProviderHelper#setEmitable
      */
     boolean canEmitFor(IAEItemStack what);
 

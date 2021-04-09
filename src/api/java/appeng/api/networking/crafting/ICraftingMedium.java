@@ -27,6 +27,8 @@ import net.minecraft.inventory.CraftingInventory;
 
 /**
  * A place to send Items for crafting purposes, this is considered part of AE's External crafting system.
+ *
+ * Registered through {@link ICraftingProvider#provideCrafting}.
  */
 public interface ICraftingMedium {
 
@@ -42,7 +44,7 @@ public interface ICraftingMedium {
     boolean pushPattern(ICraftingPatternDetails patternDetails, CraftingInventory table);
 
     /**
-     * @return if this is false, the crafting engine will refuse to send new jobs to this medium.
+     * @return if this is true, the crafting engine will refuse to send new jobs to this medium.
      */
     boolean isBusy();
 }

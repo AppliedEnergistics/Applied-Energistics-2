@@ -37,6 +37,8 @@ import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 
+import javax.annotation.Nullable;
+
 public class CraftingTreeNode {
 
     // what slot!
@@ -45,6 +47,7 @@ public class CraftingTreeNode {
     private final IItemList<IAEItemStack> used = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
     // parent node.
+    @Nullable
     private final CraftingTreeProcess parent;
     private final World world;
     // what item is this?
@@ -52,15 +55,19 @@ public class CraftingTreeNode {
     // what are the crafting patterns for this?
     private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<>();
     private int bytes = 0;
-    private boolean canEmit = false;
+    private final boolean canEmit;
     private long missing = 0;
     private long howManyEmitted = 0;
     private boolean exhausted = false;
 
     private boolean sim;
 
+    /**
+     * Build this node and gather all the patterns that can be used to make this node's stack,
+     * then recursively add their nodes, tc...
+     */
     public CraftingTreeNode(final ICraftingGrid cc, final CraftingJob job, final IAEItemStack wat,
-            final CraftingTreeProcess par, final int slot, final int depth) {
+            final @Nullable CraftingTreeProcess par, final int slot, final int depth) {
         this.what = wat;
         this.parent = par;
         this.slot = slot;
@@ -74,16 +81,25 @@ public class CraftingTreeNode {
             return; // if you can emit for something, you can't make it with patterns.
         }
 
+        // If the parent pattern is null, this is the top-level node, so we only collect recipes for that item
+        // specifically.
+        // Otherwise, we collect recipes for any item that can be substituted in the parent crafting pattern.
+        // See ICraftingGrid#getCraftingFor().
         for (final ICraftingPatternDetails details : cc.getCraftingFor(this.what,
-                this.parent == null ? null : this.parent.details, slot, this.world))// in
-        // order.
-        {
+                this.parent == null ? null : this.parent.details, slot, this.world)) {
+            // Make sure that no parent node has a stack from this pattern, either in input or output. The explanation follows.
+            // If a parent node P has its stack as an input for this pattern, then we are recursing because this pattern was already considered by P.
+            // If a parent node P has its stack as an output for this pattern, then we have encountered a loop as this can produce P and P can produce this.
             if (this.parent == null || this.parent.notRecursive(details)) {
+                // Note: this call is recursive and might instantiate further CraftingTreeNodes.
                 this.nodes.add(new CraftingTreeProcess(cc, job, details, this, depth + 1));
             }
         }
     }
 
+    /**
+     * @return true if the passed pattern doesn't contain this node's target stack, false otherwise.
+     */
     boolean notRecursive(final ICraftingPatternDetails details) {
         Collection<IAEItemStack> o = details.getOutputs();
 
@@ -115,6 +131,8 @@ public class CraftingTreeNode {
         final List<IAEItemStack> thingsUsed = new ArrayList<>();
 
         this.what.setStackSize(l);
+
+        // Attempt to consume items from the system.
         if (this.getSlot() >= 0 && this.parent != null && this.parent.details.isCraftable()) {
             final Collection<IAEItemStack> itemList;
             final IItemList<IAEItemStack> inventoryList = inv.getItemList();
@@ -185,6 +203,7 @@ public class CraftingTreeNode {
             }
         }
 
+        // If something can be emitted, we assume it will be provided and we are done.
         if (this.canEmit) {
             final IAEItemStack wat = this.what.copy();
             wat.setStackSize(l);
@@ -195,8 +214,10 @@ public class CraftingTreeNode {
             return wat;
         }
 
+        // FIXME CRAFTING what does this do
         this.exhausted = true;
 
+        // Search through patterns that can produce this stack.
         if (this.nodes.size() == 1) {
             final CraftingTreeProcess pro = this.nodes.get(0);
 
@@ -287,7 +308,7 @@ public class CraftingTreeNode {
         return is;
     }
 
-    void setSimulate() {
+    void resetForSimulation() {
         this.sim = true;
         this.missing = 0;
         this.bytes = 0;
@@ -295,7 +316,7 @@ public class CraftingTreeNode {
         this.exhausted = false;
 
         for (final CraftingTreeProcess pro : this.nodes) {
-            pro.setSimulate();
+            pro.resetForSimulation();
         }
     }
 
