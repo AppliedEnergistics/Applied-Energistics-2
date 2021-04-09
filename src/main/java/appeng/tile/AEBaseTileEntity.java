@@ -422,6 +422,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         return this.customName != null && !this.customName.isEmpty();
     }
 
+    // This is used by subclasses to implement IGridHost#securityBreak()
     public void securityBreak() {
         this.world.destroyBlock(this.pos, true);
     }
