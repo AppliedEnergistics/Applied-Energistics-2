@@ -401,10 +401,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		}
 
 		// Check via cap for IItemRepository
-		IItemRepository handlerRepo = target.getCapability( ITEM_REPOSITORY_CAPABILITY, targetSide );
-		if( handlerRepo != null )
+		if (ITEM_REPOSITORY_CAPABILITY != null && target.hasCapability( ITEM_REPOSITORY_CAPABILITY, targetSide ))
 		{
-			return new ItemRepositoryAdapter( handlerRepo, this );
+			IItemRepository handlerRepo = target.getCapability( ITEM_REPOSITORY_CAPABILITY, targetSide );
+			if( handlerRepo != null )
+			{
+				return new ItemRepositoryAdapter( handlerRepo, this );
+			}
 		}
 		// Check via cap for IItemHandler
 		IItemHandler handlerExt = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
@@ -431,11 +434,14 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			return Objects.hash( target, target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) );
 		}
 
-		final IItemRepository handlerRepo = target.getCapability( ITEM_REPOSITORY_CAPABILITY, targetSide );
-
-		if( handlerRepo != null )
+		if (ITEM_REPOSITORY_CAPABILITY != null && target.hasCapability( ITEM_REPOSITORY_CAPABILITY, targetSide ))
 		{
-			return Objects.hash( target, handlerRepo, handlerRepo.getAllItems().size() );
+			final IItemRepository handlerRepo = target.getCapability( ITEM_REPOSITORY_CAPABILITY, targetSide );
+
+			if( handlerRepo != null )
+			{
+				return Objects.hash( target, handlerRepo, handlerRepo.getAllItems().size() );
+			}
 		}
 
 		final IItemHandler itemHandler = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );

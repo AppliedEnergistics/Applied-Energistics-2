@@ -85,7 +85,6 @@ configurations {
 }
 
 dependencies {
-    compileOnly "com.jaquadro.minecraft.storagedrawers:StorageDrawers:1.12.2-5.4.2:api"
     compileOnly "gregtechce:gregtech:1.12.2:1.12.0.662"
 
     // installable runtime dependencies
@@ -106,8 +105,6 @@ dependencies {
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
-    runtime "com.jaquadro.minecraft.storagedrawers:StorageDrawers:1.12.2-5.4.2"
-    runtime "com.jaquadro.minecraft.chameleon:Chameleon:1.12-4.1.3"
 
     // unit test dependencies
     testCompile "junit:junit:4.12"

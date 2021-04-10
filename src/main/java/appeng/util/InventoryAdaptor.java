@@ -47,7 +47,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 	{
 		if( te != null )
 		{
-			if( te.hasCapability( ITEM_REPOSITORY_CAPABILITY, d ) )
+			if( ITEM_REPOSITORY_CAPABILITY != null && te.hasCapability( ITEM_REPOSITORY_CAPABILITY, d ) )
 			{
 				IItemRepository itemRepository = te.getCapability( ITEM_REPOSITORY_CAPABILITY, d );
 				if (itemRepository != null){
