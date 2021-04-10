@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "appliedenergistics2:64k_portable_cell"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["abc"],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:chest"
+    },
+    "c": {
+      "item": "appliedenergistics2:energy_cell"
+    },
+    "b": {
+      "item": "appliedenergistics2:64k_cell_component"
+    }
+  }
+}
