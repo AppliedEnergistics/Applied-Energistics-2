@@ -25,33 +25,46 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.util.inv.ItemListIgnoreCrafting;
 
+import javax.annotation.Nullable;
+
+/**
+ * An inventory with infinite capacity that can optionally log insertions and extractions, and attempt to apply them to
+ * another inventory later by using {@link #commit}.
+ * <p>
+ * It also completely ignores the {@link IAEStack#isCraftable()} information by using {@link ItemListIgnoreCrafting},
+ * because apparently that was necessary to
+ * fix <a href="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/2530">an issue with
+ * CraftingCPUClusters using isEmpty() during their cleanup, but that check returning false due to some items being
+ * craftable </a> (commit id: a9c5019). This is really sketchy, and needs to be looked at carefully in the future.
+ */
 public class MECraftingInventory implements IMEInventory<IAEItemStack> {
 
+    /**
+     * Actual storage.
+     */
     private final IItemList<IAEItemStack> localCache;
 
     private final boolean logExtracted;
+    /**
+     * List of extracted items if {@link #logExtracted} is true. Can be applied using {@link #commit}.
+     */
     private final IItemList<IAEItemStack> extractedCache;
 
     private final boolean logInjections;
+    /**
+     * List of inserted items if {@link #logInjections} is true. Can be applied using {@link #commit}.
+     */
     private final IItemList<IAEItemStack> injectedCache;
 
-    // FIXME CRAFTING This is only called by the cpu cluster during the crafting it seems
-    public MECraftingInventory() {
-        this.localCache = new ItemListIgnoreCrafting<>(
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
-        this.extractedCache = null;
-        this.injectedCache = null;
-        this.logExtracted = false;
-        this.logInjections = false;
-    }
-
-    // FIXME CRAFTING This is only called in the constructor of a crafting job tree to copy the stacks from the grid
-    public MECraftingInventory(final IMEMonitor<IAEItemStack> target, final IActionSource src,
-                               final boolean logExtracted, final boolean logInjections) {
+    /**
+     * Internal constructor used to build the various caches.
+     */
+    private MECraftingInventory(final boolean logExtracted, final boolean logInjections) {
         this.logExtracted = logExtracted;
         this.logInjections = logInjections;
 
@@ -67,8 +80,22 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
             this.injectedCache = null;
         }
 
+        // Note: we ignore crafting status, this is sketchy as explained above in the class javadoc.
         this.localCache = new ItemListIgnoreCrafting<>(
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
+    }
+
+    // FIXME CRAFTING This is only called by the cpu cluster during the crafting it seems
+    public MECraftingInventory() {
+        this(false, false);
+    }
+
+    // FIXME CRAFTING This is only called in the constructor of a crafting job tree to copy the stacks from the grid
+    public MECraftingInventory(final IMEMonitor<IAEItemStack> target, final IActionSource src,
+                               final boolean logExtracted, final boolean logInjections) {
+        this(logExtracted, logInjections);
+
+        // Populate initial cache by copying from the target monitor.
         for (final IAEItemStack is : target.getStorageList()) {
             this.localCache.add(target.extractItems(is, Actionable.SIMULATE, src));
         }
@@ -77,23 +104,10 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
     // FIXME CRAFTING This is called by the crafting job at the root, and by crafting tree nodes
     public MECraftingInventory(final IMEInventory<IAEItemStack> target, final boolean logExtracted,
                                final boolean logInjections) {
-        this.logExtracted = logExtracted;
-        this.logInjections = logInjections;
+        this(logExtracted, logInjections);
 
-        if (logExtracted) {
-            this.extractedCache = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-        } else {
-            this.extractedCache = null;
-        }
-
-        if (logInjections) {
-            this.injectedCache = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-        } else {
-            this.injectedCache = null;
-        }
-
-        this.localCache = target
-                .getAvailableItems(Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
+        // Populate initial cache by copying from the target inventory.
+        target.getAvailableItems(this.localCache);
     }
 
     @Override
