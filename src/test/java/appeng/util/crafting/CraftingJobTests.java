@@ -13,6 +13,7 @@ import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.registry.Bootstrap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,9 @@ class CraftingJobTests {
 
     CraftingJobTests() {
         for (int i = 0; i < N; ++i) {
-            items.add(AEItemStack.fromItemStack(new ItemStack(new Item(new Item.Properties()))));
+            ItemStack is = new ItemStack(Items.NAME_TAG);
+            is.getOrCreateTag().putInt("i", i);
+            items.add(AEItemStack.fromItemStack(is));
         }
     }
 
