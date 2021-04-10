@@ -15,7 +15,11 @@ public class MockedMEMonitor implements IMEMonitor<IAEItemStack> {
 
     @Override
     public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out) {
-        return list;
+        for (IAEItemStack stored : list) {
+            out.add(stored.copy());
+        }
+
+        return out;
     }
 
     @Override

@@ -44,8 +44,8 @@ class CraftingJobTests {
     /**
      * N-1 processing patterns each requiring 4 of item i+1 to make 2 of item i.
      * Every item is already in stock with an amount of 4, and the last one is emitable.
-     * Requesting 8 items of the first kind should get 4 from storage and attempt to craft 4 others,
-     * resulting in a request of 8 items of the second kind, etc...
+     * Requesting 4 items of the first kind should get 4 from storage and attempt to craft 4 others,
+     * resulting in a request of 8 items of the second kind, leading to a request of 8 of the third kind, etc...
      * Last one is emitable so the crafting should succeed.
      */
     @Test
@@ -68,7 +68,7 @@ class CraftingJobTests {
         mockedCrafting.cg.setEmitable(items.get(N-1));
 
         // Do the thing
-        CraftingJob job = mockedCrafting.doFullJob(items.get(0).copy().setStackSize(8));
+        CraftingJob job = mockedCrafting.doFullJob(items.get(0).copy().setStackSize(4));
 
         IItemList<IAEItemStack> plan = new ItemList();
         job.populatePlan(plan);
@@ -78,12 +78,17 @@ class CraftingJobTests {
             IAEItemStack stack = plan.findPrecise(items.get(i));
             if (i == N-1) {
                 // emit 8
-                assertEquals(stack.getCountRequestable(), 8);
+                assertEquals(8, stack.getCountRequestable());
+            } else if (i == 0) {
+                // craft 4
+                assertEquals(4, stack.getCountRequestable());
+                // use 0
+                assertEquals(0, stack.getStackSize());
             } else {
-                // request 4
-                assertEquals(stack.getCountRequestable(), 4);
-                // use 4
-                assertEquals(stack.getStackSize(), 4);
+                // craft 4
+                assertEquals(4, stack.getCountRequestable());
+                // use 4 in stock
+                assertEquals(4, stack.getStackSize());
             }
         }
     }
