@@ -158,7 +158,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
     private void calculateCrafting() throws CraftBranchFailure, InterruptedException {
         final Stopwatch timer = Stopwatch.createStarted();
         final MECraftingInventory craftingInventory = new MECraftingInventory(this.original, true, false);
-        craftingInventory.ignore(this.output);
+        craftingInventory.resetStackSize(this.output);
 
         this.availableCheck = new MECraftingInventory(this.original, false, false);
 

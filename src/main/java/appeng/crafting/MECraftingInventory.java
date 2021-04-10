@@ -219,7 +219,10 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
         return true;
     }
 
-    void ignore(final IAEItemStack what) {
+    /**
+     * Set the stack size of the target stack to 0.
+     */
+    void resetStackSize(final IAEItemStack what) {
         final IAEItemStack list = this.localCache.findPrecise(what);
         if (list != null) {
             list.setStackSize(0);
