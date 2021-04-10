@@ -31,7 +31,6 @@ import appeng.util.inv.ItemListIgnoreCrafting;
 
 public class MECraftingInventory implements IMEInventory<IAEItemStack> {
 
-    private final IMEInventory<IAEItemStack> target;
     private final IItemList<IAEItemStack> localCache;
 
     private final boolean logExtracted;
@@ -40,6 +39,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
     private final boolean logInjections;
     private final IItemList<IAEItemStack> injectedCache;
 
+    // FIXME CRAFTING This is only called by the cpu cluster during the crafting it seems
     public MECraftingInventory() {
         this.localCache = new ItemListIgnoreCrafting<>(
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
@@ -47,12 +47,11 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
         this.injectedCache = null;
         this.logExtracted = false;
         this.logInjections = false;
-        this.target = null;
     }
 
+    // FIXME CRAFTING This is only called in the constructor of a crafting job tree to copy the stacks from the grid
     public MECraftingInventory(final IMEMonitor<IAEItemStack> target, final IActionSource src,
                                final boolean logExtracted, final boolean logInjections) {
-        this.target = target;
         this.logExtracted = logExtracted;
         this.logInjections = logInjections;
 
@@ -75,9 +74,9 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
         }
     }
 
+    // FIXME CRAFTING This is called by the crafting job at the root, and by crafting tree nodes
     public MECraftingInventory(final IMEInventory<IAEItemStack> target, final boolean logExtracted,
                                final boolean logInjections) {
-        this.target = target;
         this.logExtracted = logExtracted;
         this.logInjections = logInjections;
 
@@ -166,7 +165,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
         return this.localCache;
     }
 
-    public boolean commit(final IActionSource src) {
+    public boolean commit(final IMEInventory<IAEItemStack> target, final IActionSource src) {
         final IItemList<IAEItemStack> added = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                 .createList();
         final IItemList<IAEItemStack> pulled = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
@@ -176,7 +175,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
         if (this.logInjections) {
             for (final IAEItemStack inject : this.injectedCache) {
                 IAEItemStack result = null;
-                added.add(result = this.target.injectItems(inject, Actionable.MODULATE, src));
+                added.add(result = target.injectItems(inject, Actionable.MODULATE, src));
 
                 if (result != null) {
                     failed = true;
@@ -187,7 +186,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
 
         if (failed) {
             for (final IAEItemStack is : added) {
-                this.target.extractItems(is, Actionable.MODULATE, src);
+                target.extractItems(is, Actionable.MODULATE, src);
             }
 
             return false;
@@ -196,7 +195,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
         if (this.logExtracted) {
             for (final IAEItemStack extra : this.extractedCache) {
                 IAEItemStack result = null;
-                pulled.add(result = this.target.extractItems(extra, Actionable.MODULATE, src));
+                pulled.add(result = target.extractItems(extra, Actionable.MODULATE, src));
 
                 if (result == null || result.getStackSize() != extra.getStackSize()) {
                     failed = true;
@@ -207,11 +206,11 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
 
         if (failed) {
             for (final IAEItemStack is : added) {
-                this.target.extractItems(is, Actionable.MODULATE, src);
+                target.extractItems(is, Actionable.MODULATE, src);
             }
 
             for (final IAEItemStack is : pulled) {
-                this.target.injectItems(is, Actionable.MODULATE, src);
+                target.injectItems(is, Actionable.MODULATE, src);
             }
 
             return false;

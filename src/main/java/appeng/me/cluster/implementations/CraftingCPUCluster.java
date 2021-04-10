@@ -834,7 +834,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         try {
             this.waitingFor.resetStatus();
             ((CraftingJob) job).getTree().setJob(ci, this, src);
-            if (ci.commit(src)) {
+            if (ci.commit(storage, src)) {
                 this.finalOutput = job.getOutput();
                 this.waiting = false;
                 this.isComplete = false;

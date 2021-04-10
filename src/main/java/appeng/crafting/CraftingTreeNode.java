@@ -252,7 +252,7 @@ public class CraftingTreeNode {
                         final IAEItemStack available = subInv.extractItems(this.what, Actionable.MODULATE, src);
 
                         if (available != null) {
-                            if (!subInv.commit(src)) {
+                            if (!subInv.commit(inv, src)) {
                                 throw new CraftBranchFailure(this.what, l);
                             }
 
