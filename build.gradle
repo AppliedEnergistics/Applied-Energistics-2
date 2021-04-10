@@ -81,6 +81,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
+    testImplementation("org.mockito:mockito-core:3.+")
 
     // Annotation Processors
     annotationProcessor 'org.spongepowered:mixin:0.8:processor'

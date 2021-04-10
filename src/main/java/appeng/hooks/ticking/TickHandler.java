@@ -323,7 +323,7 @@ public class TickHandler {
     }
 
     public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
-        Preconditions.checkArgument(!world.isRemote, "Trying to register a crafting job for a client-world");
+        Preconditions.checkArgument(!world.isRemote(), "Trying to register a crafting job for a client-world");
 
         synchronized (this.craftingJobs) {
             this.craftingJobs.put(world, craftingJob);

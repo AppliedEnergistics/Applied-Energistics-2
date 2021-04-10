@@ -171,7 +171,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack> {
     }
 
     @Override
-    public IStorageChannel getChannel() {
+    public IStorageChannel<IAEItemStack> getChannel() {
         return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 

@@ -221,6 +221,7 @@ public class CraftingGridCache
     }
 
     private void updatePatterns() {
+        // FIXME CRAFTING this is copied by reference and then erased below - very suspicious
         final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = this.craftableItems;
 
         // erase list.
@@ -439,7 +440,7 @@ public class CraftingGridCache
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }
 
-        final CraftingJob job = new CraftingJob(world, grid, actionSrc, slotItem, cb);
+        final CraftingJob job = new CraftingJob(world, this, grid.getCache(IStorageGrid.class), actionSrc, slotItem, cb);
 
         return CRAFTING_POOL.submit(job, job);
     }

@@ -92,6 +92,7 @@ public final class AppEng {
             throw new IllegalStateException();
         }
         INSTANCE = this;
+        Api.setInstance(new Api());
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AEConfig.CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AEConfig.COMMON_SPEC);

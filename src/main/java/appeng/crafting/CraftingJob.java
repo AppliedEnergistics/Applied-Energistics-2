@@ -20,6 +20,7 @@ package appeng.crafting;
 
 import java.util.concurrent.TimeUnit;
 
+import appeng.util.item.ItemList;
 import com.google.common.base.Stopwatch;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,6 +44,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
+import org.lwjgl.system.CallbackI;
 
 /**
  * Implementation of a crafting job simulation.
@@ -81,15 +83,13 @@ public class CraftingJob implements Runnable, ICraftingJob {
      * Build this crafting job, gathering all patterns that can produce the target stack,
      * the patterns that can produce their ingredients, etc...
      */
-    public CraftingJob(final World w, final IGrid grid, final IActionSource actionSrc, final IAEItemStack what,
+    public CraftingJob(final World w, final ICraftingGrid cc, final IStorageGrid sg, final IActionSource actionSrc, final IAEItemStack what,
             final ICraftingCallback callback) {
         this.world = w;
         this.output = what.copy();
         this.actionSrc = actionSrc;
 
         this.callback = callback;
-        final ICraftingGrid cc = grid.getCache(ICraftingGrid.class);
-        final IStorageGrid sg = grid.getCache(IStorageGrid.class);
         this.original = new MECraftingInventory(
                 sg.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)), actionSrc,
                 false, false);

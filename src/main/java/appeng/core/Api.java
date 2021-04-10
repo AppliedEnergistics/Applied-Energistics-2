@@ -39,7 +39,16 @@ public final class Api implements IAppEngApi {
      * While permitting public access, directly using {@link Api#instance()} is not recommended except in very special
      * cases.
      */
-    public static final Api INSTANCE = new Api();
+    // FIXME CRAFTING quick n dirty, fix this
+    public static Api INSTANCE = null;
+    public static IAppEngApi fakeInstance = null;
+
+    public static void setInstance(IAppEngApi api) {
+        fakeInstance = api;
+        if (api instanceof Api) {
+            INSTANCE = (Api) api;
+        }
+    }
 
     /**
      * Use primarily to access the API.
@@ -50,7 +59,7 @@ public final class Api implements IAppEngApi {
      * inject it into AE2 itself.
      */
     public static IAppEngApi instance() {
-        return INSTANCE;
+        return fakeInstance;
     }
 
     private final ApiPart partHelper;
@@ -63,7 +72,7 @@ public final class Api implements IAppEngApi {
     private final ICraftingHelper craftingHelper;
     private final IClientHelper client;
 
-    private Api() {
+    Api() {
         this.storageHelper = new ApiStorage();
         this.networkHelper = new ApiGrid();
         this.registryContainer = new RegistryContainer();
