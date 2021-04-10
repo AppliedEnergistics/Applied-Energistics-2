@@ -49,6 +49,7 @@ import appeng.util.Platform;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import org.lwjgl.input.Mouse;
 
 
 import static appeng.client.render.BlockPosHighlighter.hilightBlock;
@@ -68,6 +69,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private final HashMap<GuiButton,ClientDCInternalInv> guiButtonHashMap = new HashMap<>();
 	private final ArrayList<String> names = new ArrayList<>();
 	private final ArrayList<Object> lines = new ArrayList<>();
+	private final Set<Object> matchedStacks = new HashSet<>();
 
 	private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<>();
 
@@ -153,6 +155,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				for( int z = 0; z < inv.getInventory().getSlots(); z++ )
 				{
 					this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 22, 1 + offset ) );
+					if (this.matchedStacks.contains(inv.getInventory().getStackInSlot(z)))
+						drawRect( z * 18 + 22, 1 + offset, z * 18 + 22 + 16, 1 + offset + 16, 0x2A00FF00 );
 				}
 
 				GuiButton guiButton = new GuiImgButton(guiLeft + 4, guiTop + offset + 1, Settings.ACTIONS, ActionItems.HIGHLIGHT_INTERFACE);
@@ -179,8 +183,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			offset += 18;
 		}
 
-		if( searchFieldInputs.isMouseIn( mouseX, mouseY ) ) drawTooltip( mouseX - guiLeft - offsetX, mouseY - guiTop, "Inputs OR names" );
-		else if( searchFieldOutputs.isMouseIn( mouseX, mouseY ) ) drawTooltip( mouseX - guiLeft - offsetX, mouseY - guiTop, "Outputs OR names" );
+		if( searchFieldInputs.isMouseIn( mouseX , mouseY ) ) drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Inputs OR names" );
+		else if( searchFieldOutputs.isMouseIn( mouseX, mouseY ) ) drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Outputs OR names" );
 
 	}
 
@@ -355,6 +359,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	{
 		this.byName.clear();
 		this.buttonList.clear();
+		this.matchedStacks.clear();
 
 		final String searchFieldInputs = this.searchFieldInputs.getText().toLowerCase();
 		final String searchFieldOutputs = this.searchFieldOutputs.getText().toLowerCase();
@@ -380,19 +385,27 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			{
 				for( final ItemStack itemStack : entry.getInventory() )
 				{
-					if( !searchFieldInputs.isEmpty() && !searchFieldOutputs.isEmpty() )
-						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) || this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) );
-					else if( !searchFieldInputs.isEmpty() )
-						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) );
-					else if( !searchFieldOutputs.isEmpty() )
-						found = ( this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) );
+					if( !searchFieldInputs.isEmpty() && !searchFieldOutputs.isEmpty() ) {
+						if (this.itemStackMatchesSearchTerm(itemStack, searchFieldInputs, 0) || this.itemStackMatchesSearchTerm(itemStack, searchFieldOutputs, 1)) {
+							found = true;
+							matchedStacks.add(itemStack);
+						}
+					}
+					else if( !searchFieldInputs.isEmpty() ) {
+						if (this.itemStackMatchesSearchTerm(itemStack, searchFieldInputs, 0)) {
+							found = true;
+							matchedStacks.add(itemStack);
+						}
+					}
+					else if( !searchFieldOutputs.isEmpty() ) {
+						if (this.itemStackMatchesSearchTerm(itemStack, searchFieldOutputs, 1)) {
+							found = true;
+							matchedStacks.add(itemStack);
+						}
+					}
 					// If only Interfaces with empty slots should be shown, check that here
 					if(itemStack.isEmpty())
 						interfaceHasFreeSlots = true;
-					if( found )
-					{
-						break;
-					}
 				}
 			}
 			// if found, filter skipped or machine name matching the search term, add it
