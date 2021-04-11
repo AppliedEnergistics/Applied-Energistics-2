@@ -48,11 +48,6 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>> 
     }
 
     @Override
-    protected void renderGridInventoryEntryTooltip(MatrixStack matrices, GridInventoryEntry<IAEItemStack> entry, int x, int y) {
-
-    }
-
-    @Override
     protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<IAEItemStack> entry, int mouseButton, ClickType clickType) {
         if (entry == null) {
             // The only interaction allowed on an empty virtual slot is putting down the currently held item

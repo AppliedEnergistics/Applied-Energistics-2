@@ -83,14 +83,12 @@ public final class TerminalStyles {
             null
     ).setSupportsAutoCrafting(true);
 
-    private static final String FLUID_TERMINAL_BACKGROUND = "guis/fluid_terminal.png";
-
     public static TerminalStyle FLUID_TERMINAL = new TerminalStyle(
-            Blitter.texture(FLUID_TERMINAL_BACKGROUND).src(0, 0, 195, 17),
-            Blitter.texture(FLUID_TERMINAL_BACKGROUND).src(0, 17, 195, 18),
-            Blitter.texture(FLUID_TERMINAL_BACKGROUND).src(0, 35, 195, 18),
-            Blitter.texture(FLUID_TERMINAL_BACKGROUND).src(0, 53, 195, 18),
-            Blitter.texture(FLUID_TERMINAL_BACKGROUND).src(0, 71, 195, 97),
+            Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 0, 195, 17),
+            Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 17, 195, 18),
+            Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 35, 195, 18),
+            Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 53, 195, 18),
+            Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 71, 195, 97),
             9,
             new Rectangle2d(80, 4, 90, 12),
             null
