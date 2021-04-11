@@ -18,19 +18,16 @@
 
 package appeng.client.gui.me.fluids;
 
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.client.gui.me.common.MEMonitorableScreen;
-import appeng.client.gui.me.common.Repo;
-import appeng.client.gui.me.common.TerminalStyle;
-import appeng.client.gui.widgets.IScrollSource;
-import appeng.container.me.common.GridInventoryEntry;
-import appeng.container.me.fluids.FluidTerminalContainer;
-import appeng.core.AELog;
-import appeng.helpers.InventoryAction;
-import appeng.util.Platform;
-import appeng.util.prioritylist.IPartitionList;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
@@ -42,15 +39,22 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
 
-import javax.annotation.Nullable;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.gui.me.common.MEMonitorableScreen;
+import appeng.client.gui.me.common.Repo;
+import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.widgets.IScrollSource;
+import appeng.container.me.common.GridInventoryEntry;
+import appeng.container.me.fluids.FluidTerminalContainer;
+import appeng.core.AELog;
+import appeng.helpers.InventoryAction;
+import appeng.util.Platform;
+import appeng.util.prioritylist.IPartitionList;
 
 public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, FluidTerminalContainer> {
 
-    public FluidTerminalScreen(TerminalStyle style, FluidTerminalContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public FluidTerminalScreen(TerminalStyle style, FluidTerminalContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(style, container, playerInventory, title);
     }
 
@@ -65,7 +69,8 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     }
 
     @Override
-    protected void renderGridInventoryEntry(MatrixStack matrices, int x, int y, GridInventoryEntry<IAEFluidStack> entry) {
+    protected void renderGridInventoryEntry(MatrixStack matrices, int x, int y,
+            GridInventoryEntry<IAEFluidStack> entry) {
         RenderSystem.disableBlend();
         IAEFluidStack fs = entry.getStack();
         final Fluid fluid = fs.getFluid();
@@ -87,7 +92,8 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     }
 
     @Override
-    protected void renderGridInventoryEntryTooltip(MatrixStack matrices, GridInventoryEntry<IAEFluidStack> entry, int x, int y) {
+    protected void renderGridInventoryEntryTooltip(MatrixStack matrices, GridInventoryEntry<IAEFluidStack> entry, int x,
+            int y) {
         IAEFluidStack fluidStack = entry.getStack();
         String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                 .format(entry.getStoredAmount() / 1000.0) + " B";
@@ -103,7 +109,8 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     }
 
     @Override
-    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<IAEFluidStack> entry, int mouseButton, ClickType clickType) {
+    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<IAEFluidStack> entry,
+            int mouseButton, ClickType clickType) {
         if (clickType == ClickType.PICKUP) {
             // TODO: Allow more options
             if (mouseButton == 0 && entry != null) {

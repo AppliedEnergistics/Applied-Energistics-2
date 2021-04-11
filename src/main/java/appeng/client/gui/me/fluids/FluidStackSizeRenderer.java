@@ -18,12 +18,12 @@
 
 package appeng.client.gui.me.fluids;
 
-import appeng.client.gui.me.common.StackSizeRenderer;
-import appeng.core.AEConfig;
-
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+
+import appeng.client.gui.me.common.StackSizeRenderer;
+import appeng.core.AEConfig;
 
 /**
  * @author AlgorithmX2
@@ -34,7 +34,7 @@ import java.text.DecimalFormatSymbols;
  */
 public class FluidStackSizeRenderer extends StackSizeRenderer {
 
-    private static final String[] NUMBER_FORMATS = new String[]{"#.000", "#.00", "#.0", "#"};
+    private static final String[] NUMBER_FORMATS = new String[] { "#.000", "#.00", "#.0", "#" };
 
     protected String getToBeRenderedStackSize(final long originalSize) {
         // Handle any value below 100 (large font) or 1000 (small font) Buckets with a

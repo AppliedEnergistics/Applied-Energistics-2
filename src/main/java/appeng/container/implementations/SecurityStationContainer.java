@@ -18,7 +18,6 @@
 
 package appeng.container.implementations;
 
-import appeng.container.me.items.ItemTerminalContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -34,6 +33,7 @@ import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;

@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import appeng.client.Point;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -58,6 +57,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 
+import appeng.client.Point;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
@@ -81,15 +81,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public static final int COLOR_DARK_GRAY = 0x404040;
 
-
     private final VerticalButtonBar verticalButtonBar = new VerticalButtonBar();
 
     @Nullable
     private final Blitter background;
 
     /**
-     * Supports anchoring slots to the bottom of the screen to allow them to be automatically laid out correctly
-     * when the screen is resized.
+     * Supports anchoring slots to the bottom of the screen to allow them to be automatically laid out correctly when
+     * the screen is resized.
      */
     private final Map<AppEngSlot, Integer> bottomAnchoredSlots = new HashMap<>();
 
@@ -122,8 +121,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     /**
-     * Anchors a slot to the bottom edge of the screen and automatically positions it when the screen is resized.
-     * The offset should include the 1px border around the actual slot.
+     * Anchors a slot to the bottom edge of the screen and automatically positions it when the screen is resized. The
+     * offset should include the 1px border around the actual slot.
      */
     protected final void anchorSlotToBottom(AppEngSlot slot, int offset) {
         bottomAnchoredSlots.put(slot, offset);
@@ -657,9 +656,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     /**
-     * Positions the player inventory slots at the given x,y coordinates. The position should be the upper left
-     * corner of the first slot, including it's visual border. (The actual slot will be positioned at 1,1 in relation
-     * to the given coordinate).
+     * Positions the player inventory slots at the given x,y coordinates. The position should be the upper left corner
+     * of the first slot, including it's visual border. (The actual slot will be positioned at 1,1 in relation to the
+     * given coordinate).
      */
     private void positionPlayerInventory(Point origin) {
 

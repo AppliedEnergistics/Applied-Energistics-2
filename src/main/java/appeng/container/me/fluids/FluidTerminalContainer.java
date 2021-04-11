@@ -20,7 +20,6 @@ package appeng.container.me.fluids;
 
 import javax.annotation.Nullable;
 
-import appeng.container.me.common.MEMonitorableContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -40,15 +39,16 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.ContainerLocator;
 import appeng.container.implementations.ContainerHelper;
+import appeng.container.me.common.MEMonitorableContainer;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.fluids.util.AEFluidStack;
+import appeng.fluids.util.FluidSoundHelper;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 
 /**
- * @author BrockWS
- * @version rv6 - 12/05/2018
+ * @see appeng.client.gui.me.fluids.FluidTerminalScreen
  * @since rv6 12/05/2018
  */
 public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack> {
@@ -70,12 +70,15 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
         this(TYPE, id, ip, monitorable, true);
     }
 
-    public FluidTerminalContainer(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost host, boolean bindInventory) {
-        super(containerType, id, ip, host, bindInventory, Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+    public FluidTerminalContainer(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost host,
+            boolean bindInventory) {
+        super(containerType, id, ip, host, bindInventory,
+                Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
     }
 
     @Override
-    protected void handleNetworkInteraction(ServerPlayerEntity player, @Nullable IAEFluidStack stack, InventoryAction action) {
+    protected void handleNetworkInteraction(ServerPlayerEntity player, @Nullable IAEFluidStack stack,
+            InventoryAction action) {
 
         if (action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM) {
             return;
@@ -83,7 +86,7 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
 
         final ItemStack held = player.inventory.getItemStack();
         if (held.getCount() != 1) {
-            // only support stacksize 1 for now
+            // only support stacksize 1 for now, since filled items are _usually_ not stackable
             return;
         }
 
@@ -133,6 +136,7 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
 
             player.inventory.setItemStack(fh.getContainer());
             this.updateHeld(player);
+            FluidSoundHelper.playFillSound(player, pulled.getFluidStack());
         } else if (action == InventoryAction.EMPTY_ITEM) {
             // See how much we can drain from the item
             final FluidStack extract = fh.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
@@ -169,6 +173,7 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
 
             player.inventory.setItemStack(fh.getContainer());
             this.updateHeld(player);
+            FluidSoundHelper.playEmptySound(player, extract);
         }
     }
 

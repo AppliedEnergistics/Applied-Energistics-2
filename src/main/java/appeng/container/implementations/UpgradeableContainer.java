@@ -235,7 +235,8 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
             if (currentItem != this.tbInventory.getItemStack()) {
                 if (!currentItem.isEmpty()) {
                     if (ItemStack.areItemsEqual(this.tbInventory.getItemStack(), currentItem)) {
-                        this.getPlayerInventory().setInventorySlotContents(this.tbSlot, this.tbInventory.getItemStack());
+                        this.getPlayerInventory().setInventorySlotContents(this.tbSlot,
+                                this.tbInventory.getItemStack());
                     } else {
                         this.setValidContainer(false);
                     }
