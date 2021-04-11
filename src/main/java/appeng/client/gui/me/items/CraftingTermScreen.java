@@ -34,25 +34,34 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 
+/**
+ * This screen extends the item terminal with a crafting grid. The content of the crafting grid is stored
+ * server-side in the crafting terminal itself.
+ */
 public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer> {
 
     public CraftingTermScreen(TerminalStyle style, CraftingTermContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(style, container, playerInventory, title);
+
+        // Position the crafting grid slots
+        anchorSlotToBottom(container.getOutputSlot(), 130, 137);
+        CraftingMatrixSlot[] craftingSlots = container.getCraftingSlots();
+        for (int i = 0; i < craftingSlots.length; i++) {
+            int row = i / 3;
+            int col = i % 3;
+
+            anchorSlotToBottom(craftingSlots[i], 36 + col * 18, 155 - row * 18);
+        }
     }
 
+    /**
+     * Clears the crafting grid and moves everything back into the network inventory.
+     */
     private void clear() {
-        Slot s = null;
-        for (final Object j : this.container.inventorySlots) {
-            if (j instanceof CraftingMatrixSlot) {
-                s = (Slot) j;
-            }
-        }
-
-        if (s != null) {
-            final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, s.slotNumber, 0);
-            NetworkHandler.instance().sendToServer(p);
-        }
+        CraftingMatrixSlot slot = container.getCraftingSlots()[0];
+        final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.slotNumber, 0);
+        NetworkHandler.instance().sendToServer(p);
     }
 
     @Override

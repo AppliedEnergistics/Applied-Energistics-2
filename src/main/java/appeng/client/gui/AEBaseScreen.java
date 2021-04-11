@@ -124,9 +124,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      * Anchors a slot to the bottom edge of the screen and automatically positions it when the screen is resized. The
      * offset should include the 1px border around the actual slot.
      */
-    protected final void anchorSlotToBottom(AppEngSlot slot, int offset) {
-        bottomAnchoredSlots.put(slot, offset);
-        slot.yPos = ySize - offset + 1;
+    protected final void anchorSlotToBottom(AppEngSlot slot, int x, int y) {
+        bottomAnchoredSlots.put(slot, y);
+        slot.xPos = x + 1;
+        slot.yPos = ySize - y + 1;
     }
 
     private void positionAnchoredSlots() {

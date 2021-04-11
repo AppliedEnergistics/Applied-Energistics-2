@@ -29,7 +29,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.client.gui.me.interfaceterminal.InterfaceSlot;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.util.helpers.ItemHandlerUtil;
@@ -39,8 +38,6 @@ public class AppEngSlot extends Slot {
     private final IItemHandler itemHandler;
     private final int invSlot;
 
-    private final int defX;
-    private final int defY;
     private boolean isDraggable = true;
     /**
      * Indicates that this slot is part of the player's inventory.
@@ -61,9 +58,6 @@ public class AppEngSlot extends Slot {
         super(EMPTY_INVENTORY, invSlot, x, y);
         this.itemHandler = inv;
         this.invSlot = invSlot;
-
-        this.defX = x;
-        this.defY = y;
     }
 
     public Slot setNotDraggable() {
@@ -199,14 +193,6 @@ public class AppEngSlot extends Slot {
 
     public boolean isPlayerSide() {
         return this.isPlayerSide;
-    }
-
-    public int getX() {
-        return this.defX;
-    }
-
-    public int getY() {
-        return this.defY;
     }
 
     private int getIconIndex() {
