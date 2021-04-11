@@ -23,6 +23,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.container.implementations.CraftingStatusContainer;
 import appeng.core.localization.GuiText;
@@ -69,7 +70,13 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
         if (this.container.noCPU) {
             return GuiText.NoCraftingJobs.text();
         }
-        return GuiText.CraftingCPU.withSuffix(": ").append(container.cpuName);
+        // it's possible that the cpu name has not synchronized from server->client yet, since fields are synced
+        // individually.
+        ITextComponent name = container.cpuName;
+        if (name == null) {
+            name = StringTextComponent.EMPTY;
+        }
+        return GuiText.CraftingCPU.withSuffix(": ").append(name);
     }
 
     @Override
