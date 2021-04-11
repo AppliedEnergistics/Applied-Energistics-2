@@ -61,12 +61,9 @@ import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.reporting.PatternTerminalPart;
-import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
 
@@ -74,7 +71,7 @@ import appeng.util.item.AEItemStack;
  * @see appeng.client.gui.me.items.PatternTermScreen
  */
 public class PatternTermContainer extends ItemTerminalContainer
-        implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket {
+        implements IOptionalSlotHost, IContainerCraftingPacket {
 
     public static ContainerType<PatternTermContainer> TYPE;
 
@@ -90,13 +87,12 @@ public class PatternTermContainer extends ItemTerminalContainer
     }
 
     private final PatternTerminalPart patternTerminal;
-    private final AppEngInternalInventory cOut = new AppEngInternalInventory(null, 1);
-    private final IItemHandler crafting;
-    private final FakeCraftingMatrixSlot[] craftingSlots = new FakeCraftingMatrixSlot[9];
-    private final OptionalFakeSlot[] outputSlots = new OptionalFakeSlot[3];
-    private final PatternTermSlot craftSlot;
-    private final RestrictedInputSlot patternSlotIN;
-    private final RestrictedInputSlot patternSlotOUT;
+    private final IItemHandler craftingGridInv;
+    private final FakeCraftingMatrixSlot[] craftingGridSlots = new FakeCraftingMatrixSlot[9];
+    private final OptionalFakeSlot[] processingOutputSlots = new OptionalFakeSlot[3];
+    private final PatternTermSlot craftOutputSlot;
+    private final RestrictedInputSlot blankPatternSlot;
+    private final RestrictedInputSlot encodedPatternSlot;
     private final ICraftingHelper craftingHelper = Api.INSTANCE.crafting();
 
     private ICraftingRecipe currentRecipe;
@@ -112,50 +108,31 @@ public class PatternTermContainer extends ItemTerminalContainer
         final IItemHandler patternInv = this.getPatternTerminal().getInventoryByName("pattern");
         final IItemHandler output = this.getPatternTerminal().getInventoryByName("output");
 
-        this.crafting = this.getPatternTerminal().getInventoryByName("crafting");
+        this.craftingGridInv = this.getPatternTerminal().getInventoryByName("crafting");
 
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                this.addSlot(this.craftingSlots[x + y * 3] = new FakeCraftingMatrixSlot(this.crafting, x + y * 3,
-                        18 + x * 18, -76 + y * 18));
-            }
+        for (int i = 0; i < 9; i++) {
+            this.addSlot(this.craftingGridSlots[i] = new FakeCraftingMatrixSlot(this.craftingGridInv, i, 0, 0));
         }
 
-        this.addSlot(this.craftSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
-                monitorable, this.crafting, patternInv, this.cOut, 110, -76 + 18, this, 2, this));
-        this.craftSlot.setIconIndex(-1);
+        this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
+                monitorable, this.craftingGridInv, patternInv, 0, 0, this, 2, this));
+        this.craftOutputSlot.setIconIndex(-1);
 
         for (int y = 0; y < 3; y++) {
-            this.addSlot(this.outputSlots[y] = new PatternOutputsSlot(output, this, y, 110, -76 + y * 18, 0, 0, 1));
-            this.outputSlots[y].setRenderDisabled(false);
-            this.outputSlots[y].setIconIndex(-1);
+            this.addSlot(this.processingOutputSlots[y] = new PatternOutputsSlot(output, this, y, 0, 0, 0, 0, 1));
+            this.processingOutputSlots[y].setRenderDisabled(false);
+            this.processingOutputSlots[y].setIconIndex(-1);
         }
 
-        this.addSlot(this.patternSlotIN = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BLANK_PATTERN,
-                patternInv, 0, 147, -72 - 9, this.getPlayerInventory()));
-        this.addSlot(this.patternSlotOUT = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                patternInv, 1, 147, -72 + 34, this.getPlayerInventory()));
+        this.addSlot(this.blankPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BLANK_PATTERN,
+                patternInv, 0, 0, 0, this.getPlayerInventory()));
+        this.addSlot(
+                this.encodedPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
+                        patternInv, 1, 0, 0, this.getPlayerInventory()));
 
-        this.patternSlotOUT.setStackLimit(1);
+        this.encodedPatternSlot.setStackLimit(1);
 
         this.createPlayerInventorySlots(ip);
-        this.updateOrderOfOutputSlots();
-    }
-
-    private void updateOrderOfOutputSlots() {
-        if (!this.isCraftingMode()) {
-            this.craftSlot.xPos = -9000;
-
-            for (int y = 0; y < 3; y++) {
-                this.outputSlots[y].xPos = this.outputSlots[y].getX();
-            }
-        } else {
-            this.craftSlot.xPos = this.craftSlot.getX();
-
-            for (int y = 0; y < 3; y++) {
-                this.outputSlots[y].xPos = -9000;
-            }
-        }
     }
 
     @Override
@@ -169,7 +146,7 @@ public class PatternTermContainer extends ItemTerminalContainer
         final CraftingInventory ic = new CraftingInventory(this, 3, 3);
 
         for (int x = 0; x < ic.getSizeInventory(); x++) {
-            ic.setInventorySlotContents(x, this.crafting.getStackInSlot(x));
+            ic.setInventorySlotContents(x, this.craftingGridInv.getStackInSlot(x));
         }
 
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, world)) {
@@ -184,23 +161,12 @@ public class PatternTermContainer extends ItemTerminalContainer
             is = this.currentRecipe.getCraftingResult(ic);
         }
 
-        this.cOut.setStackInSlot(0, is);
+        this.craftOutputSlot.setDisplayedCraftingOutput(is);
         return is;
     }
 
-    @Override
-    public void saveChanges() {
-
-    }
-
-    @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
-
-    }
-
     public void encode() {
-        ItemStack output = this.patternSlotOUT.getStack();
+        ItemStack output = this.encodedPatternSlot.getStack();
 
         final ItemStack[] in = this.getInputs();
         final ItemStack[] out = this.getOutputs();
@@ -215,7 +181,7 @@ public class PatternTermContainer extends ItemTerminalContainer
             return;
         } // if nothing is there we should snag a new pattern.
         else if (output.isEmpty()) {
-            output = this.patternSlotIN.getStack();
+            output = this.blankPatternSlot.getStack();
             if (output.isEmpty() || !isPattern(output)) {
                 return; // no blanks.
             }
@@ -223,7 +189,7 @@ public class PatternTermContainer extends ItemTerminalContainer
             // remove one, and clear the input slot.
             output.setCount(output.getCount() - 1);
             if (output.getCount() == 0) {
-                this.patternSlotIN.putStack(ItemStack.EMPTY);
+                this.blankPatternSlot.putStack(ItemStack.EMPTY);
             }
 
             // let the crafting helper create a new encoded pattern
@@ -235,7 +201,7 @@ public class PatternTermContainer extends ItemTerminalContainer
         } else {
             output = craftingHelper.encodeProcessingPattern(output, in, out);
         }
-        this.patternSlotOUT.putStack(output);
+        this.encodedPatternSlot.putStack(output);
 
     }
 
@@ -243,8 +209,8 @@ public class PatternTermContainer extends ItemTerminalContainer
         final ItemStack[] input = new ItemStack[9];
         boolean hasValue = false;
 
-        for (int x = 0; x < this.craftingSlots.length; x++) {
-            input[x] = this.craftingSlots[x].getStack();
+        for (int x = 0; x < this.craftingGridSlots.length; x++) {
+            input[x] = this.craftingGridSlots[x].getStack();
             if (!input[x].isEmpty()) {
                 hasValue = true;
             }
@@ -268,8 +234,8 @@ public class PatternTermContainer extends ItemTerminalContainer
             boolean hasValue = false;
             final ItemStack[] list = new ItemStack[3];
 
-            for (int i = 0; i < this.outputSlots.length; i++) {
-                final ItemStack out = this.outputSlots[i].getStack();
+            for (int i = 0; i < this.processingOutputSlots.length; i++) {
+                final ItemStack out = this.processingOutputSlots[i].getStack();
                 list[i] = out;
                 if (!out.isEmpty()) {
                     hasValue = true;
@@ -404,7 +370,6 @@ public class PatternTermContainer extends ItemTerminalContainer
         if (isServer()) {
             if (this.isCraftingMode() != this.getPatternTerminal().isCraftingRecipe()) {
                 this.setCraftingMode(this.getPatternTerminal().isCraftingRecipe());
-                this.updateOrderOfOutputSlots();
             }
 
             this.substitute = this.patternTerminal.isSubstitution();
@@ -417,13 +382,12 @@ public class PatternTermContainer extends ItemTerminalContainer
 
         if (field.equals("craftingMode")) {
             this.getAndUpdateOutput();
-            this.updateOrderOfOutputSlots();
         }
     }
 
     @Override
     public void onSlotChange(final Slot s) {
-        if (s == this.patternSlotOUT && isServer()) {
+        if (s == this.encodedPatternSlot && isServer()) {
             for (final IContainerListener listener : this.listeners) {
                 for (final Slot slot : this.inventorySlots) {
                     if (slot instanceof OptionalFakeSlot || slot instanceof FakeCraftingMatrixSlot) {
@@ -437,17 +401,17 @@ public class PatternTermContainer extends ItemTerminalContainer
             this.detectAndSendChanges();
         }
 
-        if (s == this.craftSlot && isClient()) {
+        if (s == this.craftOutputSlot && isClient()) {
             this.getAndUpdateOutput();
         }
     }
 
     public void clear() {
-        for (final Slot s : this.craftingSlots) {
+        for (final Slot s : this.craftingGridSlots) {
             s.putStack(ItemStack.EMPTY);
         }
 
-        for (final Slot s : this.outputSlots) {
+        for (final Slot s : this.processingOutputSlots) {
             s.putStack(ItemStack.EMPTY);
         }
 
@@ -494,4 +458,25 @@ public class PatternTermContainer extends ItemTerminalContainer
     public void setSubstitute(final boolean substitute) {
         this.substitute = substitute;
     }
+
+    public FakeCraftingMatrixSlot[] getCraftingGridSlots() {
+        return craftingGridSlots;
+    }
+
+    public OptionalFakeSlot[] getProcessingOutputSlots() {
+        return processingOutputSlots;
+    }
+
+    public PatternTermSlot getCraftOutputSlot() {
+        return craftOutputSlot;
+    }
+
+    public RestrictedInputSlot getBlankPatternSlot() {
+        return blankPatternSlot;
+    }
+
+    public RestrictedInputSlot getEncodedPatternSlot() {
+        return encodedPatternSlot;
+    }
+
 }

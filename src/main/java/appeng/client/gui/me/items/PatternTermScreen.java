@@ -31,11 +31,16 @@ import appeng.client.gui.me.common.TerminalStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.me.items.PatternTermContainer;
+import appeng.container.slot.FakeCraftingMatrixSlot;
+import appeng.container.slot.OptionalFakeSlot;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 
 public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> {
+
+    private static final int PROCESSING_OUTPUT_X = 110;
+    private static final int CRAFTING_OUTPUT_X = 110;
 
     private static final String MODES_TEXTURE = "guis/pattern_modes.png";
 
@@ -57,6 +62,26 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
     public PatternTermScreen(TerminalStyle style, PatternTermContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(style, container, playerInventory, title);
+
+        // Position pattern-related slots
+        anchorSlotToBottom(container.getBlankPatternSlot(), 146, 162);
+        anchorSlotToBottom(container.getEncodedPatternSlot(), 146, 119);
+
+        // Position the crafting grid slots
+        anchorSlotToBottom(container.getCraftOutputSlot(), CRAFTING_OUTPUT_X, 139);
+        FakeCraftingMatrixSlot[] craftingSlots = container.getCraftingGridSlots();
+        for (int i = 0; i < craftingSlots.length; i++) {
+            int row = i / 3;
+            int col = i % 3;
+
+            anchorSlotToBottom(craftingSlots[i], 17 + col * 18, 157 - row * 18);
+        }
+
+        // Position the processing pattern output
+        OptionalFakeSlot[] processingOutputSlots = container.getProcessingOutputSlots();
+        for (int i = 0; i < processingOutputSlots.length; i++) {
+            anchorSlotToBottom(processingOutputSlots[i], PROCESSING_OUTPUT_X, 157 - i * 18);
+        }
     }
 
     @Override
@@ -116,8 +141,20 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
         Blitter modeBg;
         if (this.container.isCraftingMode()) {
             modeBg = CRAFTING_MODE_BG;
+
+            // Move the processing output slots off-screen and reposition the crafting slot onscreen
+            container.getCraftOutputSlot().xPos = CRAFTING_OUTPUT_X;
+            for (int y = 0; y < 3; y++) {
+                container.getProcessingOutputSlots()[y].xPos = -9000;
+            }
         } else {
             modeBg = PROCESSING_MODE_BG;
+
+            // Move the crafting slot off-screen and reposition the processing output slot onscreen
+            container.getCraftOutputSlot().xPos = -9000;
+            for (int y = 0; y < 3; y++) {
+                container.getProcessingOutputSlots()[y].xPos = PROCESSING_OUTPUT_X;
+            }
         }
 
         modeBg.dest(guiLeft + 9, guiTop + ySize - 164).blit(matrixStack, getBlitOffset());

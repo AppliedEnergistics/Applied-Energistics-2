@@ -32,6 +32,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerNull;
@@ -39,14 +40,16 @@ import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.CraftingMatrixSlot;
 import appeng.container.slot.CraftingTermSlot;
 import appeng.helpers.IContainerCraftingPacket;
-import appeng.parts.reporting.CraftingTerminalPart;
-import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperInvItemHandler;
 
+/**
+ * Can only be used with a host that implements {@link ISegmentedInventory} and exposes an inventory named "crafting" to
+ * store the crafting grid and output.
+ *
+ * @see appeng.client.gui.me.items.CraftingTermScreen
+ */
 public class CraftingTermContainer extends ItemTerminalContainer
-        implements IAEAppEngInventory, IContainerCraftingPacket {
+        implements IContainerCraftingPacket {
 
     public static ContainerType<CraftingTermContainer> TYPE;
 
@@ -61,31 +64,27 @@ public class CraftingTermContainer extends ItemTerminalContainer
         return helper.open(player, locator);
     }
 
-    private final CraftingTerminalPart ct;
-    private final AppEngInternalInventory output = new AppEngInternalInventory(this, 1);
+    private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
     private final CraftingTermSlot outputSlot;
     private IRecipe<CraftingInventory> currentRecipe;
 
-    public CraftingTermContainer(int id, final PlayerInventory ip, final ITerminalHost monitorable) {
-        super(TYPE, id, ip, monitorable, false);
-        this.ct = (CraftingTerminalPart) monitorable;
+    public CraftingTermContainer(int id, final PlayerInventory ip, final ITerminalHost host) {
+        super(TYPE, id, ip, host, false);
+        this.craftingInventoryHost = (ISegmentedInventory) host;
 
-        final IItemHandler crafting = this.ct.getInventoryByName("crafting");
+        final IItemHandler craftingGridInv = this.craftingInventoryHost.getInventoryByName("crafting");
 
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                this.addSlot(this.craftingSlots[x + y * 3] = new CraftingMatrixSlot(this, crafting, x + y * 3,
-                        37 + x * 18, -72 + y * 18));
-            }
+        for (int i = 0; i < 9; i++) {
+            this.addSlot(this.craftingSlots[i] = new CraftingMatrixSlot(this, craftingGridInv, i, 0, 0));
         }
 
         this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
-                this.powerSource, monitorable, crafting, crafting, this.output, 131, -72 + 18, this));
+                this.powerSource, host, craftingGridInv, craftingGridInv, 0, 0, this));
 
         this.createPlayerInventorySlots(ip);
 
-        this.onCraftMatrixChanged(new WrapperInvItemHandler(crafting));
+        this.onCraftMatrixChanged(new WrapperInvItemHandler(craftingGridInv));
     }
 
     /**
@@ -101,29 +100,16 @@ public class CraftingTermContainer extends ItemTerminalContainer
             ic.setInventorySlotContents(x, this.craftingSlots[x].getStack());
         }
 
-        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, this.getPlayerInventory().player.world)) {
-            World world = this.getPlayerInventory().player.world;
+        World world = this.getPlayerInventory().player.world;
+        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, world)) {
             this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
         }
 
         if (this.currentRecipe == null) {
             this.outputSlot.putStack(ItemStack.EMPTY);
         } else {
-            final ItemStack craftingResult = this.currentRecipe.getCraftingResult(ic);
-
-            this.outputSlot.putStack(craftingResult);
+            this.outputSlot.putStack(this.currentRecipe.getCraftingResult(ic));
         }
-    }
-
-    @Override
-    public void saveChanges() {
-
-    }
-
-    @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
-
     }
 
     @Override
@@ -131,7 +117,7 @@ public class CraftingTermContainer extends ItemTerminalContainer
         if (name.equals("player")) {
             return new PlayerInvWrapper(this.getPlayerInventory());
         }
-        return this.ct.getInventoryByName(name);
+        return this.craftingInventoryHost.getInventoryByName(name);
     }
 
     @Override
@@ -142,4 +128,13 @@ public class CraftingTermContainer extends ItemTerminalContainer
     public IRecipe<CraftingInventory> getCurrentRecipe() {
         return this.currentRecipe;
     }
+
+    public CraftingMatrixSlot[] getCraftingSlots() {
+        return craftingSlots;
+    }
+
+    public CraftingTermSlot getOutputSlot() {
+        return outputSlot;
+    }
+
 }
