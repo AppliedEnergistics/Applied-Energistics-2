@@ -26,11 +26,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperInvItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class AppEngCraftingSlot extends AppEngSlot {
 

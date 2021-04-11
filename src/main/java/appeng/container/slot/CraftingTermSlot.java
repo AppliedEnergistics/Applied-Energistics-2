@@ -66,8 +66,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private final IContainerCraftingPacket container;
 
     public CraftingTermSlot(final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc,
-                            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
-                            final int x, final int y, final IContainerCraftingPacket ccp) {
+            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
+            final int x, final int y, final IContainerCraftingPacket ccp) {
         super(player, cMatrix, x, y);
         this.energySrc = energySrc;
         this.storage = storage;

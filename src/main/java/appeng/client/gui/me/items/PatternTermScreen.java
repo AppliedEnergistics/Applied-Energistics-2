@@ -18,6 +18,13 @@
 
 package appeng.client.gui.me.items;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.ActionItems;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.me.common.TerminalStyle;
@@ -29,11 +36,6 @@ import appeng.container.slot.OptionalFakeSlot;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
 
 public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> {
 
@@ -58,7 +60,7 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
     private ActionButton substitutionsDisabledBtn;
 
     public PatternTermScreen(TerminalStyle style, PatternTermContainer container, PlayerInventory playerInventory,
-                             ITextComponent title) {
+            ITextComponent title) {
         super(style, container, playerInventory, title);
 
         // Position pattern-related slots
@@ -160,7 +162,7 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         updateButtonVisibility();
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
         this.font.drawString(matrixStack, GuiText.PatternTerminal.getLocal(), 8,

@@ -18,16 +18,6 @@
 
 package appeng.container.me.items;
 
-import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.tiles.ISegmentedInventory;
-import appeng.api.storage.ITerminalHost;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerNull;
-import appeng.container.implementations.ContainerHelper;
-import appeng.container.slot.CraftingMatrixSlot;
-import appeng.container.slot.CraftingTermSlot;
-import appeng.helpers.IContainerCraftingPacket;
-import appeng.util.inv.WrapperInvItemHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -41,9 +31,20 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
+import appeng.api.config.SecurityPermissions;
+import appeng.api.implementations.tiles.ISegmentedInventory;
+import appeng.api.storage.ITerminalHost;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerNull;
+import appeng.container.implementations.ContainerHelper;
+import appeng.container.slot.CraftingMatrixSlot;
+import appeng.container.slot.CraftingTermSlot;
+import appeng.helpers.IContainerCraftingPacket;
+import appeng.util.inv.WrapperInvItemHandler;
+
 /**
- * Can only be used with a host that implements {@link ISegmentedInventory} and exposes an inventory named "crafting"
- * to store the crafting grid and output.
+ * Can only be used with a host that implements {@link ISegmentedInventory} and exposes an inventory named "crafting" to
+ * store the crafting grid and output.
  *
  * @see appeng.client.gui.me.items.CraftingTermScreen
  */

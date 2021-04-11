@@ -35,8 +35,8 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 
 /**
- * This screen extends the item terminal with a crafting grid. The content of the crafting grid is stored
- * server-side in the crafting terminal itself.
+ * This screen extends the item terminal with a crafting grid. The content of the crafting grid is stored server-side in
+ * the crafting terminal itself.
  */
 public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer> {
 
