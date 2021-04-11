@@ -480,7 +480,7 @@ final class Registration {
             );
             ScreenManager.registerFactory(
                     FluidTerminalContainer.TYPE,
-                    TerminalStyles.PATTERN_TERMINAL.<FluidTerminalContainer, FluidTerminalScreen>factory(FluidTerminalScreen::new)
+                    TerminalStyles.FLUID_TERMINAL.<FluidTerminalContainer, FluidTerminalScreen>factory(FluidTerminalScreen::new)
             );
             ScreenManager.registerFactory(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
             ScreenManager.registerFactory(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
