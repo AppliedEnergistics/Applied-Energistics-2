@@ -73,13 +73,8 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                     ContainerOpener.openContainer(CraftAmountContainer.TYPE, player, locator);
 
                     if (player.openContainer instanceof CraftAmountContainer) {
-                        final CraftAmountContainer cca = (CraftAmountContainer) player.openContainer;
-
-                        // This will be sent to the client to indicate what is about to be crafted
-                        cca.getCraftingItem().putStack(stack.asItemStackRepresentation());
-                        // This is the *actual* item that matters, not the display item above
-                        cca.setItemToCraft(stack.copy());
-
+                        CraftAmountContainer cca = (CraftAmountContainer) player.openContainer;
+                        cca.setItemToCraft(stack);
                         cca.detectAndSendChanges();
                     }
                 }

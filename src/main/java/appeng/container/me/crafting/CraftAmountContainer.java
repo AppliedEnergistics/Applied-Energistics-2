@@ -59,14 +59,21 @@ public class CraftAmountContainer extends AEBaseContainer {
     private static final ContainerHelper<CraftAmountContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftAmountContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
+    /**
+     * This slot is used to synchronize a visual representation of what is to be crafted to the client.
+     */
     private final Slot craftingItem;
+
+    /**
+     * This item (server-only) indicates what should actually be crafted.
+     */
     private IAEItemStack itemToCreate;
 
     public CraftAmountContainer(int id, PlayerInventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);
 
         this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(null, 1), 0, 34, 53);
-        this.addSlot(this.getCraftingItem());
+        this.addSlot(this.craftingItem);
     }
 
     public static CraftAmountContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
@@ -96,16 +103,10 @@ public class CraftAmountContainer extends AEBaseContainer {
         return new PlayerSource(this.getPlayerInventory().player, (IActionHost) this.getTarget());
     }
 
-    public Slot getCraftingItem() {
-        return this.craftingItem;
-    }
-
-    public IAEItemStack getItemToCraft() {
-        return this.itemToCreate;
-    }
-
     public void setItemToCraft(@Nonnull final IAEItemStack itemToCreate) {
-        this.itemToCreate = itemToCreate;
+        // Make a copy because this stack will be modified with the requested amount
+        this.itemToCreate = itemToCreate.copy();
+        this.craftingItem.putStack(itemToCreate.asItemStackRepresentation());
     }
 
     /**
@@ -130,17 +131,17 @@ public class CraftAmountContainer extends AEBaseContainer {
             }
 
             final IGrid g = gn.getGrid();
-            if (g == null || getItemToCraft() == null) {
+            if (g == null || this.itemToCreate == null) {
                 return;
             }
 
-            getItemToCraft().setStackSize(amount);
+            this.itemToCreate.setStackSize(amount);
 
             Future<ICraftingJob> futureJob = null;
             try {
                 final ICraftingGrid cg = g.getCache(ICraftingGrid.class);
                 futureJob = cg.beginCraftingJob(getWorld(), getGrid(), getActionSrc(),
-                        getItemToCraft(), null);
+                        this.itemToCreate, null);
 
                 final ContainerLocator locator = getLocator();
                 if (locator != null) {
