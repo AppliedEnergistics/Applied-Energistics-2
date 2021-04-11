@@ -22,13 +22,13 @@ public final class UpgradesPanel {
     private static final Blitter BACKGROUND = Blitter.texture("guis/extra_panels.png", 128, 128);
     private static final Blitter INNER_CORNER = BACKGROUND.copy().src(12, 33, SLOT_SIZE, SLOT_SIZE);
 
-    private final List<AppEngSlot> upgradeSlots;
+    private final List<? extends AppEngSlot> upgradeSlots;
 
     // Relative to current screen origin (not window)
     private int x;
     private int y;
 
-    public UpgradesPanel(int x, int y, List<AppEngSlot> upgradeSlots) {
+    public UpgradesPanel(int x, int y, List<? extends AppEngSlot> upgradeSlots) {
         this.upgradeSlots = upgradeSlots;
         this.setPos(x, y);
     }

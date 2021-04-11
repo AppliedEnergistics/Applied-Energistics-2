@@ -22,14 +22,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Upgrades;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.ContainerLocator;
 import appeng.container.implementations.ContainerHelper;
-import appeng.container.slot.RestrictedInputSlot;
 import appeng.fluids.parts.FluidFormationPlanePart;
 import appeng.fluids.util.IAEFluidTank;
 
@@ -53,11 +51,6 @@ public class FluidFormationPlaneContainer extends FluidConfigurableContainer {
     public FluidFormationPlaneContainer(int id, final PlayerInventory ip, final FluidFormationPlanePart te) {
         super(TYPE, id, ip, te);
         this.plane = te;
-    }
-
-    @Override
-    protected int getHeight() {
-        return 251;
     }
 
     @Override

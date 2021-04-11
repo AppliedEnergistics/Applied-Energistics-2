@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nullable;
 
+import appeng.container.me.items.ItemTerminalContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -47,7 +48,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerHelper;
 import appeng.container.me.items.CraftingTermContainer;
-import appeng.container.me.items.MEMonitorableContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.container.me.items.WirelessTermContainer;
 import appeng.core.AELog;
@@ -138,7 +138,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
 
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (final Throwable e) {
-                this.getPlayerInv().player.sendMessage(new StringTextComponent("Error: " + e.toString()),
+                this.getPlayerInventory().player.sendMessage(new StringTextComponent("Error: " + e.toString()),
                         Util.DUMMY_UUID);
                 AELog.debug(e);
                 this.setValidContainer(false);
@@ -171,7 +171,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         }
 
         if (ah instanceof TerminalPart) {
-            originalGui = MEMonitorableContainer.TYPE;
+            originalGui = ItemTerminalContainer.TYPE;
         }
 
         if (ah instanceof CraftingTerminalPart) {
@@ -193,7 +193,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     private IActionSource getActionSrc() {
-        return new PlayerSource(this.getPlayerInv().player, (IActionHost) this.getTarget());
+        return new PlayerSource(this.getPlayerInventory().player, (IActionHost) this.getTarget());
     }
 
     @Override
@@ -231,7 +231,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     public World getWorld() {
-        return this.getPlayerInv().player.world;
+        return this.getPlayerInventory().player.world;
     }
 
     public boolean isAutoStart() {

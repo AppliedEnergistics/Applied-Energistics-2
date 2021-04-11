@@ -170,16 +170,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         // Add a terminalstyle button
         int offset = this.guiTop + GUI_BUTTON_Y_MARGIN;
-        this.addButton(new SettingToggleButton<>(this.guiLeft + GUI_BUTTON_X_MARGIN, offset,
+        this.addToLeftToolbar(new SettingToggleButton<>(this.guiLeft + GUI_BUTTON_X_MARGIN, offset,
                 Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
-
-        // Reposition player inventory slots.
-        for (final Slot s : this.container.inventorySlots) {
-            if (s instanceof AppEngSlot) {
-                // The first slot must be positioned 83 pixels from the bottom of the dialog (see the dialog PNG)
-                s.yPos = ((AppEngSlot) s).getY() + this.ySize - 83;
-            }
-        }
 
         // numLines may have changed, recalculate scroll bar.
         this.resetScrollbar();

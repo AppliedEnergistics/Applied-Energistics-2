@@ -73,7 +73,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
         this.addSlot(new OutputSlot(spatialIOPort.getInternalInventory(), 1, 113, 48,
                 RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon));
 
-        this.bindPlayerInventory(ip, 0, 197 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     public static SpatialIOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {

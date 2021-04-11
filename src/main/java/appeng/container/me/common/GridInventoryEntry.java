@@ -1,13 +1,16 @@
-package appeng.container.me.items;
+package appeng.container.me.common;
 
-import net.minecraft.item.ItemStack;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.IAEStack;
 import net.minecraft.network.PacketBuffer;
 
-public class GridInventoryEntry {
+import javax.annotation.Nullable;
+
+public class GridInventoryEntry<T extends IAEStack<T>> {
     private final long serial;
 
-    // it is acceptable for this to be an empty ItemStack for incremental updates
-    private final ItemStack item;
+    @Nullable
+    private final T stack;
 
     private final long storedAmount;
 
@@ -15,10 +18,10 @@ public class GridInventoryEntry {
 
     private final boolean craftable;
 
-    public GridInventoryEntry(long serial, ItemStack item, long storedAmount, long requestableAmount,
+    public GridInventoryEntry(long serial, @Nullable T stack, long storedAmount, long requestableAmount,
                               boolean craftable) {
         this.serial = serial;
-        this.item = item;
+        this.stack = stack;
         this.storedAmount = storedAmount;
         this.requestableAmount = requestableAmount;
         this.craftable = craftable;
@@ -28,8 +31,8 @@ public class GridInventoryEntry {
         return serial;
     }
 
-    public ItemStack getItem() {
-        return item;
+    public T getStack() {
+        return stack;
     }
 
     public long getStoredAmount() {
@@ -46,19 +49,28 @@ public class GridInventoryEntry {
 
     public void write(PacketBuffer buffer) {
         buffer.writeVarLong(serial);
+        buffer.writeBoolean(stack != null);
+        if (stack != null) {
+            stack.writeToPacket(buffer);
+        }
         buffer.writeVarLong(storedAmount);
         buffer.writeVarLong(requestableAmount);
         buffer.writeBoolean(craftable);
-        buffer.writeItemStack(item, true);
     }
 
-    public static GridInventoryEntry read(PacketBuffer buffer) {
+    public static <T extends IAEStack<T>> GridInventoryEntry<T> read(IStorageChannel<T> storageChannel, PacketBuffer buffer) {
         long serial = buffer.readVarLong();
+        T stack = null;
+        if (buffer.readBoolean()) {
+            stack = storageChannel.readFromPacket(buffer);
+        }
         long storedAmount = buffer.readVarLong();
         long requestableAmount = buffer.readVarLong();
         boolean craftable = buffer.readBoolean();
-        ItemStack item = buffer.readItemStack();
-        return new GridInventoryEntry(serial, item, storedAmount, requestableAmount, craftable);
+        return new GridInventoryEntry<>(serial, stack, storedAmount, requestableAmount, craftable);
     }
 
+    public boolean isMeaningful() {
+        return storedAmount > 0 || requestableAmount > 0 || craftable;
+    }
 }

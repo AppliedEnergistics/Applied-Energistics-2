@@ -18,53 +18,6 @@
 
 package appeng.core;
 
-import java.util.Locale;
-import java.util.function.Supplier;
-
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.placement.NoPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
-import net.minecraft.world.gen.placement.TopSolidRangeConfig;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.network.IContainerFactory;
-import net.minecraftforge.registries.IForgeRegistry;
-
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
@@ -113,6 +66,7 @@ import appeng.client.gui.implementations.StorageBusScreen;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.implementations.VibrationChamberScreen;
 import appeng.client.gui.implementations.WirelessScreen;
+import appeng.client.gui.me.common.TerminalStyles;
 import appeng.client.gui.me.crafting.CraftAmountScreen;
 import appeng.client.gui.me.crafting.CraftConfirmScreen;
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
@@ -120,7 +74,7 @@ import appeng.client.gui.me.crafting.CraftingStatusScreen;
 import appeng.client.gui.me.fluids.FluidTerminalScreen;
 import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.client.gui.me.items.CraftingTermScreen;
-import appeng.client.gui.me.items.MEMonitorableScreen;
+import appeng.client.gui.me.items.ItemTerminalScreen;
 import appeng.client.gui.me.items.MEPortableCellScreen;
 import appeng.client.gui.me.items.PatternTermScreen;
 import appeng.client.gui.me.items.WirelessTermScreen;
@@ -182,7 +136,7 @@ import appeng.container.me.crafting.CraftingCPUContainer;
 import appeng.container.me.crafting.CraftingStatusContainer;
 import appeng.container.me.fluids.FluidTerminalContainer;
 import appeng.container.me.items.CraftingTermContainer;
-import appeng.container.me.items.MEMonitorableContainer;
+import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.me.items.MEPortableCellContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.container.me.items.WirelessTermContainer;
@@ -234,6 +188,52 @@ import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.placement.NoPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.TopSolidRangeConfig;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.network.IContainerFactory;
+import net.minecraftforge.registries.IForgeRegistry;
+
+import java.util.Locale;
+import java.util.function.Supplier;
 
 final class Registration {
 
@@ -383,8 +383,8 @@ final class Registration {
                 LevelEmitterContainer::open);
         MolecularAssemblerContainer.TYPE = registerContainer(registry, "molecular_assembler",
                 MolecularAssemblerContainer::fromNetwork, MolecularAssemblerContainer::open);
-        MEMonitorableContainer.TYPE = registerContainer(registry, "memonitorable", MEMonitorableContainer::fromNetwork,
-                MEMonitorableContainer::open);
+        ItemTerminalContainer.TYPE = registerContainer(registry, "item_terminal", ItemTerminalContainer::fromNetwork,
+                ItemTerminalContainer::open);
         MEPortableCellContainer.TYPE = registerContainer(registry, "meportablecell",
                 MEPortableCellContainer::fromNetwork, MEPortableCellContainer::open);
         NetworkStatusContainer.TYPE = registerContainer(registry, "networkstatus", NetworkStatusContainer::fromNetwork,
@@ -436,10 +436,18 @@ final class Registration {
             ScreenManager.registerFactory(SkyChestContainer.TYPE, SkyChestScreen::new);
             ScreenManager.registerFactory(ChestContainer.TYPE, ChestScreen::new);
             ScreenManager.registerFactory(WirelessContainer.TYPE, WirelessScreen::new);
-            ScreenManager.<MEMonitorableContainer, MEMonitorableScreen<MEMonitorableContainer>>registerFactory(
-                    MEMonitorableContainer.TYPE, MEMonitorableScreen::new);
-            ScreenManager.registerFactory(MEPortableCellContainer.TYPE, MEPortableCellScreen::new);
-            ScreenManager.registerFactory(WirelessTermContainer.TYPE, WirelessTermScreen::new);
+            ScreenManager.registerFactory(
+                    ItemTerminalContainer.TYPE,
+                    TerminalStyles.ITEM_TERMINAL.<ItemTerminalContainer, ItemTerminalScreen<ItemTerminalContainer>>factory(ItemTerminalScreen::new)
+            );
+            ScreenManager.registerFactory(
+                    MEPortableCellContainer.TYPE,
+                    TerminalStyles.PORTABLE_CELL.<MEPortableCellContainer, MEPortableCellScreen>factory(MEPortableCellScreen::new)
+            );
+            ScreenManager.registerFactory(
+                    WirelessTermContainer.TYPE,
+                    TerminalStyles.WIRELESS_TERMINAL.<WirelessTermContainer, WirelessTermScreen>factory(WirelessTermScreen::new)
+            );
             ScreenManager.registerFactory(NetworkStatusContainer.TYPE, NetworkStatusScreen::new);
             ScreenManager.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>registerFactory(
                     CraftingCPUContainer.TYPE, CraftingCPUScreen::new);
@@ -459,10 +467,21 @@ final class Registration {
             ScreenManager.registerFactory(FormationPlaneContainer.TYPE, FormationPlaneScreen::new);
             ScreenManager.registerFactory(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new);
             ScreenManager.registerFactory(PriorityContainer.TYPE, PriorityScreen::new);
-            ScreenManager.registerFactory(SecurityStationContainer.TYPE, SecurityStationScreen::new);
-            ScreenManager.registerFactory(CraftingTermContainer.TYPE, CraftingTermScreen::new);
-            ScreenManager.registerFactory(PatternTermContainer.TYPE, PatternTermScreen::new);
-            ScreenManager.registerFactory(FluidTerminalContainer.TYPE, FluidTerminalScreen::new);
+            ScreenManager.registerFactory(SecurityStationContainer.TYPE,
+                    TerminalStyles.SECURITY_STATION.<SecurityStationContainer, SecurityStationScreen>factory(SecurityStationScreen::new)
+            );
+            ScreenManager.registerFactory(
+                    CraftingTermContainer.TYPE,
+                    TerminalStyles.CRAFTING_TERMINAL.<CraftingTermContainer, CraftingTermScreen>factory(CraftingTermScreen::new)
+            );
+            ScreenManager.registerFactory(
+                    PatternTermContainer.TYPE,
+                    TerminalStyles.PATTERN_TERMINAL.<PatternTermContainer, PatternTermScreen>factory(PatternTermScreen::new)
+            );
+            ScreenManager.registerFactory(
+                    FluidTerminalContainer.TYPE,
+                    TerminalStyles.PATTERN_TERMINAL.<FluidTerminalContainer, FluidTerminalScreen>factory(FluidTerminalScreen::new)
+            );
             ScreenManager.registerFactory(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
             ScreenManager.registerFactory(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
             ScreenManager.registerFactory(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new);
@@ -478,7 +497,7 @@ final class Registration {
     }
 
     private <T extends AEBaseContainer> ContainerType<T> registerContainer(IForgeRegistry<ContainerType<?>> registry,
-            String id, IContainerFactory<T> factory, ContainerOpener.Opener<T> opener) {
+                                                                           String id, IContainerFactory<T> factory, ContainerOpener.Opener<T> opener) {
         ContainerType<T> type = IForgeContainerType.create(factory);
         type.setRegistryName(AppEng.MOD_ID, id);
         registry.register(type);
@@ -530,7 +549,7 @@ final class Registration {
     // This mirrors the Vanilla registration method for structures, but uses the
     // Forge registry instead
     private static <F extends Structure<?>> void registerStructure(IForgeRegistry<Structure<?>> registry, String name,
-            F structure, GenerationStage.Decoration stage) {
+                                                                   F structure, GenerationStage.Decoration stage) {
         Structure.NAME_STRUCTURE_BIMAP.put(name.toLowerCase(Locale.ROOT), structure);
         Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, stage);
         structure.setRegistryName(name.toLowerCase(Locale.ROOT));
@@ -803,9 +822,9 @@ final class Registration {
     }
 
     static boolean shouldGenerateIn(ResourceLocation id,
-            AEFeature feature,
-            IWorldGen.WorldGenType worldGenType,
-            Biome.Category category) {
+                                    AEFeature feature,
+                                    IWorldGen.WorldGenType worldGenType,
+                                    Biome.Category category) {
         if (id == null) {
             return false; // We don't add to unnamed biomes
         }

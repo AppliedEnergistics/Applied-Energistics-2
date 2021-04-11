@@ -56,7 +56,7 @@ public class DriveContainer extends AEBaseContainer {
             }
         }
 
-        this.bindPlayerInventory(ip, 0, 199 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
 }

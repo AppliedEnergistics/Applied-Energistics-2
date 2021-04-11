@@ -92,11 +92,6 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     }
 
     @Override
-    protected int getHeight() {
-        return 176;
-    }
-
-    @Override
     /**
      * Overridden super.setupConfig to prevent setting up the fake slots
      */

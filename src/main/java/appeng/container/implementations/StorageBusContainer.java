@@ -41,7 +41,6 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
-import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.parts.misc.StorageBusPart;
 import appeng.util.helpers.ItemHandlerUtil;
@@ -73,11 +72,6 @@ public class StorageBusContainer extends UpgradeableContainer {
     public StorageBusContainer(int id, final PlayerInventory ip, final StorageBusPart te) {
         super(TYPE, id, ip, te);
         this.storageBus = te;
-    }
-
-    @Override
-    protected int getHeight() {
-        return 251;
     }
 
     @Override

@@ -52,7 +52,7 @@ public class SkyChestContainer extends AEBaseContainer {
 
         this.chest.openInventory(ip.player);
 
-        this.bindPlayerInventory(ip, 0, 195 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     public static SkyChestContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {

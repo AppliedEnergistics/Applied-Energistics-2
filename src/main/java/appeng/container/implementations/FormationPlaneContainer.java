@@ -33,7 +33,6 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
-import appeng.container.slot.RestrictedInputSlot;
 import appeng.parts.automation.FormationPlanePart;
 
 public class FormationPlaneContainer extends UpgradeableContainer {
@@ -56,11 +55,6 @@ public class FormationPlaneContainer extends UpgradeableContainer {
 
     public FormationPlaneContainer(int id, final PlayerInventory ip, final FormationPlanePart te) {
         super(TYPE, id, ip, te);
-    }
-
-    @Override
-    protected int getHeight() {
-        return 251;
     }
 
     @Override

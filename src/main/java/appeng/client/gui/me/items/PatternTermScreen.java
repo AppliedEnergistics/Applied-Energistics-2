@@ -18,32 +18,33 @@
 
 package appeng.client.gui.me.items;
 
+import appeng.api.config.ActionItems;
+import appeng.client.gui.Blitter;
+import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.widgets.ActionButton;
+import appeng.client.gui.widgets.TabButton;
+import appeng.container.me.items.PatternTermContainer;
+import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfigValuePacket;
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.api.config.ActionItems;
-import appeng.client.gui.me.items.MEMonitorableScreen;
-import appeng.client.gui.widgets.ActionButton;
-import appeng.client.gui.widgets.TabButton;
-import appeng.container.me.items.PatternTermContainer;
-import appeng.container.slot.AppEngSlot;
-import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
+public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> {
 
-public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer> {
+    private static final String MODES_TEXTURE = "guis/pattern_modes.png";
 
-    private static final String BACKGROUND_CRAFTING_MODE = "guis/pattern.png";
-    private static final String BACKGROUND_PROCESSING_MODE = "guis/pattern2.png";
+    private static final Blitter CRAFTING_MODE_BG = Blitter.texture(MODES_TEXTURE).src(0, 0, 126, 68);
 
-    private static final String SUBSITUTION_DISABLE = "0";
-    private static final String SUBSITUTION_ENABLE = "1";
+    private static final Blitter PROCESSING_MODE_BG = Blitter.texture(MODES_TEXTURE).src(0, 70, 126, 68);
 
-    private static final String CRAFTMODE_CRFTING = "1";
+    private static final String SUBSTITUTION_DISABLE = "0";
+    private static final String SUBSTITUTION_ENABLE = "1";
+
+    private static final String CRAFTMODE_CRAFTING = "1";
     private static final String CRAFTMODE_PROCESSING = "0";
 
     private TabButton tabCraftButton;
@@ -51,9 +52,8 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
     private ActionButton substitutionsEnabledBtn;
     private ActionButton substitutionsDisabledBtn;
 
-    public PatternTermScreen(PatternTermContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.setReservedSpace(81);
+    public PatternTermScreen(TerminalStyle style, PatternTermContainer container, PlayerInventory playerInventory, ITextComponent title) {
+        super(style, container, playerInventory, title);
     }
 
     @Override
@@ -67,16 +67,16 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
 
         this.tabProcessButton = new TabButton(this.guiLeft + 173, this.guiTop + this.ySize - 177,
                 new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.text(), this.itemRenderer,
-                btn -> toggleCraftMode(CRAFTMODE_CRFTING));
+                btn -> toggleCraftMode(CRAFTMODE_CRAFTING));
         this.addButton(this.tabProcessButton);
 
         this.substitutionsEnabledBtn = new ActionButton(this.guiLeft + 84, this.guiTop + this.ySize - 163,
-                ActionItems.ENABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSITUTION_DISABLE));
+                ActionItems.ENABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSTITUTION_DISABLE));
         this.substitutionsEnabledBtn.setHalfSize(true);
         this.addButton(this.substitutionsEnabledBtn);
 
         this.substitutionsDisabledBtn = new ActionButton(this.guiLeft + 84, this.guiTop + this.ySize - 163,
-                ActionItems.DISABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSITUTION_ENABLE));
+                ActionItems.DISABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSTITUTION_ENABLE));
         this.substitutionsDisabledBtn.setHalfSize(true);
         this.addButton(this.substitutionsDisabledBtn);
 
@@ -107,8 +107,30 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
     }
 
     @Override
+    public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
+
+        Blitter modeBg;
+        if (this.container.isCraftingMode()) {
+            modeBg = CRAFTING_MODE_BG;
+        } else {
+            modeBg = PROCESSING_MODE_BG;
+        }
+
+        modeBg.dest(guiLeft + 9, guiTop + ySize - 164).blit(matrixStack, getBlitOffset());
+    }
+
+    @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+                       final int mouseY) {
+        updateButtonVisibility();
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
+        this.font.drawString(matrixStack, GuiText.PatternTerminal.getLocal(), 8,
+                this.ySize - 96 + 2 - 81, COLOR_DARK_GRAY);
+    }
+
+    private void updateButtonVisibility() {
+        // Update button visibility
         if (this.container.isCraftingMode()) {
             this.tabCraftButton.visible = true;
             this.tabProcessButton.visible = false;
@@ -126,26 +148,6 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
             this.substitutionsEnabledBtn.visible = false;
             this.substitutionsDisabledBtn.visible = false;
         }
-
-        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
-        this.font.drawString(matrixStack, GuiText.PatternTerminal.getLocal(), 8,
-                this.ySize - 96 + 2 - this.getReservedSpace(), COLOR_DARK_GRAY);
-    }
-
-    @Override
-    protected String getBackground() {
-        if (this.container.isCraftingMode()) {
-            return BACKGROUND_CRAFTING_MODE;
-        }
-
-        return BACKGROUND_PROCESSING_MODE;
-    }
-
-    @Override
-    protected void repositionSlot(final AppEngSlot s) {
-        final int offsetPlayerSide = s.isPlayerSide() ? 5 : 3;
-
-        s.yPos = s.getY() + this.ySize - 78 - offsetPlayerSide;
     }
 
 }

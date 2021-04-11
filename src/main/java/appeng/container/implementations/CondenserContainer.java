@@ -61,7 +61,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
                 (new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_COMPONENT, inv, 2, 101, 26, ip))
                         .setStackLimit(1));
 
-        this.bindPlayerInventory(ip, 0, 197 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     public static CondenserContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {

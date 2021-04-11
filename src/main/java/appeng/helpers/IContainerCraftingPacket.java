@@ -24,6 +24,8 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 
+import java.util.List;
+
 public interface IContainerCraftingPacket {
 
     /**
@@ -49,7 +51,7 @@ public interface IContainerCraftingPacket {
     boolean useRealItems();
 
     /**
-     * @return array of view cells
+     * @return array of view cells. can contain empty itemstacks.
      */
-    ItemStack[] getViewCells();
+    List<ItemStack> getViewCells();
 }

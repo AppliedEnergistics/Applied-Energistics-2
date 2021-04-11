@@ -8,7 +8,7 @@ import appeng.api.config.YesNo;
 import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
-import appeng.container.me.items.GridInventoryEntry;
+import appeng.container.me.common.GridInventoryEntry;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.integration.abstraction.JEIFacade;
@@ -34,9 +34,9 @@ public abstract class Repo<T extends IAEStack<T>> {
     private String searchString = "";
     private boolean hasPower;
 
-    private final BiMap<Long, Entry<T>> entries = HashBiMap.create();
-    private final ArrayList<Entry<T>> view = new ArrayList<>();
-    private IPartitionList<T> myPartitionList;
+    private final BiMap<Long, GridInventoryEntry<T>> entries = HashBiMap.create();
+    private final ArrayList<GridInventoryEntry<T>> view = new ArrayList<>();
+    private IPartitionList<T> partitionList;
 
     private final IScrollSource src;
     private final ISortSource sortSrc;
@@ -47,33 +47,41 @@ public abstract class Repo<T extends IAEStack<T>> {
         this.sortSrc = sortSrc;
     }
 
-    protected void setMyPartitionList(IPartitionList<T> myPartitionList) {
-        this.myPartitionList = myPartitionList;
+    public void setPartitionList(IPartitionList<T> partitionList) {
+        if (partitionList != this.partitionList) {
+            this.partitionList = partitionList;
+            this.updateView();
+        }
     }
 
-    @Nullable
-    protected abstract T createFromNetwork(GridInventoryEntry networkEntry);
+    public final void postUpdate(GridInventoryEntry<T> serverEntry) {
 
-    public final void postUpdate(GridInventoryEntry serverEntry) {
-
-        Entry<T> localEntry = entries.get(serverEntry.getSerial());
+        GridInventoryEntry<T> localEntry = entries.get(serverEntry.getSerial());
         if (localEntry == null) {
             // First time we're seeing this serial -> create new entry
-            T refStack = createFromNetwork(serverEntry);
-            if (refStack == null) {
+            if (serverEntry.getStack() == null) {
                 AELog.warn("First time seeing serial %s, but incomplete info received", serverEntry.getSerial());
                 return;
             }
-            localEntry = new Entry<>(serverEntry.getSerial(), refStack);
-            entries.put(serverEntry.getSerial(), localEntry);
+            if (serverEntry.isMeaningful()) {
+                entries.put(serverEntry.getSerial(), serverEntry);
+            }
+            return;
         }
 
-        localEntry.setStoredAmount(serverEntry.getStoredAmount());
-        localEntry.setRequestableAmount(serverEntry.getRequestableAmount());
-        localEntry.setCraftable(serverEntry.isCraftable());
-
-        if (!localEntry.isMeaningful()) {
+        // Update the local entry
+        if (!serverEntry.isMeaningful()) {
             entries.remove(serverEntry.getSerial());
+        } else if (serverEntry.getStack() == null) {
+            entries.put(serverEntry.getSerial(), new GridInventoryEntry<>(
+                    serverEntry.getSerial(),
+                    localEntry.getStack(),
+                    serverEntry.getStoredAmount(),
+                    serverEntry.getRequestableAmount(),
+                    serverEntry.isCraftable()
+            ));
+        } else {
+            entries.put(serverEntry.getSerial(), serverEntry);
         }
     }
 
@@ -104,10 +112,9 @@ public abstract class Repo<T extends IAEStack<T>> {
 
         ViewItems viewMode = this.sortSrc.getSortDisplay();
 
-        for (Entry<T> entry : this.entries.values()) {
-            // TODO: This is kinda the only reason we're using an AEItemStack here
-            if (this.myPartitionList != null) {
-                if (!this.myPartitionList.isListed(entry.stack)) {
+        for (GridInventoryEntry<T> entry : this.entries.values()) {
+            if (this.partitionList != null) {
+                if (!this.partitionList.isListed(entry.getStack())) {
                     continue;
                 }
             }
@@ -128,26 +135,17 @@ public abstract class Repo<T extends IAEStack<T>> {
         SortOrder sortOrder = this.sortSrc.getSortBy();
         SortDir sortDir = this.sortSrc.getSortDir();
 
-        this.view.sort(Comparator.comparing(e -> e.stack, getComparator(sortOrder, sortDir)));
+        this.view.sort(Comparator.comparing(GridInventoryEntry::getStack, getComparator(sortOrder, sortDir)));
     }
 
     @Nullable
-    public final Entry<T> getEntry(int idx) {
+    public final GridInventoryEntry<T> get(int idx) {
         idx += this.src.getCurrentScroll() * this.rowSize;
 
         if (idx >= this.view.size()) {
             return null;
         }
         return this.view.get(idx);
-    }
-
-    public final T get(int idx) {
-        idx += this.src.getCurrentScroll() * this.rowSize;
-
-        if (idx >= this.view.size()) {
-            return null;
-        }
-        return this.view.get(idx).stack;
     }
 
     public final int size() {
@@ -202,55 +200,6 @@ public abstract class Repo<T extends IAEStack<T>> {
         MOD,
         NAME,
         NAME_OR_TOOLTIP
-    }
-
-    public static final class Entry<T> {
-        private final long serial;
-        private final T stack;
-        private long storedAmount;
-        private long requestableAmount;
-        private boolean craftable;
-
-        public Entry(long serial, T stack) {
-            this.serial = serial;
-            this.stack = stack;
-        }
-
-        public long getSerial() {
-            return serial;
-        }
-
-        public T getStack() {
-            return stack;
-        }
-
-        public long getStoredAmount() {
-            return storedAmount;
-        }
-
-        public void setStoredAmount(long storedAmount) {
-            this.storedAmount = storedAmount;
-        }
-
-        public long getRequestableAmount() {
-            return requestableAmount;
-        }
-
-        public void setRequestableAmount(long requestableAmount) {
-            this.requestableAmount = requestableAmount;
-        }
-
-        public boolean isCraftable() {
-            return craftable;
-        }
-
-        public void setCraftable(boolean craftable) {
-            this.craftable = craftable;
-        }
-
-        public boolean isMeaningful() {
-            return storedAmount > 0 || requestableAmount > 0 || craftable;
-        }
     }
 
 }

@@ -62,11 +62,6 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
         this.tankSync = new FluidSyncHelper(this.myDuality.getTanks(), DualityFluidInterface.NUMBER_OF_TANKS);
     }
 
-    @Override
-    protected int getHeight() {
-        return 231;
-    }
-
     public IAEFluidTank getTanks() {
         return myDuality.getTanks();
     }

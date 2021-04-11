@@ -89,11 +89,6 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     }
 
     @Override
-    protected int getHeight() {
-        return 197;
-    }
-
-    @Override
     protected void setupConfig() {
         int offX = 29;
         int offY = 30;

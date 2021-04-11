@@ -68,7 +68,7 @@ public class NetworkToolContainer extends AEBaseContainer {
             }
         }
 
-        this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     public void toggleFacadeMode() {
@@ -79,12 +79,12 @@ public class NetworkToolContainer extends AEBaseContainer {
 
     @Override
     public void detectAndSendChanges() {
-        final ItemStack currentItem = this.getPlayerInv().getCurrentItem();
+        final ItemStack currentItem = this.getPlayerInventory().getCurrentItem();
 
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
                 if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem,
+                    this.getPlayerInventory().setInventorySlotContents(this.getPlayerInventory().currentItem,
                             this.toolInv.getItemStack());
                 } else {
                     this.setValidContainer(false);

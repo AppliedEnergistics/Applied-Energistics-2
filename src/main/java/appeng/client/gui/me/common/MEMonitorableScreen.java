@@ -16,35 +16,34 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.me.items;
+package appeng.client.gui.me.common;
 
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.config.TerminalStyle;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.implementations.tiles.IViewCellStorage;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
+import appeng.client.Point;
 import appeng.client.gui.AEBaseMEScreen;
-import appeng.client.gui.implementations.SecurityStationScreen;
+import appeng.client.gui.Blitter;
+import appeng.client.gui.me.items.RepoSlot;
 import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
-import appeng.client.render.StackSizeRenderer;
+import appeng.client.gui.widgets.UpgradesPanel;
+import appeng.container.me.common.GridInventoryEntry;
+import appeng.container.me.common.MEMonitorableContainer;
 import appeng.container.me.crafting.CraftingStatusContainer;
-import appeng.container.me.items.GridInventoryEntry;
-import appeng.container.me.items.MEMonitorableContainer;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.CraftingMatrixSlot;
-import appeng.container.slot.FakeCraftingMatrixSlot;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -52,8 +51,7 @@ import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.core.sync.packets.InventoryActionPacket;
-import appeng.core.sync.packets.RequestAutoCraftPacket;
+import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -62,46 +60,46 @@ import appeng.parts.reporting.AbstractTerminalPart;
 import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import appeng.util.prioritylist.IPartitionList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nullable;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBaseMEScreen<T>
+public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMonitorableContainer<T>> extends AEBaseMEScreen<C>
         implements ISortSource, IConfigManagerHost {
 
-    private static int craftingGridOffsetX;
-    private static int craftingGridOffsetY;
+    private static final int MIN_ROWS = 3;
 
     private static String memoryText = "";
-    private final ItemRepo repo;
-    private final int offsetX = 9;
-    private final int lowerTextureOffset = 0;
+    private final TerminalStyle style;
+    private final Repo<T> repo;
+    private final List<ItemStack> currentViewCells = new ArrayList<>();
     private final IConfigManager configSrc;
-    private final boolean viewCell;
-    private final ItemStack[] myCurrentViewCells = new ItemStack[5];
-    private final StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();
+    private final boolean supportsViewCells;
+    // The box on the right of the terminal shown behind the view cell slots
+    @Nullable
+    private final UpgradesPanel viewCellBg;
     private TabButton craftingStatusBtn;
     private AETextField searchField;
-    private GuiText myName;
-    private int perRow = 9;
-    private int reservedSpace = 0;
-    private boolean customSortOrder = true;
+    private final GuiText windowTitle;
     private int rows = 0;
-    private int maxRows = Integer.MAX_VALUE;
-    private int standardSize;
     private SettingToggleButton<ViewItems> viewModeToggle;
     private SettingToggleButton<SortOrder> sortByToggle;
     private SettingToggleButton<SortDir> sortDirToggle;
@@ -109,50 +107,61 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     private int currentMouseX = 0;
     private int currentMouseY = 0;
 
-    public MEMonitorableScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public MEMonitorableScreen(TerminalStyle style, C container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, null);
+
+        this.style = style;
 
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
-        this.repo = new ItemRepo(scrollbar, this);
+        this.repo = createRepo(scrollbar);
         setScrollBar();
 
-        this.xSize = 185;
-        this.ySize = 204;
+        this.xSize = style.getScreenWidth();
+        this.ySize = style.getScreenHeight(0);
 
         Object te = container.getTarget();
-        if (te instanceof IViewCellStorage) {
-            this.xSize += 33;
-        }
-
-        this.standardSize = this.xSize;
 
         this.configSrc = ((IConfigurableObject) this.container).getConfigManager();
         this.container.setGui(this);
 
-        this.viewCell = te instanceof IViewCellStorage;
+        this.supportsViewCells = te instanceof IViewCellStorage;
+        if (this.supportsViewCells) {
+            viewCellBg = new UpgradesPanel(xSize + 2, 0, container.getViewCellSlots());
+        } else {
+            viewCellBg = null;
+        }
 
         if (te instanceof SecurityStationTileEntity) {
-            this.myName = GuiText.Security;
+            this.windowTitle = GuiText.Security;
         } else if (te instanceof WirelessTerminalGuiObject) {
-            this.myName = GuiText.WirelessTerminal;
+            this.windowTitle = GuiText.WirelessTerminal;
         } else if (te instanceof IPortableCell) {
-            this.myName = GuiText.PortableCell;
+            this.windowTitle = GuiText.PortableCell;
         } else if (te instanceof IMEChest) {
-            this.myName = GuiText.Chest;
+            this.windowTitle = GuiText.Chest;
         } else if (te instanceof AbstractTerminalPart) {
-            this.myName = GuiText.Terminal;
+            this.windowTitle = GuiText.Terminal;
         } else {
             throw new IllegalArgumentException("Invalid GUI target given: " + te);
         }
     }
 
-    public void postUpdate(boolean fullUpdate, final List<GridInventoryEntry> list) {
+    protected abstract Repo<T> createRepo(IScrollSource scrollSource);
+
+    @Nullable
+    protected abstract IPartitionList<T> createPartitionList(List<ItemStack> viewCells);
+
+    protected abstract void renderGridInventoryEntry(MatrixStack matrices, int x, int y, GridInventoryEntry<T> entry);
+
+    protected abstract void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<T> entry, int mouseButton, ClickType clickType);
+
+    public void postUpdate(boolean fullUpdate, final List<GridInventoryEntry<T>> list) {
         if (fullUpdate) {
             this.repo.clear();
         }
 
-        for (GridInventoryEntry entry : list) {
+        for (GridInventoryEntry<T> entry : list) {
             this.repo.postUpdate(entry);
         }
 
@@ -162,66 +171,49 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
     private void setScrollBar() {
         this.getScrollBar().setTop(18).setLeft(175).setHeight(this.rows * 18 - 2);
-        this.getScrollBar().setRange(0, (this.repo.size() + this.perRow - 1) / this.perRow - this.rows,
-                Math.max(1, this.rows / 6));
+        int totalRows = (this.repo.size() + getSlotsPerRow() - 1) / getSlotsPerRow();
+        this.getScrollBar().setRange(0, totalRows - this.rows, Math.max(1, this.rows / 6));
     }
 
     private void showCraftingStatus() {
         NetworkHandler.instance().sendToServer(new SwitchGuisPacket(CraftingStatusContainer.TYPE));
     }
 
+    private int getSlotsPerRow() {
+        return style.getSlotsPerRow();
+    }
+
     @Override
     public void init() {
         getMinecraft().keyboardListener.enableRepeatEvents(true);
 
-        this.maxRows = this.getMaxRows();
-        TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
-
-        if (terminalStyle != TerminalStyle.FULL) {
-            this.perRow = 9;
-        } else {
-            this.perRow = 9 + ((this.width - this.standardSize) / 18);
-        }
-        this.xSize = this.standardSize + ((this.perRow - 9) * 18);
-
-        final int magicNumber = 114 + 1;
-        final int extraSpace = this.height - magicNumber - this.reservedSpace;
-
-        this.rows = extraSpace / 18;
-        if (this.rows > this.maxRows) {
-            this.rows = this.maxRows;
-        }
-
-        if (this.rows < 3) {
-            this.rows = 3;
-        }
+        this.rows = MathHelper.clamp(style.getPossibleRows(height), MIN_ROWS, getMaxRows());
 
         // Size the container according to the number of rows we decided to have
-        this.ySize = magicNumber + this.rows * 18 + this.reservedSpace;
+        this.ySize = style.getScreenHeight(rows);
 
         // Re-create the ME slots since the number of rows could have changed
         List<Slot> slots = this.container.inventorySlots;
-        slots.removeIf(slot -> slot instanceof VirtualItemSlot);
+        slots.removeIf(slot -> slot instanceof RepoSlot);
 
-        for (int y = 0; y < this.rows; y++) {
-            for (int x = 0; x < this.perRow; x++) {
-                VirtualItemSlot slot = new VirtualItemSlot(this.repo, x + y * this.perRow, this.offsetX + x * 18,
-                        18 + y * 18);
-                slots.add(slot);
+        int repoIndex = 0;
+        for (int row = 0; row < this.rows; row++) {
+            for (int col = 0; col < style.getSlotsPerRow(); col++) {
+                Point pos = style.getSlotPos(row, col);
+
+                slots.add(new RepoSlot<>(this.repo, repoIndex++, pos.getX(), pos.getY()));
             }
         }
 
         super.init();
-        // full size : 204
-        // extra slots : 72
-        // slot 18
 
-        if (this.customSortOrder) {
+        if (style.hasSortByButton()) {
             this.sortByToggle = this.addToLeftToolbar(new SettingToggleButton<>(0, 0, Settings.SORT_BY,
                     getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
         }
 
-        if (this.viewCell || this instanceof WirelessTermScreen) {
+        // Toggling between craftable/stored items only makes sense if the terminal supports auto-crafting
+        if (style.isSupportsAutoCrafting()) {
             this.viewModeToggle = this.addToLeftToolbar(new SettingToggleButton<>(0, 0,
                     Settings.VIEW_MODE, getSortDisplay(), this::toggleServerSetting));
         }
@@ -233,20 +225,27 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         this.addToLeftToolbar(new SettingToggleButton<>(0, 0, Settings.SEARCH_MODE, searchMode,
                 Platform::isSearchModeAvailable, this::toggleTerminalSearchMode));
 
-        if (!(this instanceof MEPortableCellScreen) || this instanceof WirelessTermScreen) {
+        // Show a button to toggle the terminal style if the style doesn't enforce a max number of rows
+        if (style.getMaxRows() == null) {
+            appeng.api.config.TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
             this.addToLeftToolbar(new SettingToggleButton<>(0, 0, Settings.TERMINAL_STYLE, terminalStyle,
                     this::toggleTerminalStyle));
         }
 
-        this.searchField = new AETextField(this.font, this.guiLeft + Math.max(80, this.offsetX), this.guiTop + 4, 90,
-                12);
+        Rectangle2d searchFieldRect = style.getSearchFieldRect();
+        this.searchField = new AETextField(this.font,
+                this.guiLeft + searchFieldRect.getX(),
+                this.guiTop + searchFieldRect.getY(),
+                searchFieldRect.getWidth(),
+                searchFieldRect.getHeight()
+        );
         this.searchField.setEnableBackgroundDrawing(false);
         this.searchField.setMaxStringLength(25);
         this.searchField.setTextColor(0xFFFFFF);
         this.searchField.setSelectionColor(0xFF008000);
         this.searchField.setVisible(true);
 
-        if (this.viewCell || this instanceof WirelessTermScreen) {
+        if (style.isSupportsAutoCrafting()) {
             this.craftingStatusBtn = this.addButton(new TabButton(this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16,
                     GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus()));
             this.craftingStatusBtn.setHideEdge(true);
@@ -274,27 +273,6 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
             this.setScrollBar();
         }
 
-        craftingGridOffsetX = Integer.MAX_VALUE;
-        craftingGridOffsetY = Integer.MAX_VALUE;
-
-        for (final Slot s : this.container.inventorySlots) {
-            if (s instanceof AppEngSlot) {
-                if (s.xPos < 197) {
-                    this.repositionSlot((AppEngSlot) s);
-                }
-            }
-
-            if (s instanceof CraftingMatrixSlot || s instanceof FakeCraftingMatrixSlot) {
-                if (s.xPos > 0 && s.yPos > 0) {
-                    craftingGridOffsetX = Math.min(craftingGridOffsetX, s.xPos);
-                    craftingGridOffsetY = Math.min(craftingGridOffsetY, s.yPos);
-                }
-            }
-        }
-
-        craftingGridOffsetX -= 25;
-        craftingGridOffsetY -= 6;
-
         this.setScrollBar();
 
     }
@@ -302,7 +280,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
                        final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(this.myName.text()).getString(), 8, 6,
+        this.font.drawString(matrixStack, this.getGuiDisplayName(this.windowTitle.text()).getString(), 8, 6,
                 COLOR_DARK_GRAY);
         this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3,
                 COLOR_DARK_GRAY);
@@ -316,7 +294,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
             // bigger
             int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
             int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeightRealms() - 16) / 2;
-            StackSizeRenderer.renderSizeLabel(font, x - this.guiLeft, y - this.guiTop,
+            style.getStackSizeRenderer().renderSizeLabel(font, x - this.guiLeft, y - this.guiTop,
                     String.valueOf(container.activeCraftingJobs));
         }
     }
@@ -343,21 +321,19 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
         if (wheelDelta != 0 && hasShiftDown()) {
             final Slot slot = this.getSlot((int) x, (int) y);
-            if (slot instanceof VirtualItemSlot) {
-                final IAEItemStack item = ((VirtualItemSlot) slot).getAEStack();
-                if (item != null) {
-                    this.container.setTargetStack(item);
-                    final InventoryAction direction = wheelDelta > 0 ? InventoryAction.ROLL_DOWN
-                            : InventoryAction.ROLL_UP;
-                    final int times = (int) Math.abs(wheelDelta);
-                    final int inventorySize = this.container.inventorySlots.size();
-                    for (int h = 0; h < times; h++) {
-                        final InventoryActionPacket p = new InventoryActionPacket(direction, inventorySize, 0);
-                        NetworkHandler.instance().sendToServer(p);
-                    }
-
-                    return true;
+            RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, slot);
+            if (repoSlot != null) {
+                GridInventoryEntry<T> entry = repoSlot.getEntry();
+                long serial = entry != null ? entry.getSerial() : -1;
+                final InventoryAction direction = wheelDelta > 0 ? InventoryAction.ROLL_DOWN
+                        : InventoryAction.ROLL_UP;
+                int times = (int) Math.abs(wheelDelta);
+                for (int h = 0; h < times; h++) {
+                    final MEInteractionPacket p = new MEInteractionPacket(this.container.windowId, serial, direction);
+                    NetworkHandler.instance().sendToServer(p);
                 }
+
+                return true;
             }
         }
         return super.mouseScrolled(x, y, wheelDelta);
@@ -365,58 +341,9 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
     @Override
     protected void handleMouseClick(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
-        if (slot instanceof VirtualItemSlot) {
-            VirtualItemSlot virtualItemSlot = (VirtualItemSlot) slot;
-            if (!virtualItemSlot.getHasStack()) {
-                return;
-            }
-
-            IAEItemStack stack = virtualItemSlot.getAEStack();
-
-            // Move as many items of a single type as possible
-            if (InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
-                this.container.setTargetStack(stack);
-                final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, -1, 0);
-                NetworkHandler.instance().sendToServer(p);
-            } else {
-                InventoryAction action = null;
-
-                switch (clickType) {
-                    case PICKUP: // pickup / set-down.
-                        action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE
-                                : InventoryAction.PICKUP_OR_SET_DOWN;
-
-                        if (action == InventoryAction.PICKUP_OR_SET_DOWN
-                                && virtualItemSlot.getStoredAmount() == 0
-                                && playerInventory.getItemStack().isEmpty()) {
-                            NetworkHandler.instance().sendToServer(new RequestAutoCraftPacket(stack));
-                            return;
-                        }
-
-                        break;
-                    case QUICK_MOVE:
-                        action = (mouseButton == 1) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
-                        break;
-
-                    case CLONE: // creative dupe:
-                        if (virtualItemSlot.isCraftable()) {
-                            NetworkHandler.instance().sendToServer(new RequestAutoCraftPacket(stack));
-                            return;
-                        } else if (playerInventory.player.abilities.isCreativeMode) {
-                            action = InventoryAction.CREATIVE_DUPLICATE;
-                        }
-                        break;
-
-                    default:
-                    case THROW: // drop item:
-                }
-
-                if (action != null) {
-                    this.container.setTargetStack(stack);
-                    final InventoryActionPacket p = new InventoryActionPacket(action, -1, 0);
-                    NetworkHandler.instance().sendToServer(p);
-                }
-            }
+        RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, slot);
+        if (repoSlot != null) {
+            handleGridInventoryEntryMouseClick(repoSlot.getEntry(), mouseButton, clickType);
             return;
         }
 
@@ -434,34 +361,31 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
                        final int mouseY, float partialTicks) {
 
-        this.bindTexture(this.getBackground());
-        final int x_width = 197;
-        blit(matrixStack, offsetX, offsetY, 0, 0, x_width, 18);
+        style.getHeader()
+                .dest(offsetX, offsetY)
+                .blit(matrixStack, getBlitOffset());
 
-        if (this.viewCell || (this instanceof SecurityStationScreen)) {
-            blit(matrixStack, offsetX + x_width, offsetY, x_width, 0, 46, 128);
+        int y = offsetY;
+        style.getHeader().dest(offsetX, y).blit(matrixStack, getBlitOffset());
+        y += style.getHeader().getSrcHeight();
+
+        // To draw the first/last row, we need to at least draw 2
+        int rowsToDraw = Math.max(2, this.rows);
+        for (int x = 0; x < rowsToDraw; x++) {
+            Blitter row = style.getRow();
+            if (x == 0) {
+                row = style.getFirstRow();
+            } else if (x + 1 == rowsToDraw) {
+                row = style.getLastRow();
+            }
+            row.dest(offsetX, y).blit(matrixStack, getBlitOffset());
+            y += style.getRow().getSrcHeight();
         }
 
-        for (int x = 0; x < this.rows; x++) {
-            blit(matrixStack, offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18);
-        }
+        style.getBottom().dest(offsetX, y).blit(matrixStack, getBlitOffset());
 
-        blit(matrixStack, offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
-                99 + this.reservedSpace - this.lowerTextureOffset);
-
-        if (this.viewCell) {
-            boolean update = false;
-
-            for (int i = 0; i < 5; i++) {
-                if (this.myCurrentViewCells[i] != this.container.getCellViewSlot(i).getStack()) {
-                    update = true;
-                    this.myCurrentViewCells[i] = this.container.getCellViewSlot(i).getStack();
-                }
-            }
-
-            if (update) {
-                this.repo.setViewCell(this.myCurrentViewCells);
-            }
+        if (viewCellBg != null) {
+            viewCellBg.draw(matrixStack, getBlitOffset(), offsetX, offsetY);
         }
 
         if (this.searchField != null) {
@@ -473,28 +397,29 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     // TODO This is incorrectly named in MCP, it's renderSlot, essentially
     @Override
     protected void moveItems(MatrixStack matrices, Slot s) {
-        if (s instanceof VirtualItemSlot) {
-            VirtualItemSlot slot = (VirtualItemSlot) s;
+        RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, s);
+        if (repoSlot != null) {
+            if (!this.repo.hasPower()) {
+                fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+            } else {
+                GridInventoryEntry<T> entry = repoSlot.getEntry();
+                if (entry != null) {
+                    try {
+                        renderGridInventoryEntry(matrices, s.xPos, s.yPos, entry);
+                    } catch (final Exception err) {
+                        AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err.toString());
+                    }
 
-            try {
-                if (!this.repo.hasPower()) {
-                    fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
-                }
-
-                if (slot.getHasStack()) {
-                    // Annoying but easier than trying to splice into render item
-                    super.moveItems(matrices, new Size1Slot(s));
-
-                    long storedAmount = slot.getStoredAmount();
-                    boolean craftable = slot.isCraftable();
-                    if (viewModeToggle.getSetting() == Settings.CRAFT_ONLY && craftable) {
-                        this.stackSizeRenderer.renderStackSize(this.font, 0, true, s.xPos, s.yPos);
+                    // If a view mode is selected that only shows craftable items, display the "craftable" text
+                    // regardless of stack size
+                    long storedAmount = entry.getStoredAmount();
+                    boolean craftable = entry.isCraftable();
+                    if (isViewOnlyCraftable() && craftable) {
+                        style.getStackSizeRenderer().renderStackSize(this.font, 0, true, s.xPos, s.yPos);
                     } else {
-                        this.stackSizeRenderer.renderStackSize(this.font, storedAmount, craftable, s.xPos, s.yPos);
+                        style.getStackSizeRenderer().renderStackSize(this.font, storedAmount, craftable, s.xPos, s.yPos);
                     }
                 }
-            } catch (final Exception err) {
-                AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err.toString());
             }
 
             return;
@@ -503,66 +428,66 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         super.moveItems(matrices, s);
     }
 
-    @Override
-    protected void renderTooltip(MatrixStack matrixStack, final ItemStack stack, final int x, final int y) {
-        final Slot s = this.getSlot(x, y);
+    /**
+     * @return True if the terminal should only show craftable items.
+     */
+    protected final boolean isViewOnlyCraftable() {
+        return viewModeToggle != null && viewModeToggle.getCurrentValue() == ViewItems.CRAFTABLE;
+    }
 
-        if (s instanceof VirtualItemSlot && !stack.isEmpty()) {
-            final int bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
+    protected void renderHoveredTooltip(MatrixStack matrixStack, int x, int y) {
+        // Vanilla doesn't show item tooltips when the player have something in their hand
+        if (style.isShowTooltipsWithItemInHand() || getPlayer().inventory.getItemStack().isEmpty()) {
+            RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, this.hoveredSlot);
 
-            final List<ITextComponent> currentToolTip = this.getTooltipFromItem(stack);
-
-            VirtualItemSlot slot = (VirtualItemSlot) s;
-
-            if (slot.getHasStack()) {
-                long storedAmount = slot.getStoredAmount();
-                if (storedAmount > bigNumber || (storedAmount > 1 && stack.isDamaged())) {
-                    final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
-                            .format(storedAmount);
-                    currentToolTip
-                            .add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
+            if (repoSlot != null) {
+                GridInventoryEntry<T> entry = repoSlot.getEntry();
+                if (entry != null) {
+                    this.renderGridInventoryEntryTooltip(matrixStack, entry, x, y);
                 }
-
-                long requestableAmount = slot.getRequestableAmount();
-                if (requestableAmount > 0) {
-                    final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
-                            .format(requestableAmount);
-                    currentToolTip.add(ButtonToolTips.ItemsRequestable.text(formattedAmount));
-                }
-
-                // TODO: Should also list craftable status
-                if (Minecraft.getInstance().gameSettings.advancedItemTooltips) {
-                    currentToolTip.add(new StringTextComponent("Serial: " + slot.getEntry().getSerial()).mergeStyle(TextFormatting.DARK_GRAY));
-                }
-
-                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,
-                        this.font);
-
-                return;
-            } else if (stack.getCount() > bigNumber) {
-                final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(stack.getCount());
-                currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
-
-                this.renderToolTip(matrixStack, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,
-                        this.font);
-
                 return;
             }
         }
 
-        super.renderTooltip(matrixStack, stack, x, y);
+        super.renderHoveredTooltip(matrixStack, x, y);
     }
 
-    protected String getBackground() {
-        return "guis/terminal.png";
+    protected void renderGridInventoryEntryTooltip(MatrixStack matrices, GridInventoryEntry<T> entry, int x, int y) {
+        final int bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
+
+        ItemStack stack = entry.getStack().asItemStackRepresentation();
+
+        final List<ITextComponent> currentToolTip = this.getTooltipFromItem(stack);
+
+        long storedAmount = entry.getStoredAmount();
+        if (storedAmount > bigNumber || (storedAmount > 1 && stack.isDamaged())) {
+            final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
+                    .format(storedAmount);
+            currentToolTip
+                    .add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
+        }
+
+        long requestableAmount = entry.getRequestableAmount();
+        if (requestableAmount > 0) {
+            final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
+                    .format(requestableAmount);
+            currentToolTip.add(ButtonToolTips.ItemsRequestable.text(formattedAmount));
+        }
+
+        // TODO: Should also list craftable status
+        if (Minecraft.getInstance().gameSettings.advancedItemTooltips) {
+            currentToolTip.add(new StringTextComponent("Serial: " + entry.getSerial()).mergeStyle(TextFormatting.DARK_GRAY));
+        }
+
+        this.renderToolTip(matrices, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,this.font);
     }
 
-    protected int getMaxRows() {
-        return AEConfig.instance().getTerminalStyle() == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
-    }
-
-    protected void repositionSlot(final AppEngSlot s) {
-        s.yPos = s.getY() + this.ySize - 78 - 5;
+    private int getMaxRows() {
+        Integer maxRows = style.getMaxRows();
+        if (maxRows != null) {
+            return maxRows;
+        }
+        return AEConfig.instance().getTerminalStyle() == appeng.api.config.TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
     }
 
     @Override
@@ -628,6 +553,16 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     @Override
     public void tick() {
         this.repo.setPower(this.container.isPowered());
+
+        if (this.supportsViewCells) {
+            List<ItemStack> viewCells = this.container.getViewCells();
+            if (!this.currentViewCells.equals(viewCells)) {
+                this.currentViewCells.clear();
+                this.currentViewCells.addAll(viewCells);
+                this.repo.setPartitionList(createPartitionList(viewCells));
+            }
+        }
+
         super.tick();
     }
 
@@ -663,30 +598,6 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         this.repo.updateView();
     }
 
-    protected int getReservedSpace() {
-        return this.reservedSpace;
-    }
-
-    protected void setReservedSpace(final int reservedSpace) {
-        this.reservedSpace = reservedSpace;
-    }
-
-    public boolean isCustomSortOrder() {
-        return this.customSortOrder;
-    }
-
-    protected void setCustomSortOrder(final boolean customSortOrder) {
-        this.customSortOrder = customSortOrder;
-    }
-
-    public int getStandardSize() {
-        return this.standardSize;
-    }
-
-    protected void setStandardSize(final int standardSize) {
-        this.standardSize = standardSize;
-    }
-
     private void toggleTerminalSearchMode(SettingToggleButton<SearchBoxMode> btn, boolean backwards) {
         SearchBoxMode next = btn.getNextValue(backwards);
         AEConfig.instance().setTerminalSearchMode(next);
@@ -694,17 +605,26 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         this.reinitalize();
     }
 
-    private void toggleTerminalStyle(SettingToggleButton<TerminalStyle> btn, boolean backwards) {
-        TerminalStyle next = btn.getNextValue(backwards);
+    private void toggleTerminalStyle(SettingToggleButton<appeng.api.config.TerminalStyle> btn, boolean backwards) {
+        appeng.api.config.TerminalStyle next = btn.getNextValue(backwards);
         AEConfig.instance().setTerminalStyle(next);
         btn.set(next);
         this.reinitalize();
     }
 
-    private <S extends Enum<S>> void toggleServerSetting(SettingToggleButton<S> btn, boolean backwards) {
-        S next = btn.getNextValue(backwards);
+    private <SE extends Enum<SE>> void toggleServerSetting(SettingToggleButton<SE> btn, boolean backwards) {
+        SE next = btn.getNextValue(backwards);
         NetworkHandler.instance().sendToServer(new ConfigValuePacket(btn.getSetting().name(), next.name()));
         btn.set(next);
+    }
+
+    @Override
+    public List<Rectangle2d> getExclusionZones() {
+        List<Rectangle2d> result = super.getExclusionZones();
+        if (viewCellBg != null) {
+            viewCellBg.addExclusionZones(guiLeft, guiTop, result);
+        }
+        return result;
     }
 
     private void reinitalize() {
@@ -712,5 +632,4 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         this.buttons.clear();
         this.init();
     }
-
 }

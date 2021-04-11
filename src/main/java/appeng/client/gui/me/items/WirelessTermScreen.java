@@ -18,18 +18,15 @@
 
 package appeng.client.gui.me.items;
 
+import appeng.client.gui.me.common.TerminalStyle;
+import appeng.container.me.items.WirelessTermContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.client.gui.me.items.MEMonitorableScreen;
-import appeng.container.me.items.MEPortableCellContainer;
+public class WirelessTermScreen extends ItemTerminalScreen<WirelessTermContainer> {
 
-// FIXME: Extended from GuiPortableCell before... Why?
-public class WirelessTermScreen extends MEMonitorableScreen<MEPortableCellContainer> {
-
-    public WirelessTermScreen(MEPortableCellContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title);
+    public WirelessTermScreen(TerminalStyle style, WirelessTermContainer container, PlayerInventory playerInventory, ITextComponent title) {
+        super(style, container, playerInventory, title);
     }
 
 }
