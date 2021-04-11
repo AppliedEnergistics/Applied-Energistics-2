@@ -78,7 +78,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                         // This will be sent to the client to indicate what is about to be crafted
                         cca.getCraftingItem().putStack(stack.asItemStackRepresentation());
                         // This is the *actual* item that matters, not the display item above
-                        cca.setItemToCraft(stack);
+                        cca.setItemToCraft(stack.copy());
 
                         cca.detectAndSendChanges();
                     }
