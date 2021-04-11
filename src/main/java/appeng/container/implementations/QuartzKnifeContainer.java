@@ -69,7 +69,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
         this.lockPlayerInventorySlot(ip.currentItem);
 
-        this.bindPlayerInventory(ip, 0, 184 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     public void setName(final String value) {
@@ -78,7 +78,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
     @Override
     public void detectAndSendChanges() {
-        if (!ensureGuiItemIsInSlot(this.toolInv, this.getPlayerInv().currentItem)) {
+        if (!ensureGuiItemIsInSlot(this.toolInv, this.getPlayerInventory().currentItem)) {
             this.setValidContainer(false);
             return;
         }
@@ -141,7 +141,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
             if (isServer() && !this.getItemHandler().extractItem(0, 1, false).isEmpty()) {
                 final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
                 final ItemStack before = item.copy();
-                PlayerInventory playerInv = QuartzKnifeContainer.this.getPlayerInv();
+                PlayerInventory playerInv = QuartzKnifeContainer.this.getPlayerInventory();
                 item.damageItem(1, playerInv.player, p -> {
                     playerInv.setInventorySlotContents(playerInv.currentItem, ItemStack.EMPTY);
                     MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(playerInv.player, before, null));

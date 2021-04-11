@@ -20,6 +20,7 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import appeng.container.me.items.ItemTerminalContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -31,7 +32,6 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.container.me.items.MEMonitorableContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -97,7 +97,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
             return PatternTermContainer.TYPE;
         }
-        return MEMonitorableContainer.TYPE;
+        return ItemTerminalContainer.TYPE;
     }
 
     @Override

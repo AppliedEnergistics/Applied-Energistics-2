@@ -119,7 +119,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
             zCoord = mk.getPos().getZ();
         }
 
-        final IInventory pi = this.getPlayerInv();
+        final IInventory pi = this.getPlayerInventory();
         for (int x = 0; x < pi.getSizeInventory(); x++) {
             final ItemStack pii = pi.getStackInSlot(x);
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem) {
@@ -144,15 +144,11 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
         this.setupConfig();
 
-        this.bindPlayerInventory(ip, 0, this.getHeight() - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     public boolean hasToolbox() {
         return this.tbInventory != null;
-    }
-
-    protected int getHeight() {
-        return 184;
     }
 
     protected void setupConfig() {
@@ -234,12 +230,12 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
     protected void checkToolbox() {
         if (this.hasToolbox()) {
-            final ItemStack currentItem = this.getPlayerInv().getStackInSlot(this.tbSlot);
+            final ItemStack currentItem = this.getPlayerInventory().getStackInSlot(this.tbSlot);
 
             if (currentItem != this.tbInventory.getItemStack()) {
                 if (!currentItem.isEmpty()) {
                     if (ItemStack.areItemsEqual(this.tbInventory.getItemStack(), currentItem)) {
-                        this.getPlayerInv().setInventorySlotContents(this.tbSlot, this.tbInventory.getItemStack());
+                        this.getPlayerInventory().setInventorySlotContents(this.tbSlot, this.tbInventory.getItemStack());
                     } else {
                         this.setValidContainer(false);
                     }

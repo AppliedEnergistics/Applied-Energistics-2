@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.me.items;
+package appeng.container.me.common;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -42,23 +42,25 @@ import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.parts.IPart;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.implementations.ContainerHelper;
-import appeng.container.me.common.IMEInteractionHandler;
-import appeng.container.me.common.IncrementalUpdateHelper;
+import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AELog;
 import appeng.core.Api;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
@@ -66,36 +68,31 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class MEMonitorableContainer extends AEBaseContainer
-        implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack>, IMEInteractionHandler {
+/**
+ * @see MEMonitorableScreen
+ */
+public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBaseContainer
+        implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<T>, IMEInteractionHandler {
 
-    public static ContainerType<MEMonitorableContainer> TYPE;
-
-    private static final ContainerHelper<MEMonitorableContainer, ITerminalHost> helper = new ContainerHelper<>(
-            MEMonitorableContainer::new, ITerminalHost.class);
-
-    public static MEMonitorableContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
-
-    private final RestrictedInputSlot[] cellView = new RestrictedInputSlot[5];
-    private final IMEMonitor<IAEItemStack> monitor;
+    private final List<RestrictedInputSlot> viewCellSlots;
     private final IConfigManager clientCM;
     private final ITerminalHost host;
     @GuiSync(99)
-    public boolean canAccessViewCells;
+    public boolean canEditViewCells;
     @GuiSync(98)
     public boolean hasPower = false;
     /**
@@ -108,17 +105,21 @@ public class MEMonitorableContainer extends AEBaseContainer
     private IConfigManager serverCM;
     private IGridNode networkNode;
 
-    private final IncrementalUpdateHelper<IAEItemStack> updateHelper = new IncrementalUpdateHelper<>();
+    protected final IEnergySource powerSource;
+    protected final IMEMonitor<T> monitor;
 
-    public MEMonitorableContainer(int id, final PlayerInventory ip, final ITerminalHost monitorable) {
-        this(TYPE, id, ip, monitorable, true);
-    }
+    private final IncrementalUpdateHelper<T> updateHelper = new IncrementalUpdateHelper<>();
+
+    private final IStorageChannel<T> storageChannel;
 
     public MEMonitorableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
-                                  final ITerminalHost host, final boolean bindInventory) {
+                                  final ITerminalHost host, final boolean bindInventory,
+                                  IStorageChannel<T> storageChannel) {
         super(containerType, id, ip, host instanceof TileEntity ? (TileEntity) host : null,
                 host instanceof IPart ? (IPart) host : null,
                 host instanceof IGuiItemObject ? (IGuiItemObject) host : null);
+
+        this.storageChannel = storageChannel;
 
         this.host = host;
         this.clientCM = new ConfigManager(this);
@@ -127,20 +128,18 @@ public class MEMonitorableContainer extends AEBaseContainer
         this.clientCM.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
+        IEnergySource powerSource = null;
         if (isServer()) {
             this.serverCM = host.getConfigManager();
 
-            this.monitor = host
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+            this.monitor = host.getInventory(storageChannel);
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
 
-                this.setCellInventory(this.monitor);
-
                 if (host instanceof IPortableCell) {
-                    this.setPowerSource((IEnergySource) host);
+                    powerSource = (IEnergySource) host;
                 } else if (host instanceof IMEChest) {
-                    this.setPowerSource((IEnergySource) host);
+                    powerSource = (IEnergySource) host;
                 } else if (host instanceof IGridHost || host instanceof IActionHost) {
                     final IGridNode node;
                     if (host instanceof IGridHost) {
@@ -155,7 +154,7 @@ public class MEMonitorableContainer extends AEBaseContainer
                         this.networkNode = node;
                         final IGrid g = node.getGrid();
                         if (g != null) {
-                            this.setPowerSource(new ChannelPowerSrc(this.networkNode, g.getCache(IEnergyGrid.class)));
+                            powerSource = new ChannelPowerSrc(this.networkNode, g.getCache(IEnergyGrid.class));
                         }
                     }
                 }
@@ -165,20 +164,26 @@ public class MEMonitorableContainer extends AEBaseContainer
         } else {
             this.monitor = null;
         }
+        this.powerSource = powerSource;
 
-        this.canAccessViewCells = false;
+        // Create slots for the view cells, in case the terminal host supports those
         if (host instanceof IViewCellStorage) {
-            for (int y = 0; y < 5; y++) {
-                this.cellView[y] = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.VIEW_CELL,
-                        ((IViewCellStorage) host).getViewCellStorage(), y, 206, y * 18 + 8,
+            IItemHandler viewCellStorage = ((IViewCellStorage) host).getViewCellStorage();
+            this.viewCellSlots = new ArrayList<>(viewCellStorage.getSlots());
+            for (int y = 0; y < viewCellStorage.getSlots(); y++) {
+                RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.VIEW_CELL,
+                        viewCellStorage, y, 0, 0,
                         this.getPlayerInventory());
-                this.cellView[y].setAllowEdit(this.canAccessViewCells);
-                this.addSlot(this.cellView[y]);
+                this.addSlot(slot);
+                this.viewCellSlots.add(slot);
             }
+        } else {
+            this.viewCellSlots = Collections.emptyList();
         }
+        updateViewCellPermission();
 
         if (bindInventory) {
-            this.bindPlayerInventory(ip, 0, 0);
+            this.createPlayerInventorySlots(ip);
         }
     }
 
@@ -189,9 +194,10 @@ public class MEMonitorableContainer extends AEBaseContainer
     @Override
     public void detectAndSendChanges() {
         if (isServer()) {
-            if (this.monitor != this.host
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))) {
+            // Close the screen if the backing network inventory has changed
+            if (this.monitor != this.host.getInventory(storageChannel)) {
                 this.setValidContainer(false);
+                return;
             }
 
             this.updateActiveCraftingJobs();
@@ -208,10 +214,10 @@ public class MEMonitorableContainer extends AEBaseContainer
 
             if (this.updateHelper.hasChanges()) {
                 try {
-                    MEInventoryUpdatePacket.Builder builder = MEInventoryUpdatePacket
-                            .builder(this.updateHelper.isFullUpdate());
+                    MEInventoryUpdatePacket.Builder<T> builder = MEInventoryUpdatePacket
+                            .builder(windowId, updateHelper.isFullUpdate());
 
-                    IItemList<IAEItemStack> storageList = monitor.getStorageList();
+                    IItemList<T> storageList = monitor.getStorageList();
                     if (this.updateHelper.isFullUpdate()) {
                         builder.addFull(updateHelper, storageList);
                     } else {
@@ -229,30 +235,36 @@ public class MEMonitorableContainer extends AEBaseContainer
 
             this.updatePowerStatus();
 
-            final boolean oldAccessible = this.canAccessViewCells;
-            this.canAccessViewCells = this.hasAccess(SecurityPermissions.BUILD, false);
-            if (this.canAccessViewCells != oldAccessible) {
-                for (int y = 0; y < 5; y++) {
-                    if (this.cellView[y] != null) {
-                        this.cellView[y].setAllowEdit(this.canAccessViewCells);
-                    }
-                }
-            }
+            updateViewCellPermission();
 
             super.detectAndSendChanges();
         }
 
     }
 
+    /**
+     * The player's permission w.r.t. editing the terminal can change while it is open. Update the
+     * view cell permissions accordingly.
+     */
+    private void updateViewCellPermission() {
+        final boolean oldAccessible = this.canEditViewCells;
+        this.canEditViewCells = this.hasAccess(SecurityPermissions.BUILD, false);
+        if (this.canEditViewCells != oldAccessible) {
+            for (RestrictedInputSlot slot : viewCellSlots) {
+                slot.setAllowEdit(this.canEditViewCells);
+            }
+        }
+    }
+
     protected void updatePowerStatus() {
         try {
             if (this.networkNode != null) {
                 this.setPowered(this.networkNode.isActive());
-            } else if (this.getPowerSource() instanceof IEnergyGrid) {
-                this.setPowered(((IEnergyGrid) this.getPowerSource()).isNetworkPowered());
+            } else if (this.powerSource instanceof IEnergyGrid) {
+                this.setPowered(((IEnergyGrid) this.powerSource).isNetworkPowered());
             } else {
                 this.setPowered(
-                        this.getPowerSource().extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.8);
+                        this.powerSource.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.8);
             }
         } catch (final Throwable t) {
             // :P
@@ -261,12 +273,10 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     @Override
     public void onUpdate(final String field, final Object oldValue, final Object newValue) {
-        if (field.equals("canAccessViewCells")) {
-            for (int y = 0; y < 5; y++) {
-                if (this.cellView[y] != null) {
-                    this.cellView[y].setAllowEdit(this.canAccessViewCells);
-                }
-            }
+        // When the canEditViewCells field changes on the client-side after a data sync from the server,
+        // update the associated slots accordingly
+        for (RestrictedInputSlot slot : viewCellSlots) {
+            slot.setAllowEdit(this.canEditViewCells);
         }
 
         super.onUpdate(field, oldValue, newValue);
@@ -325,9 +335,9 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     @Override
-    public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
+    public void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change,
                            final IActionSource source) {
-        for (final IAEItemStack is : change) {
+        for (T is : change) {
             this.updateHelper.addChange(is);
         }
     }
@@ -335,7 +345,8 @@ public class MEMonitorableContainer extends AEBaseContainer
     @Override
     public void onListUpdate() {
         if (isServer()) {
-            // This is handled like a full update
+            // This resets it back to the initial state of requiring a full update,
+            // which will be carried out in the next update tick
             this.updateHelper.clear();
         }
     }
@@ -355,23 +366,59 @@ public class MEMonitorableContainer extends AEBaseContainer
         return this.clientCM;
     }
 
-    public ItemStack[] getViewCells() {
-        final ItemStack[] list = new ItemStack[this.cellView.length];
+    public List<ItemStack> getViewCells() {
+        return this.viewCellSlots.stream()
+                .map(AppEngSlot::getStack)
+                .collect(Collectors.toList());
+    }
 
-        for (int x = 0; x < this.cellView.length; x++) {
-            list[x] = this.cellView[x].getStack();
-        }
+    public List<RestrictedInputSlot> getViewCellSlots() {
+        return this.viewCellSlots;
+    }
 
-        return list;
+    /**
+     * Checks that the inventory monitor is connected, a power source exists and that it is powered.
+     */
+    protected final boolean canInteractWithGrid() {
+        return this.monitor != null && this.powerSource != null && this.isPowered();
     }
 
     @Override
-    public void handleInteraction(long serial, InventoryAction action) {
+    public final void handleInteraction(long serial, InventoryAction action) {
+        if (isClient()) {
+            NetworkHandler.instance().sendToServer(new MEInteractionPacket(windowId, serial, action));
+            return;
+        }
 
+        // Do not allow interactions if there's no monitor or no power
+        if (!canInteractWithGrid()) {
+            return;
+        }
+
+        ServerPlayerEntity player = (ServerPlayerEntity) this.getPlayerInventory().player;
+
+        // Serial -1 is used to target empty virtual slots, which only allows the player to put
+        // items under their cursor into the network inventory
+        if (serial == -1) {
+            handleNetworkInteraction(player, null, action);
+            return;
+        }
+
+        T stack = getStackBySerial(serial);
+        if (stack == null) {
+            // This can happen if the client sent the request after we removed the item, but before
+            // the client knows about it (-> network delay).
+            return;
+        }
+
+        handleNetworkInteraction(player, stack, action);
     }
 
-    public RestrictedInputSlot getCellViewSlot(final int index) {
-        return this.cellView[index];
+    protected abstract void handleNetworkInteraction(ServerPlayerEntity player, @Nullable T stack, InventoryAction action);
+
+    @Nullable
+    protected final T getStackBySerial(long serial) {
+        return updateHelper.getBySerial(serial);
     }
 
     public boolean isPowered() {
@@ -388,6 +435,10 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     public void setGui(@Nonnull final IConfigManagerHost gui) {
         this.gui = gui;
+    }
+
+    public IStorageChannel<T> getStorageChannel() {
+        return this.storageChannel;
     }
 
 }

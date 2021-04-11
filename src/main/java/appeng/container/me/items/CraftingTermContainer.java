@@ -45,7 +45,7 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperInvItemHandler;
 
-public class CraftingTermContainer extends MEMonitorableContainer
+public class CraftingTermContainer extends ItemTerminalContainer
         implements IAEAppEngInventory, IContainerCraftingPacket {
 
     public static ContainerType<CraftingTermContainer> TYPE;
@@ -80,10 +80,10 @@ public class CraftingTermContainer extends MEMonitorableContainer
             }
         }
 
-        this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInv().player, this.getActionSource(),
-                this.getPowerSource(), monitorable, crafting, crafting, this.output, 131, -72 + 18, this));
+        this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
+                this.powerSource, monitorable, crafting, crafting, this.output, 131, -72 + 18, this));
 
-        this.bindPlayerInventory(ip, 0, 0);
+        this.createPlayerInventorySlots(ip);
 
         this.onCraftMatrixChanged(new WrapperInvItemHandler(crafting));
     }
@@ -101,8 +101,8 @@ public class CraftingTermContainer extends MEMonitorableContainer
             ic.setInventorySlotContents(x, this.craftingSlots[x].getStack());
         }
 
-        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, this.getPlayerInv().player.world)) {
-            World world = this.getPlayerInv().player.world;
+        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, this.getPlayerInventory().player.world)) {
+            World world = this.getPlayerInventory().player.world;
             this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
         }
 

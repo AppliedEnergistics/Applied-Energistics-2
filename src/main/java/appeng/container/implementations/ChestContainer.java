@@ -42,7 +42,7 @@ public class ChestContainer extends AEBaseContainer {
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
                 chest.getInternalInventory(), 1, 80, 37, this.getPlayerInventory()));
 
-        this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     public static ChestContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {

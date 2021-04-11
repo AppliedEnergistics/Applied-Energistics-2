@@ -91,7 +91,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
     public InterfaceTerminalContainer(int id, final PlayerInventory ip, final InterfaceTerminalPart anchor) {
         super(TYPE, id, ip, anchor);
-        this.bindPlayerInventory(ip, 0, 0);
+        this.createPlayerInventorySlots(ip);
     }
 
     @Override
@@ -118,7 +118,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
 
         if (packet != null) {
-            NetworkHandler.instance().sendTo(packet, (ServerPlayerEntity) this.getPlayerInv().player);
+            NetworkHandler.instance().sendTo(packet, (ServerPlayerEntity) this.getPlayerInventory().player);
         }
     }
 

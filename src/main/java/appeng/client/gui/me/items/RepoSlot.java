@@ -18,37 +18,34 @@
 
 package appeng.client.gui.me.items;
 
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.client.gui.me.common.ClientReadOnlySlot;
 import appeng.client.gui.me.common.Repo;
+import appeng.container.me.common.GridInventoryEntry;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.storage.data.IAEItemStack;
-import appeng.client.gui.me.common.ClientReadOnlySlot;
+import javax.annotation.Nullable;
 
 /**
  * This is a virtual slot that has no corresponding slot on the server-side. It displays an item stack from the
  * client-side {@link ItemRepo}.
  */
-public class VirtualItemSlot extends ClientReadOnlySlot {
+public class RepoSlot<T extends IAEStack<T>> extends ClientReadOnlySlot {
 
-    private final ItemRepo repo;
+    private final Repo<T> repo;
     private final int offset;
 
-    public VirtualItemSlot(ItemRepo repo, int offset, int displayX, int displayY) {
+    public RepoSlot(Repo<T> repo, int offset, int displayX, int displayY) {
         super(displayX, displayY);
         this.repo = repo;
         this.offset = offset;
     }
 
-    public IAEItemStack getAEStack() {
+    public GridInventoryEntry<T> getEntry() {
         if (this.repo.hasPower()) {
             return this.repo.get(this.offset);
-        }
-        return null;
-    }
-
-    public Repo.Entry<IAEItemStack> getEntry() {
-        if (this.repo.hasPower()) {
-            return this.repo.getEntry(this.offset);
         }
         return null;
     }
@@ -57,7 +54,7 @@ public class VirtualItemSlot extends ClientReadOnlySlot {
      * @see IAEItemStack#getStackSize()
      */
     public long getStoredAmount() {
-        Repo.Entry<?> entry = getEntry();
+        GridInventoryEntry<T> entry = getEntry();
         return entry != null ? entry.getStoredAmount() : 0;
     }
 
@@ -65,7 +62,7 @@ public class VirtualItemSlot extends ClientReadOnlySlot {
      * @see IAEItemStack#getCountRequestable()
      */
     public long getRequestableAmount() {
-        Repo.Entry<?> entry = getEntry();
+        GridInventoryEntry<T> entry = getEntry();
         return entry != null ? entry.getRequestableAmount() : 0;
     }
 
@@ -73,15 +70,15 @@ public class VirtualItemSlot extends ClientReadOnlySlot {
      * @see IAEItemStack#isCraftable()
      */
     public boolean isCraftable() {
-        Repo.Entry<?> entry = getEntry();
+        GridInventoryEntry<T> entry = getEntry();
         return entry != null && entry.isCraftable();
     }
 
     @Override
     public ItemStack getStack() {
-        IAEItemStack aeStack = this.getAEStack();
-        if (aeStack != null) {
-            return aeStack.asItemStackRepresentation();
+        GridInventoryEntry<T> entry = getEntry();
+        if (entry != null) {
+            return entry.getStack().asItemStackRepresentation();
         }
         return ItemStack.EMPTY;
     }
@@ -89,6 +86,22 @@ public class VirtualItemSlot extends ClientReadOnlySlot {
     @Override
     public boolean getHasStack() {
         return getEntry() != null;
+    }
+
+    /**
+     * Tries to cast any given slot (which may be null) to a {@link RepoSlot} of the same type as the given repo.
+     * Returns null when the given slot is not compatible.
+     */
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public static <T extends IAEStack<T>> RepoSlot<T> tryCast(Repo<T> repo, @Nullable Slot slot) {
+        if (slot instanceof RepoSlot) {
+            RepoSlot<?> repoSlot = (RepoSlot<?>) slot;
+            if (repoSlot.repo == repo) {
+                return (RepoSlot<T>) repoSlot;
+            }
+        }
+        return null;
     }
 
 }

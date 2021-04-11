@@ -95,15 +95,10 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     }
 
     @Override
-    protected int getHeight() {
-        return 251;
-    }
-
-    @Override
     protected void setupConfig() {
         final IItemHandler cell = this.getUpgradeable().getInventoryByName("cell");
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8,
-                this.getPlayerInv()));
+                this.getPlayerInventory()));
 
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
         final WrapperSupplierItemHandler upgradeInventory = new WrapperSupplierItemHandler(

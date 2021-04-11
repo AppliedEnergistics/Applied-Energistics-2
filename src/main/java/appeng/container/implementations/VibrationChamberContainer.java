@@ -30,6 +30,9 @@ import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.misc.VibrationChamberTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.VibrationChamberScreen
+ */
 public class VibrationChamberContainer extends AEBaseContainer implements IProgressProvider {
 
     public static ContainerType<VibrationChamberContainer> TYPE;
@@ -59,7 +62,7 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.FUEL,
                 vibrationChamber.getInternalInventory(), 0, 80, 37, this.getPlayerInventory()));
 
-        this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     @Override

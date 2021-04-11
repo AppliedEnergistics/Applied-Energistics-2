@@ -24,7 +24,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
@@ -39,7 +38,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerHelper;
-import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.fluids.parts.FluidStorageBusPart;
 import appeng.fluids.util.IAEFluidTank;
@@ -76,11 +74,6 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
     public FluidStorageBusContainer(int id, PlayerInventory ip, FluidStorageBusPart te) {
         super(TYPE, id, ip, te);
         this.storageBus = te;
-    }
-
-    @Override
-    protected int getHeight() {
-        return 251;
     }
 
     @Override

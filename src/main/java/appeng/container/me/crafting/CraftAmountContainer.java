@@ -89,11 +89,11 @@ public class CraftAmountContainer extends AEBaseContainer {
     }
 
     public World getWorld() {
-        return this.getPlayerInv().player.world;
+        return this.getPlayerInventory().player.world;
     }
 
     public IActionSource getActionSrc() {
-        return new PlayerSource(this.getPlayerInv().player, (IActionHost) this.getTarget());
+        return new PlayerSource(this.getPlayerInventory().player, (IActionHost) this.getTarget());
     }
 
     public Slot getCraftingItem() {
@@ -144,7 +144,7 @@ public class CraftAmountContainer extends AEBaseContainer {
 
                 final ContainerLocator locator = getLocator();
                 if (locator != null) {
-                    PlayerEntity player = getPlayerInv().player;
+                    PlayerEntity player = this.getPlayerInventory().player;
                     ContainerOpener.openContainer(CraftConfirmContainer.TYPE, player, locator);
 
                     if (player.openContainer instanceof CraftConfirmContainer) {

@@ -60,11 +60,6 @@ public class IOPortContainer extends UpgradeableContainer {
     }
 
     @Override
-    protected int getHeight() {
-        return 166;
-    }
-
-    @Override
     protected void setupConfig() {
         int offX = 19;
         int offY = 17;

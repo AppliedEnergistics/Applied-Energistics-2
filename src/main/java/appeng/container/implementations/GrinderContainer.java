@@ -64,7 +64,7 @@ public class GrinderContainer extends AEBaseContainer {
         this.addSlot(new OutputSlot(inv, 4, 112 + 18, 63, 2 * 16 + 15));
         this.addSlot(new OutputSlot(inv, 5, 112 + 36, 63, 2 * 16 + 15));
 
-        this.bindPlayerInventory(ip, 0, 176 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
 }

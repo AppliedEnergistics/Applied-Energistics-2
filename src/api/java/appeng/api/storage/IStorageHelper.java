@@ -60,7 +60,6 @@ public interface IStorageHelper {
      * @param channel The channel type, must be a subtype of {@link IStorageChannel}
      * @param factory An instance implementing the channel, must be be an instance of channel
      */
-    @Nonnull
     <T extends IAEStack<T>, C extends IStorageChannel<T>> void registerStorageChannel(@Nonnull Class<C> channel,
             @Nonnull C factory);
 

@@ -18,20 +18,16 @@
 
 package appeng.client.gui.me.items;
 
+import appeng.client.gui.me.common.TerminalStyle;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.container.me.items.MEPortableCellContainer;
 
-public class MEPortableCellScreen extends MEMonitorableScreen<MEPortableCellContainer> {
+public class MEPortableCellScreen extends ItemTerminalScreen<MEPortableCellContainer> {
 
-    public MEPortableCellScreen(MEPortableCellContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title);
+    public MEPortableCellScreen(TerminalStyle style, MEPortableCellContainer container, PlayerInventory playerInventory, ITextComponent title) {
+        super(style, container, playerInventory, title);
     }
 
-    @Override
-    protected int getMaxRows() {
-        return 3;
-    }
 }

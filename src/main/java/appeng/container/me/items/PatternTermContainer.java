@@ -70,7 +70,10 @@ import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
 
-public class PatternTermContainer extends MEMonitorableContainer
+/**
+ * @see appeng.client.gui.me.items.PatternTermScreen
+ */
+public class PatternTermContainer extends ItemTerminalContainer
         implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket {
 
     public static ContainerType<PatternTermContainer> TYPE;
@@ -118,7 +121,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             }
         }
 
-        this.addSlot(this.craftSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.getPowerSource(),
+        this.addSlot(this.craftSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
                 monitorable, this.crafting, patternInv, this.cOut, 110, -76 + 18, this, 2, this));
         this.craftSlot.setIconIndex(-1);
 
@@ -135,7 +138,7 @@ public class PatternTermContainer extends MEMonitorableContainer
 
         this.patternSlotOUT.setStackLimit(1);
 
-        this.bindPlayerInventory(ip, 0, 0);
+        this.createPlayerInventorySlots(ip);
         this.updateOrderOfOutputSlots();
     }
 
@@ -162,7 +165,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     }
 
     private ItemStack getAndUpdateOutput() {
-        final World world = this.getPlayerInv().player.world;
+        final World world = this.getPlayerInventory().player.world;
         final CraftingInventory ic = new CraftingInventory(this, 3, 3);
 
         for (int x = 0; x < ic.getSizeInventory(); x++) {
@@ -301,11 +304,11 @@ public class PatternTermContainer extends MEMonitorableContainer
     }
 
     public void craftOrGetItem(final PatternSlotPacket packetPatternSlot) {
-        if (packetPatternSlot.slotItem != null && this.getCellInventory() != null) {
+        if (packetPatternSlot.slotItem != null && this.monitor != null /* TODO should this check powered / powerSource? */) {
             final IAEItemStack out = packetPatternSlot.slotItem.copy();
             InventoryAdaptor inv = new AdaptorItemHandler(
-                    new WrapperCursorItemHandler(this.getPlayerInv().player.inventory));
-            final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(this.getPlayerInv().player);
+                    new WrapperCursorItemHandler(this.getPlayerInventory().player.inventory));
+            final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(this.getPlayerInventory().player);
 
             if (packetPatternSlot.shift) {
                 inv = playerInv;
@@ -315,9 +318,9 @@ public class PatternTermContainer extends MEMonitorableContainer
                 return;
             }
 
-            final IAEItemStack extracted = Platform.poweredExtraction(this.getPowerSource(), this.getCellInventory(),
+            final IAEItemStack extracted = Platform.poweredExtraction(this.powerSource, this.monitor,
                     out, this.getActionSource());
-            final PlayerEntity p = this.getPlayerInv().player;
+            final PlayerEntity p = this.getPlayerInventory().player;
 
             if (extracted != null) {
                 inv.addItems(extracted.createItemStack());
@@ -351,7 +354,7 @@ public class PatternTermContainer extends MEMonitorableContainer
 
             for (int x = 0; x < ic.getSizeInventory(); x++) {
                 if (!ic.getStackInSlot(x).isEmpty()) {
-                    final ItemStack pulled = Platform.extractItemsByRecipe(this.getPowerSource(),
+                    final ItemStack pulled = Platform.extractItemsByRecipe(this.powerSource,
                             this.getActionSource(), storage, p.world, r, is, ic, ic.getStackInSlot(x), x, all,
                             Actionable.MODULATE, ViewCellItem.createFilter(this.getViewCells()));
                     real.setInventorySlotContents(x, pulled);
@@ -385,7 +388,7 @@ public class PatternTermContainer extends MEMonitorableContainer
                 for (int x = 0; x < real.getSizeInventory(); x++) {
                     final ItemStack failed = real.getStackInSlot(x);
                     if (!failed.isEmpty()) {
-                        this.getCellInventory().injectItems(AEItemStack.fromItemStack(failed), Actionable.MODULATE,
+                        this.monitor.injectItems(AEItemStack.fromItemStack(failed), Actionable.MODULATE,
                                 new MachineSource(this.getPatternTerminal()));
                     }
                 }

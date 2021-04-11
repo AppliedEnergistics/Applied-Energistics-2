@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.me.items.ItemTerminalContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -33,7 +34,6 @@ import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.me.items.MEMonitorableContainer;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
@@ -42,7 +42,7 @@ import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
-public class SecurityStationContainer extends MEMonitorableContainer implements IAEAppEngInventory {
+public class SecurityStationContainer extends ItemTerminalContainer implements IAEAppEngInventory {
 
     public static ContainerType<SecurityStationContainer> TYPE;
 
@@ -72,7 +72,7 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
                 this.wirelessEncoder, 0, 212, 10, ip));
         this.addSlot(this.wirelessOut = new OutputSlot(this.wirelessEncoder, 1, 212, 68, -1));
 
-        this.bindPlayerInventory(ip, 0, 0);
+        this.createPlayerInventorySlots(ip);
     }
 
     public static SecurityStationContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {

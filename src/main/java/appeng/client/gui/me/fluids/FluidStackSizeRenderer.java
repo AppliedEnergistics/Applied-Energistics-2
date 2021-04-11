@@ -16,20 +16,14 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.fluids.client.render;
+package appeng.client.gui.me.fluids;
+
+import appeng.client.gui.me.common.StackSizeRenderer;
+import appeng.core.AEConfig;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-
-import net.minecraft.client.gui.FontRenderer;
-
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.client.render.StackSizeRenderer;
-import appeng.core.AEConfig;
-import appeng.util.ISlimReadableNumberConverter;
-import appeng.util.IWideReadableNumberConverter;
-import appeng.util.ReadableNumberConverter;
 
 /**
  * @author AlgorithmX2
@@ -38,21 +32,11 @@ import appeng.util.ReadableNumberConverter;
  * @version rv6
  * @since rv6
  */
-public class FluidStackSizeRenderer {
+public class FluidStackSizeRenderer extends StackSizeRenderer {
 
-    private static final String[] NUMBER_FORMATS = new String[] { "#.000", "#.00", "#.0", "#" };
+    private static final String[] NUMBER_FORMATS = new String[]{"#.000", "#.00", "#.0", "#"};
 
-    private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
-    private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
-
-    public void renderStackSize(FontRenderer fontRenderer, IAEFluidStack aeStack, int xPos, int yPos) {
-        if (aeStack != null && aeStack.getStackSize() > 0) {
-            final String stackSize = this.getToBeRenderedStackSize(aeStack.getStackSize());
-            StackSizeRenderer.renderSizeLabel(fontRenderer, xPos, yPos, stackSize);
-        }
-    }
-
-    private String getToBeRenderedStackSize(final long originalSize) {
+    protected String getToBeRenderedStackSize(final long originalSize) {
         // Handle any value below 100 (large font) or 1000 (small font) Buckets with a
         // custom formatter,
         // otherwise pass it to the normal number converter
@@ -62,11 +46,7 @@ public class FluidStackSizeRenderer {
             return this.getWideRenderedStacksize(originalSize);
         }
 
-        if (AEConfig.instance().isUseLargeFonts()) {
-            return SLIM_CONVERTER.toSlimReadableForm(originalSize / 1000);
-        } else {
-            return WIDE_CONVERTER.toWideReadableForm(originalSize / 1000);
-        }
+        return super.getToBeRenderedStackSize(originalSize / 1000);
     }
 
     private String getSlimRenderedStacksize(final long originalSize) {

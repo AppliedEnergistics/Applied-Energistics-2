@@ -20,14 +20,17 @@ package appeng.client.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import appeng.client.Point;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -37,7 +40,6 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
@@ -79,10 +81,17 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public static final int COLOR_DARK_GRAY = 0x404040;
 
+
     private final VerticalButtonBar verticalButtonBar = new VerticalButtonBar();
 
     @Nullable
     private final Blitter background;
+
+    /**
+     * Supports anchoring slots to the bottom of the screen to allow them to be automatically laid out correctly
+     * when the screen is resized.
+     */
+    private final Map<AppEngSlot, Integer> bottomAnchoredSlots = new HashMap<>();
 
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
@@ -108,6 +117,23 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     protected void init() {
         super.init();
         this.verticalButtonBar.reset(guiLeft, guiTop);
+        positionPlayerInventory(getPlayerInventoryOrigin());
+        positionAnchoredSlots();
+    }
+
+    /**
+     * Anchors a slot to the bottom edge of the screen and automatically positions it when the screen is resized.
+     * The offset should include the 1px border around the actual slot.
+     */
+    protected final void anchorSlotToBottom(AppEngSlot slot, int offset) {
+        bottomAnchoredSlots.put(slot, offset);
+        slot.yPos = ySize - offset + 1;
+    }
+
+    private void positionAnchoredSlots() {
+        for (Map.Entry<AppEngSlot, Integer> entry : bottomAnchoredSlots.entrySet()) {
+            entry.getKey().yPos = ySize - entry.getValue() + 1;
+        }
     }
 
     private List<Slot> getInventorySlots() {
@@ -444,8 +470,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 if (getMinecraft().gameSettings.keyBindsHotbar[j].isActiveAndMatches(input)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
-                        if (s.getSlotIndex() == j && s.inventory == this.container.getPlayerInv()) {
-                            if (!s.canTakeStack(this.container.getPlayerInv().player)) {
+                        if (s.getSlotIndex() == j && s.inventory == this.container.getPlayerInventory()) {
+                            if (!s.canTakeStack(this.container.getPlayerInventory().player)) {
                                 return false;
                             }
                         }
@@ -457,7 +483,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                     } else {
                         for (final Slot s : slots) {
                             if (s.getSlotIndex() == j
-                                    && s.inventory == this.container.getPlayerInv()) {
+                                    && s.inventory == this.container.getPlayerInventory()) {
                                 NetworkHandler.instance()
                                         .sendToServer(new SwapSlotsPacket(s.slotNumber, theSlot.slotNumber));
                                 return true;
@@ -628,6 +654,45 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     protected void fillRect(MatrixStack matrices, Rectangle2d rect, int color) {
         fill(matrices, rect.getX(), rect.getY(), rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight(), color);
+    }
+
+    /**
+     * Positions the player inventory slots at the given x,y coordinates. The position should be the upper left
+     * corner of the first slot, including it's visual border. (The actual slot will be positioned at 1,1 in relation
+     * to the given coordinate).
+     */
+    private void positionPlayerInventory(Point origin) {
+
+        for (AppEngSlot slot : container.getPlayerInventorySlots()) {
+            int slotX, slotY;
+
+            // Determine the relative position based on the inventory index
+            int invIndex = slot.getSlotIndex();
+            if (invIndex >= 0 && invIndex < PlayerInventory.getHotbarSize()) {
+                slotY = 58; // Start of the hotbar from the top of the player inventory
+                slotX = invIndex * 18;
+            } else {
+                invIndex -= PlayerInventory.getHotbarSize();
+
+                int row = invIndex / 9;
+                int col = invIndex % 9;
+
+                slotY = row * 18;
+                slotX = col * 18;
+            }
+
+            slot.xPos = origin.getX() + slotX + 1;
+            slot.yPos = origin.getY() + slotY + 1;
+        }
+
+    }
+
+    /**
+     * Returns the origin for the player inventory slots on the screen (if it has any).
+     */
+    protected Point getPlayerInventoryOrigin() {
+        // This default position works for most AE2 dialogs
+        return new Point(7, ySize - 83);
     }
 
 }

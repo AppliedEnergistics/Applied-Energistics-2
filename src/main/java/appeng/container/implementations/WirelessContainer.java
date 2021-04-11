@@ -58,7 +58,7 @@ public class WirelessContainer extends AEBaseContainer {
         this.addSlot(this.boosterSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.RANGE_BOOSTER,
                 te.getInternalInventory(), 0, 80, 47, this.getPlayerInventory()));
 
-        this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     @Override

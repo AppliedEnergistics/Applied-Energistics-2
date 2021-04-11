@@ -20,6 +20,7 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import appeng.container.me.items.ItemTerminalContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -40,7 +41,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.me.items.MEMonitorableContainer;
 import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -114,7 +114,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     public ContainerType<?> getContainerType(final PlayerEntity player) {
-        return MEMonitorableContainer.TYPE;
+        return ItemTerminalContainer.TYPE;
     }
 
     @Override

@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.render;
+package appeng.client.gui.me.common;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -40,8 +40,8 @@ import appeng.util.ReadableNumberConverter;
  * @since rv0
  */
 public class StackSizeRenderer {
-    private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
-    private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
+    protected static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
+    protected static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
     public void renderStackSize(FontRenderer fontRenderer, long stackSize, boolean craftable, int xPos, int yPos) {
         if (stackSize == 0 && craftable) {
@@ -56,7 +56,7 @@ public class StackSizeRenderer {
         }
     }
 
-    public static void renderSizeLabel(FontRenderer fontRenderer, float xPos, float yPos, String text) {
+    public void renderSizeLabel(FontRenderer fontRenderer, float xPos, float yPos, String text) {
 
         final float scaleFactor = AEConfig.instance().isUseLargeFonts() ? 0.85f : 0.5f;
         final float inverseScaleFactor = 1.0f / scaleFactor;
@@ -76,7 +76,7 @@ public class StackSizeRenderer {
         RenderSystem.enableBlend();
     }
 
-    private String getToBeRenderedStackSize(final long originalSize) {
+    protected String getToBeRenderedStackSize(final long originalSize) {
         if (AEConfig.instance().isUseLargeFonts()) {
             return SLIM_CONVERTER.toSlimReadableForm(originalSize);
         } else {

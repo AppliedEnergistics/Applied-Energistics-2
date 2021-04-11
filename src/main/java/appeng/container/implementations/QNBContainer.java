@@ -50,7 +50,7 @@ public class QNBContainer extends AEBaseContainer {
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,
                 quantumBridge.getInternalInventory(), 0, 80, 37, this.getPlayerInventory())).setStackLimit(1));
 
-        this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
 }

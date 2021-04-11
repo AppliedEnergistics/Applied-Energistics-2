@@ -32,7 +32,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.implementations.ContainerHelper;
 import appeng.container.interfaces.IInventorySlotAware;
 
-public class MEPortableCellContainer extends MEMonitorableContainer {
+public class MEPortableCellContainer extends ItemTerminalContainer {
 
     public static ContainerType<MEPortableCellContainer> TYPE;
 
@@ -67,7 +67,7 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
         }
         this.lockPlayerInventorySlot(this.slot);
         this.cell = Objects.requireNonNull(monitorable);
-        this.bindPlayerInventory(ip, 0, 0);
+        this.createPlayerInventorySlots(ip);
     }
 
     @Override

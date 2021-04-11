@@ -38,13 +38,15 @@ import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.MergedPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
+import java.util.Collection;
+
 public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
     public ViewCellItem(Properties properties) {
         super(properties);
     }
 
-    public static IPartitionList<IAEItemStack> createFilter(final ItemStack[] list) {
+    public static IPartitionList<IAEItemStack> createFilter(Collection<ItemStack> list) {
         IPartitionList<IAEItemStack> myPartitionList = null;
 
         final MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<>();

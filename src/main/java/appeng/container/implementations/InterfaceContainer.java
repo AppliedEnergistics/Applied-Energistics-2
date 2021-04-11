@@ -78,11 +78,6 @@ public class InterfaceContainer extends UpgradeableContainer {
     }
 
     @Override
-    protected int getHeight() {
-        return 211;
-    }
-
-    @Override
     protected void setupConfig() {
         this.setupUpgrades();
     }

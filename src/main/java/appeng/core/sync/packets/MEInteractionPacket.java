@@ -32,7 +32,7 @@ public class MEInteractionPacket extends BasePacket {
         data.writeInt(this.getPacketID());
         data.writeInt(windowId);
         data.writeVarLong(serial);
-        data.writeInt(action.ordinal());
+        data.writeEnumValue(action);
         this.configureWrite(data);
     }
 
