@@ -18,6 +18,14 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.client.gui.Blitter;
@@ -28,12 +36,6 @@ import appeng.container.implementations.SecurityStationContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
-import java.util.List;
 
 public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationContainer> {
 
@@ -47,7 +49,8 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     private ToggleButton build;
     private ToggleButton security;
 
-    public SecurityStationScreen(TerminalStyle style, SecurityStationContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public SecurityStationScreen(TerminalStyle style, SecurityStationContainer container,
+            PlayerInventory playerInventory, ITextComponent title) {
         super(style, container, playerInventory, title);
     }
 
@@ -92,7 +95,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
         this.font.drawString(matrixStack, GuiText.SecurityCardEditor.getLocal(), 8,
                 this.ySize - 96 + 1 - 33, COLOR_DARK_GRAY);
@@ -121,8 +124,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
                 guiLeft + xSize + 3,
                 guiTop,
                 ENCODING_BG.getSrcWidth(),
-                ENCODING_BG.getSrcHeight()
-        ));
+                ENCODING_BG.getSrcHeight()));
         return result;
     }
 }

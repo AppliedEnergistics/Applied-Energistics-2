@@ -1,7 +1,7 @@
 package appeng.client.gui.me.common;
 
-import appeng.client.Point;
-import appeng.client.gui.Blitter;
+import javax.annotation.Nullable;
+
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.Screen;
@@ -10,7 +10,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
 
-import javax.annotation.Nullable;
+import appeng.client.Point;
+import appeng.client.gui.Blitter;
 
 /**
  * Describes the appearance of a terminal screen.
@@ -62,7 +63,8 @@ public final class TerminalStyle {
      */
     private boolean showTooltipsWithItemInHand;
 
-    public TerminalStyle(Blitter header, Blitter firstRow, Blitter row, Blitter lastRow, Blitter bottom, int slotsPerRow, Rectangle2d searchFieldRect, Integer maxRows) {
+    public TerminalStyle(Blitter header, Blitter firstRow, Blitter row, Blitter lastRow, Blitter bottom,
+            int slotsPerRow, Rectangle2d searchFieldRect, Integer maxRows) {
         this.header = header;
         this.firstRow = firstRow;
         this.row = row;
@@ -138,8 +140,8 @@ public final class TerminalStyle {
     }
 
     /**
-     * @return The number of rows this terminal should display (at most). If null, the player's chosen terminal
-     * style determines the number of rows.
+     * @return The number of rows this terminal should display (at most). If null, the player's chosen terminal style
+     *         determines the number of rows.
      */
     @Nullable
     public Integer getMaxRows() {
@@ -161,7 +163,8 @@ public final class TerminalStyle {
     /**
      * Creates a screen factory from a screen constructor that takes a terminal style as the first argument.
      */
-    public <M extends Container, U extends Screen & IHasContainer<M>> ScreenManager.IScreenFactory<M, U> factory(StyledScreenFactory<M, U> factory) {
+    public <M extends Container, U extends Screen & IHasContainer<M>> ScreenManager.IScreenFactory<M, U> factory(
+            StyledScreenFactory<M, U> factory) {
         return (container, playerInv, title) -> factory.create(this, container, playerInv, title);
     }
 
@@ -182,7 +185,6 @@ public final class TerminalStyle {
         this.supportsAutoCrafting = enabled;
         return this;
     }
-
 
     public boolean isShowTooltipsWithItemInHand() {
         return showTooltipsWithItemInHand;

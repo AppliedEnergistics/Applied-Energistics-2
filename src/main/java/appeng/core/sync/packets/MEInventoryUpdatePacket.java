@@ -18,18 +18,17 @@
 
 package appeng.core.sync.packets;
 
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
-import appeng.client.gui.me.common.MEMonitorableScreen;
-import appeng.container.me.common.IncrementalUpdateHelper;
-import appeng.container.me.common.GridInventoryEntry;
-import appeng.container.me.common.MEMonitorableContainer;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.BasePacketHandler;
-import appeng.core.sync.network.INetworkInfo;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
+
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,11 +36,16 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
+import appeng.client.gui.me.common.MEMonitorableScreen;
+import appeng.container.me.common.GridInventoryEntry;
+import appeng.container.me.common.IncrementalUpdateHelper;
+import appeng.container.me.common.MEMonitorableContainer;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.BasePacketHandler;
+import appeng.core.sync.network.INetworkInfo;
 
 public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
 
@@ -129,7 +133,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         }
 
         public void addFull(IncrementalUpdateHelper<T> updateHelper,
-                            IItemList<T> stacks) {
+                IItemList<T> stacks) {
             for (T item : stacks) {
                 long serial = updateHelper.getOrAssignSerial(item);
                 add(new GridInventoryEntry<>(serial, item, item.getStackSize(), item.getCountRequestable(),

@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import appeng.core.sync.packets.MEInteractionPacket;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.core.sync.packets.AssemblerAnimationPacket;
@@ -41,6 +40,7 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.ItemTransitionEffectPacket;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.core.sync.packets.LightningPacket;
+import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.core.sync.packets.MatterCannonPacket;
 import appeng.core.sync.packets.MockExplosionPacket;

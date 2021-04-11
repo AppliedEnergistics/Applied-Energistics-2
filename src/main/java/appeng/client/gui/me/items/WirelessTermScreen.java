@@ -18,14 +18,16 @@
 
 package appeng.client.gui.me.items;
 
-import appeng.client.gui.me.common.TerminalStyle;
-import appeng.container.me.items.WirelessTermContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+import appeng.client.gui.me.common.TerminalStyle;
+import appeng.container.me.items.WirelessTermContainer;
+
 public class WirelessTermScreen extends ItemTerminalScreen<WirelessTermContainer> {
 
-    public WirelessTermScreen(TerminalStyle style, WirelessTermContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public WirelessTermScreen(TerminalStyle style, WirelessTermContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(style, container, playerInventory, title);
     }
 

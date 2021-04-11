@@ -18,6 +18,9 @@
 
 package appeng.client.gui.me.fluids;
 
+import java.util.Comparator;
+import java.util.regex.Pattern;
+
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.storage.data.IAEFluidStack;
@@ -25,9 +28,6 @@ import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.util.Platform;
-
-import java.util.Comparator;
-import java.util.regex.Pattern;
 
 class FluidRepo extends Repo<IAEFluidStack> {
 

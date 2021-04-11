@@ -25,7 +25,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.container.me.items.ItemTerminalContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
@@ -93,6 +92,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.container.me.fluids.FluidTerminalContainer;
+import appeng.container.me.items.ItemTerminalContainer;
 import appeng.core.Api;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;

@@ -22,7 +22,6 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nullable;
 
-import appeng.container.me.items.ItemTerminalContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -48,6 +47,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerHelper;
 import appeng.container.me.items.CraftingTermContainer;
+import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.container.me.items.WirelessTermContainer;
 import appeng.core.AELog;

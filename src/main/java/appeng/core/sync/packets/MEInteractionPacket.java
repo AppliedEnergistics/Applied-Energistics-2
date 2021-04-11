@@ -1,12 +1,14 @@
 package appeng.core.sync.packets;
 
+import io.netty.buffer.Unpooled;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
+
 import appeng.container.me.common.IMEInteractionHandler;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
-import io.netty.buffer.Unpooled;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
 
 /**
  * Packet sent by clients to interact with an ME inventory such as an item terminal.

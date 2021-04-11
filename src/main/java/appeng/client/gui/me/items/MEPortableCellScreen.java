@@ -18,15 +18,16 @@
 
 package appeng.client.gui.me.items;
 
-import appeng.client.gui.me.common.TerminalStyle;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+import appeng.client.gui.me.common.TerminalStyle;
 import appeng.container.me.items.MEPortableCellContainer;
 
 public class MEPortableCellScreen extends ItemTerminalScreen<MEPortableCellContainer> {
 
-    public MEPortableCellScreen(TerminalStyle style, MEPortableCellContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public MEPortableCellScreen(TerminalStyle style, MEPortableCellContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(style, container, playerInventory, title);
     }
 

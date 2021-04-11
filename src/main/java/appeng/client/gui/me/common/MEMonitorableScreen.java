@@ -18,6 +18,30 @@
 
 package appeng.client.gui.me.common;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Nullable;
+
+import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -61,28 +85,9 @@ import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
-import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nullable;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMonitorableContainer<T>> extends AEBaseMEScreen<C>
+public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMonitorableContainer<T>>
+        extends AEBaseMEScreen<C>
         implements ISortSource, IConfigManagerHost {
 
     private static final int MIN_ROWS = 3;
@@ -107,7 +112,8 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private int currentMouseX = 0;
     private int currentMouseY = 0;
 
-    public MEMonitorableScreen(TerminalStyle style, C container, PlayerInventory playerInventory, ITextComponent title) {
+    public MEMonitorableScreen(TerminalStyle style, C container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title, null);
 
         this.style = style;
@@ -154,7 +160,8 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     protected abstract void renderGridInventoryEntry(MatrixStack matrices, int x, int y, GridInventoryEntry<T> entry);
 
-    protected abstract void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<T> entry, int mouseButton, ClickType clickType);
+    protected abstract void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<T> entry, int mouseButton,
+            ClickType clickType);
 
     public void postUpdate(boolean fullUpdate, final List<GridInventoryEntry<T>> list) {
         if (fullUpdate) {
@@ -237,8 +244,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                 this.guiLeft + searchFieldRect.getX(),
                 this.guiTop + searchFieldRect.getY(),
                 searchFieldRect.getWidth(),
-                searchFieldRect.getHeight()
-        );
+                searchFieldRect.getHeight());
         this.searchField.setEnableBackgroundDrawing(false);
         this.searchField.setMaxStringLength(25);
         this.searchField.setTextColor(0xFFFFFF);
@@ -279,7 +285,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         this.font.drawString(matrixStack, this.getGuiDisplayName(this.windowTitle.text()).getString(), 8, 6,
                 COLOR_DARK_GRAY);
         this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3,
@@ -359,7 +365,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY, float partialTicks) {
+            final int mouseY, float partialTicks) {
 
         style.getHeader()
                 .dest(offsetX, offsetY)
@@ -417,7 +423,8 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                     if (isViewOnlyCraftable() && craftable) {
                         style.getStackSizeRenderer().renderStackSize(this.font, 0, true, s.xPos, s.yPos);
                     } else {
-                        style.getStackSizeRenderer().renderStackSize(this.font, storedAmount, craftable, s.xPos, s.yPos);
+                        style.getStackSizeRenderer().renderStackSize(this.font, storedAmount, craftable, s.xPos,
+                                s.yPos);
                     }
                 }
             }
@@ -476,10 +483,11 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
         // TODO: Should also list craftable status
         if (Minecraft.getInstance().gameSettings.advancedItemTooltips) {
-            currentToolTip.add(new StringTextComponent("Serial: " + entry.getSerial()).mergeStyle(TextFormatting.DARK_GRAY));
+            currentToolTip
+                    .add(new StringTextComponent("Serial: " + entry.getSerial()).mergeStyle(TextFormatting.DARK_GRAY));
         }
 
-        this.renderToolTip(matrices, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y,this.font);
+        this.renderToolTip(matrices, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y, this.font);
     }
 
     private int getMaxRows() {

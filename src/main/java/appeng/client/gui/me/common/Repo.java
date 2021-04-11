@@ -1,5 +1,16 @@
 package appeng.client.gui.me.common;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -13,15 +24,6 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.util.prioritylist.IPartitionList;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * For showing the network content of a storage channel, this class will maintain a client-side copy of the current
@@ -78,8 +80,7 @@ public abstract class Repo<T extends IAEStack<T>> {
                     localEntry.getStack(),
                     serverEntry.getStoredAmount(),
                     serverEntry.getRequestableAmount(),
-                    serverEntry.isCraftable()
-            ));
+                    serverEntry.isCraftable()));
         } else {
             entries.put(serverEntry.getSerial(), serverEntry);
         }

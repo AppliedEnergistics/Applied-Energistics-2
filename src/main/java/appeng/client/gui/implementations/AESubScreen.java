@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
-import appeng.container.me.items.ItemTerminalContainer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -34,6 +33,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.ChestContainer;
 import appeng.container.me.items.CraftingTermContainer;
+import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.container.me.items.WirelessTermContainer;
 import appeng.core.Api;

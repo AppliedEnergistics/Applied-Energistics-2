@@ -1,11 +1,20 @@
 package appeng.container.me.common;
 
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import net.minecraft.network.PacketBuffer;
-
 import javax.annotation.Nullable;
 
+import net.minecraft.network.PacketBuffer;
+
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.IAEStack;
+
+/**
+ * Contains information about something that is stored inside of the grid inventory. This is used to synchronize the
+ * grid inventory to a client, and incrementally update the information. To this end, each stack sent to the client is
+ * identified by a {@link #serial}, which is subsequently used to update the inventory entry for that specific
+ * item/fluid/etc.
+ *
+ * @param <T> The general type of what is being stored (items, fluids, etc.)
+ */
 public class GridInventoryEntry<T extends IAEStack<T>> {
     private final long serial;
 
@@ -19,7 +28,7 @@ public class GridInventoryEntry<T extends IAEStack<T>> {
     private final boolean craftable;
 
     public GridInventoryEntry(long serial, @Nullable T stack, long storedAmount, long requestableAmount,
-                              boolean craftable) {
+            boolean craftable) {
         this.serial = serial;
         this.stack = stack;
         this.storedAmount = storedAmount;
@@ -27,26 +36,48 @@ public class GridInventoryEntry<T extends IAEStack<T>> {
         this.craftable = craftable;
     }
 
+    /**
+     * Gets the serial number assigned to this inventory entry. Subsequent changes to properties other than
+     * {@link #stack} will use this serial to identify which entry needs to be updated.
+     */
     public long getSerial() {
         return serial;
     }
 
+    /**
+     * Gets the client-side representation of what is being stored. Do not use the statistical information on this
+     * object (count, requestable, etc.) and only use it for informing the player of *what* the stored object is. When
+     * this entry is an incremental update, this field is null, and {@link #serial} refers to a previous inventory entry
+     * that should be updated.
+     */
     public T getStack() {
         return stack;
     }
 
+    /**
+     * @see IAEStack#getStackSize()
+     */
     public long getStoredAmount() {
         return storedAmount;
     }
 
+    /**
+     * @see IAEStack#getCountRequestable()
+     */
     public long getRequestableAmount() {
         return requestableAmount;
     }
 
+    /**
+     * @see IAEStack#isCraftable()
+     */
     public boolean isCraftable() {
         return craftable;
     }
 
+    /**
+     * Writes this entry to a packet buffer for shipping it to the client.
+     */
     public void write(PacketBuffer buffer) {
         buffer.writeVarLong(serial);
         buffer.writeBoolean(stack != null);
@@ -58,7 +89,12 @@ public class GridInventoryEntry<T extends IAEStack<T>> {
         buffer.writeBoolean(craftable);
     }
 
-    public static <T extends IAEStack<T>> GridInventoryEntry<T> read(IStorageChannel<T> storageChannel, PacketBuffer buffer) {
+    /**
+     * Reads an inventory entry from a packet for a given storage channel. The storage channel is used to read the
+     * {@link #stack} field.
+     */
+    public static <T extends IAEStack<T>> GridInventoryEntry<T> read(IStorageChannel<T> storageChannel,
+            PacketBuffer buffer) {
         long serial = buffer.readVarLong();
         T stack = null;
         if (buffer.readBoolean()) {
@@ -70,6 +106,9 @@ public class GridInventoryEntry<T extends IAEStack<T>> {
         return new GridInventoryEntry<>(serial, stack, storedAmount, requestableAmount, craftable);
     }
 
+    /**
+     * @return True if this entry should still be present, otherwise it's a removal.
+     */
     public boolean isMeaningful() {
         return storedAmount > 0 || requestableAmount > 0 || craftable;
     }

@@ -1,8 +1,9 @@
 package appeng.client.gui.me.common;
 
+import net.minecraft.client.renderer.Rectangle2d;
+
 import appeng.client.gui.Blitter;
 import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
-import net.minecraft.client.renderer.Rectangle2d;
 
 public final class TerminalStyles {
 
@@ -19,8 +20,7 @@ public final class TerminalStyles {
             Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 71, 195, 97),
             9,
             new Rectangle2d(80, 4, 90, 12),
-            null
-    ).setSupportsAutoCrafting(true);
+            null).setSupportsAutoCrafting(true);
 
     public static TerminalStyle PORTABLE_CELL = new TerminalStyle(
             Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 0, 195, 17),
@@ -30,8 +30,7 @@ public final class TerminalStyles {
             Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 71, 195, 97),
             9,
             new Rectangle2d(80, 4, 90, 12),
-            3
-    );
+            3);
 
     public static TerminalStyle WIRELESS_TERMINAL = new TerminalStyle(
             Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 0, 195, 17),
@@ -41,8 +40,7 @@ public final class TerminalStyles {
             Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 71, 195, 97),
             9,
             new Rectangle2d(80, 4, 90, 12),
-            null
-    ).setSupportsAutoCrafting(true);
+            null).setSupportsAutoCrafting(true);
 
     private static final String SECURITY_STATION_BACKGROUND = "guis/security_station.png";
 
@@ -54,8 +52,7 @@ public final class TerminalStyles {
             Blitter.texture(SECURITY_STATION_BACKGROUND).src(0, 71, 195, 130),
             9,
             new Rectangle2d(80, 4, 90, 12),
-            null
-    ).setSortByButton(false);
+            null).setSortByButton(false);
 
     private static final String CRAFTING_TERMINAL_BACKGROUND = "guis/crafting.png";
 
@@ -67,8 +64,7 @@ public final class TerminalStyles {
             Blitter.texture(CRAFTING_TERMINAL_BACKGROUND).src(0, 71, 195, 170),
             9,
             new Rectangle2d(80, 4, 90, 12),
-            null
-    ).setSupportsAutoCrafting(true);
+            null).setSupportsAutoCrafting(true);
 
     private static final String PATTERN_TERMINAL_BACKGROUND = "guis/pattern.png";
 
@@ -80,8 +76,7 @@ public final class TerminalStyles {
             Blitter.texture(PATTERN_TERMINAL_BACKGROUND).src(0, 71, 195, 178),
             9,
             new Rectangle2d(80, 4, 90, 12),
-            null
-    ).setSupportsAutoCrafting(true);
+            null).setSupportsAutoCrafting(true);
 
     public static TerminalStyle FLUID_TERMINAL = new TerminalStyle(
             Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 0, 195, 17),
@@ -91,7 +86,6 @@ public final class TerminalStyles {
             Blitter.texture(ITEM_TERMINAL_BACKGROUND).src(0, 71, 195, 97),
             9,
             new Rectangle2d(80, 4, 90, 12),
-            null
-    ).setStackSizeRenderer(new FluidStackSizeRenderer()).setShowTooltipsWithItemInHand(true);
+            null).setStackSizeRenderer(new FluidStackSizeRenderer()).setShowTooltipsWithItemInHand(true);
 
 }

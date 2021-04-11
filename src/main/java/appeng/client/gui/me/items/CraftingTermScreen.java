@@ -18,7 +18,6 @@
 
 package appeng.client.gui.me.items;
 
-import appeng.client.gui.me.common.TerminalStyle;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,6 +25,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
+import appeng.client.gui.me.common.TerminalStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.container.me.items.CraftingTermContainer;
 import appeng.container.slot.CraftingMatrixSlot;
@@ -36,7 +36,8 @@ import appeng.helpers.InventoryAction;
 
 public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer> {
 
-    public CraftingTermScreen(TerminalStyle style, CraftingTermContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public CraftingTermScreen(TerminalStyle style, CraftingTermContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(style, container, playerInventory, title);
     }
 

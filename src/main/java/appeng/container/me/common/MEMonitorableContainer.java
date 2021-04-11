@@ -18,6 +18,23 @@
 
 package appeng.container.me.common;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
@@ -66,21 +83,6 @@ import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.items.IItemHandler;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @see MEMonitorableScreen
@@ -113,8 +115,8 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     private final IStorageChannel<T> storageChannel;
 
     public MEMonitorableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
-                                  final ITerminalHost host, final boolean bindInventory,
-                                  IStorageChannel<T> storageChannel) {
+            final ITerminalHost host, final boolean bindInventory,
+            IStorageChannel<T> storageChannel) {
         super(containerType, id, ip, host instanceof TileEntity ? (TileEntity) host : null,
                 host instanceof IPart ? (IPart) host : null,
                 host instanceof IGuiItemObject ? (IGuiItemObject) host : null);
@@ -243,8 +245,8 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     }
 
     /**
-     * The player's permission w.r.t. editing the terminal can change while it is open. Update the
-     * view cell permissions accordingly.
+     * The player's permission w.r.t. editing the terminal can change while it is open. Update the view cell permissions
+     * accordingly.
      */
     private void updateViewCellPermission() {
         final boolean oldAccessible = this.canEditViewCells;
@@ -336,7 +338,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
 
     @Override
     public void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change,
-                           final IActionSource source) {
+            final IActionSource source) {
         for (T is : change) {
             this.updateHelper.addChange(is);
         }
@@ -414,7 +416,8 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         handleNetworkInteraction(player, stack, action);
     }
 
-    protected abstract void handleNetworkInteraction(ServerPlayerEntity player, @Nullable T stack, InventoryAction action);
+    protected abstract void handleNetworkInteraction(ServerPlayerEntity player, @Nullable T stack,
+            InventoryAction action);
 
     @Nullable
     protected final T getStackBySerial(long serial) {

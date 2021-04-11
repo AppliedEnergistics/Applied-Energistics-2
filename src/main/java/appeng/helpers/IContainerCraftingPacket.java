@@ -18,13 +18,13 @@
 
 package appeng.helpers;
 
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
-
-import java.util.List;
 
 public interface IContainerCraftingPacket {
 

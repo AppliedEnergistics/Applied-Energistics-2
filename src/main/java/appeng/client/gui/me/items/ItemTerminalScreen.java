@@ -1,5 +1,22 @@
 package appeng.client.gui.me.items;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.common.Repo;
@@ -10,21 +27,9 @@ import appeng.container.me.common.MEMonitorableContainer;
 import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
 import appeng.util.prioritylist.IPartitionList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
-public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>> extends MEMonitorableScreen<IAEItemStack, C> {
+public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
+        extends MEMonitorableScreen<IAEItemStack, C> {
     public ItemTerminalScreen(TerminalStyle style, C container, PlayerInventory playerInventory, ITextComponent title) {
         super(style, container, playerInventory, title);
     }
@@ -40,7 +45,8 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>> 
     }
 
     @Override
-    protected void renderGridInventoryEntry(MatrixStack matrices, int x, int y, GridInventoryEntry<IAEItemStack> entry) {
+    protected void renderGridInventoryEntry(MatrixStack matrices, int x, int y,
+            GridInventoryEntry<IAEItemStack> entry) {
         // Annoying but easier than trying to splice into render item
         ItemStack displayStack = entry.getStack().asItemStackRepresentation();
         Inventory displayInv = new Inventory(displayStack);
@@ -48,7 +54,8 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>> 
     }
 
     @Override
-    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<IAEItemStack> entry, int mouseButton, ClickType clickType) {
+    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<IAEItemStack> entry, int mouseButton,
+            ClickType clickType) {
         if (entry == null) {
             // The only interaction allowed on an empty virtual slot is putting down the currently held item
             if (clickType == ClickType.PICKUP && !playerInventory.getItemStack().isEmpty()) {

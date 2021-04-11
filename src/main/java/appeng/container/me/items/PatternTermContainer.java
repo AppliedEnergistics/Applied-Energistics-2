@@ -304,7 +304,9 @@ public class PatternTermContainer extends ItemTerminalContainer
     }
 
     public void craftOrGetItem(final PatternSlotPacket packetPatternSlot) {
-        if (packetPatternSlot.slotItem != null && this.monitor != null /* TODO should this check powered / powerSource? */) {
+        if (packetPatternSlot.slotItem != null && this.monitor != null /*
+                                                                        * TODO should this check powered / powerSource?
+                                                                        */) {
             final IAEItemStack out = packetPatternSlot.slotItem.copy();
             InventoryAdaptor inv = new AdaptorItemHandler(
                     new WrapperCursorItemHandler(this.getPlayerInventory().player.inventory));
