@@ -52,6 +52,8 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     public SecurityStationScreen(TerminalStyle style, SecurityStationContainer container,
             PlayerInventory playerInventory, ITextComponent title) {
         super(style, container, playerInventory, title);
+
+        anchorSlotToBottom(container.getConfigSlot(), 36, 116);
     }
 
     private void toggleOption(SecurityPermissions permission) {
@@ -63,24 +65,29 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     public void init() {
         super.init();
 
-        final int top = this.guiTop + this.ySize - 116;
-        this.inject = this.addButton(new ToggleButton(this.guiLeft + 56, top, 11 * 16, 12 * 16,
+        int top = this.guiTop + this.ySize - 116;
+        int left = this.guiLeft + 56;
+        this.inject = this.addButton(new ToggleButton(left, top, 11 * 16, 12 * 16,
                 SecurityPermissions.INJECT.getTranslatedName(), SecurityPermissions.INJECT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.INJECT)));
+        left += 18;
 
-        this.extract = this.addButton(new ToggleButton(this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1,
+        this.extract = this.addButton(new ToggleButton(left, top, 11 * 16 + 1, 12 * 16 + 1,
                 SecurityPermissions.EXTRACT.getTranslatedName(), SecurityPermissions.EXTRACT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.EXTRACT)));
+        left += 18;
 
-        this.craft = this.addButton(new ToggleButton(this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2,
+        this.craft = this.addButton(new ToggleButton(left, top, 11 * 16 + 2, 12 * 16 + 2,
                 SecurityPermissions.CRAFT.getTranslatedName(), SecurityPermissions.CRAFT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.CRAFT)));
+        left += 18;
 
-        this.build = this.addButton(new ToggleButton(this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3,
+        this.build = this.addButton(new ToggleButton(left, top, 11 * 16 + 3, 12 * 16 + 3,
                 SecurityPermissions.BUILD.getTranslatedName(), SecurityPermissions.BUILD.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.BUILD)));
+        left += 18;
 
-        this.security = this.addButton(new ToggleButton(this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4,
+        this.security = this.addButton(new ToggleButton(left, top, 11 * 16 + 4, 12 * 16 + 4,
                 SecurityPermissions.SECURITY.getTranslatedName(), SecurityPermissions.SECURITY.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.SECURITY)));
     }

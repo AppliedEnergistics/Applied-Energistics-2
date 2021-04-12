@@ -66,7 +66,7 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
         this.securityBox = (SecurityStationTileEntity) monitorable;
 
         this.addSlot(this.configSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BIOMETRIC_CARD,
-                this.securityBox.getConfigSlot(), 0, 37, -33, ip));
+                this.securityBox.getConfigSlot(), 0, 0, 0, ip));
 
         this.addSlot(this.wirelessIn = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODABLE_ITEM,
                 this.wirelessEncoder, 0, 212, 10, ip));
@@ -179,5 +179,9 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
 
     private void setPermissionMode(final int permissionMode) {
         this.permissionMode = permissionMode;
+    }
+
+    public RestrictedInputSlot getConfigSlot() {
+        return configSlot;
     }
 }
