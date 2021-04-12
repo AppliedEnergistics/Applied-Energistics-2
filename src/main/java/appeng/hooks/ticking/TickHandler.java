@@ -46,6 +46,7 @@ import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.DistExecutor.SafeRunnable;
@@ -104,8 +105,10 @@ public class TickHandler {
         eventBus.addListener(INSTANCE::onServerTick);
         eventBus.addListener(INSTANCE::onWorldTick);
         eventBus.addListener(INSTANCE::onUnloadChunk);
-        eventBus.addListener(INSTANCE::onLoadWorld);
-        eventBus.addListener(INSTANCE::onUnloadWorld);
+        // Try to go first for world loads since we use it to initialize state
+        eventBus.addListener(EventPriority.HIGHEST, INSTANCE::onLoadWorld);
+        // Try to go last for world unloads since we use it to clean-up state
+        eventBus.addListener(EventPriority.LOWEST, INSTANCE::onUnloadWorld);
 
         // DistExecutor does not like functional interfaces
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new SafeRunnable() {
