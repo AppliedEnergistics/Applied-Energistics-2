@@ -243,10 +243,10 @@ public final class ApiBlocks implements IBlocks {
     private final IBlockDefinition energyGenerator;
 
     private static final AbstractBlock.Properties QUARTZ_PROPERTIES = defaultProps(Material.ROCK)
-            .hardnessAndResistance(3, 5);
+            .hardnessAndResistance(3, 5).setRequiresTool().harvestLevel(1);
 
     private static final AbstractBlock.Properties SKYSTONE_PROPERTIES = defaultProps(Material.ROCK)
-            .hardnessAndResistance(50, 150);
+            .hardnessAndResistance(50, 150).setRequiresTool();
 
     public ApiBlocks(FeatureFactory registry) {
         this.quartzOre = registry.block("quartz_ore", () -> new QuartzOreBlock(QUARTZ_PROPERTIES))
@@ -306,7 +306,7 @@ public final class ApiBlocks implements IBlocks {
                 .features(
                         AEFeature.SKY_STONE)
                 .block("sky_stone_block", () -> new SkyStoneBlock(SkystoneType.STONE,
-                        defaultProps(Material.ROCK).hardnessAndResistance(50, 150).harvestLevel(3)))
+                        defaultProps(Material.ROCK).hardnessAndResistance(50, 150).setRequiresTool().harvestLevel(3)))
                 .build();
 
         this.smoothSkyStoneBlock = registry.features(AEFeature.SKY_STONE)
