@@ -1,0 +1,15 @@
+{
+  "$schema": "../screen_style.json",
+  "slots": {
+    "BIOMETRIC_CARD": {
+    },
+    "MACHINE_INPUT": {
+      "left": 212,
+      "top": 10
+    },
+    "MACHINE_OUTPUT": {
+      "left": 212,
+      "top": 68
+    }
+  }
+}

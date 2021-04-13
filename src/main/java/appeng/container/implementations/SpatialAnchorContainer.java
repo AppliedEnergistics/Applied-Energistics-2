@@ -46,6 +46,9 @@ import appeng.me.GridAccessException;
 import appeng.me.cache.StatisticsCache;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.SpatialAnchorScreen
+ */
 public class SpatialAnchorContainer extends AEBaseContainer {
 
     public static ContainerType<SpatialAnchorContainer> TYPE;
@@ -115,13 +118,12 @@ public class SpatialAnchorContainer extends AEBaseContainer {
                     for (IGridNode machine : anchors) {
                         SpatialAnchorTileEntity a = (SpatialAnchorTileEntity) machine.getMachine();
                         World world = machine.getGridBlock().getLocation().getWorld();
-                        stats.merge(world, a.countLoadedChunks(), (left, right) -> Math.max(left, right));
+                        stats.merge(world, a.countLoadedChunks(), Math::max);
                     }
 
-                    this.allLoadedChunks = stats.values().stream().reduce((left, right) -> left + right).orElse(0);
+                    this.allLoadedChunks = stats.values().stream().reduce(Integer::sum).orElse(0);
                     this.allLoadedWorlds = stats.keySet().size();
-
-                } catch (GridAccessException e) {
+                } catch (GridAccessException ignored) {
                 }
 
                 this.allWorlds = statistics.getChunks().size();
@@ -135,10 +137,6 @@ public class SpatialAnchorContainer extends AEBaseContainer {
         }
 
         super.detectAndSendChanges();
-    }
-
-    protected void loadSettingsFromHost(final IConfigManager cm) {
-        this.setOverlayMode((YesNo) cm.getSetting(Settings.OVERLAY_MODE));
     }
 
     public YesNo getOverlayMode() {

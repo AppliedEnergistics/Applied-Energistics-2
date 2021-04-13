@@ -1,6 +1,9 @@
 package appeng.client;
 
 public final class Point {
+
+    public static final Point ZERO = new Point(0, 0);
+
     private final int x;
     private final int y;
 
@@ -20,4 +23,5 @@ public final class Point {
     public Point move(int x, int y) {
         return new Point(this.x + x, this.y + y);
     }
+
 }

@@ -53,7 +53,6 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.InterfaceTerminalContainer;
-import appeng.container.slot.AppEngSlot;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;

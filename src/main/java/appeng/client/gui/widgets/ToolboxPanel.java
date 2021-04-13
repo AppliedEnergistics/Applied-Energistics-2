@@ -1,14 +1,12 @@
 package appeng.client.gui.widgets;
 
-import java.util.List;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.renderer.Rectangle2d;
-
 import appeng.client.gui.Blitter;
 import appeng.client.gui.Rects;
-import appeng.container.slot.AppEngSlot;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.inventory.container.Slot;
+
+import java.util.List;
 
 /**
  * A 3x3 toolbox panel attached to the player inventory.
@@ -24,14 +22,14 @@ public class ToolboxPanel {
     private static final Blitter BACKGROUND = Blitter.texture("guis/extra_panels.png", 128, 128)
             .src(60, 60, 68, 68);
 
-    private final List<AppEngSlot> toolboxSlots;
+    private final List<Slot> slots;
 
     // Relative to the origin of the current screen (not window)
     private int x;
     private int y;
 
-    public ToolboxPanel(int x, int y, List<AppEngSlot> toolboxSlots) {
-        this.toolboxSlots = toolboxSlots;
+    public ToolboxPanel(int x, int y, List<Slot> slots) {
+        this.slots = slots;
         this.setPos(x, y);
     }
 
@@ -58,11 +56,11 @@ public class ToolboxPanel {
 
         // Toolbox slots are organized in a 3x3 grid left-to-right,top-to-bottom
         int sizeWithMargin = 16 + TOOLBOX_SLOT_MARGIN * 2;
-        for (int i = 0; i < toolboxSlots.size(); i++) {
+        for (int i = 0; i < slots.size(); i++) {
             int row = i / 3;
             int col = i % 3;
 
-            AppEngSlot slot = toolboxSlots.get(i);
+            Slot slot = slots.get(i);
             slot.xPos = slotOriginX + row * sizeWithMargin + TOOLBOX_SLOT_MARGIN;
             slot.yPos = slotOriginY + col * sizeWithMargin + TOOLBOX_SLOT_MARGIN;
         }

@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -51,8 +52,6 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
 
     private final RestrictedInputSlot configSlot;
 
-    private final AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory(this, 2);
-
     private final RestrictedInputSlot wirelessIn;
     private final OutputSlot wirelessOut;
 
@@ -66,11 +65,12 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
         this.securityBox = (SecurityStationTileEntity) monitorable;
 
         this.addSlot(this.configSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BIOMETRIC_CARD,
-                this.securityBox.getConfigSlot(), 0, 0, 0, ip));
+                this.securityBox.getConfigSlot(), 0), SlotSemantic.BIOMETRIC_CARD);
 
+        AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory(this, 2);
         this.addSlot(this.wirelessIn = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODABLE_ITEM,
-                this.wirelessEncoder, 0, 212, 10, ip));
-        this.addSlot(this.wirelessOut = new OutputSlot(this.wirelessEncoder, 1, 212, 68, -1));
+                wirelessEncoder, 0), SlotSemantic.MACHINE_INPUT);
+        this.addSlot(this.wirelessOut = new OutputSlot(wirelessEncoder, 1, -1), SlotSemantic.MACHINE_OUTPUT);
 
         this.createPlayerInventorySlots(ip);
     }

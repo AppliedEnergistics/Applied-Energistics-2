@@ -18,25 +18,31 @@
 
 package appeng.client.gui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
+import appeng.client.Point;
+import appeng.client.gui.layout.SlotGridLayout;
+import appeng.client.gui.widgets.CustomSlotWidget;
+import appeng.client.gui.widgets.ITickingWidget;
+import appeng.client.gui.widgets.ITooltip;
+import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.VerticalButtonBar;
+import appeng.container.AEBaseContainer;
+import appeng.container.SlotSemantic;
+import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.CraftingTermSlot;
+import appeng.container.slot.DisabledSlot;
+import appeng.container.slot.FakeSlot;
+import appeng.container.slot.IOptionalSlot;
+import appeng.container.slot.PatternTermSlot;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.core.sync.packets.SwapSlotsPacket;
+import appeng.helpers.InventoryAction;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import org.lwjgl.glfw.GLFW;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -56,26 +62,20 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.glfw.GLFW;
 
-import appeng.client.Point;
-import appeng.client.gui.widgets.CustomSlotWidget;
-import appeng.client.gui.widgets.ITickingWidget;
-import appeng.client.gui.widgets.ITooltip;
-import appeng.client.gui.widgets.Scrollbar;
-import appeng.client.gui.widgets.VerticalButtonBar;
-import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.CraftingTermSlot;
-import appeng.container.slot.DisabledSlot;
-import appeng.container.slot.FakeSlot;
-import appeng.container.slot.IOptionalSlot;
-import appeng.container.slot.PatternTermSlot;
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.InventoryActionPacket;
-import appeng.core.sync.packets.SwapSlotsPacket;
-import appeng.helpers.InventoryAction;
+import javax.annotation.Nullable;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
 
@@ -101,9 +101,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private Slot bl_clicked;
     private boolean handlingRightClick;
     protected final List<CustomSlotWidget> guiSlots = new ArrayList<>();
+    private ScreenStyle style;
 
     public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title,
-            @Nullable Blitter background) {
+                        @Nullable Blitter background) {
         super(container, playerInventory, title);
         this.background = background;
         if (background != null) {
@@ -118,6 +119,62 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         this.verticalButtonBar.reset(guiLeft, guiTop);
         positionPlayerInventory(getPlayerInventoryOrigin());
         positionAnchoredSlots();
+        if (style != null) {
+            applyStyle(style);
+        }
+    }
+
+    protected void loadStyle(String path) {
+        try (InputStream in = getClass().getResourceAsStream(path)) {
+            if (in == null) {
+                AELog.error("Missing screen style file: %s", path);
+                return;
+            }
+
+            this.style = ScreenStyle.GSON.fromJson(new InputStreamReader(in), ScreenStyle.class);
+        } catch (Exception e) {
+            AELog.error(e, "Failed to read Screen JSON file: " + path);
+        }
+    }
+
+    protected void applyStyle(ScreenStyle style) {
+
+        for (Map.Entry<SlotSemantic, ScreenStyle.SlotPosition> entry : style.getSlots().entrySet()) {
+
+            List<Slot> slots = container.getSlots(entry.getKey());
+            for (int i = 0; i < slots.size(); i++) {
+                Slot slot = slots.get(i);
+                ScreenStyle.SlotPosition slotPos = entry.getValue();
+                SlotGridLayout grid = slotPos.getGrid();
+
+                // Start by computing the x,y position
+                int x, y;
+                if (slotPos.getLeft() != null) {
+                    x = slotPos.getLeft();
+                } else if (slotPos.getRight() != null) {
+                    x = xSize - slotPos.getRight();
+                } else {
+                    x = 0;
+                }
+                if (slotPos.getTop() != null) {
+                    y = slotPos.getTop();
+                } else if (slotPos.getBottom() != null) {
+                    y = ySize - slotPos.getBottom();
+                } else {
+                    y = 0;
+                }
+
+                if (grid != null) {
+                    Point pos = grid.getPosition(x, y, i);
+                    x = pos.getX();
+                    y = pos.getY();
+                }
+
+                slot.xPos = x;
+                slot.yPos = y;
+            }
+        }
+
     }
 
     /**
@@ -175,7 +232,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     protected void drawGuiSlot(MatrixStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
-            float partialTicks) {
+                               float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.getTooltipAreaX();
             final int top = slot.getTooltipAreaY();
@@ -257,38 +314,38 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
-            final int y) {
-        final int ox = this.guiLeft; // (width - xSize) / 2;
-        final int oy = this.guiTop; // (height - ySize) / 2;
+                                                         final int y) {
 
-        this.drawBG(matrixStack, ox, oy, x, y, f);
+        this.drawBG(matrixStack, guiLeft, guiTop, x, y, f);
 
-        final List<Slot> slots = this.getInventorySlots();
-        for (final Slot slot : slots) {
+        for (final Slot slot : this.getInventorySlots()) {
             if (slot instanceof IOptionalSlot) {
-                final IOptionalSlot optionalSlot = (IOptionalSlot) slot;
-                // If a slot is optional and doesn't currently render, we still need to provide a background for it
-                if (optionalSlot.isRenderDisabled()) {
-                    final AppEngSlot aeSlot = (AppEngSlot) slot;
-
-                    // If the slot is disabled, shade the background overlay
-                    if (!aeSlot.isSlotEnabled()) {
-                        RenderSystem.enableBlend();
-                        RenderSystem.color4f(1, 1, 1, 0.4f);
-                    }
-                    blit(matrixStack, ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1,
-                            optionalSlot.getSourceY() - 1, 18, 18);
-                    if (!aeSlot.isSlotEnabled()) {
-                        RenderSystem.color4f(1, 1, 1, 1);
-                    }
-                }
+                drawOptionalSlotBackground(matrixStack, (IOptionalSlot) slot, false);
             }
         }
 
         for (final CustomSlotWidget slot : this.guiSlots) {
-            slot.drawBackground(matrixStack, ox, oy, getBlitOffset());
+            if (slot instanceof IOptionalSlot) {
+                drawOptionalSlotBackground(matrixStack, (IOptionalSlot) slot, true);
+            }
         }
 
+    }
+
+    private void drawOptionalSlotBackground(MatrixStack matrixStack, IOptionalSlot slot, boolean alwaysDraw) {
+        // If a slot is optional and doesn't currently render, we still need to provide a background for it
+        if (alwaysDraw || slot.isRenderDisabled()) {
+            // If the slot is disabled, shade the background overlay
+            float alpha = slot.isSlotEnabled() ? 1.0f : 0.4f;
+            if (background != null) {
+                Point pos = slot.getBackgroundPos();
+                background.copy()
+                        .src(slot.getBackgroundSrcRect())
+                        .dest(guiLeft + pos.getX(), guiTop + pos.getY())
+                        .color(1, 1, 1, alpha)
+                        .blit(matrixStack, getBlitOffset());
+            }
+        }
     }
 
     @Override
@@ -368,7 +425,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected void handleMouseClick(@Nullable Slot slot, final int slotIdx, final int mouseButton,
-            final ClickType clickType) {
+                                    final ClickType clickType) {
 
         // Do not allow clicks on disabled player inventory slots
         if (slot instanceof DisabledSlot) {
@@ -509,7 +566,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-            float partialTicks) {
+                       float partialTicks) {
         if (background != null) {
             background.dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
         }

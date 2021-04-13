@@ -1,0 +1,10 @@
+{
+  "$schema": "../screen_style.json",
+  "slots": {
+    "STORAGE": {
+      "left": 62,
+      "top": 19,
+      "grid": "BREAK_AFTER_3COLS"
+    }
+  }
+}

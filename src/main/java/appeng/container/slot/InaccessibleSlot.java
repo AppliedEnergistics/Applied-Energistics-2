@@ -26,8 +26,8 @@ public class InaccessibleSlot extends AppEngSlot {
 
     private ItemStack dspStack = ItemStack.EMPTY;
 
-    public InaccessibleSlot(final IItemHandler i, final int invSlot, final int x, final int y) {
-        super(i, invSlot, x, y);
+    public InaccessibleSlot(final IItemHandler i, final int invSlot) {
+        super(i, invSlot);
     }
 
     @Override

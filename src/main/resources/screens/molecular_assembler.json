@@ -1,0 +1,18 @@
+{
+  "$schema": "../screen_style.json",
+  "slots": {
+    "MACHINE_CRAFTING_GRID": {
+      "left": 29,
+      "top": 30,
+      "grid": "BREAK_AFTER_3COLS"
+    },
+    "ENCODED_PATTERN": {
+      "left": 126,
+      "top": 16
+    },
+    "MACHINE_OUTPUT": {
+      "left": 126,
+      "top": 48
+    }
+  }
+}

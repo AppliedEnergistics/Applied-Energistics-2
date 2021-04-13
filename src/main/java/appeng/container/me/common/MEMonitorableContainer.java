@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -61,8 +62,6 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
@@ -74,7 +73,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
@@ -172,11 +170,10 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         if (host instanceof IViewCellStorage) {
             IItemHandler viewCellStorage = ((IViewCellStorage) host).getViewCellStorage();
             this.viewCellSlots = new ArrayList<>(viewCellStorage.getSlots());
-            for (int y = 0; y < viewCellStorage.getSlots(); y++) {
+            for (int i = 0; i < viewCellStorage.getSlots(); i++) {
                 RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.VIEW_CELL,
-                        viewCellStorage, y, 0, 0,
-                        this.getPlayerInventory());
-                this.addSlot(slot);
+                        viewCellStorage, i);
+                this.addSlot(slot, SlotSemantic.VIEW_CELL);
                 this.viewCellSlots.add(slot);
             }
         } else {
@@ -372,10 +369,6 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         return this.viewCellSlots.stream()
                 .map(AppEngSlot::getStack)
                 .collect(Collectors.toList());
-    }
-
-    public List<RestrictedInputSlot> getViewCellSlots() {
-        return this.viewCellSlots;
     }
 
     /**

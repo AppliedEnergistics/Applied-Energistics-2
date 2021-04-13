@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://appliedenergistics.github.io/screen_style",
+  "type": "object",
+  "title": "AE2 Screen Style",
+  "description": "Provides styling information for an AE2 UI screen",
+  "required": [
+  ],
+  "definitions": {
+    "point": {
+      "$id": "Point",
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "integer",
+          "default": 0
+        },
+        "y": {
+          "type": "integer",
+          "default": 0
+        }
+      }
+    }
+  },
+  "properties": {
+    "includes": {
+      "description": "Relative path to other files to include before processing this one.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "slots": {
+      "type": "object",
+      "description": "Defines positions for slots and their grid alignment",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "grid": {
+            "$comment": "Configures the slots with this semantic in a grid",
+            "enum": [
+              "IO_BUS_CONFIG",
+              "BREAK_AFTER_9COLS",
+              "BREAK_AFTER_2COLS",
+              "BREAK_AFTER_3COLS",
+              "HORIZONTAL"
+            ]
+          },
+          "left": {
+            "type": "number"
+          },
+          "top": {
+            "type": "number"
+          },
+          "right": {
+            "type": "number"
+          },
+          "bottom": {
+            "type": "number"
+          }
+        }
+      },
+      "propertyNames": {
+        "$comment": "List SlotSemantic names here",
+        "enum": [
+          "NONE",
+          "STORAGE",
+          "PLAYER_INVENTORY",
+          "PLAYER_HOTBAR",
+          "CONFIG",
+          "UPGRADE",
+          "STORAGE_CELL",
+          "INSCRIBER_PLATE_TOP",
+          "INSCRIBER_PLATE_BOTTOM",
+          "MACHINE_INPUT",
+          "MACHINE_PROCESSING",
+          "MACHINE_OUTPUT",
+          "MACHINE_CRAFTING_GRID",
+          "ENCODED_PATTERN",
+          "VIEW_CELL",
+          "CRAFTING_GRID",
+          "CRAFTING_RESULT",
+          "PROCESSING_RESULT",
+          "BIOMETRIC_CARD"
+        ]
+      }
+    }
+  }
+}

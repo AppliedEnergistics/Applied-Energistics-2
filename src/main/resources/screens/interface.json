@@ -1,0 +1,20 @@
+{
+  "$schema": "../screen_style.json",
+  "slots": {
+    "CONFIG": {
+      "left": 8,
+      "top": 35,
+      "grid": "HORIZONTAL"
+    },
+    "STORAGE": {
+      "left": 8,
+      "top": 53,
+      "grid": "HORIZONTAL"
+    },
+    "INTERFACE_PATTERN": {
+      "left": 8,
+      "top": 90,
+      "grid": "HORIZONTAL"
+    }
+  }
+}

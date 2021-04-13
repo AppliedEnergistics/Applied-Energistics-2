@@ -47,6 +47,8 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
+
+        loadStyle("/screens/cell_workbench.json");
     }
 
     @Override

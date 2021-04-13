@@ -18,16 +18,20 @@
 
 package appeng.container.implementations;
 
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
+import appeng.container.slot.AppEngSlot;
+import appeng.tile.storage.SkyChestTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.items.IItemHandler;
 
-import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
-import appeng.container.slot.NormalSlot;
-import appeng.tile.storage.SkyChestTileEntity;
-
+/**
+ * @see appeng.client.gui.implementations.SkyChestScreen
+ */
 public class SkyChestContainer extends AEBaseContainer {
 
     public static ContainerType<SkyChestContainer> TYPE;
@@ -41,13 +45,9 @@ public class SkyChestContainer extends AEBaseContainer {
         super(TYPE, id, ip, chest, null);
         this.chest = chest;
 
-        for (int y = 0; y < 4; y++) {
-            int slotY = 24 + 18 * y;
-            for (int x = 0; x < 9; x++) {
-                int slotX = 8 + 18 * x;
-                int invSlot = y * 9 + x;
-                this.addSlot(new NormalSlot(this.chest.getInternalInventory(), invSlot, slotX, slotY));
-            }
+        IItemHandler inv = this.chest.getInternalInventory();
+        for (int i = 0; i < inv.getSlots(); i++) {
+            this.addSlot(new AppEngSlot(inv, i), SlotSemantic.STORAGE);
         }
 
         this.chest.openInventory(ip.player);

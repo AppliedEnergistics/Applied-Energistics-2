@@ -18,6 +18,7 @@
 
 package appeng.fluids.client.gui;
 
+import appeng.client.gui.implementations.IOBusScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -38,7 +39,7 @@ import appeng.fluids.util.IAEFluidTank;
 public class FluidIOScreen extends UpgradeableScreen<FluidIOContainer> {
 
     public FluidIOScreen(FluidIOContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+        super(container, playerInventory, title, IOBusScreen.BACKGROUND);
     }
 
     @Override

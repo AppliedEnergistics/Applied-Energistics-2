@@ -24,7 +24,6 @@ import java.util.Set;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -66,16 +65,13 @@ public class RestrictedInputSlot extends AppEngSlot {
             new ResourceLocation("forge:ingots/aluminium"));
 
     private final PlacableItemType which;
-    private final PlayerInventory p;
     private boolean allowEdit = true;
     private int stackLimit = -1;
 
-    public RestrictedInputSlot(final PlacableItemType valid, final IItemHandler inv, final int invSlot, final int x,
-            final int y, final PlayerInventory p) {
-        super(inv, invSlot, x, y);
+    public RestrictedInputSlot(final PlacableItemType valid, final IItemHandler inv, final int invSlot) {
+        super(inv, invSlot);
         this.which = valid;
         this.setIconIndex(valid.IIcon);
-        this.p = p;
     }
 
     @Override
@@ -89,6 +85,10 @@ public class RestrictedInputSlot extends AppEngSlot {
     public Slot setStackLimit(final int i) {
         this.stackLimit = i;
         return this;
+    }
+
+    private World getWorld() {
+        return getContainer().getPlayerInventory().player.getEntityWorld();
     }
 
     @Override
@@ -120,7 +120,7 @@ public class RestrictedInputSlot extends AppEngSlot {
 
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
-                final ICraftingPatternDetails de = crafting.decodePattern(stack, this.p.player.world);
+                final ICraftingPatternDetails de = crafting.decodePattern(stack, getWorld());
                 if (de != null) {
                     return de.isCraftable();
                 }
@@ -140,7 +140,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                     return true;
                 }
 
-                return InscriberRecipes.isValidOptionalIngredient(p.player.world, stack);
+                return InscriberRecipes.isValidOptionalIngredient(getWorld(), stack);
 
             case INSCRIBER_INPUT:
                 return true;/*
@@ -155,7 +155,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case VIEW_CELL:
                 return items.viewCell().isSameAs(stack);
             case ORE:
-                return GrinderRecipes.isValidIngredient(p.player.world, stack);
+                return GrinderRecipes.isValidIngredient(getWorld(), stack);
             case FUEL:
                 return ForgeHooks.getBurnTime(stack) > 0;
             case POWERED_TOOL:
@@ -246,9 +246,8 @@ public class RestrictedInputSlot extends AppEngSlot {
     protected boolean getCurrentValidationState() {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
             // Allow either an empty slot, or a valid encoded pattern
-            World world = this.p.player.getEntityWorld();
             ItemStack stack = getStack();
-            return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, world) != null;
+            return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, getWorld()) != null;
         }
         return true;
     }

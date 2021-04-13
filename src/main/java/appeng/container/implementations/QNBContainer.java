@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -29,6 +30,9 @@ import appeng.container.ContainerLocator;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.QNBScreen
+ */
 public class QNBContainer extends AEBaseContainer {
 
     public static ContainerType<QNBContainer> TYPE;
@@ -48,7 +52,7 @@ public class QNBContainer extends AEBaseContainer {
         super(TYPE, id, ip, quantumBridge, null);
 
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,
-                quantumBridge.getInternalInventory(), 0, 80, 37, this.getPlayerInventory())).setStackLimit(1));
+                quantumBridge.getInternalInventory(), 0)).setStackLimit(1), SlotSemantic.STORAGE);
 
         this.createPlayerInventorySlots(ip);
     }

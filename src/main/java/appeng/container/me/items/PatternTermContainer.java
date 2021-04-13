@@ -18,24 +18,6 @@
 
 package appeng.container.me.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.CraftResultInventory;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.CraftingResultSlot;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.ICraftingHelper;
@@ -47,6 +29,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerNull;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.FakeCraftingMatrixSlot;
@@ -66,6 +49,23 @@ import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.CraftResultInventory;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.CraftingResultSlot;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 /**
  * @see appeng.client.gui.me.items.PatternTermScreen
@@ -111,24 +111,24 @@ public class PatternTermContainer extends ItemTerminalContainer
         this.craftingGridInv = this.getPatternTerminal().getInventoryByName("crafting");
 
         for (int i = 0; i < 9; i++) {
-            this.addSlot(this.craftingGridSlots[i] = new FakeCraftingMatrixSlot(this.craftingGridInv, i, 0, 0));
+            this.addSlot(this.craftingGridSlots[i] = new FakeCraftingMatrixSlot(this.craftingGridInv, i),
+                    SlotSemantic.CRAFTING_GRID);
         }
 
         this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
-                monitorable, this.craftingGridInv, patternInv, 0, 0, this, 2, this));
+                monitorable, this.craftingGridInv, patternInv, this, 2, this), SlotSemantic.CRAFTING_RESULT);
         this.craftOutputSlot.setIconIndex(-1);
 
-        for (int y = 0; y < 3; y++) {
-            this.addSlot(this.processingOutputSlots[y] = new PatternOutputsSlot(output, this, y, 0, 0, 0, 0, 1));
-            this.processingOutputSlots[y].setRenderDisabled(false);
-            this.processingOutputSlots[y].setIconIndex(-1);
+        for (int i = 0; i < 3; i++) {
+            this.addSlot(this.processingOutputSlots[i] = new PatternOutputsSlot(output, this, i, 1), SlotSemantic.PROCESSING_RESULT);
+            this.processingOutputSlots[i].setRenderDisabled(false);
+            this.processingOutputSlots[i].setIconIndex(-1);
         }
 
         this.addSlot(this.blankPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BLANK_PATTERN,
-                patternInv, 0, 0, 0, this.getPlayerInventory()));
-        this.addSlot(
-                this.encodedPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                        patternInv, 1, 0, 0, this.getPlayerInventory()));
+                patternInv, 0), SlotSemantic.BLANK_PATTERN);
+        this.addSlot(this.encodedPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
+                patternInv, 1), SlotSemantic.ENCODED_PATTERN);
 
         this.encodedPatternSlot.setStackLimit(1);
 
@@ -228,7 +228,7 @@ public class PatternTermContainer extends ItemTerminalContainer
             final ItemStack out = this.getAndUpdateOutput();
 
             if (!out.isEmpty() && out.getCount() > 0) {
-                return new ItemStack[] { out };
+                return new ItemStack[]{out};
             }
         } else {
             boolean hasValue = false;
@@ -271,8 +271,8 @@ public class PatternTermContainer extends ItemTerminalContainer
 
     public void craftOrGetItem(final PatternSlotPacket packetPatternSlot) {
         if (packetPatternSlot.slotItem != null && this.monitor != null /*
-                                                                        * TODO should this check powered / powerSource?
-                                                                        */) {
+         * TODO should this check powered / powerSource?
+         */) {
             final IAEItemStack out = packetPatternSlot.slotItem.copy();
             InventoryAdaptor inv = new AdaptorItemHandler(
                     new WrapperCursorItemHandler(this.getPlayerInventory().player.inventory));

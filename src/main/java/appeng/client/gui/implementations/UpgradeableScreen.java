@@ -20,6 +20,7 @@ package appeng.client.gui.implementations;
 
 import java.util.List;
 
+import appeng.container.SlotSemantic;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.Rectangle2d;
@@ -49,10 +50,6 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     // Margin used to position additional elements to the right of the UI
     private static final int MARGIN = 2;
 
-    // Default background for import/export buses
-    public static final Blitter BACKGROUND = Blitter.texture("guis/bus.png")
-            .src(0, 0, 176, 184);
-
     private final UpgradesPanel upgradesPanel;
 
     private final ToolboxPanel toolboxPanel;
@@ -64,13 +61,6 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     protected SettingToggleButton<YesNo> craftMode;
     protected SettingToggleButton<SchedulingMode> schedulingMode;
 
-    /**
-     * Used for simple import-/export buses
-     */
-    public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
-        this(container, playerInventory, title, BACKGROUND);
-    }
-
     public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title, Blitter background) {
         super(container, playerInventory, title, background);
 
@@ -79,8 +69,8 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
         this.xSize = background.getSrcWidth();
         this.ySize = background.getSrcHeight();
 
-        upgradesPanel = new UpgradesPanel(xSize + MARGIN, 0, container.getUpgradeSlots());
-        toolboxPanel = new ToolboxPanel(xSize + MARGIN, ySize - 90, container.getToolboxSlots());
+        upgradesPanel = new UpgradesPanel(xSize + MARGIN, 0, container.getSlots(SlotSemantic.UPGRADE));
+        toolboxPanel = new ToolboxPanel(xSize + MARGIN, ySize - 90, container.getSlots(SlotSemantic.TOOLBOX));
     }
 
     @Override

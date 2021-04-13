@@ -21,6 +21,8 @@ package appeng.core;
 import java.util.Locale;
 import java.util.function.Supplier;
 
+import appeng.client.gui.implementations.IOBusScreen;
+import appeng.container.implementations.IOBusContainer;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.advancements.CriteriaTriggers;
@@ -412,8 +414,8 @@ final class Registration {
                 SpatialAnchorContainer::open);
         StorageBusContainer.TYPE = registerContainer(registry, "storagebus", StorageBusContainer::fromNetwork,
                 StorageBusContainer::open);
-        UpgradeableContainer.TYPE = registerContainer(registry, "upgradeable", UpgradeableContainer::fromNetwork,
-                UpgradeableContainer::open);
+        IOBusContainer.TYPE = registerContainer(registry, "iobus", IOBusContainer::fromNetwork,
+                IOBusContainer::open);
         VibrationChamberContainer.TYPE = registerContainer(registry, "vibrationchamber",
                 VibrationChamberContainer::fromNetwork, VibrationChamberContainer::open);
         WirelessContainer.TYPE = registerContainer(registry, "wireless", WirelessContainer::fromNetwork,
@@ -463,8 +465,7 @@ final class Registration {
             ScreenManager.registerFactory(CondenserContainer.TYPE, CondenserScreen::new);
             ScreenManager.registerFactory(InterfaceContainer.TYPE, InterfaceScreen::new);
             ScreenManager.registerFactory(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new);
-            ScreenManager.<UpgradeableContainer, UpgradeableScreen<UpgradeableContainer>>registerFactory(
-                    UpgradeableContainer.TYPE, UpgradeableScreen::new);
+            ScreenManager.registerFactory(IOBusContainer.TYPE, IOBusScreen::new);
             ScreenManager.registerFactory(FluidIOContainer.TYPE, FluidIOScreen::new);
             ScreenManager.registerFactory(IOPortContainer.TYPE, IOPortScreen::new);
             ScreenManager.registerFactory(StorageBusContainer.TYPE, StorageBusScreen::new);

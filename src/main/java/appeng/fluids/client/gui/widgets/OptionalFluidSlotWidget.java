@@ -18,26 +18,24 @@
 
 package appeng.fluids.client.gui.widgets;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.Point;
+import appeng.container.slot.IOptionalSlot;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.client.renderer.Rectangle2d;
 
-public class OptionalFluidSlotWidget extends FluidSlotWidget {
+public class OptionalFluidSlotWidget extends FluidSlotWidget implements IOptionalSlot {
     private final IOptionalSlotHost containerBus;
     private final int groupNum;
-    private final int srcX;
-    private final int srcY;
+    private final Rectangle2d backgroundSrcRect;
 
     public OptionalFluidSlotWidget(IAEFluidTank fluids, final IOptionalSlotHost containerBus, int slot, int id,
-            int groupNum, int x, int y, int xoffs, int yoffs) {
+                                   int groupNum, int x, int y, int xoffs, int yoffs) {
         super(fluids, slot, id, x + xoffs * 18, y + yoffs * 18);
         this.containerBus = containerBus;
         this.groupNum = groupNum;
-        this.srcX = x;
-        this.srcY = y;
+        this.backgroundSrcRect = new Rectangle2d(x - 1, y - 1, 18, 18);
     }
 
     @Override
@@ -57,15 +55,13 @@ public class OptionalFluidSlotWidget extends FluidSlotWidget {
     }
 
     @Override
-    public void drawBackground(MatrixStack matrices, int guileft, int guitop, int currentZIndex) {
-        RenderSystem.enableBlend();
-        if (this.isSlotEnabled()) {
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        } else {
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.4F);
-        }
-        blit(matrices, guileft + this.getTooltipAreaX() - 1, guitop + this.getTooltipAreaY() - 1, currentZIndex,
-                this.srcX - 1,
-                this.srcY - 1, this.getTooltipAreaWidth() + 2, this.getTooltipAreaHeight() + 2, 256, 256);
+    public Rectangle2d getBackgroundSrcRect() {
+        return backgroundSrcRect;
+    }
+
+    @Override
+    public Point getBackgroundPos() {
+        return new Point(getTooltipAreaX() - 1, getTooltipAreaY() - 1);
     }
 }
+

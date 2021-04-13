@@ -18,11 +18,6 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -31,11 +26,19 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
+/**
+ * @see appeng.client.gui.implementations.SpatialIOPortScreen
+ */
 public class SpatialIOPortContainer extends AEBaseContainer {
 
     public static ContainerType<SpatialIOPortContainer> TYPE;
@@ -69,9 +72,9 @@ public class SpatialIOPortContainer extends AEBaseContainer {
         }
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS,
-                spatialIOPort.getInternalInventory(), 0, 52, 48, this.getPlayerInventory()));
-        this.addSlot(new OutputSlot(spatialIOPort.getInternalInventory(), 1, 113, 48,
-                RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon));
+                spatialIOPort.getInternalInventory(), 0), SlotSemantic.MACHINE_INPUT);
+        this.addSlot(new OutputSlot(spatialIOPort.getInternalInventory(), 1,
+                RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon), SlotSemantic.MACHINE_OUTPUT);
 
         this.createPlayerInventorySlots(ip);
     }

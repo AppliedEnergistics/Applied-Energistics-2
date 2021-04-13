@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -31,6 +32,9 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AEConfig;
 import appeng.tile.networking.WirelessTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.WirelessScreen
+ */
 public class WirelessContainer extends AEBaseContainer {
 
     public static ContainerType<WirelessContainer> TYPE;
@@ -56,7 +60,7 @@ public class WirelessContainer extends AEBaseContainer {
         super(TYPE, id, ip, te, null);
 
         this.addSlot(this.boosterSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.RANGE_BOOSTER,
-                te.getInternalInventory(), 0, 80, 47, this.getPlayerInventory()));
+                te.getInternalInventory(), 0), SlotSemantic.STORAGE);
 
         this.createPlayerInventorySlots(ip);
     }

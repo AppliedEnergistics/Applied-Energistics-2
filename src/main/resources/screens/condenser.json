@@ -1,0 +1,17 @@
+{
+  "$schema": "../screen_style.json",
+  "slots": {
+    "MACHINE_INPUT": {
+      "left": 0,
+      "top": 52
+    },
+    "STORAGE_CELL": {
+      "left": 101,
+      "top": 26
+    },
+    "MACHINE_OUTPUT": {
+      "left": 105,
+      "top": 52
+    }
+  }
+}

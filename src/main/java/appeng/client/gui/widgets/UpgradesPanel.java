@@ -1,14 +1,13 @@
 package appeng.client.gui.widgets;
 
-import java.util.List;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.renderer.Rectangle2d;
-
 import appeng.client.gui.Blitter;
 import appeng.client.gui.Rects;
-import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.IOptionalSlot;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.inventory.container.Slot;
+
+import java.util.List;
 
 /**
  * A panel that can draw a dynamic number of upgrade slots in a vertical layout.
@@ -22,14 +21,14 @@ public final class UpgradesPanel {
     private static final Blitter BACKGROUND = Blitter.texture("guis/extra_panels.png", 128, 128);
     private static final Blitter INNER_CORNER = BACKGROUND.copy().src(12, 33, SLOT_SIZE, SLOT_SIZE);
 
-    private final List<? extends AppEngSlot> upgradeSlots;
+    private final List<Slot> slots;
 
     // Relative to current screen origin (not window)
     private int x;
     private int y;
 
-    public UpgradesPanel(int x, int y, List<? extends AppEngSlot> upgradeSlots) {
-        this.upgradeSlots = upgradeSlots;
+    public UpgradesPanel(int x, int y, List<Slot> slots) {
+        this.slots = slots;
         this.setPos(x, y);
     }
 
@@ -38,6 +37,8 @@ public final class UpgradesPanel {
         if (slotCount <= 0) {
             return;
         }
+
+        this.layoutSlots();
 
         // This is the absolute x,y coord of the first slot within the panel
         int slotOriginX = offsetX + this.x + PADDING;
@@ -111,11 +112,10 @@ public final class UpgradesPanel {
     public void setPos(int x, int y) {
         this.x = x;
         this.y = y;
-        this.layoutSlots();
     }
 
     private static void drawSlot(MatrixStack matrices, int zIndex, int x, int y,
-            boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
+                                 boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
         int srcX = PADDING;
         int srcY = PADDING;
         int srcWidth = SLOT_SIZE;
@@ -149,8 +149,8 @@ public final class UpgradesPanel {
      */
     private int getUpgradeSlotCount() {
         int count = 0;
-        for (AppEngSlot slot : upgradeSlots) {
-            if (slot.isSlotEnabled()) {
+        for (Slot slot : slots) {
+            if (!(slot instanceof IOptionalSlot) || ((IOptionalSlot) slot).isSlotEnabled()) {
                 count++;
             }
         }
@@ -161,7 +161,7 @@ public final class UpgradesPanel {
         int slotOriginX = this.x + PADDING;
         int slotOriginY = this.y + PADDING;
 
-        for (AppEngSlot slot : upgradeSlots) {
+        for (Slot slot : slots) {
             if (!slot.isEnabled()) {
                 continue;
             }

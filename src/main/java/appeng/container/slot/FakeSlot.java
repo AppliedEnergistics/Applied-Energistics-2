@@ -24,13 +24,13 @@ import net.minecraftforge.items.IItemHandler;
 
 public class FakeSlot extends AppEngSlot {
 
-    public FakeSlot(final IItemHandler inv, final int invSlot, final int x, final int y) {
-        super(inv, invSlot, x, y);
+    public FakeSlot(final IItemHandler inv, final int invSlot) {
+        super(inv, invSlot);
     }
 
     @Override
-    public ItemStack onTake(final PlayerEntity par1PlayerEntity, final ItemStack par2ItemStack) {
-        return par2ItemStack;
+    public ItemStack onTake(final PlayerEntity player, final ItemStack stack) {
+        return stack;
     }
 
     @Override

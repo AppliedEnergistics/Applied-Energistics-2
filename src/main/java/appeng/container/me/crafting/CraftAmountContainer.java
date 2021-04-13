@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -72,8 +73,8 @@ public class CraftAmountContainer extends AEBaseContainer {
     public CraftAmountContainer(int id, PlayerInventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);
 
-        this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(null, 1), 0, 34, 53);
-        this.addSlot(this.craftingItem);
+        this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(null, 1), 0);
+        this.addSlot(this.craftingItem, SlotSemantic.MACHINE_OUTPUT);
     }
 
     public static CraftAmountContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {

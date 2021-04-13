@@ -1,0 +1,14 @@
+{
+  "$schema": "../screen_style.json",
+  "slots": {
+    "STORAGE_CELL": {
+      "left": 152,
+      "top": 8
+    },
+    "CONFIG": {
+      "left": 8,
+      "top": 29,
+      "grid": "BREAK_AFTER_9COLS"
+    }
+  }
+}

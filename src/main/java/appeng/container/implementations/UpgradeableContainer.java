@@ -18,21 +18,6 @@
 
 package appeng.container.implementations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
@@ -45,32 +30,24 @@ import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.parts.IPart;
 import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalFakeSlot;
-import appeng.container.slot.OptionalTypeOnlyFakeSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.NetworkToolItem;
 import appeng.parts.automation.ExportBusPart;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
-public class UpgradeableContainer extends AEBaseContainer implements IOptionalSlotHost {
-
-    public static ContainerType<UpgradeableContainer> TYPE;
-
-    private static final ContainerHelper<UpgradeableContainer, IUpgradeableHost> helper = new ContainerHelper<>(
-            UpgradeableContainer::new, IUpgradeableHost.class, SecurityPermissions.BUILD);
-
-    public static UpgradeableContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+public abstract class UpgradeableContainer extends AEBaseContainer implements IOptionalSlotHost {
 
     private final IUpgradeableHost upgradeable;
     @GuiSync(0)
@@ -84,16 +61,8 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     private int tbSlot;
     private NetworkToolViewer tbInventory;
 
-    // We automatically reposition theses slots on the client-side to fit the respective textures
-    protected final List<AppEngSlot> upgradeSlots = new ArrayList<>();
-    protected final List<AppEngSlot> toolboxSlots = new ArrayList<>();
-
-    public UpgradeableContainer(int id, final PlayerInventory ip, final IUpgradeableHost te) {
-        this(TYPE, id, ip, te);
-    }
-
     public UpgradeableContainer(ContainerType<?> containerType, int id, final PlayerInventory ip,
-            final IUpgradeableHost te) {
+                                final IUpgradeableHost te) {
         super(containerType, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
                 (IPart) (te instanceof IPart ? te : null));
         this.upgradeable = te;
@@ -134,11 +103,10 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
         if (this.hasToolbox()) {
             for (int i = 0; i < 9; i++) {
                 RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES,
-                        this.tbInventory.getInternalInventory(), i, 0, 0, this.getPlayerInventory());
+                        this.tbInventory.getInternalInventory(), i);
                 // The toolbox is in the network tool that is part of the player inventory
                 slot.setPlayerSide();
-                toolboxSlots.add(slot);
-                this.addSlot(slot);
+                this.addSlot(slot, SlotSemantic.TOOLBOX);
             }
         }
 
@@ -151,37 +119,17 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
         return this.tbInventory != null;
     }
 
-    protected void setupConfig() {
-        this.setupUpgrades();
-
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
-        final int y = 40;
-        final int x = 80;
-        this.addSlot(new FakeTypeOnlySlot(inv, 0, x, y));
-
-        if (this.supportCapacity()) {
-            this.addSlot(new OptionalTypeOnlyFakeSlot(inv, this, 1, x, y, -1, 0, 1));
-            this.addSlot(new OptionalTypeOnlyFakeSlot(inv, this, 2, x, y, 1, 0, 1));
-            this.addSlot(new OptionalTypeOnlyFakeSlot(inv, this, 3, x, y, 0, -1, 1));
-            this.addSlot(new OptionalTypeOnlyFakeSlot(inv, this, 4, x, y, 0, 1, 1));
-
-            this.addSlot(new OptionalTypeOnlyFakeSlot(inv, this, 5, x, y, -1, -1, 2));
-            this.addSlot(new OptionalTypeOnlyFakeSlot(inv, this, 6, x, y, 1, -1, 2));
-            this.addSlot(new OptionalTypeOnlyFakeSlot(inv, this, 7, x, y, -1, 1, 2));
-            this.addSlot(new OptionalTypeOnlyFakeSlot(inv, this, 8, x, y, 1, 1, 2));
-        }
-    }
+    protected abstract void setupConfig();
 
     protected void setupUpgrades() {
         final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
 
         for (int i = 0; i < availableUpgrades(); i++) {
             RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades,
-                    i, 0, 0,
-                    this.getPlayerInventory());
+                    i
+            );
             slot.setNotDraggable();
-            upgradeSlots.add(slot);
-            this.addSlot(slot);
+            this.addSlot(slot, SlotSemantic.UPGRADE);
         }
     }
 
@@ -253,16 +201,9 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        final int upgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
-
-        if (idx == 1 && upgrades > 0) {
-            return true;
-        }
-        if (idx == 2 && upgrades > 1) {
-            return true;
-        }
-
-        return false;
+        int capacityUpgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
+        return idx == 1 && capacityUpgrades >= 1
+                || idx == 2 && capacityUpgrades >= 2;
     }
 
     public FuzzyMode getFuzzyMode() {
@@ -299,14 +240,6 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
     protected IUpgradeableHost getUpgradeable() {
         return this.upgradeable;
-    }
-
-    public List<AppEngSlot> getUpgradeSlots() {
-        return Collections.unmodifiableList(upgradeSlots);
-    }
-
-    public List<AppEngSlot> getToolboxSlots() {
-        return Collections.unmodifiableList(toolboxSlots);
     }
 
 }

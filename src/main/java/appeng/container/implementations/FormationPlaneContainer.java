@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -35,6 +36,11 @@ import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
 import appeng.parts.automation.FormationPlanePart;
 
+/**
+ * This is used by both annihilation and formation planes.
+ *
+ * @see appeng.client.gui.implementations.FormationPlaneScreen
+ */
 public class FormationPlaneContainer extends UpgradeableContainer {
 
     public static ContainerType<FormationPlaneContainer> TYPE;
@@ -59,16 +65,14 @@ public class FormationPlaneContainer extends UpgradeableContainer {
 
     @Override
     protected void setupConfig() {
-        final int xo = 8;
-        final int yo = 23 + 6;
-
         final IItemHandler config = this.getUpgradeable().getInventoryByName("config");
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
+                int invIdx = y * 9 + x;
                 if (y < 2) {
-                    this.addSlot(new FakeTypeOnlySlot(config, y * 9 + x, xo + x * 18, yo + y * 18));
+                    this.addSlot(new FakeTypeOnlySlot(config, invIdx), SlotSemantic.CONFIG);
                 } else {
-                    this.addSlot(new OptionalTypeOnlyFakeSlot(config, this, y * 9 + x, xo, yo, x, y, y - 2));
+                    this.addSlot(new OptionalTypeOnlyFakeSlot(config, this, invIdx, y - 2), SlotSemantic.CONFIG);
                 }
             }
         }

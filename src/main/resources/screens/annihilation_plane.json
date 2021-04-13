@@ -1,0 +1,6 @@
+{
+  "$schema": "../screen_style.json",
+  "includes": [
+    "storage_bus.json"
+  ]
+}

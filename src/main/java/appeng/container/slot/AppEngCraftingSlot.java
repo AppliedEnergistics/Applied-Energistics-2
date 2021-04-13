@@ -49,8 +49,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
      */
     private int amountCrafted;
 
-    public AppEngCraftingSlot(PlayerEntity player, IItemHandler craftingGrid, int x, int y) {
-        super(new ItemStackHandler(1), 0, x, y);
+    public AppEngCraftingSlot(PlayerEntity player, IItemHandler craftingGrid) {
+        super(new ItemStackHandler(1), 0);
         this.player = player;
         this.craftingGrid = craftingGrid;
     }
