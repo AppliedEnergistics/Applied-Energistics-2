@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -53,6 +54,9 @@ import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperSupplierItemHandler;
 import appeng.util.iterators.NullIterator;
 
+/**
+ * @see appeng.client.gui.implementations.CellWorkbenchScreen
+ */
 public class CellWorkbenchContainer extends UpgradeableContainer {
 
     public static ContainerType<CellWorkbenchContainer> TYPE;
@@ -97,21 +101,15 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     @Override
     protected void setupConfig() {
         final IItemHandler cell = this.getUpgradeable().getInventoryByName("cell");
-        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8,
-                this.getPlayerInventory()));
+        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0
+        ), SlotSemantic.STORAGE_CELL);
 
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
         final WrapperSupplierItemHandler upgradeInventory = new WrapperSupplierItemHandler(
                 this::getCellUpgradeInventory);
 
-        int offset = 0;
-        final int y = 29;
-        final int x = 8;
-        for (int w = 0; w < 7; w++) {
-            for (int z = 0; z < 9; z++) {
-                this.addSlot(new FakeTypeOnlySlot(inv, offset, x + z * 18, y + w * 18));
-                offset++;
-            }
+        for (int i = 0; i < 7 * 9; i++) {
+            this.addSlot(new FakeTypeOnlySlot(inv, i), SlotSemantic.CONFIG);
         }
 
         // We support up to 24 upgrade slots, see ICellWorkbenchItem, but we need to pre-create all slots here
@@ -119,9 +117,8 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         for (int i = 0; i < 24; i++) {
             OptionalRestrictedInputSlot slot = new OptionalRestrictedInputSlot(
                     RestrictedInputSlot.PlacableItemType.UPGRADES,
-                    upgradeInventory, this, i, 0, 0, i, this.getPlayerInventory());
-            this.addSlot(slot);
-            upgradeSlots.add(slot);
+                    upgradeInventory, this, i, i, this.getPlayerInventory());
+            this.addSlot(slot, SlotSemantic.UPGRADE);
         }
     }
 
@@ -201,21 +198,14 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
 
         final ItemStack is = this.getUpgradeable().getInventoryByName("cell").getStackInSlot(0);
-        final IStorageChannel channel = is.getItem() instanceof IStorageCell
-                ? ((IStorageCell) is.getItem()).getChannel()
+        final IStorageChannel<?> channel = is.getItem() instanceof IStorageCell
+                ? ((IStorageCell<?>) is.getItem()).getChannel()
                 : Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
 
-        final IMEInventory cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
-
-        Iterator<IAEStack> i = new NullIterator<>();
-        if (cellInv != null) {
-            final IItemList list = cellInv.getAvailableItems(channel.createList());
-            i = list.iterator();
-        }
+        Iterator<? extends IAEStack<?>> i = iterateCellItems(is, channel);
 
         for (int x = 0; x < inv.getSlots(); x++) {
             if (i.hasNext()) {
-                // TODO: check if ok
                 final ItemStack g = i.next().asItemStackRepresentation();
                 ItemHandlerUtil.setStackInSlot(inv, x, g);
             } else {
@@ -224,6 +214,16 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         }
 
         this.detectAndSendChanges();
+    }
+
+    private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is, IStorageChannel<T> channel) {
+        final IMEInventory<T> cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
+        if (cellInv != null) {
+            final IItemList<T> list = cellInv.getAvailableItems(channel.createList());
+            return list.iterator();
+        } else {
+            return new NullIterator<>();
+        }
     }
 
     public CopyMode getCopyMode() {

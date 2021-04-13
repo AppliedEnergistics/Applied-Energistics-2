@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -46,6 +47,9 @@ import appeng.parts.misc.StorageBusPart;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.iterators.NullIterator;
 
+/**
+ * @see appeng.client.gui.implementations.StorageBusScreen
+ */
 public class StorageBusContainer extends UpgradeableContainer {
 
     public static ContainerType<StorageBusContainer> TYPE;
@@ -76,16 +80,14 @@ public class StorageBusContainer extends UpgradeableContainer {
 
     @Override
     protected void setupConfig() {
-        final int xo = 8;
-        final int yo = 23 + 6;
-
         final IItemHandler config = this.getUpgradeable().getInventoryByName("config");
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
+                int invSlot = y * 9 + x;
                 if (y < 2) {
-                    this.addSlot(new FakeTypeOnlySlot(config, y * 9 + x, xo + x * 18, yo + y * 18));
+                    this.addSlot(new FakeTypeOnlySlot(config, invSlot), SlotSemantic.CONFIG);
                 } else {
-                    this.addSlot(new OptionalTypeOnlyFakeSlot(config, this, y * 9 + x, xo, yo, x, y, y - 2));
+                    this.addSlot(new OptionalTypeOnlyFakeSlot(config, this, invSlot, y - 2), SlotSemantic.CONFIG);
                 }
             }
         }

@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -35,6 +36,9 @@ import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.storage.IOPortTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.IOPortScreen
+ */
 public class IOPortContainer extends UpgradeableContainer {
 
     public static ContainerType<IOPortContainer> TYPE;
@@ -61,25 +65,16 @@ public class IOPortContainer extends UpgradeableContainer {
 
     @Override
     protected void setupConfig() {
-        int offX = 19;
-        int offY = 17;
-
         final IItemHandler cells = this.getUpgradeable().getInventoryByName("cells");
 
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 2; x++) {
-                this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, cells,
-                        x + y * 2, offX + x * 18, offY + y * 18, this.getPlayerInventory()));
-            }
+        for (int i = 0; i < 6; i++) {
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, cells, i),
+                    SlotSemantic.MACHINE_INPUT);
         }
 
-        offX = 122;
-        offY = 17;
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 2; x++) {
-                this.addSlot(new OutputSlot(cells, 6 + x + y * 2, offX + x * 18, offY + y * 18,
-                        RestrictedInputSlot.PlacableItemType.STORAGE_CELLS.IIcon));
-            }
+        for (int i = 0; i < 6; i++) {
+            this.addSlot(new OutputSlot(cells, 6 + i,
+                    RestrictedInputSlot.PlacableItemType.STORAGE_CELLS.IIcon), SlotSemantic.MACHINE_OUTPUT);
         }
 
         this.setupUpgrades();

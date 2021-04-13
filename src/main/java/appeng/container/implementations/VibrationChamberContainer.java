@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -60,7 +61,7 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
         this.vibrationChamber = vibrationChamber;
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.FUEL,
-                vibrationChamber.getInternalInventory(), 0, 80, 37, this.getPlayerInventory()));
+                vibrationChamber.getInternalInventory(), 0), SlotSemantic.MACHINE_INPUT);
 
         this.createPlayerInventorySlots(ip);
     }

@@ -18,28 +18,6 @@
 
 package appeng.container;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.networking.IGrid;
@@ -66,6 +44,28 @@ import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ArrayListMultimap;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class AEBaseContainer extends Container {
     private final IActionSource mySrc;
@@ -76,18 +76,20 @@ public abstract class AEBaseContainer extends Container {
     private final PlayerInventory playerInventory;
     private final List<AppEngSlot> playerInventorySlots = new ArrayList<>();
     private final Set<Integer> lockedPlayerInventorySlots = new HashSet<>();
+    private final Map<Slot, SlotSemantic> semanticBySlot = new HashMap<>();
+    private final ArrayListMultimap<SlotSemantic, Slot> slotsBySemantic = ArrayListMultimap.create();
     private boolean isContainerValid = true;
     private ContainerLocator locator;
     private int ticksSinceCheck = 900;
 
     public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
-            final IPart myPart) {
+                           final IPart myPart) {
         this(containerType, id, ip, myTile, myPart, null);
     }
 
     public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory playerInventory,
-            final TileEntity myTile,
-            final IPart myPart, final IGuiItemObject gio) {
+                           final TileEntity myTile,
+                           final IPart myPart, final IGuiItemObject gio) {
         super(containerType, id);
         this.playerInventory = playerInventory;
         this.tileEntity = myTile;
@@ -98,7 +100,7 @@ public abstract class AEBaseContainer extends Container {
     }
 
     public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory playerInventory,
-            final Object host) {
+                           final Object host) {
         super(containerType, id);
         this.playerInventory = playerInventory;
         this.tileEntity = host instanceof TileEntity ? (TileEntity) host : null;
@@ -244,13 +246,28 @@ public abstract class AEBaseContainer extends Container {
         for (int i = 0; i < playerInventory.mainInventory.size(); i++) {
             AppEngSlot slot;
             if (this.lockedPlayerInventorySlots.contains(i)) {
-                slot = new DisabledSlot(ih, i, 0, 0);
+                slot = new DisabledSlot(ih, i);
             } else {
-                slot = new PlayerInvSlot(ih, i, 0, 0);
+                slot = new PlayerInvSlot(ih, i);
             }
             playerInventorySlots.add(slot);
-            addSlot(slot);
+            SlotSemantic s = i < PlayerInventory.getHotbarSize()
+                    ? SlotSemantic.PLAYER_HOTBAR : SlotSemantic.PLAYER_INVENTORY;
+            addSlot(slot, s);
         }
+    }
+
+    protected Slot addSlot(Slot slot, SlotSemantic semantic) {
+        slot = this.addSlot(slot);
+
+        Preconditions.checkState(!semanticBySlot.containsKey(slot));
+        semanticBySlot.put(slot, semantic);
+        slotsBySemantic.put(semantic, slot);
+        return slot;
+    }
+
+    public List<Slot> getSlots(SlotSemantic semantic) {
+        return slotsBySemantic.get(semantic);
     }
 
     @Override

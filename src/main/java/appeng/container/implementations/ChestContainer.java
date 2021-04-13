@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -40,7 +41,7 @@ public class ChestContainer extends AEBaseContainer {
         super(TYPE, id, ip, chest, null);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
-                chest.getInternalInventory(), 1, 80, 37, this.getPlayerInventory()));
+                chest.getInternalInventory(), 1), SlotSemantic.STORAGE_CELL);
 
         this.createPlayerInventorySlots(ip);
     }

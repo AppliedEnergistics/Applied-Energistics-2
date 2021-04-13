@@ -32,8 +32,10 @@ public class InterfaceSlot extends AppEngSlot {
     private final InterfaceRecord machineInv;
 
     public InterfaceSlot(InterfaceRecord machineInv, int machineInvSlot, int x, int y) {
-        super(machineInv.getInventory(), machineInvSlot, x, y);
+        super(machineInv.getInventory(), machineInvSlot);
         this.machineInv = machineInv;
+        this.xPos = x;
+        this.yPos = y;
     }
 
     @Override

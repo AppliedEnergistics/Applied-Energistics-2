@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+import appeng.container.SlotSemantic;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -133,7 +134,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
         this.supportsViewCells = te instanceof IViewCellStorage;
         if (this.supportsViewCells) {
-            viewCellBg = new UpgradesPanel(xSize + 2, 0, container.getViewCellSlots());
+            viewCellBg = new UpgradesPanel(xSize + 2, 0, container.getSlots(SlotSemantic.VIEW_CELL));
         } else {
             viewCellBg = null;
         }

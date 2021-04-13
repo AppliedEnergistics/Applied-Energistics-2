@@ -18,16 +18,19 @@
 
 package appeng.container.implementations;
 
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
+import appeng.container.slot.RestrictedInputSlot;
+import appeng.tile.storage.DriveTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 
-import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
-import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.storage.DriveTileEntity;
-
+/**
+ * @see appeng.client.gui.implementations.DriveScreen
+ */
 public class DriveContainer extends AEBaseContainer {
 
     public static ContainerType<DriveContainer> TYPE;
@@ -46,14 +49,9 @@ public class DriveContainer extends AEBaseContainer {
     public DriveContainer(int id, final PlayerInventory ip, final DriveTileEntity drive) {
         super(TYPE, id, ip, drive, null);
 
-        for (int y = 0; y < 5; y++) {
-            int slotY = 14 + y * 18;
-            for (int x = 0; x < 2; x++) {
-                int invSlot = x + y * 2;
-                int slotX = 71 + x * 18;
-                this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
-                        drive.getInternalInventory(), invSlot, slotX, slotY, this.getPlayerInventory()));
-            }
+        for (int i = 0; i < 10; i++) {
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
+                    drive.getInternalInventory(), i), SlotSemantic.STORAGE_CELL);
         }
 
         this.createPlayerInventorySlots(ip);

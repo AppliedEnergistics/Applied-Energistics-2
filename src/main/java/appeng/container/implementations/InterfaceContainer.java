@@ -18,6 +18,8 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
+import appeng.container.slot.AppEngSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -30,11 +32,13 @@ import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeSlot;
-import appeng.container.slot.NormalSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 
+/**
+ * @see appeng.client.gui.implementations.InterfaceScreen
+ */
 public class InterfaceContainer extends UpgradeableContainer {
 
     public static ContainerType<InterfaceContainer> TYPE;
@@ -50,8 +54,6 @@ public class InterfaceContainer extends UpgradeableContainer {
         return helper.open(player, locator);
     }
 
-    private final DualityInterface myDuality;
-
     @GuiSync(3)
     public YesNo bMode = YesNo.NO;
 
@@ -61,19 +63,20 @@ public class InterfaceContainer extends UpgradeableContainer {
     public InterfaceContainer(int id, final PlayerInventory ip, final IInterfaceHost te) {
         super(TYPE, id, ip, te.getInterfaceDuality().getHost());
 
-        this.myDuality = te.getInterfaceDuality();
+        DualityInterface duality = te.getInterfaceDuality();
 
         for (int x = 0; x < DualityInterface.NUMBER_OF_PATTERN_SLOTS; x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                    this.myDuality.getPatterns(), x, 8 + 18 * x, 90 + 7, this.getPlayerInventory()));
+                    duality.getPatterns(), x),
+                    SlotSemantic.ENCODED_PATTERN);
         }
 
         for (int x = 0; x < DualityInterface.NUMBER_OF_CONFIG_SLOTS; x++) {
-            this.addSlot(new FakeSlot(this.myDuality.getConfig(), x, 8 + 18 * x, 35));
+            this.addSlot(new FakeSlot(duality.getConfig(), x), SlotSemantic.CONFIG);
         }
 
         for (int x = 0; x < DualityInterface.NUMBER_OF_STORAGE_SLOTS; x++) {
-            this.addSlot(new NormalSlot(this.myDuality.getStorage(), x, 8 + 18 * x, 35 + 18));
+            this.addSlot(new AppEngSlot(duality.getStorage(), x), SlotSemantic.STORAGE);
         }
     }
 

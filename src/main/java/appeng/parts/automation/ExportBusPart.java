@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+import appeng.container.implementations.IOBusContainer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -53,7 +54,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -196,7 +196,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(UpgradeableContainer.TYPE, player, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(IOBusContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
     }

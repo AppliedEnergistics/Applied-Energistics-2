@@ -55,13 +55,17 @@ public class VerticalButtonBar {
         }
 
         // Set up a bounding rectangle for JEI exclusion zones
-        int boundX = originX - maxWidth - 2 * MARGIN;
-        int boundY = originY + START_Y;
-        boundingRectangle = new Rectangle2d(
-                boundX,
-                boundY,
-                maxWidth + 2 * MARGIN,
-                currentY + MARGIN - boundY);
+        if (buttons.isEmpty()) {
+            boundingRectangle = new Rectangle2d(0, 0, 0, 0);
+        } else {
+            int boundX = originX - maxWidth - 2 * MARGIN;
+            int boundY = originY + START_Y;
+            boundingRectangle = new Rectangle2d(
+                    boundX,
+                    boundY,
+                    maxWidth + 2 * MARGIN,
+                    currentY + MARGIN - boundY);
+        }
     }
 
     /**

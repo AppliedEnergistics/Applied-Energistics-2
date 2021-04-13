@@ -1,0 +1,15 @@
+{
+  "$schema": "../screen_style.json",
+  "slots": {
+    "MACHINE_INPUT": {
+      "left": 19,
+      "top": 17,
+      "grid": "BREAK_AFTER_2COLS"
+    },
+    "MACHINE_OUTPUT": {
+      "left": 122,
+      "top": 17,
+      "grid": "BREAK_AFTER_2COLS"
+    }
+  }
+}

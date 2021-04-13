@@ -23,8 +23,8 @@ import net.minecraftforge.items.IItemHandler;
 
 public class OutputSlot extends AppEngSlot {
 
-    public OutputSlot(final IItemHandler inv, final int invSlot, final int x, final int y, final int iconIndex) {
-        super(inv, invSlot, x, y);
+    public OutputSlot(final IItemHandler inv, final int invSlot, final int iconIndex) {
+        super(inv, invSlot);
         this.setIconIndex(iconIndex);
     }
 

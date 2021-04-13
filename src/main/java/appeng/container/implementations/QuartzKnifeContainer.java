@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -39,6 +40,9 @@ import appeng.items.contents.QuartzKnifeObj;
 import appeng.items.materials.MaterialItem;
 import appeng.tile.inventory.AppEngInternalInventory;
 
+/**
+ * @see appeng.client.gui.implementations.QuartzKnifeScreen
+ */
 public class QuartzKnifeContainer extends AEBaseContainer {
 
     public static ContainerType<QuartzKnifeContainer> TYPE;
@@ -57,15 +61,17 @@ public class QuartzKnifeContainer extends AEBaseContainer {
     private final QuartzKnifeObj toolInv;
 
     private final IItemHandler inSlot = new AppEngInternalInventory(null, 1, 1);
-    private String myName = "";
+
+    private String currentName = "";
 
     public QuartzKnifeContainer(int id, final PlayerInventory ip, final QuartzKnifeObj te) {
         super(TYPE, id, ip, null, null);
         this.toolInv = te;
 
         this.addSlot(
-                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip));
-        this.addSlot(new QuartzKniveSlot(this.inSlot, 0, 134, 44, -1));
+                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.METAL_INGOTS, this.inSlot, 0),
+                SlotSemantic.MACHINE_INPUT);
+        this.addSlot(new QuartzKniveSlot(this.inSlot, 0, -1), SlotSemantic.MACHINE_OUTPUT);
 
         this.lockPlayerInventorySlot(ip.currentItem);
 
@@ -73,7 +79,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
     }
 
     public void setName(final String value) {
-        this.myName = value;
+        this.currentName = value;
     }
 
     @Override
@@ -95,8 +101,8 @@ public class QuartzKnifeContainer extends AEBaseContainer {
     }
 
     private class QuartzKniveSlot extends OutputSlot {
-        QuartzKniveSlot(IItemHandler inv, int invSlot, int x, int y, int iconIdx) {
-            super(inv, invSlot, x, y, iconIdx);
+        QuartzKniveSlot(IItemHandler inv, int invSlot, int iconIdx) {
+            super(inv, invSlot, iconIdx);
         }
 
         @Override
@@ -108,10 +114,10 @@ public class QuartzKnifeContainer extends AEBaseContainer {
             }
 
             if (RestrictedInputSlot.isMetalIngot(input)) {
-                if (QuartzKnifeContainer.this.myName.length() > 0) {
+                if (QuartzKnifeContainer.this.currentName.length() > 0) {
                     return Api.instance().definitions().materials().namePress().maybeStack(1).map(namePressStack -> {
                         final CompoundNBT compound = namePressStack.getOrCreateTag();
-                        compound.putString(MaterialItem.TAG_INSCRIBE_NAME, QuartzKnifeContainer.this.myName);
+                        compound.putString(MaterialItem.TAG_INSCRIBE_NAME, QuartzKnifeContainer.this.currentName);
 
                         return namePressStack;
                     }).orElse(ItemStack.EMPTY);

@@ -1,0 +1,10 @@
+{
+  "$schema": "../screen_style.json",
+  "slots": {
+    "CONFIG": {
+      "left": 80,
+      "top": 40,
+      "grid": "IO_BUS_CONFIG"
+    }
+  }
+}

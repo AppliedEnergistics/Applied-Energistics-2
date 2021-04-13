@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -92,9 +93,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
         this.setupUpgrades();
 
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
-        final int y = 40;
-        final int x = 80 + 57;
-        this.addSlot(new FakeTypeOnlySlot(inv, 0, x, y));
+        this.addSlot(new FakeTypeOnlySlot(inv, 0), SlotSemantic.CONFIG);
     }
 
     @Override

@@ -18,6 +18,7 @@
 
 package appeng.container.me.networktool;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -32,6 +33,9 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.RestrictedInputSlot;
 
+/**
+ * @see appeng.client.gui.me.networktool.NetworkToolScreen
+ */
 public class NetworkToolContainer extends AEBaseContainer {
 
     public static ContainerType<NetworkToolContainer> TYPE;
@@ -58,14 +62,9 @@ public class NetworkToolContainer extends AEBaseContainer {
 
         this.lockPlayerInventorySlot(ip.currentItem);
 
-        for (int y = 0; y < 3; y++) {
-            int slotY = 19 + y * 18;
-            for (int x = 0; x < 3; x++) {
-                int slotX = 62 + x * 18;
-                int invSlot = y * 3 + x;
-                this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, te.getInventory(),
-                        invSlot, slotX, slotY, this.getPlayerInventory())));
-            }
+        for (int i = 0; i < 9; i++) {
+            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, te.getInventory(),
+                    i)), SlotSemantic.STORAGE);
         }
 
         this.createPlayerInventorySlots(ip);

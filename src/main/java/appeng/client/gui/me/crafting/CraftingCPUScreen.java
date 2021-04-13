@@ -112,23 +112,21 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
             final int mouseY) {
         String title = this.getGuiDisplayName(GuiText.CraftingStatus.text()).getString();
 
-        if (status == null) {
-            return;
-        }
+        if (status != null) {
+            this.table.render(matrixStack, mouseX, mouseY, status.getEntries(), getScrollBar().getCurrentScroll());
 
-        this.table.render(matrixStack, mouseX, mouseY, status.getEntries(), getScrollBar().getCurrentScroll());
+            final long elapsedTime = status.getElapsedTime();
+            final double remainingItems = status.getRemainingItemCount();
+            final double startItems = status.getStartItemCount();
+            final long eta = (long) (elapsedTime / Math.max(1d, (startItems - remainingItems))
+                    * remainingItems);
 
-        final long elapsedTime = status.getElapsedTime();
-        final double remainingItems = status.getRemainingItemCount();
-        final double startItems = status.getStartItemCount();
-        final long eta = (long) (elapsedTime / Math.max(1d, (startItems - remainingItems))
-                * remainingItems);
-
-        if (eta > 0 && !getVisualEntries().isEmpty()) {
-            final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(eta, TimeUnit.NANOSECONDS);
-            final String etaTimeText = DurationFormatUtils.formatDuration(etaInMilliseconds,
-                    GuiText.ETAFormat.getLocal());
-            title += " - " + etaTimeText;
+            if (eta > 0 && !getVisualEntries().isEmpty()) {
+                final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(eta, TimeUnit.NANOSECONDS);
+                final String etaTimeText = DurationFormatUtils.formatDuration(etaInMilliseconds,
+                        GuiText.ETAFormat.getLocal());
+                title += " - " + etaTimeText;
+            }
         }
 
         this.font.drawString(matrixStack, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, COLOR_DARK_GRAY);

@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -42,6 +43,9 @@ import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.MolecularAssemblerScreen
+ */
 public class MolecularAssemblerContainer extends UpgradeableContainer implements IProgressProvider {
 
     public static ContainerType<MolecularAssemblerContainer> TYPE;
@@ -90,26 +94,16 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
 
     @Override
     protected void setupConfig() {
-        int offX = 29;
-        int offY = 30;
-
         final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
 
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                final MolecularAssemblerPatternSlot s = new MolecularAssemblerPatternSlot(this, mac, x + y * 3,
-                        offX + x * 18, offY + y * 18);
-                this.addSlot(s);
-            }
+        for (int i = 0; i < 9; i++) {
+            this.addSlot(new MolecularAssemblerPatternSlot(this, mac, i), SlotSemantic.MACHINE_INPUT);
         }
 
-        offX = 126;
-        offY = 16;
+        encodedPatternSlot = this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10),
+                        SlotSemantic.ENCODED_PATTERN);
 
-        encodedPatternSlot = this
-                .addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10,
-                        offX, offY, this.getPlayerInventory()));
-        this.addSlot(new OutputSlot(mac, 9, offX, offY + 32, -1));
+        this.addSlot(new OutputSlot(mac, 9, -1), SlotSemantic.MACHINE_OUTPUT);
 
         setupUpgrades();
     }

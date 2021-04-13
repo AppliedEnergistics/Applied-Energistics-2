@@ -32,6 +32,9 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.IPriorityHost;
 
+/**
+ * @see appeng.client.gui.implementations.PriorityScreen
+ */
 public class PriorityContainer extends AEBaseContainer {
 
     public static ContainerType<PriorityContainer> TYPE;

@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -37,10 +38,7 @@ import appeng.tile.misc.InscriberRecipes;
 import appeng.tile.misc.InscriberTileEntity;
 
 /**
- * @author AlgorithmX2
- * @author thatsIch
- * @version rv2
- * @since rv0
+ * @see appeng.client.gui.implementations.InscriberScreen
  */
 public class InscriberContainer extends UpgradeableContainer implements IProgressProvider {
 
@@ -75,26 +73,23 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
 
         IItemHandler inv = te.getInternalInventory();
 
-        RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0,
-                45, 16, this.getPlayerInventory());
+        RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0
+        );
         top.setStackLimit(1);
-        this.top = this.addSlot(top);
+        this.top = this.addSlot(top, SlotSemantic.INSCRIBER_PLATE_TOP);
         RestrictedInputSlot bottom = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv,
-                1, 45, 62, this.getPlayerInventory());
+                1);
         bottom.setStackLimit(1);
-        this.bottom = this.addSlot(bottom);
+        this.bottom = this.addSlot(bottom, SlotSemantic.INSCRIBER_PLATE_BOTTOM);
         RestrictedInputSlot middle = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_INPUT, inv,
-                2, 63, 39, this.getPlayerInventory());
+                2);
         middle.setStackLimit(1);
-        this.middle = this.addSlot(middle);
+        this.middle = this.addSlot(middle, SlotSemantic.MACHINE_INPUT);
 
-        this.addSlot(new OutputSlot(inv, 3, 113, 40, -1));
+        this.addSlot(new OutputSlot(inv, 3, -1), SlotSemantic.MACHINE_OUTPUT);
     }
 
     @Override
-    /**
-     * Overridden super.setupConfig to prevent setting up the fake slots
-     */
     protected void setupConfig() {
         this.setupUpgrades();
     }

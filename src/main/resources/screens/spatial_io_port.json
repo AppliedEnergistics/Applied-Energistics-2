@@ -1,0 +1,13 @@
+{
+  "$schema": "../screen_style.json",
+  "slots": {
+    "MACHINE_INPUT": {
+      "left": 52,
+      "top": 48
+    },
+    "MACHINE_OUTPUT": {
+      "left": 113,
+      "top": 48
+    }
+  }
+}

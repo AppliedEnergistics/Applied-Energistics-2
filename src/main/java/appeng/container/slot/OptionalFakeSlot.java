@@ -20,24 +20,23 @@ package appeng.container.slot;
 
 import javax.annotation.Nonnull;
 
+import appeng.client.Point;
+import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
 
-    private final int srcX;
-    private final int srcY;
     private final int groupNum;
     private final IOptionalSlotHost host;
+    private final Rectangle2d backgroundSrcRect;
     private boolean renderDisabled = true;
 
-    public OptionalFakeSlot(final IItemHandler inv, final IOptionalSlotHost containerBus, final int invSlot,
-            final int x, final int y, final int offX, final int offY, final int groupNum) {
-        super(inv, invSlot, x + offX * 18, y + offY * 18);
-        this.srcX = x;
-        this.srcY = y;
+    public OptionalFakeSlot(final IItemHandler inv, final IOptionalSlotHost containerBus, int invSlot, int groupNum) {
+        super(inv, invSlot);
         this.groupNum = groupNum;
         this.host = containerBus;
+        this.backgroundSrcRect = new Rectangle2d(0, 0, 18, 18);
     }
 
     @Override
@@ -71,12 +70,12 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
     }
 
     @Override
-    public int getSourceX() {
-        return this.srcX;
+    public Rectangle2d getBackgroundSrcRect() {
+        return backgroundSrcRect;
     }
 
     @Override
-    public int getSourceY() {
-        return this.srcY;
+    public Point getBackgroundPos() {
+        return new Point(xPos - 1, yPos - 1);
     }
 }

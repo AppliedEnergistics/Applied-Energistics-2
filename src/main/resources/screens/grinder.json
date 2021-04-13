@@ -1,0 +1,19 @@
+{
+  "$schema": "../screen_style.json",
+  "slots": {
+    "MACHINE_INPUT": {
+      "left": 12,
+      "top": 17,
+      "grid": "HORIZONTAL"
+    },
+    "MACHINE_PROCESSING": {
+      "left": 80,
+      "top": 40
+    },
+    "MACHINE_OUTPUT": {
+      "left": 112,
+      "top": 63,
+      "grid": "HORIZONTAL"
+    }
+  }
+}
