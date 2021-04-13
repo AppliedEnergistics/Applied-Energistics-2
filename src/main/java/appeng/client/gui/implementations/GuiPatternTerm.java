@@ -19,11 +19,21 @@
 package appeng.client.gui.implementations;
 
 
+import java.awt.*;
 import java.io.IOException;
+import java.util.*;
+import java.util.List;
 
+import appeng.container.interfaces.IJEIGhostIngredients;
+import appeng.container.slot.SlotFake;
+import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.helpers.InventoryAction;
+import appeng.util.item.AEItemStack;
+import mezz.jei.api.gui.IGhostIngredientHandler.Target;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.ActionItems;
@@ -40,7 +50,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 
 
-public class GuiPatternTerm extends GuiMEMonitorable
+public class GuiPatternTerm extends GuiMEMonitorable implements IJEIGhostIngredients
 {
 
 	private static final String BACKGROUND_CRAFTING_MODE = "guis/pattern.png";
@@ -67,6 +77,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	private GuiImgButton divThreeBtn;
 	private GuiImgButton minusOneBtn;
 	private GuiImgButton maxCountBtn;
+	public Map<Target<?>,Object> mapTargetSlot = new HashMap<>();
 
 	public GuiPatternTerm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
@@ -273,5 +284,53 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		final int offsetPlayerSide = s.isPlayerSide() ? 5 : 3;
 
 		s.yPos = s.getY() + this.ySize - 78 - offsetPlayerSide;
+	}
+
+	@Override
+	public List<Target<?>> getPhantomTargets(Object ingredient) {
+		if (!(ingredient instanceof ItemStack )) {
+			return Collections.emptyList();
+		}
+		List<Target<?>> targets = new ArrayList<>();
+		for( Slot slot : this.inventorySlots.inventorySlots )
+		{
+			if( slot instanceof SlotFake )
+			{
+				ItemStack itemStack = (ItemStack) ingredient;
+				Target<Object> target = new Target<Object>()
+				{
+					@Override
+					public Rectangle getArea()
+					{
+						return new Rectangle( getGuiLeft() + slot.xPos, getGuiTop() + slot.yPos, 16, 16 );
+					}
+
+					@Override
+					public void accept( Object ingredient )
+					{
+						final PacketInventoryAction p;
+						try
+						{
+							p = new PacketInventoryAction( InventoryAction.PLACE_JEI_GHOST_ITEM, (SlotFake) slot, AEItemStack.fromItemStack( itemStack ) );
+							NetworkHandler.instance().sendToServer( p );
+
+						}
+						catch( IOException e )
+						{
+							e.printStackTrace();
+						}
+					}
+				};
+				targets.add( target );
+				mapTargetSlot.putIfAbsent( target, slot );
+			}
+		}
+		return targets;
+	}
+
+	@Override
+	public Map<Target<?>, Object> getFakeSlotTargetMap()
+	{
+		return mapTargetSlot;
 	}
 }

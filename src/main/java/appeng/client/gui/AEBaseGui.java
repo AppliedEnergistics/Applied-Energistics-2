@@ -106,6 +106,12 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
 	private ItemStack dbl_whichItem = ItemStack.EMPTY;
 	private Slot bl_clicked;
+
+	public List<GuiCustomSlot> getGuiSlots()
+	{
+		return guiSlots;
+	}
+
 	protected final List<GuiCustomSlot> guiSlots = new ArrayList<>();
 
 	public AEBaseGui( final Container container )

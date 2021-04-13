@@ -43,5 +43,6 @@ public enum InventoryAction
 	ROLL_UP,
 	ROLL_DOWN,
 	AUTO_CRAFT,
-	PLACE_SINGLE
+	PLACE_SINGLE,
+	PLACE_JEI_GHOST_ITEM
 }

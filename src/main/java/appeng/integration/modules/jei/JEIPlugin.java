@@ -97,6 +97,7 @@ public class JEIPlugin implements IModPlugin
 
 		AEGuiHandler aeGuiHandler = new AEGuiHandler();
 		registry.addAdvancedGuiHandlers(aeGuiHandler);
+		registry.addGhostIngredientHandler( aeGuiHandler.getGuiContainerClass(), aeGuiHandler);
 	}
 
 	private void registerDescriptions( IDefinitions definitions, IModRegistry registry )
