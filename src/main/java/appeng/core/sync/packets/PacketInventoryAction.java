@@ -24,8 +24,8 @@ import java.io.IOException;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiCustomSlot;
+import appeng.container.slot.IJEITargetSlot;
 import appeng.container.slot.SlotFake;
-import appeng.fluids.client.gui.GuiFluidInterface;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import appeng.fluids.util.AEFluidStack;
 import io.netty.buffer.ByteBuf;
@@ -48,6 +48,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 
 public class PacketInventoryAction extends AppEngPacket
@@ -57,7 +58,6 @@ public class PacketInventoryAction extends AppEngPacket
 	private final int slot;
 	private final long id;
 	private final IAEItemStack slotItem;
-	private final IAEFluidStack slotFluid;
 
 	// automatic.
 	public PacketInventoryAction( final ByteBuf stream ) throws IOException
@@ -66,7 +66,6 @@ public class PacketInventoryAction extends AppEngPacket
 		this.slot = stream.readInt();
 		this.id = stream.readLong();
 		final boolean hasItem = stream.readBoolean();
-		final boolean hasFluid = stream.readBoolean();
 
 		if( hasItem )
 		{
@@ -75,14 +74,6 @@ public class PacketInventoryAction extends AppEngPacket
 		else
 		{
 			this.slotItem = null;
-		}
-		if( hasFluid )
-		{
-			this.slotFluid = AEFluidStack.fromPacket( stream );
-		}
-		else
-		{
-			this.slotFluid = null;
 		}
 	}
 
@@ -98,7 +89,6 @@ public class PacketInventoryAction extends AppEngPacket
 		this.slot = slot;
 		this.id = 0;
 		this.slotItem = slotItem;
-		this.slotFluid = null;
 
 		final ByteBuf data = Unpooled.buffer();
 
@@ -110,19 +100,17 @@ public class PacketInventoryAction extends AppEngPacket
 		if( slotItem == null )
 		{
 			data.writeBoolean( false );
-			data.writeBoolean( false );
 		}
 		else
 		{
 			data.writeBoolean( true );
-			data.writeBoolean( false );
 			slotItem.writeToPacket( data );
 		}
 
 		this.configureWrite( data );
 	}
 
-	public PacketInventoryAction( final InventoryAction action, final SlotFake slot, final IAEItemStack slotItem ) throws IOException
+	public PacketInventoryAction(final InventoryAction action, final IJEITargetSlot slot, final IAEItemStack slotItem ) throws IOException
 	{
 		if( action != InventoryAction.PLACE_JEI_GHOST_ITEM )
 		{
@@ -130,63 +118,27 @@ public class PacketInventoryAction extends AppEngPacket
 		}
 
 		this.action = action;
-		this.slot = slot.slotNumber;
+		if (slot instanceof SlotFake)
+		this.slot = ((SlotFake) slot).slotNumber;
+		else this.slot = ((GuiFluidSlot) slot).getId();
 		this.id = 0;
 		this.slotItem = slotItem;
-		this.slotFluid = null;
 
 		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( action.ordinal() );
-		data.writeInt( slot.slotNumber );
+		data.writeInt( this.slot );
 		data.writeLong( this.id );
 
 		if( slotItem == null )
 		{
 			data.writeBoolean( false );
-			data.writeBoolean( false );
 		}
 		else
 		{
 			data.writeBoolean( true );
-			data.writeBoolean( false );
 			slotItem.writeToPacket( data );
-		}
-
-
-		this.configureWrite( data );
-	}
-
-	public PacketInventoryAction( final InventoryAction action, final GuiFluidSlot slot, final IAEFluidStack slotFluid ) throws IOException
-	{
-		if( action != InventoryAction.PLACE_JEI_GHOST_ITEM )
-		{
-			throw new IllegalStateException( "invalid packet, client cannot post inv actions with stacks." );
-		}
-
-		this.action = action;
-		this.slot = slot.getId();
-		this.id = 2;
-		this.slotFluid = slotFluid;
-		this.slotItem = null;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( action.ordinal() );
-		data.writeInt( slot.getId() );
-		data.writeLong( this.id );
-		data.writeBoolean( false );
-
-		if( slotFluid == null )
-		{
-			data.writeBoolean( false );
-		}
-		else
-		{
-			data.writeBoolean( true );
-			slotFluid.writeToPacket( data );
 		}
 
 		this.configureWrite( data );
@@ -199,7 +151,6 @@ public class PacketInventoryAction extends AppEngPacket
 		this.slot = slot;
 		this.id = id;
 		this.slotItem = null;
-		this.slotFluid = null;
 
 		final ByteBuf data = Unpooled.buffer();
 
@@ -207,7 +158,6 @@ public class PacketInventoryAction extends AppEngPacket
 		data.writeInt( action.ordinal() );
 		data.writeInt( slot );
 		data.writeLong( id );
-		data.writeBoolean( false );
 		data.writeBoolean( false );
 
 		this.configureWrite( data );
@@ -247,7 +197,7 @@ public class PacketInventoryAction extends AppEngPacket
 			{
 				if( sender.openContainer.inventorySlots.get( this.slot ) instanceof SlotFake )
 				{
-					if( this.slotItem != null ) sender.openContainer.inventorySlots.get( this.slot ).putStack( this.slotItem.createItemStack() );
+					if( this.slotItem != null ) sender.openContainer.inventorySlots.get( this.slot ).putStack( this.slotItem.asItemStackRepresentation() );
 					else sender.openContainer.inventorySlots.get( this.slot ).putStack( ItemStack.EMPTY );
 				}
 				if( Minecraft.getMinecraft().currentScreen instanceof GuiUpgradeable )
@@ -256,21 +206,19 @@ public class PacketInventoryAction extends AppEngPacket
 					if( cs.getGuiSlots().size() > 0 )
 					{
 						GuiCustomSlot ct = cs.getGuiSlots().get( this.slot );
-						if( this.slotFluid != null )
+						GuiFluidSlot gfs = (GuiFluidSlot) ct;
+						if( this.slotItem != null )
 						{
-							if( ct instanceof GuiFluidSlot )
+							IAEFluidStack aefs = AEFluidStack.fromNBT(this.slotItem.getDefinition().getTagCompound());
+							if (aefs != null)
 							{
-								GuiFluidSlot gfs = (GuiFluidSlot) ct;
-								gfs.setFluidStack( this.slotFluid );
+							FluidStack fluid = aefs.getFluidStack();
+							gfs.setFluidStack(AEFluidStack.fromFluidStack(fluid));
 							}
 						}
 						else
 						{
-							if( ct instanceof GuiFluidSlot )
-							{
-								GuiFluidSlot gfs = (GuiFluidSlot) ct;
-								gfs.setFluidStack( null );
-							}
+							gfs.setFluidStack( null );
 						}
 					}
 				}

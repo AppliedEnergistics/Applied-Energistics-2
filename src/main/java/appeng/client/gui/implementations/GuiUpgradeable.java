@@ -321,7 +321,7 @@ public class GuiUpgradeable extends AEBaseGui implements IJEIGhostIngredients
 							final PacketInventoryAction p;
 							try
 							{
-								p = new PacketInventoryAction( InventoryAction.PLACE_JEI_GHOST_ITEM, (GuiFluidSlot) guiCustomSlot, AEFluidStack.fromFluidStack( finalFluidStack ) );
+								p = new PacketInventoryAction( InventoryAction.PLACE_JEI_GHOST_ITEM, (GuiFluidSlot) guiCustomSlot, AEItemStack.fromItemStack(AEFluidStack.fromFluidStack( finalFluidStack ).asItemStackRepresentation() ));
 								NetworkHandler.instance().sendToServer( p );
 
 							}
