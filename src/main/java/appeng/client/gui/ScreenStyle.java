@@ -6,7 +6,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class ScreenStyle {
@@ -15,8 +17,22 @@ public class ScreenStyle {
 
     private final Map<SlotSemantic, SlotPosition> slots = new EnumMap<>(SlotSemantic.class);
 
+    private final List<String> includes = new ArrayList<>();
+
+    public List<String> getIncludes() {
+        return includes;
+    }
+
     public Map<SlotSemantic, SlotPosition> getSlots() {
         return slots;
+    }
+
+    public ScreenStyle merge(ScreenStyle otherStyle) {
+        ScreenStyle merged = new ScreenStyle();
+        // Slots are merged by simply overwriting
+        merged.slots.putAll(this.slots);
+        merged.slots.putAll(otherStyle.slots);
+        return merged;
     }
 
     public static class SlotPosition {
@@ -80,7 +96,6 @@ public class ScreenStyle {
         @Override
         public String toString() {
             StringBuilder result = new StringBuilder();
-
 
 
             return result.toString();

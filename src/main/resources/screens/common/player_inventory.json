@@ -1,0 +1,15 @@
+{
+  "$schema": "../../screen_style.json",
+  "slots": {
+    "PLAYER_INVENTORY": {
+      "left": 8,
+      "bottom": 82,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_HOTBAR": {
+      "left": 8,
+      "bottom": 24,
+      "grid": "HORIZONTAL"
+    }
+  }
+}

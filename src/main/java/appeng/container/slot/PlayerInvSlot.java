@@ -21,7 +21,6 @@ package appeng.container.slot;
 import net.minecraftforge.items.IItemHandler;
 
 // there is nothing special about this slot, its simply used to represent the players inventory, vs a container slot.
-
 public class PlayerInvSlot extends AppEngSlot {
 
     public PlayerInvSlot(final IItemHandler inv, final int invSlot) {

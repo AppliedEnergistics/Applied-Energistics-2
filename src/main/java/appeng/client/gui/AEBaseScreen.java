@@ -65,6 +65,8 @@ import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -117,21 +119,58 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     protected void init() {
         super.init();
         this.verticalButtonBar.reset(guiLeft, guiTop);
-        positionPlayerInventory(getPlayerInventoryOrigin());
         positionAnchoredSlots();
         if (style != null) {
             applyStyle(style);
         }
     }
 
-    protected void loadStyle(String path) {
+    private static String getBasePath(String path) {
+        int lastSep = path.lastIndexOf('/');
+        if (lastSep == -1) {
+            return "";
+        } else {
+            return path.substring(0, lastSep + 1);
+        }
+    }
+
+    private ScreenStyle loadStyleDoc(String path) throws IOException {
+        String basePath = getBasePath(path);
+
         try (InputStream in = getClass().getResourceAsStream(path)) {
             if (in == null) {
-                AELog.error("Missing screen style file: %s", path);
-                return;
+                throw new FileNotFoundException("Missing screen style file: " + path);
             }
 
-            this.style = ScreenStyle.GSON.fromJson(new InputStreamReader(in), ScreenStyle.class);
+            ScreenStyle baseStyle = null;
+            ScreenStyle style = ScreenStyle.GSON.fromJson(new InputStreamReader(in), ScreenStyle.class);
+
+            for (String includePath : style.getIncludes()) {
+                // The path should be relative to the currently loading file
+
+                ScreenStyle includedStyle = loadStyleDoc(basePath + includePath);
+                if (includedStyle != null) {
+                    if (baseStyle == null) {
+                        baseStyle = includedStyle;
+                    } else {
+                        baseStyle = baseStyle.merge(includedStyle);
+                    }
+                }
+            }
+
+            if (baseStyle != null) {
+                return baseStyle.merge(style);
+            } else {
+                return style;
+            }
+        }
+    }
+
+    protected final void loadStyle(String path) {
+        try {
+            this.style = loadStyleDoc(path);
+        } catch (FileNotFoundException e) {
+            AELog.error("Failed to read Screen JSON file: " + path + ": " + e.getMessage());
         } catch (Exception e) {
             AELog.error(e, "Failed to read Screen JSON file: " + path);
         }
@@ -711,45 +750,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     protected void fillRect(MatrixStack matrices, Rectangle2d rect, int color) {
         fill(matrices, rect.getX(), rect.getY(), rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight(), color);
-    }
-
-    /**
-     * Positions the player inventory slots at the given x,y coordinates. The position should be the upper left corner
-     * of the first slot, including it's visual border. (The actual slot will be positioned at 1,1 in relation to the
-     * given coordinate).
-     */
-    private void positionPlayerInventory(Point origin) {
-
-        for (AppEngSlot slot : container.getPlayerInventorySlots()) {
-            int slotX, slotY;
-
-            // Determine the relative position based on the inventory index
-            int invIndex = slot.getSlotIndex();
-            if (invIndex >= 0 && invIndex < PlayerInventory.getHotbarSize()) {
-                slotY = 58; // Start of the hotbar from the top of the player inventory
-                slotX = invIndex * 18;
-            } else {
-                invIndex -= PlayerInventory.getHotbarSize();
-
-                int row = invIndex / 9;
-                int col = invIndex % 9;
-
-                slotY = row * 18;
-                slotX = col * 18;
-            }
-
-            slot.xPos = origin.getX() + slotX + 1;
-            slot.yPos = origin.getY() + slotY + 1;
-        }
-
-    }
-
-    /**
-     * Returns the origin for the player inventory slots on the screen (if it has any).
-     */
-    protected Point getPlayerInventoryOrigin() {
-        // This default position works for most AE2 dialogs
-        return new Point(7, ySize - 83);
     }
 
 }
