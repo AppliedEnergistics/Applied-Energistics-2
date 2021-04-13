@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 
@@ -47,7 +49,7 @@ class ServerTileRepo {
     }
 
     /**
-     * Add a new tile to be initializes in a later tick.
+     * Add a new tile to be initialized in a later tick.
      */
     synchronized void addTile(AEBaseTileEntity tile) {
         final IWorld world = tile.getWorld();
@@ -55,20 +57,13 @@ class ServerTileRepo {
         final int z = tile.getPos().getZ() >> 4;
         final long chunkPos = ChunkPos.asLong(x, z);
 
-        Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = this.tiles.get(world);
+        Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = this.tiles.computeIfAbsent(world, key -> {
+            return new Long2ObjectOpenHashMap<>();
+        });
 
         worldQueue.computeIfAbsent(chunkPos, key -> {
             return new ArrayList<>();
         }).add(tile);
-    }
-
-    /**
-     * Sets up the necessary defaults when a new world is loaded
-     */
-    synchronized void addWorld(IWorld world) {
-        this.tiles.computeIfAbsent(world, (key) -> {
-            return new Long2ObjectOpenHashMap<>();
-        });
     }
 
     /**
@@ -92,8 +87,9 @@ class ServerTileRepo {
     }
 
     /**
-     * Get the tiles needing to be initialized in this specific {@link IWorld}.
+     * Get the tiles needing to be initialized in this specific {@link IWorld}, if available.
      */
+    @Nullable
     public Long2ObjectMap<List<AEBaseTileEntity>> getTiles(IWorld world) {
         return tiles.get(world);
     }

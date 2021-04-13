@@ -29,6 +29,8 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
@@ -104,7 +106,6 @@ public class TickHandler {
         eventBus.addListener(INSTANCE::onServerTick);
         eventBus.addListener(INSTANCE::onWorldTick);
         eventBus.addListener(INSTANCE::onUnloadChunk);
-        eventBus.addListener(INSTANCE::onLoadWorld);
         eventBus.addListener(INSTANCE::onUnloadWorld);
 
         // DistExecutor does not like functional interfaces
@@ -214,15 +215,6 @@ public class TickHandler {
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
         if (!ev.getWorld().isRemote()) {
             this.tiles.removeWorldChunk(ev.getWorld(), ev.getChunk().getPos().asLong());
-        }
-    }
-
-    /**
-     * Handle a newly loaded world and setup defaults when necessary.
-     */
-    public void onLoadWorld(final WorldEvent.Load ev) {
-        if (!ev.getWorld().isRemote()) {
-            this.tiles.addWorld(ev.getWorld());
         }
     }
 
@@ -360,7 +352,13 @@ public class TickHandler {
     private void readyTiles(IWorld world) {
         AbstractChunkProvider chunkProvider = world.getChunkProvider();
 
+        @Nullable
         final Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
+
+        if (worldQueue == null) {
+            // No tiles have been added to this world, nothing to do.
+            return;
+        }
 
         // Make a copy because this set may be modified
         // when new chunks are loaded by an onReady call below
