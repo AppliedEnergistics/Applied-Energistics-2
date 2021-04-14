@@ -36,6 +36,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
+import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.gui.IGhostIngredientHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.input.Keyboard;
@@ -92,6 +94,8 @@ import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 import yalter.mousetweaks.api.IMTModGuiContainer2;
 
+import static appeng.integration.modules.jei.JEIPlugin.runtime;
+
 
 @Optional.Interface( iface = "yalter.mousetweaks.api.IMTModGuiContainer2", modid = "mousetweaks" )
 public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContainer2
@@ -106,6 +110,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
 	private ItemStack dbl_whichItem = ItemStack.EMPTY;
 	private Slot bl_clicked;
+	private final AEGuiHandler aeGuiHandler = new AEGuiHandler();
 
 	public List<GuiCustomSlot> getGuiSlots()
 	{
@@ -194,6 +199,14 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 				this.drawTooltip( (ITooltip) c, mouseX, mouseY );
 			}
 		}
+
+		if ( isPointInRegion( -guiLeft,-guiTop, mc.displayWidth, mc.displayHeight, mouseX,mouseY)){
+			Object o = runtime.getBookmarkOverlay().getIngredientUnderMouse();
+			if (o != null) {
+				aeGuiHandler.getTargets( this,o,true );
+			}
+		}
+
 	}
 
 	protected void drawGuiSlot( GuiCustomSlot slot, int mouseX, int mouseY, float partialTicks )

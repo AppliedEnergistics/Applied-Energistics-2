@@ -19,6 +19,8 @@
 package appeng.integration.modules.jei;
 
 
+import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +29,11 @@ import appeng.client.gui.AEGuiHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import mezz.jei.api.*;
 import mezz.jei.config.Constants;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import mezz.jei.api.IJeiRuntime;
-import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 
@@ -55,8 +54,10 @@ import appeng.items.parts.ItemFacade;
 
 
 @mezz.jei.api.JEIPlugin
-public class JEIPlugin implements IModPlugin
+public class JEIPlugin implements IModPlugin, IBookmarkOverlay
 {
+	public static IJeiRuntime runtime;
+
 	@Override
 	public void registerItemSubtypes( ISubtypeRegistry subtypeRegistry )
 	{
@@ -220,5 +221,13 @@ public class JEIPlugin implements IModPlugin
 	{
 		JEIModule jeiModule = (JEIModule) Integrations.jei();
 		jeiModule.setJei( new JeiRuntimeAdapter( jeiRuntime ) );
+		runtime = jeiRuntime;
+	}
+
+	@Nullable
+	@Override
+	public Object getIngredientUnderMouse()
+	{
+		return runtime.getBookmarkOverlay().getIngredientUnderMouse();
 	}
 }

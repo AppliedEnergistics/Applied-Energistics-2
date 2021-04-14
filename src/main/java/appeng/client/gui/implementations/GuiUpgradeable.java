@@ -26,6 +26,7 @@ import java.util.List;
 
 import appeng.client.gui.widgets.GuiCustomSlot;
 import appeng.container.interfaces.IJEIGhostIngredients;
+import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.IJEITargetSlot;
 import appeng.container.slot.SlotFake;
 import appeng.core.sync.packets.PacketInventoryAction;
@@ -34,12 +35,9 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.InventoryAction;
 import appeng.util.item.AEItemStack;
 import mezz.jei.api.gui.IGhostIngredientHandler.Target;
-import net.minecraft.block.Block;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.*;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -231,97 +229,90 @@ public class GuiUpgradeable extends AEBaseGui implements IJEIGhostIngredients
 		if( ingredient instanceof ItemStack )
 		{
 			itemStack = (ItemStack) ingredient;
-
-			if( itemStack.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null ) )
-			{
-				fluidStack = ( itemStack.getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null ).drain( Integer.MAX_VALUE, false ) );
-			}
-			if( fluidStack == null )
-			{
-				NBTTagCompound tagCompound = itemStack.getTagCompound();
-				if( tagCompound != null && tagCompound.hasKey( "Fluid" ) )
-				{
-					Fluid fluid = FluidRegistry.getFluid( tagCompound.getString( "Fluid" ) );
-					fluidStack = new FluidStack( fluid, 1000 );
-				}
-			}
-			if( fluidStack == null )
-			{
-				Block maybeFluidBlock = Block.getBlockFromItem( itemStack.getItem() );
-				if( Block.getBlockFromItem( itemStack.getItem() ) instanceof BlockFluidBase )
-				{
-					Fluid fluid = ( (BlockFluidBase) maybeFluidBlock ).getFluid();
-					fluidStack = new FluidStack( fluid, 1000 );
-				}
-			}
+			fluidStack = FluidUtil.getFluidContained( itemStack );
 		}
 		else if( ingredient instanceof FluidStack )
 		{
 			fluidStack = (FluidStack) ingredient;
 		}
 
+		if( !( ingredient instanceof ItemStack ) && !( ingredient instanceof FluidStack ) )
+			return Collections.emptyList();
+
 		List<Target<?>> targets = new ArrayList<>();
 
 		List<IJEITargetSlot> slots = new ArrayList<>();
-		if (this.inventorySlots.inventorySlots.size() > 0) {
-			for (Slot slot : this.inventorySlots.inventorySlots) {
-				if (slot instanceof SlotFake) {
-					slots.add((IJEITargetSlot) slot);
-				}
-			}
-		}
-		if(this.getGuiSlots().size() > 0) {
-			for (GuiCustomSlot slot : this.getGuiSlots()) {
-				if (slot instanceof GuiFluidSlot) {
-					slots.add((IJEITargetSlot) slot);
-				}
-			}
-		}
-			for( Object slot : slots )
+		if( this.inventorySlots.inventorySlots.size() > 0 )
+		{
+			for( Slot slot : this.inventorySlots.inventorySlots )
 			{
-					ItemStack finalItemStack = itemStack;
-					FluidStack finalFluidStack = fluidStack;
-					Target<Object> targetItem = new Target<Object>()
-					{
-						@Override
-						public Rectangle getArea()
-						{
-							if (slot instanceof SlotFake)
-							return new Rectangle( getGuiLeft() + ((SlotFake)slot).xPos, getGuiTop() + ((SlotFake)slot).yPos, 16, 16 );
-							else {
-								return new Rectangle( getGuiLeft() + ((GuiFluidSlot)slot).xPos(), getGuiTop() + ((GuiFluidSlot)slot).yPos(), 16, 16 );
-							}
-						}
-
-						@Override
-						public void accept( Object ingredient )
-						{
-							PacketInventoryAction p = null;
-							try
-							{
-								if (slot instanceof SlotFake) {
-									if (finalItemStack.isEmpty() && finalFluidStack != null) {
-										p = new PacketInventoryAction( InventoryAction.PLACE_JEI_GHOST_ITEM, (IJEITargetSlot) slot, AEItemStack.fromItemStack( FluidUtil.getFilledBucket(finalFluidStack) ) );
-									}
-									else if (!finalItemStack.isEmpty()){
-										p = new PacketInventoryAction(InventoryAction.PLACE_JEI_GHOST_ITEM, (IJEITargetSlot) slot, AEItemStack.fromItemStack(finalItemStack));
-									}
-								}
-								else {
-									p = new PacketInventoryAction(InventoryAction.PLACE_JEI_GHOST_ITEM, (IJEITargetSlot) slot, AEItemStack.fromItemStack(AEFluidStack.fromFluidStack(finalFluidStack).asItemStackRepresentation()));
-								}
-								NetworkHandler.instance().sendToServer( p );
-
-							}
-							catch( IOException e )
-							{
-								e.printStackTrace();
-							}
-						}
-					};
-					targets.add( targetItem );
-					mapTargetSlot.putIfAbsent( targetItem, slot );
+				if( slot instanceof SlotFake && ( !itemStack.isEmpty() || this instanceof GuiCellWorkbench && fluidStack != null && !( (AppEngSlot) slot ).isItemValid( itemStack ) ) )
+				{
+					slots.add( (IJEITargetSlot) slot );
 				}
+			}
+		}
+		if( this.getGuiSlots().size() > 0 )
+		{
+			for( GuiCustomSlot slot : this.getGuiSlots() )
+			{
+				if( slot instanceof GuiFluidSlot && fluidStack != null )
+				{
+					slots.add( (IJEITargetSlot) slot );
+				}
+			}
+		}
+		for( Object slot : slots )
+		{
+			ItemStack finalItemStack = itemStack;
+			FluidStack finalFluidStack = fluidStack;
+			Target<Object> targetItem = new Target<Object>()
+			{
+				@Override
+				public Rectangle getArea()
+				{
+					if( slot instanceof SlotFake )
+						return new Rectangle( getGuiLeft() + ( (SlotFake) slot ).xPos, getGuiTop() + ( (SlotFake) slot ).yPos, 16, 16 );
+					else
+					{
+						return new Rectangle( getGuiLeft() + ( (GuiFluidSlot) slot ).xPos(), getGuiTop() + ( (GuiFluidSlot) slot ).yPos(), 16, 16 );
+					}
+				}
+
+				@Override
+				public void accept( Object ingredient )
+				{
+					PacketInventoryAction p = null;
+					try
+					{
+						if( slot instanceof SlotFake )
+						{
+							if( finalItemStack.isEmpty() && finalFluidStack != null )
+							{
+								p = new PacketInventoryAction( InventoryAction.PLACE_JEI_GHOST_ITEM, (IJEITargetSlot) slot, AEItemStack.fromItemStack( FluidUtil.getFilledBucket( finalFluidStack ) ) );
+							}
+							else if( !finalItemStack.isEmpty() )
+							{
+								p = new PacketInventoryAction( InventoryAction.PLACE_JEI_GHOST_ITEM, (IJEITargetSlot) slot, AEItemStack.fromItemStack( finalItemStack ) );
+							}
+						}
+						else
+						{
+							if( finalFluidStack == null ) return;
+							p = new PacketInventoryAction( InventoryAction.PLACE_JEI_GHOST_ITEM, (IJEITargetSlot) slot, AEItemStack.fromItemStack( AEFluidStack.fromFluidStack( finalFluidStack ).asItemStackRepresentation() ) );
+						}
+						NetworkHandler.instance().sendToServer( p );
+
+					}
+					catch( IOException e )
+					{
+						e.printStackTrace();
+					}
+				}
+			};
+			targets.add( targetItem );
+			mapTargetSlot.putIfAbsent( targetItem, slot );
+		}
 		return targets;
 	}
 

@@ -197,7 +197,17 @@ public class PacketInventoryAction extends AppEngPacket
 			{
 				if( sender.openContainer.inventorySlots.get( this.slot ) instanceof SlotFake )
 				{
-					if( this.slotItem != null ) sender.openContainer.inventorySlots.get( this.slot ).putStack( this.slotItem.asItemStackRepresentation() );
+					if( this.slotItem != null ) {
+						sender.openContainer.inventorySlots.get( this.slot ).putStack( this.slotItem.asItemStackRepresentation() );
+						if (sender.openContainer.inventorySlots.get( this.slot ).getStack().isEmpty()){
+							IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
+							if( aefs != null )
+							{
+								FluidStack fluid = aefs.getFluidStack();
+								sender.openContainer.inventorySlots.get( this.slot ).putStack( AEFluidStack.fromFluidStack( fluid ).asItemStackRepresentation() );
+							}
+						}
+					}
 					else sender.openContainer.inventorySlots.get( this.slot ).putStack( ItemStack.EMPTY );
 				}
 				if( Minecraft.getMinecraft().currentScreen instanceof GuiUpgradeable )
@@ -209,11 +219,11 @@ public class PacketInventoryAction extends AppEngPacket
 						GuiFluidSlot gfs = (GuiFluidSlot) ct;
 						if( this.slotItem != null )
 						{
-							IAEFluidStack aefs = AEFluidStack.fromNBT(this.slotItem.getDefinition().getTagCompound());
-							if (aefs != null)
+							IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
+							if( aefs != null )
 							{
-							FluidStack fluid = aefs.getFluidStack();
-							gfs.setFluidStack(AEFluidStack.fromFluidStack(fluid));
+								FluidStack fluid = aefs.getFluidStack();
+								gfs.setFluidStack( AEFluidStack.fromFluidStack( fluid ) );
 							}
 						}
 						else

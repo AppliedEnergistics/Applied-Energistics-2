@@ -5,14 +5,16 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.implementations.*;
 import appeng.container.interfaces.IJEIGhostIngredients;
 import appeng.container.slot.SlotFake;
-import appeng.fluids.client.gui.*;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
 import mezz.jei.api.gui.IGhostIngredientHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.item.ItemStack;
+import org.lwjgl.input.Mouse;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +22,6 @@ import java.util.List;
 
 public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngredientHandler<AEBaseGui>
 {
-
     @Override
     public Class<AEBaseGui> getGuiContainerClass()
     {
@@ -106,7 +107,7 @@ public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngre
         }
         if( doStart )
         {
-            if( GuiScreen.isShiftKeyDown() )
+            if( GuiScreen.isShiftKeyDown() && Mouse.isButtonDown( 0 ) )
             {
                 if( gui instanceof GuiUpgradeable || gui instanceof GuiPatternTerm )
                 {
@@ -117,7 +118,16 @@ public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngre
                         {
                             if( ( (SlotFake) ghostGui.getFakeSlotTargetMap().get( target ) ).getStack().isEmpty() )
                             {
+                                Minecraft.getMinecraft().player.inventory.setItemStack( ItemStack.EMPTY );
                                 target.accept( ingredient );
+                                try
+                                {
+                                    gui.handleMouseInput();
+                                }
+                                catch( IOException e )
+                                {
+                                    e.printStackTrace();
+                                }
                                 break;
                             }
                         }
@@ -125,7 +135,16 @@ public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngre
                         {
                             if( ( (GuiFluidSlot) ghostGui.getFakeSlotTargetMap().get( target ) ).getFluidStack() == null )
                             {
+                                Minecraft.getMinecraft().player.inventory.setItemStack( ItemStack.EMPTY );
                                 target.accept( ingredient );
+                                try
+                                {
+                                    gui.handleMouseInput();
+                                }
+                                catch( IOException e )
+                                {
+                                    e.printStackTrace();
+                                }
                                 break;
                             }
                         }
