@@ -1,5 +1,5 @@
 {
-  "$schema": "../screen_style.json",
+  "$schema": "schema.json",
   "slots": {
     "MACHINE_INPUT": {
       "left": 0,

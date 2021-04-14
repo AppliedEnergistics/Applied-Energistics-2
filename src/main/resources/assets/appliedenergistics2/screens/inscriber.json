@@ -1,5 +1,5 @@
 {
-  "$schema": "../screen_style.json",
+  "$schema": "schema.json",
   "slots": {
     "INSCRIBER_PLATE_TOP": {
       "left": 45,

@@ -23,6 +23,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
+import appeng.client.gui.style.GuiStyleManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -57,6 +58,10 @@ public class ClientHelper extends ServerHelper {
     private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
 
     private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
+
+    public ClientHelper() {
+        GuiStyleManager.initialize(Minecraft.getInstance());
+    }
 
     public void clientInit() {
         MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);

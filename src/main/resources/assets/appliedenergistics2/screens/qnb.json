@@ -1,9 +1,9 @@
 {
-  "$schema": "../screen_style.json",
+  "$schema": "schema.json",
   "slots": {
     "STORAGE": {
       "left": 80,
-      "top": 47
+      "top": 37
     }
   }
 }
