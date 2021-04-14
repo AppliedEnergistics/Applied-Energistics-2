@@ -1,5 +1,8 @@
 {
-  "$schema": "../screen_style.json",
+  "$schema": "schema.json",
+  "includes": [
+    "common/player_inventory.json"
+  ],
   "slots": {
     "STORAGE_CELL": {
       "left": 71,

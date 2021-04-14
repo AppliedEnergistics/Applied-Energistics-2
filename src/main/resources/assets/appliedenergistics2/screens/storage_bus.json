@@ -1,9 +1,9 @@
 {
-  "$schema": "../screen_style.json",
+  "$schema": "schema.json",
   "slots": {
-    "STORAGE": {
+    "CONFIG": {
       "left": 8,
-      "top": 24,
+      "top": 29,
       "grid": "BREAK_AFTER_9COLS"
     }
   }

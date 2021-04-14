@@ -20,6 +20,7 @@ package appeng.client.gui;
 
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
+import appeng.client.gui.style.GuiStyleManager;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
@@ -66,9 +67,6 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -125,50 +123,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
-    private static String getBasePath(String path) {
-        int lastSep = path.lastIndexOf('/');
-        if (lastSep == -1) {
-            return "";
-        } else {
-            return path.substring(0, lastSep + 1);
-        }
-    }
-
-    private ScreenStyle loadStyleDoc(String path) throws IOException {
-        String basePath = getBasePath(path);
-
-        try (InputStream in = getClass().getResourceAsStream(path)) {
-            if (in == null) {
-                throw new FileNotFoundException("Missing screen style file: " + path);
-            }
-
-            ScreenStyle baseStyle = null;
-            ScreenStyle style = ScreenStyle.GSON.fromJson(new InputStreamReader(in), ScreenStyle.class);
-
-            for (String includePath : style.getIncludes()) {
-                // The path should be relative to the currently loading file
-
-                ScreenStyle includedStyle = loadStyleDoc(basePath + includePath);
-                if (includedStyle != null) {
-                    if (baseStyle == null) {
-                        baseStyle = includedStyle;
-                    } else {
-                        baseStyle = baseStyle.merge(includedStyle);
-                    }
-                }
-            }
-
-            if (baseStyle != null) {
-                return baseStyle.merge(style);
-            } else {
-                return style;
-            }
-        }
-    }
-
     protected final void loadStyle(String path) {
         try {
-            this.style = loadStyleDoc(path);
+            this.style = GuiStyleManager.loadStyleDoc(path);
         } catch (FileNotFoundException e) {
             AELog.error("Failed to read Screen JSON file: " + path + ": " + e.getMessage());
         } catch (Exception e) {
