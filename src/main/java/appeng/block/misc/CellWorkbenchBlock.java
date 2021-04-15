@@ -20,6 +20,7 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
+import appeng.container.ContainerOpener;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -51,7 +52,7 @@ public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity>
         final CellWorkbenchTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (!w.isRemote()) {
-                CellWorkbenchContainer.open(p, ContainerLocator.forTileEntity(tg));
+                ContainerOpener.openContainer(CellWorkbenchContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
             return ActionResultType.func_233537_a_(w.isRemote());
         }

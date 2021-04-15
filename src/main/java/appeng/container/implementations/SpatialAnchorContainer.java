@@ -18,19 +18,6 @@
 
 package appeng.container.implementations;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
-import com.google.common.collect.Multiset;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -38,23 +25,30 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.me.GridAccessException;
 import appeng.me.cache.StatisticsCache;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
+import com.google.common.collect.Multiset;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * @see appeng.client.gui.implementations.SpatialAnchorScreen
  */
 public class SpatialAnchorContainer extends AEBaseContainer {
 
-    public static ContainerType<SpatialAnchorContainer> TYPE;
-
-    private static final ContainerHelper<SpatialAnchorContainer, SpatialAnchorTileEntity> helper = new ContainerHelper<>(
-            SpatialAnchorContainer::new, SpatialAnchorTileEntity.class, SecurityPermissions.BUILD);
+    public static final ContainerType<SpatialAnchorContainer> TYPE = ContainerTypeBuilder
+            .create(SpatialAnchorContainer::new, SpatialAnchorTileEntity.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("spatialanchor");
 
     private static final int UPDATE_DELAY = 20;
 
@@ -86,14 +80,6 @@ public class SpatialAnchorContainer extends AEBaseContainer {
         if (isServer()) {
             this.network = spatialAnchor.getGridNode(AEPartLocation.INTERNAL).getGrid();
         }
-    }
-
-    public static SpatialAnchorContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
     }
 
     @Override

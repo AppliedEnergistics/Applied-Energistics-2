@@ -64,10 +64,6 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.IOPort.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
-
         if (this.redstoneMode != null) {
             this.redstoneMode.set(this.container.getRedStoneMode());
         }

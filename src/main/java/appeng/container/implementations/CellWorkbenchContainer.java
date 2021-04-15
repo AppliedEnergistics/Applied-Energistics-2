@@ -18,20 +18,6 @@
 
 package appeng.container.implementations;
 
-import java.util.Iterator;
-
-import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
-
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -42,7 +28,7 @@ import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalRestrictedInputSlot;
@@ -53,16 +39,25 @@ import appeng.util.EnumCycler;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperSupplierItemHandler;
 import appeng.util.iterators.NullIterator;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
+
+import java.util.Iterator;
 
 /**
  * @see appeng.client.gui.implementations.CellWorkbenchScreen
  */
 public class CellWorkbenchContainer extends UpgradeableContainer {
 
-    public static ContainerType<CellWorkbenchContainer> TYPE;
-
-    private static final ContainerHelper<CellWorkbenchContainer, CellWorkbenchTileEntity> helper = new ContainerHelper<>(
-            CellWorkbenchContainer::new, CellWorkbenchTileEntity.class);
+    public static final ContainerType<CellWorkbenchContainer> TYPE = ContainerTypeBuilder
+            .create(CellWorkbenchContainer::new, CellWorkbenchTileEntity.class)
+            .build("cellworkbench");
 
     private final CellWorkbenchTileEntity workBench;
     @GuiSync(2)
@@ -73,14 +68,6 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     public CellWorkbenchContainer(int id, final PlayerInventory ip, final CellWorkbenchTileEntity te) {
         super(TYPE, id, ip, te);
         this.workBench = te;
-    }
-
-    public static CellWorkbenchContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
     }
 
     public void setFuzzy(final FuzzyMode valueOf) {

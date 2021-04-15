@@ -18,35 +18,23 @@
 
 package appeng.container.implementations;
 
-import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 
 /**
  * @see appeng.client.gui.implementations.QNBScreen
  */
 public class QNBContainer extends AEBaseContainer {
 
-    public static ContainerType<QNBContainer> TYPE;
-
-    private static final ContainerHelper<QNBContainer, QuantumBridgeTileEntity> helper = new ContainerHelper<>(
-            QNBContainer::new, QuantumBridgeTileEntity.class, SecurityPermissions.BUILD);
-
-    public static QNBContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<QNBContainer> TYPE = ContainerTypeBuilder
+            .create(QNBContainer::new, QuantumBridgeTileEntity.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("qnb");
 
     public QNBContainer(int id, final PlayerInventory ip, final QuantumBridgeTileEntity quantumBridge) {
         super(TYPE, id, ip, quantumBridge, null);

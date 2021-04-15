@@ -90,11 +90,6 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     }
 
     @Override
-    protected GuiText getName() {
-        return GuiText.FluidLevelEmitter;
-    }
-
-    @Override
     protected void handleButtonVisibility() {
     }
 

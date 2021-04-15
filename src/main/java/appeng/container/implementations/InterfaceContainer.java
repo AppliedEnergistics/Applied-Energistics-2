@@ -18,41 +18,29 @@
 
 package appeng.container.implementations;
 
-import appeng.container.SlotSemantic;
-import appeng.container.slot.AppEngSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
+import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.FakeSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 
 /**
  * @see appeng.client.gui.implementations.InterfaceScreen
  */
 public class InterfaceContainer extends UpgradeableContainer {
 
-    public static ContainerType<InterfaceContainer> TYPE;
-
-    private static final ContainerHelper<InterfaceContainer, IInterfaceHost> helper = new ContainerHelper<>(
-            InterfaceContainer::new, IInterfaceHost.class, SecurityPermissions.BUILD);
-
-    public static InterfaceContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<InterfaceContainer> TYPE = ContainerTypeBuilder
+            .create(InterfaceContainer::new, IInterfaceHost.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("interface");
 
     @GuiSync(3)
     public YesNo bMode = YesNo.NO;
@@ -67,7 +55,7 @@ public class InterfaceContainer extends UpgradeableContainer {
 
         for (int x = 0; x < DualityInterface.NUMBER_OF_PATTERN_SLOTS; x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                    duality.getPatterns(), x),
+                            duality.getPatterns(), x),
                     SlotSemantic.ENCODED_PATTERN);
         }
 

@@ -18,44 +18,33 @@
 
 package appeng.container.implementations;
 
-import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.parts.automation.LevelEmitterPart;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraftforge.items.IItemHandler;
 
 public class LevelEmitterContainer extends UpgradeableContainer {
 
-    public static ContainerType<LevelEmitterContainer> TYPE;
-
-    private static final ContainerHelper<LevelEmitterContainer, LevelEmitterPart> helper = new ContainerHelper<>(
-            LevelEmitterContainer::new, LevelEmitterPart.class, SecurityPermissions.BUILD);
-
-    public static LevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf, (host, container, buffer) -> {
-            container.reportingValue = buffer.readVarLong();
-        });
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator, (host, buffer) -> {
-            buffer.writeVarLong(host.getReportingValue());
-        });
-    }
+    public static final ContainerType<LevelEmitterContainer> TYPE = ContainerTypeBuilder
+            .create(LevelEmitterContainer::new, LevelEmitterPart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .withInitialData((host, buffer) -> {
+                buffer.writeVarLong(host.getReportingValue());
+            }, (host, container, buffer) -> {
+                container.reportingValue = buffer.readVarLong();
+            })
+            .build("levelemitter");
 
     private final LevelEmitterPart lvlEmitter;
 

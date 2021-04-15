@@ -37,6 +37,7 @@ import appeng.container.slot.FakeSlot;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.PlayerInvSlot;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
@@ -56,6 +57,8 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 

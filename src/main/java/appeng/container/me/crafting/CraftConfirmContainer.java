@@ -18,20 +18,6 @@
 
 package appeng.container.me.crafting;
 
-import java.util.concurrent.Future;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -42,10 +28,9 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.guisync.GuiSync;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.me.items.CraftingTermContainer;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.me.items.PatternTermContainer;
@@ -57,24 +42,27 @@ import appeng.me.helpers.PlayerSource;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.TerminalPart;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.concurrent.Future;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
  */
 public class CraftConfirmContainer extends AEBaseContainer implements CraftingCPUCyclingContainer {
 
-    public static ContainerType<CraftConfirmContainer> TYPE;
-
-    private static final ContainerHelper<CraftConfirmContainer, ITerminalHost> helper = new ContainerHelper<>(
-            CraftConfirmContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
-
-    public static CraftConfirmContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<CraftConfirmContainer> TYPE = ContainerTypeBuilder
+            .create(CraftConfirmContainer::new, ITerminalHost.class)
+            .requirePermission(SecurityPermissions.CRAFT)
+            .build("craftconfirm");
 
     private final CraftingCPUCycler cpuCycler;
 
@@ -264,7 +252,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
 
     /**
      * @return The summary of the crafting plan. This is null as long as the plan has not yet finished computing, or it
-     *         wasn't synced to the client yet.
+     * wasn't synced to the client yet.
      */
     @Nullable
     public CraftingPlanSummary getPlan() {

@@ -11,5 +11,18 @@
       "top": 17,
       "grid": "BREAK_AFTER_2COLS"
     }
-  }
+  },
+  "text": [
+    {
+      "$comment": "Dialog title",
+      "text": {
+        "translate": "gui.appliedenergistics2.IOPort"
+      },
+      "color": "TEXT_HEADLINE",
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
 }

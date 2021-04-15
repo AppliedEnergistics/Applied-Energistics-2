@@ -19,18 +19,15 @@
 package appeng.container.me.networktool;
 
 import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.slot.RestrictedInputSlot;
 
 /**
@@ -38,18 +35,9 @@ import appeng.container.slot.RestrictedInputSlot;
  */
 public class NetworkToolContainer extends AEBaseContainer {
 
-    public static ContainerType<NetworkToolContainer> TYPE;
-
-    private static final ContainerHelper<NetworkToolContainer, INetworkTool> helper = new ContainerHelper<>(
-            NetworkToolContainer::new, INetworkTool.class);
-
-    public static NetworkToolContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<NetworkToolContainer> TYPE = ContainerTypeBuilder
+            .create(NetworkToolContainer::new, INetworkTool.class)
+            .build("networktool");
 
     private final INetworkTool toolInv;
 

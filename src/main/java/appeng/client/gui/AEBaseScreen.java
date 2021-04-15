@@ -20,7 +20,11 @@ package appeng.client.gui;
 
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
-import appeng.client.gui.style.GuiStyleManager;
+import appeng.client.gui.style.Position;
+import appeng.client.gui.style.SlotPosition;
+import appeng.client.gui.style.StyleManager;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.Text;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
@@ -125,7 +129,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     protected final void loadStyle(String path) {
         try {
-            this.style = GuiStyleManager.loadStyleDoc(path);
+            this.style = StyleManager.loadStyleDoc(path);
         } catch (FileNotFoundException e) {
             AELog.error("Failed to read Screen JSON file: " + path + ": " + e.getMessage());
         } catch (Exception e) {
@@ -135,42 +139,46 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     protected void applyStyle(ScreenStyle style) {
 
-        for (Map.Entry<SlotSemantic, ScreenStyle.SlotPosition> entry : style.getSlots().entrySet()) {
+        for (Map.Entry<SlotSemantic, SlotPosition> entry : style.getSlots().entrySet()) {
 
             List<Slot> slots = container.getSlots(entry.getKey());
             for (int i = 0; i < slots.size(); i++) {
                 Slot slot = slots.get(i);
-                ScreenStyle.SlotPosition slotPos = entry.getValue();
+                SlotPosition slotPos = entry.getValue();
                 SlotGridLayout grid = slotPos.getGrid();
 
-                // Start by computing the x,y position
-                int x, y;
-                if (slotPos.getLeft() != null) {
-                    x = slotPos.getLeft();
-                } else if (slotPos.getRight() != null) {
-                    x = xSize - slotPos.getRight();
-                } else {
-                    x = 0;
-                }
-                if (slotPos.getTop() != null) {
-                    y = slotPos.getTop();
-                } else if (slotPos.getBottom() != null) {
-                    y = ySize - slotPos.getBottom();
-                } else {
-                    y = 0;
-                }
+                Point pos = resolvePosition(slotPos);
 
                 if (grid != null) {
-                    Point pos = grid.getPosition(x, y, i);
-                    x = pos.getX();
-                    y = pos.getY();
+                    pos = grid.getPosition(pos.getX(), pos.getY(), i);
                 }
 
-                slot.xPos = x;
-                slot.yPos = y;
+                slot.xPos = pos.getX();
+                slot.yPos = pos.getY();
             }
         }
 
+    }
+
+    private Point resolvePosition(Position pos) {
+        // Start by computing the x,y position
+        int x, y;
+        if (pos.getLeft() != null) {
+            x = pos.getLeft();
+        } else if (pos.getRight() != null) {
+            x = xSize - pos.getRight();
+        } else {
+            x = 0;
+        }
+        if (pos.getTop() != null) {
+            y = pos.getTop();
+        } else if (pos.getBottom() != null) {
+            y = ySize - pos.getBottom();
+        } else {
+            y = 0;
+        }
+
+        return new Point(x, y);
     }
 
     /**
@@ -304,6 +312,22 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
 
         this.drawFG(matrixStack, ox, oy, x, y);
+
+        if (style != null) {
+            for (Text text : style.getText()) {
+                int color = style.getColor(text.getColor()).toARGB();
+
+                Point pos = resolvePosition(text.getPosition());
+
+                this.font.func_243248_b(
+                        matrixStack,
+                        text.getText(),
+                        pos.getX(),
+                        pos.getY(),
+                        color
+                );
+            }
+        }
     }
 
     public abstract void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY);

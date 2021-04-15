@@ -18,16 +18,12 @@
 
 package appeng.fluids.container;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-
 import appeng.api.config.SecurityPermissions;
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.fluids.parts.SharedFluidBusPart;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 
 /**
  * @author BrockWS
@@ -36,18 +32,10 @@ import appeng.fluids.util.IAEFluidTank;
  */
 public class FluidIOContainer extends FluidConfigurableContainer {
 
-    public static ContainerType<FluidIOContainer> TYPE;
-
-    private static final ContainerHelper<FluidIOContainer, SharedFluidBusPart> helper = new ContainerHelper<>(
-            FluidIOContainer::new, SharedFluidBusPart.class, SecurityPermissions.BUILD);
-
-    public static FluidIOContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<FluidIOContainer> TYPE = ContainerTypeBuilder
+            .create(FluidIOContainer::new, SharedFluidBusPart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("fluid_io");
 
     private final SharedFluidBusPart bus;
 

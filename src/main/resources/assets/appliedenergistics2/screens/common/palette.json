@@ -1,0 +1,6 @@
+{
+  "$schema": "../schema.json",
+  "palette": {
+    "TEXT_HEADLINE": "#404040"
+  }
+}

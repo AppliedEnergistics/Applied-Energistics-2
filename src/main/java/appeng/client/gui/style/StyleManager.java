@@ -1,7 +1,7 @@
 package appeng.client.gui.style;
 
-import appeng.client.gui.ScreenStyle;
 import appeng.core.AppEng;
+import com.google.common.base.Preconditions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
@@ -10,7 +10,6 @@ import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +18,7 @@ import java.util.function.Predicate;
 /**
  * Manages AE2 GUI styles found in resource packs.
  */
-public final class GuiStyleManager {
+public final class StyleManager {
 
     private static final Map<String, ScreenStyle> styleCache = new HashMap<>();
 
@@ -35,6 +34,16 @@ public final class GuiStyleManager {
     }
 
     public static ScreenStyle loadStyleDoc(String path) throws IOException {
+        ScreenStyle style = loadStyleDocInternal(path);
+        // We only require the final style-document to be fully valid,
+        // includes are allowed to be partially valid.
+        style.validate();
+        return style;
+    }
+
+    private static ScreenStyle loadStyleDocInternal(String path) throws IOException {
+        Preconditions.checkArgument(path.startsWith("/"), "Path needs to start with slash");
+
         if (resourceManager == null) {
             throw new IllegalStateException("ResourceManager was not set. Was initialize called?");
         }
@@ -46,21 +55,17 @@ public final class GuiStyleManager {
 
         String basePath = getBasePath(path);
 
-        IResource resource = resourceManager.getResource(AppEng.makeId(path.substring(1)));
-
-        try (InputStream in = resource.getInputStream()) {
+        try (IResource resource = resourceManager.getResource(AppEng.makeId(path.substring(1)))) {
             ScreenStyle baseStyle = null;
-            style = ScreenStyle.GSON.fromJson(new InputStreamReader(in), ScreenStyle.class);
+            style = ScreenStyle.GSON.fromJson(new InputStreamReader(resource.getInputStream()), ScreenStyle.class);
 
             for (String includePath : style.getIncludes()) {
                 // The path should be relative to the currently loading file
-                ScreenStyle includedStyle = loadStyleDoc(basePath + includePath);
-                if (includedStyle != null) {
-                    if (baseStyle == null) {
-                        baseStyle = includedStyle;
-                    } else {
-                        baseStyle = baseStyle.merge(includedStyle);
-                    }
+                ScreenStyle includedStyle = loadStyleDocInternal(basePath + includePath);
+                if (baseStyle == null) {
+                    baseStyle = includedStyle;
+                } else {
+                    baseStyle = baseStyle.merge(includedStyle);
                 }
             }
 
@@ -80,8 +85,8 @@ public final class GuiStyleManager {
     private static class ReloadListener implements ISelectiveResourceReloadListener {
         @Override
         public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-            GuiStyleManager.resourceManager = resourceManager;
-            GuiStyleManager.styleCache.clear();
+            StyleManager.resourceManager = resourceManager;
+            StyleManager.styleCache.clear();
         }
     }
 

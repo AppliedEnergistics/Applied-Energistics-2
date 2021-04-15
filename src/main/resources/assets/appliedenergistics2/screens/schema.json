@@ -7,19 +7,211 @@
   "required": [
   ],
   "definitions": {
-    "point": {
-      "$id": "Point",
+    "position": {
+      "$comment": "Used to position an element in relationship to the size of the current dialog",
+      "$id": "Position",
       "type": "object",
       "properties": {
-        "x": {
-          "type": "integer",
-          "default": 0
+        "left": {
+          "type": "number",
+          "description": "Positions the content to the right (positive) or left (negative) of the left screen edge."
         },
-        "y": {
-          "type": "integer",
-          "default": 0
+        "top": {
+          "type": "number",
+          "description": "Positions the content to the bottom (positive) or top (negative) of the top screen edge."
+        },
+        "right": {
+          "type": "number",
+          "description": "Positions the content to the left (positive) or right (negative) of the right screen edge."
+        },
+        "bottom": {
+          "type": "number",
+          "description": "Positions the content to the top (positive) or bottom (negative) of the bottom screen edge."
         }
       }
+    },
+    "color": {
+      "$comment": "Definition of a color using a fake HTML notation",
+      "type": "string",
+      "pattern": "^#([0-9a-fA-F]{2}){3,4}$"
+    },
+    "text": {
+      "$comment": "JSON schema definition of Minecraft text https://minecraft.fandom.com/wiki/Raw_JSON_text_format",
+      "type": "object",
+      "properties": {
+        "extra": {
+          "description": "Text that is displayed after this text, but that inherits this texts properties.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/text"
+          }
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{6})$"
+        },
+        "font": {
+          "type": "string",
+          "default": "minecraft:default",
+          "description": "Font in assets/<namespace>/font"
+        },
+        "bold": {
+          "type": "boolean",
+          "default": false
+        },
+        "italic": {
+          "type": "boolean",
+          "default": false
+        },
+        "underlined": {
+          "type": "boolean",
+          "default": false
+        },
+        "strikethrough": {
+          "type": "boolean",
+          "default": false
+        },
+        "obfuscated": {
+          "type": "boolean",
+          "default": false
+        },
+        "insertion": {
+          "type": "string",
+          "description": "When shift-clicked while the chat is open, the text of this property will be inserted."
+        },
+        "clickEvent": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "open_url",
+                "open_file",
+                "run_command",
+                "suggest_command",
+                "change_page",
+                "copy_to_clipboard"
+              ]
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "action",
+            "value"
+          ]
+        },
+        "hoverEvent": {
+          "type": "object",
+          "oneOf": [
+            {
+              "properties": {
+                "action": {
+                  "const": "show_text"
+                },
+                "contents": {
+                  "$ref": "#/definitions/text"
+                }
+              }
+            },
+            {
+              "properties": {
+                "action": {
+                  "const": "show_item"
+                },
+                "contents": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "default": "minecraft:air",
+                      "description": "The item to show"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "default": 1,
+                      "description": "The item stack size"
+                    },
+                    "tag": {
+                      "type": "string",
+                      "description": "NBT of the item, serialized as string. See https://minecraft.fandom.com/wiki/Player.dat_format#Item_structure"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "action": {
+                  "const": "show_entity"
+                },
+                "contents": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "$ref": "#/definitions/text"
+                    },
+                    "type": {
+                      "type": "string",
+                      "default": "minecraft:pig",
+                      "description": "The entity type id to show"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "UUID of the entity to show"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "text": {
+              "description": "Display simple text",
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ]
+        },
+        {
+          "properties": {
+            "translate": {
+              "description": "The ID of a translation key",
+              "type": "string"
+            },
+            "with": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/text"
+              }
+            }
+          },
+          "required": [
+            "translate"
+          ]
+        },
+        {
+          "properties": {
+            "keybind": {
+              "type": "string",
+              "description": "A keybind identifier"
+            }
+          },
+          "required": [
+            "keybind"
+          ]
+        }
+      ]
     }
   },
   "properties": {
@@ -30,35 +222,40 @@
         "type": "string"
       }
     },
+    "palette": {
+      "$comment": "See PaletteColor enum",
+      "type": "object",
+      "description": "Defines colors used through the UI screen",
+      "properties": {
+        "TEXT_HEADLINE": {
+          "$ref": "#/definitions/color"
+        }
+      }
+    },
     "slots": {
       "type": "object",
       "description": "Defines positions for slots and their grid alignment",
       "additionalProperties": {
         "type": "object",
-        "properties": {
-          "grid": {
-            "$comment": "Configures the slots with this semantic in a grid",
-            "enum": [
-              "IO_BUS_CONFIG",
-              "BREAK_AFTER_9COLS",
-              "BREAK_AFTER_2COLS",
-              "BREAK_AFTER_3COLS",
-              "HORIZONTAL"
-            ]
+        "allOf": [
+          {
+            "properties": {
+              "grid": {
+                "$comment": "Configures the slots with this semantic in a grid",
+                "enum": [
+                  "IO_BUS_CONFIG",
+                  "BREAK_AFTER_9COLS",
+                  "BREAK_AFTER_2COLS",
+                  "BREAK_AFTER_3COLS",
+                  "HORIZONTAL"
+                ]
+              }
+            }
           },
-          "left": {
-            "type": "number"
-          },
-          "top": {
-            "type": "number"
-          },
-          "right": {
-            "type": "number"
-          },
-          "bottom": {
-            "type": "number"
+          {
+            "$ref": "#/definitions/position"
           }
-        }
+        ]
       },
       "propertyNames": {
         "$comment": "List SlotSemantic names here",
@@ -83,6 +280,26 @@
           "PROCESSING_RESULT",
           "BIOMETRIC_CARD"
         ]
+      }
+    },
+    "text": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "$ref": "#/definitions/text"
+          },
+          "color": {
+            "$comment": "See enum PaletteColor",
+            "enum": [
+              "TEXT_HEADLINE"
+            ]
+          },
+          "position": {
+            "$ref": "#/definitions/position"
+          }
+        }
       }
     }
   }

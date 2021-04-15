@@ -18,13 +18,6 @@
 
 package appeng.container.me.crafting;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CraftingItemList;
@@ -37,31 +30,35 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.me.common.IncrementalUpdateHelper;
 import appeng.core.Api;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.CraftingTileEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.util.text.StringTextComponent;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingCPUScreen
  */
 public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
-    public static ContainerType<CraftingCPUContainer> TYPE;
-
-    private static final ContainerHelper<CraftingCPUContainer, CraftingTileEntity> helper = new ContainerHelper<>(
-            CraftingCPUContainer::new, CraftingTileEntity.class, SecurityPermissions.CRAFT)
-                    .withContainerTitle(craftingTileEntity -> {
-                        // Use the cluster's custom name instead of the right-clicked block entities one
-                        CraftingCPUCluster cluster = craftingTileEntity.getCluster();
-                        if (cluster != null && cluster.getName() != null) {
-                            return cluster.getName();
-                        }
-                        return StringTextComponent.EMPTY;
-                    });
+    public static final ContainerType<CraftingCPUContainer> TYPE = ContainerTypeBuilder
+            .create(CraftingCPUContainer::new, CraftingTileEntity.class)
+            .requirePermission(SecurityPermissions.CRAFT)
+            .withContainerTitle(craftingTileEntity -> {
+                // Use the cluster's custom name instead of the right-clicked block entities one
+                CraftingCPUCluster cluster = craftingTileEntity.getCluster();
+                if (cluster != null && cluster.getName() != null) {
+                    return cluster.getName();
+                }
+                return StringTextComponent.EMPTY;
+            })
+            .build("craftingcpu");
 
     private final IncrementalUpdateHelper<IAEItemStack> incrementalUpdateHelper = new IncrementalUpdateHelper<>();
     private final IGrid grid;
@@ -88,14 +85,6 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
         if (this.getGrid() == null && isServer()) {
             this.setValidContainer(false);
         }
-    }
-
-    public static CraftingCPUContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
     }
 
     protected void setCPU(final ICraftingCPU c) {
@@ -174,7 +163,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
 
     @Override
     public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
-            final IActionSource actionSource) {
+                           final IActionSource actionSource) {
         for (IAEItemStack is : change) {
             this.incrementalUpdateHelper.addChange(is);
         }

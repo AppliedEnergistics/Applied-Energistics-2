@@ -18,21 +18,6 @@
 
 package appeng.container.implementations;
 
-import java.util.function.Function;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.network.NetworkHooks;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -41,45 +26,89 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
 import appeng.core.AELog;
 import appeng.core.Api;
+import appeng.core.AppEng;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.fml.network.NetworkHooks;
+
+import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
- * Helper for containers that can be opened for a part <em>or</em> tile given that either implements a given interface.
+ * Builder that allows creation of container types which can be opened from multiple types of hosts.
  *
  * @param <C>
  */
-public final class ContainerHelper<C extends AEBaseContainer, I> {
+public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
 
-    private final Class<I> interfaceClass;
+    private final Class<I> hostInterface;
 
     private final ContainerFactory<C, I> factory;
 
-    private final SecurityPermissions requiredPermission;
-
     private Function<I, ITextComponent> containerTitleStrategy = this::getDefaultContainerTitle;
 
-    public ContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass) {
-        this(factory, interfaceClass, null);
+    @Nullable
+    private SecurityPermissions requiredPermission;
+
+    @Nullable
+    private InitialDataSerializer<I> initialDataSerializer;
+
+    @Nullable
+    private InitialDataDeserializer<C, I> initialDataDeserializer;
+
+    private ContainerTypeBuilder(ContainerFactory<C, I> factory, Class<I> hostInterface) {
+        this.factory = factory;
+        this.hostInterface = hostInterface;
     }
 
-    public ContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass,
-            SecurityPermissions requiredPermission) {
-        this.requiredPermission = requiredPermission;
-        this.interfaceClass = interfaceClass;
-        this.factory = factory;
+    public static <C extends AEBaseContainer, I> ContainerTypeBuilder<C, I> create(ContainerFactory<C, I> factory, Class<I> hostInterface) {
+        return new ContainerTypeBuilder<>(factory, hostInterface);
+    }
+
+    /**
+     * Requires that the player has a certain permission on the tile to open the container.
+     */
+    public ContainerTypeBuilder<C, I> requirePermission(SecurityPermissions permission) {
+        this.requiredPermission = permission;
+        return this;
     }
 
     /**
      * Specifies a custom strategy for obtaining a custom container name.
-     *
+     * <p>
      * The stratgy should return {@link StringTextComponent#EMPTY} if there's no custom name.
      */
-    public ContainerHelper<C, I> withContainerTitle(Function<I, ITextComponent> containerTitleStrategy) {
+    public ContainerTypeBuilder<C, I> withContainerTitle(Function<I, ITextComponent> containerTitleStrategy) {
         this.containerTitleStrategy = containerTitleStrategy;
+        return this;
+    }
+
+
+    /**
+     * Sets a serializer and deserializer for additional data that should be transmitted from server->client
+     * when the container is being first opened.
+     */
+    public ContainerTypeBuilder<C, I> withInitialData(InitialDataSerializer<I> initialDataSerializer,
+                                                      InitialDataDeserializer<C, I> initialDataDeserializer) {
+        this.initialDataSerializer = initialDataSerializer;
+        this.initialDataDeserializer = initialDataDeserializer;
         return this;
     }
 
@@ -87,31 +116,19 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
      * Opens a container that is based around a single tile entity. The tile entity's position is encoded in the packet
      * buffer.
      */
-    public C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf) {
-        return fromNetwork(windowId, inv, packetBuf, (accessObj, container, buffer) -> {
-        });
-    }
-
-    /**
-     * Same as {@link #open}, but allows or additional data to be read from the packet, and passed onto the container.
-     */
-    public C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf,
-            InitialDataDeserializer<C, I> initialDataDeserializer) {
+    private C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf) {
         I host = getHostFromLocator(inv.player, ContainerLocator.read(packetBuf));
         if (host != null) {
             C container = factory.create(windowId, inv, host);
-            initialDataDeserializer.deserializeInitialData(host, container, packetBuf);
+            if (initialDataDeserializer != null) {
+                initialDataDeserializer.deserializeInitialData(host, container, packetBuf);
+            }
             return container;
         }
         return null;
     }
 
-    public boolean open(PlayerEntity player, ContainerLocator locator) {
-        return open(player, locator, (accessObj, buffer) -> {
-        });
-    }
-
-    public boolean open(PlayerEntity player, ContainerLocator locator, InitialDataSerializer<I> initialDataSerializer) {
+    private boolean open(PlayerEntity player, ContainerLocator locator) {
         if (!(player instanceof ServerPlayerEntity)) {
             // Cannot open containers on the client or for non-players
             // FIXME logging?
@@ -139,7 +156,9 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         }, title);
         NetworkHooks.openGui((ServerPlayerEntity) player, container, buffer -> {
             locator.write(buffer);
-            initialDataSerializer.serializeInitialData(accessInterface, buffer);
+            if (initialDataSerializer != null) {
+                initialDataSerializer.serializeInitialData(accessInterface, buffer);
+            }
         });
 
         return true;
@@ -157,8 +176,8 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         TileEntity tileEntity = player.world.getTileEntity(locator.getBlockPos());
 
         // The tile entity itself can host a terminal (i.e. Chest!)
-        if (interfaceClass.isInstance(tileEntity)) {
-            return interfaceClass.cast(tileEntity);
+        if (hostInterface.isInstance(tileEntity)) {
+            return hostInterface.cast(tileEntity);
         }
 
         if (!locator.hasSide()) {
@@ -173,11 +192,11 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
                 return null;
             }
 
-            if (interfaceClass.isInstance(part)) {
-                return interfaceClass.cast(part);
+            if (hostInterface.isInstance(part)) {
+                return hostInterface.cast(part);
             } else {
                 AELog.debug("Trying to open a container @ %s for a %s, but the container requires %s", locator,
-                        part.getClass(), interfaceClass);
+                        part.getClass(), hostInterface);
                 return null;
             }
         } else {
@@ -201,19 +220,29 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             // Optionally contains the block the item was used on to open the container
             BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
             IGuiItemObject guiObject = guiItem.getGuiObject(it, locator.getItemIndex(), player.world, blockPos);
-            if (interfaceClass.isInstance(guiObject)) {
-                return interfaceClass.cast(guiObject);
+            if (hostInterface.isInstance(guiObject)) {
+                return hostInterface.cast(guiObject);
             }
         }
 
-        if (interfaceClass.isAssignableFrom(WirelessTerminalGuiObject.class)) {
+        if (hostInterface.isAssignableFrom(WirelessTerminalGuiObject.class)) {
             final IWirelessTermHandler wh = Api.instance().registries().wireless().getWirelessTerminalHandler(it);
             if (wh != null) {
-                return interfaceClass.cast(new WirelessTerminalGuiObject(wh, it, player, locator.getItemIndex()));
+                return hostInterface.cast(new WirelessTerminalGuiObject(wh, it, player, locator.getItemIndex()));
             }
         }
 
         return null;
+    }
+
+    /**
+     * Creates a container type that uses this helper as a factory and network deserializer.
+     */
+    public ContainerType<C> build(String id) {
+        ContainerType<C> type = IForgeContainerType.create(this::fromNetwork);
+        type.setRegistryName(AppEng.MOD_ID, id);
+        ContainerOpener.addOpener(type, this::open);
+        return type;
     }
 
     @FunctionalInterface

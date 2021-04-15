@@ -2,14 +2,11 @@ package appeng.container.implementations;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.container.ContainerLocator;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 /**
@@ -17,18 +14,10 @@ import net.minecraftforge.items.IItemHandler;
  */
 public class IOBusContainer extends UpgradeableContainer {
 
-    public static ContainerType<IOBusContainer> TYPE;
-
-    private static final ContainerHelper<IOBusContainer, IUpgradeableHost> helper = new ContainerHelper<>(
-            IOBusContainer::new, IUpgradeableHost.class, SecurityPermissions.BUILD);
-
-    public static IOBusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<IOBusContainer> TYPE = ContainerTypeBuilder
+            .create(IOBusContainer::new, IUpgradeableHost.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("iobus");
 
     public IOBusContainer(int id, final PlayerInventory ip, final IUpgradeableHost te) {
         super(TYPE, id, ip, te);
