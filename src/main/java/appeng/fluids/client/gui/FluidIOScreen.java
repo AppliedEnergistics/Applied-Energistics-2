@@ -19,17 +19,13 @@
 package appeng.fluids.client.gui;
 
 import appeng.client.gui.implementations.IOBusScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
-import appeng.client.gui.Blitter;
 import appeng.client.gui.implementations.UpgradeableScreen;
-import appeng.core.localization.GuiText;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidIOContainer;
-import appeng.fluids.parts.FluidImportBusPart;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * @author BrockWS
@@ -62,8 +58,4 @@ public class FluidIOScreen extends UpgradeableScreen<FluidIOContainer> {
         this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 8, 8, 2, x, y, 1, 1));
     }
 
-    @Override
-    protected GuiText getName() {
-        return this.bc instanceof FluidImportBusPart ? GuiText.ImportBusFluids : GuiText.ExportBusFluids;
-    }
 }

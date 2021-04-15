@@ -1,5 +1,9 @@
 {
   "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json"
+  ],
   "slots": {
     "CONFIG": {
       "left": 8,
@@ -11,10 +15,23 @@
       "top": 53,
       "grid": "HORIZONTAL"
     },
-    "INTERFACE_PATTERN": {
+    "ENCODED_PATTERN": {
       "left": 8,
       "top": 90,
       "grid": "HORIZONTAL"
     }
-  }
+  },
+  "text": [
+    {
+      "$comment": "Dialog title",
+      "text": {
+        "translate": "gui.appliedenergistics2.Interface"
+      },
+      "color": "TEXT_HEADLINE",
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
 }

@@ -19,13 +19,10 @@
 package appeng.container.implementations;
 
 import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.RestrictedInputSlot;
@@ -36,18 +33,9 @@ import appeng.tile.misc.VibrationChamberTileEntity;
  */
 public class VibrationChamberContainer extends AEBaseContainer implements IProgressProvider {
 
-    public static ContainerType<VibrationChamberContainer> TYPE;
-
-    private static final ContainerHelper<VibrationChamberContainer, VibrationChamberTileEntity> helper = new ContainerHelper<>(
-            VibrationChamberContainer::new, VibrationChamberTileEntity.class);
-
-    public static VibrationChamberContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<VibrationChamberContainer> TYPE = ContainerTypeBuilder
+            .create(VibrationChamberContainer::new, VibrationChamberTileEntity.class)
+            .build("vibrationchamber");
 
     private final VibrationChamberTileEntity vibrationChamber;
     @GuiSync(0)

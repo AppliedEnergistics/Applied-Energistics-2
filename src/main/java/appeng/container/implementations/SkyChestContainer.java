@@ -19,14 +19,12 @@
 package appeng.container.implementations;
 
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.AppEngSlot;
 import appeng.tile.storage.SkyChestTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 /**
@@ -34,10 +32,9 @@ import net.minecraftforge.items.IItemHandler;
  */
 public class SkyChestContainer extends AEBaseContainer {
 
-    public static ContainerType<SkyChestContainer> TYPE;
-
-    private static final ContainerHelper<SkyChestContainer, SkyChestTileEntity> helper = new ContainerHelper<>(
-            SkyChestContainer::new, SkyChestTileEntity.class);
+    public static final ContainerType<SkyChestContainer> TYPE = ContainerTypeBuilder
+            .create(SkyChestContainer::new, SkyChestTileEntity.class)
+            .build("skychest");
 
     private final SkyChestTileEntity chest;
 
@@ -53,14 +50,6 @@ public class SkyChestContainer extends AEBaseContainer {
         this.chest.openInventory(ip.player);
 
         this.createPlayerInventorySlots(ip);
-    }
-
-    public static SkyChestContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
     }
 
     @Override

@@ -27,11 +27,10 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.container.ContainerLocator;
 import appeng.container.ContainerNull;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.slot.FakeCraftingMatrixSlot;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalFakeSlot;
@@ -62,7 +61,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -73,18 +71,10 @@ import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 public class PatternTermContainer extends ItemTerminalContainer
         implements IOptionalSlotHost, IContainerCraftingPacket {
 
-    public static ContainerType<PatternTermContainer> TYPE;
-
-    private static final ContainerHelper<PatternTermContainer, ITerminalHost> helper = new ContainerHelper<>(
-            PatternTermContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
-
-    public static PatternTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static ContainerType<PatternTermContainer> TYPE = ContainerTypeBuilder
+            .create(PatternTermContainer::new, ITerminalHost.class)
+            .requirePermission(SecurityPermissions.CRAFT)
+            .build("patternterm");
 
     private final PatternTerminalPart patternTerminal;
     private final IItemHandler craftingGridInv;

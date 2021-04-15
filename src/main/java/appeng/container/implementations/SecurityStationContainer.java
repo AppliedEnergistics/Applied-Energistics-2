@@ -24,7 +24,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -32,7 +31,6 @@ import appeng.api.features.INetworkEncodable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.storage.ITerminalHost;
-import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.slot.OutputSlot;
@@ -43,12 +41,15 @@ import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
+/**
+ * @see appeng.client.gui.implementations.SecurityStationScreen
+ */
 public class SecurityStationContainer extends ItemTerminalContainer implements IAEAppEngInventory {
 
-    public static ContainerType<SecurityStationContainer> TYPE;
-
-    private static final ContainerHelper<SecurityStationContainer, ITerminalHost> helper = new ContainerHelper<>(
-            SecurityStationContainer::new, ITerminalHost.class, SecurityPermissions.SECURITY);
+    public static final ContainerType<SecurityStationContainer> TYPE = ContainerTypeBuilder
+            .create(SecurityStationContainer::new, ITerminalHost.class)
+            .requirePermission(SecurityPermissions.SECURITY)
+            .build("securitystation");
 
     private final RestrictedInputSlot configSlot;
 
@@ -73,14 +74,6 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
         this.addSlot(this.wirelessOut = new OutputSlot(wirelessEncoder, 1, -1), SlotSemantic.MACHINE_OUTPUT);
 
         this.createPlayerInventorySlots(ip);
-    }
-
-    public static SecurityStationContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
     }
 
     public void toggleSetting(final String value, final PlayerEntity player) {

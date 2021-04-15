@@ -18,21 +18,11 @@
 
 package appeng.container.implementations;
 
-import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.AppEngSlot;
@@ -42,24 +32,21 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 /**
  * @see appeng.client.gui.implementations.MolecularAssemblerScreen
  */
 public class MolecularAssemblerContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static ContainerType<MolecularAssemblerContainer> TYPE;
-
-    private static final ContainerHelper<MolecularAssemblerContainer, MolecularAssemblerTileEntity> helper = new ContainerHelper<>(
-            MolecularAssemblerContainer::new, MolecularAssemblerTileEntity.class);
-
-    public static MolecularAssemblerContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<MolecularAssemblerContainer> TYPE = ContainerTypeBuilder
+            .create(MolecularAssemblerContainer::new, MolecularAssemblerTileEntity.class)
+            .build("molecular_assembler");
 
     private static final int MAX_CRAFT_PROGRESS = 100;
     private final MolecularAssemblerTileEntity tma;
@@ -101,7 +88,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         }
 
         encodedPatternSlot = this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10),
-                        SlotSemantic.ENCODED_PATTERN);
+                SlotSemantic.ENCODED_PATTERN);
 
         this.addSlot(new OutputSlot(mac, 9, -1), SlotSemantic.MACHINE_OUTPUT);
 

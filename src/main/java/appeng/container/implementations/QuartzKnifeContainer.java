@@ -26,13 +26,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
@@ -45,18 +43,9 @@ import appeng.tile.inventory.AppEngInternalInventory;
  */
 public class QuartzKnifeContainer extends AEBaseContainer {
 
-    public static ContainerType<QuartzKnifeContainer> TYPE;
-
-    private static final ContainerHelper<QuartzKnifeContainer, QuartzKnifeObj> helper = new ContainerHelper<>(
-            QuartzKnifeContainer::new, QuartzKnifeObj.class);
-
-    public static QuartzKnifeContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<QuartzKnifeContainer> TYPE = ContainerTypeBuilder
+            .create(QuartzKnifeContainer::new, QuartzKnifeObj.class)
+            .build("quartzknife");
 
     private final QuartzKnifeObj toolInv;
 

@@ -2,5 +2,18 @@
   "$schema": "schema.json",
   "includes": [
     "storage_bus.json"
+  ],
+  "text": [
+    {
+      "$comment": "Dialog title",
+      "text": {
+        "translate": "gui.appliedenergistics2.FormationPlane"
+      },
+      "color": "TEXT_HEADLINE",
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
   ]
 }

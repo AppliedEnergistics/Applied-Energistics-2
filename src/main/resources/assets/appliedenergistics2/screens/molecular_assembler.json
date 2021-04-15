@@ -14,5 +14,18 @@
       "left": 126,
       "top": 48
     }
-  }
+  },
+  "text": [
+    {
+      "$comment": "Dialog title",
+      "text": {
+        "translate": "gui.appliedenergistics2.MolecularAssembler"
+      },
+      "color": "TEXT_HEADLINE",
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
 }

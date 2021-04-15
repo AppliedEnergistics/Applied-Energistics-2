@@ -18,17 +18,8 @@
 
 package appeng.container.implementations;
 
-import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.definitions.IItemDefinition;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
@@ -36,24 +27,20 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.tile.misc.InscriberRecipes;
 import appeng.tile.misc.InscriberTileEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 /**
  * @see appeng.client.gui.implementations.InscriberScreen
  */
 public class InscriberContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static ContainerType<InscriberContainer> TYPE;
-
-    private static final ContainerHelper<InscriberContainer, InscriberTileEntity> helper = new ContainerHelper<>(
-            InscriberContainer::new, InscriberTileEntity.class);
-
-    public static InscriberContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<InscriberContainer> TYPE = ContainerTypeBuilder
+            .create(InscriberContainer::new, InscriberTileEntity.class)
+            .build("inscriber");
 
     private final InscriberTileEntity ti;
 

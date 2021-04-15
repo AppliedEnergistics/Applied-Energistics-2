@@ -19,16 +19,13 @@
 package appeng.container.implementations;
 
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.grindstone.GrinderTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 /**
@@ -36,18 +33,9 @@ import net.minecraftforge.items.IItemHandler;
  */
 public class GrinderContainer extends AEBaseContainer {
 
-    public static ContainerType<GrinderContainer> TYPE;
-
-    private static final ContainerHelper<GrinderContainer, GrinderTileEntity> helper = new ContainerHelper<>(
-            GrinderContainer::new, GrinderTileEntity.class);
-
-    public static GrinderContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<GrinderContainer> TYPE = ContainerTypeBuilder
+            .create(GrinderContainer::new, GrinderTileEntity.class)
+            .build("grinder");
 
     public GrinderContainer(int id, final PlayerInventory ip, final GrinderTileEntity grinder) {
         super(TYPE, id, ip, grinder, null);

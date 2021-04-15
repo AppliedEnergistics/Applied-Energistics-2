@@ -68,8 +68,4 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
     }
 
-    @Override
-    protected GuiText getName() {
-        return GuiText.MolecularAssembler;
-    }
 }

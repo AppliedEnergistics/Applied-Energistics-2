@@ -18,33 +18,21 @@
 
 package appeng.fluids.container;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Upgrades;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.fluids.parts.FluidFormationPlanePart;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 
 public class FluidFormationPlaneContainer extends FluidConfigurableContainer {
 
-    public static ContainerType<FluidFormationPlaneContainer> TYPE;
-
-    private static final ContainerHelper<FluidFormationPlaneContainer, FluidFormationPlanePart> helper = new ContainerHelper<>(
-            FluidFormationPlaneContainer::new, FluidFormationPlanePart.class, SecurityPermissions.BUILD);
-
-    public static FluidFormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<FluidFormationPlaneContainer> TYPE = ContainerTypeBuilder
+            .create(FluidFormationPlaneContainer::new, FluidFormationPlanePart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("fluid_formation_plane");
 
     private final FluidFormationPlanePart plane;
 

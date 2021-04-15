@@ -23,7 +23,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
-import appeng.client.gui.style.GuiStyleManager;
+import appeng.client.gui.style.StyleManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -60,7 +60,7 @@ public class ClientHelper extends ServerHelper {
     private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
 
     public ClientHelper() {
-        GuiStyleManager.initialize(Minecraft.getInstance());
+        StyleManager.initialize(Minecraft.getInstance());
     }
 
     public void clientInit() {

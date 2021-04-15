@@ -18,18 +18,6 @@
 
 package appeng.container.me.crafting;
 
-import java.util.concurrent.Future;
-
-import javax.annotation.Nonnull;
-
-import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -42,23 +30,32 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.SlotSemantic;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.me.helpers.PlayerSource;
 import appeng.tile.inventory.AppEngInternalInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
+import java.util.concurrent.Future;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftAmountScreen
  */
 public class CraftAmountContainer extends AEBaseContainer {
 
-    public static ContainerType<CraftAmountContainer> TYPE;
-
-    private static final ContainerHelper<CraftAmountContainer, ITerminalHost> helper = new ContainerHelper<>(
-            CraftAmountContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+    public static final ContainerType<CraftAmountContainer> TYPE = ContainerTypeBuilder
+            .create(CraftAmountContainer::new, ITerminalHost.class)
+            .requirePermission(SecurityPermissions.CRAFT)
+            .build("craftamount");
 
     /**
      * This slot is used to synchronize a visual representation of what is to be crafted to the client.
@@ -75,14 +72,6 @@ public class CraftAmountContainer extends AEBaseContainer {
 
         this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(null, 1), 0);
         this.addSlot(this.craftingItem, SlotSemantic.MACHINE_OUTPUT);
-    }
-
-    public static CraftAmountContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
     }
 
     @Override

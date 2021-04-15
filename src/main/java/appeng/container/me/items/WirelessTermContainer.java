@@ -18,32 +18,22 @@
 
 package appeng.container.me.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Util;
-
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.Util;
 
+/**
+ * @see appeng.client.gui.implementations.WirelessScreen
+ */
 public class WirelessTermContainer extends MEPortableCellContainer {
 
-    public static ContainerType<WirelessTermContainer> TYPE;
-
-    private static final ContainerHelper<WirelessTermContainer, WirelessTerminalGuiObject> helper = new ContainerHelper<>(
-            WirelessTermContainer::new, WirelessTerminalGuiObject.class);
-
-    public static WirelessTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<WirelessTermContainer> TYPE = ContainerTypeBuilder
+            .create(WirelessTermContainer::new, WirelessTerminalGuiObject.class)
+            .build("wirelessterm");
 
     private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 

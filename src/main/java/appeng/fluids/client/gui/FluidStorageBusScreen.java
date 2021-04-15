@@ -105,11 +105,6 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(this.getName().text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3,
-                COLOR_DARK_GRAY);
-
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.container.getFuzzyMode());
         }
@@ -135,8 +130,4 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
         NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
-    @Override
-    protected GuiText getName() {
-        return GuiText.StorageBusFluids;
-    }
 }

@@ -1,5 +1,6 @@
 package appeng.client.gui;
 
+import appeng.client.gui.style.ScreenStyle;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

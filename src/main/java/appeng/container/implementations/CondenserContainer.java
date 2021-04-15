@@ -21,17 +21,14 @@ package appeng.container.implementations;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.misc.CondenserTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 /**
@@ -39,10 +36,9 @@ import net.minecraftforge.items.IItemHandler;
  */
 public class CondenserContainer extends AEBaseContainer implements IProgressProvider {
 
-    public static ContainerType<CondenserContainer> TYPE;
-
-    private static final ContainerHelper<CondenserContainer, CondenserTileEntity> helper = new ContainerHelper<>(
-            CondenserContainer::new, CondenserTileEntity.class);
+    public static final ContainerType<CondenserContainer> TYPE = ContainerTypeBuilder
+            .create(CondenserContainer::new, CondenserTileEntity.class)
+            .build("condenser");
 
     private final CondenserTileEntity condenser;
     @GuiSync(0)
@@ -65,14 +61,6 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
                         .setStackLimit(1), SlotSemantic.STORAGE_CELL);
 
         this.createPlayerInventorySlots(ip);
-    }
-
-    public static CondenserContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
     }
 
     @Override

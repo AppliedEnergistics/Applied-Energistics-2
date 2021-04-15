@@ -20,10 +20,8 @@ package appeng.fluids.container;
 
 import java.util.Iterator;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
@@ -35,9 +33,8 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.core.Api;
 import appeng.fluids.parts.FluidStorageBusPart;
 import appeng.fluids.util.IAEFluidTank;
@@ -50,18 +47,9 @@ import appeng.util.iterators.NullIterator;
  */
 public class FluidStorageBusContainer extends FluidConfigurableContainer {
 
-    public static ContainerType<FluidStorageBusContainer> TYPE;
-
-    private static final ContainerHelper<FluidStorageBusContainer, FluidStorageBusPart> helper = new ContainerHelper<>(
-            FluidStorageBusContainer::new, FluidStorageBusPart.class);
-
-    public static FluidStorageBusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<FluidStorageBusContainer> TYPE = ContainerTypeBuilder
+            .create(FluidStorageBusContainer::new, FluidStorageBusPart.class)
+            .build("fluid_storage_bus");
 
     private final FluidStorageBusPart storageBus;
 

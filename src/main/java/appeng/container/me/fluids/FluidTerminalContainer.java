@@ -18,27 +18,12 @@
 
 package appeng.container.me.fluids;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.me.common.MEMonitorableContainer;
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -46,6 +31,17 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.FluidSoundHelper;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+
+import javax.annotation.Nullable;
 
 /**
  * @see appeng.client.gui.me.fluids.FluidTerminalScreen
@@ -53,32 +49,24 @@ import appeng.util.Platform;
  */
 public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack> {
 
-    public static ContainerType<FluidTerminalContainer> TYPE;
-
-    private static final ContainerHelper<FluidTerminalContainer, ITerminalHost> helper = new ContainerHelper<>(
-            FluidTerminalContainer::new, ITerminalHost.class, SecurityPermissions.BUILD);
-
-    public static FluidTerminalContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<FluidTerminalContainer> TYPE = ContainerTypeBuilder
+            .create(FluidTerminalContainer::new, ITerminalHost.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("fluid_terminal");
 
     public FluidTerminalContainer(int id, PlayerInventory ip, ITerminalHost monitorable) {
         this(TYPE, id, ip, monitorable, true);
     }
 
     public FluidTerminalContainer(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost host,
-            boolean bindInventory) {
+                                  boolean bindInventory) {
         super(containerType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
     }
 
     @Override
     protected void handleNetworkInteraction(ServerPlayerEntity player, @Nullable IAEFluidStack stack,
-            InventoryAction action) {
+                                            InventoryAction action) {
 
         if (action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM) {
             return;

@@ -79,11 +79,6 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
         this.fuzzyMode.setVisibility(hasFuzzy);
     }
 
-    @Override
-    protected GuiText getName() {
-        return GuiText.CellWorkbench;
-    }
-
     private void action(String type) {
         NetworkHandler.instance().sendToServer(new ConfigValuePacket("CellWorkbench.Action", type));
     }

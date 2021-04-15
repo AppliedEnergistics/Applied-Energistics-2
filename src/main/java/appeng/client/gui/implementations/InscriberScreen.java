@@ -56,11 +56,6 @@ public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
             final int mouseY) {
         this.pb.setFullMsg(new StringTextComponent(
                 this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%"));
-
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Inscriber.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3,
-                COLOR_DARK_GRAY);
     }
 
 }

@@ -18,10 +18,8 @@
 
 package appeng.container.me.networktool;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
@@ -30,8 +28,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.core.sync.packets.NetworkStatusPacket;
 
 /**
@@ -39,18 +36,9 @@ import appeng.core.sync.packets.NetworkStatusPacket;
  */
 public class NetworkStatusContainer extends AEBaseContainer {
 
-    public static ContainerType<NetworkStatusContainer> TYPE;
-
-    private static final ContainerHelper<NetworkStatusContainer, INetworkTool> helper = new ContainerHelper<>(
-            NetworkStatusContainer::new, INetworkTool.class);
-
-    public static NetworkStatusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<NetworkStatusContainer> TYPE = ContainerTypeBuilder
+            .create(NetworkStatusContainer::new, INetworkTool.class)
+            .build("networkstatus");
 
     private IGrid grid;
     private int delay = 40;

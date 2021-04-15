@@ -18,41 +18,29 @@
 
 package appeng.container.implementations;
 
-import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.storage.IOPortTileEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraftforge.items.IItemHandler;
 
 /**
  * @see appeng.client.gui.implementations.IOPortScreen
  */
 public class IOPortContainer extends UpgradeableContainer {
 
-    public static ContainerType<IOPortContainer> TYPE;
-
-    private static final ContainerHelper<IOPortContainer, IOPortTileEntity> helper = new ContainerHelper<>(
-            IOPortContainer::new, IOPortTileEntity.class, SecurityPermissions.BUILD);
-
-    public static IOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<IOPortContainer> TYPE = ContainerTypeBuilder
+            .create(IOPortContainer::new, IOPortTileEntity.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("ioport");
 
     @GuiSync(2)
     public FullnessMode fMode = FullnessMode.EMPTY;

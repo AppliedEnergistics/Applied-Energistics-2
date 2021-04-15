@@ -18,37 +18,25 @@
 
 package appeng.container.implementations;
 
-import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AEConfig;
 import appeng.tile.networking.WirelessTileEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 
 /**
  * @see appeng.client.gui.implementations.WirelessScreen
  */
 public class WirelessContainer extends AEBaseContainer {
 
-    public static ContainerType<WirelessContainer> TYPE;
-
-    private static final ContainerHelper<WirelessContainer, WirelessTileEntity> helper = new ContainerHelper<>(
-            WirelessContainer::new, WirelessTileEntity.class, SecurityPermissions.BUILD);
-
-    public static WirelessContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<WirelessContainer> TYPE = ContainerTypeBuilder
+            .create(WirelessContainer::new, WirelessTileEntity.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("wireless");
 
     private final RestrictedInputSlot boosterSlot;
     @GuiSync(1)

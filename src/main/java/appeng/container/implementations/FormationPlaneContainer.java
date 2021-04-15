@@ -18,23 +18,19 @@
 
 package appeng.container.implementations;
 
-import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
 import appeng.parts.automation.FormationPlanePart;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraftforge.items.IItemHandler;
 
 /**
  * This is used by both annihilation and formation planes.
@@ -43,18 +39,10 @@ import appeng.parts.automation.FormationPlanePart;
  */
 public class FormationPlaneContainer extends UpgradeableContainer {
 
-    public static ContainerType<FormationPlaneContainer> TYPE;
-
-    private static final ContainerHelper<FormationPlaneContainer, FormationPlanePart> helper = new ContainerHelper<>(
-            FormationPlaneContainer::new, FormationPlanePart.class, SecurityPermissions.BUILD);
-
-    public static FormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<FormationPlaneContainer> TYPE = ContainerTypeBuilder
+            .create(FormationPlaneContainer::new, FormationPlanePart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("formationplane");
 
     @GuiSync(7)
     public YesNo placeMode;

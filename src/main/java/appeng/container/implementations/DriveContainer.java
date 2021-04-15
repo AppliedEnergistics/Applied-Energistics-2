@@ -19,32 +19,20 @@
 package appeng.container.implementations;
 
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.storage.DriveTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 
 /**
  * @see appeng.client.gui.implementations.DriveScreen
  */
 public class DriveContainer extends AEBaseContainer {
 
-    public static ContainerType<DriveContainer> TYPE;
-
-    private static final ContainerHelper<DriveContainer, DriveTileEntity> helper = new ContainerHelper<>(
-            DriveContainer::new, DriveTileEntity.class);
-
-    public static DriveContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<DriveContainer> TYPE = ContainerTypeBuilder
+            .create(DriveContainer::new, DriveTileEntity.class)
+            .build("drive");
 
     public DriveContainer(int id, final PlayerInventory ip, final DriveTileEntity drive) {
         super(TYPE, id, ip, drive, null);

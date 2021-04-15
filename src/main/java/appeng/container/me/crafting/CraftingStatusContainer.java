@@ -18,37 +18,25 @@
 
 package appeng.container.me.crafting;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.storage.ITerminalHost;
-import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingStatusScreen
  */
 public class CraftingStatusContainer extends CraftingCPUContainer implements CraftingCPUCyclingContainer {
 
-    public static ContainerType<CraftingStatusContainer> TYPE;
-
-    private static final ContainerHelper<CraftingStatusContainer, ITerminalHost> helper = new ContainerHelper<>(
-            CraftingStatusContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
-
-    public static CraftingStatusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<CraftingStatusContainer> TYPE = ContainerTypeBuilder
+            .create(CraftingStatusContainer::new, ITerminalHost.class)
+            .requirePermission(SecurityPermissions.CRAFT)
+            .build("craftingstatus");
 
     private final CraftingCPUCycler cpuCycler = new CraftingCPUCycler(this::cpuMatches, this::onCPUSelectionChanged);
 

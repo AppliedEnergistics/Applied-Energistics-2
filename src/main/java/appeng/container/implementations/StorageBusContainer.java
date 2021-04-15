@@ -18,16 +18,6 @@
 
 package appeng.container.implementations;
 
-import java.util.Iterator;
-
-import appeng.container.SlotSemantic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
@@ -38,7 +28,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
@@ -46,24 +36,22 @@ import appeng.core.Api;
 import appeng.parts.misc.StorageBusPart;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.iterators.NullIterator;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+
+import java.util.Iterator;
 
 /**
  * @see appeng.client.gui.implementations.StorageBusScreen
  */
 public class StorageBusContainer extends UpgradeableContainer {
 
-    public static ContainerType<StorageBusContainer> TYPE;
-
-    private static final ContainerHelper<StorageBusContainer, StorageBusPart> helper = new ContainerHelper<>(
-            StorageBusContainer::new, StorageBusPart.class, SecurityPermissions.BUILD);
-
-    public static StorageBusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<StorageBusContainer> TYPE = ContainerTypeBuilder
+            .create(StorageBusContainer::new, StorageBusPart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("storagebus");
 
     private final StorageBusPart storageBus;
 

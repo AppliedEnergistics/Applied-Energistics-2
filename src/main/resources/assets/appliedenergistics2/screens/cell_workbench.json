@@ -1,6 +1,7 @@
 {
   "$schema": "schema.json",
   "includes": [
+    "common/common.json",
     "common/player_inventory.json"
   ],
   "slots": {
@@ -13,5 +14,18 @@
       "top": 29,
       "grid": "BREAK_AFTER_9COLS"
     }
-  }
+  },
+  "text": [
+    {
+      "$comment": "Dialog title",
+      "text": {
+        "translate": "gui.appliedenergistics2.CellWorkbench"
+      },
+      "color": "TEXT_HEADLINE",
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
 }

@@ -18,34 +18,24 @@
 
 package appeng.container.me.items;
 
-import java.util.Objects;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.interfaces.IInventorySlotAware;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 
+import java.util.Objects;
+
+/**
+ * @see appeng.client.gui.me.items.MEPortableCellScreen
+ */
 public class MEPortableCellContainer extends ItemTerminalContainer {
 
-    public static ContainerType<MEPortableCellContainer> TYPE;
-
-    private static final ContainerHelper<MEPortableCellContainer, IPortableCell> helper = new ContainerHelper<>(
-            MEPortableCellContainer::new, IPortableCell.class);
-
-    public static MEPortableCellContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<MEPortableCellContainer> TYPE = ContainerTypeBuilder
+            .create(MEPortableCellContainer::new, IPortableCell.class)
+            .build("meportablecell");
 
     private final IPortableCell cell;
     private final int slot;
@@ -57,7 +47,7 @@ public class MEPortableCellContainer extends ItemTerminalContainer {
     }
 
     protected MEPortableCellContainer(ContainerType<? extends MEPortableCellContainer> type, int id,
-            final PlayerInventory ip, final IPortableCell monitorable) {
+                                      final PlayerInventory ip, final IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
         // Is the screen being opened a specific slot? If not, it must be for the currently held item
         if (monitorable instanceof IInventorySlotAware) {

@@ -125,9 +125,4 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         this.fuzzyMode.setVisibility(this.bc.getInstalledUpgrades(Upgrades.FUZZY) > 0);
     }
 
-    @Override
-    protected GuiText getName() {
-        return GuiText.LevelEmitter;
-    }
-
 }

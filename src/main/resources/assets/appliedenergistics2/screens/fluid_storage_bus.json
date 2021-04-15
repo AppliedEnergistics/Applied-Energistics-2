@@ -1,0 +1,20 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json"
+  ],
+  "text": [
+    {
+      "$comment": "Dialog title",
+      "text": {
+        "translate": "gui.appliedenergistics2.StorageBusFluids"
+      },
+      "color": "TEXT_HEADLINE",
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
+}

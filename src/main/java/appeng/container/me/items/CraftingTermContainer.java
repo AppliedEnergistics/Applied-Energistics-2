@@ -21,15 +21,13 @@ package appeng.container.me.items;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.storage.ITerminalHost;
-import appeng.container.ContainerLocator;
 import appeng.container.ContainerNull;
 import appeng.container.SlotSemantic;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.slot.CraftingMatrixSlot;
 import appeng.container.slot.CraftingTermSlot;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.util.inv.WrapperInvItemHandler;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
@@ -37,7 +35,6 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -48,21 +45,12 @@ import net.minecraftforge.items.wrapper.PlayerInvWrapper;
  *
  * @see appeng.client.gui.me.items.CraftingTermScreen
  */
-public class CraftingTermContainer extends ItemTerminalContainer
-        implements IContainerCraftingPacket {
+public class CraftingTermContainer extends ItemTerminalContainer implements IContainerCraftingPacket {
 
-    public static ContainerType<CraftingTermContainer> TYPE;
-
-    private static final ContainerHelper<CraftingTermContainer, ITerminalHost> helper = new ContainerHelper<>(
-            CraftingTermContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
-
-    public static CraftingTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<CraftingTermContainer> TYPE = ContainerTypeBuilder
+            .create(CraftingTermContainer::new, ITerminalHost.class)
+            .requirePermission(SecurityPermissions.CRAFT)
+            .build("craftingterm");
 
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];

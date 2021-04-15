@@ -74,8 +74,4 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
         NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
-    @Override
-    protected GuiText getName() {
-        return GuiText.FluidFormationPlane;
-    }
 }

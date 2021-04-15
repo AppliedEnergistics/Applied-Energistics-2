@@ -1,5 +1,9 @@
 {
   "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json"
+  ],
   "slots": {
     "INSCRIBER_PLATE_TOP": {
       "left": 45,
@@ -17,5 +21,18 @@
       "left": 113,
       "top": 40
     }
-  }
+  },
+  "text": [
+    {
+      "$comment": "Dialog title",
+      "text": {
+        "translate": "gui.appliedenergistics2.Inscriber"
+      },
+      "color": "TEXT_HEADLINE",
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
 }
