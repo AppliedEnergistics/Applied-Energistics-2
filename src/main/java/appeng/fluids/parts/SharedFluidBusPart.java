@@ -18,18 +18,6 @@
 
 package appeng.fluids.parts;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.ticking.IGridTickable;
@@ -40,13 +28,23 @@ import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.core.Api;
-import appeng.fluids.container.FluidIOContainer;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeablePart;
-import appeng.util.Platform;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
  * @author BrockWS
@@ -93,11 +91,13 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(FluidIOContainer.TYPE, player, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(getContainerType(), player, ContainerLocator.forPart(this));
         }
 
         return true;
     }
+
+    protected abstract ContainerType<?> getContainerType();
 
     @Override
     public void getBoxes(IPartCollisionHelper bch) {

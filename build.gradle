@@ -82,6 +82,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:3.9.0")
+    testImplementation("org.mockito:mockito-inline:3.9.0")
 
     // Annotation Processors
     annotationProcessor 'org.spongepowered:mixin:0.8:processor'

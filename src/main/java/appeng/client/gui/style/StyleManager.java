@@ -2,7 +2,6 @@ package appeng.client.gui.style;
 
 import appeng.core.AppEng;
 import com.google.common.base.Preconditions;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
@@ -78,15 +77,22 @@ public final class StyleManager {
         return style;
     }
 
-    public static void initialize(Minecraft minecraft) {
-        ((IReloadableResourceManager) minecraft.getResourceManager()).addReloadListener(new ReloadListener());
+    public static void initialize(IResourceManager resourceManager) {
+        if (resourceManager instanceof IReloadableResourceManager) {
+            ((IReloadableResourceManager) resourceManager).addReloadListener(new ReloadListener());
+        }
+        setResourceManager(resourceManager);
+    }
+
+    private static void setResourceManager(IResourceManager resourceManager) {
+        StyleManager.resourceManager = resourceManager;
+        StyleManager.styleCache.clear();
     }
 
     private static class ReloadListener implements ISelectiveResourceReloadListener {
         @Override
         public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-            StyleManager.resourceManager = resourceManager;
-            StyleManager.styleCache.clear();
+            setResourceManager(resourceManager);
         }
     }
 

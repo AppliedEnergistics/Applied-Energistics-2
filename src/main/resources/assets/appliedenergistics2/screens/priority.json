@@ -1,0 +1,6 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json"
+  ]
+}

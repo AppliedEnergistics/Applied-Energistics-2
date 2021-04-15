@@ -42,10 +42,6 @@ public class MEPortableCellContainer extends ItemTerminalContainer {
     private int ticks = 0;
     private double powerMultiplier = 0.5;
 
-    public MEPortableCellContainer(int id, final PlayerInventory ip, final IPortableCell monitorable) {
-        this(TYPE, id, ip, monitorable);
-    }
-
     protected MEPortableCellContainer(ContainerType<? extends MEPortableCellContainer> type, int id,
                                       final PlayerInventory ip, final IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);

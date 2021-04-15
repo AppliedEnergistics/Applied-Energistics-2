@@ -20,6 +20,8 @@ package appeng.fluids.container;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.implementations.ContainerTypeBuilder;
+import appeng.fluids.parts.FluidExportBusPart;
+import appeng.fluids.parts.FluidImportBusPart;
 import appeng.fluids.parts.SharedFluidBusPart;
 import appeng.fluids.util.IAEFluidTank;
 import net.minecraft.entity.player.PlayerInventory;
@@ -32,16 +34,21 @@ import net.minecraft.inventory.container.ContainerType;
  */
 public class FluidIOContainer extends FluidConfigurableContainer {
 
-    public static final ContainerType<FluidIOContainer> TYPE = ContainerTypeBuilder
-            .create(FluidIOContainer::new, SharedFluidBusPart.class)
+    public static final ContainerType<FluidIOContainer> EXPORT_TYPE = ContainerTypeBuilder
+            .create(FluidIOContainer::new, FluidExportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
-            .build("fluid_io");
+            .build("fluid_import_bus");
+
+    public static final ContainerType<FluidIOContainer> IMPORT_TYPE = ContainerTypeBuilder
+            .create(FluidIOContainer::new, FluidImportBusPart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("fluid_export_bus");
 
     private final SharedFluidBusPart bus;
 
-    public FluidIOContainer(int id, PlayerInventory ip, SharedFluidBusPart te) {
-        super(TYPE, id, ip, te);
-        this.bus = te;
+    public FluidIOContainer(ContainerType<?> containerType, int id, PlayerInventory ip, SharedFluidBusPart bus) {
+        super(containerType, id, ip, bus);
+        this.bus = bus;
     }
 
     @Override
