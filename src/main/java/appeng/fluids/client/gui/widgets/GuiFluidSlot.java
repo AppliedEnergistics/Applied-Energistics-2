@@ -4,6 +4,7 @@ package appeng.fluids.client.gui.widgets;
 
 import java.util.Collections;
 
+import appeng.container.slot.IJEITargetSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -23,7 +24,7 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidTank;
 
 
-public class GuiFluidSlot extends GuiCustomSlot
+public class GuiFluidSlot extends GuiCustomSlot implements IJEITargetSlot
 {
 	private final IAEFluidTank fluids;
 	private final int slot;

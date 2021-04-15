@@ -303,7 +303,7 @@ public class PacketJEIRecipe extends AppEngPacket
 		{
 			for( ItemStack option : this.recipe[slot] )
 			{
-				if( is.isItemEqual( option ) )
+				if( ItemStack.areItemStacksEqual( is, option ) )
 				{
 					return is;
 				}

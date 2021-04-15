@@ -24,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class SlotFake extends AppEngSlot
+public class SlotFake extends AppEngSlot implements IJEITargetSlot
 {
 
 	public SlotFake( final IItemHandler inv, final int idx, final int x, final int y )

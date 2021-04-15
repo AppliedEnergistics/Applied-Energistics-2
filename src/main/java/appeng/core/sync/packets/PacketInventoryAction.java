@@ -21,9 +21,17 @@ package appeng.core.sync.packets;
 
 import java.io.IOException;
 
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.gui.implementations.GuiUpgradeable;
+import appeng.client.gui.widgets.GuiCustomSlot;
+import appeng.container.slot.IJEITargetSlot;
+import appeng.container.slot.SlotFake;
+import appeng.fluids.client.gui.widgets.GuiFluidSlot;
+import appeng.fluids.util.AEFluidStack;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -40,6 +48,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 
 public class PacketInventoryAction extends AppEngPacket
@@ -57,6 +66,7 @@ public class PacketInventoryAction extends AppEngPacket
 		this.slot = stream.readInt();
 		this.id = stream.readLong();
 		final boolean hasItem = stream.readBoolean();
+
 		if( hasItem )
 		{
 			this.slotItem = AEItemStack.fromPacket( stream );
@@ -70,7 +80,6 @@ public class PacketInventoryAction extends AppEngPacket
 	// api
 	public PacketInventoryAction( final InventoryAction action, final int slot, final IAEItemStack slotItem ) throws IOException
 	{
-
 		if( Platform.isClient() )
 		{
 			throw new IllegalStateException( "invalid packet, client cannot post inv actions with stacks." );
@@ -86,6 +95,36 @@ public class PacketInventoryAction extends AppEngPacket
 		data.writeInt( this.getPacketID() );
 		data.writeInt( action.ordinal() );
 		data.writeInt( slot );
+		data.writeLong( this.id );
+
+		if( slotItem == null )
+		{
+			data.writeBoolean( false );
+		}
+		else
+		{
+			data.writeBoolean( true );
+			slotItem.writeToPacket( data );
+		}
+
+		this.configureWrite( data );
+	}
+
+	public PacketInventoryAction(final InventoryAction action, final IJEITargetSlot slot, final IAEItemStack slotItem ) throws IOException
+	{
+
+		this.action = action;
+		if (slot instanceof SlotFake)
+		this.slot = ((SlotFake) slot).slotNumber;
+		else this.slot = ((GuiFluidSlot) slot).getId();
+		this.id = 0;
+		this.slotItem = slotItem;
+
+		final ByteBuf data = Unpooled.buffer();
+
+		data.writeInt( this.getPacketID() );
+		data.writeInt( action.ordinal() );
+		data.writeInt( this.slot );
 		data.writeLong( this.id );
 
 		if( slotItem == null )
@@ -147,6 +186,46 @@ public class PacketInventoryAction extends AppEngPacket
 						}
 
 						cca.detectAndSendChanges();
+					}
+				}
+			}
+			else if( this.action == InventoryAction.PLACE_JEI_GHOST_ITEM )
+			{
+				if( sender.openContainer.inventorySlots.get( this.slot ) instanceof SlotFake )
+				{
+					if( this.slotItem != null ) {
+						sender.openContainer.inventorySlots.get( this.slot ).putStack( this.slotItem.asItemStackRepresentation() );
+						if (sender.openContainer.inventorySlots.get( this.slot ).getStack().isEmpty()){
+							IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
+							if( aefs != null )
+							{
+								FluidStack fluid = aefs.getFluidStack();
+								sender.openContainer.inventorySlots.get( this.slot ).putStack( AEFluidStack.fromFluidStack( fluid ).asItemStackRepresentation() );
+							}
+						}
+					}
+					else sender.openContainer.inventorySlots.get( this.slot ).putStack( ItemStack.EMPTY );
+				}
+				if( Minecraft.getMinecraft().currentScreen instanceof GuiUpgradeable )
+				{
+					GuiUpgradeable cs = ( (GuiUpgradeable) Minecraft.getMinecraft().currentScreen );
+					if( cs.getGuiSlots().size() > 0 )
+					{
+						GuiCustomSlot ct = cs.getGuiSlots().get( this.slot );
+						GuiFluidSlot gfs = (GuiFluidSlot) ct;
+						if( this.slotItem != null )
+						{
+							IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
+							if( aefs != null )
+							{
+								FluidStack fluid = aefs.getFluidStack();
+								gfs.setFluidStack( AEFluidStack.fromFluidStack( fluid ) );
+							}
+						}
+						else
+						{
+							gfs.setFluidStack( null );
+						}
 					}
 				}
 			}
