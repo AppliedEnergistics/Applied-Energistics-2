@@ -33,9 +33,11 @@ import appeng.core.AppEng;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
+import com.google.common.base.Preconditions;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
@@ -73,13 +75,24 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
     @Nullable
     private InitialDataDeserializer<C, I> initialDataDeserializer;
 
-    private ContainerTypeBuilder(ContainerFactory<C, I> factory, Class<I> hostInterface) {
-        this.factory = factory;
+    private ContainerType<C> containerType;
+
+    private ContainerTypeBuilder(Class<I> hostInterface, TypedContainerFactory<C, I> typedFactory) {
         this.hostInterface = hostInterface;
+        this.factory = (windowId, playerInv, accessObj) -> typedFactory.create(containerType, windowId, playerInv, accessObj);
+    }
+
+    private ContainerTypeBuilder(Class<I> hostInterface, ContainerFactory<C, I> factory) {
+        this.hostInterface = hostInterface;
+        this.factory = factory;
     }
 
     public static <C extends AEBaseContainer, I> ContainerTypeBuilder<C, I> create(ContainerFactory<C, I> factory, Class<I> hostInterface) {
-        return new ContainerTypeBuilder<>(factory, hostInterface);
+        return new ContainerTypeBuilder<>(hostInterface, factory);
+    }
+
+    public static <C extends AEBaseContainer, I> ContainerTypeBuilder<C, I> create(TypedContainerFactory<C, I> factory, Class<I> hostInterface) {
+        return new ContainerTypeBuilder<>(hostInterface, factory);
     }
 
     /**
@@ -239,15 +252,22 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
      * Creates a container type that uses this helper as a factory and network deserializer.
      */
     public ContainerType<C> build(String id) {
-        ContainerType<C> type = IForgeContainerType.create(this::fromNetwork);
-        type.setRegistryName(AppEng.MOD_ID, id);
-        ContainerOpener.addOpener(type, this::open);
-        return type;
+        Preconditions.checkState(containerType == null, "build was already called");
+
+        containerType = IForgeContainerType.create(this::fromNetwork);
+        containerType.setRegistryName(AppEng.MOD_ID, id);
+        ContainerOpener.addOpener(containerType, this::open);
+        return containerType;
     }
 
     @FunctionalInterface
     public interface ContainerFactory<C, I> {
         C create(int windowId, PlayerInventory playerInv, I accessObj);
+    }
+
+    @FunctionalInterface
+    public interface TypedContainerFactory<C extends Container, I> {
+        C create(ContainerType<C> type, int windowId, PlayerInventory playerInv, I accessObj);
     }
 
     /**

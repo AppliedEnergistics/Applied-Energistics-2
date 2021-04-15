@@ -22,7 +22,6 @@ import appeng.client.gui.implementations.SpatialIOPortScreen;
 import appeng.client.gui.implementations.StorageBusScreen;
 import appeng.client.gui.implementations.VibrationChamberScreen;
 import appeng.client.gui.implementations.WirelessScreen;
-import appeng.client.gui.me.common.TerminalStyle;
 import appeng.client.gui.me.common.TerminalStyles;
 import appeng.client.gui.me.crafting.CraftAmountScreen;
 import appeng.client.gui.me.crafting.CraftConfirmScreen;
@@ -83,14 +82,21 @@ import appeng.fluids.container.FluidIOContainer;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;
+import com.google.common.annotations.VisibleForTesting;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
+
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 /**
  * The server sends the client a container identifier, which the client then maps onto a screen using
  * {@link net.minecraft.client.gui.ScreenManager}. This class registers our screens.
  */
 public class ScreenRegistration {
+
+    @VisibleForTesting
+    static final Map<ContainerType<?>, String> CONTAINER_STYLES = new IdentityHashMap<>();
 
     public static void register() {
         register(GrinderContainer.TYPE, GrinderScreen::new, "/screens/grinder.json");
@@ -126,8 +132,9 @@ public class ScreenRegistration {
         register(CondenserContainer.TYPE, CondenserScreen::new, "/screens/condenser.json");
         register(InterfaceContainer.TYPE, InterfaceScreen::new, "/screens/interface.json");
         register(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new, "/screens/fluid_interface.json");
-        register(IOBusContainer.TYPE, IOBusScreen::new, "/screens/iobus.json");
-        register(FluidIOContainer.TYPE, FluidIOScreen::new, "/screens/fluid_io.json");
+        register(IOBusContainer.TYPE, IOBusScreen::new, "/screens/io_bus.json");
+        register(FluidIOContainer.IMPORT_TYPE, FluidIOScreen::new, "/screens/fluid_import_bus.json");
+        register(FluidIOContainer.EXPORT_TYPE, FluidIOScreen::new, "/screens/fluid_export_bus.json");
         register(IOPortContainer.TYPE, IOPortScreen::new, "/screens/io_port.json");
         register(StorageBusContainer.TYPE, StorageBusScreen::new, "/screens/storage_bus.json");
         register(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new, "/screens/fluid_storage_bus.json");
@@ -166,6 +173,7 @@ public class ScreenRegistration {
      * Registers a screen for a given container and ensures the given style is applied after opening the screen.
      */
     private static <M extends AEBaseContainer, U extends AEBaseScreen<M>> void register(ContainerType<M> type, ScreenManager.IScreenFactory<M, U> factory, String stylePath) {
+        CONTAINER_STYLES.put(type, stylePath);
         ScreenManager.<M, U>registerFactory(type, (container, playerInv, title) -> {
             U screen = factory.create(container, playerInv, title);
             screen.loadStyle(stylePath);

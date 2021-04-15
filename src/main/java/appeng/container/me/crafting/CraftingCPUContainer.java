@@ -64,10 +64,6 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
 
-    private CraftingCPUContainer(int id, final PlayerInventory ip, final CraftingTileEntity te) {
-        this(TYPE, id, ip, te);
-    }
-
     public CraftingCPUContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final Object te) {
         super(containerType, id, ip, te);
         final IActionHost host = (IActionHost) (te instanceof IActionHost ? te : null);

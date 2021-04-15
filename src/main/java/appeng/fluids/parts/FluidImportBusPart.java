@@ -20,6 +20,8 @@ package appeng.fluids.parts;
 
 import javax.annotation.Nonnull;
 
+import appeng.fluids.container.FluidIOContainer;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -76,6 +78,12 @@ public class FluidImportBusPart extends SharedFluidBusPart {
         this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
         this.getConfigManager().registerSetting(Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
         this.source = new MachineSource(this);
+    }
+
+
+    @Override
+    protected ContainerType<?> getContainerType() {
+        return FluidIOContainer.IMPORT_TYPE;
     }
 
     @Override
