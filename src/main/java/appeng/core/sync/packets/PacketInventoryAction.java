@@ -26,6 +26,8 @@ import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiCustomSlot;
 import appeng.container.slot.IJEITargetSlot;
 import appeng.container.slot.SlotFake;
+import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import appeng.fluids.util.AEFluidStack;
 import io.netty.buffer.ByteBuf;
@@ -203,8 +205,20 @@ public class PacketInventoryAction extends AppEngPacket
 								sender.openContainer.inventorySlots.get( this.slot ).putStack( AEFluidStack.fromFluidStack( fluid ).asItemStackRepresentation() );
 							}
 						}
+
 					}
 					else sender.openContainer.inventorySlots.get( this.slot ).putStack( ItemStack.EMPTY );
+					try
+					{
+						NetworkHandler.instance()
+								.sendTo(
+										new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack( ItemStack.EMPTY ) ),
+										sender );
+					}
+					catch( final IOException e )
+					{
+						AELog.debug( e );
+					}
 				}
 				if( Minecraft.getMinecraft().currentScreen instanceof GuiUpgradeable )
 				{

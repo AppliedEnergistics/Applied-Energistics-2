@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import appeng.container.slot.*;
+import appeng.util.item.AEItemStack;
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
@@ -72,17 +74,7 @@ import appeng.client.me.SlotDisconnected;
 import appeng.client.me.SlotME;
 import appeng.client.render.StackSizeRenderer;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngCraftingSlot;
-import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.IOptionalSlot;
-import appeng.container.slot.SlotCraftingTerm;
-import appeng.container.slot.SlotDisabled;
-import appeng.container.slot.SlotFake;
-import appeng.container.slot.SlotInaccessible;
-import appeng.container.slot.SlotOutput;
-import appeng.container.slot.SlotPatternTerm;
-import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
@@ -110,6 +102,21 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
 	private ItemStack dbl_whichItem = ItemStack.EMPTY;
 	private Slot bl_clicked;
+	private Stopwatch lastClicked = Stopwatch.createStarted();
+	private boolean isJeiGhostItem;
+	private List<IGhostIngredientHandler.Target<Object>> hoveredIngredientTargets = new ArrayList<>();
+	private boolean isDraggingJeiGhostItem;
+	private Object bookmarkedIngredient;
+
+	public boolean hasIngredientTargets()
+	{
+		return (hoveredIngredientTargets.size() > 0);
+	}
+
+	public Object getBookmarkedIngredient()
+	{
+		return bookmarkedIngredient;
+	}
 
 	public List<GuiCustomSlot> getGuiSlots()
 	{
@@ -198,35 +205,51 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 				this.drawTooltip( (ITooltip) c, mouseX, mouseY );
 			}
 		}
-		/*
-		if ( isPointInRegion( -guiLeft,-guiTop, mc.displayWidth, mc.displayHeight, mouseX,mouseY)){
-			Object o = runtime.getBookmarkOverlay().getIngredientUnderMouse();
-			if (o != null) {
-				List<IGhostIngredientHandler.Target<Object>> hoveredIngredientTargets = aeGuiHandler.getTargets( this, o, false );
-				if (hoveredIngredientTargets.size() > 0 )
+		if( !isJeiGhostItem )
+		{
+			bookmarkedIngredient = runtime.getBookmarkOverlay().getIngredientUnderMouse();
+		}
+		if( isJeiGhostItem )
+		{
+			if( hoveredIngredientTargets.size() > 0 )
+			{
+				drawTargets( mouseX, mouseY );
+			}
+		}
+		else if( bookmarkedIngredient != null )
+		{
+			hoveredIngredientTargets = aeGuiHandler.getTargets( this, bookmarkedIngredient, false );
+			if( hoveredIngredientTargets.size() > 0 )
+			{
+				drawTargets( mouseX, mouseY );
+				if( isShiftKeyDown() && Mouse.isButtonDown( 0 ) && this.lastClicked.elapsed( TimeUnit.MILLISECONDS ) > 200 )
 				{
-					GlStateManager.disableLighting();
-					GlStateManager.disableDepth();
-					for( IGhostIngredientHandler.Target target : hoveredIngredientTargets )
-					{
-						Rectangle area = target.getArea();
-						Color color;
-						if( area.contains( mouseX, mouseY ) )
-						{
-							color = new Color( 76, 201, 25, 128 );
-						}
-						else
-						{
-							color = new Color( 19, 201, 10, 64 );
-						}
-						Gui.drawRect( area.x, area.y, area.x + area.width, area.y + area.height, color.getRGB() );
-					}
-					GlStateManager.color( 1f, 1f, 1f, 1f );
-					aeGuiHandler.getTargets( this, o, true );
+					this.lastClicked = Stopwatch.createStarted();
+					aeGuiHandler.getTargets( this, bookmarkedIngredient, true );
 				}
 			}
 		}
-		*/
+	}
+
+	private void drawTargets(int mouseX, int mouseY) {
+		GlStateManager.disableLighting();
+		GlStateManager.disableDepth();
+		for( IGhostIngredientHandler.Target target : hoveredIngredientTargets )
+		{
+			Rectangle area = target.getArea();
+			Color color;
+			if( area.contains( mouseX, mouseY ) )
+			{
+				color = new Color( 76, 201, 25, 128 );
+			}
+			else
+			{
+				color = new Color( 19, 201, 10, 64 );
+			}
+			Gui.drawRect( area.x, area.y, area.x + area.width, area.y + area.height, color.getRGB() );
+		}
+		GlStateManager.color( 1f, 1f, 1f, 1f );
+		GlStateManager.enableDepth();
 	}
 
 	protected void drawGuiSlot( GuiCustomSlot slot, int mouseX, int mouseY, float partialTicks )
@@ -462,24 +485,43 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 		}
 	}
 
+	public boolean isJeiGhostItem()
+	{
+		return isJeiGhostItem;
+	}
+
 	// TODO 1.9.4 aftermath - Whole ClickType thing, to be checked.
 	@Override
 	protected void handleMouseClick( final Slot slot, final int slotIdx, final int mouseButton, final ClickType clickType )
 	{
 		final EntityPlayer player = Minecraft.getMinecraft().player;
 
-		if( slot instanceof SlotFake )
+		if( isJeiGhostItem && slot instanceof IJEITargetSlot)
 		{
-			final InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+			try
+			{
+				PacketInventoryAction p = new PacketInventoryAction( InventoryAction.PLACE_JEI_GHOST_ITEM, (IJEITargetSlot) slot, AEItemStack.fromItemStack( player.inventory.getItemStack() ) );
+				NetworkHandler.instance().sendToServer( p );
+			}
+			catch( IOException e )
+			{
+				e.printStackTrace();
+			}
+			isJeiGhostItem = false;
+		}
+
+		else if( slot instanceof SlotFake )
+		{
+			final InventoryAction action;
+			action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 
 			if( this.drag_click.size() > 1 )
 			{
 				return;
 			}
 
-			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
+			PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
 			NetworkHandler.instance().sendToServer( p );
-
 			return;
 		}
 
@@ -599,14 +641,13 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 			InventoryAction action = null;
 			IAEItemStack stack = null;
 
-			switch( clickType )
+			switch ( clickType )
 			{
 				case PICKUP: // pickup / set-down.
 					action = ( mouseButton == 1 ) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 					stack = ( (SlotME) slot ).getAEStack();
 
-					if( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0 && player.inventory.getItemStack()
-							.isEmpty() )
+					if( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0 && player.inventory.getItemStack().isEmpty() )
 					{
 						action = InventoryAction.AUTO_CRAFT;
 					}
@@ -673,9 +714,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 				final List<Slot> slots = this.getInventorySlots();
 				for( final Slot inventorySlot : slots )
 				{
-					if( inventorySlot != null && inventorySlot.canTakeStack(
-							this.mc.player ) && inventorySlot.getHasStack() && inventorySlot.isSameInventory( slot ) && Container.canAddItemToSlot(
-									inventorySlot, this.dbl_whichItem, true ) )
+					if( inventorySlot != null && inventorySlot.canTakeStack( this.mc.player ) && inventorySlot.getHasStack() && inventorySlot.isSameInventory( slot ) && Container.canAddItemToSlot( inventorySlot, this.dbl_whichItem, true ) )
 					{
 						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, 0, ClickType.QUICK_MOVE );
 					}
@@ -684,6 +723,16 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 			}
 
 			this.disableShiftClick = false;
+		}
+
+		if (clickType == ClickType.PICKUP && isJeiGhostItem && !isDraggingJeiGhostItem) {
+			this.isDraggingJeiGhostItem = true;
+			return;
+		} else if ( clickType == ClickType.PICKUP && isJeiGhostItem )
+		{
+			this.isDraggingJeiGhostItem = false;
+			player.inventory.setItemStack( ItemStack.EMPTY );
+			this.isJeiGhostItem = false;
 		}
 
 		super.handleMouseClick( slot, slotIdx, mouseButton, clickType );
@@ -1112,5 +1161,10 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 	public boolean MT_disableRMBDraggingFunctionality()
 	{
 		return false;
+	}
+
+	public void setJeiGhostItem( boolean b )
+	{
+		this.isJeiGhostItem = b;
 	}
 }

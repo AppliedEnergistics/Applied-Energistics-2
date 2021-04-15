@@ -9,6 +9,7 @@ import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
 import mezz.jei.api.gui.IGhostIngredientHandler;
 import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.input.Mouse;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -101,7 +102,7 @@ public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngre
             List<Target<?>> phantomTargets = g.getPhantomTargets( ingredient );
             targets.addAll( (List<Target<I>>) (Object) phantomTargets );
         }
-        if( doStart && GuiScreen.isShiftKeyDown()  )
+        if( doStart && GuiScreen.isShiftKeyDown() && Mouse.isButtonDown( 0 ) )
         {
             if( gui instanceof GuiUpgradeable || gui instanceof GuiPatternTerm )
             {

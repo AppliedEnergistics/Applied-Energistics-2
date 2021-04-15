@@ -25,24 +25,28 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.gui.AEBaseGui;
+import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.HighlighterHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -75,6 +79,7 @@ import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
+import org.lwjgl.input.Mouse;
 
 
 public class ClientHelper extends ServerHelper
@@ -313,6 +318,42 @@ public class ClientHelper extends ServerHelper
 	{
 		final LightningFX fx = new LightningArcFX( world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f, 0.0f );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+	}
+
+	@SubscribeEvent
+	public void MouseClickEvent( final GuiScreenEvent.MouseInputEvent.Pre me )
+	{
+		final Minecraft mc = Minecraft.getMinecraft();
+		final EntityPlayer player = mc.player;
+		if( mc.currentScreen instanceof AEBaseGui )
+		{
+			AEBaseGui gui = ( (AEBaseGui) mc.currentScreen );
+
+			ItemStack dragItem = ItemStack.EMPTY;
+			Object ingredient = gui.getBookmarkedIngredient();
+
+			if( ingredient != null )
+			{
+				if( ingredient instanceof ItemStack )
+				{
+					dragItem = ( (ItemStack) ingredient );
+				}
+				else if( ingredient instanceof FluidStack )
+				{
+					dragItem = FluidUtil.getFilledBucket( ( (FluidStack) ingredient ) );
+				}
+				if( GuiScreen.isShiftKeyDown() )
+				{
+					me.setCanceled( true );
+				}
+				else if( Mouse.isButtonDown( 0 ) )
+				{
+					me.setCanceled( true );
+					player.inventory.setItemStack( dragItem.copy() );
+					gui.setJeiGhostItem( true );
+				}
+			}
+		}
 	}
 
 	@SubscribeEvent
