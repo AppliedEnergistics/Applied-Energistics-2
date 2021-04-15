@@ -8,13 +8,9 @@ import appeng.container.slot.SlotFake;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
 import mezz.jei.api.gui.IGhostIngredientHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.item.ItemStack;
-import org.lwjgl.input.Mouse;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +36,7 @@ public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngre
     public Object getIngredientUnderMouse( AEBaseGui guiContainer, int mouseX, int mouseY )
     {
         List<IAEItemStack> visual;
-        int guiSlotIdx = 0;
+        int guiSlotIdx;
         Object result = null;
         if( guiContainer instanceof GuiCraftConfirm )
         {
@@ -105,48 +101,27 @@ public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngre
             List<Target<?>> phantomTargets = g.getPhantomTargets( ingredient );
             targets.addAll( (List<Target<I>>) (Object) phantomTargets );
         }
-        if( doStart )
+        if( doStart && GuiScreen.isShiftKeyDown()  )
         {
-            if( GuiScreen.isShiftKeyDown() && Mouse.isButtonDown( 0 ) )
+            if( gui instanceof GuiUpgradeable || gui instanceof GuiPatternTerm )
             {
-                if( gui instanceof GuiUpgradeable || gui instanceof GuiPatternTerm )
+                IJEIGhostIngredients ghostGui = ( (IJEIGhostIngredients) gui );
+                for( Target<I> target : targets )
                 {
-                    IJEIGhostIngredients ghostGui = ( (IJEIGhostIngredients) gui );
-                    for( Target<I> target : targets )
+                    if( ghostGui.getFakeSlotTargetMap().get( target ) instanceof SlotFake )
                     {
-                        if( ghostGui.getFakeSlotTargetMap().get( target ) instanceof SlotFake )
+                        if( ( (SlotFake) ghostGui.getFakeSlotTargetMap().get( target ) ).getStack().isEmpty() )
                         {
-                            if( ( (SlotFake) ghostGui.getFakeSlotTargetMap().get( target ) ).getStack().isEmpty() )
-                            {
-                                Minecraft.getMinecraft().player.inventory.setItemStack( ItemStack.EMPTY );
-                                target.accept( ingredient );
-                                try
-                                {
-                                    gui.handleMouseInput();
-                                }
-                                catch( IOException e )
-                                {
-                                    e.printStackTrace();
-                                }
-                                break;
-                            }
+                            target.accept( ingredient );
+                            break;
                         }
-                        else if( ghostGui.getFakeSlotTargetMap().get( target ) instanceof GuiFluidSlot )
+                    }
+                    else if( ghostGui.getFakeSlotTargetMap().get( target ) instanceof GuiFluidSlot )
+                    {
+                        if( ( (GuiFluidSlot) ghostGui.getFakeSlotTargetMap().get( target ) ).getFluidStack() == null )
                         {
-                            if( ( (GuiFluidSlot) ghostGui.getFakeSlotTargetMap().get( target ) ).getFluidStack() == null )
-                            {
-                                Minecraft.getMinecraft().player.inventory.setItemStack( ItemStack.EMPTY );
-                                target.accept( ingredient );
-                                try
-                                {
-                                    gui.handleMouseInput();
-                                }
-                                catch( IOException e )
-                                {
-                                    e.printStackTrace();
-                                }
-                                break;
-                            }
+                            target.accept( ingredient );
+                            break;
                         }
                     }
                 }

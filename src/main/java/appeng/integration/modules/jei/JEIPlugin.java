@@ -54,9 +54,10 @@ import appeng.items.parts.ItemFacade;
 
 
 @mezz.jei.api.JEIPlugin
-public class JEIPlugin implements IModPlugin, IBookmarkOverlay
+public class JEIPlugin implements IModPlugin
 {
 	public static IJeiRuntime runtime;
+	public static AEGuiHandler aeGuiHandler;
 
 	@Override
 	public void registerItemSubtypes( ISubtypeRegistry subtypeRegistry )
@@ -96,7 +97,7 @@ public class JEIPlugin implements IModPlugin, IBookmarkOverlay
 				.addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerPatternTerm.class ),
 						Constants.UNIVERSAL_RECIPE_TRANSFER_UID );
 
-		AEGuiHandler aeGuiHandler = new AEGuiHandler();
+		aeGuiHandler = new AEGuiHandler();
 		registry.addAdvancedGuiHandlers(aeGuiHandler);
 		registry.addGhostIngredientHandler( aeGuiHandler.getGuiContainerClass(), aeGuiHandler);
 	}
@@ -222,12 +223,5 @@ public class JEIPlugin implements IModPlugin, IBookmarkOverlay
 		JEIModule jeiModule = (JEIModule) Integrations.jei();
 		jeiModule.setJei( new JeiRuntimeAdapter( jeiRuntime ) );
 		runtime = jeiRuntime;
-	}
-
-	@Nullable
-	@Override
-	public Object getIngredientUnderMouse()
-	{
-		return runtime.getBookmarkOverlay().getIngredientUnderMouse();
 	}
 }

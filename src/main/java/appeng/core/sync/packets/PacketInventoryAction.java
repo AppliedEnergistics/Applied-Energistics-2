@@ -112,10 +112,6 @@ public class PacketInventoryAction extends AppEngPacket
 
 	public PacketInventoryAction(final InventoryAction action, final IJEITargetSlot slot, final IAEItemStack slotItem ) throws IOException
 	{
-		if( action != InventoryAction.PLACE_JEI_GHOST_ITEM )
-		{
-			throw new IllegalStateException( "invalid packet, client cannot post inv actions with stacks." );
-		}
 
 		this.action = action;
 		if (slot instanceof SlotFake)

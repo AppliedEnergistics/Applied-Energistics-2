@@ -19,6 +19,7 @@
 package appeng.client.gui;
 
 
+import java.awt.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -31,15 +32,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import appeng.tile.inventory.AppEngInternalInventory;
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
-import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.gui.IGhostIngredientHandler;
+import net.minecraft.client.gui.Gui;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -94,6 +93,7 @@ import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 import yalter.mousetweaks.api.IMTModGuiContainer2;
 
+import static appeng.integration.modules.jei.JEIPlugin.aeGuiHandler;
 import static appeng.integration.modules.jei.JEIPlugin.runtime;
 
 
@@ -110,7 +110,6 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
 	private ItemStack dbl_whichItem = ItemStack.EMPTY;
 	private Slot bl_clicked;
-	private final AEGuiHandler aeGuiHandler = new AEGuiHandler();
 
 	public List<GuiCustomSlot> getGuiSlots()
 	{
@@ -199,14 +198,35 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 				this.drawTooltip( (ITooltip) c, mouseX, mouseY );
 			}
 		}
-
+		/*
 		if ( isPointInRegion( -guiLeft,-guiTop, mc.displayWidth, mc.displayHeight, mouseX,mouseY)){
 			Object o = runtime.getBookmarkOverlay().getIngredientUnderMouse();
 			if (o != null) {
-				aeGuiHandler.getTargets( this,o,true );
+				List<IGhostIngredientHandler.Target<Object>> hoveredIngredientTargets = aeGuiHandler.getTargets( this, o, false );
+				if (hoveredIngredientTargets.size() > 0 )
+				{
+					GlStateManager.disableLighting();
+					GlStateManager.disableDepth();
+					for( IGhostIngredientHandler.Target target : hoveredIngredientTargets )
+					{
+						Rectangle area = target.getArea();
+						Color color;
+						if( area.contains( mouseX, mouseY ) )
+						{
+							color = new Color( 76, 201, 25, 128 );
+						}
+						else
+						{
+							color = new Color( 19, 201, 10, 64 );
+						}
+						Gui.drawRect( area.x, area.y, area.x + area.width, area.y + area.height, color.getRGB() );
+					}
+					GlStateManager.color( 1f, 1f, 1f, 1f );
+					aeGuiHandler.getTargets( this, o, true );
+				}
 			}
 		}
-
+		*/
 	}
 
 	protected void drawGuiSlot( GuiCustomSlot slot, int mouseX, int mouseY, float partialTicks )

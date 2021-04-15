@@ -246,7 +246,7 @@ public class GuiUpgradeable extends AEBaseGui implements IJEIGhostIngredients
 		{
 			for( Slot slot : this.inventorySlots.inventorySlots )
 			{
-				if( slot instanceof SlotFake && ( !itemStack.isEmpty() || this instanceof GuiCellWorkbench && fluidStack != null && !( (AppEngSlot) slot ).isItemValid( itemStack ) ) )
+				if( slot instanceof SlotFake && ( !itemStack.isEmpty() || this instanceof GuiCellWorkbench && fluidStack != null ) )
 				{
 					slots.add( (IJEITargetSlot) slot );
 				}
