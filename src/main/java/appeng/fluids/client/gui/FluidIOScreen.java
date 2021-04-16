@@ -18,14 +18,15 @@
 
 package appeng.fluids.client.gui;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.implementations.IOBusScreen;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidIOContainer;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
 
 /**
  * @author BrockWS

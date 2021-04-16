@@ -18,15 +18,16 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.tileentity.TileEntity;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPart;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.IPriorityHost;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.tileentity.TileEntity;
 
 /**
  * @see appeng.client.gui.implementations.PriorityScreen

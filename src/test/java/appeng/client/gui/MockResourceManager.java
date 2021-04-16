@@ -1,20 +1,23 @@
 package appeng.client.gui;
 
-import appeng.core.AppEng;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.data.IMetadataSectionSerializer;
-import net.minecraft.util.ResourceLocation;
-import org.junit.jupiter.api.Assertions;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import javax.annotation.Nullable;
+
+import org.junit.jupiter.api.Assertions;
+
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.data.IMetadataSectionSerializer;
+import net.minecraft.util.ResourceLocation;
+
+import appeng.core.AppEng;
 
 /**
  * Fake resource manager that more or less loads AE2 resource pack resources.
@@ -29,7 +32,8 @@ public final class MockResourceManager {
         when(resourceManager.getResource(any())).thenAnswer(invoc -> {
             ResourceLocation loc = invoc.getArgument(0);
             Assertions.assertEquals(AppEng.MOD_ID, loc.getNamespace());
-            InputStream in = MockResourceManager.class.getResourceAsStream("/assets/appliedenergistics2/" + loc.getPath());
+            InputStream in = MockResourceManager.class
+                    .getResourceAsStream("/assets/appliedenergistics2/" + loc.getPath());
             if (in == null) {
                 throw new FileNotFoundException("Missing resource: " + loc.getPath());
             }

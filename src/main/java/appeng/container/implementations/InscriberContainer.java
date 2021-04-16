@@ -18,6 +18,12 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.definitions.IItemDefinition;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
@@ -27,11 +33,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.tile.misc.InscriberRecipes;
 import appeng.tile.misc.InscriberTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 /**
  * @see appeng.client.gui.implementations.InscriberScreen
@@ -60,8 +61,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
 
         IItemHandler inv = te.getInternalInventory();
 
-        RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0
-        );
+        RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0);
         top.setStackLimit(1);
         this.top = this.addSlot(top, SlotSemantic.INSCRIBER_PLATE_TOP);
         RestrictedInputSlot bottom = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv,

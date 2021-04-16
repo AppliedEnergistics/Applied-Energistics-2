@@ -5,16 +5,16 @@ import appeng.client.Point;
 public enum SlotGridLayout {
 
     /**
-     * This layout is used for the peculiar grid of slots used in {@link appeng.container.implementations.IOBusContainer}.
+     * This layout is used for the peculiar grid of slots used in
+     * {@link appeng.container.implementations.IOBusContainer}.
      */
     IO_BUS_CONFIG {
 
         /**
-         * Slots are laid out around the center slot 0.
-         * Slots 1-4 in the cardinal directions.
-         * Slots 5-8 in the diagonal directions.
+         * Slots are laid out around the center slot 0. Slots 1-4 in the cardinal directions. Slots 5-8 in the diagonal
+         * directions.
          */
-        private final Point[] OFFSETS = new Point[]{
+        private final Point[] OFFSETS = new Point[] {
                 new Point(0, 0),
                 new Point(-18, 0),
                 new Point(18, 0),

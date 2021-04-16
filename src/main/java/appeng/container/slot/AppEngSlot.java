@@ -18,9 +18,8 @@
 
 package appeng.container.slot;
 
-import appeng.container.AEBaseContainer;
-import appeng.core.AELog;
-import appeng.util.helpers.ItemHandlerUtil;
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
@@ -30,7 +29,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
+import appeng.container.AEBaseContainer;
+import appeng.core.AELog;
+import appeng.util.helpers.ItemHandlerUtil;
 
 public class AppEngSlot extends Slot {
     private static final IInventory EMPTY_INVENTORY = new Inventory(0);

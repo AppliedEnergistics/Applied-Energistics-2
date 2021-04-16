@@ -1,8 +1,6 @@
 {
   "$schema": "schema.json",
-  "includes": [
-    "io_bus.json"
-  ],
+  "includes": ["io_bus.json"],
   "text": [
     {
       "$comment": "Dialog title",

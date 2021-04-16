@@ -18,6 +18,13 @@
 
 package appeng.fluids.container;
 
+import java.util.Collections;
+import java.util.Map;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
@@ -26,12 +33,6 @@ import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * @see appeng.fluids.client.gui.FluidInterfaceScreen

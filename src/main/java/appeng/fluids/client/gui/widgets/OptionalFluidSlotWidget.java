@@ -18,12 +18,13 @@
 
 package appeng.fluids.client.gui.widgets;
 
+import net.minecraft.client.renderer.Rectangle2d;
+
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.Point;
 import appeng.container.slot.IOptionalSlot;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.client.renderer.Rectangle2d;
 
 public class OptionalFluidSlotWidget extends FluidSlotWidget implements IOptionalSlot {
     private final IOptionalSlotHost containerBus;
@@ -31,7 +32,7 @@ public class OptionalFluidSlotWidget extends FluidSlotWidget implements IOptiona
     private final Rectangle2d backgroundSrcRect;
 
     public OptionalFluidSlotWidget(IAEFluidTank fluids, final IOptionalSlotHost containerBus, int slot, int id,
-                                   int groupNum, int x, int y, int xoffs, int yoffs) {
+            int groupNum, int x, int y, int xoffs, int yoffs) {
         super(fluids, slot, id, x + xoffs * 18, y + yoffs * 18);
         this.containerBus = containerBus;
         this.groupNum = groupNum;
@@ -64,4 +65,3 @@ public class OptionalFluidSlotWidget extends FluidSlotWidget implements IOptiona
         return new Point(getTooltipAreaX() - 1, getTooltipAreaY() - 1);
     }
 }
-

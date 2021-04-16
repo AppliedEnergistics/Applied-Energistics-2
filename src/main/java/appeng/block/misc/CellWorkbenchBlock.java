@@ -20,7 +20,6 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import appeng.container.ContainerOpener;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -32,6 +31,7 @@ import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.tile.misc.CellWorkbenchTileEntity;
 import appeng.util.InteractionUtil;

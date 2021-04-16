@@ -18,15 +18,16 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.grindstone.GrinderTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraftforge.items.IItemHandler;
 
 /**
  * @see appeng.client.gui.implementations.GrinderScreen
@@ -43,7 +44,8 @@ public class GrinderContainer extends AEBaseContainer {
         IItemHandler inv = grinder.getInternalInventory();
 
         for (int i = 0; i < 3; i++) {
-            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ORE, inv, i), SlotSemantic.MACHINE_INPUT);
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ORE, inv, i),
+                    SlotSemantic.MACHINE_INPUT);
         }
 
         this.addSlot(new InaccessibleSlot(inv, 6), SlotSemantic.MACHINE_PROCESSING);

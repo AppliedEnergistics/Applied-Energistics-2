@@ -1,8 +1,8 @@
 package appeng.client.gui.style;
 
-import appeng.client.gui.layout.SlotGridLayout;
-
 import javax.annotation.Nullable;
+
+import appeng.client.gui.layout.SlotGridLayout;
 
 /**
  * Describes positioning for a slot.

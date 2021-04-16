@@ -1,6 +1,4 @@
 {
   "$schema": "../schema.json",
-  "includes": [
-    "palette.json"
-  ]
+  "includes": ["palette.json"]
 }

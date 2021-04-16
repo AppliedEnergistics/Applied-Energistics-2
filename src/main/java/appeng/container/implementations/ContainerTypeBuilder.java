@@ -18,22 +18,12 @@
 
 package appeng.container.implementations;
 
-import appeng.api.config.SecurityPermissions;
-import appeng.api.features.IWirelessTermHandler;
-import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.core.AELog;
-import appeng.core.Api;
-import appeng.core.AppEng;
-import appeng.helpers.ICustomNameObject;
-import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.util.Platform;
+import java.util.function.Function;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -50,8 +40,21 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-import javax.annotation.Nullable;
-import java.util.function.Function;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.features.IWirelessTermHandler;
+import appeng.api.implementations.guiobjects.IGuiItem;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.core.AELog;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import appeng.helpers.ICustomNameObject;
+import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.util.Platform;
 
 /**
  * Builder that allows creation of container types which can be opened from multiple types of hosts.
@@ -79,7 +82,8 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
 
     private ContainerTypeBuilder(Class<I> hostInterface, TypedContainerFactory<C, I> typedFactory) {
         this.hostInterface = hostInterface;
-        this.factory = (windowId, playerInv, accessObj) -> typedFactory.create(containerType, windowId, playerInv, accessObj);
+        this.factory = (windowId, playerInv, accessObj) -> typedFactory.create(containerType, windowId, playerInv,
+                accessObj);
     }
 
     private ContainerTypeBuilder(Class<I> hostInterface, ContainerFactory<C, I> factory) {
@@ -87,11 +91,13 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
         this.factory = factory;
     }
 
-    public static <C extends AEBaseContainer, I> ContainerTypeBuilder<C, I> create(ContainerFactory<C, I> factory, Class<I> hostInterface) {
+    public static <C extends AEBaseContainer, I> ContainerTypeBuilder<C, I> create(ContainerFactory<C, I> factory,
+            Class<I> hostInterface) {
         return new ContainerTypeBuilder<>(hostInterface, factory);
     }
 
-    public static <C extends AEBaseContainer, I> ContainerTypeBuilder<C, I> create(TypedContainerFactory<C, I> factory, Class<I> hostInterface) {
+    public static <C extends AEBaseContainer, I> ContainerTypeBuilder<C, I> create(TypedContainerFactory<C, I> factory,
+            Class<I> hostInterface) {
         return new ContainerTypeBuilder<>(hostInterface, factory);
     }
 
@@ -113,13 +119,12 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
         return this;
     }
 
-
     /**
-     * Sets a serializer and deserializer for additional data that should be transmitted from server->client
-     * when the container is being first opened.
+     * Sets a serializer and deserializer for additional data that should be transmitted from server->client when the
+     * container is being first opened.
      */
     public ContainerTypeBuilder<C, I> withInitialData(InitialDataSerializer<I> initialDataSerializer,
-                                                      InitialDataDeserializer<C, I> initialDataDeserializer) {
+            InitialDataDeserializer<C, I> initialDataDeserializer) {
         this.initialDataSerializer = initialDataSerializer;
         this.initialDataDeserializer = initialDataDeserializer;
         return this;

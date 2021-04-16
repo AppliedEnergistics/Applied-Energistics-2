@@ -1,5 +1,12 @@
 package appeng.container.me.items;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+
 import appeng.api.config.Actionable;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -17,12 +24,6 @@ import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
@@ -38,14 +39,14 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
     }
 
     public ItemTerminalContainer(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost host,
-                                 boolean bindInventory) {
+            boolean bindInventory) {
         super(containerType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
     }
 
     @Override
     protected void handleNetworkInteraction(ServerPlayerEntity player, @Nullable IAEItemStack stack,
-                                            InventoryAction action) {
+            InventoryAction action) {
 
         // Handle interactions where the player wants to put something into the network
         if (stack == null) {
@@ -101,7 +102,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                     }
                 }
             }
-            break;
+                break;
             case ROLL_UP:
             case PICKUP_SINGLE:
                 int liftQty = 1;

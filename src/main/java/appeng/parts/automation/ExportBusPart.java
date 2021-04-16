@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-import appeng.container.implementations.IOBusContainer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -54,6 +53,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
+import appeng.container.implementations.IOBusContainer;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;

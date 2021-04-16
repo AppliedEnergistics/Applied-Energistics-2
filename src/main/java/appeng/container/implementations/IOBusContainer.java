@@ -1,13 +1,14 @@
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraftforge.items.IItemHandler;
 
 /**
  * Used for {@link appeng.parts.automation.ImportBusPart} and {@link appeng.parts.automation.ExportBusPart}

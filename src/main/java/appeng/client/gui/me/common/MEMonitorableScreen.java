@@ -25,7 +25,6 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import appeng.container.SlotSemantic;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -66,6 +65,7 @@ import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.UpgradesPanel;
+import appeng.container.SlotSemantic;
 import appeng.container.me.common.GridInventoryEntry;
 import appeng.container.me.common.MEMonitorableContainer;
 import appeng.container.me.crafting.CraftingStatusContainer;

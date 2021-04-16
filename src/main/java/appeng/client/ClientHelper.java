@@ -23,7 +23,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
-import appeng.client.gui.style.StyleManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -41,6 +40,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
+import appeng.client.gui.style.StyleManager;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;

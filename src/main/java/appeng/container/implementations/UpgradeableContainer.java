@@ -18,6 +18,15 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
@@ -38,14 +47,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.NetworkToolItem;
 import appeng.parts.automation.ExportBusPart;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 public abstract class UpgradeableContainer extends AEBaseContainer implements IOptionalSlotHost {
 
@@ -62,7 +63,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
     private NetworkToolViewer tbInventory;
 
     public UpgradeableContainer(ContainerType<?> containerType, int id, final PlayerInventory ip,
-                                final IUpgradeableHost te) {
+            final IUpgradeableHost te) {
         super(containerType, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
                 (IPart) (te instanceof IPart ? te : null));
         this.upgradeable = te;
@@ -126,8 +127,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
 
         for (int i = 0; i < availableUpgrades(); i++) {
             RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades,
-                    i
-            );
+                    i);
             slot.setNotDraggable();
             this.addSlot(slot, SlotSemantic.UPGRADE);
         }

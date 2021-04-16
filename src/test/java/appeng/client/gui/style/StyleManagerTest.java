@@ -1,11 +1,11 @@
 package appeng.client.gui.style;
 
-import appeng.client.gui.MockResourceManager;
-import appeng.container.SlotSemantic;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.IFutureReloadListener;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -13,11 +13,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.io.IOException;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.IFutureReloadListener;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import appeng.client.gui.MockResourceManager;
+import appeng.container.SlotSemantic;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 class StyleManagerTest {
@@ -48,7 +50,6 @@ class StyleManagerTest {
                 SlotSemantic.PLAYER_INVENTORY,
                 SlotSemantic.PLAYER_HOTBAR,
                 SlotSemantic.CONFIG,
-                SlotSemantic.STORAGE_CELL
-        );
+                SlotSemantic.STORAGE_CELL);
     }
 }

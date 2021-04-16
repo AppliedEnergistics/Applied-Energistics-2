@@ -20,7 +20,6 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
-import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -31,6 +30,7 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
+import appeng.container.SlotSemantic;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;

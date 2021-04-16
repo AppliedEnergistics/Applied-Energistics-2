@@ -20,7 +20,6 @@ package appeng.client.gui.implementations;
 
 import java.util.List;
 
-import appeng.container.SlotSemantic;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.Rectangle2d;
@@ -40,10 +39,9 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
+import appeng.container.SlotSemantic;
 import appeng.container.implementations.UpgradeableContainer;
-import appeng.core.localization.GuiText;
 import appeng.parts.automation.ExportBusPart;
-import appeng.parts.automation.ImportBusPart;
 
 public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
 

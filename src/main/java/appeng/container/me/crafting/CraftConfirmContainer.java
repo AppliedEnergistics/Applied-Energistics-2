@@ -18,6 +18,19 @@
 
 package appeng.container.me.crafting;
 
+import java.util.concurrent.Future;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -42,17 +55,6 @@ import appeng.me.helpers.PlayerSource;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.TerminalPart;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-import java.util.concurrent.Future;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
@@ -252,7 +254,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
 
     /**
      * @return The summary of the crafting plan. This is null as long as the plan has not yet finished computing, or it
-     * wasn't synced to the client yet.
+     *         wasn't synced to the client yet.
      */
     @Nullable
     public CraftingPlanSummary getPlan() {

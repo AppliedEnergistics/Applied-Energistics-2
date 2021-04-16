@@ -18,6 +18,22 @@
 
 package appeng.container.implementations;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.items.IItemHandler;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -44,19 +60,6 @@ import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.WrapperRangeItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.items.IItemHandler;
-
-import javax.annotation.Nullable;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * @see appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen
@@ -131,7 +134,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     }
 
     private <T extends IInterfaceHost & IGridHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
-                                                                            VisitorState state) {
+            VisitorState state) {
         for (final IGridNode gn : grid.getMachines(machineClass)) {
             if (gn.isActive()) {
                 final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();

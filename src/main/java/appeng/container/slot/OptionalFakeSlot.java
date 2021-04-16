@@ -20,10 +20,11 @@ package appeng.container.slot;
 
 import javax.annotation.Nonnull;
 
-import appeng.client.Point;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+
+import appeng.client.Point;
 
 public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
 

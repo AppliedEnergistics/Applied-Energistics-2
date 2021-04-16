@@ -18,15 +18,16 @@
 
 package appeng.container.me.crafting;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerTypeBuilder;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.text.ITextComponent;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingStatusScreen

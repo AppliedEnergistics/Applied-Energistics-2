@@ -18,13 +18,14 @@
 
 package appeng.container.me.items;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.Util;
+
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.Util;
 
 /**
  * @see appeng.client.gui.implementations.WirelessScreen

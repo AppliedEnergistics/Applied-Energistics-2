@@ -1,18 +1,20 @@
 package appeng.client.gui.style;
 
-import appeng.core.AppEng;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
+
 import com.google.common.base.Preconditions;
+
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Predicate;
+import appeng.core.AppEng;
 
 /**
  * Manages AE2 GUI styles found in resource packs.
@@ -91,7 +93,8 @@ public final class StyleManager {
 
     private static class ReloadListener implements ISelectiveResourceReloadListener {
         @Override
-        public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
+        public void onResourceManagerReload(IResourceManager resourceManager,
+                Predicate<IResourceType> resourcePredicate) {
             setResourceManager(resourceManager);
         }
     }

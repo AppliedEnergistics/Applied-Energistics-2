@@ -1,5 +1,13 @@
 package appeng.client.gui;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.inventory.container.ContainerType;
+
 import appeng.client.gui.implementations.CellWorkbenchScreen;
 import appeng.client.gui.implementations.ChestScreen;
 import appeng.client.gui.implementations.CondenserScreen;
@@ -82,12 +90,6 @@ import appeng.fluids.container.FluidIOContainer;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;
-import com.google.common.annotations.VisibleForTesting;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.inventory.container.ContainerType;
-
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 /**
  * The server sends the client a container identifier, which the client then maps onto a screen using
@@ -106,25 +108,22 @@ public class ScreenRegistration {
         register(WirelessContainer.TYPE, WirelessScreen::new, "/screens/wireless.json");
         register(
                 ItemTerminalContainer.TYPE,
-                TerminalStyles.ITEM_TERMINAL.<ItemTerminalContainer, ItemTerminalScreen<ItemTerminalContainer>>factory(ItemTerminalScreen::new),
-                "/screens/item_terminal.json"
-        );
+                TerminalStyles.ITEM_TERMINAL.<ItemTerminalContainer, ItemTerminalScreen<ItemTerminalContainer>>factory(
+                        ItemTerminalScreen::new),
+                "/screens/item_terminal.json");
         register(
                 MEPortableCellContainer.TYPE,
                 TerminalStyles.PORTABLE_CELL.factory(MEPortableCellScreen::new),
-                "/screens/portable_cell.json"
-        );
+                "/screens/portable_cell.json");
         register(
                 WirelessTermContainer.TYPE,
                 TerminalStyles.WIRELESS_TERMINAL.factory(WirelessTermScreen::new),
-                "/screens/wireless_terminal.json"
-        );
+                "/screens/wireless_terminal.json");
         register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
         ScreenRegistration.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
                 CraftingCPUContainer.TYPE,
                 CraftingCPUScreen::new,
-                "/screens/crafting_cpu.json"
-        );
+                "/screens/crafting_cpu.json");
         register(NetworkToolContainer.TYPE, NetworkToolScreen::new, "/screens/network_tool.json");
         register(QuartzKnifeContainer.TYPE, QuartzKnifeScreen::new, "/screens/quartz_knife.json");
         register(DriveContainer.TYPE, DriveScreen::new, "/screens/drive.json");
@@ -139,23 +138,28 @@ public class ScreenRegistration {
         register(StorageBusContainer.TYPE, StorageBusScreen::new, "/screens/storage_bus.json");
         register(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new, "/screens/fluid_storage_bus.json");
         register(FormationPlaneContainer.TYPE, FormationPlaneScreen::new, "/screens/formation_plane.json");
-        register(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new, "/screens/fluid_formation_plane.json");
+        register(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new,
+                "/screens/fluid_formation_plane.json");
         register(PriorityContainer.TYPE, PriorityScreen::new, "/screens/priority.json");
         register(SecurityStationContainer.TYPE,
                 TerminalStyles.SECURITY_STATION
-                        .<SecurityStationContainer, SecurityStationScreen>factory(SecurityStationScreen::new), "/screens/security_station.json");
+                        .<SecurityStationContainer, SecurityStationScreen>factory(SecurityStationScreen::new),
+                "/screens/security_station.json");
         register(
                 CraftingTermContainer.TYPE,
                 TerminalStyles.CRAFTING_TERMINAL
-                        .<CraftingTermContainer, CraftingTermScreen>factory(CraftingTermScreen::new), "/screens/crafting_terminal.json");
+                        .<CraftingTermContainer, CraftingTermScreen>factory(CraftingTermScreen::new),
+                "/screens/crafting_terminal.json");
         register(
                 PatternTermContainer.TYPE,
                 TerminalStyles.PATTERN_TERMINAL
-                        .<PatternTermContainer, PatternTermScreen>factory(PatternTermScreen::new), "/screens/pattern_terminal.json");
+                        .<PatternTermContainer, PatternTermScreen>factory(PatternTermScreen::new),
+                "/screens/pattern_terminal.json");
         register(
                 FluidTerminalContainer.TYPE,
                 TerminalStyles.FLUID_TERMINAL
-                        .<FluidTerminalContainer, FluidTerminalScreen>factory(FluidTerminalScreen::new), "/screens/fluid_terminal.json");
+                        .<FluidTerminalContainer, FluidTerminalScreen>factory(FluidTerminalScreen::new),
+                "/screens/fluid_terminal.json");
         register(LevelEmitterContainer.TYPE, LevelEmitterScreen::new, "/screens/level_emitter.json");
         register(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new, "/screens/fluid_level_emitter.json");
         register(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new, "/screens/spatial_io_port.json");
@@ -172,7 +176,8 @@ public class ScreenRegistration {
     /**
      * Registers a screen for a given container and ensures the given style is applied after opening the screen.
      */
-    private static <M extends AEBaseContainer, U extends AEBaseScreen<M>> void register(ContainerType<M> type, ScreenManager.IScreenFactory<M, U> factory, String stylePath) {
+    private static <M extends AEBaseContainer, U extends AEBaseScreen<M>> void register(ContainerType<M> type,
+            ScreenManager.IScreenFactory<M, U> factory, String stylePath) {
         CONTAINER_STYLES.put(type, stylePath);
         ScreenManager.<M, U>registerFactory(type, (container, playerInv, title) -> {
             U screen = factory.create(container, playerInv, title);

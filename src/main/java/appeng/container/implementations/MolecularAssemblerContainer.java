@@ -18,6 +18,13 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -32,12 +39,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 /**
  * @see appeng.client.gui.implementations.MolecularAssemblerScreen
@@ -87,7 +88,8 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
             this.addSlot(new MolecularAssemblerPatternSlot(this, mac, i), SlotSemantic.MACHINE_INPUT);
         }
 
-        encodedPatternSlot = this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10),
+        encodedPatternSlot = this.addSlot(
+                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10),
                 SlotSemantic.ENCODED_PATTERN);
 
         this.addSlot(new OutputSlot(mac, 9, -1), SlotSemantic.MACHINE_OUTPUT);
