@@ -1,16 +1,17 @@
 package appeng.client.gui.style;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Map;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.util.JSONUtils;
 
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Map;
+import net.minecraft.util.JSONUtils;
 
 public class Palette {
 
@@ -32,7 +33,8 @@ public class Palette {
 
     public static class Deserializer implements JsonDeserializer<Palette> {
         @Override
-        public Palette deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        public Palette deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
             if (!json.isJsonObject()) {
                 throw new JsonParseException("Expected palette to be a JSON object.");
             }

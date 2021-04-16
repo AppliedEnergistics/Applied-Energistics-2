@@ -1,9 +1,10 @@
 package appeng.client.gui.implementations;
 
-import appeng.client.gui.Blitter;
-import appeng.container.implementations.IOBusContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+
+import appeng.client.gui.Blitter;
+import appeng.container.implementations.IOBusContainer;
 
 public class IOBusScreen extends UpgradeableScreen<IOBusContainer> {
 

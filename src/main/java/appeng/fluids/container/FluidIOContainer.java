@@ -18,14 +18,15 @@
 
 package appeng.fluids.container;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.fluids.parts.FluidExportBusPart;
 import appeng.fluids.parts.FluidImportBusPart;
 import appeng.fluids.parts.SharedFluidBusPart;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 
 /**
  * @author BrockWS

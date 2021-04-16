@@ -18,7 +18,6 @@
 
 package appeng.container.me.networktool;
 
-import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -26,6 +25,7 @@ import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.slot.RestrictedInputSlot;

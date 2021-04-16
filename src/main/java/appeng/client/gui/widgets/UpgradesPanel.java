@@ -1,13 +1,15 @@
 package appeng.client.gui.widgets;
 
-import appeng.client.gui.Blitter;
-import appeng.client.gui.Rects;
-import appeng.container.slot.IOptionalSlot;
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.inventory.container.Slot;
 
-import java.util.List;
+import appeng.client.gui.Blitter;
+import appeng.client.gui.Rects;
+import appeng.container.slot.IOptionalSlot;
 
 /**
  * A panel that can draw a dynamic number of upgrade slots in a vertical layout.
@@ -115,7 +117,7 @@ public final class UpgradesPanel {
     }
 
     private static void drawSlot(MatrixStack matrices, int zIndex, int x, int y,
-                                 boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
+            boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
         int srcX = PADDING;
         int srcY = PADDING;
         int srcWidth = SLOT_SIZE;

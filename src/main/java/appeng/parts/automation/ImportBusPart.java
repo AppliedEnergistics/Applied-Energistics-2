@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-import appeng.container.implementations.IOBusContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -45,6 +44,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
+import appeng.container.implementations.IOBusContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;

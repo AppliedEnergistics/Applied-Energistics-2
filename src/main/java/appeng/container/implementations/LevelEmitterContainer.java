@@ -18,6 +18,10 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
@@ -30,9 +34,6 @@ import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.parts.automation.LevelEmitterPart;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraftforge.items.IItemHandler;
 
 public class LevelEmitterContainer extends UpgradeableContainer {
 

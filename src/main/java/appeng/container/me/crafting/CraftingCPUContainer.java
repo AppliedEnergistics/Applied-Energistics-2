@@ -18,6 +18,12 @@
 
 package appeng.container.me.crafting;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.util.text.StringTextComponent;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CraftingItemList;
@@ -36,11 +42,6 @@ import appeng.core.Api;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.CraftingTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.util.text.StringTextComponent;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingCPUScreen
@@ -159,7 +160,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
 
     @Override
     public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
-                           final IActionSource actionSource) {
+            final IActionSource actionSource) {
         for (IAEItemStack is : change) {
             this.incrementalUpdateHelper.addChange(is);
         }

@@ -18,6 +18,9 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -30,8 +33,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 
 /**
  * @see appeng.client.gui.implementations.SpatialIOPortScreen

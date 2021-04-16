@@ -4,8 +4,7 @@
   "type": "object",
   "title": "AE2 Screen Style",
   "description": "Provides styling information for an AE2 UI screen",
-  "required": [
-  ],
+  "required": [],
   "definitions": {
     "position": {
       "$comment": "Used to position an element in relationship to the size of the current dialog",
@@ -97,10 +96,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "action",
-            "value"
-          ]
+          "required": ["action", "value"]
         },
         "hoverEvent": {
           "type": "object",
@@ -138,9 +134,7 @@
                       "description": "NBT of the item, serialized as string. See https://minecraft.fandom.com/wiki/Player.dat_format#Item_structure"
                     }
                   },
-                  "required": [
-                    "id"
-                  ]
+                  "required": ["id"]
                 }
               }
             },
@@ -179,9 +173,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "text"
-          ]
+          "required": ["text"]
         },
         {
           "properties": {
@@ -196,9 +188,7 @@
               }
             }
           },
-          "required": [
-            "translate"
-          ]
+          "required": ["translate"]
         },
         {
           "properties": {
@@ -207,9 +197,7 @@
               "description": "A keybind identifier"
             }
           },
-          "required": [
-            "keybind"
-          ]
+          "required": ["keybind"]
         }
       ]
     }
@@ -292,9 +280,7 @@
           },
           "color": {
             "$comment": "See enum PaletteColor",
-            "enum": [
-              "TEXT_HEADLINE"
-            ]
+            "enum": ["TEXT_HEADLINE"]
           },
           "position": {
             "$ref": "#/definitions/position"

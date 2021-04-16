@@ -18,6 +18,9 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -29,8 +32,6 @@ import appeng.container.slot.FakeSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 
 /**
  * @see appeng.client.gui.implementations.InterfaceScreen
@@ -55,7 +56,7 @@ public class InterfaceContainer extends UpgradeableContainer {
 
         for (int x = 0; x < DualityInterface.NUMBER_OF_PATTERN_SLOTS; x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                            duality.getPatterns(), x),
+                    duality.getPatterns(), x),
                     SlotSemantic.ENCODED_PATTERN);
         }
 

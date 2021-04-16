@@ -18,11 +18,11 @@
 
 package appeng.container.implementations;
 
-import appeng.container.SlotSemantic;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 
 import appeng.container.AEBaseContainer;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.RestrictedInputSlot;

@@ -1,8 +1,13 @@
 {
   "$schema": "schema.json",
-  "includes": [
-    "storage_bus.json"
-  ],
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "slots": {
+    "CONFIG": {
+      "left": 8,
+      "top": 29,
+      "grid": "BREAK_AFTER_9COLS"
+    }
+  },
   "text": [
     {
       "$comment": "Dialog title",

@@ -18,6 +18,10 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.container.AEBaseContainer;
@@ -27,9 +31,6 @@ import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.misc.CondenserTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraftforge.items.IItemHandler;
 
 /**
  * @see appeng.client.gui.implementations.CondenserScreen
@@ -54,11 +55,13 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
 
         IItemHandler inv = condenser.getInternalInventory();
 
-        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.TRASH, inv, 0), SlotSemantic.MACHINE_INPUT);
+        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.TRASH, inv, 0),
+                SlotSemantic.MACHINE_INPUT);
         this.addSlot(new OutputSlot(inv, 1, -1), SlotSemantic.MACHINE_OUTPUT);
         this.addSlot(
                 (new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_COMPONENT, inv, 2))
-                        .setStackLimit(1), SlotSemantic.STORAGE_CELL);
+                        .setStackLimit(1),
+                SlotSemantic.STORAGE_CELL);
 
         this.createPlayerInventorySlots(ip);
     }

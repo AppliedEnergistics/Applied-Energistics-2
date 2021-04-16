@@ -18,6 +18,16 @@
 
 package appeng.container.me.crafting;
 
+import java.util.concurrent.Future;
+
+import javax.annotation.Nonnull;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.world.World;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -38,14 +48,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.me.helpers.PlayerSource;
 import appeng.tile.inventory.AppEngInternalInventory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.world.World;
-
-import javax.annotation.Nonnull;
-import java.util.concurrent.Future;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftAmountScreen

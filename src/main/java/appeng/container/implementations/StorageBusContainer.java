@@ -18,6 +18,13 @@
 
 package appeng.container.implementations;
 
+import java.util.Iterator;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
@@ -36,12 +43,6 @@ import appeng.core.Api;
 import appeng.parts.misc.StorageBusPart;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.iterators.NullIterator;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-
-import java.util.Iterator;
 
 /**
  * @see appeng.client.gui.implementations.StorageBusScreen

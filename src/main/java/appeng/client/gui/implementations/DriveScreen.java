@@ -53,13 +53,4 @@ public class DriveScreen extends AEBaseScreen<DriveContainer> {
         NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
-    @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Drive.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3,
-                COLOR_DARK_GRAY);
-    }
-
 }

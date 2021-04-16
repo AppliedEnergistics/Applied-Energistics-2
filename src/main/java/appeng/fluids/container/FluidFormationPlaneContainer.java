@@ -18,14 +18,15 @@
 
 package appeng.fluids.container;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Upgrades;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.fluids.parts.FluidFormationPlanePart;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 
 public class FluidFormationPlaneContainer extends FluidConfigurableContainer {
 

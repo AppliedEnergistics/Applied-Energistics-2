@@ -18,6 +18,18 @@
 
 package appeng.container.me.fluids;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.ITerminalHost;
@@ -31,17 +43,6 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.FluidSoundHelper;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-
-import javax.annotation.Nullable;
 
 /**
  * @see appeng.client.gui.me.fluids.FluidTerminalScreen
@@ -59,14 +60,14 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
     }
 
     public FluidTerminalContainer(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost host,
-                                  boolean bindInventory) {
+            boolean bindInventory) {
         super(containerType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
     }
 
     @Override
     protected void handleNetworkInteraction(ServerPlayerEntity player, @Nullable IAEFluidStack stack,
-                                            InventoryAction action) {
+            InventoryAction action) {
 
         if (action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM) {
             return;

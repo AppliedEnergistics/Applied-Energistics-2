@@ -18,6 +18,17 @@
 
 package appeng.container.implementations;
 
+import java.util.Iterator;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
+
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -39,16 +50,6 @@ import appeng.util.EnumCycler;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperSupplierItemHandler;
 import appeng.util.iterators.NullIterator;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
-
-import java.util.Iterator;
 
 /**
  * @see appeng.client.gui.implementations.CellWorkbenchScreen
@@ -88,8 +89,8 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     @Override
     protected void setupConfig() {
         final IItemHandler cell = this.getUpgradeable().getInventoryByName("cell");
-        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0
-        ), SlotSemantic.STORAGE_CELL);
+        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0),
+                SlotSemantic.STORAGE_CELL);
 
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
         final WrapperSupplierItemHandler upgradeInventory = new WrapperSupplierItemHandler(
@@ -203,7 +204,8 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         this.detectAndSendChanges();
     }
 
-    private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is, IStorageChannel<T> channel) {
+    private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is,
+            IStorageChannel<T> channel) {
         final IMEInventory<T> cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
         if (cellInv != null) {
             final IItemList<T> list = cellInv.getAvailableItems(channel.createList());

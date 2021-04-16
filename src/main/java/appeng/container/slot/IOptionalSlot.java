@@ -18,10 +18,11 @@
 
 package appeng.container.slot;
 
-import appeng.client.Point;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import appeng.client.Point;
 
 /**
  * @author BrockWS
@@ -35,7 +36,7 @@ public interface IOptionalSlot {
 
     /**
      * @return The source rectangle in the screen's background image that should be used to draw this optional slot's
-     * background.
+     *         background.
      */
     @OnlyIn(Dist.CLIENT)
     Rectangle2d getBackgroundSrcRect();
