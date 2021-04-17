@@ -1,4 +1,14 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json"]
+  "includes": ["common/common.json"],
+  "text": [
+    {
+      "id": "title",
+      "position": {
+        "left": 8,
+        "top": 7
+      },
+      "color": "TEXT_HEADLINE"
+    }
+  ]
 }
