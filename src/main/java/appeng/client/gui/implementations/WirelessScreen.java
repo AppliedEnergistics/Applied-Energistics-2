@@ -29,10 +29,11 @@ import appeng.client.gui.widgets.CommonButtons;
 import appeng.container.implementations.WirelessContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
+import net.minecraft.util.text.StringTextComponent;
 
 public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/inscriber.png").src(0, 0, 176, 166);
+    private static final Blitter BACKGROUND = Blitter.texture("guis/wireless.png").src(0, 0, 176, 166);
 
     public WirelessScreen(WirelessContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
@@ -42,27 +43,22 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
     public void init() {
         super.init();
 
-        this.addToLeftToolbar(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
+        this.addToLeftToolbar(CommonButtons.togglePowerUnit(0, 0));
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Wireless.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
-
+        ITextComponent rangeText = StringTextComponent.EMPTY;
+        ITextComponent energyUseText = StringTextComponent.EMPTY;
         if (container.getRange() > 0) {
-            final String firstMessage = GuiText.Range.getLocal() + ": " + (container.getRange() / 10.0) + " m";
-            final String secondMessage = GuiText.PowerUsageRate.getLocal() + ": "
-                    + Platform.formatPowerLong(container.getDrain(), true);
-
-            final int strWidth = Math.max(this.font.getStringWidth(firstMessage),
-                    this.font.getStringWidth(secondMessage));
-            final int cOffset = (this.xSize / 2) - (strWidth / 2);
-            this.font.drawString(matrixStack, firstMessage, cOffset, 20, COLOR_DARK_GRAY);
-            this.font.drawString(matrixStack, secondMessage, cOffset, 20 + 12, COLOR_DARK_GRAY);
+            double rangeBlocks = container.getRange() / 10.0;
+            rangeText = GuiText.WirelessRange.text(rangeBlocks);
+            energyUseText = GuiText.PowerUsageRate.text(Platform.formatPowerLong(container.getDrain(), true));
         }
+
+        setTextContent("range", rangeText);
+        setTextContent("energy_use", energyUseText);
     }
 
 }

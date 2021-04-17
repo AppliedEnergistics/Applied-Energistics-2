@@ -18,8 +18,6 @@
 
 package appeng.client.gui.me.crafting;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -62,12 +60,9 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     }
 
     @Override
-    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
-        this.updateCPUButtonText();
-        super.render(matrixStack, mouseX, mouseY, btn);
-    }
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-    private void updateCPUButtonText() {
         this.selectCPU.setMessage(getNextCpuButtonLabel());
     }
 
@@ -81,12 +76,12 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
         if (name == null) {
             name = StringTextComponent.EMPTY;
         }
-        return GuiText.CraftingCPU.withSuffix(": ").append(name);
+        return GuiText.SelectedCraftingCPU.text(name);
     }
 
     @Override
     protected ITextComponent getGuiDisplayName(final ITextComponent in) {
-        return in; // the cup name is on the button
+        return in; // the cpu name is on the button
     }
 
     private void selectNextCpu() {

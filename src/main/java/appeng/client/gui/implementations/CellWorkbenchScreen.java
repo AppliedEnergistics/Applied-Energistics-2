@@ -44,6 +44,8 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
 
     private ToggleButton copyMode;
 
+    private SettingToggleButton<FuzzyMode> fuzzyMode;
+
     public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
@@ -52,7 +54,9 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     }
 
     @Override
-    protected void addButtons() {
+    public void init() {
+        super.init();
+
         this.fuzzyMode = this.addToLeftToolbar(new SettingToggleButton<>(0, 0,
                 Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
         this.addToLeftToolbar(
@@ -63,7 +67,9 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     }
 
     @Override
-    protected void handleButtonVisibility() {
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
         this.copyMode.setState(this.container.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
 
         boolean hasFuzzy = false;

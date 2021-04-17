@@ -18,20 +18,13 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
-import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.container.implementations.MolecularAssemblerContainer;
-import appeng.core.localization.GuiText;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssemblerContainer> {
 
@@ -41,7 +34,7 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     private ProgressBar pb;
 
     public MolecularAssemblerScreen(MolecularAssemblerContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+                                    ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
     }
 
@@ -55,17 +48,10 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     }
 
     @Override
-    protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8,
-                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
-        addButton(this.redstoneMode);
-    }
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-    @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
         this.pb.setFullMsg(new StringTextComponent(this.container.getCurrentProgress() + "%"));
-        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
     }
 
 }

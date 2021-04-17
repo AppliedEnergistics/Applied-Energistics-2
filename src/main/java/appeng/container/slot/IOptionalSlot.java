@@ -18,7 +18,6 @@
 
 package appeng.container.slot;
 
-import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -33,13 +32,6 @@ public interface IOptionalSlot {
     default boolean isRenderDisabled() {
         return false;
     }
-
-    /**
-     * @return The source rectangle in the screen's background image that should be used to draw this optional slot's
-     *         background.
-     */
-    @OnlyIn(Dist.CLIENT)
-    Rectangle2d getBackgroundSrcRect();
 
     boolean isSlotEnabled();
 

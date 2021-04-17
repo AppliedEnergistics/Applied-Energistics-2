@@ -18,19 +18,16 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.VibrationChamberContainer;
-import appeng.core.localization.GuiText;
 import appeng.tile.misc.VibrationChamberTileEntity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContainer> {
 
@@ -43,7 +40,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     private ProgressBar pb;
 
     public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+                                  ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
     }
 
@@ -57,15 +54,16 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrices, this.getGuiDisplayName(GuiText.VibrationChamber.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrices, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
         this.pb.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
                 * this.container.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
+    }
 
+    @Override
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY) {
         // Show the flame "burning down" as we burn through an item of fuel
         if (this.container.getRemainingBurnTime() > 0) {
             int f = this.container.getRemainingBurnTime() * BURN_PROGRESS.getSrcHeight() / 100;

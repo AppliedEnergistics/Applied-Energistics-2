@@ -1,11 +1,26 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json"
+  ],
   "slots": {
     "STORAGE": {
       "left": 62,
       "top": 19,
       "grid": "BREAK_AFTER_3COLS"
     }
-  }
+  },
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.NetworkTool"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
 }

@@ -15,11 +15,10 @@
   },
   "text": [
     {
-      "$comment": "Dialog title",
+      "id": "dialog_title",
       "text": {
         "translate": "gui.appliedenergistics2.IOPort"
       },
-      "color": "TEXT_HEADLINE",
       "position": {
         "left": 8,
         "top": 6

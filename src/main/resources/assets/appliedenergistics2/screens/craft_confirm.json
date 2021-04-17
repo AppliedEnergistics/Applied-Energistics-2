@@ -1,14 +1,23 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json"],
+  "includes": [
+    "common/common.json"
+  ],
   "text": [
     {
-      "id": "title",
+      "id": "dialog_title",
       "position": {
         "left": 8,
         "top": 7
+      }
+    },
+    {
+      "id": "cpu_status",
+      "position": {
+        "left": 109,
+        "top": 165
       },
-      "color": "TEXT_HEADLINE"
+      "centerHorizontally": true
     }
   ]
 }

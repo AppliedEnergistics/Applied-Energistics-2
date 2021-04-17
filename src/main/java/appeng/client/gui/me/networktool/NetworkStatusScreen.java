@@ -18,14 +18,6 @@
 
 package appeng.client.gui.me.networktool;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.CommonButtons;
@@ -35,6 +27,12 @@ import appeng.container.me.networktool.NetworkStatus;
 import appeng.container.me.networktool.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
@@ -54,7 +52,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
     private static final Blitter BACKGROUND = Blitter.texture("guis/networkstatus.png").src(0, 0, 195, 153);
 
     public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+                               ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
         this.setScrollBar(new Scrollbar());
     }
@@ -63,27 +61,24 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
     public void init() {
         super.init();
 
-        this.addToLeftToolbar(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
+        this.addToLeftToolbar(CommonButtons.togglePowerUnit(0, 0));
+
+        this.getScrollBar().setTop(39).setLeft(175).setHeight(78);
+    }
+
+    @Override
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
+        setTextContent("stored_power", GuiText.StoredPower.text(Platform.formatPower(status.getStoredPower(), false)));
+        setTextContent("max_power", GuiText.MaxPower.text(Platform.formatPower(status.getMaxStoredPower(), false)));
+        setTextContent("power_input_rate", GuiText.PowerInputRate.text(Platform.formatPower(status.getAveragePowerInjection(), true)));
+        setTextContent("power_usage_rate", GuiText.PowerUsageRate.text(Platform.formatPower(status.getAveragePowerUsage(), true)));
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrixStack, GuiText.NetworkDetails.getLocal(), 8, 6, COLOR_DARK_GRAY);
-
-        this.font.drawString(matrixStack,
-                GuiText.StoredPower.getLocal() + ": " + Platform.formatPower(status.getStoredPower(), false),
-                13, 16, COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack,
-                GuiText.MaxPower.getLocal() + ": " + Platform.formatPower(status.getMaxStoredPower(), false), 13, 26,
-                COLOR_DARK_GRAY);
-
-        this.font.drawString(matrixStack, GuiText.PowerInputRate.getLocal() + ": "
-                + Platform.formatPower(status.getAveragePowerInjection(), true), 13, 143 - 10, COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack,
-                GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPower(status.getAveragePowerUsage(), true),
-                13, 143 - 20, COLOR_DARK_GRAY);
-
+                       final int mouseY) {
         int x = 0;
         int y = 0;
         final int viewStart = getScrollBar().getCurrentScroll() * COLUMNS;
@@ -113,10 +108,10 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
                 tooltip = new ArrayList<>();
                 tooltip.add(entry.getDisplay().getDisplayName());
 
-                tooltip.add(GuiText.Installed.withSuffix(": " + entry.getCount()));
+                tooltip.add(GuiText.Installed.text(entry.getCount()));
                 if (entry.getIdlePowerUsage() > 0) {
                     tooltip.add(GuiText.EnergyDrain
-                            .withSuffix(": " + Platform.formatPower(entry.getIdlePowerUsage(), true)));
+                            .text(Platform.formatPower(entry.getIdlePowerUsage(), true)));
                 }
 
                 // Hard to know why drawTooltip uses these offsets, it seems to be the center of the item stack (16x16)
@@ -167,7 +162,6 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
     private void setScrollBar() {
         final int size = this.status.getGroupedMachines().size();
-        this.getScrollBar().setTop(39).setLeft(175).setHeight(78);
         int overflowRows = (size + (COLUMNS - 1)) / COLUMNS - ROWS;
         this.getScrollBar().setRange(0, overflowRows, 1);
     }

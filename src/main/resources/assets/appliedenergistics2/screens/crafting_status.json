@@ -1,4 +1,4 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json"]
+  "includes": ["crafting_cpu.json"]
 }

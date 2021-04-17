@@ -18,24 +18,29 @@
 
 package appeng.fluids.client.gui;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
 import appeng.client.gui.implementations.IOBusScreen;
 import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.widgets.ServerSettingToggleButton;
+import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidIOContainer;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 /**
- * @author BrockWS
- * @version rv5 - 1/05/2018
- * @since rv5 1/05/2018
+ * @see appeng.fluids.parts.FluidImportBusPart
+ * @see appeng.fluids.parts.FluidExportBusPart
  */
-public class FluidIOScreen extends UpgradeableScreen<FluidIOContainer> {
+public class FluidIOBusScreen extends UpgradeableScreen<FluidIOContainer> {
 
-    public FluidIOScreen(FluidIOContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    private SettingToggleButton<RedstoneMode> redstoneMode;
+
+    public FluidIOBusScreen(FluidIOContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, IOBusScreen.BACKGROUND);
     }
 
@@ -57,6 +62,17 @@ public class FluidIOScreen extends UpgradeableScreen<FluidIOContainer> {
         this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 6, 6, 2, x, y, 1, -1));
         this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 7, 7, 2, x, y, -1, 1));
         this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 8, 8, 2, x, y, 1, 1));
+
+        this.redstoneMode = new ServerSettingToggleButton<>(0, 0, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        addToLeftToolbar(this.redstoneMode);
+    }
+
+    @Override
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
+        this.redstoneMode.set(this.container.getRedStoneMode());
+        this.redstoneMode.setVisibility(container.hasUpgrade(Upgrades.REDSTONE));
     }
 
 }

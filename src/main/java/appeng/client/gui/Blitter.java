@@ -24,7 +24,7 @@ import appeng.core.AppEng;
  */
 public final class Blitter {
 
-    private static final ResourceLocation ICON_SPRITESHEET = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation ICON_SPRITESHEET = new ResourceLocation(AppEng.MOD_ID,
             "textures/guis/states.png");
 
     // This assumption is obviously bogus, but currently all textures are this size,

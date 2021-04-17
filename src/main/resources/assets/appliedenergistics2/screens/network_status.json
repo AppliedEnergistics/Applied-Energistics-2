@@ -1,4 +1,44 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json"]
+  "includes": ["common/common.json"],
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.NetworkDetails"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    {
+      "id": "stored_power",
+      "position": {
+        "left": 13,
+        "top": 16
+      }
+    },
+    {
+      "id": "max_power",
+      "position": {
+        "left": 13,
+        "top": 26
+      }
+    },
+    {
+      "id": "power_usage_rate",
+      "position": {
+        "left": 13,
+        "top": 123
+      }
+    },
+    {
+      "id": "power_input_rate",
+      "position": {
+        "left": 13,
+        "top": 133
+      }
+    }
+  ]
 }

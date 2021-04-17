@@ -18,16 +18,7 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
-
-import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
@@ -39,6 +30,12 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 /**
  * @see appeng.client.gui.implementations.MolecularAssemblerScreen
@@ -85,7 +82,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
 
         for (int i = 0; i < 9; i++) {
-            this.addSlot(new MolecularAssemblerPatternSlot(this, mac, i), SlotSemantic.MACHINE_INPUT);
+            this.addSlot(new MolecularAssemblerPatternSlot(this, mac, i), SlotSemantic.MACHINE_CRAFTING_GRID);
         }
 
         encodedPatternSlot = this.addSlot(
@@ -110,11 +107,6 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     @Override
     public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
-
-        if (isServer()) {
-            this.setRedStoneMode(
-                    (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED));
-        }
 
         this.craftProgress = this.tma.getCraftingProgress();
 

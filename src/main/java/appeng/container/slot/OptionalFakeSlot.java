@@ -30,14 +30,12 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
 
     private final int groupNum;
     private final IOptionalSlotHost host;
-    private final Rectangle2d backgroundSrcRect;
     private boolean renderDisabled = true;
 
     public OptionalFakeSlot(final IItemHandler inv, final IOptionalSlotHost containerBus, int invSlot, int groupNum) {
         super(inv, invSlot);
         this.groupNum = groupNum;
         this.host = containerBus;
-        this.backgroundSrcRect = new Rectangle2d(0, 0, 18, 18);
     }
 
     @Override
@@ -68,11 +66,6 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
 
     public void setRenderDisabled(final boolean renderDisabled) {
         this.renderDisabled = renderDisabled;
-    }
-
-    @Override
-    public Rectangle2d getBackgroundSrcRect() {
-        return backgroundSrcRect;
     }
 
     @Override

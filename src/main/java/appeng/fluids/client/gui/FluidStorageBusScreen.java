@@ -18,14 +18,8 @@
 
 package appeng.fluids.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
-import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.client.gui.Blitter;
@@ -43,6 +37,8 @@ import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * @author BrockWS
@@ -58,7 +54,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     private SettingToggleButton<StorageFilter> storageFilter;
 
     public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+                                 ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
     }
 
@@ -81,41 +77,26 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
                 }
             }
         }
-    }
-
-    @Override
-    protected void addButtons() {
-        addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, btn -> clear()));
-        addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, btn -> partition()));
-        this.rwMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS,
-                AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
-                Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE,
-                FuzzyMode.IGNORE_ALL);
 
         addButton(this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui())));
 
-        this.addButton(this.storageFilter);
-        this.addButton(this.fuzzyMode);
-        this.addButton(this.rwMode);
+        addToLeftToolbar(new ActionButton(0, 0, ActionItems.CLOSE, btn -> clear()));
+        addToLeftToolbar(new ActionButton(0, 0, ActionItems.WRENCH, btn -> partition()));
+        this.rwMode = new ServerSettingToggleButton<>(0, 0, Settings.ACCESS,
+                AccessRestriction.READ_WRITE);
+        this.storageFilter = new ServerSettingToggleButton<>(0, 0,
+                Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        addToLeftToolbar(this.storageFilter);
+        addToLeftToolbar(this.rwMode);
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        if (this.fuzzyMode != null) {
-            this.fuzzyMode.set(this.container.getFuzzyMode());
-        }
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        if (this.storageFilter != null) {
-            this.storageFilter.set(this.container.getStorageFilter());
-        }
-
-        if (this.rwMode != null) {
-            this.rwMode.set(this.container.getReadWriteMode());
-        }
+        this.storageFilter.set(this.container.getStorageFilter());
+        this.rwMode.set(this.container.getReadWriteMode());
     }
 
     private void partition() {

@@ -96,7 +96,10 @@
               "type": "string"
             }
           },
-          "required": ["action", "value"]
+          "required": [
+            "action",
+            "value"
+          ]
         },
         "hoverEvent": {
           "type": "object",
@@ -134,7 +137,9 @@
                       "description": "NBT of the item, serialized as string. See https://minecraft.fandom.com/wiki/Player.dat_format#Item_structure"
                     }
                   },
-                  "required": ["id"]
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             },
@@ -173,7 +178,9 @@
               "type": "string"
             }
           },
-          "required": ["text"]
+          "required": [
+            "text"
+          ]
         },
         {
           "properties": {
@@ -188,7 +195,9 @@
               }
             }
           },
-          "required": ["translate"]
+          "required": [
+            "translate"
+          ]
         },
         {
           "properties": {
@@ -197,7 +206,9 @@
               "description": "A keybind identifier"
             }
           },
-          "required": ["keybind"]
+          "required": [
+            "keybind"
+          ]
         }
       ]
     }
@@ -284,10 +295,17 @@
           },
           "color": {
             "$comment": "See enum PaletteColor",
-            "enum": ["TEXT_HEADLINE"]
+            "enum": [
+              "DEFAULT_TEXT_COLOR"
+            ],
+            "default": "DEFAULT_TEXT_COLOR"
           },
           "position": {
             "$ref": "#/definitions/position"
+          },
+          "centerHorizontally": {
+            "type": "boolean",
+            "default": false
           }
         }
       }

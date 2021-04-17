@@ -42,7 +42,7 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
     @Override
     public void init() {
         super.init();
-        this.addToLeftToolbar(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
+        this.addToLeftToolbar(CommonButtons.togglePowerUnit(0, 0));
     }
 
     @Override

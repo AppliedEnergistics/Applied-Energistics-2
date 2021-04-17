@@ -20,11 +20,10 @@
   },
   "text": [
     {
-      "$comment": "Dialog title",
+      "id": "dialog_title",
       "text": {
         "translate": "gui.appliedenergistics2.SecurityCardEditor"
       },
-      "color": "TEXT_HEADLINE",
       "position": {
         "left": 8,
         "bottom": 128

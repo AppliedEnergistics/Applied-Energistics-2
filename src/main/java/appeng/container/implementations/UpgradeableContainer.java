@@ -18,15 +18,6 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
@@ -47,6 +38,14 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.NetworkToolItem;
 import appeng.parts.automation.ExportBusPart;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 public abstract class UpgradeableContainer extends AEBaseContainer implements IOptionalSlotHost {
 
@@ -63,7 +62,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
     private NetworkToolViewer tbInventory;
 
     public UpgradeableContainer(ContainerType<?> containerType, int id, final PlayerInventory ip,
-            final IUpgradeableHost te) {
+                                final IUpgradeableHost te) {
         super(containerType, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
                 (IPart) (te instanceof IPart ? te : null));
         this.upgradeable = te;
@@ -122,7 +121,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
 
     protected abstract void setupConfig();
 
-    protected void setupUpgrades() {
+    protected final void setupUpgrades() {
         final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
 
         for (int i = 0; i < availableUpgrades(); i++) {
@@ -238,8 +237,12 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
         this.schedulingMode = schedulingMode;
     }
 
-    protected IUpgradeableHost getUpgradeable() {
+    public IUpgradeableHost getUpgradeable() {
         return this.upgradeable;
+    }
+
+    public final boolean hasUpgrade(Upgrades upgrade) {
+        return this.upgradeable.getInstalledUpgrades(upgrade) > 0;
     }
 
 }

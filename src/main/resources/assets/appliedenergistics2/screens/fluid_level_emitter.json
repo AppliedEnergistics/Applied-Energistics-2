@@ -3,14 +3,23 @@
   "includes": ["common/common.json", "common/player_inventory.json"],
   "text": [
     {
-      "$comment": "Dialog title",
+      "id": "dialog_title",
       "text": {
         "translate": "gui.appliedenergistics2.FluidLevelEmitter"
       },
-      "color": "TEXT_HEADLINE",
       "position": {
         "left": 8,
         "top": 6
+      }
+    },
+    {
+      "id": "level_emitter_unit",
+      "text": {
+        "translate": "gui.appliedenergistics2.FluidLevelEmitterUnit"
+      },
+      "position": {
+        "left": 110,
+        "top": 44
       }
     }
   ]

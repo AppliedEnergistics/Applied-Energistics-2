@@ -80,7 +80,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
                             : InventoryAction.PICKUP_OR_SET_DOWN;
 
                     if (action == InventoryAction.PICKUP_OR_SET_DOWN
-                            && isViewOnlyCraftable()
+                            && shouldCraftOnClick(entry)
                             && playerInventory.getItemStack().isEmpty()) {
                         container.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
                         return;
@@ -108,6 +108,16 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
                 container.handleInteraction(serial, action);
             }
         }
+    }
+
+    private boolean shouldCraftOnClick(GridInventoryEntry<IAEItemStack> entry) {
+        // Always auto-craft when viewing only craftable items
+        if (isViewOnlyCraftable()) {
+            return true;
+        }
+
+        // Otherwise only craft if there are no stored items
+        return entry.getStoredAmount() == 0 && entry.isCraftable();
     }
 
 }

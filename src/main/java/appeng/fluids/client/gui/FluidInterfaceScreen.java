@@ -64,17 +64,6 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
                 this.itemRenderer, btn -> openPriorityGui()));
     }
 
-    @Override
-    protected void addButtons() {
-    }
-
-    @Override
-    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.font.drawString(matrixStack, GuiText.Config.getLocal(), 35, 6 + 11 + 7, COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
-    }
-
     private void openPriorityGui() {
         NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
