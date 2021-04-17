@@ -333,13 +333,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
                 int color = style.getColor(text.getColor()).toARGB();
 
-                Point pos = resolvePosition(text.getPosition());
-
                 // Allow overrides for which content is shown
                 ITextComponent content = text.getText();
                 if (override != null && override.getContent() != null) {
                     content = override.getContent();
                 }
+
+                Point pos = resolvePosition(text.getPosition());
 
                 this.font.func_243248_b(
                         matrixStack,
