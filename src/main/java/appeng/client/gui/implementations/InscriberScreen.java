@@ -18,17 +18,13 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.InscriberContainer;
-import appeng.core.localization.GuiText;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
 
@@ -52,8 +48,9 @@ public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
         this.pb.setFullMsg(new StringTextComponent(
                 this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%"));
     }

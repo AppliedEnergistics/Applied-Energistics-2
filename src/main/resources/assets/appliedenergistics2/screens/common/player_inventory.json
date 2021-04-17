@@ -14,11 +14,10 @@
   },
   "text": [
     {
-      "$comment": "Inventory headline",
+      "id": "player_inventory_title",
       "text": {
         "translate": "container.inventory"
       },
-      "color": "TEXT_HEADLINE",
       "position": {
         "left": 8,
         "bottom": 93

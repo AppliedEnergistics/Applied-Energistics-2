@@ -70,6 +70,14 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         changeFocus(true);
     }
 
+    @Override
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
+        this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
+        this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;
+    }
+
     private void confirm(Button button) {
         int amount = this.amountToCraft.getIntValue().orElse(0);
         if (amount <= 0) {
@@ -79,18 +87,10 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrices, GuiText.SelectAmount.text().getString(), 8, 6, COLOR_DARK_GRAY);
-    }
-
-    @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
-        this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;
         this.amountToCraft.render(matrices, offsetX, offsetY, partialTicks);
     }
 

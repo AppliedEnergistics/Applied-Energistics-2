@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.api.config.Upgrades;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -41,6 +42,7 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
     private static final Blitter BACKGROUND = Blitter.texture("guis/storagebus.png")
             .src(0, 0, 211 - 34, 251);
 
+    private SettingToggleButton<FuzzyMode> fuzzyMode;
     private SettingToggleButton<YesNo> placeMode;
 
     public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
@@ -49,29 +51,27 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
     }
 
     @Override
-    protected void addButtons() {
-        this.placeMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.PLACE_BLOCK,
+    public void init() {
+        super.init();
+
+        this.placeMode = new ServerSettingToggleButton<>(0, 0, Settings.PLACE_BLOCK,
                 YesNo.YES);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(0, 0, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
-
-        this.addToLeftToolbar(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui()));
-
         this.addToLeftToolbar(this.placeMode);
         this.addToLeftToolbar(this.fuzzyMode);
+
+        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
+                this.itemRenderer, btn -> openPriorityGui()));
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        if (this.fuzzyMode != null) {
-            this.fuzzyMode.set(this.container.getFuzzyMode());
-        }
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        if (this.placeMode != null) {
-            this.placeMode.set(this.container.getPlaceMode());
-        }
+        this.fuzzyMode.set(this.container.getFuzzyMode());
+        this.fuzzyMode.setVisibility(container.hasUpgrade(Upgrades.FUZZY));
+        this.placeMode.set(this.container.getPlaceMode());
     }
 
     private void openPriorityGui() {

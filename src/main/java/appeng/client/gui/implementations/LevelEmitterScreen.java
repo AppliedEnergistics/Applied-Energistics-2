@@ -18,14 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
-import appeng.api.config.PowerUnits;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -35,16 +29,20 @@ import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.LevelEmitterContainer;
-import appeng.core.localization.GuiText;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer> {
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/lvlemitter.png")
-            .src(0, 0, 211, 184);
+            .src(0, 0, 176, 184);
 
     private NumberEntryWidget level;
     private SettingToggleButton<LevelType> levelMode;
     private SettingToggleButton<YesNo> craftingMode;
+    private SettingToggleButton<RedstoneMode> redstoneMode;
+    private SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public LevelEmitterScreen(LevelEmitterContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
@@ -62,67 +60,54 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         this.level.setOnConfirm(this::closeScreen);
 
         this.changeFocus(true);
-    }
 
-    private void saveReportingValue() {
-        this.level.getLongValue().ifPresent(container::setReportingValue);
-    }
-
-    @Override
-    protected void addButtons() {
-        this.levelMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.LEVEL_TYPE,
+        this.levelMode = new ServerSettingToggleButton<>(0, 0, Settings.LEVEL_TYPE,
                 LevelType.ITEM_LEVEL);
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+        this.redstoneMode = new ServerSettingToggleButton<>(0, 0,
                 Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(0, 0, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
-        this.craftingMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48,
+        this.craftingMode = new ServerSettingToggleButton<>(0, 0,
                 Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
-        this.addButton(this.levelMode);
-        this.addButton(this.redstoneMode);
-        this.addButton(this.craftingMode);
+        this.addToLeftToolbar(this.levelMode);
+        this.addToLeftToolbar(this.redstoneMode);
+        this.addToLeftToolbar(this.craftingMode);
+        this.addToLeftToolbar(this.fuzzyMode);
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        final boolean notCraftingMode = this.bc.getInstalledUpgrades(Upgrades.CRAFTING) == 0;
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
+        this.fuzzyMode.set(container.getFuzzyMode());
+        this.fuzzyMode.setVisibility(container.hasUpgrade(Upgrades.FUZZY));
 
         // configure enabled status...
+        final boolean notCraftingMode = !container.hasUpgrade(Upgrades.CRAFTING);
         this.level.setActive(notCraftingMode);
-        this.levelMode.active = notCraftingMode;
+
         this.redstoneMode.active = notCraftingMode;
+        this.redstoneMode.set(container.getRedStoneMode());
 
-        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
+        LevelType currentLevelMode = this.container.getLevelMode();
+        this.levelMode.active = notCraftingMode;
+        this.levelMode.set(currentLevelMode);
 
-        if (this.craftingMode != null) {
-            this.craftingMode.set(this.container.getCraftingMode());
-        }
+        this.craftingMode.set(this.container.getCraftingMode());
+        this.craftingMode.setVisibility(!notCraftingMode);
 
-        if (this.levelMode != null) {
-            LevelType currentLevelMode = this.container.getLevelMode();
-            this.levelMode.set(currentLevelMode);
-
-            if (notCraftingMode) {
-                if (currentLevelMode == LevelType.ENERGY_LEVEL) {
-                    this.font.drawString(matrixStack, PowerUnits.AE.textComponent().getString(), 110, 44,
-                            COLOR_DARK_GRAY);
-                }
-            }
-        }
+        setTextHidden("energy_unit", !notCraftingMode || currentLevelMode != LevelType.ENERGY_LEVEL);
     }
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+                       final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.level.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
-    @Override
-    protected void handleButtonVisibility() {
-        this.craftingMode.setVisibility(this.bc.getInstalledUpgrades(Upgrades.CRAFTING) > 0);
-        this.fuzzyMode.setVisibility(this.bc.getInstalledUpgrades(Upgrades.FUZZY) > 0);
+    private void saveReportingValue() {
+        this.level.getLongValue().ifPresent(container::setReportingValue);
     }
 
 }

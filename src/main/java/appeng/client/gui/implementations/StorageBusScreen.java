@@ -18,16 +18,12 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
+import appeng.api.config.Upgrades;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
@@ -39,32 +35,37 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/storagebus.png")
-            .src(0, 0, 211 - 34, 251);
+            .src(0, 0, 176, 251);
 
     private SettingToggleButton<AccessRestriction> rwMode;
     private SettingToggleButton<StorageFilter> storageFilter;
+    private SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public StorageBusScreen(StorageBusContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
     }
 
     @Override
-    protected void addButtons() {
-        addToLeftToolbar(new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, btn -> clear()));
-        addToLeftToolbar(new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, btn -> partition()));
-        this.rwMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS,
-                AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
-                Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE,
-                FuzzyMode.IGNORE_ALL);
+    public void init() {
+        super.init();
 
         this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
+
+        addToLeftToolbar(new ActionButton(0, 0, ActionItems.CLOSE, btn -> clear()));
+        addToLeftToolbar(new ActionButton(0, 0, ActionItems.WRENCH, btn -> partition()));
+        this.rwMode = new ServerSettingToggleButton<>(0, 0, Settings.ACCESS,
+                AccessRestriction.READ_WRITE);
+        this.storageFilter = new ServerSettingToggleButton<>(0, 0,
+                Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        this.fuzzyMode = new ServerSettingToggleButton<>(0, 0, Settings.FUZZY_MODE,
+                FuzzyMode.IGNORE_ALL);
 
         this.addToLeftToolbar(this.storageFilter);
         this.addToLeftToolbar(this.fuzzyMode);
@@ -72,19 +73,13 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        if (this.fuzzyMode != null) {
-            this.fuzzyMode.set(this.container.getFuzzyMode());
-        }
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        if (this.storageFilter != null) {
-            this.storageFilter.set(this.container.getStorageFilter());
-        }
-
-        if (this.rwMode != null) {
-            this.rwMode.set(this.container.getReadWriteMode());
-        }
+        this.storageFilter.set(this.container.getStorageFilter());
+        this.rwMode.set(this.container.getReadWriteMode());
+        this.fuzzyMode.set(this.container.getFuzzyMode());
+        this.fuzzyMode.setVisibility(container.hasUpgrade(Upgrades.FUZZY));
     }
 
     private void partition() {

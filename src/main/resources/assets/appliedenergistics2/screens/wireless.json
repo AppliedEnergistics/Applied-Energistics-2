@@ -6,5 +6,33 @@
       "left": 80,
       "top": 47
     }
-  }
+  },
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.Wireless"
+      },
+      "position": {
+        "left": 8,
+        "top": 7
+      }
+    },
+    {
+      "id": "range",
+      "position": {
+        "left": 88,
+        "top": 20
+      },
+      "centerHorizontally": true
+    },
+    {
+      "id": "energy_use",
+      "position": {
+        "left": 88,
+        "top": 32
+      },
+      "centerHorizontally": true
+    }
+  ]
 }

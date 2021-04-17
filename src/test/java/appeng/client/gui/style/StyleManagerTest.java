@@ -1,25 +1,20 @@
 package appeng.client.gui.style;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
-import net.minecraft.client.Minecraft;
+import appeng.client.gui.MockResourceManager;
+import appeng.container.SlotSemantic;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-import appeng.client.gui.MockResourceManager;
-import appeng.container.SlotSemantic;
+import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 class StyleManagerTest {
@@ -44,7 +39,7 @@ class StyleManagerTest {
 
         ScreenStyle style = StyleManager.loadStyleDoc("/screens/cell_workbench.json");
 
-        assertThat(style.getColor(PaletteColor.TEXT_HEADLINE).toARGB()).isEqualTo(0xff404040);
+        assertThat(style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB()).isEqualTo(0xff404040);
         assertThat(style.getText()).hasSize(2);
         assertThat(style.getSlots()).containsOnlyKeys(
                 SlotSemantic.PLAYER_INVENTORY,

@@ -18,11 +18,6 @@
 
 package appeng.client.gui.me.networktool;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ToggleButton;
@@ -30,6 +25,8 @@ import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
 
@@ -45,7 +42,7 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
     public void init() {
         super.init();
 
-        this.tFacades = new ToggleButton(this.guiLeft - 18, this.guiTop + 8, 23, 22,
+        this.tFacades = new ToggleButton(0, 0, 23, 22,
                 GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal(),
                 btn -> toggleFacades());
 
@@ -57,15 +54,10 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        if (this.tFacades != null) {
-            this.tFacades.setState(container.isFacadeMode());
-        }
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.NetworkTool.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
+        this.tFacades.setState(container.isFacadeMode());
     }
 
 }

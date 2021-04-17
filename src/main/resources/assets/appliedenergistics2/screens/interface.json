@@ -14,20 +14,49 @@
     },
     "ENCODED_PATTERN": {
       "left": 8,
-      "top": 90,
+      "top": 97,
       "grid": "HORIZONTAL"
     }
   },
   "text": [
     {
-      "$comment": "Dialog title",
+      "id": "dialog_title",
       "text": {
         "translate": "gui.appliedenergistics2.Interface"
       },
-      "color": "TEXT_HEADLINE",
       "position": {
         "left": 8,
         "top": 6
+      }
+    },
+    {
+      "id": "interface_config",
+      "text": {
+        "translate": "gui.appliedenergistics2.Config"
+      },
+      "position": {
+        "left": 8,
+        "top": 24
+      }
+    },
+    {
+      "id": "interface_stored_items",
+      "text": {
+        "translate": "gui.appliedenergistics2.StoredItems"
+      },
+      "position": {
+        "left": 8,
+        "top": 73
+      }
+    },
+    {
+      "id": "interface_patterns",
+      "text": {
+        "translate": "gui.appliedenergistics2.Patterns"
+      },
+      "position": {
+        "left": 8,
+        "top": 86
       }
     }
   ]

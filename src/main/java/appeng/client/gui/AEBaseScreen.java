@@ -18,46 +18,6 @@
 
 package appeng.client.gui;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import org.lwjgl.glfw.GLFW;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
 import appeng.client.gui.style.Position;
@@ -84,8 +44,52 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.glfw.GLFW;
+
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
+
+    private static final Blitter SLOT_BACKGROUND = Blitter.texture("guis/states.png").src(192, 192, 18, 18);
+
+    /**
+     * Commonly used id for text that is used to show the dialog title.
+     */
+    public static final String TEXT_ID_DIALOG_TITLE = "dialog_title";
 
     public static final int COLOR_DARK_GRAY = 0x404040;
 
@@ -113,7 +117,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private ScreenStyle style;
 
     public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title,
-            @Nullable Blitter background) {
+                        @Nullable Blitter background) {
         super(container, playerInventory, title);
         this.background = background;
         if (background != null) {
@@ -123,12 +127,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     protected void init() {
         super.init();
         this.verticalButtonBar.reset(guiLeft, guiTop);
         positionAnchoredSlots();
         if (style != null) {
-            applyStyle(style);
+            positionSlots(style);
         }
     }
 
@@ -142,7 +147,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
-    protected void applyStyle(ScreenStyle style) {
+    private void positionSlots(ScreenStyle style) {
 
         for (Map.Entry<SlotSemantic, SlotPosition> entry : style.getSlots().entrySet()) {
 
@@ -206,8 +211,18 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return this.container.inventorySlots;
     }
 
+    /**
+     * This method is called directly before rendering the screen, and should be used to perform layout,
+     * and other rendering-related updates.
+     */
+    @OverridingMethodsMustInvokeSuper
+    protected void updateBeforeRender() {
+    }
+
     @Override
     public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        this.updateBeforeRender();
+
         this.verticalButtonBar.layout();
 
         super.renderBackground(matrixStack);
@@ -241,7 +256,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     protected void drawGuiSlot(MatrixStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
-            float partialTicks) {
+                               float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.getTooltipAreaX();
             final int top = slot.getTooltipAreaY();
@@ -341,6 +356,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
                 Point pos = resolvePosition(text.getPosition());
 
+                if (text.isCenterHorizontally()) {
+                    int textWidth = this.font.getStringPropertyWidth(content);
+                    pos = pos.move(-textWidth / 2, 0);
+                }
+
                 this.font.func_243248_b(
                         matrixStack,
                         content,
@@ -356,7 +376,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
-            final int y) {
+                                                         final int y) {
 
         this.drawBG(matrixStack, guiLeft, guiTop, x, y, f);
 
@@ -379,14 +399,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         if (alwaysDraw || slot.isRenderDisabled()) {
             // If the slot is disabled, shade the background overlay
             float alpha = slot.isSlotEnabled() ? 1.0f : 0.4f;
-            if (background != null) {
-                Point pos = slot.getBackgroundPos();
-                background.copy()
-                        .src(slot.getBackgroundSrcRect())
-                        .dest(guiLeft + pos.getX(), guiTop + pos.getY())
-                        .color(1, 1, 1, alpha)
-                        .blit(matrixStack, getBlitOffset());
-            }
+
+            Point pos = slot.getBackgroundPos();
+            SLOT_BACKGROUND
+                    .dest(guiLeft + pos.getX(), guiTop + pos.getY())
+                    .color(1, 1, 1, alpha)
+                    .blit(matrixStack, getBlitOffset());
         }
     }
 
@@ -398,8 +416,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         if (btn == 1) {
             handlingRightClick = true;
             try {
-                for (final Object o : this.buttons) {
-                    final Widget widget = (Widget) o;
+                for (Widget widget : this.buttons) {
                     if (widget.isMouseOver(xCoord, yCoord)) {
                         return super.mouseClicked(xCoord, yCoord, 0);
                     }
@@ -467,7 +484,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected void handleMouseClick(@Nullable Slot slot, final int slotIdx, final int mouseButton,
-            final ClickType clickType) {
+                                    final ClickType clickType) {
 
         // Do not allow clicks on disabled player inventory slots
         if (slot instanceof DisabledSlot) {
@@ -608,7 +625,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-            float partialTicks) {
+                       float partialTicks) {
         if (background != null) {
             background.dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
         }
@@ -621,11 +638,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             return true;
         }
         return false;
-    }
-
-    public void bindTexture(final String base, final String file) {
-        final ResourceLocation loc = new ResourceLocation(base, "textures/" + file);
-        getMinecraft().getTextureManager().bindTexture(loc);
     }
 
     public void drawItem(final int x, final int y, final ItemStack is) {
@@ -769,8 +781,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     /**
      * Changes the text that will be displayed for a text defined in this screen's style file.
      */
-    protected final void setText(String id, ITextComponent text) {
-        getOrCreateTextOverride(id).setContent(text);
+    protected final void setTextContent(String id, ITextComponent content) {
+        getOrCreateTextOverride(id).setContent(content);
     }
 
 }

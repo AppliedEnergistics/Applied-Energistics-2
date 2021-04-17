@@ -18,11 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.client.gui.Blitter;
@@ -36,6 +31,9 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
@@ -50,7 +48,9 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     }
 
     @Override
-    protected void addButtons() {
+    public void init() {
+        super.init();
+
         this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
@@ -64,21 +64,11 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        if (this.blockMode != null) {
-            this.blockMode.set(this.container.getBlockingMode());
-        }
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        if (this.interfaceMode != null) {
-            this.interfaceMode.setState(this.container.getInterfaceTerminalMode() == YesNo.YES);
-        }
-
-        this.font.drawString(matrixStack, GuiText.Config.getLocal(), 8, 6 + 11 + 7, COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, COLOR_DARK_GRAY);
-
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
+        this.blockMode.set(this.container.getBlockingMode());
+        this.interfaceMode.setState(this.container.getInterfaceTerminalMode() == YesNo.YES);
     }
 
     private void openPriorityGui() {

@@ -95,8 +95,6 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
 
         this.incrementalUpdateHelper.clear();
 
-        CraftingStatus status;
-
         if (c instanceof CraftingCPUCluster) {
             this.cpu = (CraftingCPUCluster) c;
 
@@ -108,15 +106,10 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
                 incrementalUpdateHelper.addChange(stack);
             }
 
-            status = CraftingStatus.create(incrementalUpdateHelper, this.cpu);
-            incrementalUpdateHelper.commitChanges();
             this.cpu.addListener(this, null);
         } else {
-            status = CraftingStatus.EMPTY;
             this.cpu = null;
         }
-
-        sendPacketToClient(new CraftingStatusPacket(status));
     }
 
     public void cancelCrafting() {

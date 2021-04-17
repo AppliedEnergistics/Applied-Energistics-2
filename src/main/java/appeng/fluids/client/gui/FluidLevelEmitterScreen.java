@@ -18,6 +18,7 @@
 
 package appeng.fluids.client.gui;
 
+import appeng.client.gui.widgets.SettingToggleButton;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -38,6 +39,8 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/lvlemitter.png")
             .src(0, 0, 211, 197);
+
+    private SettingToggleButton<RedstoneMode> redstoneMode;
 
     private NumberEntryWidget level;
 
@@ -62,6 +65,17 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
         final int y = 40;
         final int x = 80 + 57;
         this.guiSlots.add(new FluidSlotWidget(this.container.getFluidConfigInventory(), 0, 0, x, y));
+
+        this.redstoneMode = new ServerSettingToggleButton<>(0, 0,
+                Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
+        this.addToLeftToolbar(this.redstoneMode);
+    }
+
+    @Override
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
+        this.redstoneMode.set(this.container.getRedStoneMode());
     }
 
     private void saveReportingValue() {
@@ -69,28 +83,10 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     }
 
     @Override
-    protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
-                Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
-        this.addButton(this.redstoneMode);
-    }
-
-    @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.level.render(matrixStack, mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
-        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
-
-        this.font.drawString(matrixStack, GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
-    }
-
-    @Override
-    protected void handleButtonVisibility() {
     }
 
 }

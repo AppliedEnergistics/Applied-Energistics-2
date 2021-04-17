@@ -71,13 +71,13 @@ public enum GuiText {
 
     ConfirmCrafting, Stored, Crafting, Scheduled, CraftingStatus, Cancel, ETA, ETAFormat,
 
-    FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start, Bytes,
+    FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start,
 
-    CraftingCPU, Automatic, CoProcessors, Simulation, Missing,
+    SelectedCraftingCPU, Automatic, Simulation, Missing, ConfirmCraftCpuStatus, ConfirmCraftNoCpu,
 
     InterfaceTerminal, NoCraftingCPUs, Clean, InvalidPattern,
 
-    InterfaceTerminalHint, Range, TransparentFacades, TransparentFacadesHint,
+    InterfaceTerminalHint, WirelessRange, TransparentFacades, TransparentFacadesHint,
 
     NoCraftingJobs, CPUs, FacadeCrafting, inWorldCraftingPresses, ChargedQuartzFind,
 

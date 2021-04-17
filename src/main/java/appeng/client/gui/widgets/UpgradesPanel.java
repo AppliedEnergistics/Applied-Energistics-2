@@ -2,6 +2,7 @@ package appeng.client.gui.widgets;
 
 import java.util.List;
 
+import appeng.container.slot.AppEngSlot;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.Rectangle2d;
@@ -152,7 +153,7 @@ public final class UpgradesPanel {
     private int getUpgradeSlotCount() {
         int count = 0;
         for (Slot slot : slots) {
-            if (!(slot instanceof IOptionalSlot) || ((IOptionalSlot) slot).isSlotEnabled()) {
+            if (slot instanceof AppEngSlot && ((AppEngSlot) slot).isSlotEnabled()) {
                 count++;
             }
         }

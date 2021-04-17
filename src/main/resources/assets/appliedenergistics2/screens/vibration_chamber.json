@@ -1,10 +1,25 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json"
+  ],
   "slots": {
     "MACHINE_INPUT": {
       "left": 80,
       "top": 37
     }
-  }
+  },
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.VibrationChamber"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
 }

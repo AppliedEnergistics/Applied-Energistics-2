@@ -49,18 +49,6 @@ import appeng.core.sync.packets.ConfigValuePacket;
 public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScreen<T> {
     private static final Blitter BACKGROUND = Blitter.texture("guis/craftingcpu.png").src(0, 0, 238, 184);
 
-    private static final int SCROLLBAR_TOP = 19;
-    private static final int SCROLLBAR_LEFT = 218;
-    private static final int SCROLLBAR_HEIGHT = 137;
-
-    private static final int CANCEL_LEFT_OFFSET = 163;
-    private static final int CANCEL_TOP_OFFSET = 25;
-    private static final int CANCEL_HEIGHT = 20;
-    private static final int CANCEL_WIDTH = 50;
-
-    private static final int TITLE_TOP_OFFSET = 7;
-    private static final int TITLE_LEFT_OFFSET = 8;
-
     private final CraftingStatusTableRenderer table;
 
     private Button cancel;
@@ -72,8 +60,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
 
         this.table = new CraftingStatusTableRenderer(this, 9, 19);
 
-        final Scrollbar scrollbar = new Scrollbar();
-        this.setScrollBar(scrollbar);
+        this.setScrollBar(new Scrollbar().setTop(19).setLeft(218).setHeight(137));
     }
 
     private void cancel() {
@@ -83,16 +70,17 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     @Override
     public void init() {
         super.init();
-        this.setScrollBar();
-        this.cancel = new Button(this.guiLeft + CANCEL_LEFT_OFFSET, this.guiTop + this.ySize - CANCEL_TOP_OFFSET,
-                CANCEL_WIDTH, CANCEL_HEIGHT, GuiText.Cancel.text(), btn -> cancel());
+
+        this.cancel = new Button(this.guiLeft + 163, this.guiTop + this.ySize - 25,
+                50, 20, GuiText.Cancel.text(), btn -> cancel());
         this.addButton(this.cancel);
     }
 
-    private void setScrollBar() {
-        final int size = this.status != null ? this.status.getEntries().size() : 0;
+    @Override
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        this.getScrollBar().setTop(SCROLLBAR_TOP).setLeft(SCROLLBAR_LEFT).setHeight(SCROLLBAR_HEIGHT);
+        final int size = this.status != null ? this.status.getEntries().size() : 0;
         this.getScrollBar().setRange(0, CraftingStatusTableRenderer.getScrollableRows(size), 1);
     }
 
@@ -110,7 +98,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        String title = this.getGuiDisplayName(GuiText.CraftingStatus.text()).getString();
+        ITextComponent title = this.getGuiDisplayName(GuiText.CraftingStatus.text());
 
         if (status != null) {
             this.table.render(matrixStack, mouseX, mouseY, status.getEntries(), getScrollBar().getCurrentScroll());
@@ -125,12 +113,11 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(eta, TimeUnit.NANOSECONDS);
                 final String etaTimeText = DurationFormatUtils.formatDuration(etaInMilliseconds,
                         GuiText.ETAFormat.getLocal());
-                title += " - " + etaTimeText;
+                title = title.deepCopy().appendString(" - " + etaTimeText);
             }
         }
 
-        this.font.drawString(matrixStack, title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, COLOR_DARK_GRAY);
-
+        setTextContent(TEXT_ID_DIALOG_TITLE, title);
     }
 
     public void postUpdate(CraftingStatus status) {
@@ -164,8 +151,6 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                     status.getStartItemCount(),
                     sortedEntries);
         }
-
-        this.setScrollBar();
     }
 
 }

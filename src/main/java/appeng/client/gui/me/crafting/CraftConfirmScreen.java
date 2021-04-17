@@ -18,17 +18,6 @@
 
 package appeng.client.gui.me.crafting;
 
-import java.text.NumberFormat;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import org.lwjgl.glfw.GLFW;
-
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.implementations.AESubScreen;
@@ -38,6 +27,15 @@ import appeng.container.me.crafting.CraftingPlanSummary;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import org.lwjgl.glfw.GLFW;
+
+import java.text.NumberFormat;
 
 /**
  * This screen shows the computed crafting plan and allows the player to select a CPU on which it should be scheduled
@@ -78,23 +76,44 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         addButton(new Button(this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.text(),
                 btn -> subGui.goBack()));
 
-        this.setScrollBar();
+        this.getScrollBar().setTop(19).setLeft(218).setHeight(114);
     }
 
     @Override
-    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
-        this.updateCPUButtonText();
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
+        this.selectCPU.setMessage(getNextCpuButtonLabel());
 
         CraftingPlanSummary plan = container.getPlan();
         boolean planIsStartable = plan != null && !plan.isSimulation();
         this.start.active = !this.container.hasNoCPU() && planIsStartable;
         this.selectCPU.active = planIsStartable;
 
-        super.render(matrixStack, mouseX, mouseY, btn);
-    }
+        // Show additional status about the selected CPU and plan when the planning is done
+        ITextComponent planDetails = GuiText.CalculatingWait.text();
+        ITextComponent cpuDetails = StringTextComponent.EMPTY;
+        if (plan != null) {
+            String byteUsed = NumberFormat.getInstance().format(plan.getUsedBytes());
+            planDetails = GuiText.BytesUsed.text(byteUsed);
 
-    private void updateCPUButtonText() {
-        this.selectCPU.setMessage(getNextCpuButtonLabel());
+            if (plan.isSimulation()) {
+                cpuDetails = GuiText.Simulation.text();
+            } else if (this.container.getCpuAvailableBytes() > 0) {
+                cpuDetails = GuiText.ConfirmCraftCpuStatus.text(
+                        this.container.getCpuAvailableBytes(),
+                        this.container.getCpuCoProcessors()
+                );
+            } else {
+                cpuDetails = GuiText.ConfirmCraftNoCpu.text();
+            }
+        }
+
+        setTextContent(TEXT_ID_DIALOG_TITLE, GuiText.CraftingPlan.text(planDetails));
+        setTextContent("cpu_status", cpuDetails);
+
+        final int size = plan != null ? plan.getEntries().size() : 0;
+        this.getScrollBar().setRange(0, AbstractTableRenderer.getScrollableRows(size), 1);
     }
 
     private ITextComponent getNextCpuButtonLabel() {
@@ -109,57 +128,21 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
             cpuName = this.container.cpuName;
         }
 
-        return GuiText.CraftingCPU.withSuffix(": ").append(cpuName);
+        return GuiText.SelectedCraftingCPU.text(cpuName);
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        String titleSuffix;
-        CraftingPlanSummary plan = this.container.getPlan();
-        if (plan == null) {
-            titleSuffix = GuiText.CalculatingWait.getLocal();
-        } else {
-            String byteUsed = NumberFormat.getInstance().format(plan.getUsedBytes());
-            titleSuffix = byteUsed + ' ' + GuiText.BytesUsed.getLocal();
-        }
-        this.font.drawString(matrixStack, GuiText.CraftingPlan.getLocal() + " - " + titleSuffix, 8, 7, COLOR_DARK_GRAY);
 
+        CraftingPlanSummary plan = container.getPlan();
         if (plan != null) {
             this.table.render(matrixStack, mouseX, mouseY, plan.getEntries(), getScrollBar().getCurrentScroll());
-
-            // Show additional status about the selected CPU
-            String cpuStatus;
-            if (plan.isSimulation()) {
-                cpuStatus = GuiText.Simulation.getLocal();
-            } else {
-                cpuStatus = this.container.getCpuAvailableBytes() > 0
-                        ? (GuiText.Bytes.getLocal() + ": " + this.container.getCpuAvailableBytes() + " : "
-                                + GuiText.CoProcessors.getLocal() + ": " + this.container.getCpuCoProcessors())
-                        : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
-            }
-
-            final int offset = (219 - this.font.getStringWidth(cpuStatus)) / 2;
-            this.font.drawString(matrixStack, cpuStatus, offset, 165, COLOR_DARK_GRAY);
         }
 
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
-        this.setScrollBar();
-        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
-    }
-
-    private void setScrollBar() {
-        CraftingPlanSummary plan = container.getPlan();
-        final int size = plan != null ? plan.getEntries().size() : 0;
-
-        this.getScrollBar().setTop(19).setLeft(218).setHeight(114);
-        this.getScrollBar().setRange(0, AbstractTableRenderer.getScrollableRows(size), 1);
-    }
-
+    // Allow players to confirm a craft via the enter key
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
         if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {

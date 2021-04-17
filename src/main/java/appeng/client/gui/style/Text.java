@@ -21,12 +21,17 @@ public class Text {
     /**
      * The color to show the text in.
      */
-    private PaletteColor color;
+    private PaletteColor color = PaletteColor.DEFAULT_TEXT_COLOR;
 
     /**
      * The position of the text on the screen.
      */
     private Position position;
+
+    /**
+     * Center on the computed x position.
+     */
+    private boolean centerHorizontally;
 
     public String getId() {
         return id;
@@ -60,4 +65,11 @@ public class Text {
         this.position = position;
     }
 
+    public boolean isCenterHorizontally() {
+        return centerHorizontally;
+    }
+
+    public void setCenterHorizontally(boolean centerHorizontally) {
+        this.centerHorizontally = centerHorizontally;
+    }
 }
