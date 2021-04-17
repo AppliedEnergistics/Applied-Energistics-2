@@ -415,7 +415,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             errorMessage.append("Final output: ").append(finalOutput.copy().setStackSize(this.startItemCount));
             throw new RuntimeException(errorMessage.toString());
         }
-        this.waitingFor.resetStatus();
+        Preconditions.checkState(waitingFor.isEmpty(),
+                "When completing a job, the CPU should not be waiting for more items");
 
         this.remainingItemCount = 0;
         this.startItemCount = 0;
