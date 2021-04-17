@@ -275,6 +275,10 @@
       "items": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique identifier for this text which will be used by the code to override properties"
+          },
           "text": {
             "$ref": "#/definitions/text"
           },

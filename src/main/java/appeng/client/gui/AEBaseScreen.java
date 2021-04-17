@@ -109,6 +109,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private Slot bl_clicked;
     private boolean handlingRightClick;
     protected final List<CustomSlotWidget> guiSlots = new ArrayList<>();
+    private final Map<String, TextOverride> textOverrides = new HashMap<>();
     private ScreenStyle style;
 
     public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title,
@@ -319,13 +320,30 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
         if (style != null) {
             for (Text text : style.getText()) {
+                // Process text overrides
+                TextOverride override = null;
+                if (text.getId() != null) {
+                    override = textOverrides.get(text.getId());
+                }
+
+                // Don't draw if the screen decided to hide this
+                if (override != null && override.isHidden()) {
+                    continue;
+                }
+
                 int color = style.getColor(text.getColor()).toARGB();
 
                 Point pos = resolvePosition(text.getPosition());
 
+                // Allow overrides for which content is shown
+                ITextComponent content = text.getText();
+                if (override != null && override.getContent() != null) {
+                    content = override.getContent();
+                }
+
                 this.font.func_243248_b(
                         matrixStack,
-                        text.getText(),
+                        content,
                         pos.getX(),
                         pos.getY(),
                         color);
@@ -735,6 +753,24 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     protected void fillRect(MatrixStack matrices, Rectangle2d rect, int color) {
         fill(matrices, rect.getX(), rect.getY(), rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight(), color);
+    }
+
+    private TextOverride getOrCreateTextOverride(String id) {
+        return textOverrides.computeIfAbsent(id, x -> new TextOverride());
+    }
+
+    /**
+     * Hides (or shows) a text that is defined in this screen's style file.
+     */
+    protected final void setTextHidden(String id, boolean hidden) {
+        getOrCreateTextOverride(id).setHidden(hidden);
+    }
+
+    /**
+     * Changes the text that will be displayed for a text defined in this screen's style file.
+     */
+    protected final void setText(String id, ITextComponent text) {
+        getOrCreateTextOverride(id).setContent(text);
     }
 
 }

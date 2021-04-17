@@ -33,7 +33,6 @@ import appeng.client.gui.me.common.TerminalStyle;
 import appeng.client.gui.me.items.ItemTerminalScreen;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.implementations.SecurityStationContainer;
-import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 
@@ -52,8 +51,6 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     public SecurityStationScreen(TerminalStyle style, SecurityStationContainer container,
             PlayerInventory playerInventory, ITextComponent title) {
         super(style, container, playerInventory, title);
-
-        anchorSlotToBottom(container.getConfigSlot(), 36, 116);
     }
 
     private void toggleOption(SecurityPermissions permission) {
@@ -98,14 +95,6 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
 
         // Draw the encoding-box on the right
         ENCODING_BG.dest(offsetX + xSize + 3, offsetY).blit(matrixStack, getBlitOffset());
-    }
-
-    @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
-        this.font.drawString(matrixStack, GuiText.SecurityCardEditor.getLocal(), 8,
-                this.ySize - 96 + 1 - 33, COLOR_DARK_GRAY);
     }
 
     @Override
