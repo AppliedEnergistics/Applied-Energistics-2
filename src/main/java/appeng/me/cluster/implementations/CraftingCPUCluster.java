@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.CraftingInventory;
@@ -233,7 +234,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
-        if (!(input instanceof IAEItemStack)) {
+        // also stop accepting items when the job is complete, i.e. to prevent re-insertion when pushing out
+        // items during storeItems
+        if (input == null || isComplete) {
             return input;
         }
 
@@ -396,6 +399,24 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             logStack.setStackSize(this.startItemCount);
             AELog.crafting(LOG_MARK_AS_COMPLETE, logStack);
         }
+
+        // See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5158
+        // We suspect this is caused by waitingFor not being empty when the job is marked as complete
+        // This code is intended to analyze this problem further if it occurs again
+        if (!this.waitingFor.isEmpty()) {
+            StringBuilder errorMessage = new StringBuilder("A crafting job completed while still waiting for items:\n");
+            for (IAEItemStack stack : this.waitingFor) {
+                errorMessage.append(" - ").append(stack).append("\n");
+            }
+            errorMessage.append("Current inventory:\n");
+            for (IAEItemStack stack : inventory.getItemList()) {
+                errorMessage.append(" - ").append(stack).append("\n");
+            }
+            errorMessage.append("Final output: ").append(finalOutput.copy().setStackSize(this.startItemCount));
+            throw new RuntimeException(errorMessage.toString());
+        }
+        Preconditions.checkState(waitingFor.isEmpty(),
+                "When completing a job, the CPU should not be waiting for more items");
 
         this.remainingItemCount = 0;
         this.startItemCount = 0;
@@ -781,6 +802,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
      * Tries to dump all locally stored items back into the storage network.
      */
     private void storeItems() {
+        Preconditions.checkState(isComplete, "CPU should be complete to prevent re-insertion when dumping items");
         final IGrid g = this.getGrid();
 
         if (g == null) {
