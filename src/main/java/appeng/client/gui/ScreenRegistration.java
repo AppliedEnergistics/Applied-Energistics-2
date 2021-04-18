@@ -1,5 +1,19 @@
 package appeng.client.gui;
 
+import java.io.FileNotFoundException;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import net.minecraft.client.gui.IHasContainer;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.implementations.CellWorkbenchScreen;
 import appeng.client.gui.implementations.ChestScreen;
 import appeng.client.gui.implementations.CondenserScreen;
@@ -81,18 +95,6 @@ import appeng.fluids.container.FluidIOBusContainer;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;
-import com.google.common.annotations.VisibleForTesting;
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.text.ITextComponent;
-
-import java.io.FileNotFoundException;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 /**
  * The server sends the client a container identifier, which the client then maps onto a screen using
@@ -178,8 +180,8 @@ public class ScreenRegistration {
      * Registers a screen for a given container and ensures the given style is applied after opening the screen.
      */
     private static <M extends AEBaseContainer, U extends AEBaseScreen<M>> void register(ContainerType<M> type,
-                                                                                        StyledScreenFactory<M, U> factory,
-                                                                                        String stylePath) {
+            StyledScreenFactory<M, U> factory,
+            String stylePath) {
         CONTAINER_STYLES.put(type, stylePath);
         ScreenManager.<M, U>registerFactory(type, (container, playerInv, title) -> {
             ScreenStyle style;

@@ -28,9 +28,8 @@ public class OptionalFluidSlotWidget extends FluidSlotWidget implements IOptiona
     private final IOptionalSlotHost containerBus;
     private final int groupNum;
 
-    public OptionalFluidSlotWidget(IAEFluidTank fluids, final IOptionalSlotHost containerBus, int slot, int id,
-            int groupNum, int x, int y, int xoffs, int yoffs) {
-        super(fluids, slot, id, x + xoffs * 18, y + yoffs * 18);
+    public OptionalFluidSlotWidget(IAEFluidTank fluids, final IOptionalSlotHost containerBus, int slot, int groupNum) {
+        super(fluids, slot);
         this.containerBus = containerBus;
         this.groupNum = groupNum;
     }

@@ -27,19 +27,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
-    private final int x;
-    private final int y;
-    private final int id;
+import appeng.client.Point;
 
-    public CustomSlotWidget(final int id, final int x, final int y) {
-        this.x = x;
-        this.y = y;
-        this.id = id;
+public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
+    private final int serverId;
+    private int x;
+    private int y;
+
+    public CustomSlotWidget(int serverId) {
+        this.serverId = serverId;
     }
 
     public int getId() {
-        return this.id;
+        return this.serverId;
+    }
+
+    public void setPos(Point pos) {
+        this.x = pos.getX();
+        this.y = pos.getY();
     }
 
     public boolean canClick(final PlayerEntity player) {

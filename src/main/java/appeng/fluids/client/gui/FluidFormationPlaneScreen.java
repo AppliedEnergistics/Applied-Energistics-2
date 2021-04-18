@@ -22,9 +22,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.TabButton;
+import appeng.container.SlotSemantic;
 import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -39,14 +39,6 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-
-        final int xo = 8;
-        final int yo = 23 + 6;
 
         final IAEFluidTank config = container.getFluidConfigInventory();
 
@@ -54,12 +46,17 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
             for (int x = 0; x < 9; x++) {
                 final int idx = y * 9 + x;
                 if (y < 2) {
-                    this.guiSlots.add(new FluidSlotWidget(config, idx, idx, xo + x * 18, yo + y * 18));
+                    addSlot(new FluidSlotWidget(config, idx), SlotSemantic.CONFIG);
                 } else {
-                    this.guiSlots.add(new OptionalFluidSlotWidget(config, container, idx, idx, y - 2, xo, yo, x, y));
+                    addSlot(new OptionalFluidSlotWidget(config, container, idx, y - 2), SlotSemantic.CONFIG);
                 }
             }
         }
+    }
+
+    @Override
+    public void init() {
+        super.init();
 
         this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));

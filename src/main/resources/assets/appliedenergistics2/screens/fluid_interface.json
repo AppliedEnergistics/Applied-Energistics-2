@@ -7,18 +7,8 @@
   },
   "slots": {
     "CONFIG": {
-      "left": 8,
+      "left": 35,
       "top": 35,
-      "grid": "HORIZONTAL"
-    },
-    "STORAGE": {
-      "left": 8,
-      "top": 53,
-      "grid": "HORIZONTAL"
-    },
-    "ENCODED_PATTERN": {
-      "left": 8,
-      "top": 90,
       "grid": "HORIZONTAL"
     }
   },
@@ -43,7 +33,7 @@
     },
     "interface_stored_fluids": {
       "text": {
-        "translate": "gui.appliedenergistics2.StoredItems"
+        "translate": "gui.appliedenergistics2.StoredFluids"
       },
       "position": {
         "left": 35,

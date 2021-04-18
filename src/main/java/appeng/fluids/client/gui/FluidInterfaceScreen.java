@@ -22,9 +22,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.TabButton;
+import appeng.container.SlotSemantic;
 import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -40,20 +40,22 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
     public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
+
+        final IAEFluidTank configFluids = this.container.getFluidConfigInventory();
+        for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
+            addSlot(new FluidSlotWidget(configFluids, i), SlotSemantic.CONFIG);
+        }
     }
 
     @Override
     public void init() {
         super.init();
 
-        final IAEFluidTank configFluids = this.container.getFluidConfigInventory();
         final IAEFluidTank fluidTank = this.container.getTanks();
-
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
             final FluidTankWidget guiTank = new FluidTankWidget(fluidTank, i, this.getGuiLeft() + 35 + 18 * i,
                     this.getGuiTop() + 53, 16, 68);
             this.addButton(guiTank);
-            this.guiSlots.add(new FluidSlotWidget(configFluids, i, i, 35 + 18 * i, 35));
         }
 
         this.addButton(new TabButton(this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.text(),

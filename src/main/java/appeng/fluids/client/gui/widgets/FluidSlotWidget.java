@@ -47,12 +47,10 @@ import appeng.fluids.util.IAEFluidTank;
 
 public class FluidSlotWidget extends CustomSlotWidget {
     private final IAEFluidTank fluids;
-    private final int slot;
 
-    public FluidSlotWidget(final IAEFluidTank fluids, final int slot, final int id, final int x, final int y) {
-        super(id, x, y);
+    public FluidSlotWidget(IAEFluidTank fluids, int slot) {
+        super(slot);
         this.fluids = fluids;
-        this.slot = slot;
     }
 
     @Override
@@ -113,11 +111,11 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     public IAEFluidStack getFluidStack() {
-        return this.fluids.getFluidInSlot(this.slot);
+        return this.fluids.getFluidInSlot(getId());
     }
 
     public void setFluidStack(final IAEFluidStack stack) {
-        this.fluids.setFluidInSlot(this.slot, stack);
+        this.fluids.setFluidInSlot(getId(), stack);
         NetworkHandler.instance()
                 .sendToServer(new FluidSlotPacket(Collections.singletonMap(this.getId(), this.getFluidStack())));
     }

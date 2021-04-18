@@ -28,10 +28,10 @@ import appeng.api.config.Settings;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.client.gui.implementations.UpgradeableScreen;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.container.SlotSemantic;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 
@@ -44,6 +44,8 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
+
+        addSlot(new FluidSlotWidget(this.container.getFluidConfigInventory(), 0), SlotSemantic.CONFIG);
     }
 
     @Override
@@ -58,10 +60,6 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
         this.level.setOnConfirm(this::closeScreen);
 
         this.changeFocus(true);
-
-        final int y = 40;
-        final int x = 80 + 57;
-        this.guiSlots.add(new FluidSlotWidget(this.container.getFluidConfigInventory(), 0, 0, x, y));
 
         this.redstoneMode = new ServerSettingToggleButton<>(0, 0,
                 Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);

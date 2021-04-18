@@ -24,11 +24,11 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
-import appeng.client.gui.implementations.IOBusScreen;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.container.SlotSemantic;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidIOBusContainer;
@@ -45,26 +45,24 @@ public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
     public FluidIOBusScreen(FluidIOBusContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
+
+        final IAEFluidTank inv = this.container.getFluidConfigInventory();
+
+        addSlot(new FluidSlotWidget(inv, 0), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, container, 1, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, container, 2, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, container, 3, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, container, 4, 1), SlotSemantic.CONFIG);
+
+        addSlot(new OptionalFluidSlotWidget(inv, container, 5, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, container, 6, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, container, 7, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, container, 8, 2), SlotSemantic.CONFIG);
     }
 
     @Override
     public void init() {
         super.init();
-
-        final IAEFluidTank inv = this.container.getFluidConfigInventory();
-        final int y = 40;
-        final int x = 80;
-
-        this.guiSlots.add(new FluidSlotWidget(inv, 0, 0, x, y));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 1, 1, 1, x, y, -1, 0));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 2, 2, 1, x, y, 1, 0));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 3, 3, 1, x, y, 0, -1));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 4, 4, 1, x, y, 0, 1));
-
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 5, 5, 2, x, y, -1, -1));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 6, 6, 2, x, y, 1, -1));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 7, 7, 2, x, y, -1, 1));
-        this.guiSlots.add(new OptionalFluidSlotWidget(inv, container, 8, 8, 2, x, y, 1, 1));
 
         this.redstoneMode = new ServerSettingToggleButton<>(0, 0, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addToLeftToolbar(this.redstoneMode);
