@@ -1,6 +1,6 @@
 {
-  "$schema": "schema.json",
-  "includes": ["common/me_terminal.json"],
+  "$schema": "../schema.json",
+  "includes": ["base_terminal.json"],
   "slots": {
     "BLANK_PATTERN": {
       "left": 147,
@@ -46,5 +46,27 @@
         "bottom": 175
       }
     }
-  ]
+  ],
+  "images": {
+    "terminalHeader": {
+      "texture": "guis/pattern.png",
+      "srcRect": [0, 0, 195, 17]
+    },
+    "terminalFirstRow": {
+      "texture": "guis/pattern.png",
+      "srcRect": [0, 17, 195, 18]
+    },
+    "terminalRow": {
+      "texture": "guis/pattern.png",
+      "srcRect": [0, 35, 195, 18]
+    },
+    "terminalLastRow": {
+      "texture": "guis/pattern.png",
+      "srcRect": [0, 53, 195, 18]
+    },
+    "terminalBottom": {
+      "texture": "guis/pattern.png",
+      "srcRect": [0, 71, 195, 178]
+    }
+  }
 }

@@ -109,6 +109,8 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
             this.cpu.addListener(this, null);
         } else {
             this.cpu = null;
+            // Clear the crafting status
+            sendPacketToClient(new CraftingStatusPacket(CraftingStatus.EMPTY));
         }
     }
 

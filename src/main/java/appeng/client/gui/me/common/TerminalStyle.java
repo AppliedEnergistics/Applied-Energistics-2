@@ -1,19 +1,17 @@
 package appeng.client.gui.me.common;
 
-import javax.annotation.Nullable;
-
+import appeng.client.Point;
+import appeng.client.gui.ScreenRegistration;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.client.Point;
-import appeng.client.gui.ScreenRegistration;
-import appeng.client.gui.style.Blitter;
-import appeng.client.gui.style.ScreenStyle;
+import javax.annotation.Nullable;
 
 /**
  * Describes the appearance of a terminal screen.
@@ -65,13 +63,15 @@ public final class TerminalStyle {
      */
     private boolean showTooltipsWithItemInHand;
 
-    public TerminalStyle(Blitter header, Blitter firstRow, Blitter row, Blitter lastRow, Blitter bottom,
-            int slotsPerRow, Rectangle2d searchFieldRect, Integer maxRows) {
-        this.header = header;
-        this.firstRow = firstRow;
-        this.row = row;
-        this.lastRow = lastRow;
-        this.bottom = bottom;
+    public TerminalStyle(ScreenStyle screenStyle,
+                         int slotsPerRow,
+                         Rectangle2d searchFieldRect,
+                         Integer maxRows) {
+        this.header = screenStyle.getImage("terminalHeader");
+        this.firstRow = screenStyle.getImage("terminalFirstRow");
+        this.row = screenStyle.getImage("terminalRow");
+        this.lastRow = screenStyle.getImage("terminalLastRow");
+        this.bottom = screenStyle.getImage("terminalBottom");
         this.slotsPerRow = slotsPerRow;
         this.searchFieldRect = searchFieldRect;
         this.maxRows = maxRows;
@@ -143,7 +143,7 @@ public final class TerminalStyle {
 
     /**
      * @return The number of rows this terminal should display (at most). If null, the player's chosen terminal style
-     *         determines the number of rows.
+     * determines the number of rows.
      */
     @Nullable
     public Integer getMaxRows() {
@@ -160,15 +160,6 @@ public final class TerminalStyle {
         result += lastRow.getSrcHeight();
         result += bottom.getSrcHeight();
         return result;
-    }
-
-    /**
-     * Creates a screen factory from a screen constructor that takes a terminal style as the first argument.
-     */
-    public <M extends Container, U extends Screen & IHasContainer<M>> ScreenRegistration.StyledScreenFactory<M, U> factory(
-            TerminalScreenFactory<M, U> factory) {
-        return (container, playerInv, title, screenStyle) -> factory.create(this, container, playerInv, title,
-                screenStyle);
     }
 
     public boolean hasSortByButton() {
@@ -205,11 +196,6 @@ public final class TerminalStyle {
     public TerminalStyle setStackSizeRenderer(StackSizeRenderer renderer) {
         this.stackSizeRenderer = renderer;
         return this;
-    }
-
-    @FunctionalInterface
-    public interface TerminalScreenFactory<T extends Container, U extends Screen & IHasContainer<T>> {
-        U create(TerminalStyle style, T t, PlayerInventory pi, ITextComponent title, ScreenStyle screenStyle);
     }
 
 }
