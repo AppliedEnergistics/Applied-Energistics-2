@@ -1,6 +1,10 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json"],
+  "background": {
+    "texture": "guis/priority.png",
+    "srcRect": [0, 0, 176, 107]
+  },
   "text": [
     {
       "id": "dialog_title",

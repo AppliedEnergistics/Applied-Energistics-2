@@ -9,7 +9,8 @@ import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.IOBusContainer;
@@ -17,17 +18,14 @@ import appeng.parts.automation.ExportBusPart;
 
 public class IOBusScreen extends UpgradeableScreen<IOBusContainer> {
 
-    // Default background for import/export buses
-    public static final Blitter BACKGROUND = Blitter.texture("guis/bus.png")
-            .src(0, 0, 176, 184);
-
     private SettingToggleButton<RedstoneMode> redstoneMode;
     private SettingToggleButton<FuzzyMode> fuzzyMode;
     private SettingToggleButton<YesNo> craftMode;
     private SettingToggleButton<SchedulingMode> schedulingMode;
 
-    public IOBusScreen(IOBusContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public IOBusScreen(IOBusContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

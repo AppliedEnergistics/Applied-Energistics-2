@@ -43,6 +43,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.container.me.common.GridInventoryEntry;
 import appeng.container.me.fluids.FluidTerminalContainer;
@@ -54,8 +55,8 @@ import appeng.util.prioritylist.IPartitionList;
 public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, FluidTerminalContainer> {
 
     public FluidTerminalScreen(TerminalStyle style, FluidTerminalContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(style, container, playerInventory, title);
+            ITextComponent title, ScreenStyle style1) {
+        super(style, container, playerInventory, title, style1);
     }
 
     @Override

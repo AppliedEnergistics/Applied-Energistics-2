@@ -1,6 +1,10 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/io_port.png",
+    "srcRect": [0, 0, 176, 184]
+  },
   "slots": {
     "MACHINE_INPUT": {
       "left": 19,

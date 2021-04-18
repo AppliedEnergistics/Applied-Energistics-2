@@ -18,14 +18,13 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
@@ -39,14 +38,12 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/interface.png")
-            .src(0, 0, 176, 211);
-
     private SettingToggleButton<YesNo> blockMode;
     private ToggleButton interfaceMode;
 
-    public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

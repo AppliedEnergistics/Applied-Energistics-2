@@ -22,21 +22,21 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.MolecularAssemblerContainer;
 
 public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssemblerContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/molecular_assembler.png").src(0, 0, 176, 197);
-    private static final Blitter PROGRESS_BAR = BACKGROUND.copy().src(148, 201, 6, 18);
+    private static final Blitter PROGRESS_BAR = Blitter.texture("guis/molecular_assembler.png").src(148, 201, 6, 18);
 
     private ProgressBar pb;
 
     public MolecularAssemblerScreen(MolecularAssemblerContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

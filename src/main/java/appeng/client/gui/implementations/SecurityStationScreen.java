@@ -28,9 +28,10 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
-import appeng.client.gui.Blitter;
 import appeng.client.gui.me.common.TerminalStyle;
 import appeng.client.gui.me.items.ItemTerminalScreen;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.core.sync.network.NetworkHandler;
@@ -49,8 +50,8 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     private ToggleButton security;
 
     public SecurityStationScreen(TerminalStyle style, SecurityStationContainer container,
-            PlayerInventory playerInventory, ITextComponent title) {
-        super(style, container, playerInventory, title);
+            PlayerInventory playerInventory, ITextComponent title, ScreenStyle style1) {
+        super(style, container, playerInventory, title, style1);
     }
 
     private void toggleOption(SecurityPermissions permission) {

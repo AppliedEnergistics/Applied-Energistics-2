@@ -1,12 +1,18 @@
 package appeng.client.gui;
 
+import java.io.FileNotFoundException;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.implementations.CellWorkbenchScreen;
 import appeng.client.gui.implementations.ChestScreen;
@@ -39,11 +45,11 @@ import appeng.client.gui.me.fluids.FluidTerminalScreen;
 import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.client.gui.me.items.CraftingTermScreen;
 import appeng.client.gui.me.items.ItemTerminalScreen;
-import appeng.client.gui.me.items.MEPortableCellScreen;
 import appeng.client.gui.me.items.PatternTermScreen;
-import appeng.client.gui.me.items.WirelessTermScreen;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.client.gui.me.networktool.NetworkToolScreen;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.StyleManager;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.container.implementations.ChestContainer;
@@ -113,11 +119,15 @@ public class ScreenRegistration {
                 "/screens/item_terminal.json");
         register(
                 MEPortableCellContainer.TYPE,
-                TerminalStyles.PORTABLE_CELL.factory(MEPortableCellScreen::new),
+                TerminalStyles.PORTABLE_CELL
+                        .<MEPortableCellContainer, ItemTerminalScreen<MEPortableCellContainer>>factory(
+                                ItemTerminalScreen::new),
                 "/screens/portable_cell.json");
         register(
                 WirelessTermContainer.TYPE,
-                TerminalStyles.WIRELESS_TERMINAL.factory(WirelessTermScreen::new),
+                TerminalStyles.WIRELESS_TERMINAL
+                        .<WirelessTermContainer, ItemTerminalScreen<WirelessTermContainer>>factory(
+                                ItemTerminalScreen::new),
                 "/screens/wireless_terminal.json");
         register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
         ScreenRegistration.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
@@ -178,13 +188,26 @@ public class ScreenRegistration {
      * Registers a screen for a given container and ensures the given style is applied after opening the screen.
      */
     private static <M extends AEBaseContainer, U extends AEBaseScreen<M>> void register(ContainerType<M> type,
-            ScreenManager.IScreenFactory<M, U> factory, String stylePath) {
+            StyledScreenFactory<M, U> factory,
+            String stylePath) {
         CONTAINER_STYLES.put(type, stylePath);
         ScreenManager.<M, U>registerFactory(type, (container, playerInv, title) -> {
-            U screen = factory.create(container, playerInv, title);
-            screen.loadStyle(stylePath);
-            return screen;
+            ScreenStyle style;
+            try {
+                style = StyleManager.loadStyleDoc(stylePath);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException("Failed to read Screen JSON file: " + stylePath + ": " + e.getMessage());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to read Screen JSON file: " + stylePath, e);
+            }
+
+            return factory.create(container, playerInv, title, style);
         });
+    }
+
+    @FunctionalInterface
+    public interface StyledScreenFactory<T extends Container, U extends Screen & IHasContainer<T>> {
+        U create(T t, PlayerInventory pi, ITextComponent title, ScreenStyle style);
     }
 
 }

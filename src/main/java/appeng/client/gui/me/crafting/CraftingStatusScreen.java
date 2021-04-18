@@ -24,6 +24,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.implementations.AESubScreen;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.container.me.crafting.CraftingStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -40,8 +41,8 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     private Button selectCPU;
 
     public CraftingStatusScreen(CraftingStatusContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title);
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
         this.subGui = new AESubScreen(this, container.getTarget());
     }
 

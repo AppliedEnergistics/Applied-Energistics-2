@@ -54,8 +54,9 @@ import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
 import appeng.client.gui.me.items.RepoSlot;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
@@ -107,8 +108,8 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private int currentMouseY = 0;
 
     public MEMonitorableScreen(TerminalStyle style, C container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title, null);
+            ITextComponent title, ScreenStyle style1) {
+        super(container, playerInventory, title, style1);
 
         this.style = style;
 

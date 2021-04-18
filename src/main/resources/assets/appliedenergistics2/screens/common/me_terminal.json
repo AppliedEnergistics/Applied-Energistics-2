@@ -1,0 +1,4 @@
+{
+  "$schema": "../schema.json",
+  "includes": ["common.json", "player_inventory.json"]
+}

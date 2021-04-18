@@ -18,8 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -27,7 +25,8 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
@@ -39,15 +38,12 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/storagebus.png")
-            .src(0, 0, 176, 251);
-
     private SettingToggleButton<FuzzyMode> fuzzyMode;
     private SettingToggleButton<YesNo> placeMode;
 
     public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

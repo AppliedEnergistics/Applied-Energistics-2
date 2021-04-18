@@ -29,16 +29,14 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.client.gui.Blitter;
 import appeng.client.gui.NumberEntryType;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.LevelEmitterContainer;
 
 public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer> {
-
-    private static final Blitter BACKGROUND = Blitter.texture("guis/lvlemitter.png")
-            .src(0, 0, 176, 184);
 
     private NumberEntryWidget level;
     private SettingToggleButton<LevelType> levelMode;
@@ -46,8 +44,9 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     private SettingToggleButton<RedstoneMode> redstoneMode;
     private SettingToggleButton<FuzzyMode> fuzzyMode;
 
-    public LevelEmitterScreen(LevelEmitterContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public LevelEmitterScreen(LevelEmitterContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

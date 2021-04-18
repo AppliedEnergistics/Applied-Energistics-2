@@ -22,15 +22,13 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.QNBContainer;
 
 public class QNBScreen extends AEBaseScreen<QNBContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/chest.png").src(0, 0, 176, 166);
-
-    public QNBScreen(QNBContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public QNBScreen(QNBContainer container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
 }

@@ -7,10 +7,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.inventory.container.Slot;
 
-import appeng.client.gui.Blitter;
 import appeng.client.gui.Rects;
+import appeng.client.gui.style.Blitter;
 import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.IOptionalSlot;
 
 /**
  * A panel that can draw a dynamic number of upgrade slots in a vertical layout.

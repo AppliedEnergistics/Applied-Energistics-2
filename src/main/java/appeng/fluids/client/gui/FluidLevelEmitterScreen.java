@@ -25,28 +25,25 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.client.gui.Blitter;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.core.localization.GuiText;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 
 public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitterContainer> {
-
-    private static final Blitter BACKGROUND = Blitter.texture("guis/lvlemitter.png")
-            .src(0, 0, 211, 197);
 
     private SettingToggleButton<RedstoneMode> redstoneMode;
 
     private NumberEntryWidget level;
 
     public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

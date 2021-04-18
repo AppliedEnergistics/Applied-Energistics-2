@@ -23,6 +23,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.container.me.items.CraftingTermContainer;
 
@@ -33,8 +34,8 @@ import appeng.container.me.items.CraftingTermContainer;
 public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer> {
 
     public CraftingTermScreen(TerminalStyle style, CraftingTermContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(style, container, playerInventory, title);
+            ITextComponent title, ScreenStyle style1) {
+        super(style, container, playerInventory, title, style1);
     }
 
     @Override

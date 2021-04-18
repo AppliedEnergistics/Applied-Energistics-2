@@ -11,7 +11,9 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.Point;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.ScreenRegistration;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 
 /**
  * Describes the appearance of a terminal screen.
@@ -163,9 +165,10 @@ public final class TerminalStyle {
     /**
      * Creates a screen factory from a screen constructor that takes a terminal style as the first argument.
      */
-    public <M extends Container, U extends Screen & IHasContainer<M>> ScreenManager.IScreenFactory<M, U> factory(
-            StyledScreenFactory<M, U> factory) {
-        return (container, playerInv, title) -> factory.create(this, container, playerInv, title);
+    public <M extends Container, U extends Screen & IHasContainer<M>> ScreenRegistration.StyledScreenFactory<M, U> factory(
+            TerminalScreenFactory<M, U> factory) {
+        return (container, playerInv, title, screenStyle) -> factory.create(this, container, playerInv, title,
+                screenStyle);
     }
 
     public boolean hasSortByButton() {
@@ -205,8 +208,8 @@ public final class TerminalStyle {
     }
 
     @FunctionalInterface
-    public interface StyledScreenFactory<T extends Container, U extends Screen & IHasContainer<T>> {
-        U create(TerminalStyle style, T t, PlayerInventory pi, ITextComponent title);
+    public interface TerminalScreenFactory<T extends Container, U extends Screen & IHasContainer<T>> {
+        U create(TerminalStyle style, T t, PlayerInventory pi, ITextComponent title, ScreenStyle screenStyle);
     }
 
 }
