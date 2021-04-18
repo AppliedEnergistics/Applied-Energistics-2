@@ -12,9 +12,8 @@
       "grid": "HORIZONTAL"
     }
   },
-  "text": [
-    {
-      "id": "player_inventory_title",
+  "text": {
+    "player_inventory_title": {
       "text": {
         "translate": "container.inventory"
       },
@@ -23,5 +22,5 @@
         "bottom": 93
       }
     }
-  ]
+  }
 }

@@ -20,9 +20,8 @@
       "top": 48
     }
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.MolecularAssembler"
       },
@@ -31,5 +30,5 @@
         "top": 6
       }
     }
-  ]
+  }
 }

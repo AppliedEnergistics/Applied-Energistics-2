@@ -21,9 +21,8 @@
       "grid": "HORIZONTAL"
     }
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.GrindStone"
       },
@@ -32,5 +31,5 @@
         "top": 6
       }
     }
-  ]
+  }
 }

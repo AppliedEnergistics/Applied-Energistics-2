@@ -3,11 +3,18 @@ package appeng.client.gui.style;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
@@ -23,6 +30,7 @@ import appeng.core.AppEng;
 public final class StyleManager {
 
     private static final Map<String, ScreenStyle> styleCache = new HashMap<>();
+    public static final String PROP_INCLUDES = "includes";
 
     private static IResourceManager resourceManager;
 
@@ -43,7 +51,8 @@ public final class StyleManager {
         return style;
     }
 
-    private static ScreenStyle loadStyleDocInternal(String path) throws IOException {
+    private static JsonObject loadMergedJsonTree(String path, Set<String> loadedFiles, Set<String> resourcePacks)
+            throws IOException {
         Preconditions.checkArgument(path.startsWith("/"), "Path needs to start with slash");
 
         // The resource manager doesn't like relative paths like that, so we resolve them here
@@ -51,34 +60,105 @@ public final class StyleManager {
             path = URI.create(path).normalize().toString();
         }
 
+        if (!loadedFiles.add(path)) {
+            throw new IllegalStateException("Recursive style includes: " + loadedFiles);
+        }
+
         if (resourceManager == null) {
             throw new IllegalStateException("ResourceManager was not set. Was initialize called?");
         }
+
+        String basePath = getBasePath(path);
+
+        JsonObject document;
+        try (IResource resource = resourceManager.getResource(AppEng.makeId(path.substring(1)))) {
+            resourcePacks.add(resource.getPackName());
+            document = ScreenStyle.GSON.fromJson(new InputStreamReader(resource.getInputStream()), JsonObject.class);
+        }
+
+        // Resolve the includes present in the document
+        if (document.has(PROP_INCLUDES)) {
+            String[] includes = ScreenStyle.GSON.fromJson(document.get(PROP_INCLUDES), String[].class);
+
+            List<JsonObject> layers = new ArrayList<>();
+            for (String include : includes) {
+                layers.add(loadMergedJsonTree(basePath + include, loadedFiles, resourcePacks));
+            }
+            layers.add(document);
+            document = combineLayers(layers);
+        }
+
+        return document;
+
+    }
+
+    // Builds a new JSON document from layered documents
+    private static JsonObject combineLayers(List<JsonObject> layers) {
+        JsonObject result = new JsonObject();
+
+        // Start by copying over all properties layer-by-layer while overwriting properties set by
+        // previous layers.
+        for (JsonObject layer : layers) {
+            for (Map.Entry<String, JsonElement> entry : layer.entrySet()) {
+                result.add(entry.getKey(), entry.getValue());
+            }
+        }
+
+        // Merge the following keys by merging their properties
+        mergeObjectKeys("slots", layers, result);
+        mergeObjectKeys("text", layers, result);
+        mergeObjectKeys("palette", layers, result);
+        mergeObjectKeys("images", layers, result);
+        mergeObjectKeys("terminalStyle", layers, result);
+
+        return result;
+    }
+
+    /**
+     * Merges a single object property across multiple layers by merging the object keys. Higher layers win when there
+     * is a conflict.
+     */
+    private static void mergeObjectKeys(String propertyName, List<JsonObject> layers, JsonObject target)
+            throws JsonParseException {
+        JsonObject mergedObject = null;
+        for (JsonObject layer : layers) {
+            JsonElement layerEl = layer.get(propertyName);
+            if (layerEl != null) {
+                if (!layerEl.isJsonObject()) {
+                    throw new JsonParseException("Expected " + propertyName + " to be an object, but was: " + layerEl);
+                }
+                JsonObject layerObj = layerEl.getAsJsonObject();
+
+                if (mergedObject == null) {
+                    mergedObject = new JsonObject();
+                }
+                for (Map.Entry<String, JsonElement> entry : layerObj.entrySet()) {
+                    mergedObject.add(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        if (mergedObject != null) {
+            target.add(propertyName, mergedObject);
+        }
+    }
+
+    private static ScreenStyle loadStyleDocInternal(String path) {
 
         ScreenStyle style = styleCache.get(path);
         if (style != null) {
             return style;
         }
 
-        String basePath = getBasePath(path);
+        Set<String> resourcePacks = new HashSet<>();
+        try {
+            JsonObject document = loadMergedJsonTree(path, new HashSet<>(), resourcePacks);
 
-        try (IResource resource = resourceManager.getResource(AppEng.makeId(path.substring(1)))) {
-            ScreenStyle baseStyle = null;
-            style = ScreenStyle.GSON.fromJson(new InputStreamReader(resource.getInputStream()), ScreenStyle.class);
+            style = ScreenStyle.GSON.fromJson(document, ScreenStyle.class);
 
-            for (String includePath : style.getIncludes()) {
-                // The path should be relative to the currently loading file
-                ScreenStyle includedStyle = loadStyleDocInternal(basePath + includePath);
-                if (baseStyle == null) {
-                    baseStyle = includedStyle;
-                } else {
-                    baseStyle = baseStyle.merge(includedStyle);
-                }
-            }
-
-            if (baseStyle != null) {
-                style = baseStyle.merge(style);
-            }
+            style.validate();
+        } catch (Exception e) {
+            throw new JsonParseException("Failed to load style from " + path + " (packs: " + resourcePacks + ")", e);
         }
 
         styleCache.put(path, style);

@@ -3,7 +3,7 @@
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
     "texture": "guis/bus.png",
-    "srcRect": [0, 0, 176, 166]
+    "srcRect": [0, 0, 176, 184]
   },
   "slots": {
     "CONFIG": {

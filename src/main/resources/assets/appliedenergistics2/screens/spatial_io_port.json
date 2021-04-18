@@ -15,9 +15,8 @@
       "top": 48
     }
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.SpatialIOPort"
       },
@@ -26,40 +25,35 @@
         "top": 6
       }
     },
-    {
-      "id": "stored_power",
+    "stored_power": {
       "position": {
         "left": 13,
         "top": 21
       }
     },
-    {
-      "id": "max_power",
+    "max_power": {
       "position": {
         "left": 13,
         "top": 31
       }
     },
-    {
-      "id": "required_power",
+    "required_power": {
       "position": {
         "left": 13,
         "top": 73
       }
     },
-    {
-      "id": "efficiency",
+    "efficiency": {
       "position": {
         "left": 13,
         "top": 83
       }
     },
-    {
-      "id": "scs_size",
+    "scs_size": {
       "position": {
         "left": 13,
         "top": 93
       }
     }
-  ]
+  }
 }

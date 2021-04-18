@@ -12,9 +12,8 @@
       "grid": "BREAK_AFTER_9COLS"
     }
   },
-  "text": [
-    {
-      "id": "screen_title",
+  "text": {
+    "screen_title": {
       "text": {
         "translate": "gui.appliedenergistics2.FluidFormationPlane"
       },
@@ -23,5 +22,5 @@
         "top": 6
       }
     }
-  ]
+  }
 }

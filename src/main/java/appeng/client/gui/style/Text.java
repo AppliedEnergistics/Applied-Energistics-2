@@ -9,11 +9,6 @@ import net.minecraft.util.text.StringTextComponent;
 public class Text {
 
     /**
-     * A unique id for overriding properties of a text component.
-     */
-    private String id;
-
-    /**
      * The text to display.
      */
     private ITextComponent text = StringTextComponent.EMPTY;
@@ -32,14 +27,6 @@ public class Text {
      * Center on the computed x position.
      */
     private boolean centerHorizontally;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public ITextComponent getText() {
         return text;

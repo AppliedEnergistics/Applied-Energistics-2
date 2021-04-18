@@ -57,6 +57,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.me.items.RepoSlot;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
@@ -107,19 +108,23 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private int currentMouseX = 0;
     private int currentMouseY = 0;
 
-    public MEMonitorableScreen(TerminalStyle style, C container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style1) {
-        super(container, playerInventory, title, style1);
+    public MEMonitorableScreen(C container, PlayerInventory playerInventory,
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
 
-        this.style = style;
+        this.style = style.getTerminalStyle();
+        if (this.style == null) {
+            throw new IllegalStateException(
+                    "Cannot construct screen " + getClass() + " without a terminalStyles setting");
+        }
 
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
         this.repo = createRepo(scrollbar);
         setScrollBar();
 
-        this.xSize = style.getScreenWidth();
-        this.ySize = style.getScreenHeight(0);
+        this.xSize = this.style.getScreenWidth();
+        this.ySize = this.style.getScreenHeight(0);
 
         this.configSrc = ((IConfigurableObject) this.container).getConfigManager();
         this.container.setGui(this);
@@ -288,6 +293,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             // bigger
             int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
             int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeightRealms() - 16) / 2;
+
             style.getStackSizeRenderer().renderSizeLabel(font, x - this.guiLeft, y - this.guiTop,
                     String.valueOf(container.activeCraftingJobs));
         }

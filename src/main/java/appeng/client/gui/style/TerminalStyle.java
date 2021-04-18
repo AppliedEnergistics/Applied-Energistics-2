@@ -1,61 +1,60 @@
-package appeng.client.gui.me.common;
-
-import appeng.client.Point;
-import appeng.client.gui.ScreenRegistration;
-import appeng.client.gui.style.Blitter;
-import appeng.client.gui.style.ScreenStyle;
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.ITextComponent;
+package appeng.client.gui.style;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.renderer.Rectangle2d;
+
+import appeng.client.Point;
+import appeng.client.gui.me.common.StackSizeRenderer;
+import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
+
 /**
- * Describes the appearance of a terminal screen.
+ * Describes the appearance of terminal screens.
  */
-public final class TerminalStyle {
+public class TerminalStyle {
 
     /**
      * The top of the terminal background right up to the first row of content.
      */
-    private final Blitter header;
+    private Blitter header;
 
     /**
      * The area to draw for the first row in the terminal. Usually this includes the top of the scrollbar.
      */
-    private final Blitter firstRow;
+    private Blitter firstRow;
 
     /**
      * The area to repeat for every row in the terminal. Should be 16px for the item + 2px for the border in size.
      */
-    private final Blitter row;
+    private Blitter row;
 
     /**
      * The area to draw for the last row in the terminal. Usually this includes the top of the scrollbar.
      */
-    private final Blitter lastRow;
+    private Blitter lastRow;
 
     /**
      * The area to draw at the bottom of the terminal (i.e. includes the player inventory)
      */
-    private final Blitter bottom;
+    private Blitter bottom;
 
-    private final int screenWidth;
+    /**
+     * If specified, limits the terminal to at most this many rows rather than using up available space.
+     */
+    private Integer maxRows;
 
-    private final Integer maxRows;
+    /**
+     * Currently only 9 is supported here.
+     */
+    private int slotsPerRow;
 
-    private final int slotsPerRow;
-
-    private final Rectangle2d searchFieldRect;
+    private Rectangle2d searchFieldRect;
 
     private boolean sortByButton = true;
 
     private boolean supportsAutoCrafting = false;
 
-    private StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();
+    private StackSizeStyle stackSizeStyle = StackSizeStyle.ITEMS;
 
     /**
      * Should the terminal show item tooltips for the network inventory even if the player has an item in their hand?
@@ -63,54 +62,74 @@ public final class TerminalStyle {
      */
     private boolean showTooltipsWithItemInHand;
 
-    public TerminalStyle(ScreenStyle screenStyle,
-                         int slotsPerRow,
-                         Rectangle2d searchFieldRect,
-                         Integer maxRows) {
-        this.header = screenStyle.getImage("terminalHeader");
-        this.firstRow = screenStyle.getImage("terminalFirstRow");
-        this.row = screenStyle.getImage("terminalRow");
-        this.lastRow = screenStyle.getImage("terminalLastRow");
-        this.bottom = screenStyle.getImage("terminalBottom");
-        this.slotsPerRow = slotsPerRow;
-        this.searchFieldRect = searchFieldRect;
-        this.maxRows = maxRows;
-
-        // Calculate a bounding box for the screen
-        int screenWidth = header.getSrcWidth();
-        screenWidth = Math.max(screenWidth, firstRow.getSrcWidth());
-        screenWidth = Math.max(screenWidth, row.getSrcWidth());
-        screenWidth = Math.max(screenWidth, lastRow.getSrcWidth());
-        screenWidth = Math.max(screenWidth, bottom.getSrcWidth());
-        this.screenWidth = screenWidth;
-    }
-
     public Blitter getHeader() {
         return header;
+    }
+
+    public void setHeader(Blitter header) {
+        this.header = header;
     }
 
     public Blitter getFirstRow() {
         return firstRow;
     }
 
+    public void setFirstRow(Blitter firstRow) {
+        this.firstRow = firstRow;
+    }
+
     public Blitter getRow() {
         return row;
+    }
+
+    public void setRow(Blitter row) {
+        this.row = row;
     }
 
     public Blitter getLastRow() {
         return lastRow;
     }
 
+    public void setLastRow(Blitter lastRow) {
+        this.lastRow = lastRow;
+    }
+
     public Blitter getBottom() {
         return bottom;
     }
 
-    public int getScreenWidth() {
-        return screenWidth;
+    public void setBottom(Blitter bottom) {
+        this.bottom = bottom;
+    }
+
+    public void setMaxRows(Integer maxRows) {
+        this.maxRows = maxRows;
     }
 
     public int getSlotsPerRow() {
         return slotsPerRow;
+    }
+
+    public void setSlotsPerRow(int slotsPerRow) {
+        this.slotsPerRow = slotsPerRow;
+    }
+
+    public void setSearchFieldRect(Rectangle2d searchFieldRect) {
+        this.searchFieldRect = searchFieldRect;
+    }
+
+    public boolean isSortByButton() {
+        return sortByButton;
+    }
+
+    public int getScreenWidth() {
+        // Calculate a bounding box for the screen
+        int screenWidth = header.getSrcWidth();
+        screenWidth = Math.max(screenWidth, firstRow.getSrcWidth());
+        screenWidth = Math.max(screenWidth, row.getSrcWidth());
+        screenWidth = Math.max(screenWidth, lastRow.getSrcWidth());
+        screenWidth = Math.max(screenWidth, bottom.getSrcWidth());
+        return screenWidth;
     }
 
     public int getPossibleRows(int availableHeight) {
@@ -143,7 +162,7 @@ public final class TerminalStyle {
 
     /**
      * @return The number of rows this terminal should display (at most). If null, the player's chosen terminal style
-     * determines the number of rows.
+     *         determines the number of rows.
      */
     @Nullable
     public Integer getMaxRows() {
@@ -166,36 +185,49 @@ public final class TerminalStyle {
         return sortByButton;
     }
 
-    public TerminalStyle setSortByButton(boolean visible) {
-        this.sortByButton = visible;
-        return this;
-    }
-
     public boolean isSupportsAutoCrafting() {
         return supportsAutoCrafting;
-    }
-
-    public TerminalStyle setSupportsAutoCrafting(boolean enabled) {
-        this.supportsAutoCrafting = enabled;
-        return this;
     }
 
     public boolean isShowTooltipsWithItemInHand() {
         return showTooltipsWithItemInHand;
     }
 
-    public TerminalStyle setShowTooltipsWithItemInHand(boolean enabled) {
-        this.showTooltipsWithItemInHand = enabled;
-        return this;
+    public StackSizeStyle getStackSizeStyle() {
+        return stackSizeStyle;
     }
 
     public StackSizeRenderer getStackSizeRenderer() {
-        return stackSizeRenderer;
+        switch (stackSizeStyle) {
+            default:
+            case ITEMS:
+                return new StackSizeRenderer();
+            case FLUIDS:
+                return new FluidStackSizeRenderer();
+        }
     }
 
-    public TerminalStyle setStackSizeRenderer(StackSizeRenderer renderer) {
-        this.stackSizeRenderer = renderer;
-        return this;
+    public void validate() {
+        if (header == null) {
+            throw new RuntimeException("terminalStyle.header is missing");
+        }
+        if (firstRow == null) {
+            throw new RuntimeException("terminalStyle.firstRow is missing");
+        }
+        if (row == null) {
+            throw new RuntimeException("terminalStyle.row is missing");
+        }
+        if (lastRow == null) {
+            throw new RuntimeException("terminalStyle.lastRow is missing");
+        }
+        if (bottom == null) {
+            throw new RuntimeException("terminalStyle.bottom is missing");
+        }
+        if (searchFieldRect == null) {
+            throw new RuntimeException("terminalStyle.searchFieldRect is missing");
+        }
+        if (stackSizeStyle == null) {
+            throw new RuntimeException("terminalStyle.stackSizeStyle is missing");
+        }
     }
-
 }

@@ -311,18 +311,16 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         this.drawFG(matrixStack, ox, oy, x, y);
 
         if (style != null) {
-            for (Text text : style.getText()) {
+            for (Map.Entry<String, Text> entry : style.getText().entrySet()) {
                 // Process text overrides
-                TextOverride override = null;
-                if (text.getId() != null) {
-                    override = textOverrides.get(text.getId());
-                }
+                TextOverride override = textOverrides.get(entry.getKey());
 
                 // Don't draw if the screen decided to hide this
                 if (override != null && override.isHidden()) {
                     continue;
                 }
 
+                Text text = entry.getValue();
                 int color = style.getColor(text.getColor()).toARGB();
 
                 // Allow overrides for which content is shown

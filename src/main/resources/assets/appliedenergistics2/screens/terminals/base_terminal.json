@@ -1,7 +1,28 @@
 {
   "$schema": "../schema.json",
-  "includes": [
-    "../common/common.json",
-    "../common/player_inventory.json"
-  ]
+  "includes": ["../common/common.json", "../common/player_inventory.json"],
+  "terminalStyle": {
+    "searchFieldRect": [80, 4, 90, 12],
+    "slotsPerRow": 9,
+    "header": {
+      "texture": "guis/terminal.png",
+      "srcRect": [0, 0, 195, 17]
+    },
+    "firstRow": {
+      "texture": "guis/terminal.png",
+      "srcRect": [0, 17, 195, 18]
+    },
+    "row": {
+      "texture": "guis/terminal.png",
+      "srcRect": [0, 35, 195, 18]
+    },
+    "lastRow": {
+      "texture": "guis/terminal.png",
+      "srcRect": [0, 53, 195, 18]
+    },
+    "bottom": {
+      "texture": "guis/terminal.png",
+      "srcRect": [0, 71, 195, 97]
+    }
+  }
 }

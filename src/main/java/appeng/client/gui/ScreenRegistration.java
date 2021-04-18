@@ -5,7 +5,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import appeng.client.gui.me.common.TerminalStyle;
 import com.google.common.annotations.VisibleForTesting;
 
 import net.minecraft.client.gui.IHasContainer;
@@ -38,7 +37,6 @@ import appeng.client.gui.implementations.SpatialIOPortScreen;
 import appeng.client.gui.implementations.StorageBusScreen;
 import appeng.client.gui.implementations.VibrationChamberScreen;
 import appeng.client.gui.implementations.WirelessScreen;
-import appeng.client.gui.me.common.TerminalStyles;
 import appeng.client.gui.me.crafting.CraftAmountScreen;
 import appeng.client.gui.me.crafting.CraftConfirmScreen;
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
@@ -52,6 +50,7 @@ import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.client.gui.me.networktool.NetworkToolScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.StyleManager;
+import appeng.client.gui.style.TerminalStyle;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.container.implementations.ChestContainer;
@@ -150,32 +149,32 @@ public class ScreenRegistration {
         register(SpatialAnchorContainer.TYPE, SpatialAnchorScreen::new, "/screens/spatial_anchor.json");
 
         // Terminals
-        register(
+        ScreenRegistration.<ItemTerminalContainer, ItemTerminalScreen<ItemTerminalContainer>>register(
                 ItemTerminalContainer.TYPE,
-                ScreenRegistration.<ItemTerminalContainer, ItemTerminalScreen<ItemTerminalContainer>>factory(TerminalStyles.ITEM_TERMINAL, ItemTerminalScreen::new),
+                ItemTerminalScreen::new,
                 "/screens/terminals/item_terminal.json");
-        register(
+        ScreenRegistration.<MEPortableCellContainer, ItemTerminalScreen<MEPortableCellContainer>>register(
                 MEPortableCellContainer.TYPE,
-                ScreenRegistration.<MEPortableCellContainer, ItemTerminalScreen<MEPortableCellContainer>>factory(TerminalStyles.PORTABLE_CELL, ItemTerminalScreen::new),
+                ItemTerminalScreen::new,
                 "/screens/terminals/portable_cell.json");
-        register(
+        ScreenRegistration.<WirelessTermContainer, ItemTerminalScreen<WirelessTermContainer>>register(
                 WirelessTermContainer.TYPE,
-                ScreenRegistration.<WirelessTermContainer, ItemTerminalScreen<WirelessTermContainer>>factory(TerminalStyles.WIRELESS_TERMINAL, ItemTerminalScreen::new),
+                ItemTerminalScreen::new,
                 "/screens/terminals/wireless_terminal.json");
         register(SecurityStationContainer.TYPE,
-                ScreenRegistration.<SecurityStationContainer, SecurityStationScreen>factory(TerminalStyles.SECURITY_STATION, SecurityStationScreen::new),
+                SecurityStationScreen::new,
                 "/screens/terminals/security_station.json");
         register(
                 CraftingTermContainer.TYPE,
-                ScreenRegistration.<CraftingTermContainer, CraftingTermScreen>factory(TerminalStyles.CRAFTING_TERMINAL, CraftingTermScreen::new),
+                CraftingTermScreen::new,
                 "/screens/terminals/crafting_terminal.json");
         register(
                 PatternTermContainer.TYPE,
-                ScreenRegistration.<PatternTermContainer, PatternTermScreen>factory(TerminalStyles.PATTERN_TERMINAL, PatternTermScreen::new),
+                PatternTermScreen::new,
                 "/screens/terminals/pattern_terminal.json");
         register(
                 FluidTerminalContainer.TYPE,
-                ScreenRegistration.<FluidTerminalContainer, FluidTerminalScreen>factory(TerminalStyles.FLUID_TERMINAL, FluidTerminalScreen::new),
+                FluidTerminalScreen::new,
                 "/screens/terminals/fluid_terminal.json");
     }
 
@@ -201,8 +200,8 @@ public class ScreenRegistration {
     }
 
     /**
-     * A type definition that matches the constructors of our screens, which take an additional
-     * {@link ScreenStyle} argument.
+     * A type definition that matches the constructors of our screens, which take an additional {@link ScreenStyle}
+     * argument.
      */
     @FunctionalInterface
     public interface StyledScreenFactory<T extends Container, U extends Screen & IHasContainer<T>> {
@@ -215,7 +214,8 @@ public class ScreenRegistration {
     private static <M extends Container, U extends Screen & IHasContainer<M>> ScreenRegistration.StyledScreenFactory<M, U> factory(
             Function<ScreenStyle, TerminalStyle> terminalStyle,
             TerminalScreenFactory<M, U> factory) {
-        return (container, playerInv, title, screenStyle) -> factory.create(terminalStyle.apply(screenStyle), container, playerInv, title,
+        return (container, playerInv, title, screenStyle) -> factory.create(terminalStyle.apply(screenStyle), container,
+                playerInv, title,
                 screenStyle);
     }
 
