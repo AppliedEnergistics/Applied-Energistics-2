@@ -1,0 +1,59 @@
+{
+  "$schema": "../schema.json",
+  "includes": ["base_terminal.json"],
+  "slots": {
+    "CRAFTING_GRID": {
+      "left": 37,
+      "bottom": 154,
+      "grid": "BREAK_AFTER_3COLS"
+    },
+    "CRAFTING_RESULT": {
+      "left": 131,
+      "bottom": 136
+    }
+  },
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.Terminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    {
+      "id": "crafting_grid_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.CraftingTerminal"
+      },
+      "position": {
+        "left": 8,
+        "bottom": 168
+      }
+    }
+  ],
+  "images": {
+    "terminalHeader": {
+      "texture": "guis/crafting.png",
+      "srcRect": [0, 0, 195, 17]
+    },
+    "terminalFirstRow": {
+      "texture": "guis/crafting.png",
+      "srcRect": [0, 17, 195, 18]
+    },
+    "terminalRow": {
+      "texture": "guis/crafting.png",
+      "srcRect": [0, 35, 195, 18]
+    },
+    "terminalLastRow": {
+      "texture": "guis/crafting.png",
+      "srcRect": [0, 53, 195, 18]
+    },
+    "terminalBottom": {
+      "texture": "guis/crafting.png",
+      "srcRect": [0, 71, 195, 170]
+    }
+  }
+}

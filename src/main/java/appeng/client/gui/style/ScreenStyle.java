@@ -1,21 +1,23 @@
 package appeng.client.gui.style;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
+import appeng.container.SlotSemantic;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 
-import appeng.container.SlotSemantic;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * A screen style document defines various visual aspects of AE2 screens.
+ */
 public class ScreenStyle {
 
     public static final Gson GSON = new GsonBuilder()
@@ -27,16 +29,37 @@ public class ScreenStyle {
             .registerTypeAdapter(Rectangle2d.class, Rectangle2dDeserializer.INSTANCE)
             .create();
 
-    private final Map<SlotSemantic, SlotPosition> slots = new EnumMap<>(SlotSemantic.class);
-
+    /**
+     * A screen style can include other screen styles, these are merged together on load.
+     */
     private final List<String> includes = new ArrayList<>();
 
+    /**
+     * Positioning information for groups of slots.
+     */
+    private final Map<SlotSemantic, SlotPosition> slots = new EnumMap<>(SlotSemantic.class);
+
+    /**
+     * Various text-labels positioned on the screen.
+     */
     private final List<Text> text = new ArrayList<>();
 
+    /**
+     * Color-Palette for the screen.
+     */
     private Palette palette;
 
+    /**
+     * The screen background, which is optional.
+     * If defined, it is also used to size the dialog.
+     */
     @Nullable
     private Blitter background;
+
+    /**
+     * Additional images that are screen-specific.
+     */
+    private final Map<String, Blitter> images = new HashMap<>();
 
     public List<String> getIncludes() {
         return includes;
@@ -55,11 +78,16 @@ public class ScreenStyle {
     }
 
     public Blitter getBackground() {
-        return background;
+        return background != null ? background.copy() : null;
     }
 
-    public void setBackground(Blitter background) {
-        this.background = background;
+    @Nonnull
+    public Blitter getImage(String id) {
+        Blitter blitter = images.get(id);
+        if (blitter == null) {
+            throw new IllegalStateException("Screen is missing required image " + id);
+        }
+        return blitter;
     }
 
     public ScreenStyle merge(ScreenStyle otherStyle) {
@@ -69,6 +97,10 @@ public class ScreenStyle {
             merged.background = otherStyle.background;
         }
 
+        // Images are merged by overwriting
+        merged.images.putAll(this.images);
+        merged.images.putAll(otherStyle.images);
+
         // Slots are merged by simply overwriting
         merged.slots.putAll(this.slots);
         merged.slots.putAll(otherStyle.slots);
@@ -77,6 +109,7 @@ public class ScreenStyle {
         merged.text.addAll(text);
         merged.text.addAll(otherStyle.text);
 
+        // The palette is a bit harder to merge since it can be null
         if (this.palette != null) {
             if (otherStyle.palette != null) {
                 merged.palette = this.palette.merge(otherStyle.palette);

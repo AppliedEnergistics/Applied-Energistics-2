@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema.json",
+  "includes": ["base_terminal.json"],
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.FluidTerminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ],
+  "images": {
+    "terminalHeader": {
+      "texture": "guis/terminal.png",
+      "srcRect": [0, 0, 195, 17]
+    },
+    "terminalFirstRow": {
+      "texture": "guis/terminal.png",
+      "srcRect": [0, 17, 195, 18]
+    },
+    "terminalRow": {
+      "texture": "guis/terminal.png",
+      "srcRect": [0, 35, 195, 18]
+    },
+    "terminalLastRow": {
+      "texture": "guis/terminal.png",
+      "srcRect": [0, 53, 195, 18]
+    },
+    "terminalBottom": {
+      "texture": "guis/terminal.png",
+      "srcRect": [0, 71, 195, 97]
+    }
+  }
+}

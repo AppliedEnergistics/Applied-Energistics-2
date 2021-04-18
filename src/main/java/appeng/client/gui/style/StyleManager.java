@@ -2,6 +2,7 @@ package appeng.client.gui.style;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -44,6 +45,11 @@ public final class StyleManager {
 
     private static ScreenStyle loadStyleDocInternal(String path) throws IOException {
         Preconditions.checkArgument(path.startsWith("/"), "Path needs to start with slash");
+
+        // The resource manager doesn't like relative paths like that, so we resolve them here
+        if (path.contains("..")) {
+            path = URI.create(path).normalize().toString();
+        }
 
         if (resourceManager == null) {
             throw new IllegalStateException("ResourceManager was not set. Was initialize called?");

@@ -3,7 +3,9 @@ package appeng.client.gui;
 import java.io.FileNotFoundException;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
+import appeng.client.gui.me.common.TerminalStyle;
 import com.google.common.annotations.VisibleForTesting;
 
 import net.minecraft.client.gui.IHasContainer;
@@ -112,23 +114,6 @@ public class ScreenRegistration {
         register(SkyChestContainer.TYPE, SkyChestScreen::new, "/screens/sky_chest.json");
         register(ChestContainer.TYPE, ChestScreen::new, "/screens/chest.json");
         register(WirelessContainer.TYPE, WirelessScreen::new, "/screens/wireless.json");
-        register(
-                ItemTerminalContainer.TYPE,
-                TerminalStyles.ITEM_TERMINAL.<ItemTerminalContainer, ItemTerminalScreen<ItemTerminalContainer>>factory(
-                        ItemTerminalScreen::new),
-                "/screens/item_terminal.json");
-        register(
-                MEPortableCellContainer.TYPE,
-                TerminalStyles.PORTABLE_CELL
-                        .<MEPortableCellContainer, ItemTerminalScreen<MEPortableCellContainer>>factory(
-                                ItemTerminalScreen::new),
-                "/screens/portable_cell.json");
-        register(
-                WirelessTermContainer.TYPE,
-                TerminalStyles.WIRELESS_TERMINAL
-                        .<WirelessTermContainer, ItemTerminalScreen<WirelessTermContainer>>factory(
-                                ItemTerminalScreen::new),
-                "/screens/wireless_terminal.json");
         register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
         ScreenRegistration.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
                 CraftingCPUContainer.TYPE,
@@ -152,25 +137,6 @@ public class ScreenRegistration {
         register(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new,
                 "/screens/fluid_formation_plane.json");
         register(PriorityContainer.TYPE, PriorityScreen::new, "/screens/priority.json");
-        register(SecurityStationContainer.TYPE,
-                TerminalStyles.SECURITY_STATION
-                        .<SecurityStationContainer, SecurityStationScreen>factory(SecurityStationScreen::new),
-                "/screens/security_station.json");
-        register(
-                CraftingTermContainer.TYPE,
-                TerminalStyles.CRAFTING_TERMINAL
-                        .<CraftingTermContainer, CraftingTermScreen>factory(CraftingTermScreen::new),
-                "/screens/crafting_terminal.json");
-        register(
-                PatternTermContainer.TYPE,
-                TerminalStyles.PATTERN_TERMINAL
-                        .<PatternTermContainer, PatternTermScreen>factory(PatternTermScreen::new),
-                "/screens/pattern_terminal.json");
-        register(
-                FluidTerminalContainer.TYPE,
-                TerminalStyles.FLUID_TERMINAL
-                        .<FluidTerminalContainer, FluidTerminalScreen>factory(FluidTerminalScreen::new),
-                "/screens/fluid_terminal.json");
         register(LevelEmitterContainer.TYPE, LevelEmitterScreen::new, "/screens/level_emitter.json");
         register(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new, "/screens/fluid_level_emitter.json");
         register(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new, "/screens/spatial_io_port.json");
@@ -182,6 +148,35 @@ public class ScreenRegistration {
         register(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new, "/screens/interface_terminal.json");
         register(CraftingStatusContainer.TYPE, CraftingStatusScreen::new, "/screens/crafting_status.json");
         register(SpatialAnchorContainer.TYPE, SpatialAnchorScreen::new, "/screens/spatial_anchor.json");
+
+        // Terminals
+        register(
+                ItemTerminalContainer.TYPE,
+                ScreenRegistration.<ItemTerminalContainer, ItemTerminalScreen<ItemTerminalContainer>>factory(TerminalStyles.ITEM_TERMINAL, ItemTerminalScreen::new),
+                "/screens/terminals/item_terminal.json");
+        register(
+                MEPortableCellContainer.TYPE,
+                ScreenRegistration.<MEPortableCellContainer, ItemTerminalScreen<MEPortableCellContainer>>factory(TerminalStyles.PORTABLE_CELL, ItemTerminalScreen::new),
+                "/screens/terminals/portable_cell.json");
+        register(
+                WirelessTermContainer.TYPE,
+                ScreenRegistration.<WirelessTermContainer, ItemTerminalScreen<WirelessTermContainer>>factory(TerminalStyles.WIRELESS_TERMINAL, ItemTerminalScreen::new),
+                "/screens/terminals/wireless_terminal.json");
+        register(SecurityStationContainer.TYPE,
+                ScreenRegistration.<SecurityStationContainer, SecurityStationScreen>factory(TerminalStyles.SECURITY_STATION, SecurityStationScreen::new),
+                "/screens/terminals/security_station.json");
+        register(
+                CraftingTermContainer.TYPE,
+                ScreenRegistration.<CraftingTermContainer, CraftingTermScreen>factory(TerminalStyles.CRAFTING_TERMINAL, CraftingTermScreen::new),
+                "/screens/terminals/crafting_terminal.json");
+        register(
+                PatternTermContainer.TYPE,
+                ScreenRegistration.<PatternTermContainer, PatternTermScreen>factory(TerminalStyles.PATTERN_TERMINAL, PatternTermScreen::new),
+                "/screens/terminals/pattern_terminal.json");
+        register(
+                FluidTerminalContainer.TYPE,
+                ScreenRegistration.<FluidTerminalContainer, FluidTerminalScreen>factory(TerminalStyles.FLUID_TERMINAL, FluidTerminalScreen::new),
+                "/screens/terminals/fluid_terminal.json");
     }
 
     /**
@@ -212,6 +207,21 @@ public class ScreenRegistration {
     @FunctionalInterface
     public interface StyledScreenFactory<T extends Container, U extends Screen & IHasContainer<T>> {
         U create(T t, PlayerInventory pi, ITextComponent title, ScreenStyle style);
+    }
+
+    /**
+     * Creates a screen factory from a screen constructor that takes a terminal style as the first argument.
+     */
+    private static <M extends Container, U extends Screen & IHasContainer<M>> ScreenRegistration.StyledScreenFactory<M, U> factory(
+            Function<ScreenStyle, TerminalStyle> terminalStyle,
+            TerminalScreenFactory<M, U> factory) {
+        return (container, playerInv, title, screenStyle) -> factory.create(terminalStyle.apply(screenStyle), container, playerInv, title,
+                screenStyle);
+    }
+
+    @FunctionalInterface
+    public interface TerminalScreenFactory<T extends Container, U extends Screen & IHasContainer<T>> {
+        U create(TerminalStyle style, T t, PlayerInventory pi, ITextComponent title, ScreenStyle screenStyle);
     }
 
 }

@@ -1,0 +1,64 @@
+{
+  "$schema": "../schema.json",
+  "includes": [
+    "base_terminal.json"
+  ],
+  "slots": {
+    "BIOMETRIC_CARD": {
+      "left": 37,
+      "bottom": 115
+    },
+    "MACHINE_INPUT": {
+      "left": 212,
+      "top": 10
+    },
+    "MACHINE_OUTPUT": {
+      "left": 212,
+      "top": 68
+    }
+  },
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.Security"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    {
+      "id": "security_card_editor",
+      "text": {
+        "translate": "gui.appliedenergistics2.SecurityCardEditor"
+      },
+      "position": {
+        "left": 8,
+        "bottom": 128
+      }
+    }
+  ],
+  "images": {
+    "terminalHeader": {
+      "texture": "guis/security_station.png",
+      "srcRect": [0, 0, 195, 17]
+    },
+    "terminalFirstRow": {
+      "texture": "guis/security_station.png",
+      "srcRect": [0, 17, 195, 18]
+    },
+    "terminalRow": {
+      "texture": "guis/security_station.png",
+      "srcRect": [0, 35, 195, 18]
+    },
+    "terminalLastRow": {
+      "texture": "guis/security_station.png",
+      "srcRect": [0, 53, 195, 18]
+    },
+    "terminalBottom": {
+      "texture": "guis/security_station.png",
+      "srcRect": [0, 71, 195, 130]
+    }
+  }
+}

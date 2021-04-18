@@ -1,11 +1,11 @@
 {
-  "$schema": "schema.json",
-  "includes": ["common/me_terminal.json"],
+  "$schema": "../schema.json",
+  "includes": ["item_terminal.json"],
   "text": [
     {
       "id": "dialog_title",
       "text": {
-        "translate": "gui.appliedenergistics2.FluidTerminal"
+        "translate": "gui.appliedenergistics2.PortableCell"
       },
       "position": {
         "left": 8,
