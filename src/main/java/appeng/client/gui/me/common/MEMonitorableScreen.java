@@ -47,15 +47,13 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
-import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
 import appeng.client.Point;
-import appeng.client.gui.AEBaseMEScreen;
+import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.me.items.RepoSlot;
 import appeng.client.gui.widgets.AETextField;
@@ -79,17 +77,13 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
-import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.abstraction.JEIFacade;
-import appeng.parts.reporting.AbstractTerminalPart;
-import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
 public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMonitorableContainer<T>>
-        extends AEBaseMEScreen<C>
-        implements ISortSource, IConfigManagerHost {
+        extends AEBaseScreen<C> implements ISortSource, IConfigManagerHost {
 
     private static final int MIN_ROWS = 3;
 
@@ -104,7 +98,6 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private final UpgradesPanel viewCellBg;
     private TabButton craftingStatusBtn;
     private AETextField searchField;
-    private final GuiText windowTitle;
     private int rows = 0;
     private SettingToggleButton<ViewItems> viewModeToggle;
     private SettingToggleButton<SortOrder> sortByToggle;
@@ -127,30 +120,15 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         this.xSize = style.getScreenWidth();
         this.ySize = style.getScreenHeight(0);
 
-        Object te = container.getTarget();
-
         this.configSrc = ((IConfigurableObject) this.container).getConfigManager();
         this.container.setGui(this);
 
-        this.supportsViewCells = te instanceof IViewCellStorage;
+        List<Slot> viewCellSlots = container.getSlots(SlotSemantic.VIEW_CELL);
+        this.supportsViewCells = !viewCellSlots.isEmpty();
         if (this.supportsViewCells) {
-            viewCellBg = new UpgradesPanel(xSize + 2, 0, container.getSlots(SlotSemantic.VIEW_CELL));
+            viewCellBg = new UpgradesPanel(xSize + 2, 0, viewCellSlots);
         } else {
             viewCellBg = null;
-        }
-
-        if (te instanceof SecurityStationTileEntity) {
-            this.windowTitle = GuiText.Security;
-        } else if (te instanceof WirelessTerminalGuiObject) {
-            this.windowTitle = GuiText.WirelessTerminal;
-        } else if (te instanceof IPortableCell) {
-            this.windowTitle = GuiText.PortableCell;
-        } else if (te instanceof IMEChest) {
-            this.windowTitle = GuiText.Chest;
-        } else if (te instanceof AbstractTerminalPart) {
-            this.windowTitle = GuiText.Terminal;
-        } else {
-            throw new IllegalArgumentException("Invalid GUI target given: " + te);
         }
     }
 
@@ -285,13 +263,21 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     @Override
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
+        // Override the dialog title found in the screen JSON with the user-supplied name
+        if (!this.title.getString().isEmpty()) {
+            setTextContent(TEXT_ID_DIALOG_TITLE, this.title);
+        } else if (this.container.getTarget() instanceof IMEChest) {
+            // ME Chest uses Item Terminals, but overrides the title
+            setTextContent(TEXT_ID_DIALOG_TITLE, GuiText.Chest.text());
+        }
+    }
+
+    @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(this.windowTitle.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3,
-                COLOR_DARK_GRAY);
-
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 

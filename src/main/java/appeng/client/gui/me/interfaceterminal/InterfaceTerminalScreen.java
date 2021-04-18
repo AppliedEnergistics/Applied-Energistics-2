@@ -56,7 +56,6 @@ import appeng.container.implementations.InterfaceTerminalContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.DualityInterface;
@@ -74,11 +73,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     private static final int GUI_HEADER_HEIGHT = 17;
     private static final int GUI_FOOTER_HEIGHT = 97;
-
-    /**
-     * Margin in pixel of a header text after the previous element.
-     */
-    private static final int HEADER_TEXT_MARGIN_Y = 3;
 
     /**
      * Additional margin in pixel for a text row inside the scrolling box.
@@ -179,8 +173,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.InterfaceTerminal.text()).getString(),
-                GUI_PADDING_X, GUI_PADDING_Y, COLOR_DARK_GRAY);
 
         this.container.inventorySlots.removeIf(slot -> slot instanceof InterfaceSlot);
 
@@ -210,9 +202,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                 }
             }
         }
-
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), GUI_PADDING_X,
-                HEADER_TEXT_MARGIN_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, COLOR_DARK_GRAY);
     }
 
     @Override
@@ -372,8 +361,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             this.refreshList = true;
         }
 
-        for (final Object oKey : in.keySet()) {
-            final String key = (String) oKey;
+        for (final String key : in.keySet()) {
             if (key.startsWith("=")) {
                 try {
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
@@ -561,7 +549,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     /**
      * A version of blit that lets us pass a source rectangle
-     * 
+     *
      * @see AbstractGui#blit(MatrixStack, int, int, int, int, int, int)
      */
     private void blit(MatrixStack matrixStack, int offsetX, int offsetY, Rectangle2d srcRect) {

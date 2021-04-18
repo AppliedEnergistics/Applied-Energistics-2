@@ -61,14 +61,6 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
-    }
-
-    @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);

@@ -36,12 +36,4 @@ public class GrinderScreen extends AEBaseScreen<GrinderContainer> {
         super(container, playerInventory, title, BACKGROUND);
     }
 
-    @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrices, this.getGuiDisplayName(GuiText.GrindStone.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrices, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, COLOR_DARK_GRAY);
-    }
-
 }

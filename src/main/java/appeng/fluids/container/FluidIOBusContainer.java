@@ -29,25 +29,25 @@ import appeng.fluids.parts.SharedFluidBusPart;
 import appeng.fluids.util.IAEFluidTank;
 
 /**
- * @author BrockWS
- * @version rv5 - 1/05/2018
- * @since rv5 1/05/2018
+ * Used for both {@link FluidImportBusPart} and {@link FluidExportBusPart}.
+ *
+ * @see appeng.fluids.client.gui.FluidIOBusScreen
  */
-public class FluidIOContainer extends FluidConfigurableContainer {
+public class FluidIOBusContainer extends FluidConfigurableContainer {
 
-    public static final ContainerType<FluidIOContainer> EXPORT_TYPE = ContainerTypeBuilder
-            .create(FluidIOContainer::new, FluidExportBusPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
-            .build("fluid_import_bus");
-
-    public static final ContainerType<FluidIOContainer> IMPORT_TYPE = ContainerTypeBuilder
-            .create(FluidIOContainer::new, FluidImportBusPart.class)
+    public static final ContainerType<FluidIOBusContainer> EXPORT_TYPE = ContainerTypeBuilder
+            .create(FluidIOBusContainer::new, FluidExportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_export_bus");
 
+    public static final ContainerType<FluidIOBusContainer> IMPORT_TYPE = ContainerTypeBuilder
+            .create(FluidIOBusContainer::new, FluidImportBusPart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("fluid_import_bus");
+
     private final SharedFluidBusPart bus;
 
-    public FluidIOContainer(ContainerType<?> containerType, int id, PlayerInventory ip, SharedFluidBusPart bus) {
+    public FluidIOBusContainer(ContainerType<?> containerType, int id, PlayerInventory ip, SharedFluidBusPart bus) {
         super(containerType, id, ip, bus);
         this.bus = bus;
     }

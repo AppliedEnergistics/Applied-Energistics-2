@@ -10,5 +10,17 @@
       "left": 134,
       "top": 44
     }
-  }
+  },
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.QuartzCuttingKnife"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
 }

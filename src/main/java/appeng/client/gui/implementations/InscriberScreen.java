@@ -18,13 +18,14 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.InscriberContainer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
 

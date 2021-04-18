@@ -1,12 +1,11 @@
 package appeng.client.gui;
 
-import net.minecraft.util.text.ITextComponent;
-
 import javax.annotation.Nullable;
 
+import net.minecraft.util.text.ITextComponent;
+
 /**
- * Properties of {@link appeng.client.gui.style.Text} can be overridden by their ID.
- * This class stores those overrides.
+ * Properties of {@link appeng.client.gui.style.Text} can be overridden by their ID. This class stores those overrides.
  */
 public class TextOverride {
 

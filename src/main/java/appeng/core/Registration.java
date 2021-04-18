@@ -161,7 +161,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.AeStats;
 import appeng.fluids.container.FluidFormationPlaneContainer;
-import appeng.fluids.container.FluidIOContainer;
+import appeng.fluids.container.FluidIOBusContainer;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;
@@ -341,13 +341,14 @@ final class Registration {
                 SpatialIOPortContainer.TYPE,
                 SpatialAnchorContainer.TYPE,
                 StorageBusContainer.TYPE,
-                IOBusContainer.TYPE,
+                IOBusContainer.EXPORT_TYPE,
+                IOBusContainer.IMPORT_TYPE,
                 VibrationChamberContainer.TYPE,
                 WirelessContainer.TYPE,
                 WirelessTermContainer.TYPE,
                 FluidFormationPlaneContainer.TYPE,
-                FluidIOContainer.EXPORT_TYPE,
-                FluidIOContainer.IMPORT_TYPE,
+                FluidIOBusContainer.EXPORT_TYPE,
+                FluidIOBusContainer.IMPORT_TYPE,
                 FluidInterfaceContainer.TYPE,
                 FluidLevelEmitterContainer.TYPE,
                 FluidStorageBusContainer.TYPE,

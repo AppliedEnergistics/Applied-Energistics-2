@@ -3,7 +3,7 @@
   "includes": ["common/common.json", "common/player_inventory.json"],
   "slots": {
     "MACHINE_INPUT": {
-      "left": 0,
+      "left": 51,
       "top": 52
     },
     "STORAGE_CELL": {
@@ -14,5 +14,17 @@
       "left": 105,
       "top": 52
     }
-  }
+  },
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.Condenser"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
 }

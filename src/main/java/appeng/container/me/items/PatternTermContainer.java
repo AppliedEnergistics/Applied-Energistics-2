@@ -99,17 +99,19 @@ public class PatternTermContainer extends ItemTerminalContainer
         final IItemHandler patternInv = this.getPatternTerminal().getInventoryByName("pattern");
         final IItemHandler output = this.getPatternTerminal().getInventoryByName("output");
 
+        // Create the 3x3 crafting input grid, which is used for both processing and crafting mode
         this.craftingGridInv = this.getPatternTerminal().getInventoryByName("crafting");
-
         for (int i = 0; i < 9; i++) {
             this.addSlot(this.craftingGridSlots[i] = new FakeCraftingMatrixSlot(this.craftingGridInv, i),
                     SlotSemantic.CRAFTING_GRID);
         }
 
+        // Create the output slot used for crafting mode patterns
         this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
                 monitorable, this.craftingGridInv, patternInv, this, 2, this), SlotSemantic.CRAFTING_RESULT);
         this.craftOutputSlot.setIconIndex(-1);
 
+        // Create slots for the outputs of processing-mode patterns
         for (int i = 0; i < 3; i++) {
             this.addSlot(this.processingOutputSlots[i] = new PatternOutputsSlot(output, this, i, 1),
                     SlotSemantic.PROCESSING_RESULT);
@@ -426,13 +428,6 @@ public class PatternTermContainer extends ItemTerminalContainer
         return false;
     }
 
-    public void toggleSubstitute() {
-        this.substitute = !this.substitute;
-
-        this.detectAndSendChanges();
-        this.getAndUpdateOutput();
-    }
-
     public boolean isCraftingMode() {
         return this.craftingMode;
     }
@@ -463,14 +458,6 @@ public class PatternTermContainer extends ItemTerminalContainer
 
     public PatternTermSlot getCraftOutputSlot() {
         return craftOutputSlot;
-    }
-
-    public RestrictedInputSlot getBlankPatternSlot() {
-        return blankPatternSlot;
-    }
-
-    public RestrictedInputSlot getEncodedPatternSlot() {
-        return encodedPatternSlot;
     }
 
 }

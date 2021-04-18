@@ -18,8 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -36,7 +34,7 @@ import appeng.util.Platform;
 
 public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/spatialanchor.png").src(0, 0, 100, 195);
+    private static final Blitter BACKGROUND = Blitter.texture("guis/spatialanchor.png").src(0, 0, 195, 100);
 
     private SettingToggleButton<YesNo> overlayToggle;
 
@@ -54,34 +52,18 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        if (this.overlayToggle != null) {
-            this.overlayToggle.set(this.container.getOverlayMode());
-        }
+        this.overlayToggle.set(this.container.getOverlayMode());
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchor.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-
-        String usedPower = GuiText.SpatialAnchorUsedPower
-                .text(Platform.formatPowerLong(this.container.powerConsumption * 100, true)).getString();
-        this.font.drawString(matrixStack, usedPower, 13, 21, COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack,
-                GuiText.SpatialAnchorLoadedChunks.text(this.container.loadedChunks).getString(), 13, 31,
-                COLOR_DARK_GRAY);
-
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialAnchorStatistics.text()).getString(), 8,
-                56, COLOR_DARK_GRAY);
-
-        this.font.drawString(matrixStack,
-                GuiText.SpatialAnchorAllLoaded.text(this.container.allLoadedChunks, this.container.allLoadedWorlds)
-                        .getString(),
-                13, 71, COLOR_DARK_GRAY);
-
-        this.font.drawString(matrixStack,
-                GuiText.SpatialAnchorAll.text(this.container.allChunks, this.container.allWorlds).getString(), 13,
-                81, COLOR_DARK_GRAY);
+        setTextContent("used_power", GuiText.SpatialAnchorUsedPower
+                .text(Platform.formatPowerLong(this.container.powerConsumption * 100, true)));
+        setTextContent("loaded_chunks", GuiText.SpatialAnchorLoadedChunks.text(this.container.loadedChunks));
+        setTextContent("statistics_loaded",
+                GuiText.SpatialAnchorAllLoaded.text(this.container.allLoadedChunks, this.container.allLoadedWorlds));
+        setTextContent("statistics_total",
+                GuiText.SpatialAnchorAll.text(this.container.allChunks, this.container.allWorlds));
     }
 
 }

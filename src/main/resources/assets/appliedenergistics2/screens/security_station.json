@@ -1,9 +1,6 @@
 {
   "$schema": "schema.json",
-  "includes": [
-    "common/common.json",
-    "common/player_inventory.json"
-  ],
+  "includes": ["common/common.json", "common/player_inventory.json"],
   "slots": {
     "BIOMETRIC_CARD": {
       "left": 37,
@@ -21,6 +18,16 @@
   "text": [
     {
       "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.Security"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    {
+      "id": "security_card_editor",
       "text": {
         "translate": "gui.appliedenergistics2.SecurityCardEditor"
       },

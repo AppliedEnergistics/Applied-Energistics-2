@@ -1,4 +1,37 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"]
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "slots": {
+    "CRAFTING_GRID": {
+      "left": 37,
+      "bottom": 154,
+      "grid": "BREAK_AFTER_3COLS"
+    },
+    "CRAFTING_RESULT": {
+      "left": 131,
+      "bottom": 136
+    }
+  },
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.Terminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    {
+      "id": "crafting_grid_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.CraftingTerminal"
+      },
+      "position": {
+        "left": 8,
+        "bottom": 168
+      }
+    }
+  ]
 }

@@ -18,7 +18,6 @@
 
 package appeng.fluids.client.gui;
 
-import appeng.client.gui.widgets.SettingToggleButton;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -31,6 +30,7 @@ import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
+import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.localization.GuiText;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.FluidLevelEmitterContainer;

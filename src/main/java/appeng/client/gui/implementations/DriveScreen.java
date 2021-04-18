@@ -38,7 +38,6 @@ public class DriveScreen extends AEBaseScreen<DriveContainer> {
 
     public DriveScreen(DriveContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
-        loadStyle("/screens/drive.json");
     }
 
     @Override

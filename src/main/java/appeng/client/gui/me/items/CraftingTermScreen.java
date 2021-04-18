@@ -18,21 +18,13 @@
 
 package appeng.client.gui.me.items;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.me.common.TerminalStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.container.me.items.CraftingTermContainer;
-import appeng.container.slot.CraftingMatrixSlot;
-import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.InventoryActionPacket;
-import appeng.helpers.InventoryAction;
 
 /**
  * This screen extends the item terminal with a crafting grid. The content of the crafting grid is stored server-side in
@@ -43,40 +35,15 @@ public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer
     public CraftingTermScreen(TerminalStyle style, CraftingTermContainer container, PlayerInventory playerInventory,
             ITextComponent title) {
         super(style, container, playerInventory, title);
-
-        // Position the crafting grid slots
-        anchorSlotToBottom(container.getOutputSlot(), 130, 137);
-        CraftingMatrixSlot[] craftingSlots = container.getCraftingSlots();
-        for (int i = 0; i < craftingSlots.length; i++) {
-            int row = i / 3;
-            int col = i % 3;
-
-            anchorSlotToBottom(craftingSlots[i], 36 + col * 18, 155 - row * 18);
-        }
-    }
-
-    /**
-     * Clears the crafting grid and moves everything back into the network inventory.
-     */
-    private void clear() {
-        CraftingMatrixSlot slot = container.getCraftingSlots()[0];
-        final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.slotNumber, 0);
-        NetworkHandler.instance().sendToServer(p);
     }
 
     @Override
     public void init() {
         super.init();
         ActionButton clearBtn = this.addButton(
-                new ActionButton(this.guiLeft + 92, this.guiTop + this.ySize - 156, ActionItems.STASH, btn -> clear()));
+                new ActionButton(this.guiLeft + 92, this.guiTop + this.ySize - 156, ActionItems.STASH,
+                        btn -> container.clearCraftingGrid()));
         clearBtn.setHalfSize(true);
     }
 
-    @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
-        this.font.drawString(matrixStack, GuiText.CraftingTerminal.getLocal(), 8,
-                this.ySize - 96 + 1 - 73, COLOR_DARK_GRAY);
-    }
 }

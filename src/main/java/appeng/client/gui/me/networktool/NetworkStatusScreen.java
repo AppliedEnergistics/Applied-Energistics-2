@@ -18,6 +18,14 @@
 
 package appeng.client.gui.me.networktool;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.CommonButtons;
@@ -27,12 +35,6 @@ import appeng.container.me.networktool.NetworkStatus;
 import appeng.container.me.networktool.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
@@ -52,7 +54,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
     private static final Blitter BACKGROUND = Blitter.texture("guis/networkstatus.png").src(0, 0, 195, 153);
 
     public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
-                               ITextComponent title) {
+            ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
         this.setScrollBar(new Scrollbar());
     }
@@ -72,13 +74,15 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
         setTextContent("stored_power", GuiText.StoredPower.text(Platform.formatPower(status.getStoredPower(), false)));
         setTextContent("max_power", GuiText.MaxPower.text(Platform.formatPower(status.getMaxStoredPower(), false)));
-        setTextContent("power_input_rate", GuiText.PowerInputRate.text(Platform.formatPower(status.getAveragePowerInjection(), true)));
-        setTextContent("power_usage_rate", GuiText.PowerUsageRate.text(Platform.formatPower(status.getAveragePowerUsage(), true)));
+        setTextContent("power_input_rate",
+                GuiText.PowerInputRate.text(Platform.formatPower(status.getAveragePowerInjection(), true)));
+        setTextContent("power_usage_rate",
+                GuiText.PowerUsageRate.text(Platform.formatPower(status.getAveragePowerUsage(), true)));
     }
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         int x = 0;
         int y = 0;
         final int viewStart = getScrollBar().getCurrentScroll() * COLUMNS;
