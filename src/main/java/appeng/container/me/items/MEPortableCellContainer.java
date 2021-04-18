@@ -30,7 +30,7 @@ import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.interfaces.IInventorySlotAware;
 
 /**
- * @see appeng.client.gui.me.items.MEPortableCellScreen
+ * @see appeng.client.gui.me.items.ItemTerminalScreen
  */
 public class MEPortableCellContainer extends ItemTerminalContainer {
 

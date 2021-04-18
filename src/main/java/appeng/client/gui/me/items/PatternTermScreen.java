@@ -26,14 +26,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
-import appeng.client.gui.Blitter;
 import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.SlotSemantic;
 import appeng.container.me.items.PatternTermContainer;
-import appeng.container.slot.FakeCraftingMatrixSlot;
-import appeng.container.slot.OptionalFakeSlot;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
@@ -58,8 +57,8 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
     private ActionButton substitutionsDisabledBtn;
 
     public PatternTermScreen(TerminalStyle style, PatternTermContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(style, container, playerInventory, title);
+            ITextComponent title, ScreenStyle style1) {
+        super(style, container, playerInventory, title, style1);
     }
 
     @Override

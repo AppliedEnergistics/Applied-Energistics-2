@@ -60,7 +60,10 @@ public class ClientHelper extends ServerHelper {
     private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
 
     public ClientHelper() {
-        StyleManager.initialize(Minecraft.getInstance().getResourceManager());
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft != null) {
+            StyleManager.initialize(minecraft.getResourceManager());
+        }
     }
 
     public void clientInit() {

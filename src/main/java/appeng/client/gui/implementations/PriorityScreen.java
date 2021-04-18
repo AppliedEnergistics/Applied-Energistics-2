@@ -26,21 +26,19 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
 import appeng.client.gui.NumberEntryType;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.PriorityContainer;
-import appeng.core.localization.GuiText;
 
 public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
-
-    private static final Blitter BACKGROUND = Blitter.texture("guis/priority.png").src(0, 0, 176, 107);
 
     private final AESubScreen subGui;
 
     private NumberEntryWidget priority;
 
-    public PriorityScreen(PriorityContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public PriorityScreen(PriorityContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
         this.subGui = new AESubScreen(this, container.getPriorityHost());
     }
 

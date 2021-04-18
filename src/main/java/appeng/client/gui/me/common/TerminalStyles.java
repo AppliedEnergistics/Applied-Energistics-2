@@ -2,8 +2,8 @@ package appeng.client.gui.me.common;
 
 import net.minecraft.client.renderer.Rectangle2d;
 
-import appeng.client.gui.Blitter;
 import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
+import appeng.client.gui.style.Blitter;
 
 public final class TerminalStyles {
 

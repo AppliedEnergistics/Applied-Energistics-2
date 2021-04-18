@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.localization.GuiText;
@@ -31,12 +31,11 @@ import appeng.core.sync.packets.ConfigValuePacket;
 
 public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/toolbox.png").src(0, 0, 176, 166);
-
     private ToggleButton tFacades;
 
-    public NetworkToolScreen(NetworkToolContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public NetworkToolScreen(NetworkToolContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

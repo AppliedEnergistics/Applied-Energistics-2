@@ -30,21 +30,19 @@ import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.core.AppEng;
-import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 
 public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/quartzknife.png").src(0, 0, 176, 184);
-
     private TextFieldWidget name;
 
-    public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

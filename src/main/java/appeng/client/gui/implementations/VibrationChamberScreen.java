@@ -25,7 +25,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.VibrationChamberContainer;
@@ -33,17 +34,16 @@ import appeng.tile.misc.VibrationChamberTileEntity;
 
 public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/vibchamber.png").src(0, 0, 176, 166);
     // "Progress-bar" that indicates the energy generation rate
-    private static final Blitter GENERATION_RATE = BACKGROUND.copy().src(176, 14, 6, 18);
+    private static final Blitter GENERATION_RATE = Blitter.texture("guis/vibchamber.png").src(176, 14, 6, 18);
     // Burn indicator similar to the "flame" in a vanilla furnace
-    private static final Blitter BURN_PROGRESS = BACKGROUND.copy().src(176, 0, 14, 13);
+    private static final Blitter BURN_PROGRESS = Blitter.texture("guis/vibchamber.png").src(176, 0, 14, 13);
 
     private ProgressBar pb;
 
     public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

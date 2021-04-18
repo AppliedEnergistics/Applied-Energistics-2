@@ -21,6 +21,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.container.me.common.GridInventoryEntry;
 import appeng.container.me.common.MEMonitorableContainer;
@@ -30,8 +31,9 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
         extends MEMonitorableScreen<IAEItemStack, C> {
-    public ItemTerminalScreen(TerminalStyle style, C container, PlayerInventory playerInventory, ITextComponent title) {
-        super(style, container, playerInventory, title);
+    public ItemTerminalScreen(TerminalStyle style, C container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style1) {
+        super(style, container, playerInventory, title, style1);
     }
 
     @Override

@@ -7,8 +7,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.inventory.container.Slot;
 
-import appeng.client.gui.Blitter;
 import appeng.client.gui.Rects;
+import appeng.client.gui.style.Blitter;
 
 /**
  * A 3x3 toolbox panel attached to the player inventory.

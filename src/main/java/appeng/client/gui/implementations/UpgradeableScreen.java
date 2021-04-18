@@ -28,7 +28,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.container.SlotSemantic;
@@ -47,8 +47,8 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
 
     private final ToolboxPanel toolboxPanel;
 
-    public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title, Blitter background) {
-        super(container, playerInventory, title, background);
+    public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
 
         upgradesPanel = new UpgradesPanel(xSize + MARGIN, 0, container.getSlots(SlotSemantic.UPGRADE));
         toolboxPanel = new ToolboxPanel(xSize + MARGIN, ySize - 90, container.getSlots(SlotSemantic.TOOLBOX));

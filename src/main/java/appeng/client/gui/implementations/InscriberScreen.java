@@ -22,21 +22,21 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.InscriberContainer;
 
 public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/inscriber.png").src(0, 0, 176, 176);
-
-    private static final Blitter PROGRESS_BAR = BACKGROUND.copy().src(135, 177, 6, 18);
+    private static final Blitter PROGRESS_BAR = Blitter.texture("guis/inscriber.png").src(135, 177, 6, 18);
 
     private ProgressBar pb;
 
-    public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

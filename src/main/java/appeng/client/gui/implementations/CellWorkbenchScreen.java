@@ -29,7 +29,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
@@ -40,15 +40,13 @@ import appeng.core.sync.packets.ConfigValuePacket;
 
 public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/cellworkbench.png").src(0, 0, 176, 251);
-
     private ToggleButton copyMode;
 
     private SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

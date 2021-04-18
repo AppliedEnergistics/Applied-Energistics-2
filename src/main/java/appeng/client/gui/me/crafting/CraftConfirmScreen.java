@@ -31,8 +31,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
 import appeng.client.gui.implementations.AESubScreen;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.container.me.crafting.CraftConfirmContainer;
 import appeng.container.me.crafting.CraftingPlanSummary;
@@ -46,16 +46,15 @@ import appeng.core.sync.packets.ConfigValuePacket;
  */
 public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/craftingreport.png").src(0, 0, 238, 206);
-
     private final AESubScreen subGui;
     private final CraftConfirmTableRenderer table;
 
     private Button start;
     private Button selectCPU;
 
-    public CraftConfirmScreen(CraftConfirmContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public CraftConfirmScreen(CraftConfirmContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
         this.subGui = new AESubScreen(this, container.getTarget());
         this.table = new CraftConfirmTableRenderer(this, 9, 19);
 

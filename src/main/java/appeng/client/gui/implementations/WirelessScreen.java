@@ -23,7 +23,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.container.implementations.WirelessContainer;
 import appeng.core.localization.GuiText;
@@ -31,10 +31,9 @@ import appeng.util.Platform;
 
 public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/wireless.png").src(0, 0, 176, 166);
-
-    public WirelessScreen(WirelessContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public WirelessScreen(WirelessContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

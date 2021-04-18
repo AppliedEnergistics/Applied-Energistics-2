@@ -34,7 +34,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.container.me.crafting.CraftingCPUContainer;
 import appeng.container.me.crafting.CraftingStatus;
@@ -47,7 +47,6 @@ import appeng.core.sync.packets.ConfigValuePacket;
  * This screen shows the current crafting job that a crafting CPU is working on (if any).
  */
 public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScreen<T> {
-    private static final Blitter BACKGROUND = Blitter.texture("guis/craftingcpu.png").src(0, 0, 238, 184);
 
     private final CraftingStatusTableRenderer table;
 
@@ -55,8 +54,8 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
 
     private CraftingStatus status;
 
-    public CraftingCPUScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public CraftingCPUScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
 
         this.table = new CraftingStatusTableRenderer(this, 9, 19);
 

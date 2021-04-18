@@ -1,6 +1,10 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/interfacefluid.png",
+    "srcRect": [0, 0, 211, 231]
+  },
   "slots": {
     "CONFIG": {
       "left": 8,

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -62,6 +63,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
+import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.Position;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
@@ -102,9 +104,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     private final VerticalButtonBar verticalButtonBar = new VerticalButtonBar();
 
-    @Nullable
-    private final Blitter background;
-
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
     private Scrollbar myScrollBar = null;
@@ -118,13 +117,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private final EnumSet<SlotSemantic> hiddenSlots = EnumSet.noneOf(SlotSemantic.class);
     private ScreenStyle style;
 
-    public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title,
-            @Nullable Blitter background) {
+    public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title);
-        this.background = background;
-        if (background != null) {
-            this.xSize = background.getSrcWidth();
-            this.ySize = background.getSrcHeight();
+        this.style = Objects.requireNonNull(style, "style");
+        if (style.getBackground() != null) {
+            this.xSize = style.getBackground().getSrcWidth();
+            this.ySize = style.getBackground().getSrcHeight();
         }
     }
 
@@ -133,19 +131,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     protected void init() {
         super.init();
         this.verticalButtonBar.reset(guiLeft, guiTop);
-        if (style != null) {
-            positionSlots(style);
-        }
-    }
-
-    final void loadStyle(String path) {
-        try {
-            this.style = StyleManager.loadStyleDoc(path);
-        } catch (FileNotFoundException e) {
-            AELog.error("Failed to read Screen JSON file: " + path + ": " + e.getMessage());
-        } catch (Exception e) {
-            AELog.error(e, "Failed to read Screen JSON file: " + path);
-        }
+        positionSlots(style);
     }
 
     private void positionSlots(ScreenStyle style) {
@@ -616,8 +602,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
             float partialTicks) {
-        if (background != null) {
-            background.dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
+        if (style.getBackground() != null) {
+            style.getBackground().dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
         }
     }
 

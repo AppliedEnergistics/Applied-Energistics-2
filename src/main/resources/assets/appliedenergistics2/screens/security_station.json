@@ -1,6 +1,6 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "includes": ["common/me_terminal.json"],
   "slots": {
     "BIOMETRIC_CARD": {
       "left": 37,

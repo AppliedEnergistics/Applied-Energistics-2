@@ -26,6 +26,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.client.gui.implementations.IOBusScreen;
 import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
@@ -41,8 +42,9 @@ public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
 
     private SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public FluidIOBusScreen(FluidIOBusContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, IOBusScreen.BACKGROUND);
+    public FluidIOBusScreen(FluidIOBusContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

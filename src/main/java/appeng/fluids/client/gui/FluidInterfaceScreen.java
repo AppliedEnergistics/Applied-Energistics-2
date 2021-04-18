@@ -18,13 +18,12 @@
 
 package appeng.fluids.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.client.gui.Blitter;
 import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
@@ -38,12 +37,9 @@ import appeng.fluids.util.IAEFluidTank;
 
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/interfacefluid.png")
-            .src(0, 0, 211, 231);
-
     public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

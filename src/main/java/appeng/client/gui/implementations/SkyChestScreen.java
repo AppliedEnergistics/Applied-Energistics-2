@@ -18,22 +18,18 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.SkyChestContainer;
-import appeng.core.localization.GuiText;
 
 public class SkyChestScreen extends AEBaseScreen<SkyChestContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/skychest.png").src(0, 0, 176, 195);
-
-    public SkyChestScreen(SkyChestContainer container, PlayerInventory playerInv, ITextComponent title) {
-        super(container, playerInv, title, BACKGROUND);
+    public SkyChestScreen(SkyChestContainer container, PlayerInventory playerInv, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInv, title, style);
     }
 
 }

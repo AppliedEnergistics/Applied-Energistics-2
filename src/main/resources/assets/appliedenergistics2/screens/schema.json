@@ -200,6 +200,62 @@
           "required": ["keybind"]
         }
       ]
+    },
+    "rect": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": [
+            {
+              "type": "integer",
+              "description": "x"
+            },
+            {
+              "type": "integer",
+              "description": "y"
+            },
+            {
+              "type": "integer",
+              "description": "width"
+            },
+            {
+              "type": "integer",
+              "description": "height"
+            }
+          ],
+          "additionalItems": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "integer"
+            },
+            "y": {
+              "type": "integer"
+            },
+            "width": {
+              "type": "integer"
+            },
+            "height": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "blitter": {
+      "type": "object",
+      "properties": {
+        "texture": {
+          "type": "string"
+        },
+        "srcRect": {
+          "$ref": "#/definitions/rect"
+        }
+      },
+      "required": ["texture"]
     }
   },
   "properties": {
@@ -219,6 +275,9 @@
           "$ref": "#/definitions/color"
         }
       }
+    },
+    "background": {
+      "$ref": "#/definitions/blitter"
     },
     "slots": {
       "type": "object",

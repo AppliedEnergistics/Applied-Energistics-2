@@ -1,6 +1,10 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/drive.png",
+    "srcRect": [0, 0, 176, 199]
+  },
   "slots": {
     "STORAGE_CELL": {
       "left": 71,

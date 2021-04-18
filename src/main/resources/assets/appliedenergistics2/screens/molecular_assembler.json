@@ -1,6 +1,10 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/molecular_assembler.png",
+    "srcRect": [0, 0, 176, 197]
+  },
   "slots": {
     "MACHINE_CRAFTING_GRID": {
       "left": 29,

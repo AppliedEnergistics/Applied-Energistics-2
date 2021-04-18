@@ -18,13 +18,11 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.container.implementations.SpatialIOPortContainer;
 import appeng.core.localization.GuiText;
@@ -32,11 +30,9 @@ import appeng.util.Platform;
 
 public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/spatialio.png").src(0, 0, 176, 197);
-
     public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

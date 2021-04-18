@@ -18,22 +18,18 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.GrinderContainer;
-import appeng.core.localization.GuiText;
 
 public class GrinderScreen extends AEBaseScreen<GrinderContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/grinder.png").src(0, 0, 176, 176);
-
-    public GrinderScreen(GrinderContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public GrinderScreen(GrinderContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
 }

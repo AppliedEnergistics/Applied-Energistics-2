@@ -24,7 +24,7 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -34,13 +34,11 @@ import appeng.util.Platform;
 
 public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/spatialanchor.png").src(0, 0, 195, 100);
-
     private SettingToggleButton<YesNo> overlayToggle;
 
     public SpatialAnchorScreen(SpatialAnchorContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override

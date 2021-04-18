@@ -1,6 +1,10 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/grinder.png",
+    "srcRect": [0, 0, 176, 176]
+  },
   "slots": {
     "MACHINE_INPUT": {
       "left": 12,

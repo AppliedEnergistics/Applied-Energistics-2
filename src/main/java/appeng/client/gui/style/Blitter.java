@@ -1,4 +1,4 @@
-package appeng.client.gui;
+package appeng.client.gui.style;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -16,7 +16,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
 
-import appeng.client.Point;
 import appeng.core.AppEng;
 
 /**
@@ -46,7 +45,7 @@ public final class Blitter {
     private Rectangle2d srcRect;
     private Rectangle2d destRect = new Rectangle2d(0, 0, 0, 0);
 
-    private Blitter(ResourceLocation texture, int referenceWidth, int referenceHeight) {
+    Blitter(ResourceLocation texture, int referenceWidth, int referenceHeight) {
         this.texture = texture;
         this.referenceWidth = referenceWidth;
         this.referenceHeight = referenceHeight;

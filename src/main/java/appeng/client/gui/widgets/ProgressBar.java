@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.Blitter;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
 

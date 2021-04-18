@@ -28,7 +28,7 @@ import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.definitions.IDefinitions;
-import appeng.client.gui.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.IOPortContainer;
@@ -36,15 +36,13 @@ import appeng.core.Api;
 
 public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
 
-    private static final Blitter BACKGROUND = Blitter.texture("guis/io_port.png")
-            .src(0, 0, 176, 166);
-
     private SettingToggleButton<FullnessMode> fullMode;
     private SettingToggleButton<OperationMode> operationMode;
     private SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title, BACKGROUND);
+    public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override
