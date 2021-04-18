@@ -18,6 +18,18 @@
 
 package appeng.client.gui.me.crafting;
 
+import java.text.NumberFormat;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.implementations.AESubScreen;
@@ -27,15 +39,6 @@ import appeng.container.me.crafting.CraftingPlanSummary;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import org.lwjgl.glfw.GLFW;
-
-import java.text.NumberFormat;
 
 /**
  * This screen shows the computed crafting plan and allows the player to select a CPU on which it should be scheduled
@@ -102,8 +105,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
             } else if (this.container.getCpuAvailableBytes() > 0) {
                 cpuDetails = GuiText.ConfirmCraftCpuStatus.text(
                         this.container.getCpuAvailableBytes(),
-                        this.container.getCpuCoProcessors()
-                );
+                        this.container.getCpuCoProcessors());
             } else {
                 cpuDetails = GuiText.ConfirmCraftNoCpu.text();
             }

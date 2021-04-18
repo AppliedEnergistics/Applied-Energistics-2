@@ -45,7 +45,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.fluids.container.FluidIOContainer;
+import appeng.fluids.container.FluidIOBusContainer;
 import appeng.fluids.util.AEFluidStack;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
@@ -82,7 +82,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
 
     @Override
     protected ContainerType<?> getContainerType() {
-        return FluidIOContainer.IMPORT_TYPE;
+        return FluidIOBusContainer.IMPORT_TYPE;
     }
 
     @Override

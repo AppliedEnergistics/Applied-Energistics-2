@@ -55,7 +55,7 @@ public class VerticalButtonBar {
         }
 
         // Set up a bounding rectangle for JEI exclusion zones
-        if (buttons.isEmpty()) {
+        if (maxWidth == 0) {
             boundingRectangle = new Rectangle2d(0, 0, 0, 0);
         } else {
             int boundX = originX - maxWidth - 2 * MARGIN;

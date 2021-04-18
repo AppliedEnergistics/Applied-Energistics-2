@@ -1,4 +1,16 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"]
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.FluidTerminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  ]
 }

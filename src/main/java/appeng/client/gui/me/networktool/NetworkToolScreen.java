@@ -18,6 +18,9 @@
 
 package appeng.client.gui.me.networktool;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
 import appeng.client.gui.widgets.ToggleButton;
@@ -25,8 +28,6 @@ import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
 
 public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
 

@@ -1,8 +1,6 @@
 {
   "$schema": "schema.json",
-  "includes": [
-    "common/common.json"
-  ],
+  "includes": ["common/common.json"],
   "text": [
     {
       "id": "dialog_title",

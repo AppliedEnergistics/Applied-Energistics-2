@@ -96,10 +96,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "action",
-            "value"
-          ]
+          "required": ["action", "value"]
         },
         "hoverEvent": {
           "type": "object",
@@ -137,9 +134,7 @@
                       "description": "NBT of the item, serialized as string. See https://minecraft.fandom.com/wiki/Player.dat_format#Item_structure"
                     }
                   },
-                  "required": [
-                    "id"
-                  ]
+                  "required": ["id"]
                 }
               }
             },
@@ -178,9 +173,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "text"
-          ]
+          "required": ["text"]
         },
         {
           "properties": {
@@ -195,9 +188,7 @@
               }
             }
           },
-          "required": [
-            "translate"
-          ]
+          "required": ["translate"]
         },
         {
           "properties": {
@@ -206,9 +197,7 @@
               "description": "A keybind identifier"
             }
           },
-          "required": [
-            "keybind"
-          ]
+          "required": ["keybind"]
         }
       ]
     }
@@ -246,7 +235,8 @@
                   "BREAK_AFTER_9COLS",
                   "BREAK_AFTER_2COLS",
                   "BREAK_AFTER_3COLS",
-                  "HORIZONTAL"
+                  "HORIZONTAL",
+                  "VERTICAL"
                 ]
               }
             }
@@ -272,6 +262,7 @@
           "MACHINE_PROCESSING",
           "MACHINE_OUTPUT",
           "MACHINE_CRAFTING_GRID",
+          "BLANK_PATTERN",
           "ENCODED_PATTERN",
           "VIEW_CELL",
           "CRAFTING_GRID",
@@ -295,9 +286,7 @@
           },
           "color": {
             "$comment": "See enum PaletteColor",
-            "enum": [
-              "DEFAULT_TEXT_COLOR"
-            ],
+            "enum": ["DEFAULT_TEXT_COLOR"],
             "default": "DEFAULT_TEXT_COLOR"
           },
           "position": {

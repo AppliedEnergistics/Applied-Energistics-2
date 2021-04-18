@@ -73,12 +73,6 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrixStack, GuiText.Priority.getLocal(), 8, 6, COLOR_DARK_GRAY);
-    }
-
-    @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);

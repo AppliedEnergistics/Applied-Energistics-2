@@ -7,5 +7,17 @@
       "top": 24,
       "grid": "BREAK_AFTER_9COLS"
     }
-  }
+  },
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.SkyChest"
+      },
+      "position": {
+        "left": 8,
+        "top": 8
+      }
+    }
+  ]
 }

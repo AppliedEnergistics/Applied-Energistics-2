@@ -9,19 +9,28 @@ import appeng.api.implementations.IUpgradeableHost;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
+import appeng.parts.automation.ExportBusPart;
+import appeng.parts.automation.ImportBusPart;
 
 /**
  * Used for {@link appeng.parts.automation.ImportBusPart} and {@link appeng.parts.automation.ExportBusPart}
+ *
+ * @see appeng.client.gui.implementations.IOBusScreen
  */
 public class IOBusContainer extends UpgradeableContainer {
 
-    public static final ContainerType<IOBusContainer> TYPE = ContainerTypeBuilder
-            .create(IOBusContainer::new, IUpgradeableHost.class)
+    public static final ContainerType<IOBusContainer> EXPORT_TYPE = ContainerTypeBuilder
+            .create(IOBusContainer::new, ExportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
-            .build("iobus");
+            .build("export_bus");
 
-    public IOBusContainer(int id, final PlayerInventory ip, final IUpgradeableHost te) {
-        super(TYPE, id, ip, te);
+    public static final ContainerType<IOBusContainer> IMPORT_TYPE = ContainerTypeBuilder
+            .create(IOBusContainer::new, ImportBusPart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("import_bus");
+
+    public IOBusContainer(ContainerType<?> containerType, int id, PlayerInventory ip, IUpgradeableHost te) {
+        super(containerType, id, ip, te);
     }
 
     @Override

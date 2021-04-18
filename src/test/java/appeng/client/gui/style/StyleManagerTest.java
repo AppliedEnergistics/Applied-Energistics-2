@@ -1,20 +1,22 @@
 package appeng.client.gui.style;
 
-import appeng.client.gui.MockResourceManager;
-import appeng.container.SlotSemantic;
-import net.minecraft.resources.IFutureReloadListener;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+
+import java.io.IOException;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.io.IOException;
+import net.minecraft.resources.IFutureReloadListener;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
+import appeng.client.gui.MockResourceManager;
+import appeng.container.SlotSemantic;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 class StyleManagerTest {

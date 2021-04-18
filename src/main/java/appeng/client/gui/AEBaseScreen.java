@@ -18,6 +18,48 @@
 
 package appeng.client.gui;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
 import appeng.client.gui.style.Position;
@@ -44,45 +86,10 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.glfw.GLFW;
-
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
+
+    private static final Point HIDDEN_SLOT_POS = new Point(-9999, -9999);
 
     private static final Blitter SLOT_BACKGROUND = Blitter.texture("guis/states.png").src(192, 192, 18, 18);
 
@@ -98,12 +105,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     @Nullable
     private final Blitter background;
 
-    /**
-     * Supports anchoring slots to the bottom of the screen to allow them to be automatically laid out correctly when
-     * the screen is resized.
-     */
-    private final Map<AppEngSlot, Integer> bottomAnchoredSlots = new HashMap<>();
-
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
     private Scrollbar myScrollBar = null;
@@ -114,10 +115,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private boolean handlingRightClick;
     protected final List<CustomSlotWidget> guiSlots = new ArrayList<>();
     private final Map<String, TextOverride> textOverrides = new HashMap<>();
+    private final EnumSet<SlotSemantic> hiddenSlots = EnumSet.noneOf(SlotSemantic.class);
     private ScreenStyle style;
 
     public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title,
-                        @Nullable Blitter background) {
+            @Nullable Blitter background) {
         super(container, playerInventory, title);
         this.background = background;
         if (background != null) {
@@ -131,13 +133,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     protected void init() {
         super.init();
         this.verticalButtonBar.reset(guiLeft, guiTop);
-        positionAnchoredSlots();
         if (style != null) {
             positionSlots(style);
         }
     }
 
-    protected final void loadStyle(String path) {
+    final void loadStyle(String path) {
         try {
             this.style = StyleManager.loadStyleDoc(path);
         } catch (FileNotFoundException e) {
@@ -154,6 +155,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             List<Slot> slots = container.getSlots(entry.getKey());
             for (int i = 0; i < slots.size(); i++) {
                 Slot slot = slots.get(i);
+
+                // Do not position slots that are hidden
+                if (hiddenSlots.contains(entry.getKey())) {
+                    continue;
+                }
+
                 SlotPosition slotPos = entry.getValue();
                 SlotGridLayout grid = slotPos.getGrid();
 
@@ -191,29 +198,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return new Point(x, y);
     }
 
-    /**
-     * Anchors a slot to the bottom edge of the screen and automatically positions it when the screen is resized. The
-     * offset should include the 1px border around the actual slot.
-     */
-    protected final void anchorSlotToBottom(AppEngSlot slot, int x, int y) {
-        bottomAnchoredSlots.put(slot, y);
-        slot.xPos = x + 1;
-        slot.yPos = ySize - y + 1;
-    }
-
-    private void positionAnchoredSlots() {
-        for (Map.Entry<AppEngSlot, Integer> entry : bottomAnchoredSlots.entrySet()) {
-            entry.getKey().yPos = ySize - entry.getValue() + 1;
-        }
-    }
-
     private List<Slot> getInventorySlots() {
         return this.container.inventorySlots;
     }
 
     /**
-     * This method is called directly before rendering the screen, and should be used to perform layout,
-     * and other rendering-related updates.
+     * This method is called directly before rendering the screen, and should be used to perform layout, and other
+     * rendering-related updates.
      */
     @OverridingMethodsMustInvokeSuper
     protected void updateBeforeRender() {
@@ -256,7 +247,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     protected void drawGuiSlot(MatrixStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
-                               float partialTicks) {
+            float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.getTooltipAreaX();
             final int top = slot.getTooltipAreaY();
@@ -376,7 +367,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
-                                                         final int y) {
+            final int y) {
 
         this.drawBG(matrixStack, guiLeft, guiTop, x, y, f);
 
@@ -461,7 +452,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         final ItemStack itemstack = getPlayer().inventory.getItemStack();
 
         if (this.getScrollBar() != null) {
-            // FIXME: Coordinate system of mouseX/mouseY is unclear
             this.getScrollBar().mouseDragged((int) mouseX - this.guiLeft, (int) mouseY - this.guiTop);
         }
 
@@ -484,7 +474,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected void handleMouseClick(@Nullable Slot slot, final int slotIdx, final int mouseButton,
-                                    final ClickType clickType) {
+            final ClickType clickType) {
 
         // Do not allow clicks on disabled player inventory slots
         if (slot instanceof DisabledSlot) {
@@ -625,7 +615,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-                       float partialTicks) {
+            float partialTicks) {
         if (background != null) {
             background.dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
         }
@@ -776,6 +766,26 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      */
     protected final void setTextHidden(String id, boolean hidden) {
         getOrCreateTextOverride(id).setHidden(hidden);
+    }
+
+    /**
+     * Hides (or shows) a group of slots based on semantic.
+     */
+    protected final void setSlotsHidden(SlotSemantic semantic, boolean hidden) {
+        if (hidden) {
+            if (hiddenSlots.add(semantic)) {
+                // This isn't the greatest tactic but allows us to do this for every slot-type.
+                // This approach has been used to hide slots since 1.7
+                for (Slot slot : container.getSlots(semantic)) {
+                    slot.xPos = HIDDEN_SLOT_POS.getX();
+                    slot.yPos = HIDDEN_SLOT_POS.getY();
+                }
+            }
+        } else {
+            if (hiddenSlots.remove(semantic) && style != null) {
+                positionSlots(style);
+            }
+        }
     }
 
     /**

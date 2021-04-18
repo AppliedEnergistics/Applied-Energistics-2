@@ -18,6 +18,8 @@
 
 package appeng.container.me.items;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
@@ -37,7 +39,10 @@ import appeng.container.SlotSemantic;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.slot.CraftingMatrixSlot;
 import appeng.container.slot.CraftingTermSlot;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.IContainerCraftingPacket;
+import appeng.helpers.InventoryAction;
 import appeng.util.inv.WrapperInvItemHandler;
 
 /**
@@ -119,12 +124,14 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
         return this.currentRecipe;
     }
 
-    public CraftingMatrixSlot[] getCraftingSlots() {
-        return craftingSlots;
-    }
-
-    public CraftingTermSlot getOutputSlot() {
-        return outputSlot;
+    /**
+     * Clears the crafting grid and moves everything back into the network inventory.
+     */
+    public void clearCraftingGrid() {
+        Preconditions.checkState(isClient());
+        CraftingMatrixSlot slot = craftingSlots[0];
+        final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.slotNumber, 0);
+        NetworkHandler.instance().sendToServer(p);
     }
 
 }

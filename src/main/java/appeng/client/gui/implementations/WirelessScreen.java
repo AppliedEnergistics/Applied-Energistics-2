@@ -18,10 +18,9 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
@@ -29,7 +28,6 @@ import appeng.client.gui.widgets.CommonButtons;
 import appeng.container.implementations.WirelessContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
-import net.minecraft.util.text.StringTextComponent;
 
 public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
 
@@ -47,8 +45,9 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
         ITextComponent rangeText = StringTextComponent.EMPTY;
         ITextComponent energyUseText = StringTextComponent.EMPTY;
         if (container.getRange() > 0) {

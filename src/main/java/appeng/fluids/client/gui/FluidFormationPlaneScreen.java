@@ -36,7 +36,7 @@ import appeng.fluids.util.IAEFluidTank;
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneContainer> {
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/storagebus.png")
-            .src(0, 0, 211, 251);
+            .src(0, 0, 176, 251);
 
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, PlayerInventory playerInventory,
             ITextComponent title) {

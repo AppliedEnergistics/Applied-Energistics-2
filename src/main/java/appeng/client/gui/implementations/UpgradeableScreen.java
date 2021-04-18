@@ -18,6 +18,14 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Blitter;
@@ -25,16 +33,10 @@ import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.container.SlotSemantic;
 import appeng.container.implementations.UpgradeableContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
-import java.util.List;
 
 /**
- * This screen adds the ability for {@link IUpgradeableHost} screens to show the upgrade inventory and
- * the player's toolbox to more easily install/remove upgrades.
+ * This screen adds the ability for {@link IUpgradeableHost} screens to show the upgrade inventory and the player's
+ * toolbox to more easily install/remove upgrades.
  */
 public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
 
@@ -54,7 +56,7 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
 
     @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-                       float partialTicks) {
+            float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         upgradesPanel.draw(matrices, getBlitOffset(), offsetX, offsetY);

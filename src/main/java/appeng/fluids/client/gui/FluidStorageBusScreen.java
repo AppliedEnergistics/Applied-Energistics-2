@@ -18,6 +18,9 @@
 
 package appeng.fluids.client.gui;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
@@ -37,8 +40,6 @@ import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
 
 /**
  * @author BrockWS
@@ -48,13 +49,13 @@ import net.minecraft.util.text.ITextComponent;
 public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusContainer> {
 
     private static final Blitter BACKGROUND = Blitter.texture("guis/storagebus.png")
-            .src(0, 0, 211, 251);
+            .src(0, 0, 176, 251);
 
     private SettingToggleButton<AccessRestriction> rwMode;
     private SettingToggleButton<StorageFilter> storageFilter;
 
     public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory,
-                                 ITextComponent title) {
+            ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
     }
 

@@ -1,5 +1,8 @@
 package appeng.client.gui.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
@@ -11,8 +14,6 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.IOBusContainer;
 import appeng.parts.automation.ExportBusPart;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
 
 public class IOBusScreen extends UpgradeableScreen<IOBusContainer> {
 
@@ -27,7 +28,6 @@ public class IOBusScreen extends UpgradeableScreen<IOBusContainer> {
 
     public IOBusScreen(IOBusContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, BACKGROUND);
-        loadStyle("/screens/io_bus.json");
     }
 
     @Override

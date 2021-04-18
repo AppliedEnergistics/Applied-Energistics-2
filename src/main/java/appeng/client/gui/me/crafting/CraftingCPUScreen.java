@@ -80,6 +80,24 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
+        // Update the dialog title with an ETA if possible
+        ITextComponent title = this.getGuiDisplayName(GuiText.CraftingStatus.text());
+        if (status != null) {
+            final long elapsedTime = status.getElapsedTime();
+            final double remainingItems = status.getRemainingItemCount();
+            final double startItems = status.getStartItemCount();
+            final long eta = (long) (elapsedTime / Math.max(1d, (startItems - remainingItems))
+                    * remainingItems);
+
+            if (eta > 0 && !getVisualEntries().isEmpty()) {
+                final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(eta, TimeUnit.NANOSECONDS);
+                final String etaTimeText = DurationFormatUtils.formatDuration(etaInMilliseconds,
+                        GuiText.ETAFormat.getLocal());
+                title = title.deepCopy().appendString(" - " + etaTimeText);
+            }
+        }
+        setTextContent(TEXT_ID_DIALOG_TITLE, title);
+
         final int size = this.status != null ? this.status.getEntries().size() : 0;
         this.getScrollBar().setRange(0, CraftingStatusTableRenderer.getScrollableRows(size), 1);
     }
@@ -96,28 +114,12 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        ITextComponent title = this.getGuiDisplayName(GuiText.CraftingStatus.text());
+    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
 
         if (status != null) {
             this.table.render(matrixStack, mouseX, mouseY, status.getEntries(), getScrollBar().getCurrentScroll());
-
-            final long elapsedTime = status.getElapsedTime();
-            final double remainingItems = status.getRemainingItemCount();
-            final double startItems = status.getStartItemCount();
-            final long eta = (long) (elapsedTime / Math.max(1d, (startItems - remainingItems))
-                    * remainingItems);
-
-            if (eta > 0 && !getVisualEntries().isEmpty()) {
-                final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(eta, TimeUnit.NANOSECONDS);
-                final String etaTimeText = DurationFormatUtils.formatDuration(etaInMilliseconds,
-                        GuiText.ETAFormat.getLocal());
-                title = title.deepCopy().appendString(" - " + etaTimeText);
-            }
         }
-
-        setTextContent(TEXT_ID_DIALOG_TITLE, title);
     }
 
     public void postUpdate(CraftingStatus status) {

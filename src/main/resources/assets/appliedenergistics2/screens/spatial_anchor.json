@@ -1,4 +1,54 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"]
+  "includes": ["common/common.json"],
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.SpatialAnchor"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    {
+      "id": "used_power",
+      "position": {
+        "left": 13,
+        "top": 21
+      }
+    },
+    {
+      "id": "loaded_chunks",
+      "position": {
+        "left": 13,
+        "top": 31
+      }
+    },
+    {
+      "id": "statistics_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.SpatialAnchorStatistics"
+      },
+      "position": {
+        "left": 8,
+        "top": 56
+      }
+    },
+    {
+      "id": "statistics_loaded",
+      "position": {
+        "left": 13,
+        "top": 71
+      }
+    },
+    {
+      "id": "statistics_total",
+      "position": {
+        "left": 13,
+        "top": 81
+      }
+    }
+  ]
 }

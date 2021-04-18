@@ -48,17 +48,18 @@ public class ChestScreen extends AEBaseScreen<ChestContainer> {
                 this.itemRenderer, btn -> openPriority()));
     }
 
-    private void openPriority() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
+    @Override
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+
+        // Show a custom name for the ME Chest on the screen
+        if (!this.title.getString().isEmpty()) {
+            setTextContent(TEXT_ID_DIALOG_TITLE, this.title);
+        }
     }
 
-    @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Chest.text()).getString(), 8, 6,
-                COLOR_DARK_GRAY);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3,
-                COLOR_DARK_GRAY);
+    private void openPriority() {
+        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
 }

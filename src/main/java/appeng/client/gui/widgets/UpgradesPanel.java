@@ -2,7 +2,6 @@ package appeng.client.gui.widgets;
 
 import java.util.List;
 
-import appeng.container.slot.AppEngSlot;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.Rectangle2d;
@@ -10,6 +9,7 @@ import net.minecraft.inventory.container.Slot;
 
 import appeng.client.gui.Blitter;
 import appeng.client.gui.Rects;
+import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.IOptionalSlot;
 
 /**

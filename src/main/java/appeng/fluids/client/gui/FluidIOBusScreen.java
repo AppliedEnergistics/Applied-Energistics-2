@@ -18,6 +18,9 @@
 
 package appeng.fluids.client.gui;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -27,20 +30,18 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
-import appeng.fluids.container.FluidIOContainer;
+import appeng.fluids.container.FluidIOBusContainer;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
 
 /**
  * @see appeng.fluids.parts.FluidImportBusPart
  * @see appeng.fluids.parts.FluidExportBusPart
  */
-public class FluidIOBusScreen extends UpgradeableScreen<FluidIOContainer> {
+public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
 
     private SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public FluidIOBusScreen(FluidIOContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public FluidIOBusScreen(FluidIOBusContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title, IOBusScreen.BACKGROUND);
     }
 

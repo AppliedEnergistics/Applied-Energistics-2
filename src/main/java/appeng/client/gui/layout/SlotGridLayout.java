@@ -55,6 +55,12 @@ public enum SlotGridLayout {
         public Point getPosition(int x, int y, int semanticIdx) {
             return new Point(x, y).move(semanticIdx * 18, 0);
         }
+    },
+
+    VERTICAL {
+        public Point getPosition(int x, int y, int semanticIdx) {
+            return new Point(x, y).move(0, semanticIdx * 18);
+        }
     };
 
     private static Point getRowBreakPosition(int x, int y, int semanticIdx, int cols) {

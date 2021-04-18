@@ -1,4 +1,50 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"]
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "slots": {
+    "BLANK_PATTERN": {
+      "left": 147,
+      "bottom": 161
+    },
+    "ENCODED_PATTERN": {
+      "left": 147,
+      "bottom": 118
+    },
+    "CRAFTING_GRID": {
+      "left": 18,
+      "bottom": 156,
+      "grid": "BREAK_AFTER_3COLS"
+    },
+    "CRAFTING_RESULT": {
+      "left": 110,
+      "bottom": 138
+    },
+    "PROCESSING_RESULT": {
+      "left": 110,
+      "bottom": 156,
+      "grid": "VERTICAL"
+    }
+  },
+  "text": [
+    {
+      "id": "dialog_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.Terminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    {
+      "id": "crafting_grid_title",
+      "text": {
+        "translate": "gui.appliedenergistics2.PatternTerminal"
+      },
+      "position": {
+        "left": 8,
+        "bottom": 175
+      }
+    }
+  ]
 }

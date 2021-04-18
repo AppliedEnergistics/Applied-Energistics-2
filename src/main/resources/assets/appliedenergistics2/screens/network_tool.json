@@ -1,9 +1,6 @@
 {
   "$schema": "schema.json",
-  "includes": [
-    "common/common.json",
-    "common/player_inventory.json"
-  ],
+  "includes": ["common/common.json", "common/player_inventory.json"],
   "slots": {
     "STORAGE": {
       "left": 62,
