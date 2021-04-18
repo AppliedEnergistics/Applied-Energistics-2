@@ -26,12 +26,12 @@ import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.client.gui.implementations.UpgradeableScreen;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
+import appeng.container.SlotSemantic;
 import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -55,14 +55,6 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-
-        final int xo = 8;
-        final int yo = 23 + 6;
 
         final IAEFluidTank config = this.container.getFluidConfigInventory();
 
@@ -70,12 +62,17 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
             for (int x = 0; x < 9; x++) {
                 final int idx = y * 9 + x;
                 if (y < 2) {
-                    this.guiSlots.add(new FluidSlotWidget(config, idx, idx, xo + x * 18, yo + y * 18));
+                    addSlot(new FluidSlotWidget(config, idx), SlotSemantic.CONFIG);
                 } else {
-                    this.guiSlots.add(new OptionalFluidSlotWidget(config, container, idx, idx, y - 2, xo, yo, x, y));
+                    addSlot(new OptionalFluidSlotWidget(config, container, idx, y - 2), SlotSemantic.CONFIG);
                 }
             }
         }
+    }
+
+    @Override
+    public void init() {
+        super.init();
 
         addButton(this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui())));

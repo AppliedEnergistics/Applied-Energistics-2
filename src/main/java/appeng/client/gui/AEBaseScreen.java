@@ -18,7 +18,6 @@
 
 package appeng.client.gui;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -36,6 +35,7 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.ArrayListMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -67,7 +67,6 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.Position;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
-import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.style.Text;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.ITickingWidget;
@@ -112,10 +111,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private ItemStack dbl_whichItem = ItemStack.EMPTY;
     private Slot bl_clicked;
     private boolean handlingRightClick;
-    protected final List<CustomSlotWidget> guiSlots = new ArrayList<>();
+    private final List<CustomSlotWidget> guiSlots = new ArrayList<>();
+    private final ArrayListMultimap<SlotSemantic, CustomSlotWidget> guiSlotsBySemantic = ArrayListMultimap.create();
     private final Map<String, TextOverride> textOverrides = new HashMap<>();
     private final EnumSet<SlotSemantic> hiddenSlots = EnumSet.noneOf(SlotSemantic.class);
-    private ScreenStyle style;
+    private final ScreenStyle style;
 
     public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title);
@@ -137,30 +137,42 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private void positionSlots(ScreenStyle style) {
 
         for (Map.Entry<SlotSemantic, SlotPosition> entry : style.getSlots().entrySet()) {
+            // Do not position slots that are hidden
+            if (hiddenSlots.contains(entry.getKey())) {
+                continue;
+            }
 
             List<Slot> slots = container.getSlots(entry.getKey());
             for (int i = 0; i < slots.size(); i++) {
                 Slot slot = slots.get(i);
 
-                // Do not position slots that are hidden
-                if (hiddenSlots.contains(entry.getKey())) {
-                    continue;
-                }
-
-                SlotPosition slotPos = entry.getValue();
-                SlotGridLayout grid = slotPos.getGrid();
-
-                Point pos = resolvePosition(slotPos);
-
-                if (grid != null) {
-                    pos = grid.getPosition(pos.getX(), pos.getY(), i);
-                }
+                Point pos = getSlotPosition(entry.getValue(), i);
 
                 slot.xPos = pos.getX();
                 slot.yPos = pos.getY();
             }
+
+            // Do the same for GUI-only slots, which are used in Fluid-related UIs that do not deal with normal slots
+            List<CustomSlotWidget> guiSlots = guiSlotsBySemantic.get(entry.getKey());
+            if (guiSlots != null) {
+                for (int i = 0; i < guiSlots.size(); i++) {
+                    CustomSlotWidget guiSlot = guiSlots.get(i);
+                    Point pos = getSlotPosition(entry.getValue(), i);
+                    guiSlot.setPos(pos);
+                }
+            }
         }
 
+    }
+
+    private Point getSlotPosition(SlotPosition position, int semanticIndex) {
+        Point pos = resolvePosition(position);
+
+        SlotGridLayout grid = position.getGrid();
+        if (grid != null) {
+            pos = grid.getPosition(pos.getX(), pos.getY(), semanticIndex);
+        }
+        return pos;
     }
 
     private Point resolvePosition(Position pos) {
@@ -186,6 +198,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     private List<Slot> getInventorySlots() {
         return this.container.inventorySlots;
+    }
+
+    protected final void addSlot(CustomSlotWidget slot, SlotSemantic semantic) {
+        guiSlots.add(slot);
+        guiSlotsBySemantic.put(semantic, slot);
     }
 
     /**
