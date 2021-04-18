@@ -400,24 +400,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             AELog.crafting(LOG_MARK_AS_COMPLETE, logStack);
         }
 
-        // See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5158
-        // We suspect this is caused by waitingFor not being empty when the job is marked as complete
-        // This code is intended to analyze this problem further if it occurs again
-        if (!this.waitingFor.isEmpty()) {
-            StringBuilder errorMessage = new StringBuilder("A crafting job completed while still waiting for items:\n");
-            for (IAEItemStack stack : this.waitingFor) {
-                errorMessage.append(" - ").append(stack).append("\n");
-            }
-            errorMessage.append("Current inventory:\n");
-            for (IAEItemStack stack : inventory.getItemList()) {
-                errorMessage.append(" - ").append(stack).append("\n");
-            }
-            errorMessage.append("Final output: ").append(finalOutput.copy().setStackSize(this.startItemCount));
-            throw new RuntimeException(errorMessage.toString());
-        }
-        Preconditions.checkState(waitingFor.isEmpty(),
-                "When completing a job, the CPU should not be waiting for more items");
-
+        // Waiting for can potentially contain items at this point, if the user has a 64xplank->64xbutton processing
+        // recipe for example, but only requested 1xbutton. We just ignore the rest since it will be dumped
+        // back into the network inventory regardless. For this to work it's important that injectItems in this CPU
+        // does not accept any further items if isComplete is true.
+        this.waitingFor.resetStatus();
         this.remainingItemCount = 0;
         this.startItemCount = 0;
         this.lastTime = 0;
