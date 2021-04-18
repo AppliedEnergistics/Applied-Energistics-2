@@ -1,15 +1,10 @@
 package appeng.client.gui.me.common;
 
-import appeng.client.gui.ScreenRegistration;
 import appeng.client.gui.style.ScreenStyle;
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.screen.Screen;
+import appeng.client.gui.style.TerminalStyle;
 import net.minecraft.client.renderer.Rectangle2d;
 
 import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.ITextComponent;
 
 import java.util.function.Function;
 

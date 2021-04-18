@@ -5,7 +5,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.style.TerminalStyle;
 import com.google.common.annotations.VisibleForTesting;
 
 import net.minecraft.client.gui.IHasContainer;

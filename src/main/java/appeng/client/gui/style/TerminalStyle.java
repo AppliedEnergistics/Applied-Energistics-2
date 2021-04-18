@@ -1,55 +1,52 @@
-package appeng.client.gui.me.common;
+package appeng.client.gui.style;
 
 import appeng.client.Point;
-import appeng.client.gui.ScreenRegistration;
-import appeng.client.gui.style.Blitter;
-import appeng.client.gui.style.ScreenStyle;
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.screen.Screen;
+import appeng.client.gui.me.common.StackSizeRenderer;
 import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 
 /**
- * Describes the appearance of a terminal screen.
+ * Describes the appearance of terminal screens.
  */
-public final class TerminalStyle {
+public class TerminalStyle {
 
     /**
      * The top of the terminal background right up to the first row of content.
      */
-    private final Blitter header;
+    private Blitter header;
 
     /**
      * The area to draw for the first row in the terminal. Usually this includes the top of the scrollbar.
      */
-    private final Blitter firstRow;
+    private Blitter firstRow;
 
     /**
      * The area to repeat for every row in the terminal. Should be 16px for the item + 2px for the border in size.
      */
-    private final Blitter row;
+    private Blitter row;
 
     /**
      * The area to draw for the last row in the terminal. Usually this includes the top of the scrollbar.
      */
-    private final Blitter lastRow;
+    private Blitter lastRow;
 
     /**
      * The area to draw at the bottom of the terminal (i.e. includes the player inventory)
      */
-    private final Blitter bottom;
+    private Blitter bottom;
 
-    private final int screenWidth;
+    /**
+     * If specified, limits the terminal to at most this many rows rather than using up available space.
+     */
+    private Integer maxRows;
 
-    private final Integer maxRows;
+    /**
+     * Currently only 9 is supported here.
+     */
+    private int slotsPerRow;
 
-    private final int slotsPerRow;
-
-    private final Rectangle2d searchFieldRect;
+    private Rectangle2d searchFieldRect;
 
     private boolean sortByButton = true;
 
@@ -76,41 +73,76 @@ public final class TerminalStyle {
         this.searchFieldRect = searchFieldRect;
         this.maxRows = maxRows;
 
-        // Calculate a bounding box for the screen
-        int screenWidth = header.getSrcWidth();
-        screenWidth = Math.max(screenWidth, firstRow.getSrcWidth());
-        screenWidth = Math.max(screenWidth, row.getSrcWidth());
-        screenWidth = Math.max(screenWidth, lastRow.getSrcWidth());
-        screenWidth = Math.max(screenWidth, bottom.getSrcWidth());
-        this.screenWidth = screenWidth;
     }
 
     public Blitter getHeader() {
         return header;
     }
 
+    public void setHeader(Blitter header) {
+        this.header = header;
+    }
+
     public Blitter getFirstRow() {
         return firstRow;
+    }
+
+    public void setFirstRow(Blitter firstRow) {
+        this.firstRow = firstRow;
     }
 
     public Blitter getRow() {
         return row;
     }
 
+    public void setRow(Blitter row) {
+        this.row = row;
+    }
+
     public Blitter getLastRow() {
         return lastRow;
+    }
+
+    public void setLastRow(Blitter lastRow) {
+        this.lastRow = lastRow;
     }
 
     public Blitter getBottom() {
         return bottom;
     }
 
-    public int getScreenWidth() {
-        return screenWidth;
+    public void setBottom(Blitter bottom) {
+        this.bottom = bottom;
+    }
+
+    public void setMaxRows(Integer maxRows) {
+        this.maxRows = maxRows;
     }
 
     public int getSlotsPerRow() {
         return slotsPerRow;
+    }
+
+    public void setSlotsPerRow(int slotsPerRow) {
+        this.slotsPerRow = slotsPerRow;
+    }
+
+    public void setSearchFieldRect(Rectangle2d searchFieldRect) {
+        this.searchFieldRect = searchFieldRect;
+    }
+
+    public boolean isSortByButton() {
+        return sortByButton;
+    }
+
+    public int getScreenWidth() {
+        // Calculate a bounding box for the screen
+        int screenWidth = header.getSrcWidth();
+        screenWidth = Math.max(screenWidth, firstRow.getSrcWidth());
+        screenWidth = Math.max(screenWidth, row.getSrcWidth());
+        screenWidth = Math.max(screenWidth, lastRow.getSrcWidth());
+        screenWidth = Math.max(screenWidth, bottom.getSrcWidth());
+        return screenWidth;
     }
 
     public int getPossibleRows(int availableHeight) {
@@ -196,6 +228,10 @@ public final class TerminalStyle {
     public TerminalStyle setStackSizeRenderer(StackSizeRenderer renderer) {
         this.stackSizeRenderer = renderer;
         return this;
+    }
+
+    public TerminalStyle merge(TerminalStyle otherStyle) {
+
     }
 
 }

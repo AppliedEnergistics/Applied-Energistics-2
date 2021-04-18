@@ -345,15 +345,11 @@
       }
     },
     "text": {
-      "description": "Defines text that will be shown on the UI",
-      "type": "array",
-      "items": {
+      "description": "Defines text that will be shown on the UI, the property name is used to reference text from code",
+      "type": "object",
+      "additionalProperties": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "description": "A unique identifier for this text which will be used by the code to override properties"
-          },
           "text": {
             "$ref": "#/definitions/text"
           },
@@ -378,6 +374,70 @@
       "description": "Additional screen-specific images",
       "additionalProperties": {
         "$ref": "#/definitions/blitter"
+      }
+    },
+    "terminalStyle": {
+      "description": "If this screen is a terminal, this defines required properties to display it properly",
+      "type": "object",
+      "properties": {
+        "header": {
+          "description": "The top of the terminal background right up to the first row of content.",
+          "$ref": "#/definitions/blitter"
+        },
+        "firstRow": {
+          "description": "The area to draw for the first row in the terminal. Usually this includes the top of the scrollbar.",
+          "$ref": "#/definitions/blitter"
+        },
+        "row": {
+          "description": "The area to repeat for every row in the terminal. Should be 16px for the item + 2px for the border in size.",
+          "$ref": "#/definitions/blitter"
+        },
+        "lastRow": {
+          "description": "The area to draw for the last row in the terminal. Usually this includes the top of the scrollbar.",
+          "$ref": "#/definitions/blitter"
+        },
+        "bottom": {
+          "description": "The area to draw at the bottom of the terminal (i.e. includes the player inventory).",
+          "$ref": "#/definitions/blitter"
+        },
+        "maxRows": {
+          "description": "If specified, limits the terminal to at most this many rows rather than using up available space.",
+          "type": "integer",
+          "minimum": 3
+        },
+        "slotsPerRow": {
+          "description": "The number of slots per row on the background image.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "searchFieldRect": {
+          "description": "The bounding box of the search field in the background.",
+          "$ref": "#/definitions/rect"
+        },
+        "sortByButton": {
+          "description": "Defines if this terminal has a sort by button.",
+          "type": "boolean",
+          "default": true
+        },
+        "supportsAutoCrafting": {
+          "description": "Defines if this terminal supports auto-crafting. If not, the button to show only craftable items is hidden.",
+          "type": "boolean",
+          "default": false
+        },
+        "stackSizeRenderer": {
+          "description": "The type of stack size rendering to use.",
+          "type": "string",
+          "default": "items",
+          "enum": [
+            "items",
+            "fluids"
+          ]
+        },
+        "showTooltipsWithItemInHand": {
+          "type": "boolean",
+          "default": false,
+          "description": "Should the terminal show item tooltips for the network inventory even if the player has an item in their hand? Useful for showing fluid tooltips when the player has a bucket in hand."
+        }
       }
     }
   }

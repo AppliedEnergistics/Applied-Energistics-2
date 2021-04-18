@@ -28,7 +28,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
-import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.me.items.ItemTerminalScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;

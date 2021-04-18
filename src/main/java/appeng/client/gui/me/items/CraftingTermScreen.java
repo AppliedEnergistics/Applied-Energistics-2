@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
-import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.container.me.items.CraftingTermContainer;

@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
-import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;

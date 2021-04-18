@@ -20,7 +20,7 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.common.Repo;
-import appeng.client.gui.me.common.TerminalStyle;
+import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.container.me.common.GridInventoryEntry;

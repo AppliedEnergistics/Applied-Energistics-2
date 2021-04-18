@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+import appeng.client.gui.style.TerminalStyle;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
