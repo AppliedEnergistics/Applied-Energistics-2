@@ -5,9 +5,8 @@
     "texture": "guis/networkstatus.png",
     "srcRect": [0, 0, 195, 153]
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.NetworkDetails"
       },
@@ -16,33 +15,29 @@
         "top": 6
       }
     },
-    {
-      "id": "stored_power",
+    "stored_power": {
       "position": {
         "left": 13,
         "top": 16
       }
     },
-    {
-      "id": "max_power",
+    "max_power": {
       "position": {
         "left": 13,
         "top": 26
       }
     },
-    {
-      "id": "power_usage_rate",
+    "power_usage_rate": {
       "position": {
         "left": 13,
         "top": 123
       }
     },
-    {
-      "id": "power_input_rate",
+    "power_input_rate": {
       "position": {
         "left": 13,
         "top": 133
       }
     }
-  ]
+  }
 }

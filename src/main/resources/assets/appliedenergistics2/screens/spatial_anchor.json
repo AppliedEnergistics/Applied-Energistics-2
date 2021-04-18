@@ -5,9 +5,8 @@
     "texture": "guis/spatialanchor.png",
     "srcRect": [0, 0, 195, 100]
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.SpatialAnchor"
       },
@@ -16,22 +15,19 @@
         "top": 6
       }
     },
-    {
-      "id": "used_power",
+    "used_power": {
       "position": {
         "left": 13,
         "top": 21
       }
     },
-    {
-      "id": "loaded_chunks",
+    "loaded_chunks": {
       "position": {
         "left": 13,
         "top": 31
       }
     },
-    {
-      "id": "statistics_title",
+    "statistics_title": {
       "text": {
         "translate": "gui.appliedenergistics2.SpatialAnchorStatistics"
       },
@@ -40,19 +36,17 @@
         "top": 56
       }
     },
-    {
-      "id": "statistics_loaded",
+    "statistics_loaded": {
       "position": {
         "left": 13,
         "top": 71
       }
     },
-    {
-      "id": "statistics_total",
+    "statistics_total": {
       "position": {
         "left": 13,
         "top": 81
       }
     }
-  ]
+  }
 }

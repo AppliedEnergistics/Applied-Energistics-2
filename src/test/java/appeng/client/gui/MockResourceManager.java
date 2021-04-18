@@ -57,7 +57,7 @@ public final class MockResourceManager {
 
                 @Override
                 public String getPackName() {
-                    return null;
+                    return "ae2";
                 }
 
                 @Override

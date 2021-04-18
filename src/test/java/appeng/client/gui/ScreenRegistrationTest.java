@@ -61,11 +61,19 @@ class ScreenRegistrationTest {
             try {
                 StyleManager.loadStyleDoc(path);
             } catch (Exception e) {
-                errors.add(path + ": " + e);
+                errors.add(path + ": " + getExceptionChain(e));
             }
         }
 
         assertThat(errors).isEmpty();
+    }
+
+    private static String getExceptionChain(Throwable e) {
+        if (e.getCause() != e && e.getCause() != null) {
+            return e + " <- " + getExceptionChain(e.getCause());
+        } else {
+            return e.toString();
+        }
     }
 
     /**
@@ -85,7 +93,7 @@ class ScreenRegistrationTest {
         for (String path : ScreenRegistration.CONTAINER_STYLES.values()) {
             ScreenStyle style = StyleManager.loadStyleDoc(path);
 
-            for (Text text : style.getText()) {
+            for (Text text : style.getText().values()) {
                 collectMissingTranslations(path, text.getText(), errors, i18n.keySet());
             }
         }

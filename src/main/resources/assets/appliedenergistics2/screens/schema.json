@@ -96,10 +96,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "action",
-            "value"
-          ]
+          "required": ["action", "value"]
         },
         "hoverEvent": {
           "type": "object",
@@ -137,9 +134,7 @@
                       "description": "NBT of the item, serialized as string. See https://minecraft.fandom.com/wiki/Player.dat_format#Item_structure"
                     }
                   },
-                  "required": [
-                    "id"
-                  ]
+                  "required": ["id"]
                 }
               }
             },
@@ -178,9 +173,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "text"
-          ]
+          "required": ["text"]
         },
         {
           "properties": {
@@ -195,9 +188,7 @@
               }
             }
           },
-          "required": [
-            "translate"
-          ]
+          "required": ["translate"]
         },
         {
           "properties": {
@@ -206,9 +197,7 @@
               "description": "A keybind identifier"
             }
           },
-          "required": [
-            "keybind"
-          ]
+          "required": ["keybind"]
         }
       ]
     },
@@ -266,9 +255,7 @@
           "$ref": "#/definitions/rect"
         }
       },
-      "required": [
-        "texture"
-      ]
+      "required": ["texture"]
     }
   },
   "properties": {
@@ -355,9 +342,7 @@
           },
           "color": {
             "$comment": "See enum PaletteColor",
-            "enum": [
-              "DEFAULT_TEXT_COLOR"
-            ],
+            "enum": ["DEFAULT_TEXT_COLOR"],
             "default": "DEFAULT_TEXT_COLOR"
           },
           "position": {
@@ -379,6 +364,7 @@
     "terminalStyle": {
       "description": "If this screen is a terminal, this defines required properties to display it properly",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "header": {
           "description": "The top of the terminal background right up to the first row of content.",
@@ -424,14 +410,11 @@
           "type": "boolean",
           "default": false
         },
-        "stackSizeRenderer": {
+        "stackSizeStyle": {
           "description": "The type of stack size rendering to use.",
           "type": "string",
-          "default": "items",
-          "enum": [
-            "items",
-            "fluids"
-          ]
+          "default": "ITEMS",
+          "enum": ["ITEMS", "FLUIDS"]
         },
         "showTooltipsWithItemInHand": {
           "type": "boolean",

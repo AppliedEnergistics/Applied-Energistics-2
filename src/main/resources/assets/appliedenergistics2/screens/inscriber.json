@@ -23,9 +23,8 @@
       "top": 40
     }
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.Inscriber"
       },
@@ -34,5 +33,5 @@
         "top": 6
       }
     }
-  ]
+  }
 }

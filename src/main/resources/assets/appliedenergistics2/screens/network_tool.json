@@ -12,9 +12,8 @@
       "grid": "BREAK_AFTER_3COLS"
     }
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.NetworkTool"
       },
@@ -23,5 +22,5 @@
         "top": 6
       }
     }
-  ]
+  }
 }

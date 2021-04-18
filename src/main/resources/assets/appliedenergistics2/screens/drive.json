@@ -12,9 +12,8 @@
       "grid": "BREAK_AFTER_2COLS"
     }
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.Drive"
       },
@@ -23,5 +22,5 @@
         "top": 6
       }
     }
-  ]
+  }
 }

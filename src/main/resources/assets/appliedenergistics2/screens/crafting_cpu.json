@@ -5,13 +5,12 @@
     "texture": "guis/craftingcpu.png",
     "srcRect": [0, 0, 238, 184]
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "position": {
         "left": 8,
         "top": 7
       }
     }
-  ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "../schema.json",
-  "includes": ["base_terminal.json"],
+  "includes": ["item_terminal.json"],
   "slots": {
     "BLANK_PATTERN": {
       "left": 147,
@@ -25,9 +25,8 @@
       "grid": "VERTICAL"
     }
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.Terminal"
       },
@@ -36,8 +35,7 @@
         "top": 6
       }
     },
-    {
-      "id": "crafting_grid_title",
+    "crafting_grid_title": {
       "text": {
         "translate": "gui.appliedenergistics2.PatternTerminal"
       },
@@ -46,25 +44,25 @@
         "bottom": 175
       }
     }
-  ],
-  "images": {
-    "terminalHeader": {
+  },
+  "terminalStyle": {
+    "header": {
       "texture": "guis/pattern.png",
       "srcRect": [0, 0, 195, 17]
     },
-    "terminalFirstRow": {
+    "firstRow": {
       "texture": "guis/pattern.png",
       "srcRect": [0, 17, 195, 18]
     },
-    "terminalRow": {
+    "row": {
       "texture": "guis/pattern.png",
       "srcRect": [0, 35, 195, 18]
     },
-    "terminalLastRow": {
+    "lastRow": {
       "texture": "guis/pattern.png",
       "srcRect": [0, 53, 195, 18]
     },
-    "terminalBottom": {
+    "bottom": {
       "texture": "guis/pattern.png",
       "srcRect": [0, 71, 195, 178]
     }

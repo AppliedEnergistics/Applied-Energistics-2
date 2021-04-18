@@ -17,9 +17,8 @@
       "grid": "BREAK_AFTER_2COLS"
     }
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.IOPort"
       },
@@ -28,5 +27,5 @@
         "top": 6
       }
     }
-  ]
+  }
 }

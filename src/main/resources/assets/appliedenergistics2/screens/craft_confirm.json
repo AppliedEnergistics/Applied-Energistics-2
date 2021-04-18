@@ -5,21 +5,19 @@
     "texture": "guis/craftingreport.png",
     "srcRect": [0, 0, 238, 206]
   },
-  "text": [
-    {
-      "id": "dialog_title",
+  "text": {
+    "dialog_title": {
       "position": {
         "left": 8,
         "top": 7
       }
     },
-    {
-      "id": "cpu_status",
+    "cpu_status": {
       "position": {
         "left": 109,
         "top": 165
       },
       "centerHorizontally": true
     }
-  ]
+  }
 }

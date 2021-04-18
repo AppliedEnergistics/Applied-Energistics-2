@@ -1,10 +1,12 @@
 package appeng.client.gui.style;
 
-import appeng.client.Point;
-import appeng.client.gui.me.common.StackSizeRenderer;
+import javax.annotation.Nullable;
+
 import net.minecraft.client.renderer.Rectangle2d;
 
-import javax.annotation.Nullable;
+import appeng.client.Point;
+import appeng.client.gui.me.common.StackSizeRenderer;
+import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
 
 /**
  * Describes the appearance of terminal screens.
@@ -52,28 +54,13 @@ public class TerminalStyle {
 
     private boolean supportsAutoCrafting = false;
 
-    private StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();
+    private StackSizeStyle stackSizeStyle = StackSizeStyle.ITEMS;
 
     /**
      * Should the terminal show item tooltips for the network inventory even if the player has an item in their hand?
      * Useful for showing fluid tooltips when the player has a bucket in hand.
      */
     private boolean showTooltipsWithItemInHand;
-
-    public TerminalStyle(ScreenStyle screenStyle,
-                         int slotsPerRow,
-                         Rectangle2d searchFieldRect,
-                         Integer maxRows) {
-        this.header = screenStyle.getImage("terminalHeader");
-        this.firstRow = screenStyle.getImage("terminalFirstRow");
-        this.row = screenStyle.getImage("terminalRow");
-        this.lastRow = screenStyle.getImage("terminalLastRow");
-        this.bottom = screenStyle.getImage("terminalBottom");
-        this.slotsPerRow = slotsPerRow;
-        this.searchFieldRect = searchFieldRect;
-        this.maxRows = maxRows;
-
-    }
 
     public Blitter getHeader() {
         return header;
@@ -175,7 +162,7 @@ public class TerminalStyle {
 
     /**
      * @return The number of rows this terminal should display (at most). If null, the player's chosen terminal style
-     * determines the number of rows.
+     *         determines the number of rows.
      */
     @Nullable
     public Integer getMaxRows() {
@@ -198,40 +185,49 @@ public class TerminalStyle {
         return sortByButton;
     }
 
-    public TerminalStyle setSortByButton(boolean visible) {
-        this.sortByButton = visible;
-        return this;
-    }
-
     public boolean isSupportsAutoCrafting() {
         return supportsAutoCrafting;
-    }
-
-    public TerminalStyle setSupportsAutoCrafting(boolean enabled) {
-        this.supportsAutoCrafting = enabled;
-        return this;
     }
 
     public boolean isShowTooltipsWithItemInHand() {
         return showTooltipsWithItemInHand;
     }
 
-    public TerminalStyle setShowTooltipsWithItemInHand(boolean enabled) {
-        this.showTooltipsWithItemInHand = enabled;
-        return this;
+    public StackSizeStyle getStackSizeStyle() {
+        return stackSizeStyle;
     }
 
     public StackSizeRenderer getStackSizeRenderer() {
-        return stackSizeRenderer;
+        switch (stackSizeStyle) {
+            default:
+            case ITEMS:
+                return new StackSizeRenderer();
+            case FLUIDS:
+                return new FluidStackSizeRenderer();
+        }
     }
 
-    public TerminalStyle setStackSizeRenderer(StackSizeRenderer renderer) {
-        this.stackSizeRenderer = renderer;
-        return this;
+    public void validate() {
+        if (header == null) {
+            throw new RuntimeException("terminalStyle.header is missing");
+        }
+        if (firstRow == null) {
+            throw new RuntimeException("terminalStyle.firstRow is missing");
+        }
+        if (row == null) {
+            throw new RuntimeException("terminalStyle.row is missing");
+        }
+        if (lastRow == null) {
+            throw new RuntimeException("terminalStyle.lastRow is missing");
+        }
+        if (bottom == null) {
+            throw new RuntimeException("terminalStyle.bottom is missing");
+        }
+        if (searchFieldRect == null) {
+            throw new RuntimeException("terminalStyle.searchFieldRect is missing");
+        }
+        if (stackSizeStyle == null) {
+            throw new RuntimeException("terminalStyle.stackSizeStyle is missing");
+        }
     }
-
-    public TerminalStyle merge(TerminalStyle otherStyle) {
-
-    }
-
 }
