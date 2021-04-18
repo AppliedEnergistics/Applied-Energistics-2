@@ -549,11 +549,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.myLastLink = null;
         this.tasks.clear();
 
-        // final ImmutableSet<IAEItemStack> items = ImmutableSet.copyOf( this.waitingFor
-        // );
         final List<IAEItemStack> items = new ArrayList<>(this.waitingFor.size());
         this.waitingFor.forEach(stack -> items.add(stack.copy().setStackSize(-stack.getStackSize())));
-
         this.waitingFor.resetStatus();
 
         for (final IAEItemStack is : items) {

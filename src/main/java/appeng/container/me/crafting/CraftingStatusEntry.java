@@ -59,4 +59,11 @@ public class CraftingStatusEntry {
         return new CraftingStatusEntry(serial, item, storedAmount, missingAmount, craftAmount);
     }
 
+    /**
+     * Indicates whether this entry is actually a deletion record.
+     */
+    public boolean isDeleted() {
+        return storedAmount == 0 && activeAmount == 0 && pendingAmount == 0;
+    }
+
 }

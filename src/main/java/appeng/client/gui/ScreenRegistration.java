@@ -205,6 +205,10 @@ public class ScreenRegistration {
         });
     }
 
+    /**
+     * A type definition that matches the constructors of our screens, which take an additional
+     * {@link ScreenStyle} argument.
+     */
     @FunctionalInterface
     public interface StyledScreenFactory<T extends Container, U extends Screen & IHasContainer<T>> {
         U create(T t, PlayerInventory pi, ITextComponent title, ScreenStyle style);

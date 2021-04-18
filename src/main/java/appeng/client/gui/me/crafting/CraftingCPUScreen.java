@@ -125,12 +125,18 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
         if (this.status == null || status.isFullStatus()) {
             this.status = status;
         } else {
+            // Merge the status entries
             Map<Long, CraftingStatusEntry> entries = new LinkedHashMap<>(this.status.getEntries().size());
             for (CraftingStatusEntry entry : this.status.getEntries()) {
                 entries.put(entry.getSerial(), entry);
             }
 
             for (CraftingStatusEntry entry : status.getEntries()) {
+                if (entry.isDeleted()) {
+                    entries.remove(entry.getSerial());
+                    continue;
+                }
+
                 CraftingStatusEntry existingEntry = entries.get(entry.getSerial());
                 if (existingEntry != null) {
                     entries.put(entry.getSerial(), new CraftingStatusEntry(
