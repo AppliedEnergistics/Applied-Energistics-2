@@ -18,24 +18,26 @@
 
 package appeng.core.sync.packets;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import io.netty.buffer.Unpooled;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.IFluidSyncContainer;
 import appeng.fluids.util.AEFluidStack;
-import io.netty.buffer.Unpooled;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Similar to {@link net.minecraft.network.play.server.SSetSlotPacket}, but for fluids,
- * and used in both directions (server->client and client->server).
+ * Similar to {@link net.minecraft.network.play.server.SSetSlotPacket}, but for fluids, and used in both directions
+ * (server->client and client->server).
  * <p/>
  * The key used in for synchronization is {@link FluidSlotWidget#getId()}.
  * <p/>

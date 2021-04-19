@@ -39,8 +39,6 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
@@ -63,14 +61,12 @@ import appeng.container.slot.FakeSlot;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.PlayerInvSlot;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
 public abstract class AEBaseContainer extends Container {
     private final IActionSource mySrc;
@@ -495,6 +491,27 @@ public abstract class AEBaseContainer extends Container {
         return ((AppEngSlot) s).isDraggable();
     }
 
+    /**
+     * Sets a filter slot based on a <b>non-existent</b> item sent by the client.
+     */
+    public void setFilter(final int slotIndex, ItemStack item) {
+        if (slotIndex < 0 || slotIndex >= this.inventorySlots.size()) {
+            return;
+        }
+        final Slot s = this.getSlot(slotIndex);
+        if (!(s instanceof AppEngSlot)) {
+            return;
+        }
+        AppEngSlot appEngSlot = (AppEngSlot) s;
+        if (!appEngSlot.isSlotEnabled()) {
+            return;
+        }
+
+        if (s instanceof FakeSlot) {
+            s.putStack(item);
+        }
+    }
+
     public void doAction(final ServerPlayerEntity player, final InventoryAction action, final int slot, final long id) {
         if (slot < 0 || slot >= this.inventorySlots.size()) {
             return;
@@ -581,7 +598,7 @@ public abstract class AEBaseContainer extends Container {
 
     protected void updateHeld(final ServerPlayerEntity p) {
         NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0,
-                AEItemStack.fromItemStack(p.inventory.getItemStack())), p);
+                p.inventory.getItemStack()), p);
     }
 
     protected ItemStack transferStackToContainer(final ItemStack input) {

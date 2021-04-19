@@ -20,6 +20,7 @@ package appeng.client.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -789,11 +790,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
+    public List<CustomSlotWidget> getGuiSlots() {
+        return Collections.unmodifiableList(guiSlots);
+    }
+
     /**
      * Changes the text that will be displayed for a text defined in this screen's style file.
      */
     protected final void setTextContent(String id, ITextComponent content) {
         getOrCreateTextOverride(id).setContent(content);
     }
-
 }
