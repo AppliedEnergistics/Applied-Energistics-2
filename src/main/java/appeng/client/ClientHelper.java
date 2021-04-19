@@ -25,9 +25,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.AEBaseGui;
-import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.HighlighterHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -35,7 +33,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
@@ -45,8 +42,6 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -324,24 +319,12 @@ public class ClientHelper extends ServerHelper
 	public void MouseClickEvent( final GuiScreenEvent.MouseInputEvent.Pre me )
 	{
 		final Minecraft mc = Minecraft.getMinecraft();
-		final EntityPlayer player = mc.player;
 		if( mc.currentScreen instanceof AEBaseGui )
 		{
 			AEBaseGui gui = ( (AEBaseGui) mc.currentScreen );
-
-			ItemStack dragItem = ItemStack.EMPTY;
 			Object ingredient = gui.getBookmarkedIngredient();
-
 			if( ingredient != null )
 			{
-				if( ingredient instanceof ItemStack )
-				{
-					dragItem = ( (ItemStack) ingredient );
-				}
-				else if( ingredient instanceof FluidStack )
-				{
-					dragItem = FluidUtil.getFilledBucket( ( (FluidStack) ingredient ) );
-				}
 				if( GuiScreen.isShiftKeyDown() )
 				{
 					me.setCanceled( true );
@@ -349,8 +332,6 @@ public class ClientHelper extends ServerHelper
 				else if( Mouse.isButtonDown( 0 ) )
 				{
 					me.setCanceled( true );
-					player.inventory.setItemStack( dragItem.copy() );
-					gui.setJeiGhostItem( true );
 				}
 			}
 		}

@@ -26,7 +26,6 @@ import java.util.List;
 
 import appeng.client.gui.widgets.GuiCustomSlot;
 import appeng.container.interfaces.IJEIGhostIngredients;
-import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.IJEITargetSlot;
 import appeng.container.slot.SlotFake;
 import appeng.core.sync.packets.PacketInventoryAction;

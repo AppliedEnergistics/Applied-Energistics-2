@@ -22,18 +22,16 @@ package appeng.core.sync.packets;
 import java.io.IOException;
 
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.client.gui.implementations.GuiUpgradeable;
-import appeng.client.gui.widgets.GuiCustomSlot;
 import appeng.container.slot.IJEITargetSlot;
 import appeng.container.slot.SlotFake;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
+import appeng.fluids.container.ContainerFluidConfigurable;
 import appeng.fluids.util.AEFluidStack;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -195,9 +193,11 @@ public class PacketInventoryAction extends AppEngPacket
 			{
 				if( sender.openContainer.inventorySlots.get( this.slot ) instanceof SlotFake )
 				{
-					if( this.slotItem != null ) {
-						sender.openContainer.inventorySlots.get( this.slot ).putStack( this.slotItem.asItemStackRepresentation() );
-						if (sender.openContainer.inventorySlots.get( this.slot ).getStack().isEmpty()){
+					if( this.slotItem != null )
+					{
+						sender.openContainer.inventorySlots.get( this.slot ).putStack( this.slotItem.createItemStack() );
+						if( sender.openContainer.inventorySlots.get( this.slot ).getStack().isEmpty() )
+						{
 							IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
 							if( aefs != null )
 							{
@@ -205,40 +205,26 @@ public class PacketInventoryAction extends AppEngPacket
 								sender.openContainer.inventorySlots.get( this.slot ).putStack( AEFluidStack.fromFluidStack( fluid ).asItemStackRepresentation() );
 							}
 						}
-
 					}
 					else sender.openContainer.inventorySlots.get( this.slot ).putStack( ItemStack.EMPTY );
 					try
 					{
-						NetworkHandler.instance()
-								.sendTo(
-										new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack( ItemStack.EMPTY ) ),
-										sender );
+						NetworkHandler.instance().sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack( ItemStack.EMPTY ) ), sender );
 					}
 					catch( final IOException e )
 					{
 						AELog.debug( e );
 					}
 				}
-				if( Minecraft.getMinecraft().currentScreen instanceof GuiUpgradeable )
+
+				if( sender.openContainer instanceof ContainerFluidConfigurable )
 				{
-					GuiUpgradeable cs = ( (GuiUpgradeable) Minecraft.getMinecraft().currentScreen );
-					if( cs.getGuiSlots().size() > 0 )
+					if( this.slotItem != null )
 					{
-						GuiCustomSlot ct = cs.getGuiSlots().get( this.slot );
-						GuiFluidSlot gfs = (GuiFluidSlot) ct;
-						if( this.slotItem != null )
+						IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
+						if( aefs != null )
 						{
-							IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
-							if( aefs != null )
-							{
-								FluidStack fluid = aefs.getFluidStack();
-								gfs.setFluidStack( AEFluidStack.fromFluidStack( fluid ) );
-							}
-						}
-						else
-						{
-							gfs.setFluidStack( null );
+							( (ContainerFluidConfigurable) sender.openContainer ).getFluidConfigInventory().setFluidInSlot( this.slot, aefs );
 						}
 					}
 				}
