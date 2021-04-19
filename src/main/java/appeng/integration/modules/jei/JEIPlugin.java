@@ -197,6 +197,8 @@ public class JEIPlugin implements IModPlugin {
                 }
             }
         });
+
+        registration.addGhostIngredientHandler(AEBaseScreen.class, new GhostIngredientHandler());
     }
 
     @Override

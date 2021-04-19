@@ -25,44 +25,37 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
-import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
 public class InventoryActionPacket extends BasePacket {
 
     private final InventoryAction action;
     private final int slot;
     private final long id;
-    private final IAEItemStack slotItem;
+    private final ItemStack slotItem;
 
     public InventoryActionPacket(final PacketBuffer stream) {
         this.action = InventoryAction.values()[stream.readInt()];
         this.slot = stream.readInt();
         this.id = stream.readLong();
-        final boolean hasItem = stream.readBoolean();
-        if (hasItem) {
-            this.slotItem = AEItemStack.fromPacket(stream);
-        } else {
-            this.slotItem = null;
-        }
+        this.slotItem = stream.readItemStack();
     }
 
     // api
-    public InventoryActionPacket(final InventoryAction action, final int slot, final IAEItemStack slotItem) {
+    public InventoryActionPacket(final InventoryAction action, final int slot, final ItemStack slotItem) {
 
-        if (Platform.isClient()) {
+        if (Platform.isClient() && action != InventoryAction.SET_FILTER) {
             throw new IllegalStateException("invalid packet, client cannot post inv actions with stacks.");
         }
 
         this.action = action;
         this.slot = slot;
         this.id = 0;
-        this.slotItem = slotItem;
+        this.slotItem = slotItem.copy();
 
         final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
@@ -70,13 +63,7 @@ public class InventoryActionPacket extends BasePacket {
         data.writeInt(action.ordinal());
         data.writeInt(slot);
         data.writeLong(this.id);
-
-        if (slotItem == null) {
-            data.writeBoolean(false);
-        } else {
-            data.writeBoolean(true);
-            slotItem.writeToPacket(data);
-        }
+        data.writeItemStack(this.slotItem);
 
         this.configureWrite(data);
     }
@@ -94,7 +81,7 @@ public class InventoryActionPacket extends BasePacket {
         data.writeInt(action.ordinal());
         data.writeInt(slot);
         data.writeLong(id);
-        data.writeBoolean(false);
+        data.writeItemStack(ItemStack.EMPTY);
 
         this.configureWrite(data);
     }
@@ -104,18 +91,19 @@ public class InventoryActionPacket extends BasePacket {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
         if (sender.openContainer instanceof AEBaseContainer) {
             final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
-            baseContainer.doAction(sender, this.action, this.slot, this.id);
+
+            if (action == InventoryAction.SET_FILTER) {
+                baseContainer.setFilter(this.slot, this.slotItem);
+            } else {
+                baseContainer.doAction(sender, this.action, this.slot, this.id);
+            }
         }
     }
 
     @Override
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         if (this.action == InventoryAction.UPDATE_HAND) {
-            if (this.slotItem != null) {
-                player.inventory.setItemStack(this.slotItem.createItemStack());
-            } else {
-                player.inventory.setItemStack(ItemStack.EMPTY);
-            }
+            player.inventory.setItemStack(this.slotItem);
         }
     }
 }
