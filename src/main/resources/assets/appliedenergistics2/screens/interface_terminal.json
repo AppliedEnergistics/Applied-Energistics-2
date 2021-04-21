@@ -11,5 +11,11 @@
         "top": 6
       }
     }
+  },
+  "widgets": {
+    "scrollbar":{
+      "left": 175,
+      "top": 18
+    }
   }
 }

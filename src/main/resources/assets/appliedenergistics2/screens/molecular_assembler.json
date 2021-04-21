@@ -30,5 +30,17 @@
         "top": 6
       }
     }
+  },
+  "images": {
+    "progressBar": {
+      "texture": "guis/molecular_assembler.png",
+      "srcRect": [148, 201, 6, 18]
+    }
+  },
+  "widgets": {
+    "progressBar": {
+      "left": 148,
+      "top": 48
+    }
   }
 }

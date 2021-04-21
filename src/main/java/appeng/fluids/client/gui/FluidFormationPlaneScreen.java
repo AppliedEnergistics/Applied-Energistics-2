@@ -52,18 +52,9 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
                 }
             }
         }
+
+        widgets.addOpenPriorityButton();
     }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui()));
-    }
-
-    private void openPriorityGui() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
-    }
 
 }

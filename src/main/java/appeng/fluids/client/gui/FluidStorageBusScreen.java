@@ -18,9 +18,6 @@
 
 package appeng.fluids.client.gui;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
@@ -30,17 +27,15 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.client.gui.widgets.TabButton;
 import appeng.container.SlotSemantic;
-import appeng.container.implementations.PriorityContainer;
-import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * @author BrockWS
@@ -49,11 +44,11 @@ import appeng.fluids.util.IAEFluidTank;
  */
 public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusContainer> {
 
-    private SettingToggleButton<AccessRestriction> rwMode;
-    private SettingToggleButton<StorageFilter> storageFilter;
+    private final SettingToggleButton<AccessRestriction> rwMode;
+    private final SettingToggleButton<StorageFilter> storageFilter;
 
     public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+                                 ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank config = this.container.getFluidConfigInventory();
@@ -68,20 +63,14 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
                 }
             }
         }
-    }
 
-    @Override
-    public void init() {
-        super.init();
+        widgets.addOpenPriorityButton();
 
-        addButton(this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui())));
-
-        addToLeftToolbar(new ActionButton(0, 0, ActionItems.CLOSE, btn -> clear()));
-        addToLeftToolbar(new ActionButton(0, 0, ActionItems.WRENCH, btn -> partition()));
-        this.rwMode = new ServerSettingToggleButton<>(0, 0, Settings.ACCESS,
+        addToLeftToolbar(new ActionButton(ActionItems.CLOSE, btn -> clear()));
+        addToLeftToolbar(new ActionButton(ActionItems.WRENCH, btn -> partition()));
+        this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(0, 0,
+        this.storageFilter = new ServerSettingToggleButton<>(
                 Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
         addToLeftToolbar(this.storageFilter);
         addToLeftToolbar(this.rwMode);
@@ -101,10 +90,6 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
 
     private void clear() {
         NetworkHandler.instance().sendToServer(new ConfigValuePacket("StorageBus.Action", "Clear"));
-    }
-
-    private void openPriorityGui() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
 }

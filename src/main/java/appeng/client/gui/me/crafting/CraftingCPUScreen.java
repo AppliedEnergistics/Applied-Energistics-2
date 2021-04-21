@@ -50,7 +50,9 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
 
     private final CraftingStatusTableRenderer table;
 
-    private Button cancel;
+    private final Button cancel;
+
+    private final Scrollbar scrollbar;
 
     private CraftingStatus status;
 
@@ -59,20 +61,13 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
 
         this.table = new CraftingStatusTableRenderer(this, 9, 19);
 
-        this.setScrollBar(new Scrollbar().setTop(19).setLeft(218).setHeight(137));
+        this.scrollbar = widgets.addScrollBar("scrollbar");
+
+        this.cancel = this.widgets.addButton("cancel", GuiText.Cancel.text(), this::cancel);
     }
 
     private void cancel() {
         NetworkHandler.instance().sendToServer(new ConfigValuePacket("TileCrafting.Cancel", "Cancel"));
-    }
-
-    @Override
-    public void init() {
-        super.init();
-
-        this.cancel = new Button(this.guiLeft + 163, this.guiTop + this.ySize - 25,
-                50, 20, GuiText.Cancel.text(), btn -> cancel());
-        this.addButton(this.cancel);
     }
 
     @Override
@@ -98,7 +93,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
         setTextContent(TEXT_ID_DIALOG_TITLE, title);
 
         final int size = this.status != null ? this.status.getEntries().size() : 0;
-        this.getScrollBar().setRange(0, CraftingStatusTableRenderer.getScrollableRows(size), 1);
+        scrollbar.setRange(0, CraftingStatusTableRenderer.getScrollableRows(size), 1);
     }
 
     private List<CraftingStatusEntry> getVisualEntries() {
@@ -117,7 +112,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
 
         if (status != null) {
-            this.table.render(matrixStack, mouseX, mouseY, status.getEntries(), getScrollBar().getCurrentScroll());
+            this.table.render(matrixStack, mouseX, mouseY, status.getEntries(), scrollbar.getCurrentScroll());
         }
     }
 

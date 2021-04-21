@@ -1,6 +1,8 @@
 {
   "$schema": "../schema.json",
-  "includes": ["item_terminal.json"],
+  "includes": [
+    "item_terminal.json"
+  ],
   "slots": {
     "CRAFTING_GRID": {
       "left": 37,
@@ -35,23 +37,54 @@
   "terminalStyle": {
     "header": {
       "texture": "guis/crafting.png",
-      "srcRect": [0, 0, 195, 17]
+      "srcRect": [
+        0,
+        0,
+        195,
+        17
+      ]
     },
     "firstRow": {
       "texture": "guis/crafting.png",
-      "srcRect": [0, 17, 195, 18]
+      "srcRect": [
+        0,
+        17,
+        195,
+        18
+      ]
     },
     "row": {
       "texture": "guis/crafting.png",
-      "srcRect": [0, 35, 195, 18]
+      "srcRect": [
+        0,
+        35,
+        195,
+        18
+      ]
     },
     "lastRow": {
       "texture": "guis/crafting.png",
-      "srcRect": [0, 53, 195, 18]
+      "srcRect": [
+        0,
+        53,
+        195,
+        18
+      ]
     },
     "bottom": {
       "texture": "guis/crafting.png",
-      "srcRect": [0, 71, 195, 170]
+      "srcRect": [
+        0,
+        71,
+        195,
+        170
+      ]
+    }
+  },
+  "widgets": {
+    "clearCraftingGrid": {
+      "left": 92,
+      "bottom": 156
     }
   }
 }

@@ -1,4 +1,10 @@
 {
   "$schema": "../schema.json",
-  "includes": ["palette.json"]
+  "includes": ["palette.json"],
+  "widgets": {
+    "verticalToolbar": {
+      "left": -2,
+      "top": 6
+    }
+  }
 }

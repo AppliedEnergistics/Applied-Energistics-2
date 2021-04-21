@@ -107,6 +107,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private boolean isAutoFocus = false;
     private int currentMouseX = 0;
     private int currentMouseY = 0;
+    private final Scrollbar scrollbar;
 
     public MEMonitorableScreen(C container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
@@ -118,8 +119,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                     "Cannot construct screen " + getClass() + " without a terminalStyles setting");
         }
 
-        final Scrollbar scrollbar = new Scrollbar();
-        this.setScrollBar(scrollbar);
+        this.scrollbar = widgets.addScrollBar("scrollbar");
         this.repo = createRepo(scrollbar);
         setScrollBar();
 
@@ -135,6 +135,38 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             viewCellBg = new UpgradesPanel(xSize + 2, 0, viewCellSlots);
         } else {
             viewCellBg = null;
+        }
+
+        if (this.style.isSupportsAutoCrafting()) {
+            this.craftingStatusBtn = new TabButton(2 + 11 * 16,
+                    GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus());
+            this.craftingStatusBtn.setHideEdge(true);
+            this.widgets.add("craftingStatus", this.craftingStatusBtn);
+        }
+
+        if (this.style.hasSortByButton()) {
+            this.sortByToggle = this.addToLeftToolbar(new SettingToggleButton<>(Settings.SORT_BY,
+                    getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
+        }
+
+        // Toggling between craftable/stored items only makes sense if the terminal supports auto-crafting
+        if (this.style.isSupportsAutoCrafting()) {
+            this.viewModeToggle = this.addToLeftToolbar(new SettingToggleButton<>(
+                    Settings.VIEW_MODE, getSortDisplay(), this::toggleServerSetting));
+        }
+
+        this.addToLeftToolbar(this.sortDirToggle = new SettingToggleButton<>(
+                Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
+
+        SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
+        this.addToLeftToolbar(new SettingToggleButton<>(Settings.SEARCH_MODE, searchMode,
+                Platform::isSearchModeAvailable, this::toggleTerminalSearchMode));
+
+        // Show a button to toggle the terminal style if the style doesn't enforce a max number of rows
+        if (this.style.getMaxRows() == null) {
+            appeng.api.config.TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
+            this.addToLeftToolbar(new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle,
+                    this::toggleTerminalStyle));
         }
     }
 
@@ -162,9 +194,9 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     private void setScrollBar() {
-        this.getScrollBar().setTop(18).setLeft(175).setHeight(this.rows * 18 - 2);
+        scrollbar.setHeight(this.rows * style.getRow().getSrcHeight() - 2);
         int totalRows = (this.repo.size() + getSlotsPerRow() - 1) / getSlotsPerRow();
-        this.getScrollBar().setRange(0, totalRows - this.rows, Math.max(1, this.rows / 6));
+        scrollbar.setRange(0, totalRows - this.rows, Math.max(1, this.rows / 6));
     }
 
     private void showCraftingStatus() {
@@ -199,31 +231,6 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
         super.init();
 
-        if (style.hasSortByButton()) {
-            this.sortByToggle = this.addToLeftToolbar(new SettingToggleButton<>(0, 0, Settings.SORT_BY,
-                    getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
-        }
-
-        // Toggling between craftable/stored items only makes sense if the terminal supports auto-crafting
-        if (style.isSupportsAutoCrafting()) {
-            this.viewModeToggle = this.addToLeftToolbar(new SettingToggleButton<>(0, 0,
-                    Settings.VIEW_MODE, getSortDisplay(), this::toggleServerSetting));
-        }
-
-        this.addToLeftToolbar(this.sortDirToggle = new SettingToggleButton<>(0, 0,
-                Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
-
-        SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
-        this.addToLeftToolbar(new SettingToggleButton<>(0, 0, Settings.SEARCH_MODE, searchMode,
-                Platform::isSearchModeAvailable, this::toggleTerminalSearchMode));
-
-        // Show a button to toggle the terminal style if the style doesn't enforce a max number of rows
-        if (style.getMaxRows() == null) {
-            appeng.api.config.TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
-            this.addToLeftToolbar(new SettingToggleButton<>(0, 0, Settings.TERMINAL_STYLE, terminalStyle,
-                    this::toggleTerminalStyle));
-        }
-
         Rectangle2d searchFieldRect = style.getSearchFieldRect();
         this.searchField = new AETextField(this.font,
                 this.guiLeft + searchFieldRect.getX(),
@@ -236,12 +243,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         this.searchField.setSelectionColor(0xFF008000);
         this.searchField.setVisible(true);
 
-        if (style.isSupportsAutoCrafting()) {
-            this.craftingStatusBtn = this.addButton(new TabButton(this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16,
-                    GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus()));
-            this.craftingStatusBtn.setHideEdge(true);
-        }
-
+        SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
         this.isAutoFocus = SearchBoxMode.AUTOSEARCH == searchMode || SearchBoxMode.JEI_AUTOSEARCH == searchMode
                 || SearchBoxMode.AUTOSEARCH_KEEP == searchMode || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchMode;
         final boolean isKeepFilter = SearchBoxMode.AUTOSEARCH_KEEP == searchMode
@@ -261,11 +263,9 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             this.searchField.selectAll();
             this.repo.setSearchString(memoryText);
             this.repo.updateView();
-            this.setScrollBar();
         }
 
         this.setScrollBar();
-
     }
 
     @Override

@@ -43,7 +43,7 @@ public class ScreenStyle {
     /**
      * Color-Palette for the screen.
      */
-    private Map<PaletteColor, Color> palette = new EnumMap<PaletteColor, Color>(PaletteColor.class);
+    private final Map<PaletteColor, Color> palette = new EnumMap<PaletteColor, Color>(PaletteColor.class);
 
     /**
      * Additional images that are screen-specific.
@@ -58,6 +58,8 @@ public class ScreenStyle {
 
     @Nullable
     private TerminalStyle terminalStyle;
+
+    private final Map<String, WidgetStyle> widgets = new HashMap<>();
 
     public Color getColor(PaletteColor color) {
         return palette.get(color);
@@ -75,11 +77,19 @@ public class ScreenStyle {
         return background != null ? background.copy() : null;
     }
 
+    public WidgetStyle getWidget(String id) {
+        WidgetStyle widget = widgets.get(id);
+        if (widget == null) {
+            throw new IllegalStateException("Screen is missing required widget: " + id);
+        }
+        return widget;
+    }
+
     @Nonnull
     public Blitter getImage(String id) {
         Blitter blitter = images.get(id);
         if (blitter == null) {
-            throw new IllegalStateException("Screen is missing required image " + id);
+            throw new IllegalStateException("Screen is missing required image: " + id);
         }
         return blitter;
     }

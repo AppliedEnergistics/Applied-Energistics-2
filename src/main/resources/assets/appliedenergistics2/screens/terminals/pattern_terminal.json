@@ -66,5 +66,31 @@
       "texture": "guis/pattern.png",
       "srcRect": [0, 71, 195, 178]
     }
+  },
+  "widgets": {
+    "craftingPatternMode": {
+      "left": 173,
+      "bottom": 177
+    },
+    "processingPatternMode": {
+      "left": 173,
+      "bottom": 177
+    },
+    "substitutionsEnabled": {
+      "left": 84,
+      "bottom": 163
+    },
+    "substitutionsDisabled": {
+      "left": 84,
+      "bottom": 163
+    },
+    "clearPattern": {
+      "left": 74,
+      "bottom": 163
+    },
+    "encodePattern": {
+      "left": 147,
+      "bottom": 142
+    }
   }
 }

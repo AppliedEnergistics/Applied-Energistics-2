@@ -47,17 +47,10 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.fuzzyMode = this.addToLeftToolbar(new SettingToggleButton<>(0, 0,
-                Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
-        this.addToLeftToolbar(
-                new ActionButton(0, 0, ActionItems.WRENCH, act -> action("Partition")));
-        this.addToLeftToolbar(new ActionButton(0, 0, ActionItems.CLOSE, act -> action("Clear")));
+        this.fuzzyMode = addToLeftToolbar(new SettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
+        this.addToLeftToolbar(new ActionButton(ActionItems.WRENCH, act -> action("Partition")));
+        this.addToLeftToolbar(new ActionButton(ActionItems.CLOSE, act -> action("Clear")));
         this.copyMode = this.addToLeftToolbar(new ToggleButton(0, 0, 11 * 16 + 5, 12 * 16 + 5,
                 GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal(), act -> action("CopyMode")));
     }

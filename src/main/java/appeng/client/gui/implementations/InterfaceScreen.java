@@ -23,7 +23,6 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -38,22 +37,16 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
-    private SettingToggleButton<YesNo> blockMode;
-    private ToggleButton interfaceMode;
+    private final SettingToggleButton<YesNo> blockMode;
+    private final ToggleButton interfaceMode;
 
     public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
+        widgets.addOpenPriorityButton();
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui()));
-
-        this.blockMode = new ServerSettingToggleButton<>(0, 0, Settings.BLOCK, YesNo.NO);
+        this.blockMode = new ServerSettingToggleButton<>(Settings.BLOCK, YesNo.NO);
         this.addToLeftToolbar(this.blockMode);
 
         this.interfaceMode = new ToggleButton(0, 0, 84, 85,
@@ -68,10 +61,6 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
         this.blockMode.set(this.container.getBlockingMode());
         this.interfaceMode.setState(this.container.getInterfaceTerminalMode() == YesNo.YES);
-    }
-
-    private void openPriorityGui() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
     private void selectNextInterfaceMode() {

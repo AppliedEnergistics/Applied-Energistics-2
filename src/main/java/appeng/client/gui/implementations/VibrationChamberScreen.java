@@ -34,32 +34,25 @@ import appeng.tile.misc.VibrationChamberTileEntity;
 
 public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContainer> {
 
-    // "Progress-bar" that indicates the energy generation rate
-    private static final Blitter GENERATION_RATE = Blitter.texture("guis/vibchamber.png").src(176, 14, 6, 18);
     // Burn indicator similar to the "flame" in a vanilla furnace
     private static final Blitter BURN_PROGRESS = Blitter.texture("guis/vibchamber.png").src(176, 0, 14, 13);
 
-    private ProgressBar pb;
+    // "Progress-bar" that indicates the energy generation rate
+    private final ProgressBar generationRateBar;
 
     public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.pb = new ProgressBar(this.container, this.guiLeft + 99, this.guiTop + 36, GENERATION_RATE,
-                Direction.VERTICAL);
-        this.addButton(this.pb);
+        this.generationRateBar = new ProgressBar(this.container, style.getImage("generationRateBar"), Direction.VERTICAL);
+        widgets.add("generationRateBar", this.generationRateBar);
     }
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.pb.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
+        this.generationRateBar.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
                 * this.container.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
     }
 

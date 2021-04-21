@@ -18,49 +18,38 @@
 
 package appeng.client.gui.implementations;
 
-import java.util.OptionalInt;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.PriorityContainer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
+import java.util.OptionalInt;
 
 public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
     private final AESubScreen subGui;
 
-    private NumberEntryWidget priority;
+    private final NumberEntryWidget priority;
 
     public PriorityScreen(PriorityContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+                          ScreenStyle style) {
         super(container, playerInventory, title, style);
-        this.subGui = new AESubScreen(this, container.getPriorityHost());
-    }
+        this.subGui = new AESubScreen(container.getPriorityHost());
+        this.subGui.addBackButton("back", widgets);
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.priority = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.PRIORITY);
+        this.priority = new NumberEntryWidget(NumberEntryType.PRIORITY);
         this.priority.setTextFieldBounds(62, 57, 50);
         this.priority.setMinValue(Integer.MIN_VALUE);
         this.priority.setValue(this.container.getPriorityValue());
-        this.priority.addButtons(children::add, this::addButton);
-
-        this.subGui.addBackButton(this::addButton, 154, 0);
-
         this.priority.setOnChange(this::savePriority);
         this.priority.setOnConfirm(() -> {
             savePriority();
             this.subGui.goBack();
         });
-
-        changeFocus(true);
+        widgets.add("priority", priority);
     }
 
     private void savePriority() {
@@ -72,7 +61,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+                       final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         this.priority.render(matrixStack, mouseX, mouseY, partialTicks);

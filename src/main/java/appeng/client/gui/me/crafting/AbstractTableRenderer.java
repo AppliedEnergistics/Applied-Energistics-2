@@ -11,14 +11,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.PaletteColor;
 
 /**
  * Renders a 3x5 table where each cell displays an item and some text next to it.
  */
 public abstract class AbstractTableRenderer<T> {
-
-    private static final int WIDTH = 203;
-    private static final int HEIGHT = 137;
 
     private static final int CELL_WIDTH = 67;
     private static final int CELL_HEIGHT = 22;
@@ -52,6 +50,7 @@ public abstract class AbstractTableRenderer<T> {
         mouseX -= screen.getGuiLeft();
         mouseY -= screen.getGuiTop();
 
+        final int textColor = screen.getStyle().getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
         List<ITextComponent> tooltipLines = null;
         int tooltipX = 0;
         int tooltipY = 0;
@@ -91,7 +90,7 @@ public abstract class AbstractTableRenderer<T> {
                     final int w = fontRenderer.getStringPropertyWidth(line);
                     fontRenderer.func_243248_b(matrixStack, line,
                             (int) ((itemX - 2 - (w * TEXT_SCALE)) * INV_TEXT_SCALE),
-                            textY * INV_TEXT_SCALE, AEBaseScreen.COLOR_DARK_GRAY);
+                            textY * INV_TEXT_SCALE, textColor);
                     textY += lineHeight + LINE_SPACING;
                 }
                 matrixStack.pop();

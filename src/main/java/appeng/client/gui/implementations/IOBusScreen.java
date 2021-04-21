@@ -9,7 +9,6 @@ import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -18,35 +17,33 @@ import appeng.parts.automation.ExportBusPart;
 
 public class IOBusScreen extends UpgradeableScreen<IOBusContainer> {
 
-    private SettingToggleButton<RedstoneMode> redstoneMode;
-    private SettingToggleButton<FuzzyMode> fuzzyMode;
-    private SettingToggleButton<YesNo> craftMode;
-    private SettingToggleButton<SchedulingMode> schedulingMode;
+    private final SettingToggleButton<RedstoneMode> redstoneMode;
+    private final SettingToggleButton<FuzzyMode> fuzzyMode;
+    private final SettingToggleButton<YesNo> craftMode;
+    private final SettingToggleButton<SchedulingMode> schedulingMode;
 
     public IOBusScreen(IOBusContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.redstoneMode = new ServerSettingToggleButton<>(0, 0, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addToLeftToolbar(this.redstoneMode);
-        this.fuzzyMode = new ServerSettingToggleButton<>(0, 0, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
         addToLeftToolbar(this.fuzzyMode);
 
         // Craft & Scheduling mode is only supported by export bus
         if (container.getUpgradeable() instanceof ExportBusPart) {
-            this.craftMode = new ServerSettingToggleButton<>(0, 0, Settings.CRAFT_ONLY,
+            this.craftMode = new ServerSettingToggleButton<>(Settings.CRAFT_ONLY,
                     YesNo.NO);
             addToLeftToolbar(this.craftMode);
 
-            this.schedulingMode = new ServerSettingToggleButton<>(0, 0,
+            this.schedulingMode = new ServerSettingToggleButton<>(
                     Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
             addToLeftToolbar(this.schedulingMode);
+        } else {
+            this.craftMode = null;
+            this.schedulingMode = null;
         }
     }
 

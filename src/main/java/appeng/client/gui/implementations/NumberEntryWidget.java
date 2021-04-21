@@ -18,33 +18,35 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.Point;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.NumberEntryType;
+import appeng.client.gui.widgets.ConfirmableTextField;
+import appeng.client.gui.widgets.ValidationIcon;
+import appeng.core.AEConfig;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.NumberEntryType;
-import appeng.client.gui.widgets.ConfirmableTextField;
-import appeng.client.gui.widgets.ValidationIcon;
-import appeng.core.AEConfig;
-
 /**
  * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
  * number in fixed intervals.
  */
-public class NumberEntryWidget extends AbstractGui {
+public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
 
     private static final ITextComponent INVALID_NUMBER = new TranslationTextComponent(
             "gui.appliedenergistics2.validation.InvalidNumber");
@@ -53,11 +55,6 @@ public class NumberEntryWidget extends AbstractGui {
     private static final ITextComponent MINUS = new StringTextComponent("-");
     private static final int TEXT_COLOR_ERROR = 0xFF1900;
     private static final int TEXT_COLOR_NORMAL = 0xFFFFFF;
-
-    private final AEBaseScreen<?> parent;
-
-    private final int x;
-    private final int y;
 
     private final ConfirmableTextField textField;
     private final NumberEntryType type;
@@ -73,23 +70,22 @@ public class NumberEntryWidget extends AbstractGui {
 
     private boolean hideValidationIcon;
 
-    public NumberEntryWidget(AEBaseScreen<?> parent, int x, int y, int width, int height, NumberEntryType type) {
-        this.parent = parent;
-        this.x = x;
-        this.y = y;
+    private Rectangle2d bounds = new Rectangle2d(0, 0, 0, 0);
+
+    private Point textFieldOrigin = Point.ZERO;
+
+    public NumberEntryWidget(NumberEntryType type) {
         this.type = type;
 
-        FontRenderer font = parent.getMinecraft().fontRenderer;
-        int inputX = parent.getGuiLeft() + x;
-        int inputY = parent.getGuiTop() + y;
-        this.textField = new ConfirmableTextField(font, inputX, inputY, width, font.FONT_HEIGHT,
+        FontRenderer font = Minecraft.getInstance().fontRenderer;
+
+        this.textField = new ConfirmableTextField(font, 0, 0, 0, font.FONT_HEIGHT,
                 StringTextComponent.EMPTY);
         this.textField.setEnableBackgroundDrawing(false);
         this.textField.setMaxStringLength(16);
         this.textField.setTextColor(TEXT_COLOR_NORMAL);
         this.textField.setVisible(true);
         this.textField.setFocused2(true);
-        parent.setFocusedDefault(this.textField);
         this.textField.setResponder(text -> {
             validate();
             if (onChange != null) {
@@ -118,9 +114,13 @@ public class NumberEntryWidget extends AbstractGui {
         this.buttons.forEach(b -> b.active = active);
     }
 
+    /**
+     * Sets the bounds of the text field on the screen.
+     * This may seem insane, but the text-field background is actually baked into the screens background image,
+     * which necessitates setting it precisely.
+     */
     public void setTextFieldBounds(int x, int y, int width) {
-        this.textField.x = parent.getGuiLeft() + x;
-        this.textField.y = parent.getGuiTop() + y;
+        textFieldOrigin = new Point(x, y);
         this.textField.setWidth(width);
     }
 
@@ -129,15 +129,31 @@ public class NumberEntryWidget extends AbstractGui {
         validate();
     }
 
-    public void addButtons(Consumer<IGuiEventListener> addChildren, Consumer<Button> addButton) {
+    @Override
+    public void setPosition(Point position) {
+        bounds = new Rectangle2d(position.getX(), position.getY(), bounds.getWidth(), bounds.getHeight());
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+        bounds = new Rectangle2d(bounds.getX(), bounds.getY(), width, height);
+    }
+
+    @Override
+    public Rectangle2d getBounds() {
+        return bounds;
+    }
+
+    @Override
+    public void populateScreen(Consumer<Widget> addWidget, Rectangle2d bounds, AEBaseScreen<?> screen) {
         final int[] steps = AEConfig.instance().getNumberEntrySteps(type);
         int a = steps[0];
         int b = steps[1];
         int c = steps[2];
         int d = steps[3];
 
-        int left = parent.getGuiLeft() + x;
-        int top = parent.getGuiTop() + y;
+        int left = bounds.getX() + this.bounds.getX();
+        int top = bounds.getY() + this.bounds.getY();
 
         List<Button> buttons = new ArrayList<>(9);
 
@@ -147,10 +163,13 @@ public class NumberEntryWidget extends AbstractGui {
         buttons.add(new Button(left + 100, top, 38, 20, makeLabel(PLUS, d), btn -> addQty(d)));
 
         // Need to add these now for sensible tab-order
-        buttons.forEach(addButton);
+        buttons.forEach(addWidget);
 
         // Placing this here will give a sensible tab order
-        addChildren.accept(this.textField);
+        this.textField.x = bounds.getX() + textFieldOrigin.getX();
+        this.textField.y = bounds.getY() + textFieldOrigin.getY();
+        screen.setFocusedDefault(this.textField);
+        addWidget.accept(this.textField);
 
         buttons.add(new Button(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-a)));
         buttons.add(new Button(left + 28, top + 42, 28, 20, makeLabel(MINUS, b), btn -> addQty(-b)));
@@ -159,18 +178,22 @@ public class NumberEntryWidget extends AbstractGui {
 
         // This element is not focusable
         if (!hideValidationIcon) {
-            this.validationIcon = new ValidationIcon(left + 104, top + 27);
+            this.validationIcon = new ValidationIcon();
+            this.validationIcon.x = left + 104;
+            this.validationIcon.y = top + 27;
             buttons.add(this.validationIcon);
         }
 
         // Add the rest to the tab order
-        buttons.subList(4, buttons.size()).forEach(addButton);
+        buttons.subList(4, buttons.size()).forEach(addWidget);
 
         this.buttons = buttons;
 
         // we need to re-validate because the icon may now be present and needs it's
         // initial state
         this.validate();
+
+        screen.changeFocus(true);
     }
 
     /**

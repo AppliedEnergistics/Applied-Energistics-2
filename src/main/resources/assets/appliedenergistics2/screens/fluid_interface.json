@@ -40,5 +40,11 @@
         "top": 125
       }
     }
+  },
+  "widgets": {
+    "openPriority": {
+      "left": 154,
+      "top": 0
+    }
   }
 }

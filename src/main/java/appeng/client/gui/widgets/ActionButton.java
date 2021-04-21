@@ -31,8 +31,12 @@ public class ActionButton extends IconButton {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
     private final int iconIndex;
 
+    public ActionButton(final ActionItems action, Consumer<ActionItems> onPress) {
+        this(0, 0, action, onPress);
+    }
+
     public ActionButton(final int x, final int y, final ActionItems action, Consumer<ActionItems> onPress) {
-        super(x, y, btn -> onPress.accept(action));
+        super(btn -> onPress.accept(action));
 
         ButtonToolTips displayName;
         ButtonToolTips displayValue;

@@ -24,5 +24,13 @@
         "top": 44
       }
     }
+  },
+  "widgets": {
+    "level": {
+      "left": 20,
+      "top": 17,
+      "width": 138,
+      "height": 62
+    }
   }
 }

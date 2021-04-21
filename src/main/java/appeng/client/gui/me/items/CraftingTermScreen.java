@@ -35,15 +35,10 @@ public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer
     public CraftingTermScreen(CraftingTermContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-        ActionButton clearBtn = this.addButton(
-                new ActionButton(this.guiLeft + 92, this.guiTop + this.ySize - 156, ActionItems.STASH,
-                        btn -> container.clearCraftingGrid()));
+        ActionButton clearBtn = new ActionButton(ActionItems.STASH, btn -> container.clearCraftingGrid());
         clearBtn.setHalfSize(true);
+        widgets.add("clearCraftingGrid", clearBtn);
     }
 
 }

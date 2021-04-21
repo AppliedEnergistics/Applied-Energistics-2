@@ -422,6 +422,32 @@
           "description": "Should the terminal show item tooltips for the network inventory even if the player has an item in their hand? Useful for showing fluid tooltips when the player has a bucket in hand."
         }
       }
+    },
+    "widgets": {
+      "description": "Defines properties of various widgets that are positioned on the screen. The properties are widget-dependant. Which widget is placed is decided in code.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/definitions/position"
+          },
+          {
+            "properties": {
+              "width": {
+                "type": "integer"
+              },
+              "height": {
+                "type": "integer"
+              },
+              "hideEdge": {
+                "description": "Used to hide the border around TabButtons",
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      }
     }
   }
 }

@@ -30,30 +30,22 @@ import appeng.container.implementations.InscriberContainer;
 
 public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
 
-    private static final Blitter PROGRESS_BAR = Blitter.texture("guis/inscriber.png").src(135, 177, 6, 18);
-
-    private ProgressBar pb;
+    private final ProgressBar pb;
 
     public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.pb = new ProgressBar(this.container, this.guiLeft + 135, this.guiTop + 39, PROGRESS_BAR,
-                Direction.VERTICAL);
-        this.addButton(this.pb);
+        this.pb = new ProgressBar(this.container, style.getImage("progressBar"), Direction.VERTICAL);
+        widgets.add("progressBar", this.pb);
     }
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.pb.setFullMsg(new StringTextComponent(
-                this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%"));
+        int progress = this.container.getCurrentProgress() * 100 / this.container.getMaxProgress();
+        this.pb.setFullMsg(new StringTextComponent(progress + "%"));
     }
 
 }

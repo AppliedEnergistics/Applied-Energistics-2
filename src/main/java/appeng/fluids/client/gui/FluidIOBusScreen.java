@@ -40,7 +40,7 @@ import appeng.fluids.util.IAEFluidTank;
  */
 public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
 
-    private SettingToggleButton<RedstoneMode> redstoneMode;
+    private final SettingToggleButton<RedstoneMode> redstoneMode;
 
     public FluidIOBusScreen(FluidIOBusContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
@@ -58,13 +58,8 @@ public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
         addSlot(new OptionalFluidSlotWidget(inv, container, 6, 2), SlotSemantic.CONFIG);
         addSlot(new OptionalFluidSlotWidget(inv, container, 7, 2), SlotSemantic.CONFIG);
         addSlot(new OptionalFluidSlotWidget(inv, container, 8, 2), SlotSemantic.CONFIG);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.redstoneMode = new ServerSettingToggleButton<>(0, 0, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addToLeftToolbar(this.redstoneMode);
     }
 

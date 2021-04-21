@@ -46,39 +46,27 @@ import appeng.core.sync.packets.ConfigValuePacket;
  */
 public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
-    private final AESubScreen subGui;
     private final CraftConfirmTableRenderer table;
 
-    private Button start;
-    private Button selectCPU;
+    private final Button start;
+    private final Button selectCPU;
+    private final Scrollbar scrollbar;
 
     public CraftConfirmScreen(CraftConfirmContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
-        this.subGui = new AESubScreen(this, container.getTarget());
         this.table = new CraftConfirmTableRenderer(this, 9, 19);
 
-        this.setScrollBar(new Scrollbar());
-    }
+        this.scrollbar = widgets.addScrollBar("scrollbar");
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.start = new Button(this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.text(),
-                btn -> start());
+        this.start = widgets.addButton("start", GuiText.Start.text(), this::start);
         this.start.active = false;
-        this.addButton(this.start);
 
-        this.selectCPU = new Button(this.guiLeft + (219 - 180) / 2, this.guiTop + this.ySize - 68, 180, 20,
-                getNextCpuButtonLabel(), btn -> selectNextCpu());
+        this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
         this.selectCPU.active = false;
-        this.addButton(this.selectCPU);
 
-        addButton(new Button(this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.text(),
-                btn -> subGui.goBack()));
-
-        this.getScrollBar().setTop(19).setLeft(218).setHeight(114);
+        AESubScreen subGui = new AESubScreen(container.getTarget());
+        widgets.addButton("cancel", GuiText.Cancel.text(), subGui::goBack);
     }
 
     @Override
@@ -114,7 +102,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         setTextContent("cpu_status", cpuDetails);
 
         final int size = plan != null ? plan.getEntries().size() : 0;
-        this.getScrollBar().setRange(0, AbstractTableRenderer.getScrollableRows(size), 1);
+        scrollbar.setRange(0, AbstractTableRenderer.getScrollableRows(size), 1);
     }
 
     private ITextComponent getNextCpuButtonLabel() {
@@ -138,7 +126,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
         CraftingPlanSummary plan = container.getPlan();
         if (plan != null) {
-            this.table.render(matrixStack, mouseX, mouseY, plan.getEntries(), getScrollBar().getCurrentScroll());
+            this.table.render(matrixStack, mouseX, mouseY, plan.getEntries(), scrollbar.getCurrentScroll());
         }
 
     }

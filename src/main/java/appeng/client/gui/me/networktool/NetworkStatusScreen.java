@@ -18,15 +18,8 @@
 
 package appeng.client.gui.me.networktool;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.Scrollbar;
@@ -35,6 +28,12 @@ import appeng.container.me.networktool.NetworkStatus;
 import appeng.container.me.networktool.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
@@ -51,19 +50,14 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
     private NetworkStatus status = new NetworkStatus();
 
+    private final Scrollbar scrollbar;
+
     public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+                               ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-        this.setScrollBar(new Scrollbar());
-    }
+        this.scrollbar = widgets.addScrollBar("scrollbar");
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.addToLeftToolbar(CommonButtons.togglePowerUnit(0, 0));
-
-        this.getScrollBar().setTop(39).setLeft(175).setHeight(78);
+        this.addToLeftToolbar(CommonButtons.togglePowerUnit());
     }
 
     @Override
@@ -80,10 +74,10 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+                       final int mouseY) {
         int x = 0;
         int y = 0;
-        final int viewStart = getScrollBar().getCurrentScroll() * COLUMNS;
+        final int viewStart = scrollbar.getCurrentScroll() * COLUMNS;
         final int viewEnd = viewStart + COLUMNS * ROWS;
 
         List<ITextComponent> tooltip = null;
@@ -153,7 +147,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
                 y + (CELL_HEIGHT - textHeight) / 2.0f,
                 0);
         matrixStack.scale(0.5f, 0.5f, 0.5f);
-        this.font.drawString(matrixStack, str, 0, 0, COLOR_DARK_GRAY);
+        this.font.drawString(matrixStack, str, 0, 0,
+                style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB());
         matrixStack.pop();
     }
 
@@ -165,7 +160,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
     private void setScrollBar() {
         final int size = this.status.getGroupedMachines().size();
         int overflowRows = (size + (COLUMNS - 1)) / COLUMNS - ROWS;
-        this.getScrollBar().setRange(0, overflowRows, 1);
+        scrollbar.setRange(0, overflowRows, 1);
     }
 
 }

@@ -36,28 +36,15 @@ import appeng.core.sync.packets.ConfigValuePacket;
  */
 public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContainer> {
 
-    private final AESubScreen subGui;
-
-    private Button selectCPU;
+    private final Button selectCPU;
 
     public CraftingStatusScreen(CraftingStatusContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-        this.subGui = new AESubScreen(this, container.getTarget());
-    }
+        this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.selectCPU = new Button(this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, getNextCpuButtonLabel(),
-                btn -> selectNextCpu());
-        this.addButton(this.selectCPU);
-
-        subGui.addBackButton(btn -> {
-            addButton(btn);
-            btn.setHideEdge(true);
-        }, 213, -4);
+        AESubScreen subGui = new AESubScreen(container.getTarget());
+        subGui.addBackButton("back", widgets);
     }
 
     @Override

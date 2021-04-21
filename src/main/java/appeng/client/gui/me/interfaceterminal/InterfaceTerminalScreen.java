@@ -49,6 +49,7 @@ import appeng.api.config.TerminalStyle;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
@@ -69,8 +70,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     private static final int GUI_PADDING_X = 8;
     private static final int GUI_PADDING_Y = 6;
-    private static final int GUI_BUTTON_X_MARGIN = -18;
-    private static final int GUI_BUTTON_Y_MARGIN = 8;
 
     private static final int GUI_HEADER_HEIGHT = 17;
     private static final int GUI_FOOTER_HEIGHT = 97;
@@ -129,6 +128,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private final ArrayList<Object> lines = new ArrayList<>();
 
     private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<>();
+    private final Scrollbar scrollbar;
 
     private boolean refreshList = false;
     private AETextField searchField;
@@ -137,9 +137,12 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-        final Scrollbar scrollbar = new Scrollbar();
-        this.setScrollBar(scrollbar);
+        this.scrollbar = widgets.addScrollBar("scrollbar");
         this.xSize = GUI_WIDTH;
+
+        // Add a terminalstyle button
+        TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
+        this.addToLeftToolbar(new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
     }
 
     @Override
@@ -162,11 +165,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         this.addListener(this.searchField);
         this.changeFocus(true);
 
-        // Add a terminalstyle button
-        int offset = this.guiTop + GUI_BUTTON_Y_MARGIN;
-        this.addToLeftToolbar(new SettingToggleButton<>(this.guiLeft + GUI_BUTTON_X_MARGIN, offset,
-                Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
-
         // numLines may have changed, recalculate scroll bar.
         this.resetScrollbar();
     }
@@ -177,7 +175,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         this.container.inventorySlots.removeIf(slot -> slot instanceof InterfaceSlot);
 
-        final int scrollLevel = this.getScrollBar().getCurrentScroll();
+        int textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
+
+        final int scrollLevel = scrollbar.getCurrentScroll();
         int i = 0;
         for (; i < this.numLines; ++i) {
             if (scrollLevel + i < this.lines.size()) {
@@ -199,7 +199,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     name = this.font.func_238413_a_(name, TEXT_MAX_WIDTH, true);
 
                     this.font.drawString(matrixStack, name, GUI_PADDING_X + INTERFACE_NAME_MARGIN_X,
-                            GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, COLOR_DARK_GRAY);
+                            GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor);
                 }
             }
         }
@@ -265,7 +265,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         // Draw the top of the dialog
         blit(matrixStack, offsetX, offsetY, HEADER_BBOX);
 
-        final int scrollLevel = this.getScrollBar().getCurrentScroll();
+        final int scrollLevel = scrollbar.getCurrentScroll();
         boolean isInvLine;
 
         int currentY = offsetY + GUI_HEADER_HEIGHT;
@@ -455,10 +455,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
      * Should be called whenever this.lines.size() or this.numLines changes.
      */
     private void resetScrollbar() {
-        Scrollbar bar = this.getScrollBar();
         // Needs to take the border into account, so offset for 1 px on the top and bottom.
-        bar.setLeft(175).setTop(GUI_HEADER_HEIGHT + 1).setHeight(this.numLines * ROW_HEIGHT - 2);
-        bar.setRange(0, this.lines.size() - this.numLines, 2);
+        scrollbar.setHeight(this.numLines * ROW_HEIGHT - 2);
+        scrollbar.setRange(0, this.lines.size() - this.numLines, 2);
     }
 
     private boolean itemStackMatchesSearchTerm(final ItemStack itemStack, final String searchTerm) {

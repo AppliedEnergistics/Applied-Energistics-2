@@ -23,10 +23,8 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.ChestContainer;
 import appeng.container.implementations.PriorityContainer;
-import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
 
@@ -35,14 +33,8 @@ public class ChestScreen extends AEBaseScreen<ChestContainer> {
     public ChestScreen(ChestContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriority()));
+        widgets.addOpenPriorityButton();
     }
 
     @Override
