@@ -21,5 +21,17 @@
         "top": 6
       }
     }
+  },
+  "images": {
+    "generationRateBar": {
+      "texture": "guis/vibchamber.png",
+      "srcRect": [176, 14, 6, 18]
+    }
+  },
+  "widgets": {
+    "generationRateBar": {
+      "left": 99,
+      "top": 36
+    }
   }
 }

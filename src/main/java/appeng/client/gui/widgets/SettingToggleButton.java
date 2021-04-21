@@ -67,14 +67,14 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         void handle(T button, boolean backwards);
     }
 
-    public SettingToggleButton(final int x, final int y, final Settings setting, final T val,
+    public SettingToggleButton(final Settings setting, final T val,
             IHandler<SettingToggleButton<T>> onPress) {
-        this(x, y, setting, val, t -> true, onPress);
+        this(setting, val, t -> true, onPress);
     }
 
-    public SettingToggleButton(final int x, final int y, final Settings setting, final T val, Predicate<T> isValidValue,
+    public SettingToggleButton(final Settings setting, final T val, Predicate<T> isValidValue,
             IHandler<SettingToggleButton<T>> onPress) {
-        super(x, y, SettingToggleButton::onPress);
+        super(SettingToggleButton::onPress);
         this.onPress = onPress;
 
         // Build a list of values (in order) that are valid w.r.t. the given predicate

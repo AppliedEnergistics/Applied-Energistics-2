@@ -36,11 +36,6 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
     public NetworkToolScreen(NetworkToolContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
-
-    @Override
-    public void init() {
-        super.init();
 
         this.tFacades = new ToggleButton(0, 0, 23, 22,
                 GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal(),

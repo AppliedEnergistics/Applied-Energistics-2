@@ -24,13 +24,29 @@
 package appeng.api.parts;
 
 public enum PartItemStack {
+    /**
+     * A stack that is used when someone uses the creative mode middle click to "pick" the part.
+     */
     PICK,
 
+    /**
+     * A stack that is dropped when the part is being broken as part of the cable bus.
+     */
     BREAK,
 
+    /**
+     * A stack that is dropped when the part is being hit with a wrench.
+     */
     WRENCH,
 
+    /**
+     * A stack that uniquely identifies the part when it is sent over the network.
+     * Only the id of the item contained in the stack is sent over the network.
+     */
     NETWORK,
 
+    /**
+     * A stack that uniquely identifies the part when it is stored to disk as part of the chunk.
+     */
     WORLD
 }

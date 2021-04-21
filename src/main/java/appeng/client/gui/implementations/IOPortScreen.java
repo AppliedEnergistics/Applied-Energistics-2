@@ -36,29 +36,23 @@ import appeng.core.Api;
 
 public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
 
-    private SettingToggleButton<FullnessMode> fullMode;
-    private SettingToggleButton<OperationMode> operationMode;
-    private SettingToggleButton<RedstoneMode> redstoneMode;
+    private final SettingToggleButton<FullnessMode> fullMode;
+    private final SettingToggleButton<OperationMode> operationMode;
+    private final SettingToggleButton<RedstoneMode> redstoneMode;
 
     public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.fullMode = new ServerSettingToggleButton<>(0, 0, Settings.FULLNESS_MODE,
+        this.fullMode = new ServerSettingToggleButton<>(Settings.FULLNESS_MODE,
                 FullnessMode.EMPTY);
         addToLeftToolbar(this.fullMode);
-        this.redstoneMode = new ServerSettingToggleButton<>(0, 0,
+        this.redstoneMode = new ServerSettingToggleButton<>(
                 Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addToLeftToolbar(this.redstoneMode);
 
-        this.operationMode = new ServerSettingToggleButton<>(this.guiLeft + 80, this.guiTop + 17,
-                Settings.OPERATION_MODE, OperationMode.EMPTY);
-        this.addButton(this.operationMode);
+        this.operationMode = new ServerSettingToggleButton<>(Settings.OPERATION_MODE, OperationMode.EMPTY);
+        widgets.add("operationMode", this.operationMode);
     }
 
     @Override

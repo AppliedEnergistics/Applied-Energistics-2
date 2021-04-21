@@ -41,29 +41,23 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
 
-    private SettingToggleButton<AccessRestriction> rwMode;
-    private SettingToggleButton<StorageFilter> storageFilter;
-    private SettingToggleButton<FuzzyMode> fuzzyMode;
+    private final SettingToggleButton<AccessRestriction> rwMode;
+    private final SettingToggleButton<StorageFilter> storageFilter;
+    private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public StorageBusScreen(StorageBusContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
+        widgets.addOpenPriorityButton();
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui()));
-
-        addToLeftToolbar(new ActionButton(0, 0, ActionItems.CLOSE, btn -> clear()));
-        addToLeftToolbar(new ActionButton(0, 0, ActionItems.WRENCH, btn -> partition()));
-        this.rwMode = new ServerSettingToggleButton<>(0, 0, Settings.ACCESS,
+        addToLeftToolbar(new ActionButton(ActionItems.CLOSE, btn -> clear()));
+        addToLeftToolbar(new ActionButton(ActionItems.WRENCH, btn -> partition()));
+        this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(0, 0,
+        this.storageFilter = new ServerSettingToggleButton<>(
                 Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
-        this.fuzzyMode = new ServerSettingToggleButton<>(0, 0, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
         this.addToLeftToolbar(this.storageFilter);
@@ -87,10 +81,6 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
 
     private void clear() {
         NetworkHandler.instance().sendToServer(new ConfigValuePacket("StorageBus.Action", "Clear"));
-    }
-
-    private void openPriorityGui() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
 }

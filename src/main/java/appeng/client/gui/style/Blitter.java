@@ -54,10 +54,23 @@ public final class Blitter {
     /**
      * Creates a blitter where the source rectangle is in relation to a 256x256 pixel texture.
      */
+    public static Blitter texture(ResourceLocation file) {
+        return texture(file, DEFAULT_TEXTURE_WIDTH, DEFAULT_TEXTURE_HEIGHT);
+    }
+
+    /**
+     * Creates a blitter where the source rectangle is in relation to a 256x256 pixel texture.
+     */
     public static Blitter texture(String file) {
         return texture(file, DEFAULT_TEXTURE_WIDTH, DEFAULT_TEXTURE_HEIGHT);
     }
 
+    /**
+     * Creates a blitter where the source rectangle is in relation to a texture of the given size.
+     */
+    public static Blitter texture(ResourceLocation file, int referenceWidth, int referenceHeight) {
+        return new Blitter(file, referenceWidth, referenceHeight);
+    }
     /**
      * Creates a blitter where the source rectangle is in relation to a texture of the given size.
      */

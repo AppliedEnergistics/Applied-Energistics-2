@@ -45,11 +45,6 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
             addSlot(new FluidSlotWidget(configFluids, i), SlotSemantic.CONFIG);
         }
-    }
-
-    @Override
-    public void init() {
-        super.init();
 
         final IAEFluidTank fluidTank = this.container.getTanks();
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
@@ -58,12 +53,7 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
             this.addButton(guiTank);
         }
 
-        this.addButton(new TabButton(this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui()));
-    }
-
-    private void openPriorityGui() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
+        widgets.addOpenPriorityButton();
     }
 
 }

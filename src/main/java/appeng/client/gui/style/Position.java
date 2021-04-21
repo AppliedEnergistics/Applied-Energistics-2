@@ -1,8 +1,9 @@
 package appeng.client.gui.style;
 
-import javax.annotation.Nullable;
+import appeng.client.Point;
+import net.minecraft.client.renderer.Rectangle2d;
 
-import appeng.client.gui.layout.SlotGridLayout;
+import javax.annotation.Nullable;
 
 /**
  * Describes positioning for a slot.
@@ -51,6 +52,31 @@ public class Position {
 
     public void setBottom(Integer bottom) {
         this.bottom = bottom;
+    }
+
+    /**
+     * Resolves this relative position against the given bounds, and makes
+     * it absolute.
+     */
+    public Point resolve(Rectangle2d bounds) {
+        // Start by computing the x,y position
+        int x, y;
+        if (left != null) {
+            x = left;
+        } else if (right != null) {
+            x = bounds.getWidth() - right;
+        } else {
+            x = 0;
+        }
+        if (top != null) {
+            y = top;
+        } else if (bottom != null) {
+            y = bounds.getHeight() - bottom;
+        } else {
+            y = 0;
+        }
+
+        return new Point(x, y).move(bounds.getX(), bounds.getY());
     }
 
     @Override

@@ -110,6 +110,7 @@ public final class StyleManager {
         mergeObjectKeys("palette", layers, result);
         mergeObjectKeys("images", layers, result);
         mergeObjectKeys("terminalStyle", layers, result);
+        mergeObjectKeys("widgets", layers, result);
 
         return result;
     }

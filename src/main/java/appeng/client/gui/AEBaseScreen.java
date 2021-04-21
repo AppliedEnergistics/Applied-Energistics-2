@@ -18,54 +18,9 @@
 
 package appeng.client.gui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.ArrayListMultimap;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import org.lwjgl.glfw.GLFW;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
 import appeng.client.gui.style.Blitter;
-import appeng.client.gui.style.Position;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
@@ -88,6 +43,46 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.ArrayListMultimap;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.glfw.GLFW;
+
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
 
@@ -100,13 +95,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      */
     public static final String TEXT_ID_DIALOG_TITLE = "dialog_title";
 
-    public static final int COLOR_DARK_GRAY = 0x404040;
-
-    private final VerticalButtonBar verticalButtonBar = new VerticalButtonBar();
+    private final VerticalButtonBar verticalToolbar;
 
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
-    private Scrollbar myScrollBar = null;
     private boolean disableShiftClick = false;
     private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
     private ItemStack dbl_whichItem = ItemStack.EMPTY;
@@ -116,11 +108,15 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private final ArrayListMultimap<SlotSemantic, CustomSlotWidget> guiSlotsBySemantic = ArrayListMultimap.create();
     private final Map<String, TextOverride> textOverrides = new HashMap<>();
     private final EnumSet<SlotSemantic> hiddenSlots = EnumSet.noneOf(SlotSemantic.class);
-    private final ScreenStyle style;
+    protected final WidgetContainer widgets;
+    protected final ScreenStyle style;
 
     public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title);
         this.style = Objects.requireNonNull(style, "style");
+        this.widgets = new WidgetContainer(style);
+        this.widgets.add("verticalToolbar", this.verticalToolbar = new VerticalButtonBar());
+
         if (style.getBackground() != null) {
             this.xSize = style.getBackground().getSrcWidth();
             this.ySize = style.getBackground().getSrcHeight();
@@ -131,8 +127,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     @OverridingMethodsMustInvokeSuper
     protected void init() {
         super.init();
-        this.verticalButtonBar.reset(guiLeft, guiTop);
         positionSlots(style);
+
+        widgets.populateScreen(this::addButton, getBounds(true), this);
     }
 
     private void positionSlots(ScreenStyle style) {
@@ -167,7 +164,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     private Point getSlotPosition(SlotPosition position, int semanticIndex) {
-        Point pos = resolvePosition(position);
+        Point pos = position.resolve(getBounds(false));
 
         SlotGridLayout grid = position.getGrid();
         if (grid != null) {
@@ -176,25 +173,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return pos;
     }
 
-    private Point resolvePosition(Position pos) {
-        // Start by computing the x,y position
-        int x, y;
-        if (pos.getLeft() != null) {
-            x = pos.getLeft();
-        } else if (pos.getRight() != null) {
-            x = xSize - pos.getRight();
+    private Rectangle2d getBounds(boolean absolute) {
+        if (absolute) {
+            return new Rectangle2d(guiLeft, guiTop, xSize, ySize);
         } else {
-            x = 0;
+            return new Rectangle2d(0, 0, xSize, ySize);
         }
-        if (pos.getTop() != null) {
-            y = pos.getTop();
-        } else if (pos.getBottom() != null) {
-            y = ySize - pos.getBottom();
-        } else {
-            y = 0;
-        }
-
-        return new Point(x, y);
     }
 
     private List<Slot> getInventorySlots() {
@@ -217,8 +201,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     @Override
     public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
         this.updateBeforeRender();
-
-        this.verticalButtonBar.layout();
+        this.widgets.updateBeforeRender();
 
         super.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -251,7 +234,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     protected void drawGuiSlot(MatrixStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
-            float partialTicks) {
+                               float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.getTooltipAreaX();
             final int top = slot.getTooltipAreaY();
@@ -322,9 +305,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         final int ox = this.guiLeft;
         final int oy = this.guiTop;
 
-        if (this.getScrollBar() != null) {
-            this.getScrollBar().draw(matrixStack, this);
-        }
+        widgets.drawForegroundLayer(matrixStack, getBlitOffset(), getBounds(false), new Point(x - ox, y - oy));
 
         this.drawFG(matrixStack, ox, oy, x, y);
 
@@ -347,7 +328,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                     content = override.getContent();
                 }
 
-                Point pos = resolvePosition(text.getPosition());
+                Point pos = text.getPosition().resolve(getBounds(false));
 
                 if (text.isCenterHorizontally()) {
                     int textWidth = this.font.getStringPropertyWidth(content);
@@ -369,7 +350,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
-            final int y) {
+                                                         final int y) {
 
         this.drawBG(matrixStack, guiLeft, guiTop, x, y, f);
 
@@ -401,6 +382,21 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
+    // Convert global mouse x,y to relative Point
+    private Point getMousePoint(double x, double y) {
+        return new Point((int) Math.round(x - guiLeft), (int) Math.round(y - guiTop));
+    }
+
+    @Override
+    public boolean mouseScrolled(double x, double y, double wheelDelta) {
+        if (wheelDelta != 0) {
+            if (widgets.onMouseWheel(getMousePoint(x, y), wheelDelta)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
         this.drag_click.clear();
@@ -426,11 +422,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             }
         }
 
-        // Forward left mouse button down events to the scrollbar
-        if (btn == 0 && this.getScrollBar() != null) {
-            if (this.getScrollBar().mouseDown(xCoord - this.guiLeft, yCoord - this.guiTop)) {
-                return true;
-            }
+        if (widgets.onMouseDown(getMousePoint(xCoord, yCoord), btn)) {
+            return true;
         }
 
         return super.mouseClicked(xCoord, yCoord, btn);
@@ -438,11 +431,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        // Forward left mouse button up events to the scrollbar
-        if (button == 0 && this.getScrollBar() != null) {
-            if (this.getScrollBar().mouseUp(mouseX - this.guiLeft, mouseY - this.guiTop)) {
-                return true;
-            }
+        if (widgets.onMouseUp(getMousePoint(mouseX, mouseY), button)) {
+            return true;
         }
 
         return super.mouseReleased(mouseX, mouseY, button);
@@ -453,8 +443,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         final Slot slot = this.getSlot((int) mouseX, (int) mouseY);
         final ItemStack itemstack = getPlayer().inventory.getItemStack();
 
-        if (this.getScrollBar() != null) {
-            this.getScrollBar().mouseDragged((int) mouseX - this.guiLeft, (int) mouseY - this.guiTop);
+        Point mousePos = new Point((int) Math.round(mouseX - guiLeft), (int) Math.round(mouseY - guiTop));
+        if (widgets.onMouseDrag(mousePos, mouseButton)) {
+            return true;
         }
 
         if (slot instanceof FakeSlot && !itemstack.isEmpty()) {
@@ -476,7 +467,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected void handleMouseClick(@Nullable Slot slot, final int slotIdx, final int mouseButton,
-            final ClickType clickType) {
+                                    final ClickType clickType) {
 
         // Do not allow clicks on disabled player inventory slots
         if (slot instanceof DisabledSlot) {
@@ -617,19 +608,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-            float partialTicks) {
+                       float partialTicks) {
         if (style.getBackground() != null) {
             style.getBackground().dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
         }
-    }
-
-    @Override
-    public boolean mouseScrolled(double x, double y, double wheelDelta) {
-        if (wheelDelta != 0 && this.getScrollBar() != null) {
-            this.getScrollBar().wheel(wheelDelta);
-            return true;
-        }
-        return false;
     }
 
     public void drawItem(final int x, final int y, final ItemStack is) {
@@ -656,7 +638,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             try {
                 renderAppEngSlot(matrices, (AppEngSlot) s);
             } catch (final Exception err) {
-                AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err.toString());
+                AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
             }
         } else {
             super.moveItems(matrices, s);
@@ -701,21 +683,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         getMinecraft().getTextureManager().bindTexture(loc);
     }
 
-    protected Scrollbar getScrollBar() {
-        return this.myScrollBar;
-    }
-
     protected void setScrollBar(final Scrollbar myScrollBar) {
-        this.myScrollBar = myScrollBar;
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (this.getScrollBar() != null) {
-            this.getScrollBar().tick();
-        }
+        widgets.tick();
 
         for (IGuiEventListener child : children) {
             if (child instanceof ITickingWidget) {
@@ -733,11 +708,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     /**
      * Adds a button to the vertical toolbar to the left of the screen and returns that button to the caller. The button
-     * will automatically be positioned. This needs to be repeated everytime {@link #init()} is called.
+     * will automatically be positioned. This button will automatically be re-added to the screen when it's resized.
      */
     protected final <B extends Button> B addToLeftToolbar(B button) {
-        addButton(button);
-        verticalButtonBar.add(button);
+        verticalToolbar.add(button);
         return button;
     }
 
@@ -747,11 +721,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      * out of the way.
      */
     public List<Rectangle2d> getExclusionZones() {
-        Rectangle2d toolbarBounds = verticalButtonBar.getBoundingRectangle();
         List<Rectangle2d> result = new ArrayList<>(2);
-        if (toolbarBounds.getWidth() > 0 && toolbarBounds.getHeight() > 0) {
-            result.add(toolbarBounds);
-        }
+        widgets.addExclusionZones(result, getBounds(true));
         return result;
     }
 
@@ -799,5 +770,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      */
     protected final void setTextContent(String id, ITextComponent content) {
         getOrCreateTextOverride(id).setContent(content);
+    }
+
+    public ScreenStyle getStyle() {
+        return style;
     }
 }

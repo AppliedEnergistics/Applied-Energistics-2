@@ -34,18 +34,13 @@ import appeng.util.Platform;
 
 public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
 
-    private SettingToggleButton<YesNo> overlayToggle;
+    private final SettingToggleButton<YesNo> overlayToggle;
 
     public SpatialAnchorScreen(SpatialAnchorContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        this.addToLeftToolbar(CommonButtons.togglePowerUnit(0, 0));
-        this.addToLeftToolbar(this.overlayToggle = new ServerSettingToggleButton<>(0, 0,
+        this.addToLeftToolbar(CommonButtons.togglePowerUnit());
+        this.addToLeftToolbar(this.overlayToggle = new ServerSettingToggleButton<>(
                 Settings.OVERLAY_MODE, YesNo.NO));
     }
 

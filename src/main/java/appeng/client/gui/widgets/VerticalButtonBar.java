@@ -1,20 +1,20 @@
 package appeng.client.gui.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import appeng.client.Point;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.ICompositeWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.Rectangle2d;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A stacked button panel on the left or right side of our UIs.
  */
-public class VerticalButtonBar {
-
-    // Position of the button bar in relation to the GUI's top edge
-    private static final int START_Y = 6;
+public class VerticalButtonBar implements ICompositeWidget {
 
     // Vertical space between buttons
     private static final int VERTICAL_SPACING = 4;
@@ -24,21 +24,41 @@ public class VerticalButtonBar {
 
     private final List<Button> buttons = new ArrayList<>();
 
-    private Rectangle2d boundingRectangle = new Rectangle2d(0, 0, 0, 0);
+    // The origin of the last initialized screen in window coordinates
+    private Point screenOrigin = Point.ZERO;
+    // This bounding rectangle relative to the screens origin
+    private Rectangle2d bounds = new Rectangle2d(0, 0, 0, 0);
 
-    private int originX;
-    private int originY;
+    private Point position;
 
     public VerticalButtonBar() {
-        reset(0, 0);
     }
 
     public void add(Button button) {
         buttons.add(button);
     }
 
-    public void layout() {
-        int currentY = originY + START_Y + MARGIN;
+    @Override
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+        // Setting the size for this control is not supported
+    }
+
+    @Override
+    public Rectangle2d getBounds() {
+        return bounds;
+    }
+
+    /**
+     * We need to update every frame because buttons can become visible/invisible at any point in time.
+     */
+    @Override
+    public void updateBeforeRender() {
+        int currentY = position.getY() + MARGIN;
         int maxWidth = 0;
 
         // Align the button's right edge with the UI and account for margin
@@ -47,8 +67,9 @@ public class VerticalButtonBar {
                 continue;
             }
 
-            button.x = originX - MARGIN - button.getWidth();
-            button.y = currentY;
+            // Vanilla widgets need to be in window space
+            button.x = screenOrigin.getX() + position.getX() - MARGIN - button.getWidth();
+            button.y = screenOrigin.getY() + currentY;
 
             currentY += button.getHeightRealms() + VERTICAL_SPACING;
             maxWidth = Math.max(button.getWidth(), maxWidth);
@@ -56,15 +77,15 @@ public class VerticalButtonBar {
 
         // Set up a bounding rectangle for JEI exclusion zones
         if (maxWidth == 0) {
-            boundingRectangle = new Rectangle2d(0, 0, 0, 0);
+            bounds = new Rectangle2d(0, 0, 0, 0);
         } else {
-            int boundX = originX - maxWidth - 2 * MARGIN;
-            int boundY = originY + START_Y;
-            boundingRectangle = new Rectangle2d(
+            int boundX = position.getX() - maxWidth - 2 * MARGIN;
+            int boundY = position.getY();
+            bounds = new Rectangle2d(
                     boundX,
                     boundY,
                     maxWidth + 2 * MARGIN,
-                    currentY + MARGIN - boundY);
+                    currentY - boundY);
         }
     }
 
@@ -72,15 +93,9 @@ public class VerticalButtonBar {
      * Called when the parent UI is repositioned or resized. All buttons need to be re-added since Vanilla clears the
      * widgets when this happens.
      */
-    public void reset(int originX, int originY) {
-        this.originX = originX;
-        this.originY = originY;
-        buttons.clear();
+    @Override
+    public void populateScreen(Consumer<Widget> addWidget, Rectangle2d bounds, AEBaseScreen<?> screen) {
+        this.screenOrigin = Point.fromTopLeft(bounds);
+        this.buttons.forEach(addWidget);
     }
-
-    @Nonnull
-    public Rectangle2d getBoundingRectangle() {
-        return boundingRectangle;
-    }
-
 }

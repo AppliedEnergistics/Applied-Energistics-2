@@ -34,10 +34,8 @@ public class ValidationIcon extends IconButton {
 
     private final List<ITextComponent> tooltip = new ArrayList<>();
 
-    private boolean valid;
-
-    public ValidationIcon(int x, int y) {
-        super(x, y, btn -> {
+    public ValidationIcon() {
+        super(btn -> {
         });
         setDisableBackground(true);
         setDisableClickSound(true);

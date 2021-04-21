@@ -38,8 +38,8 @@ public class ProgressBar extends Widget implements ITooltip {
     private final ITextComponent titleName;
     private ITextComponent fullMsg;
 
-    public ProgressBar(IProgressProvider source, int posX, int posY, Blitter blitter, Direction dir) {
-        this(source, posX, posY, blitter, dir, null);
+    public ProgressBar(IProgressProvider source, Blitter blitter, Direction dir) {
+        this(source, 0, 0, blitter, dir, null);
     }
 
     public ProgressBar(final IProgressProvider source, final int posX, final int posY, Blitter blitter,

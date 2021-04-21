@@ -50,48 +50,41 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
     private static final String CRAFTMODE_CRAFTING = "1";
     private static final String CRAFTMODE_PROCESSING = "0";
 
-    private TabButton tabCraftButton;
-    private TabButton tabProcessButton;
-    private ActionButton substitutionsEnabledBtn;
-    private ActionButton substitutionsDisabledBtn;
+    private final TabButton tabCraftButton;
+    private final TabButton tabProcessButton;
+    private final ActionButton substitutionsEnabledBtn;
+    private final ActionButton substitutionsDisabledBtn;
 
     public PatternTermScreen(PatternTermContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.tabCraftButton = new TabButton(this.guiLeft + 173, this.guiTop + this.ySize - 177,
+        this.tabCraftButton = new TabButton(
                 new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,
                 btn -> toggleCraftMode(CRAFTMODE_PROCESSING));
-        this.addButton(this.tabCraftButton);
+        widgets.add("craftingPatternMode", this.tabCraftButton);
 
-        this.tabProcessButton = new TabButton(this.guiLeft + 173, this.guiTop + this.ySize - 177,
+        this.tabProcessButton = new TabButton(
                 new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.text(), this.itemRenderer,
                 btn -> toggleCraftMode(CRAFTMODE_CRAFTING));
-        this.addButton(this.tabProcessButton);
+        widgets.add("processingPatternMode", this.tabProcessButton);
 
-        this.substitutionsEnabledBtn = new ActionButton(this.guiLeft + 84, this.guiTop + this.ySize - 163,
+        this.substitutionsEnabledBtn = new ActionButton(
                 ActionItems.ENABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSTITUTION_DISABLE));
         this.substitutionsEnabledBtn.setHalfSize(true);
-        this.addButton(this.substitutionsEnabledBtn);
+        widgets.add("substitutionsEnabled", this.substitutionsEnabledBtn);
 
-        this.substitutionsDisabledBtn = new ActionButton(this.guiLeft + 84, this.guiTop + this.ySize - 163,
+        this.substitutionsDisabledBtn = new ActionButton(
                 ActionItems.DISABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSTITUTION_ENABLE));
         this.substitutionsDisabledBtn.setHalfSize(true);
-        this.addButton(this.substitutionsDisabledBtn);
+        widgets.add("substitutionsDisabled", this.substitutionsDisabledBtn);
 
-        ActionButton clearBtn = new ActionButton(this.guiLeft + 74, this.guiTop + this.ySize - 163, ActionItems.CLOSE,
-                act -> clear());
+        ActionButton clearBtn = new ActionButton(ActionItems.CLOSE, act -> clear());
         clearBtn.setHalfSize(true);
-        this.addButton(clearBtn);
+        widgets.add("clearPattern", clearBtn);
 
-        ActionButton encodeBtn = new ActionButton(this.guiLeft + 147, this.guiTop + this.ySize - 142,
-                ActionItems.ENCODE, act -> encode());
-        this.addButton(encodeBtn);
+        ActionButton encodeBtn = new ActionButton(ActionItems.ENCODE, act -> encode());
+        widgets.add("encodePattern", encodeBtn);
     }
 
     @Override

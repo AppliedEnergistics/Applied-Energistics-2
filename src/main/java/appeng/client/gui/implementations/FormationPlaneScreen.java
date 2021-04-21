@@ -25,7 +25,6 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -38,27 +37,21 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContainer> {
 
-    private SettingToggleButton<FuzzyMode> fuzzyMode;
-    private SettingToggleButton<YesNo> placeMode;
+    private final SettingToggleButton<FuzzyMode> fuzzyMode;
+    private final SettingToggleButton<YesNo> placeMode;
 
     public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.placeMode = new ServerSettingToggleButton<>(0, 0, Settings.PLACE_BLOCK,
+        this.placeMode = new ServerSettingToggleButton<>(Settings.PLACE_BLOCK,
                 YesNo.YES);
-        this.fuzzyMode = new ServerSettingToggleButton<>(0, 0, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
         this.addToLeftToolbar(this.placeMode);
         this.addToLeftToolbar(this.fuzzyMode);
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui()));
+        widgets.addOpenPriorityButton();
     }
 
     @Override
@@ -68,10 +61,6 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
         this.fuzzyMode.set(this.container.getFuzzyMode());
         this.fuzzyMode.setVisibility(container.hasUpgrade(Upgrades.FUZZY));
         this.placeMode.set(this.container.getPlaceMode());
-    }
-
-    private void openPriorityGui() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
 }

@@ -33,12 +33,7 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
     public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        this.addToLeftToolbar(CommonButtons.togglePowerUnit(0, 0));
+        this.addToLeftToolbar(CommonButtons.togglePowerUnit());
     }
 
     @Override

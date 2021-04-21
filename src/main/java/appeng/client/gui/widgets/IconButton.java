@@ -39,8 +39,8 @@ public abstract class IconButton extends Button implements ITooltip {
 
     private boolean disableBackground = false;
 
-    public IconButton(final int x, final int y, IPressable onPress) {
-        super(x, y, 16, 16, StringTextComponent.EMPTY, onPress);
+    public IconButton(IPressable onPress) {
+        super(0, 0, 16, 16, StringTextComponent.EMPTY, onPress);
     }
 
     public void setVisibility(final boolean vis) {

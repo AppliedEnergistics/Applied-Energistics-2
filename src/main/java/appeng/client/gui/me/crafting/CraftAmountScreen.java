@@ -37,36 +37,26 @@ import appeng.core.localization.GuiText;
  */
 public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
-    private final AESubScreen subGui;
+    private final Button next;
 
-    private NumberEntryWidget amountToCraft;
-
-    private Button next;
+    private final NumberEntryWidget amountToCraft;
 
     public CraftAmountScreen(CraftAmountContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
-        this.subGui = new AESubScreen(this, container.getTarget());
-    }
 
-    @Override
-    public void init() {
-        super.init();
+        this.next = widgets.addButton("next", GuiText.Next.text(), this::confirm);
 
-        this.amountToCraft = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.CRAFT_ITEM_COUNT);
+        AESubScreen subGui = new AESubScreen(container.getTarget());
+        subGui.addBackButton("back", widgets);
+
+        this.amountToCraft = new NumberEntryWidget(NumberEntryType.CRAFT_ITEM_COUNT);
         this.amountToCraft.setValue(1);
         this.amountToCraft.setTextFieldBounds(62, 57, 50);
         this.amountToCraft.setMinValue(1);
         this.amountToCraft.setHideValidationIcon(true);
-        this.amountToCraft.addButtons(children::add, this::addButton);
-
-        this.next = this.addButton(
-                new Button(this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.text(), this::confirm));
-        this.amountToCraft.setOnConfirm(() -> this.confirm(this.next));
-
-        subGui.addBackButton(this::addButton, 154, 0);
-
-        changeFocus(true);
+        this.amountToCraft.setOnConfirm(this::confirm);
+        widgets.add("amountToCraft", this.amountToCraft);
     }
 
     @Override
@@ -77,7 +67,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;
     }
 
-    private void confirm(Button button) {
+    private void confirm() {
         int amount = this.amountToCraft.getIntValue().orElse(0);
         if (amount <= 0) {
             return;

@@ -18,11 +18,11 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.api.config.Settings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.CondenserOutput;
-import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
@@ -37,23 +37,17 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
 
     private static final Blitter PROGRESS_BAR = Blitter.texture("guis/condenser.png").src(178, 25, 6, 18);
 
-    private SettingToggleButton<CondenserOutput> mode;
+    private final SettingToggleButton<CondenserOutput> mode;
 
     public CondenserScreen(CondenserContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.mode = new ServerSettingToggleButton<>(128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT,
-                this.container.getOutput());
+        this.mode = new ServerSettingToggleButton<>(Settings.CONDENSER_OUTPUT, this.container.getOutput());
+        widgets.add("mode", this.mode);
 
         this.addButton(new ProgressBar(this.container, this.guiLeft + 120, this.guiTop + 25, PROGRESS_BAR,
                 Direction.VERTICAL, GuiText.StoredEnergy.text()));
-        this.addButton(this.mode);
     }
 
     @Override

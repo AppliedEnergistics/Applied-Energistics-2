@@ -37,9 +37,9 @@ public class TabButton extends Button implements ITooltip {
     private int myIcon = -1;
     private ItemStack myItem;
 
-    public TabButton(final int x, final int y, final int ico, final ITextComponent message, final ItemRenderer ir,
+    public TabButton(final int ico, final ITextComponent message, final ItemRenderer ir,
             IPressable onPress) {
-        super(x, y, 22, 22, message, onPress);
+        super(0, 0, 22, 22, message, onPress);
 
         this.myIcon = ico;
         this.itemRenderer = ir;
@@ -48,15 +48,13 @@ public class TabButton extends Button implements ITooltip {
     /**
      * Using itemstack as an icon
      *
-     * @param x       x pos of button
-     * @param y       y pos of button
      * @param ico     used icon
      * @param message mouse over message
      * @param ir      renderer
      */
-    public TabButton(final int x, final int y, final ItemStack ico, final ITextComponent message, final ItemRenderer ir,
+    public TabButton(final ItemStack ico, final ITextComponent message, final ItemRenderer ir,
             IPressable onPress) {
-        super(x, y, 22, 22, message, onPress);
+        super(0, 0, 22, 22, message, onPress);
         this.myItem = ico;
         this.itemRenderer = ir;
     }

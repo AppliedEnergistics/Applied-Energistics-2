@@ -37,31 +37,24 @@ import appeng.fluids.container.FluidLevelEmitterContainer;
 
 public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitterContainer> {
 
-    private SettingToggleButton<RedstoneMode> redstoneMode;
+    private final SettingToggleButton<RedstoneMode> redstoneMode;
 
-    private NumberEntryWidget level;
+    private final NumberEntryWidget level;
 
     public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         addSlot(new FluidSlotWidget(this.container.getFluidConfigInventory(), 0), SlotSemantic.CONFIG);
-    }
 
-    @Override
-    public void init() {
-        super.init();
-
-        this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_FLUID_VOLUME);
+        this.level = new NumberEntryWidget(NumberEntryType.LEVEL_FLUID_VOLUME);
         this.level.setTextFieldBounds(25, 44, 75);
-        this.level.addButtons(children::add, this::addButton);
         this.level.setValue(container.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
         this.level.setOnConfirm(this::closeScreen);
+        widgets.add("level", this.level);
 
-        this.changeFocus(true);
-
-        this.redstoneMode = new ServerSettingToggleButton<>(0, 0,
+        this.redstoneMode = new ServerSettingToggleButton<>(
                 Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
         this.addToLeftToolbar(this.redstoneMode);
     }

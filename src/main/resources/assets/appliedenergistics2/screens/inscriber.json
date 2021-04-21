@@ -33,5 +33,17 @@
         "top": 6
       }
     }
+  },
+  "images": {
+    "progressBar": {
+      "texture": "guis/inscriber.png",
+      "srcRect": [135, 177, 6, 18]
+    }
+  },
+  "widgets": {
+    "progressBar": {
+      "left": 135,
+      "top": 39
+    }
   }
 }
