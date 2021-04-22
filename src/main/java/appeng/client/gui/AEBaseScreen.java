@@ -113,6 +113,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title);
+
+        // Pre-initialize these fields since they're used in our constructors, but Vanilla only initializes them
+        // in the init method
+        this.itemRenderer = Minecraft.getInstance().getItemRenderer();
+        this.font = Minecraft.getInstance().fontRenderer;
+
         this.style = Objects.requireNonNull(style, "style");
         this.widgets = new WidgetContainer(style);
         this.widgets.add("verticalToolbar", this.verticalToolbar = new VerticalButtonBar());
