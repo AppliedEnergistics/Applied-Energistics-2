@@ -18,6 +18,50 @@
 
 package appeng.client.gui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.ArrayListMultimap;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
 import appeng.client.gui.style.ScreenStyle;
@@ -42,46 +86,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.ArrayListMultimap;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.glfw.GLFW;
-
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
 
@@ -237,7 +241,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     protected void drawGuiSlot(MatrixStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
-                               float partialTicks) {
+            float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.getTooltipAreaX();
             final int top = slot.getTooltipAreaY();
@@ -353,7 +357,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
-                                                         final int y) {
+            final int y) {
 
         this.drawBG(matrixStack, guiLeft, guiTop, x, y, f);
 
@@ -471,7 +475,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected void handleMouseClick(@Nullable Slot slot, final int slotIdx, final int mouseButton,
-                                    final ClickType clickType) {
+            final ClickType clickType) {
 
         // Do not allow clicks on disabled player inventory slots
         if (slot instanceof DisabledSlot) {
@@ -612,7 +616,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-                       float partialTicks) {
+            float partialTicks) {
         if (style.getBackground() != null) {
             style.getBackground().dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
         }

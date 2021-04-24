@@ -22,13 +22,12 @@ import java.util.Collections;
 import java.util.Optional;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -39,9 +38,11 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.FluidSlotPacket;
+import appeng.fluids.client.gui.FluidBlitter;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidTank;
 
@@ -58,22 +59,9 @@ public class FluidSlotWidget extends CustomSlotWidget {
             final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
-            RenderSystem.disableBlend();
-            final Fluid fluid = fs.getFluid();
-            final FluidAttributes attributes = fluid.getAttributes();
-            mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
-                    .apply(attributes.getStillTexture(fs.getFluidStack()));
-
-            // Set color for dynamic fluids
-            // Convert int color to RGB
-            final float red = (attributes.getColor() >> 16 & 255) / 255.0F;
-            final float green = (attributes.getColor() >> 8 & 255) / 255.0F;
-            final float blue = (attributes.getColor() & 255) / 255.0F;
-            RenderSystem.color3f(red, green, blue);
-
-            blit(matrixStack, getTooltipAreaX(), getTooltipAreaY(), this.getBlitOffset(), getTooltipAreaWidth(),
-                    getTooltipAreaHeight(), sprite);
+            FluidBlitter.create(fs.getFluidStack())
+                    .dest(getTooltipAreaX(), getTooltipAreaY(), getTooltipAreaWidth(), getTooltipAreaHeight())
+                    .blit(matrixStack, getBlitOffset());
         }
     }
 

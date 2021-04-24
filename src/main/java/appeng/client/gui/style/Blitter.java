@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -41,6 +43,7 @@ public final class Blitter {
     private int a = 255;
     private Rectangle2d srcRect;
     private Rectangle2d destRect = new Rectangle2d(0, 0, 0, 0);
+    private boolean blending = true;
 
     Blitter(ResourceLocation texture, int referenceWidth, int referenceHeight) {
         this.texture = texture;
@@ -74,6 +77,21 @@ public final class Blitter {
      */
     public static Blitter texture(String file, int referenceWidth, int referenceHeight) {
         return new Blitter(new ResourceLocation(AppEng.MOD_ID, "textures/" + file), referenceWidth, referenceHeight);
+    }
+
+    /**
+     * Creates a blitter from a texture atlas sprite.
+     */
+    public static Blitter sprite(TextureAtlasSprite sprite) {
+        final int refSize = Integer.MAX_VALUE;
+        AtlasTexture atlas = sprite.getAtlasTexture();
+
+        return new Blitter(atlas.getTextureLocation(), refSize, refSize)
+                .src(
+                        (int) (sprite.getMinU() * refSize),
+                        (int) (sprite.getMinV() * refSize),
+                        (int) ((sprite.getMaxU() - sprite.getMinU()) * refSize),
+                        (int) ((sprite.getMaxV() - sprite.getMinV()) * refSize));
     }
 
     public Blitter copy() {
@@ -170,6 +188,26 @@ public final class Blitter {
         return color(r, g, b).opacity(a);
     }
 
+    /**
+     * Enables or disables alpha-blending. If disabled, all pixels of the texture will be drawn as opaque, and the alpha
+     * value set using {@link #opacity(float)} will be ignored.
+     */
+    public Blitter blending(boolean enable) {
+        this.blending = enable;
+        return this;
+    }
+
+    /**
+     * Sets the color to the R,G,B values encoded in the lower 24-bit of the given integer.
+     */
+    public Blitter colorRgb(int packedRgb) {
+        float r = (packedRgb >> 16 & 255) / 255.0F;
+        float g = (packedRgb >> 8 & 255) / 255.0F;
+        float b = (packedRgb & 255) / 255.0F;
+
+        return color(r, g, b);
+    }
+
     public void blit(MatrixStack matrices, int zIndex) {
         TextureManager textureManager = Minecraft.getInstance().getTextureManager();
         textureManager.bindTexture(this.texture);
@@ -202,7 +240,7 @@ public final class Blitter {
         Matrix4f matrix = matrices.getLast().getMatrix();
 
         BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR_TEX);
+        bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX);
         bufferbuilder.pos(matrix, x1, y2, (float) zIndex)
                 .color(r, g, b, a)
                 .tex(minU, maxV).endVertex();
@@ -217,9 +255,13 @@ public final class Blitter {
                 .tex(minU, minV).endVertex();
         bufferbuilder.finishDrawing();
 
-        RenderSystem.enableBlend();
+        if (blending) {
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        } else {
+            RenderSystem.disableBlend();
+        }
         RenderSystem.enableTexture();
-        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         WorldVertexBufferUploader.draw(bufferbuilder);
     }
 
