@@ -11,7 +11,7 @@
 !.travis.yml
 
 # include markdowns
-!README.md
+!*.md
 !LICENSE
 
 # include sourcecode except generated
