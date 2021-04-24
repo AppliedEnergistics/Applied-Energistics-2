@@ -39,32 +39,32 @@ public class ActionButton extends IconButton {
         ButtonToolTips displayValue;
         switch (action) {
             case WRENCH:
-                icon = Icon.UNUSED_04_02;
+                icon = Icon.WRENCH;
                 displayName = ButtonToolTips.PartitionStorage;
                 displayValue = ButtonToolTips.PartitionStorageHint;
                 break;
             case CLOSE:
-                icon = Icon.UNUSED_00_06;
+                icon = Icon.CLEAR;
                 displayName = ButtonToolTips.Clear;
                 displayValue = ButtonToolTips.ClearSettings;
                 break;
             case STASH:
-                icon = Icon.UNUSED_00_06;
+                icon = Icon.CLEAR;
                 displayName = ButtonToolTips.Stash;
                 displayValue = ButtonToolTips.StashDesc;
                 break;
             case ENCODE:
-                icon = Icon.UNUSED_00_08;
+                icon = Icon.WHITE_ARROW_DOWN;
                 displayName = ButtonToolTips.Encode;
                 displayValue = ButtonToolTips.EncodeDescription;
                 break;
             case ENABLE_SUBSTITUTION:
-                icon = Icon.UNUSED_03_04;
+                icon = Icon.SUBSTITUTION_ENABLED;
                 displayName = ButtonToolTips.Substitutions;
                 displayValue = ButtonToolTips.SubstitutionsDescEnabled;
                 break;
             case DISABLE_SUBSTITUTION:
-                icon = Icon.UNUSED_03_07;
+                icon = Icon.SUBSTITUTION_DISABLED;
                 displayName = ButtonToolTips.Substitutions;
                 displayValue = ButtonToolTips.SubstitutionsDescDisabled;
                 break;

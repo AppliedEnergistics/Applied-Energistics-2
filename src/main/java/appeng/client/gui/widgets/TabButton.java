@@ -62,9 +62,10 @@ public class TabButton extends Button implements ITooltip {
             // 2x2 slot
             Icon backdrop;
             if (this.hideEdge) {
-                backdrop = this.isFocused() ? Icon.UNUSED_14_08 : Icon.UNUSED_12_08;
+                backdrop = this.isFocused() ? Icon.TAB_BUTTON_BACKGROUND_BORDERLESS_FOCUS
+                        : Icon.TAB_BUTTON_BACKGROUND_BORDERLESS;
             } else {
-                backdrop = this.isFocused() ? Icon.UNUSED_14_10 : Icon.UNUSED_12_10;
+                backdrop = this.isFocused() ? Icon.TAB_BUTTON_BACKGROUND_FOCUS : Icon.TAB_BUTTON_BACKGROUND;
             }
 
             backdrop.getBlitter().dest(this.x, this.y).blit(matrixStack, getBlitOffset());

@@ -383,7 +383,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
             Point pos = slot.getBackgroundPos();
 
-            Icon.UNUSED_12_12.getBlitter()
+            Icon.SLOT_BACKGROUND.getBlitter()
                     .dest(guiLeft + pos.getX(), guiTop + pos.getY())
                     .color(1, 1, 1, alpha)
                     .blit(matrixStack, getBlitOffset());

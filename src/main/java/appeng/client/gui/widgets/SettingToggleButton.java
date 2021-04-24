@@ -89,173 +89,177 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
         if (appearances == null) {
             appearances = new HashMap<>();
-            registerApp(Icon.UNUSED_07_00, Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH,
+            registerApp(Icon.CONDENSER_OUTPUT_TRASH, Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH,
                     ButtonToolTips.CondenserOutput,
                     ButtonToolTips.Trash);
-            registerApp(Icon.UNUSED_07_01, Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS,
+            registerApp(Icon.CONDENSER_OUTPUT_MATTER_BALL, Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS,
                     ButtonToolTips.CondenserOutput,
                     ButtonToolTips.MatterBalls.text(CondenserOutput.MATTER_BALLS.requiredPower));
-            registerApp(Icon.UNUSED_07_02, Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY,
+            registerApp(Icon.CONDENSER_OUTPUT_SINGULARITY, Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY,
                     ButtonToolTips.CondenserOutput,
                     ButtonToolTips.Singularity.text(CondenserOutput.SINGULARITY.requiredPower));
 
-            registerApp(Icon.UNUSED_09_01, Settings.ACCESS, AccessRestriction.READ, ButtonToolTips.IOMode,
+            registerApp(Icon.ACCESS_READ, Settings.ACCESS, AccessRestriction.READ, ButtonToolTips.IOMode,
                     ButtonToolTips.Read);
-            registerApp(Icon.UNUSED_09_00, Settings.ACCESS, AccessRestriction.WRITE, ButtonToolTips.IOMode,
+            registerApp(Icon.ACCESS_WRITE, Settings.ACCESS, AccessRestriction.WRITE, ButtonToolTips.IOMode,
                     ButtonToolTips.Write);
-            registerApp(Icon.UNUSED_09_02, Settings.ACCESS, AccessRestriction.READ_WRITE, ButtonToolTips.IOMode,
+            registerApp(Icon.ACCESS_READ_WRITE, Settings.ACCESS, AccessRestriction.READ_WRITE, ButtonToolTips.IOMode,
                     ButtonToolTips.ReadWrite);
 
-            registerApp(Icon.UNUSED_10_00, Settings.POWER_UNITS, PowerUnits.AE, ButtonToolTips.PowerUnits,
+            registerApp(Icon.POWER_UNIT_AE, Settings.POWER_UNITS, PowerUnits.AE, ButtonToolTips.PowerUnits,
                     PowerUnits.AE.textComponent());
-            // registerApp(Icon.UNUSED_10_01, Settings.POWER_UNITS, PowerUnits.EU, ButtonToolTips.PowerUnits,
+            // registerApp(Icon.POWER_UNIT_EU, Settings.POWER_UNITS, PowerUnits.EU, ButtonToolTips.PowerUnits,
             // PowerUnits.EU.textComponent());
-            registerApp(Icon.UNUSED_10_04, Settings.POWER_UNITS, PowerUnits.RF, ButtonToolTips.PowerUnits,
+            registerApp(Icon.POWER_UNIT_RF, Settings.POWER_UNITS, PowerUnits.RF, ButtonToolTips.PowerUnits,
                     PowerUnits.RF.textComponent());
 
-            registerApp(Icon.UNUSED_00_03, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE,
+            registerApp(Icon.REDSTONE_IGNORE, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE,
                     ButtonToolTips.RedstoneMode,
                     ButtonToolTips.AlwaysActive);
-            registerApp(Icon.UNUSED_00_00, Settings.REDSTONE_CONTROLLED, RedstoneMode.LOW_SIGNAL,
+            registerApp(Icon.REDSTONE_LOW, Settings.REDSTONE_CONTROLLED, RedstoneMode.LOW_SIGNAL,
                     ButtonToolTips.RedstoneMode,
                     ButtonToolTips.ActiveWithoutSignal);
-            registerApp(Icon.UNUSED_00_01, Settings.REDSTONE_CONTROLLED, RedstoneMode.HIGH_SIGNAL,
+            registerApp(Icon.REDSTONE_HIGH, Settings.REDSTONE_CONTROLLED, RedstoneMode.HIGH_SIGNAL,
                     ButtonToolTips.RedstoneMode,
                     ButtonToolTips.ActiveWithSignal);
-            registerApp(Icon.UNUSED_00_02, Settings.REDSTONE_CONTROLLED, RedstoneMode.SIGNAL_PULSE,
+            registerApp(Icon.REDSTONE_PULSE, Settings.REDSTONE_CONTROLLED, RedstoneMode.SIGNAL_PULSE,
                     ButtonToolTips.RedstoneMode,
                     ButtonToolTips.ActiveOnPulse);
 
-            registerApp(Icon.UNUSED_00_00, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL,
+            registerApp(Icon.REDSTONE_LOW, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL,
                     ButtonToolTips.RedstoneMode,
                     ButtonToolTips.EmitLevelsBelow);
-            registerApp(Icon.UNUSED_00_01, Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL,
+            registerApp(Icon.REDSTONE_HIGH, Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL,
                     ButtonToolTips.RedstoneMode,
                     ButtonToolTips.EmitLevelAbove);
 
-            registerApp(Icon.UNUSED_03_03, Settings.OPERATION_MODE, OperationMode.FILL,
+            registerApp(Icon.ARROW_LEFT, Settings.OPERATION_MODE, OperationMode.FILL,
                     ButtonToolTips.TransferDirection,
                     ButtonToolTips.TransferToStorageCell);
-            registerApp(Icon.UNUSED_03_02, Settings.OPERATION_MODE, OperationMode.EMPTY,
+            registerApp(Icon.ARROW_RIGHT, Settings.OPERATION_MODE, OperationMode.EMPTY,
                     ButtonToolTips.TransferDirection,
                     ButtonToolTips.TransferToNetwork);
 
-            registerApp(Icon.UNUSED_03_03, Settings.IO_DIRECTION, RelativeDirection.LEFT,
+            registerApp(Icon.ARROW_LEFT, Settings.IO_DIRECTION, RelativeDirection.LEFT,
                     ButtonToolTips.TransferDirection,
                     ButtonToolTips.TransferToStorageCell);
-            registerApp(Icon.UNUSED_03_02, Settings.IO_DIRECTION, RelativeDirection.RIGHT,
+            registerApp(Icon.ARROW_RIGHT, Settings.IO_DIRECTION, RelativeDirection.RIGHT,
                     ButtonToolTips.TransferDirection,
                     ButtonToolTips.TransferToNetwork);
 
-            registerApp(Icon.UNUSED_03_00, Settings.SORT_DIRECTION, SortDir.ASCENDING, ButtonToolTips.SortOrder,
+            registerApp(Icon.ARROW_UP, Settings.SORT_DIRECTION, SortDir.ASCENDING, ButtonToolTips.SortOrder,
                     ButtonToolTips.ToggleSortDirection);
-            registerApp(Icon.UNUSED_03_01, Settings.SORT_DIRECTION, SortDir.DESCENDING, ButtonToolTips.SortOrder,
+            registerApp(Icon.ARROW_DOWN, Settings.SORT_DIRECTION, SortDir.DESCENDING, ButtonToolTips.SortOrder,
                     ButtonToolTips.ToggleSortDirection);
 
-            registerApp(Icon.UNUSED_02_03, Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH, ButtonToolTips.SearchMode,
+            registerApp(Icon.SEARCH_AUTO, Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH, ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_Auto);
-            registerApp(Icon.UNUSED_02_04, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH, ButtonToolTips.SearchMode,
+            registerApp(Icon.SEARCH_MANUAL, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH,
+                    ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_Standard);
-            registerApp(Icon.UNUSED_02_05, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH,
+            registerApp(Icon.SEARCH_AUTO_JEI, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH,
                     ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_JEIAuto);
-            registerApp(Icon.UNUSED_02_06, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH,
+            registerApp(Icon.SEARCH_MANUAL_JEI, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH,
                     ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_JEIStandard);
-            registerApp(Icon.UNUSED_02_07, Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH_KEEP,
+            registerApp(Icon.SEARCH_AUTO_KEEP, Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH_KEEP,
                     ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_AutoKeep);
-            registerApp(Icon.UNUSED_02_08, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH_KEEP,
+            registerApp(Icon.SEARCH_MANUAL_KEEP, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH_KEEP,
                     ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_StandardKeep);
-            registerApp(Icon.UNUSED_02_09, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH_KEEP,
+            registerApp(Icon.SEARCH_AUTO_JEI_KEEP, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH_KEEP,
                     ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_JEIAutoKeep);
-            registerApp(Icon.UNUSED_02_10, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP,
+            registerApp(Icon.SEARCH_MANUAL_JEI_KEEP, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP,
                     ButtonToolTips.SearchMode, ButtonToolTips.SearchMode_JEIStandardKeep);
 
-            registerApp(Icon.UNUSED_05_03, Settings.LEVEL_TYPE, LevelType.ENERGY_LEVEL, ButtonToolTips.LevelType,
+            registerApp(Icon.LEVEL_ENERGY, Settings.LEVEL_TYPE, LevelType.ENERGY_LEVEL, ButtonToolTips.LevelType,
                     ButtonToolTips.LevelType_Energy);
-            registerApp(Icon.UNUSED_04_03, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL, ButtonToolTips.LevelType,
+            registerApp(Icon.LEVEL_ITEM, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL, ButtonToolTips.LevelType,
                     ButtonToolTips.LevelType_Item);
 
-            registerApp(Icon.UNUSED_13_00, Settings.TERMINAL_STYLE, TerminalStyle.TALL, ButtonToolTips.TerminalStyle,
+            registerApp(Icon.TERMINAL_STYLE_TALL, Settings.TERMINAL_STYLE, TerminalStyle.TALL,
+                    ButtonToolTips.TerminalStyle,
                     ButtonToolTips.TerminalStyle_Tall);
-            registerApp(Icon.UNUSED_13_01, Settings.TERMINAL_STYLE, TerminalStyle.SMALL, ButtonToolTips.TerminalStyle,
+            registerApp(Icon.TERMINAL_STYLE_SMALL, Settings.TERMINAL_STYLE, TerminalStyle.SMALL,
+                    ButtonToolTips.TerminalStyle,
                     ButtonToolTips.TerminalStyle_Small);
-            registerApp(Icon.UNUSED_13_02, Settings.TERMINAL_STYLE, TerminalStyle.FULL, ButtonToolTips.TerminalStyle,
+            registerApp(Icon.TERMINAL_STYLE_FULL, Settings.TERMINAL_STYLE, TerminalStyle.FULL,
+                    ButtonToolTips.TerminalStyle,
                     ButtonToolTips.TerminalStyle_Full);
 
-            registerApp(Icon.UNUSED_04_00, Settings.SORT_BY, SortOrder.NAME, ButtonToolTips.SortBy,
+            registerApp(Icon.SORT_BY_NAME, Settings.SORT_BY, SortOrder.NAME, ButtonToolTips.SortBy,
                     ButtonToolTips.ItemName);
-            registerApp(Icon.UNUSED_04_01, Settings.SORT_BY, SortOrder.AMOUNT, ButtonToolTips.SortBy,
+            registerApp(Icon.SORT_BY_AMOUNT, Settings.SORT_BY, SortOrder.AMOUNT, ButtonToolTips.SortBy,
                     ButtonToolTips.NumberOfItems);
-            registerApp(Icon.UNUSED_04_05, Settings.SORT_BY, SortOrder.MOD, ButtonToolTips.SortBy, ButtonToolTips.Mod);
+            registerApp(Icon.SORT_BY_MOD, Settings.SORT_BY, SortOrder.MOD, ButtonToolTips.SortBy, ButtonToolTips.Mod);
 
-            registerApp(Icon.UNUSED_01_00, Settings.VIEW_MODE, ViewItems.STORED, ButtonToolTips.View,
+            registerApp(Icon.VIEW_MODE_STORED, Settings.VIEW_MODE, ViewItems.STORED, ButtonToolTips.View,
                     ButtonToolTips.StoredItems);
-            registerApp(Icon.UNUSED_01_02, Settings.VIEW_MODE, ViewItems.ALL, ButtonToolTips.View,
+            registerApp(Icon.VIEW_MODE_ALL, Settings.VIEW_MODE, ViewItems.ALL, ButtonToolTips.View,
                     ButtonToolTips.StoredCraftable);
-            registerApp(Icon.UNUSED_01_03, Settings.VIEW_MODE, ViewItems.CRAFTABLE, ButtonToolTips.View,
+            registerApp(Icon.VIEW_MODE_CRAFTING, Settings.VIEW_MODE, ViewItems.CRAFTABLE, ButtonToolTips.View,
                     ButtonToolTips.Craftable);
 
-            registerApp(Icon.UNUSED_06_00, Settings.FUZZY_MODE, FuzzyMode.PERCENT_25, ButtonToolTips.FuzzyMode,
+            registerApp(Icon.FUZZY_PERCENT_25, Settings.FUZZY_MODE, FuzzyMode.PERCENT_25, ButtonToolTips.FuzzyMode,
                     ButtonToolTips.FZPercent_25);
-            registerApp(Icon.UNUSED_06_01, Settings.FUZZY_MODE, FuzzyMode.PERCENT_50, ButtonToolTips.FuzzyMode,
+            registerApp(Icon.FUZZY_PERCENT_50, Settings.FUZZY_MODE, FuzzyMode.PERCENT_50, ButtonToolTips.FuzzyMode,
                     ButtonToolTips.FZPercent_50);
-            registerApp(Icon.UNUSED_06_02, Settings.FUZZY_MODE, FuzzyMode.PERCENT_75, ButtonToolTips.FuzzyMode,
+            registerApp(Icon.FUZZY_PERCENT_75, Settings.FUZZY_MODE, FuzzyMode.PERCENT_75, ButtonToolTips.FuzzyMode,
                     ButtonToolTips.FZPercent_75);
-            registerApp(Icon.UNUSED_06_03, Settings.FUZZY_MODE, FuzzyMode.PERCENT_99, ButtonToolTips.FuzzyMode,
+            registerApp(Icon.FUZZY_PERCENT_99, Settings.FUZZY_MODE, FuzzyMode.PERCENT_99, ButtonToolTips.FuzzyMode,
                     ButtonToolTips.FZPercent_99);
-            registerApp(Icon.UNUSED_06_04, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, ButtonToolTips.FuzzyMode,
+            registerApp(Icon.FUZZY_IGNORE, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, ButtonToolTips.FuzzyMode,
                     ButtonToolTips.FZIgnoreAll);
 
-            registerApp(Icon.UNUSED_05_00, Settings.FULLNESS_MODE, FullnessMode.EMPTY, ButtonToolTips.OperationMode,
+            registerApp(Icon.FULLNESS_EMPTY, Settings.FULLNESS_MODE, FullnessMode.EMPTY, ButtonToolTips.OperationMode,
                     ButtonToolTips.MoveWhenEmpty);
-            registerApp(Icon.UNUSED_05_01, Settings.FULLNESS_MODE, FullnessMode.HALF, ButtonToolTips.OperationMode,
+            registerApp(Icon.FULLNESS_HALF, Settings.FULLNESS_MODE, FullnessMode.HALF, ButtonToolTips.OperationMode,
                     ButtonToolTips.MoveWhenWorkIsDone);
-            registerApp(Icon.UNUSED_05_02, Settings.FULLNESS_MODE, FullnessMode.FULL, ButtonToolTips.OperationMode,
+            registerApp(Icon.FULLNESS_FULL, Settings.FULLNESS_MODE, FullnessMode.FULL, ButtonToolTips.OperationMode,
                     ButtonToolTips.MoveWhenFull);
 
-            registerApp(Icon.UNUSED_01_05, Settings.BLOCK, YesNo.YES, ButtonToolTips.InterfaceBlockingMode,
+            registerApp(Icon.BLOCKING_MODE_YES, Settings.BLOCK, YesNo.YES, ButtonToolTips.InterfaceBlockingMode,
                     ButtonToolTips.Blocking);
-            registerApp(Icon.UNUSED_01_04, Settings.BLOCK, YesNo.NO, ButtonToolTips.InterfaceBlockingMode,
+            registerApp(Icon.BLOCKING_MODE_NO, Settings.BLOCK, YesNo.NO, ButtonToolTips.InterfaceBlockingMode,
                     ButtonToolTips.NonBlocking);
 
-            registerApp(Icon.UNUSED_01_03, Settings.CRAFT_ONLY, YesNo.YES, ButtonToolTips.Craft,
+            registerApp(Icon.VIEW_MODE_CRAFTING, Settings.CRAFT_ONLY, YesNo.YES, ButtonToolTips.Craft,
                     ButtonToolTips.CraftOnly);
-            registerApp(Icon.UNUSED_01_02, Settings.CRAFT_ONLY, YesNo.NO, ButtonToolTips.Craft,
+            registerApp(Icon.VIEW_MODE_ALL, Settings.CRAFT_ONLY, YesNo.NO, ButtonToolTips.Craft,
                     ButtonToolTips.CraftEither);
 
-            registerApp(Icon.UNUSED_11_02, Settings.CRAFT_VIA_REDSTONE, YesNo.YES, ButtonToolTips.EmitterMode,
+            registerApp(Icon.PERMISSION_CRAFT, Settings.CRAFT_VIA_REDSTONE, YesNo.YES, ButtonToolTips.EmitterMode,
                     ButtonToolTips.CraftViaRedstone);
-            registerApp(Icon.UNUSED_11_01, Settings.CRAFT_VIA_REDSTONE, YesNo.NO, ButtonToolTips.EmitterMode,
+            registerApp(Icon.PERMISSION_EXTRACT, Settings.CRAFT_VIA_REDSTONE, YesNo.NO, ButtonToolTips.EmitterMode,
                     ButtonToolTips.EmitWhenCrafting);
 
-            registerApp(Icon.UNUSED_03_05, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY,
+            registerApp(Icon.STORAGE_FILTER_EXTRACTABLE_ONLY, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY,
                     ButtonToolTips.ReportInaccessibleItems, ButtonToolTips.ReportInaccessibleItemsNo);
-            registerApp(Icon.UNUSED_03_06, Settings.STORAGE_FILTER, StorageFilter.NONE,
+            registerApp(Icon.STORAGE_FILTER_EXTRACTABLE_NONE, Settings.STORAGE_FILTER, StorageFilter.NONE,
                     ButtonToolTips.ReportInaccessibleItems,
                     ButtonToolTips.ReportInaccessibleItemsYes);
 
-            registerApp(Icon.UNUSED_14_00, Settings.PLACE_BLOCK, YesNo.YES, ButtonToolTips.BlockPlacement,
+            registerApp(Icon.PLACEMENT_BLOCK, Settings.PLACE_BLOCK, YesNo.YES, ButtonToolTips.BlockPlacement,
                     ButtonToolTips.BlockPlacementYes);
-            registerApp(Icon.UNUSED_14_01, Settings.PLACE_BLOCK, YesNo.NO, ButtonToolTips.BlockPlacement,
+            registerApp(Icon.PLACEMENT_ITEM, Settings.PLACE_BLOCK, YesNo.NO, ButtonToolTips.BlockPlacement,
                     ButtonToolTips.BlockPlacementNo);
 
-            registerApp(Icon.UNUSED_15_00, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT,
+            registerApp(Icon.SCHEDULING_DEFAULT, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT,
                     ButtonToolTips.SchedulingMode,
                     ButtonToolTips.SchedulingModeDefault);
-            registerApp(Icon.UNUSED_15_01, Settings.SCHEDULING_MODE, SchedulingMode.ROUNDROBIN,
+            registerApp(Icon.SCHEDULING_ROUND_ROBIN, Settings.SCHEDULING_MODE, SchedulingMode.ROUNDROBIN,
                     ButtonToolTips.SchedulingMode,
                     ButtonToolTips.SchedulingModeRoundRobin);
-            registerApp(Icon.UNUSED_15_02, Settings.SCHEDULING_MODE, SchedulingMode.RANDOM,
+            registerApp(Icon.SCHEDULING_RANDOM, Settings.SCHEDULING_MODE, SchedulingMode.RANDOM,
                     ButtonToolTips.SchedulingMode,
                     ButtonToolTips.SchedulingModeRandom);
 
-            registerApp(Icon.UNUSED_15_03, Settings.OVERLAY_MODE, YesNo.NO, ButtonToolTips.OverlayMode,
+            registerApp(Icon.OVERLAY_OFF, Settings.OVERLAY_MODE, YesNo.NO, ButtonToolTips.OverlayMode,
                     ButtonToolTips.OverlayModeNo);
-            registerApp(Icon.UNUSED_15_04, Settings.OVERLAY_MODE, YesNo.YES, ButtonToolTips.OverlayMode,
+            registerApp(Icon.OVERLAY_ON, Settings.OVERLAY_MODE, YesNo.YES, ButtonToolTips.OverlayMode,
                     ButtonToolTips.OverlayModeYes);
         }
     }
@@ -299,7 +303,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                 return app.icon;
             }
         }
-        return Icon.UNUSED_15_15;
+        return Icon.TOOLBAR_BUTTON_BACKGROUND;
     }
 
     public Settings getSetting() {

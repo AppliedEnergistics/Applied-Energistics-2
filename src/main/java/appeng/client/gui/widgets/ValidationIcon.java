@@ -58,7 +58,7 @@ public class ValidationIcon extends IconButton {
 
     @Override
     protected Icon getIcon() {
-        return Icon.UNUSED_08_00;
+        return Icon.INVALID;
     }
 
     @Override

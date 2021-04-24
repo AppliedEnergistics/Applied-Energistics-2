@@ -53,19 +53,19 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
 
         encodingBg = style.getImage("encoding");
 
-        this.inject = new ToggleButton(Icon.UNUSED_11_00, Icon.UNUSED_12_00,
+        this.inject = new ToggleButton(Icon.PERMISSION_INJECT, Icon.PERMISSION_INJECT_DISABLED,
                 SecurityPermissions.INJECT.getTranslatedName(), SecurityPermissions.INJECT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.INJECT));
-        this.extract = new ToggleButton(Icon.UNUSED_11_01, Icon.UNUSED_12_01,
+        this.extract = new ToggleButton(Icon.PERMISSION_EXTRACT, Icon.PERMISSION_EXTRACT_DISABLED,
                 SecurityPermissions.EXTRACT.getTranslatedName(), SecurityPermissions.EXTRACT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.EXTRACT));
-        this.craft = new ToggleButton(Icon.UNUSED_11_02, Icon.UNUSED_12_02,
+        this.craft = new ToggleButton(Icon.PERMISSION_CRAFT, Icon.PERMISSION_CRAFT_DISABLED,
                 SecurityPermissions.CRAFT.getTranslatedName(), SecurityPermissions.CRAFT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.CRAFT));
-        this.build = new ToggleButton(Icon.UNUSED_11_03, Icon.UNUSED_12_03,
+        this.build = new ToggleButton(Icon.PERMISSION_BUILD, Icon.PERMISSION_BUILD_DISABLED,
                 SecurityPermissions.BUILD.getTranslatedName(), SecurityPermissions.BUILD.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.BUILD));
-        this.security = new ToggleButton(Icon.UNUSED_11_04, Icon.UNUSED_12_04,
+        this.security = new ToggleButton(Icon.PERMISSION_SECURITY, Icon.PERMISSION_SECURITY_DISABLED,
                 SecurityPermissions.SECURITY.getTranslatedName(), SecurityPermissions.SECURITY.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.SECURITY));
 

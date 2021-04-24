@@ -52,7 +52,7 @@ public class GrinderContainer extends AEBaseContainer {
         this.addSlot(new InaccessibleSlot(inv, 6), SlotSemantic.MACHINE_PROCESSING);
 
         for (int i = 0; i < 3; i++) {
-            this.addSlot(new OutputSlot(inv, 3 + i, Icon.UNUSED_02_15), SlotSemantic.MACHINE_OUTPUT);
+            this.addSlot(new OutputSlot(inv, 3 + i, Icon.BACKGROUND_DUST), SlotSemantic.MACHINE_OUTPUT);
         }
 
         this.createPlayerInventorySlots(ip);
