@@ -39,12 +39,12 @@ public class ProgressBar extends Widget implements ITooltip {
     private ITextComponent fullMsg;
 
     public ProgressBar(IProgressProvider source, Blitter blitter, Direction dir) {
-        this(source, 0, 0, blitter, dir, null);
+        this(source, blitter, dir, null);
     }
 
-    public ProgressBar(final IProgressProvider source, final int posX, final int posY, Blitter blitter,
+    public ProgressBar(final IProgressProvider source, Blitter blitter,
             final Direction dir, final ITextComponent title) {
-        super(posX, posY, blitter.getSrcWidth(), blitter.getSrcHeight(), StringTextComponent.EMPTY);
+        super(0, 0, blitter.getSrcWidth(), blitter.getSrcHeight(), StringTextComponent.EMPTY);
         this.source = source;
         this.blitter = blitter.copy();
         this.layout = dir;

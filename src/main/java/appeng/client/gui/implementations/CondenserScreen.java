@@ -18,13 +18,9 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
@@ -32,21 +28,20 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.CondenserContainer;
 import appeng.core.localization.GuiText;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
-
-    private static final Blitter PROGRESS_BAR = Blitter.texture("guis/condenser.png").src(178, 25, 6, 18);
 
     private final SettingToggleButton<CondenserOutput> mode;
 
     public CondenserScreen(CondenserContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+                           ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.mode = new ServerSettingToggleButton<>(Settings.CONDENSER_OUTPUT, this.container.getOutput());
         widgets.add("mode", this.mode);
-
-        this.addButton(new ProgressBar(this.container, this.guiLeft + 120, this.guiTop + 25, PROGRESS_BAR,
+        widgets.add("progressBar", new ProgressBar(this.container, style.getImage("progressBar"),
                 Direction.VERTICAL, GuiText.StoredEnergy.text()));
     }
 
