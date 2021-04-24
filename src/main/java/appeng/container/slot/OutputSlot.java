@@ -18,9 +18,10 @@
 
 package appeng.container.slot;
 
-import appeng.client.gui.Icon;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+
+import appeng.client.gui.Icon;
 
 public class OutputSlot extends AppEngSlot {
 

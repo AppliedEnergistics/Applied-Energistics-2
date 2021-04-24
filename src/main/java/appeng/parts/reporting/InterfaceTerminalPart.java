@@ -31,7 +31,6 @@ import appeng.container.implementations.InterfaceTerminalContainer;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
-import appeng.util.Platform;
 
 public class InterfaceTerminalPart extends AbstractDisplayPart {
 

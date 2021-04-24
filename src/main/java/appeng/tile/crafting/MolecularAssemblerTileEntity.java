@@ -41,7 +41,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.ITileDefinition;
 import appeng.api.implementations.IPowerChannelState;
@@ -71,7 +70,6 @@ import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.ConfigManager;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;

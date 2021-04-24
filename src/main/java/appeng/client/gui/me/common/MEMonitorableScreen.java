@@ -25,7 +25,6 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import appeng.client.gui.Icon;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -55,6 +54,7 @@ import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
 import appeng.client.gui.me.items.RepoSlot;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;

@@ -22,7 +22,7 @@ import appeng.client.gui.widgets.ProgressBar;
 
 /**
  * This interface provides the data for anything simulating a progress.
- *
+ * <p>
  * Its main use is in combination with the {@link ProgressBar}, which ensures to scale it to a percentage of 0 to 100.
  */
 public interface IProgressProvider {
@@ -36,7 +36,7 @@ public interface IProgressProvider {
 
     /**
      * The max value the progress.
-     *
+     * <p>
      * It is not limited to a value of 100 and can be scaled to fit the current needs. For example scaled down to
      * decrease or scaled up to increase the precision.
      *

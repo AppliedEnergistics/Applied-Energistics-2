@@ -142,7 +142,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         // Add a terminalstyle button
         TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
-        this.addToLeftToolbar(new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
+        this.addToLeftToolbar(
+                new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
     }
 
     @Override

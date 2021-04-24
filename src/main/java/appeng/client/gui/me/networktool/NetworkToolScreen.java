@@ -18,11 +18,11 @@
 
 package appeng.client.gui.me.networktool;
 
-import appeng.client.gui.Icon;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.me.networktool.NetworkToolContainer;

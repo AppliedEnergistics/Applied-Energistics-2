@@ -18,14 +18,15 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.api.config.ActionItems;
-import appeng.client.gui.Icon;
-import appeng.core.localization.ButtonToolTips;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
+
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
+import appeng.api.config.ActionItems;
+import appeng.client.gui.Icon;
+import appeng.core.localization.ButtonToolTips;
 
 public class ActionButton extends IconButton {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);

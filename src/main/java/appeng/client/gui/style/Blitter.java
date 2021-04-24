@@ -68,6 +68,7 @@ public final class Blitter {
     public static Blitter texture(ResourceLocation file, int referenceWidth, int referenceHeight) {
         return new Blitter(file, referenceWidth, referenceHeight);
     }
+
     /**
      * Creates a blitter where the source rectangle is in relation to a texture of the given size.
      */

@@ -21,12 +21,13 @@ package appeng.client.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.client.gui.Icon;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
+
+import appeng.client.gui.Icon;
 
 /**
  * Displays a small icon that shows validation errors for some input control.

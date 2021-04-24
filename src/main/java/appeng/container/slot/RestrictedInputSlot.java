@@ -21,7 +21,6 @@ package appeng.container.slot;
 import java.util.List;
 import java.util.Set;
 
-import appeng.client.gui.Icon;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,6 +43,7 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.client.gui.Icon;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;

@@ -1,13 +1,15 @@
 package appeng.client.gui;
 
-import appeng.client.Point;
+import java.util.List;
+import java.util.function.Consumer;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.Rectangle2d;
 
-import java.util.List;
-import java.util.function.Consumer;
+import appeng.client.Point;
 
 public interface ICompositeWidget {
 
@@ -28,7 +30,8 @@ public interface ICompositeWidget {
     /**
      * Allows the widget to add exclusion zones, which are used for managing space with other overlay mods such as JEI.
      *
-     * @param exclusionZones The list to add additional exclusion zones to. Exclusion zones should be in window coordinates.
+     * @param exclusionZones The list to add additional exclusion zones to. Exclusion zones should be in window
+     *                       coordinates.
      * @param screenBounds   The bounds of the current screen in window coordinates.
      */
     default void addExclusionZones(List<Rectangle2d> exclusionZones, Rectangle2d screenBounds) {
@@ -46,16 +49,15 @@ public interface ICompositeWidget {
                     screenBounds.getX() + bounds.getX(),
                     screenBounds.getY() + bounds.getY(),
                     bounds.getWidth(),
-                    bounds.getHeight()
-            ));
+                    bounds.getHeight()));
         }
     }
 
     /**
      * Reinitializes a Vanilla screen and populates it with additional vanilla widgets.
      * <p/>
-     * This is called initially when the screen is first shown, and called again everytime the screen is resized,
-     * as Vanilla does it's positioning logic entirely in this method.
+     * This is called initially when the screen is first shown, and called again everytime the screen is resized, as
+     * Vanilla does it's positioning logic entirely in this method.
      *
      * @param bounds The bounding box of the screen in window coordinates.
      */
@@ -63,8 +65,8 @@ public interface ICompositeWidget {
     }
 
     /**
-     * Drive animations. This is called alongside each client tick, via {@link Screen#tick()}.
-     * This is called less often than {@link #updateBeforeRender()}.
+     * Drive animations. This is called alongside each client tick, via {@link Screen#tick()}. This is called less often
+     * than {@link #updateBeforeRender()}.
      */
     default void tick() {
     }

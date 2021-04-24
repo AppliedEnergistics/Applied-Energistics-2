@@ -72,7 +72,6 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
-import appeng.api.exceptions.AppEngException;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGrid;
@@ -97,7 +96,6 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.stats.AeStats;
-import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.me.GridAccessException;
@@ -149,7 +147,6 @@ public class Platform {
      *
      * @param n      to be formatted long value
      * @param isRate if true it adds a /t to the formatted string
-     *
      * @return formatted long value
      */
     public static String formatPowerLong(final long n, final boolean isRate) {

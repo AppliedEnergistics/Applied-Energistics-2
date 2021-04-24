@@ -1,9 +1,10 @@
 package appeng.client.gui.style;
 
-import appeng.client.Point;
+import javax.annotation.Nullable;
+
 import net.minecraft.client.renderer.Rectangle2d;
 
-import javax.annotation.Nullable;
+import appeng.client.Point;
 
 /**
  * Describes positioning for a slot.
@@ -55,8 +56,7 @@ public class Position {
     }
 
     /**
-     * Resolves this relative position against the given bounds, and makes
-     * it absolute.
+     * Resolves this relative position against the given bounds, and makes it absolute.
      */
     public Point resolve(Rectangle2d bounds) {
         // Start by computing the x,y position

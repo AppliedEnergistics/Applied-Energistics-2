@@ -18,6 +18,14 @@
 
 package appeng.client.gui.me.networktool;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
@@ -28,12 +36,6 @@ import appeng.container.me.networktool.NetworkStatus;
 import appeng.container.me.networktool.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
@@ -53,7 +55,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
     private final Scrollbar scrollbar;
 
     public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
-                               ITextComponent title, ScreenStyle style) {
+            ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
 
@@ -74,7 +76,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         int x = 0;
         int y = 0;
         final int viewStart = scrollbar.getCurrentScroll() * COLUMNS;

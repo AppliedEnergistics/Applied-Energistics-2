@@ -37,19 +37,19 @@ import appeng.thirdparty.codechicken.lib.model.Quad;
  * The BakedPipeline! Basically this allows us to efficiently transform a BakedQuad, the Pipeline has Elements, each
  * element has a name, state and a transformer, you can enable and disable elements easily, you can also grab the
  * underlying transformer for the element if you need to set its state before rendering.
- *
+ * <p>
  * The BakedPipeline is final once created, you cannot add or remove elements, you should not need to add or remove them
  * runtime, enable and disable exist.
- *
+ * <p>
  * You must use the Builder class to construct a BakedPipeline, see {@link #builder}
- *
+ * <p>
  * Transformers run on a mutable state inside each transformer, allowing for easy reuse. It is recommended to store your
  * pipeline inside a ThreadLocal because 'minecraft'.
- *
+ * <p>
  * Each Transformer should be smart enough to expand itself for each newly sized VertexFormat it comes across, meaning
  * that the internal states for the transformers can be safely shared across VertexFormats, this reduces array
  * creations, and generally makes the system as efficient as it is.
- *
+ * <p>
  * To use the system: Grab any elements you need to set state data on first, using {@link #getElement(String, Class)}
  * transformers should NOT clear their state on pipeline Reset's so set any global data on elements now. Assuming you
  * are looping over a set of quads to transform, next you need to {@link #reset} the pipeline, Now you should disable /
@@ -111,7 +111,6 @@ public class BakedPipeline implements ISmartVertexConsumer {
      *
      * @param name  The name of the element.
      * @param clazz The Class of the element, used to safe cast.
-     *
      * @return The element.
      */
     public <T extends IPipelineConsumer> T getElement(String name, Class<T> clazz) {
@@ -268,7 +267,6 @@ public class BakedPipeline implements ISmartVertexConsumer {
          * @param name    The name to identify this element, used as an identifier when setting state, and retrieving
          *                the element.
          * @param factory The factory used to create the Transformer.
-         *
          * @return The same builder.
          */
         public Builder addFirst(String name, IPipelineElementFactory<?> factory) {
@@ -283,7 +281,6 @@ public class BakedPipeline implements ISmartVertexConsumer {
          *                     retrieving the element.
          * @param factory      The factory used to create the Transformer.
          * @param defaultState The default state for this element.
-         *
          * @return The same builder.
          */
         public Builder addFirst(String name, IPipelineElementFactory<?> factory, boolean defaultState) {
@@ -300,7 +297,6 @@ public class BakedPipeline implements ISmartVertexConsumer {
          * @param factory        The factory used to create the Transformer.
          * @param defaultState   The default state for this element.
          * @param defaultsSetter A callback used to set any defaults on the transformer.
-         *
          * @return The same builder.
          */
         public <T extends IPipelineConsumer> Builder addFirst(String name, IPipelineElementFactory<T> factory,
@@ -317,7 +313,6 @@ public class BakedPipeline implements ISmartVertexConsumer {
          * @param name    The name to identify this element, used as an identifier when setting state, and retrieving
          *                the element.
          * @param factory The factory used to create the Transformer.
-         *
          * @return The same builder.
          */
         public Builder addElement(String name, IPipelineElementFactory<?> factory) {
@@ -331,7 +326,6 @@ public class BakedPipeline implements ISmartVertexConsumer {
          *                     retrieving the element.
          * @param factory      The factory used to create the Transformer.
          * @param defaultState The default state for this element.
-         *
          * @return The same builder.
          */
         public Builder addElement(String name, IPipelineElementFactory<?> factory, boolean defaultState) {
@@ -347,7 +341,6 @@ public class BakedPipeline implements ISmartVertexConsumer {
          * @param factory        The factory used to create the Transformer.
          * @param defaultState   The default state for this element.
          * @param defaultsSetter A callback used to set any defaults on the transformer.
-         *
          * @return The same builder.
          */
         public <T extends IPipelineConsumer> Builder addElement(String name, IPipelineElementFactory<T> factory,

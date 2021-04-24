@@ -18,11 +18,11 @@
 
 package appeng.container.implementations;
 
-import appeng.client.gui.Icon;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.client.gui.Icon;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.InaccessibleSlot;

@@ -20,7 +20,6 @@ package appeng.container.slot;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 

@@ -24,7 +24,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import appeng.client.gui.Icon;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -47,6 +46,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
+import appeng.client.gui.Icon;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.tile.misc.CondenserTileEntity;

@@ -25,7 +25,6 @@ import appeng.api.config.SortOrder;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
 final class ItemSorters {
 

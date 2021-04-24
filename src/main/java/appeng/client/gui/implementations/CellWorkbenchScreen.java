@@ -18,7 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import appeng.client.gui.Icon;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -30,6 +29,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
+import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -49,7 +49,8 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        this.fuzzyMode = addToLeftToolbar(new SettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
+        this.fuzzyMode = addToLeftToolbar(
+                new SettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
         this.addToLeftToolbar(new ActionButton(ActionItems.WRENCH, act -> action("Partition")));
         this.addToLeftToolbar(new ActionButton(ActionItems.CLOSE, act -> action("Clear")));
         this.copyMode = this.addToLeftToolbar(new ToggleButton(Icon.UNUSED_11_05, Icon.UNUSED_12_05,

@@ -79,7 +79,7 @@ public class CraftingPlanSummary {
 
     /**
      * Creates a plan summary from the given planning result.
-     * 
+     *
      * @param grid         The grid used to determine the amount of items already stored.
      * @param actionSource The action source used to determine the amount of items already stored.
      */

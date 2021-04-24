@@ -1,9 +1,11 @@
 package appeng.integration.modules.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import mezz.jei.api.gui.drawable.IDrawable;
+
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.Blitter;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import mezz.jei.api.gui.drawable.IDrawable;
 
 /**
  * Creates {@link IDrawable} from {@link appeng.client.gui.Icon}

@@ -40,8 +40,8 @@ public enum PartItemStack {
     WRENCH,
 
     /**
-     * A stack that uniquely identifies the part when it is sent over the network.
-     * Only the id of the item contained in the stack is sent over the network.
+     * A stack that uniquely identifies the part when it is sent over the network. Only the id of the item contained in
+     * the stack is sent over the network.
      */
     NETWORK,
 

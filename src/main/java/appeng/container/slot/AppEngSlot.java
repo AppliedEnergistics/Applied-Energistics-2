@@ -21,7 +21,6 @@ package appeng.container.slot;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.client.gui.Icon;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
@@ -31,6 +30,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.client.gui.Icon;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.util.helpers.ItemHandlerUtil;

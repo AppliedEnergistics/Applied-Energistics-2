@@ -18,16 +18,17 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.ChestContainer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
 
 public class ChestScreen extends AEBaseScreen<ChestContainer> {
 
     public ChestScreen(ChestContainer container, PlayerInventory playerInventory, ITextComponent title,
-                       ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();
