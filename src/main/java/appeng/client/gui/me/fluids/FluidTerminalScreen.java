@@ -26,18 +26,12 @@ import java.util.Locale;
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fluids.FluidAttributes;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.me.common.MEMonitorableScreen;
@@ -47,6 +41,7 @@ import appeng.client.gui.widgets.IScrollSource;
 import appeng.container.me.common.GridInventoryEntry;
 import appeng.container.me.fluids.FluidTerminalContainer;
 import appeng.core.AELog;
+import appeng.fluids.client.gui.FluidBlitter;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
@@ -71,24 +66,10 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     @Override
     protected void renderGridInventoryEntry(MatrixStack matrices, int x, int y,
             GridInventoryEntry<IAEFluidStack> entry) {
-        RenderSystem.disableBlend();
         IAEFluidStack fs = entry.getStack();
-        final Fluid fluid = fs.getFluid();
-        FluidAttributes fluidAttributes = fluid.getAttributes();
-        bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        ResourceLocation fluidStillTexture = fluidAttributes.getStillTexture(fs.getFluidStack());
-        final TextureAtlasSprite sprite = getMinecraft()
-                .getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluidStillTexture);
-
-        // Set color for dynamic fluids
-        // Convert int color to RGB
-        float red = (fluidAttributes.getColor() >> 16 & 255) / 255.0F;
-        float green = (fluidAttributes.getColor() >> 8 & 255) / 255.0F;
-        float blue = (fluidAttributes.getColor() & 255) / 255.0F;
-        RenderSystem.color3f(red, green, blue);
-
-        blit(matrices, x, y, getBlitOffset(), 16, 16, sprite);
-        RenderSystem.enableBlend();
+        FluidBlitter.create(fs.getFluidStack())
+                .dest(x, y, 16, 16)
+                .blit(matrices, getBlitOffset());
     }
 
     @Override

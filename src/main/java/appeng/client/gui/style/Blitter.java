@@ -83,6 +83,8 @@ public final class Blitter {
      * Creates a blitter from a texture atlas sprite.
      */
     public static Blitter sprite(TextureAtlasSprite sprite) {
+        // We use this convoluted method to convert from UV in the range of [0,1] back to pixel values with a
+        // fictitious reference size of Integer.MAX_VALUE. This is converted back to UV later when we actually blit.
         final int refSize = Integer.MAX_VALUE;
         AtlasTexture atlas = sprite.getAtlasTexture();
 
