@@ -400,7 +400,7 @@
           "description": "The bounding box of the search field in the background.",
           "$ref": "#/definitions/rect"
         },
-        "sortByButton": {
+        "sortable": {
           "description": "Defines if this terminal has a sort by button.",
           "type": "boolean",
           "default": true

@@ -36,7 +36,7 @@
     }
   },
   "terminalStyle": {
-    "sortByButton": false,
+    "sortable": false,
     "header": {
       "texture": "guis/security_station.png",
       "srcRect": [0, 0, 195, 17]
