@@ -1,17 +1,9 @@
 {
   "$schema": "schema.json",
-  "includes": [
-    "common/common.json",
-    "common/player_inventory.json"
-  ],
+  "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
     "texture": "guis/condenser.png",
-    "srcRect": [
-      0,
-      0,
-      176,
-      197
-    ]
+    "srcRect": [0, 0, 176, 197]
   },
   "slots": {
     "MACHINE_INPUT": {
@@ -41,12 +33,7 @@
   "images": {
     "progressBar": {
       "texture": "guis/condenser.png",
-      "srcRect": [
-        178,
-        25,
-        6,
-        18
-      ]
+      "srcRect": [178, 25, 6, 18]
     }
   },
   "widgets": {

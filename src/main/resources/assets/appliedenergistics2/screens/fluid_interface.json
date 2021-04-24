@@ -45,6 +45,42 @@
     "openPriority": {
       "left": 154,
       "top": 0
+    },
+    "tank1": {
+      "left": 35,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    },
+    "tank2": {
+      "left": 53,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    },
+    "tank3": {
+      "left": 71,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    },
+    "tank4": {
+      "left": 89,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    },
+    "tank5": {
+      "left": 107,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    },
+    "tank6": {
+      "left": 125,
+      "top": 53,
+      "width": 16,
+      "height": 68
     }
   }
 }

@@ -43,9 +43,7 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
 
         final IAEFluidTank fluidTank = this.container.getTanks();
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
-            final FluidTankWidget guiTank = new FluidTankWidget(fluidTank, i, this.getGuiLeft() + 35 + 18 * i,
-                    this.getGuiTop() + 53, 16, 68);
-            widgets.add("tank" + i, guiTank);
+            widgets.add("tank" + (i + 1), new FluidTankWidget(fluidTank, i));
         }
 
         widgets.addOpenPriorityButton();
