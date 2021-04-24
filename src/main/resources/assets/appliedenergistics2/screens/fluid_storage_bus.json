@@ -1,10 +1,6 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
-  "background": {
-    "texture": "guis/storagebus.png",
-    "srcRect": [0, 0, 176, 251]
-  },
+  "includes": ["storage_bus.json"],
   "text": {
     "dialog_title": {
       "text": {
@@ -14,12 +10,6 @@
         "left": 8,
         "top": 6
       }
-    }
-  },
-  "widgets": {
-    "openPriority": {
-      "left": 154,
-      "top": 0
     }
   }
 }

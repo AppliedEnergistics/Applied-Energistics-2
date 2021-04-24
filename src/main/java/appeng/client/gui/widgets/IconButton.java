@@ -18,20 +18,18 @@
 
 package appeng.client.gui.widgets;
 
+import appeng.client.gui.Icon;
+import appeng.client.gui.style.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 public abstract class IconButton extends Button implements ITooltip {
-    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
-            "textures/guis/states.png");
 
     private boolean halfSize = false;
 
@@ -61,10 +59,14 @@ public abstract class IconButton extends Button implements ITooltip {
         Minecraft minecraft = Minecraft.getInstance();
 
         if (this.visible) {
-            final int iconIndex = this.getIconIndex();
+            final Icon icon = this.getIcon();
+
+            Blitter blitter = icon.getBlitter();
+            if (!this.active) {
+                blitter.opacity(0.5f);
+            }
 
             TextureManager textureManager = minecraft.getTextureManager();
-            textureManager.bindTexture(TEXTURE_STATES);
             RenderSystem.disableDepthTest();
             RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
             // it :|
@@ -72,41 +74,22 @@ public abstract class IconButton extends Button implements ITooltip {
                 this.width = 8;
                 this.height = 8;
 
-                RenderSystem.pushMatrix();
-                RenderSystem.translatef(this.x, this.y, 0.0F);
-                RenderSystem.scalef(0.5f, 0.5f, 0.5f);
-
-                if (this.active) {
-                    RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-                } else {
-                    RenderSystem.color4f(0.5f, 0.5f, 0.5f, 1.0f);
-                }
-
-                final int uv_y = iconIndex / 16;
-                final int uv_x = iconIndex - uv_y * 16;
+                matrixStack.push();
+                matrixStack.translate(this.x, this.y, 0.0F);
+                matrixStack.scale(0.5f, 0.5f, 1.f);
 
                 if (!disableBackground) {
-                    blit(matrixStack, 0, 0, 256 - 16, 256 - 16, 16, 16);
+                    Icon.UNUSED_15_15.getBlitter().dest(0,0).blit(matrixStack, getBlitOffset());
                 }
-                blit(matrixStack, 0, 0, uv_x * 16, uv_y * 16, 16, 16);
-                RenderSystem.popMatrix();
+                blitter.dest(0, 0).blit(matrixStack, getBlitOffset());
+                matrixStack.pop();
             } else {
-                if (this.active) {
-                    RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-                } else {
-                    RenderSystem.color4f(0.5f, 0.5f, 0.5f, 1.0f);
-                }
-
-                final int uv_y = iconIndex / 16;
-                final int uv_x = iconIndex - uv_y * 16;
-
                 if (!disableBackground) {
-                    blit(matrixStack, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
+                    Icon.UNUSED_15_15.getBlitter().dest(x,y).blit(matrixStack, getBlitOffset());
                 }
-                blit(matrixStack, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
+                icon.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
             }
             RenderSystem.enableDepthTest();
-            RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
 
             if (isHovered()) {
                 renderToolTip(matrixStack, mouseX, mouseY);
@@ -114,7 +97,7 @@ public abstract class IconButton extends Button implements ITooltip {
         }
     }
 
-    protected abstract int getIconIndex();
+    protected abstract Icon getIcon();
 
     @Override
     public ITextComponent getTooltipMessage() {

@@ -21,5 +21,11 @@
         "top": 6
       }
     }
+  },
+  "widgets": {
+    "openPriority": {
+      "left": 154,
+      "top": 0
+    }
   }
 }

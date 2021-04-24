@@ -18,16 +18,9 @@
 
 package appeng.client.gui.implementations;
 
-import java.util.List;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
+import appeng.client.gui.Icon;
 import appeng.client.gui.me.items.ItemTerminalScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
@@ -35,22 +28,50 @@ import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
+import java.util.List;
 
 public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationContainer> {
 
-    private static final String TEXTURE = "guis/security_station.png";
+    private final ToggleButton inject;
+    private final ToggleButton extract;
+    private final ToggleButton craft;
+    private final ToggleButton build;
+    private final ToggleButton security;
 
-    private static final Blitter ENCODING_BG = Blitter.texture(TEXTURE).src(198, 0, 44, 98);
-
-    private ToggleButton inject;
-    private ToggleButton extract;
-    private ToggleButton craft;
-    private ToggleButton build;
-    private ToggleButton security;
+    private final Blitter encodingBg;
 
     public SecurityStationScreen(SecurityStationContainer container,
-            PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
+                                 PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
+
+        encodingBg = style.getImage("encoding");
+
+        this.inject = new ToggleButton(Icon.UNUSED_11_00, Icon.UNUSED_12_00,
+                SecurityPermissions.INJECT.getTranslatedName(), SecurityPermissions.INJECT.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.INJECT));
+        this.extract = new ToggleButton(Icon.UNUSED_11_01, Icon.UNUSED_12_01,
+                SecurityPermissions.EXTRACT.getTranslatedName(), SecurityPermissions.EXTRACT.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.EXTRACT));
+        this.craft = new ToggleButton(Icon.UNUSED_11_02, Icon.UNUSED_12_02,
+                SecurityPermissions.CRAFT.getTranslatedName(), SecurityPermissions.CRAFT.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.CRAFT));
+        this.build = new ToggleButton(Icon.UNUSED_11_03, Icon.UNUSED_12_03,
+                SecurityPermissions.BUILD.getTranslatedName(), SecurityPermissions.BUILD.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.BUILD));
+        this.security = new ToggleButton(Icon.UNUSED_11_04, Icon.UNUSED_12_04,
+                SecurityPermissions.SECURITY.getTranslatedName(), SecurityPermissions.SECURITY.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.SECURITY));
+
+        widgets.add("permissionInject", this.inject);
+        widgets.add("permissionExtract", this.extract);
+        widgets.add("permissionCraft", this.craft);
+        widgets.add("permissionBuild", this.build);
+        widgets.add("permissionSecurity", this.security);
     }
 
     private void toggleOption(SecurityPermissions permission) {
@@ -59,34 +80,14 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        int top = this.guiTop + this.ySize - 116;
-        int left = this.guiLeft + 56;
-        this.inject = this.addButton(new ToggleButton(left, top, 11 * 16, 12 * 16,
-                SecurityPermissions.INJECT.getTranslatedName(), SecurityPermissions.INJECT.getTranslatedTip(),
-                btn -> toggleOption(SecurityPermissions.INJECT)));
-        left += 18;
-
-        this.extract = this.addButton(new ToggleButton(left, top, 11 * 16 + 1, 12 * 16 + 1,
-                SecurityPermissions.EXTRACT.getTranslatedName(), SecurityPermissions.EXTRACT.getTranslatedTip(),
-                btn -> toggleOption(SecurityPermissions.EXTRACT)));
-        left += 18;
-
-        this.craft = this.addButton(new ToggleButton(left, top, 11 * 16 + 2, 12 * 16 + 2,
-                SecurityPermissions.CRAFT.getTranslatedName(), SecurityPermissions.CRAFT.getTranslatedTip(),
-                btn -> toggleOption(SecurityPermissions.CRAFT)));
-        left += 18;
-
-        this.build = this.addButton(new ToggleButton(left, top, 11 * 16 + 3, 12 * 16 + 3,
-                SecurityPermissions.BUILD.getTranslatedName(), SecurityPermissions.BUILD.getTranslatedTip(),
-                btn -> toggleOption(SecurityPermissions.BUILD)));
-        left += 18;
-
-        this.security = this.addButton(new ToggleButton(left, top, 11 * 16 + 4, 12 * 16 + 4,
-                SecurityPermissions.SECURITY.getTranslatedName(), SecurityPermissions.SECURITY.getTranslatedTip(),
-                btn -> toggleOption(SecurityPermissions.SECURITY)));
+        this.inject.setState((container.getPermissionMode() & (1 << SecurityPermissions.INJECT.ordinal())) > 0);
+        this.extract.setState((container.getPermissionMode() & (1 << SecurityPermissions.EXTRACT.ordinal())) > 0);
+        this.craft.setState((container.getPermissionMode() & (1 << SecurityPermissions.CRAFT.ordinal())) > 0);
+        this.build.setState((container.getPermissionMode() & (1 << SecurityPermissions.BUILD.ordinal())) > 0);
+        this.security.setState((container.getPermissionMode() & (1 << SecurityPermissions.SECURITY.ordinal())) > 0);
     }
 
     @Override
@@ -94,18 +95,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         // Draw the encoding-box on the right
-        ENCODING_BG.dest(offsetX + xSize + 3, offsetY).blit(matrixStack, getBlitOffset());
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        this.inject.setState((container.getPermissionMode() & (1 << SecurityPermissions.INJECT.ordinal())) > 0);
-        this.extract.setState((container.getPermissionMode() & (1 << SecurityPermissions.EXTRACT.ordinal())) > 0);
-        this.craft.setState((container.getPermissionMode() & (1 << SecurityPermissions.CRAFT.ordinal())) > 0);
-        this.build.setState((container.getPermissionMode() & (1 << SecurityPermissions.BUILD.ordinal())) > 0);
-        this.security.setState((container.getPermissionMode() & (1 << SecurityPermissions.SECURITY.ordinal())) > 0);
+        encodingBg.dest(offsetX + xSize + 3, offsetY).blit(matrixStack, getBlitOffset());
     }
 
     @Override
@@ -119,8 +109,8 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
         result.add(new Rectangle2d(
                 guiLeft + xSize + 3,
                 guiTop,
-                ENCODING_BG.getSrcWidth(),
-                ENCODING_BG.getSrcHeight()));
+                encodingBg.getSrcWidth(),
+                encodingBg.getSrcHeight()));
         return result;
     }
 }

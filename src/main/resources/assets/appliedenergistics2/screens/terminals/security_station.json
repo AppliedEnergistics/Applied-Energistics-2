@@ -1,6 +1,8 @@
 {
   "$schema": "../schema.json",
-  "includes": ["base_terminal.json"],
+  "includes": [
+    "base_terminal.json"
+  ],
   "slots": {
     "BIOMETRIC_CARD": {
       "left": 37,
@@ -39,23 +41,76 @@
     "sortByButton": false,
     "header": {
       "texture": "guis/security_station.png",
-      "srcRect": [0, 0, 195, 17]
+      "srcRect": [
+        0,
+        0,
+        195,
+        17
+      ]
     },
     "firstRow": {
       "texture": "guis/security_station.png",
-      "srcRect": [0, 17, 195, 18]
+      "srcRect": [
+        0,
+        17,
+        195,
+        18
+      ]
     },
     "row": {
       "texture": "guis/security_station.png",
-      "srcRect": [0, 35, 195, 18]
+      "srcRect": [
+        0,
+        35,
+        195,
+        18
+      ]
     },
     "lastRow": {
       "texture": "guis/security_station.png",
-      "srcRect": [0, 53, 195, 18]
+      "srcRect": [
+        0,
+        53,
+        195,
+        18
+      ]
     },
     "bottom": {
       "texture": "guis/security_station.png",
-      "srcRect": [0, 71, 195, 130]
+      "srcRect": [
+        0,
+        71,
+        195,
+        130
+      ]
+    }
+  },
+  "images": {
+    "encoding": {
+      "texture": "guis/security_station.png",
+      "srcRect": [198, 0, 44, 98]
+    }
+  },
+  "widgets": {
+    "permissionInject": {
+      "left": 56,
+      "bottom": 116
+    },
+    "permissionExtract": {
+      "left": 74,
+      "bottom": 116
+    },
+    "permissionCraft": {
+      "left": 92,
+      "bottom": 116
+    },
+    "permissionBuild": {
+      "left": 110,
+      "bottom": 116
+    },
+    "permissionSecurity": {
+      "left": 128,
+      "bottom": 116
     }
   }
 }

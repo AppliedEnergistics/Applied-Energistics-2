@@ -18,14 +18,15 @@
 
 package appeng.container.slot;
 
+import appeng.client.gui.Icon;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class OutputSlot extends AppEngSlot {
 
-    public OutputSlot(final IItemHandler inv, final int invSlot, final int iconIndex) {
+    public OutputSlot(final IItemHandler inv, final int invSlot, final Icon icon) {
         super(inv, invSlot);
-        this.setIconIndex(iconIndex);
+        this.setIcon(icon);
     }
 
     @Override

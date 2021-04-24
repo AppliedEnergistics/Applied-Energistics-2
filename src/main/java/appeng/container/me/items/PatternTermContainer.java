@@ -109,14 +109,14 @@ public class PatternTermContainer extends ItemTerminalContainer
         // Create the output slot used for crafting mode patterns
         this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
                 monitorable, this.craftingGridInv, patternInv, this, 2, this), SlotSemantic.CRAFTING_RESULT);
-        this.craftOutputSlot.setIconIndex(-1);
+        this.craftOutputSlot.setIcon(null);
 
         // Create slots for the outputs of processing-mode patterns
         for (int i = 0; i < 3; i++) {
             this.addSlot(this.processingOutputSlots[i] = new PatternOutputsSlot(output, this, i, 1),
                     SlotSemantic.PROCESSING_RESULT);
             this.processingOutputSlots[i].setRenderDisabled(false);
-            this.processingOutputSlots[i].setIconIndex(-1);
+            this.processingOutputSlots[i].setIcon(null);
         }
 
         this.addSlot(this.blankPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BLANK_PATTERN,

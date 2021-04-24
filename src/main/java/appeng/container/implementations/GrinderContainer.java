@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import appeng.client.gui.Icon;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.items.IItemHandler;
@@ -51,7 +52,7 @@ public class GrinderContainer extends AEBaseContainer {
         this.addSlot(new InaccessibleSlot(inv, 6), SlotSemantic.MACHINE_PROCESSING);
 
         for (int i = 0; i < 3; i++) {
-            this.addSlot(new OutputSlot(inv, 3 + i, 2 * 16 + 15), SlotSemantic.MACHINE_OUTPUT);
+            this.addSlot(new OutputSlot(inv, 3 + i, Icon.UNUSED_02_15), SlotSemantic.MACHINE_OUTPUT);
         }
 
         this.createPlayerInventorySlots(ip);

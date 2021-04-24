@@ -226,8 +226,7 @@ public class WidgetContainer {
      */
     public void addOpenPriorityButton() {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-
-        add("openPriority", new TabButton(2 + 4 * 16, GuiText.Priority.text(),
+        add("openPriority", new TabButton(Icon.UNUSED_04_02, GuiText.Priority.text(),
                 itemRenderer, btn -> openPriorityGui()));
     }
 

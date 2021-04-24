@@ -21,6 +21,7 @@ package appeng.container.slot;
 import java.util.List;
 import java.util.Set;
 
+import appeng.client.gui.Icon;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -71,7 +72,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     public RestrictedInputSlot(final PlacableItemType valid, final IItemHandler inv, final int invSlot) {
         super(inv, invSlot);
         this.which = valid;
-        this.setIconIndex(valid.IIcon);
+        this.setIcon(valid.icon);
     }
 
     @Override
@@ -253,25 +254,34 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     public enum PlacableItemType {
-        STORAGE_CELLS(15), ORE(16 + 15), STORAGE_COMPONENT(3 * 16 + 15),
+        STORAGE_CELLS(Icon.UNUSED_00_15),
+        ORE(Icon.UNUSED_01_15),
+        STORAGE_COMPONENT(Icon.UNUSED_03_15),
+        ENCODABLE_ITEM(Icon.UNUSED_04_15),
+        TRASH(Icon.UNUSED_05_15),
+        VALID_ENCODED_PATTERN_W_OUTPUT(Icon.UNUSED_07_15),
+        ENCODED_PATTERN_W_OUTPUT(Icon.UNUSED_07_15),
+        ENCODED_CRAFTING_PATTERN(Icon.UNUSED_07_15),
+        ENCODED_PATTERN(Icon.UNUSED_07_15),
+        PATTERN(Icon.UNUSED_08_15),
+        BLANK_PATTERN(Icon.UNUSED_08_15),
+        POWERED_TOOL(Icon.UNUSED_09_15),
+        RANGE_BOOSTER(Icon.UNUSED_06_15),
+        QE_SINGULARITY(Icon.UNUSED_10_15),
+        SPATIAL_STORAGE_CELLS(Icon.UNUSED_11_15),
+        FUEL(Icon.UNUSED_12_15),
+        UPGRADES(Icon.UNUSED_13_15),
+        WORKBENCH_CELL(Icon.UNUSED_00_15),
+        BIOMETRIC_CARD(Icon.UNUSED_14_15),
+        VIEW_CELL(Icon.UNUSED_04_14),
+        INSCRIBER_PLATE(Icon.UNUSED_02_14),
+        INSCRIBER_INPUT(Icon.UNUSED_03_14),
+        METAL_INGOTS(Icon.UNUSED_03_14);
 
-        ENCODABLE_ITEM(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
-        ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
+        public final Icon icon;
 
-        ENCODED_CRAFTING_PATTERN(7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), PATTERN(8 * 16 + 15),
-        BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
-
-        RANGE_BOOSTER(6 * 16 + 15), QE_SINGULARITY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15),
-
-        FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15), WORKBENCH_CELL(15), BIOMETRIC_CARD(14 * 16 + 15),
-        VIEW_CELL(4 * 16 + 14),
-
-        INSCRIBER_PLATE(2 * 16 + 14), INSCRIBER_INPUT(3 * 16 + 14), METAL_INGOTS(3 * 16 + 14);
-
-        public final int IIcon;
-
-        PlacableItemType(final int o) {
-            this.IIcon = o;
+        PlacableItemType(final Icon o) {
+            this.icon = o;
         }
     }
 }

@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Icon;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -26,14 +27,11 @@ import appeng.api.config.YesNo;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.implementations.InterfaceContainer;
-import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
-import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
@@ -49,7 +47,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
         this.blockMode = new ServerSettingToggleButton<>(Settings.BLOCK, YesNo.NO);
         this.addToLeftToolbar(this.blockMode);
 
-        this.interfaceMode = new ToggleButton(0, 0, 84, 85,
+        this.interfaceMode = new ToggleButton(Icon.UNUSED_05_04, Icon.UNUSED_05_05,
                 GuiText.InterfaceTerminal.getLocal(), GuiText.InterfaceTerminalHint.getLocal(),
                 btn -> selectNextInterfaceMode());
         this.addToLeftToolbar(this.interfaceMode);
