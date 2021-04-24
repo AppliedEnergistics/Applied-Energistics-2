@@ -31,7 +31,6 @@ import appeng.tile.AEBaseTileEntity;
 
 /**
  * Similar to {@link IProbeInfoProvider}, but already providing the {@link AEBaseTileEntity} being looked at.
- *
  */
 public interface ITileProbInfoProvider {
 

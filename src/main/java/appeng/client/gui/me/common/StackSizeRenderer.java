@@ -26,7 +26,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3f;
 
-import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.ISlimReadableNumberConverter;
@@ -63,7 +62,7 @@ public class StackSizeRenderer {
         final int offset = AEConfig.instance().isUseLargeFonts() ? 0 : -1;
 
         TransformationMatrix tm = new TransformationMatrix(new Vector3f(0, 0, 300), // Taken from
-                                                                                    // ItemRenderer.renderItemOverlayIntoGUI
+                // ItemRenderer.renderItemOverlayIntoGUI
                 null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
 
         RenderSystem.disableBlend();

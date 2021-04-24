@@ -18,12 +18,14 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.client.gui.Icon;
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+
+import appeng.client.gui.Icon;
 
 public class TabButton extends Button implements ITooltip {
     private final ItemRenderer itemRenderer;
@@ -32,7 +34,7 @@ public class TabButton extends Button implements ITooltip {
     private ItemStack item;
 
     public TabButton(final Icon ico, final ITextComponent message, final ItemRenderer ir,
-                     IPressable onPress) {
+            IPressable onPress) {
         super(0, 0, 22, 22, message, onPress);
 
         this.icon = ico;
@@ -47,7 +49,7 @@ public class TabButton extends Button implements ITooltip {
      * @param ir      renderer
      */
     public TabButton(final ItemStack ico, final ITextComponent message, final ItemRenderer ir,
-                     IPressable onPress) {
+            IPressable onPress) {
         super(0, 0, 22, 22, message, onPress);
         this.item = ico;
         this.itemRenderer = ir;

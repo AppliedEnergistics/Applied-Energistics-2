@@ -1,16 +1,9 @@
 {
   "$schema": "schema.json",
-  "includes": [
-    "common/common.json"
-  ],
+  "includes": ["common/common.json"],
   "background": {
     "texture": "guis/craftingcpu.png",
-    "srcRect": [
-      0,
-      0,
-      238,
-      184
-    ]
+    "srcRect": [0, 0, 238, 184]
   },
   "text": {
     "dialog_title": {

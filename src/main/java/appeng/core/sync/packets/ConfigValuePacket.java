@@ -20,8 +20,6 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
@@ -32,7 +30,6 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.container.implementations.LevelEmitterContainer;

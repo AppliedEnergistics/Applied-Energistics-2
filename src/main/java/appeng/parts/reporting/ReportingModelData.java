@@ -18,8 +18,6 @@
 
 package appeng.parts.reporting;
 
-import java.util.Objects;
-
 import javax.annotation.Nullable;
 
 import net.minecraftforge.client.model.data.IModelData;

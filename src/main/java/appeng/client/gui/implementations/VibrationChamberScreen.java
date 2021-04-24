@@ -44,7 +44,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        this.generationRateBar = new ProgressBar(this.container, style.getImage("generationRateBar"), Direction.VERTICAL);
+        this.generationRateBar = new ProgressBar(this.container, style.getImage("generationRateBar"),
+                Direction.VERTICAL);
         widgets.add("generationRateBar", this.generationRateBar);
     }
 

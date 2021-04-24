@@ -1,5 +1,20 @@
 package appeng.client.gui;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+
+import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.Point;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
@@ -9,26 +24,13 @@ import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
-import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.text.ITextComponent;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
 /**
- * This utility class helps with positioning commonly used Minecraft {@link Widget} instances on a screen without
- * having to recreate them everytime the screen resizes in the <code>init</code> method.
+ * This utility class helps with positioning commonly used Minecraft {@link Widget} instances on a screen without having
+ * to recreate them everytime the screen resizes in the <code>init</code> method.
  * <p/>
- * This class sources the positioning and sizing for widgets from the {@link ScreenStyle}, and correlates
- * between the screen's JSON file and the widget using a string id.
+ * This class sources the positioning and sizing for widgets from the {@link ScreenStyle}, and correlates between the
+ * screen's JSON file and the widget using a string id.
  */
 public class WidgetContainer {
     private final ScreenStyle style;

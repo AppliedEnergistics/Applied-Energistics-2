@@ -18,14 +18,16 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.client.gui.Icon;
+import java.util.regex.Pattern;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-import java.util.regex.Pattern;
+import appeng.client.gui.Icon;
 
 public class ToggleButton extends Button implements ITooltip {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
@@ -38,7 +40,7 @@ public class ToggleButton extends Button implements ITooltip {
     private boolean isActive;
 
     public ToggleButton(final Icon on, final Icon off, final String displayName,
-                        final String displayHint, IPressable onPress) {
+            final String displayHint, IPressable onPress) {
         super(0, 0, 16, 16, StringTextComponent.EMPTY, onPress);
         this.icon = on;
         this.iconDisabled = off;

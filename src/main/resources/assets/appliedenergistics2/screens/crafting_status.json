@@ -1,8 +1,6 @@
 {
   "$schema": "schema.json",
-  "includes": [
-    "crafting_cpu.json"
-  ],
+  "includes": ["crafting_cpu.json"],
   "widgets": {
     "selectCpu": {
       "left": 8,

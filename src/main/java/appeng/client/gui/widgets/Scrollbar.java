@@ -18,23 +18,25 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.client.Point;
-import appeng.client.gui.ICompositeWidget;
-import appeng.client.gui.style.Blitter;
+import java.time.Duration;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-import java.time.Duration;
+import appeng.client.Point;
+import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.style.Blitter;
 
 /**
  * Implements a vertical scrollbar using Vanilla's scrollbar handle texture from the creative tab.
  * <p>
  * It is expected that the background of the UI contains a pre-baked scrollbar track border, and that the exact
- * rectangle of that track is set on this object via {@link #displayX}, {@link #displayY} and
- * {@link #setHeight(int)}. While the width of the track can also be set, the drawn handle will use vanilla's sprite
- * width (see {@link #HANDLE_WIDTH}.
+ * rectangle of that track is set on this object via {@link #displayX}, {@link #displayY} and {@link #setHeight(int)}.
+ * While the width of the track can also be set, the drawn handle will use vanilla's sprite width (see
+ * {@link #HANDLE_WIDTH}.
  */
 public class Scrollbar implements IScrollSource, ICompositeWidget {
 

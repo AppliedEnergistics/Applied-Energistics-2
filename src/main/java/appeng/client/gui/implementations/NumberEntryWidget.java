@@ -18,14 +18,14 @@
 
 package appeng.client.gui.implementations;
 
-import appeng.client.Point;
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.ICompositeWidget;
-import appeng.client.gui.NumberEntryType;
-import appeng.client.gui.widgets.ConfirmableTextField;
-import appeng.client.gui.widgets.ValidationIcon;
-import appeng.core.AEConfig;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
+import java.util.function.Consumer;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
@@ -36,11 +36,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
-import java.util.function.Consumer;
+import appeng.client.Point;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.NumberEntryType;
+import appeng.client.gui.widgets.ConfirmableTextField;
+import appeng.client.gui.widgets.ValidationIcon;
+import appeng.core.AEConfig;
 
 /**
  * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
@@ -115,9 +117,8 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
     }
 
     /**
-     * Sets the bounds of the text field on the screen.
-     * This may seem insane, but the text-field background is actually baked into the screens background image,
-     * which necessitates setting it precisely.
+     * Sets the bounds of the text field on the screen. This may seem insane, but the text-field background is actually
+     * baked into the screens background image, which necessitates setting it precisely.
      */
     public void setTextFieldBounds(int x, int y, int width) {
         textFieldOrigin = new Point(x, y);

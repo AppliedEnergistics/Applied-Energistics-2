@@ -18,15 +18,17 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.OptionalInt;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.PriorityContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
-import java.util.OptionalInt;
 
 public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
@@ -35,7 +37,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     private final NumberEntryWidget priority;
 
     public PriorityScreen(PriorityContainer container, PlayerInventory playerInventory, ITextComponent title,
-                          ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.subGui = new AESubScreen(container.getPriorityHost());
         this.subGui.addBackButton("back", widgets);
@@ -61,7 +63,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY, float partialTicks) {
+            final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         this.priority.render(matrixStack, mouseX, mouseY, partialTicks);

@@ -1,15 +1,16 @@
 package appeng.client.gui.widgets;
 
-import appeng.client.Point;
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.ICompositeWidget;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.Rectangle2d;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import appeng.client.Point;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.ICompositeWidget;
 
 /**
  * A stacked button panel on the left or right side of our UIs.

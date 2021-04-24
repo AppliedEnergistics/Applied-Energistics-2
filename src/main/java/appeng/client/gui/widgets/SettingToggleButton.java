@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import appeng.client.gui.Icon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -50,6 +49,7 @@ import appeng.api.config.TerminalStyle;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
 import appeng.core.localization.ButtonToolTips;
 import appeng.util.EnumCycler;
 
@@ -89,7 +89,8 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
         if (appearances == null) {
             appearances = new HashMap<>();
-            registerApp(Icon.UNUSED_07_00, Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH, ButtonToolTips.CondenserOutput,
+            registerApp(Icon.UNUSED_07_00, Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH,
+                    ButtonToolTips.CondenserOutput,
                     ButtonToolTips.Trash);
             registerApp(Icon.UNUSED_07_01, Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS,
                     ButtonToolTips.CondenserOutput,
@@ -100,7 +101,8 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
             registerApp(Icon.UNUSED_09_01, Settings.ACCESS, AccessRestriction.READ, ButtonToolTips.IOMode,
                     ButtonToolTips.Read);
-            registerApp(Icon.UNUSED_09_00, Settings.ACCESS, AccessRestriction.WRITE, ButtonToolTips.IOMode, ButtonToolTips.Write);
+            registerApp(Icon.UNUSED_09_00, Settings.ACCESS, AccessRestriction.WRITE, ButtonToolTips.IOMode,
+                    ButtonToolTips.Write);
             registerApp(Icon.UNUSED_09_02, Settings.ACCESS, AccessRestriction.READ_WRITE, ButtonToolTips.IOMode,
                     ButtonToolTips.ReadWrite);
 
@@ -111,28 +113,38 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.UNUSED_10_04, Settings.POWER_UNITS, PowerUnits.RF, ButtonToolTips.PowerUnits,
                     PowerUnits.RF.textComponent());
 
-            registerApp(Icon.UNUSED_00_03, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, ButtonToolTips.RedstoneMode,
+            registerApp(Icon.UNUSED_00_03, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE,
+                    ButtonToolTips.RedstoneMode,
                     ButtonToolTips.AlwaysActive);
-            registerApp(Icon.UNUSED_00_00, Settings.REDSTONE_CONTROLLED, RedstoneMode.LOW_SIGNAL, ButtonToolTips.RedstoneMode,
+            registerApp(Icon.UNUSED_00_00, Settings.REDSTONE_CONTROLLED, RedstoneMode.LOW_SIGNAL,
+                    ButtonToolTips.RedstoneMode,
                     ButtonToolTips.ActiveWithoutSignal);
-            registerApp(Icon.UNUSED_00_01, Settings.REDSTONE_CONTROLLED, RedstoneMode.HIGH_SIGNAL, ButtonToolTips.RedstoneMode,
+            registerApp(Icon.UNUSED_00_01, Settings.REDSTONE_CONTROLLED, RedstoneMode.HIGH_SIGNAL,
+                    ButtonToolTips.RedstoneMode,
                     ButtonToolTips.ActiveWithSignal);
-            registerApp(Icon.UNUSED_00_02, Settings.REDSTONE_CONTROLLED, RedstoneMode.SIGNAL_PULSE, ButtonToolTips.RedstoneMode,
+            registerApp(Icon.UNUSED_00_02, Settings.REDSTONE_CONTROLLED, RedstoneMode.SIGNAL_PULSE,
+                    ButtonToolTips.RedstoneMode,
                     ButtonToolTips.ActiveOnPulse);
 
-            registerApp(Icon.UNUSED_00_00, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL, ButtonToolTips.RedstoneMode,
+            registerApp(Icon.UNUSED_00_00, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL,
+                    ButtonToolTips.RedstoneMode,
                     ButtonToolTips.EmitLevelsBelow);
-            registerApp(Icon.UNUSED_00_01, Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL, ButtonToolTips.RedstoneMode,
+            registerApp(Icon.UNUSED_00_01, Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL,
+                    ButtonToolTips.RedstoneMode,
                     ButtonToolTips.EmitLevelAbove);
 
-            registerApp(Icon.UNUSED_03_03, Settings.OPERATION_MODE, OperationMode.FILL, ButtonToolTips.TransferDirection,
+            registerApp(Icon.UNUSED_03_03, Settings.OPERATION_MODE, OperationMode.FILL,
+                    ButtonToolTips.TransferDirection,
                     ButtonToolTips.TransferToStorageCell);
-            registerApp(Icon.UNUSED_03_02, Settings.OPERATION_MODE, OperationMode.EMPTY, ButtonToolTips.TransferDirection,
+            registerApp(Icon.UNUSED_03_02, Settings.OPERATION_MODE, OperationMode.EMPTY,
+                    ButtonToolTips.TransferDirection,
                     ButtonToolTips.TransferToNetwork);
 
-            registerApp(Icon.UNUSED_03_03, Settings.IO_DIRECTION, RelativeDirection.LEFT, ButtonToolTips.TransferDirection,
+            registerApp(Icon.UNUSED_03_03, Settings.IO_DIRECTION, RelativeDirection.LEFT,
+                    ButtonToolTips.TransferDirection,
                     ButtonToolTips.TransferToStorageCell);
-            registerApp(Icon.UNUSED_03_02, Settings.IO_DIRECTION, RelativeDirection.RIGHT, ButtonToolTips.TransferDirection,
+            registerApp(Icon.UNUSED_03_02, Settings.IO_DIRECTION, RelativeDirection.RIGHT,
+                    ButtonToolTips.TransferDirection,
                     ButtonToolTips.TransferToNetwork);
 
             registerApp(Icon.UNUSED_03_00, Settings.SORT_DIRECTION, SortDir.ASCENDING, ButtonToolTips.SortOrder,
@@ -144,15 +156,20 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.SearchMode_Auto);
             registerApp(Icon.UNUSED_02_04, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH, ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_Standard);
-            registerApp(Icon.UNUSED_02_05, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH, ButtonToolTips.SearchMode,
+            registerApp(Icon.UNUSED_02_05, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH,
+                    ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_JEIAuto);
-            registerApp(Icon.UNUSED_02_06, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH, ButtonToolTips.SearchMode,
+            registerApp(Icon.UNUSED_02_06, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH,
+                    ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_JEIStandard);
-            registerApp(Icon.UNUSED_02_07, Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH_KEEP, ButtonToolTips.SearchMode,
+            registerApp(Icon.UNUSED_02_07, Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH_KEEP,
+                    ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_AutoKeep);
-            registerApp(Icon.UNUSED_02_08, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH_KEEP, ButtonToolTips.SearchMode,
+            registerApp(Icon.UNUSED_02_08, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH_KEEP,
+                    ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_StandardKeep);
-            registerApp(Icon.UNUSED_02_09, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH_KEEP, ButtonToolTips.SearchMode,
+            registerApp(Icon.UNUSED_02_09, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH_KEEP,
+                    ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_JEIAutoKeep);
             registerApp(Icon.UNUSED_02_10, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP,
                     ButtonToolTips.SearchMode, ButtonToolTips.SearchMode_JEIStandardKeep);
@@ -169,13 +186,18 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.UNUSED_13_02, Settings.TERMINAL_STYLE, TerminalStyle.FULL, ButtonToolTips.TerminalStyle,
                     ButtonToolTips.TerminalStyle_Full);
 
-            registerApp(Icon.UNUSED_04_00, Settings.SORT_BY, SortOrder.NAME, ButtonToolTips.SortBy, ButtonToolTips.ItemName);
-            registerApp(Icon.UNUSED_04_01, Settings.SORT_BY, SortOrder.AMOUNT, ButtonToolTips.SortBy, ButtonToolTips.NumberOfItems);
+            registerApp(Icon.UNUSED_04_00, Settings.SORT_BY, SortOrder.NAME, ButtonToolTips.SortBy,
+                    ButtonToolTips.ItemName);
+            registerApp(Icon.UNUSED_04_01, Settings.SORT_BY, SortOrder.AMOUNT, ButtonToolTips.SortBy,
+                    ButtonToolTips.NumberOfItems);
             registerApp(Icon.UNUSED_04_05, Settings.SORT_BY, SortOrder.MOD, ButtonToolTips.SortBy, ButtonToolTips.Mod);
 
-            registerApp(Icon.UNUSED_01_00, Settings.VIEW_MODE, ViewItems.STORED, ButtonToolTips.View, ButtonToolTips.StoredItems);
-            registerApp(Icon.UNUSED_01_02, Settings.VIEW_MODE, ViewItems.ALL, ButtonToolTips.View, ButtonToolTips.StoredCraftable);
-            registerApp(Icon.UNUSED_01_03, Settings.VIEW_MODE, ViewItems.CRAFTABLE, ButtonToolTips.View, ButtonToolTips.Craftable);
+            registerApp(Icon.UNUSED_01_00, Settings.VIEW_MODE, ViewItems.STORED, ButtonToolTips.View,
+                    ButtonToolTips.StoredItems);
+            registerApp(Icon.UNUSED_01_02, Settings.VIEW_MODE, ViewItems.ALL, ButtonToolTips.View,
+                    ButtonToolTips.StoredCraftable);
+            registerApp(Icon.UNUSED_01_03, Settings.VIEW_MODE, ViewItems.CRAFTABLE, ButtonToolTips.View,
+                    ButtonToolTips.Craftable);
 
             registerApp(Icon.UNUSED_06_00, Settings.FUZZY_MODE, FuzzyMode.PERCENT_25, ButtonToolTips.FuzzyMode,
                     ButtonToolTips.FZPercent_25);
@@ -200,8 +222,10 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.UNUSED_01_04, Settings.BLOCK, YesNo.NO, ButtonToolTips.InterfaceBlockingMode,
                     ButtonToolTips.NonBlocking);
 
-            registerApp(Icon.UNUSED_01_03, Settings.CRAFT_ONLY, YesNo.YES, ButtonToolTips.Craft, ButtonToolTips.CraftOnly);
-            registerApp(Icon.UNUSED_01_02, Settings.CRAFT_ONLY, YesNo.NO, ButtonToolTips.Craft, ButtonToolTips.CraftEither);
+            registerApp(Icon.UNUSED_01_03, Settings.CRAFT_ONLY, YesNo.YES, ButtonToolTips.Craft,
+                    ButtonToolTips.CraftOnly);
+            registerApp(Icon.UNUSED_01_02, Settings.CRAFT_ONLY, YesNo.NO, ButtonToolTips.Craft,
+                    ButtonToolTips.CraftEither);
 
             registerApp(Icon.UNUSED_11_02, Settings.CRAFT_VIA_REDSTONE, YesNo.YES, ButtonToolTips.EmitterMode,
                     ButtonToolTips.CraftViaRedstone);
@@ -210,7 +234,8 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
             registerApp(Icon.UNUSED_03_05, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY,
                     ButtonToolTips.ReportInaccessibleItems, ButtonToolTips.ReportInaccessibleItemsNo);
-            registerApp(Icon.UNUSED_03_06, Settings.STORAGE_FILTER, StorageFilter.NONE, ButtonToolTips.ReportInaccessibleItems,
+            registerApp(Icon.UNUSED_03_06, Settings.STORAGE_FILTER, StorageFilter.NONE,
+                    ButtonToolTips.ReportInaccessibleItems,
                     ButtonToolTips.ReportInaccessibleItemsYes);
 
             registerApp(Icon.UNUSED_14_00, Settings.PLACE_BLOCK, YesNo.YES, ButtonToolTips.BlockPlacement,
@@ -218,11 +243,14 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.UNUSED_14_01, Settings.PLACE_BLOCK, YesNo.NO, ButtonToolTips.BlockPlacement,
                     ButtonToolTips.BlockPlacementNo);
 
-            registerApp(Icon.UNUSED_15_00, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT, ButtonToolTips.SchedulingMode,
+            registerApp(Icon.UNUSED_15_00, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT,
+                    ButtonToolTips.SchedulingMode,
                     ButtonToolTips.SchedulingModeDefault);
-            registerApp(Icon.UNUSED_15_01, Settings.SCHEDULING_MODE, SchedulingMode.ROUNDROBIN, ButtonToolTips.SchedulingMode,
+            registerApp(Icon.UNUSED_15_01, Settings.SCHEDULING_MODE, SchedulingMode.ROUNDROBIN,
+                    ButtonToolTips.SchedulingMode,
                     ButtonToolTips.SchedulingModeRoundRobin);
-            registerApp(Icon.UNUSED_15_02, Settings.SCHEDULING_MODE, SchedulingMode.RANDOM, ButtonToolTips.SchedulingMode,
+            registerApp(Icon.UNUSED_15_02, Settings.SCHEDULING_MODE, SchedulingMode.RANDOM,
+                    ButtonToolTips.SchedulingMode,
                     ButtonToolTips.SchedulingModeRandom);
 
             registerApp(Icon.UNUSED_15_03, Settings.OVERLAY_MODE, YesNo.NO, ButtonToolTips.OverlayMode,

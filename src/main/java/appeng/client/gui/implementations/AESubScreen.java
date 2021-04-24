@@ -20,7 +20,6 @@ package appeng.client.gui.implementations;
 
 import javax.annotation.Nullable;
 
-import appeng.client.gui.WidgetContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.inventory.container.ContainerType;
@@ -29,6 +28,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
+import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.ChestContainer;
 import appeng.container.me.items.CraftingTermContainer;

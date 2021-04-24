@@ -18,6 +18,9 @@
 
 package appeng.fluids.client.gui;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
@@ -34,8 +37,6 @@ import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
 
 /**
  * @author BrockWS
@@ -48,7 +49,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     private final SettingToggleButton<StorageFilter> storageFilter;
 
     public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory,
-                                 ITextComponent title, ScreenStyle style) {
+            ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank config = this.container.getFluidConfigInventory();

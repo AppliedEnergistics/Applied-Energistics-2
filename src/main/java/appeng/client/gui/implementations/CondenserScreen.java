@@ -18,11 +18,11 @@
 
 package appeng.client.gui.implementations;
 
-import appeng.api.config.Settings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.CondenserOutput;
+import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;

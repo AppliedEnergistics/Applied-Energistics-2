@@ -18,6 +18,14 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.client.gui.Icon;
@@ -28,12 +36,6 @@ import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
-import java.util.List;
 
 public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationContainer> {
 
@@ -46,7 +48,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     private final Blitter encodingBg;
 
     public SecurityStationScreen(SecurityStationContainer container,
-                                 PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
+            PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         encodingBg = style.getImage("encoding");

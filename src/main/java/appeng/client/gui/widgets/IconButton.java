@@ -18,16 +18,18 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.client.gui.Icon;
-import appeng.client.gui.style.Blitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+
+import appeng.client.gui.Icon;
+import appeng.client.gui.style.Blitter;
 
 public abstract class IconButton extends Button implements ITooltip {
 
@@ -79,13 +81,13 @@ public abstract class IconButton extends Button implements ITooltip {
                 matrixStack.scale(0.5f, 0.5f, 1.f);
 
                 if (!disableBackground) {
-                    Icon.UNUSED_15_15.getBlitter().dest(0,0).blit(matrixStack, getBlitOffset());
+                    Icon.UNUSED_15_15.getBlitter().dest(0, 0).blit(matrixStack, getBlitOffset());
                 }
                 blitter.dest(0, 0).blit(matrixStack, getBlitOffset());
                 matrixStack.pop();
             } else {
                 if (!disableBackground) {
-                    Icon.UNUSED_15_15.getBlitter().dest(x,y).blit(matrixStack, getBlitOffset());
+                    Icon.UNUSED_15_15.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
                 }
                 icon.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
             }
