@@ -50,7 +50,7 @@ public class TerminalStyle {
 
     private Rectangle2d searchFieldRect;
 
-    private boolean sortByButton = true;
+    private boolean sortable = true;
 
     private boolean supportsAutoCrafting = false;
 
@@ -118,8 +118,12 @@ public class TerminalStyle {
         this.searchFieldRect = searchFieldRect;
     }
 
-    public boolean isSortByButton() {
-        return sortByButton;
+    public boolean isSortable() {
+        return sortable;
+    }
+
+    public void setSortable(boolean sortable) {
+        this.sortable = sortable;
     }
 
     public int getScreenWidth() {
@@ -181,20 +185,28 @@ public class TerminalStyle {
         return result;
     }
 
-    public boolean hasSortByButton() {
-        return sortByButton;
-    }
-
     public boolean isSupportsAutoCrafting() {
         return supportsAutoCrafting;
+    }
+
+    public void setSupportsAutoCrafting(boolean supportsAutoCrafting) {
+        this.supportsAutoCrafting = supportsAutoCrafting;
     }
 
     public boolean isShowTooltipsWithItemInHand() {
         return showTooltipsWithItemInHand;
     }
 
+    public void setShowTooltipsWithItemInHand(boolean showTooltipsWithItemInHand) {
+        this.showTooltipsWithItemInHand = showTooltipsWithItemInHand;
+    }
+
     public StackSizeStyle getStackSizeStyle() {
         return stackSizeStyle;
+    }
+
+    public void setStackSizeStyle(StackSizeStyle stackSizeStyle) {
+        this.stackSizeStyle = stackSizeStyle;
     }
 
     public StackSizeRenderer getStackSizeRenderer() {

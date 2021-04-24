@@ -2,6 +2,9 @@ package appeng.client;
 
 import net.minecraft.client.renderer.Rectangle2d;
 
+/**
+ * Represents a x,y coordinate in the UI.
+ */
 public final class Point {
 
     public static final Point ZERO = new Point(0, 0);

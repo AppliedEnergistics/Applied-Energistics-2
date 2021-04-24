@@ -145,7 +145,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             this.widgets.add("craftingStatus", this.craftingStatusBtn);
         }
 
-        if (this.style.hasSortByButton()) {
+        if (this.style.isSortable()) {
             this.sortByToggle = this.addToLeftToolbar(new SettingToggleButton<>(Settings.SORT_BY,
                     getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
         }
