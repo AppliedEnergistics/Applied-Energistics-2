@@ -81,13 +81,13 @@ public abstract class IconButton extends Button implements ITooltip {
                 matrixStack.scale(0.5f, 0.5f, 1.f);
 
                 if (!disableBackground) {
-                    Icon.UNUSED_15_15.getBlitter().dest(0, 0).blit(matrixStack, getBlitOffset());
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(0, 0).blit(matrixStack, getBlitOffset());
                 }
                 blitter.dest(0, 0).blit(matrixStack, getBlitOffset());
                 matrixStack.pop();
             } else {
                 if (!disableBackground) {
-                    Icon.UNUSED_15_15.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
                 }
                 icon.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
             }

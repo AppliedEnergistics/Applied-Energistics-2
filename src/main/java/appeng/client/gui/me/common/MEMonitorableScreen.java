@@ -139,7 +139,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         }
 
         if (this.style.isSupportsAutoCrafting()) {
-            this.craftingStatusBtn = new TabButton(Icon.UNUSED_11_02,
+            this.craftingStatusBtn = new TabButton(Icon.PERMISSION_CRAFT,
                     GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus());
             this.craftingStatusBtn.setHideEdge(true);
             this.widgets.add("craftingStatus", this.craftingStatusBtn);

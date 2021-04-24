@@ -47,7 +47,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
         this.blockMode = new ServerSettingToggleButton<>(Settings.BLOCK, YesNo.NO);
         this.addToLeftToolbar(this.blockMode);
 
-        this.interfaceMode = new ToggleButton(Icon.UNUSED_05_04, Icon.UNUSED_05_05,
+        this.interfaceMode = new ToggleButton(Icon.INTERFACE_TERMINAL_SHOW, Icon.INTERFACE_TERMINAL_HIDE,
                 GuiText.InterfaceTerminal.getLocal(), GuiText.InterfaceTerminalHint.getLocal(),
                 btn -> selectNextInterfaceMode());
         this.addToLeftToolbar(this.interfaceMode);
