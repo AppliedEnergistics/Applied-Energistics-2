@@ -88,8 +88,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     private static final Point HIDDEN_SLOT_POS = new Point(-9999, -9999);
 
-    private static final Blitter SLOT_BACKGROUND = Blitter.texture("guis/states.png").src(192, 192, 18, 18);
-
     /**
      * Commonly used id for text that is used to show the dialog title.
      */
@@ -381,7 +379,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             float alpha = slot.isSlotEnabled() ? 1.0f : 0.4f;
 
             Point pos = slot.getBackgroundPos();
-            SLOT_BACKGROUND
+
+            Icon.UNUSED_12_12.getBlitter()
                     .dest(guiLeft + pos.getX(), guiTop + pos.getY())
                     .color(1, 1, 1, alpha)
                     .blit(matrixStack, getBlitOffset());
@@ -657,8 +656,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         // If the slot has a background icon, render it, but only if the slot is empty
         // or it requests the icon to be always drawn
         if ((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled()) {
-            if (s.getIcon() >= 0) {
-                Blitter.icon(s.getIcon())
+            if (s.getIcon() != null) {
+                s.getIcon().getBlitter()
                         .dest(s.xPos, s.yPos)
                         .opacity(s.getOpacityOfIcon())
                         .blit(matrices, getBlitOffset());

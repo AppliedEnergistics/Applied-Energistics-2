@@ -73,7 +73,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
         middle.setStackLimit(1);
         this.middle = this.addSlot(middle, SlotSemantic.MACHINE_INPUT);
 
-        this.addSlot(new OutputSlot(inv, 3, -1), SlotSemantic.MACHINE_OUTPUT);
+        this.addSlot(new OutputSlot(inv, 3, null), SlotSemantic.MACHINE_OUTPUT);
     }
 
     @Override

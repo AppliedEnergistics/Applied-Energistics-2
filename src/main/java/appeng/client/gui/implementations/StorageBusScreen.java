@@ -18,9 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.FuzzyMode;
@@ -31,13 +28,11 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.client.gui.widgets.TabButton;
-import appeng.container.implementations.PriorityContainer;
 import appeng.container.implementations.StorageBusContainer;
-import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.core.sync.packets.SwitchGuisPacket;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
 
@@ -46,7 +41,7 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public StorageBusScreen(StorageBusContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+                            ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();

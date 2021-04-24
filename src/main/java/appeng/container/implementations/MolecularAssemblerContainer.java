@@ -90,7 +90,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
                 new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10),
                 SlotSemantic.ENCODED_PATTERN);
 
-        this.addSlot(new OutputSlot(mac, 9, -1), SlotSemantic.MACHINE_OUTPUT);
+        this.addSlot(new OutputSlot(mac, 9, null), SlotSemantic.MACHINE_OUTPUT);
 
         setupUpgrades();
     }

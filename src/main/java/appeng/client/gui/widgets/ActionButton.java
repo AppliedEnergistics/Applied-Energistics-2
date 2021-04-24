@@ -18,56 +18,52 @@
 
 package appeng.client.gui.widgets;
 
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
-
+import appeng.api.config.ActionItems;
+import appeng.client.gui.Icon;
+import appeng.core.localization.ButtonToolTips;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-import appeng.api.config.ActionItems;
-import appeng.core.localization.ButtonToolTips;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 public class ActionButton extends IconButton {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
-    private final int iconIndex;
+    private final Icon icon;
 
     public ActionButton(final ActionItems action, Consumer<ActionItems> onPress) {
-        this(0, 0, action, onPress);
-    }
-
-    public ActionButton(final int x, final int y, final ActionItems action, Consumer<ActionItems> onPress) {
         super(btn -> onPress.accept(action));
 
         ButtonToolTips displayName;
         ButtonToolTips displayValue;
         switch (action) {
             case WRENCH:
-                iconIndex = 66;
+                icon = Icon.UNUSED_04_02;
                 displayName = ButtonToolTips.PartitionStorage;
                 displayValue = ButtonToolTips.PartitionStorageHint;
                 break;
             case CLOSE:
-                iconIndex = 6;
+                icon = Icon.UNUSED_00_06;
                 displayName = ButtonToolTips.Clear;
                 displayValue = ButtonToolTips.ClearSettings;
                 break;
             case STASH:
-                iconIndex = 6;
+                icon = Icon.UNUSED_00_06;
                 displayName = ButtonToolTips.Stash;
                 displayValue = ButtonToolTips.StashDesc;
                 break;
             case ENCODE:
-                iconIndex = 8;
+                icon = Icon.UNUSED_00_08;
                 displayName = ButtonToolTips.Encode;
                 displayValue = ButtonToolTips.EncodeDescription;
                 break;
             case ENABLE_SUBSTITUTION:
-                iconIndex = 4 + 3 * 16;
+                icon = Icon.UNUSED_03_04;
                 displayName = ButtonToolTips.Substitutions;
                 displayValue = ButtonToolTips.SubstitutionsDescEnabled;
                 break;
             case DISABLE_SUBSTITUTION:
-                iconIndex = 7 + 3 * 16;
+                icon = Icon.UNUSED_03_07;
                 displayName = ButtonToolTips.Substitutions;
                 displayValue = ButtonToolTips.SubstitutionsDescDisabled;
                 break;
@@ -79,8 +75,8 @@ public class ActionButton extends IconButton {
     }
 
     @Override
-    protected int getIconIndex() {
-        return iconIndex;
+    protected Icon getIcon() {
+        return icon;
     }
 
     private ITextComponent buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {

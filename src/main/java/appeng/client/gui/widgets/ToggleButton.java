@@ -18,35 +18,30 @@
 
 package appeng.client.gui.widgets;
 
-import java.util.regex.Pattern;
-
+import appeng.client.gui.Icon;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
+import java.util.regex.Pattern;
+
 public class ToggleButton extends Button implements ITooltip {
-    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
-            "textures/guis/states.png");
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
-    private final int iconIdxOn;
-    private final int iconIdxOff;
+    private final Icon icon;
+    private final Icon iconDisabled;
 
     private final String displayName;
     private final String displayHint;
 
     private boolean isActive;
 
-    public ToggleButton(final int x, final int y, final int on, final int off, final String displayName,
-            final String displayHint, IPressable onPress) {
-        super(x, y, 16, 16, StringTextComponent.EMPTY, onPress);
-        this.iconIdxOn = on;
-        this.iconIdxOff = off;
+    public ToggleButton(final Icon on, final Icon off, final String displayName,
+                        final String displayHint, IPressable onPress) {
+        super(0, 0, 16, 16, StringTextComponent.EMPTY, onPress);
+        this.icon = on;
+        this.iconDisabled = off;
         this.displayName = displayName;
         this.displayHint = displayHint;
     }
@@ -58,21 +53,13 @@ public class ToggleButton extends Button implements ITooltip {
     @Override
     public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
         if (this.visible) {
-            final int iconIndex = this.getIconIndex();
-
-            RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE_STATES);
-
-            final int uv_y = iconIndex / 16;
-            final int uv_x = iconIndex - uv_y * 16;
-
-            blit(matrixStack, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
-            blit(matrixStack, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
+            Icon.UNUSED_15_15.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
+            getIcon().getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
         }
     }
 
-    private int getIconIndex() {
-        return this.isActive ? this.iconIdxOn : this.iconIdxOff;
+    private Icon getIcon() {
+        return this.isActive ? this.icon : this.iconDisabled;
     }
 
     @Override
@@ -81,10 +68,10 @@ public class ToggleButton extends Button implements ITooltip {
             String name = I18n.format(this.displayName);
             String value = I18n.format(this.displayHint);
 
-            if (name == null || name.isEmpty()) {
+            if (name.isEmpty()) {
                 name = this.displayName;
             }
-            if (value == null || value.isEmpty()) {
+            if (value.isEmpty()) {
                 value = this.displayHint;
             }
 

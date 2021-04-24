@@ -18,6 +18,7 @@
 
 package appeng.client.gui.me.networktool;
 
+import appeng.client.gui.Icon;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -31,17 +32,17 @@ import appeng.core.sync.packets.ConfigValuePacket;
 
 public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
 
-    private ToggleButton tFacades;
+    private final ToggleButton transparentFacadesButton;
 
     public NetworkToolScreen(NetworkToolContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        this.tFacades = new ToggleButton(0, 0, 23, 22,
+        this.transparentFacadesButton = new ToggleButton(Icon.UNUSED_01_06, Icon.UNUSED_01_07,
                 GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal(),
                 btn -> toggleFacades());
 
-        addToLeftToolbar(this.tFacades);
+        addToLeftToolbar(this.transparentFacadesButton);
     }
 
     private void toggleFacades() {
@@ -52,7 +53,7 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.tFacades.setState(container.isFacadeMode());
+        this.transparentFacadesButton.setState(container.isFacadeMode());
     }
 
 }

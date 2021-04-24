@@ -57,7 +57,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.TRASH, inv, 0),
                 SlotSemantic.MACHINE_INPUT);
-        this.addSlot(new OutputSlot(inv, 1, -1), SlotSemantic.MACHINE_OUTPUT);
+        this.addSlot(new OutputSlot(inv, 1, null), SlotSemantic.MACHINE_OUTPUT);
         this.addSlot(
                 (new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_COMPONENT, inv, 2))
                         .setStackLimit(1),

@@ -23,9 +23,6 @@ import appeng.core.AppEng;
  */
 public final class Blitter {
 
-    public static final ResourceLocation ICON_SPRITESHEET = new ResourceLocation(AppEng.MOD_ID,
-            "textures/guis/states.png");
-
     // This assumption is obviously bogus, but currently all textures are this size,
     // and it's impossible to get the texture size from an already loaded texture.
     // The coordinates will still be correct when a resource pack provides bigger textures as long
@@ -76,20 +73,6 @@ public final class Blitter {
      */
     public static Blitter texture(String file, int referenceWidth, int referenceHeight) {
         return new Blitter(new ResourceLocation(AppEng.MOD_ID, "textures/" + file), referenceWidth, referenceHeight);
-    }
-
-    /**
-     * Blits an icon from the icon sprite-sheet
-     *
-     * @param iconIndex The index of the icon in the sprite-sheet, starting at 0, in right-then-down order.
-     */
-    public static Blitter icon(int iconIndex) {
-        // The icon sprite-sheet is 16x16 icons of 16x16 pixels
-        int iconY = iconIndex / 16;
-        int iconX = iconIndex - iconY * 16;
-
-        return new Blitter(ICON_SPRITESHEET, DEFAULT_TEXTURE_WIDTH, DEFAULT_TEXTURE_HEIGHT)
-                .src(iconX * 16, iconY * 16, 16, 16);
     }
 
     public Blitter copy() {

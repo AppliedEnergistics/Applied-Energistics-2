@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+import appeng.client.gui.Icon;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -138,7 +139,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         }
 
         if (this.style.isSupportsAutoCrafting()) {
-            this.craftingStatusBtn = new TabButton(2 + 11 * 16,
+            this.craftingStatusBtn = new TabButton(Icon.UNUSED_11_02,
                     GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus());
             this.craftingStatusBtn.setHideEdge(true);
             this.widgets.add("craftingStatus", this.craftingStatusBtn);

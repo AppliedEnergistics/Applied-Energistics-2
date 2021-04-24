@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.gui.Icon;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -51,7 +52,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
         this.fuzzyMode = addToLeftToolbar(new SettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
         this.addToLeftToolbar(new ActionButton(ActionItems.WRENCH, act -> action("Partition")));
         this.addToLeftToolbar(new ActionButton(ActionItems.CLOSE, act -> action("Clear")));
-        this.copyMode = this.addToLeftToolbar(new ToggleButton(0, 0, 11 * 16 + 5, 12 * 16 + 5,
+        this.copyMode = this.addToLeftToolbar(new ToggleButton(Icon.UNUSED_11_05, Icon.UNUSED_12_05,
                 GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal(), act -> action("CopyMode")));
     }
 

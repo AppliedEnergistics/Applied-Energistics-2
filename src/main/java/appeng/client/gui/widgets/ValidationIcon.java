@@ -21,6 +21,7 @@ package appeng.client.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.client.gui.Icon;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
@@ -55,8 +56,8 @@ public class ValidationIcon extends IconButton {
     }
 
     @Override
-    protected int getIconIndex() {
-        return 16 * 8;
+    protected Icon getIcon() {
+        return Icon.UNUSED_08_00;
     }
 
     @Override

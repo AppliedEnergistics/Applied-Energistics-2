@@ -18,30 +18,24 @@
 
 package appeng.client.gui.widgets;
 
+import appeng.client.gui.Icon;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class TabButton extends Button implements ITooltip {
-    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
-            "textures/guis/states.png");
     private final ItemRenderer itemRenderer;
     private boolean hideEdge;
-    private int myIcon = -1;
-    private ItemStack myItem;
+    private Icon icon = null;
+    private ItemStack item;
 
-    public TabButton(final int ico, final ITextComponent message, final ItemRenderer ir,
-            IPressable onPress) {
+    public TabButton(final Icon ico, final ITextComponent message, final ItemRenderer ir,
+                     IPressable onPress) {
         super(0, 0, 22, 22, message, onPress);
 
-        this.myIcon = ico;
+        this.icon = ico;
         this.itemRenderer = ir;
     }
 
@@ -53,47 +47,34 @@ public class TabButton extends Button implements ITooltip {
      * @param ir      renderer
      */
     public TabButton(final ItemStack ico, final ITextComponent message, final ItemRenderer ir,
-            IPressable onPress) {
+                     IPressable onPress) {
         super(0, 0, 22, 22, message, onPress);
-        this.myItem = ico;
+        this.item = ico;
         this.itemRenderer = ir;
     }
 
     @Override
     public void renderButton(MatrixStack matrixStack, final int x, final int y, float partial) {
-        final Minecraft minecraft = Minecraft.getInstance();
-
         if (this.visible) {
-            RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            minecraft.getTextureManager().bindTexture(TEXTURE_STATES);
-
-            RenderSystem.enableAlphaTest();
-
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot
-            int uv_x = 8 + (this.hideEdge ? 0 : 2);
-            int uv_y = 12 + (this.isFocused() ? 2 : 0);
-
-            final int offsetX = this.hideEdge ? 1 : 0;
-
-            blit(matrixStack, this.x, this.y, uv_x * 16, uv_y * 16, 25, 22);
-
-            if (this.myIcon >= 0) {
-                uv_y = this.myIcon / 16;
-                uv_x = this.myIcon - uv_y * 16;
-
-                blit(matrixStack, offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16);
+            Icon backdrop;
+            if (this.hideEdge) {
+                backdrop = this.isFocused() ? Icon.UNUSED_14_08 : Icon.UNUSED_12_08;
+            } else {
+                backdrop = this.isFocused() ? Icon.UNUSED_14_10 : Icon.UNUSED_12_10;
             }
 
-            RenderSystem.disableAlphaTest();
+            backdrop.getBlitter().dest(this.x, this.y).blit(matrixStack, getBlitOffset());
 
-            if (this.myItem != null) {
+            final int offsetX = this.hideEdge ? 1 : 0;
+            if (this.icon != null) {
+                this.icon.getBlitter().dest(offsetX + this.x + 3, this.y + 3).blit(matrixStack, getBlitOffset());
+            }
+
+            if (this.item != null) {
                 this.itemRenderer.zLevel = 100.0F;
-
-                RenderHelper.enableStandardItemLighting();
-                this.itemRenderer.renderItemAndEffectIntoGUI(this.myItem, offsetX + this.x + 3, this.y + 3);
-                RenderHelper.disableStandardItemLighting();
-
+                this.itemRenderer.renderItemAndEffectIntoGUI(this.item, offsetX + this.x + 3, this.y + 3);
                 this.itemRenderer.zLevel = 0.0F;
             }
         }

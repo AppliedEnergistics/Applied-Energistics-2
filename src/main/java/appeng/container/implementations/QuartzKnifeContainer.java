@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
+import appeng.client.gui.Icon;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -60,7 +61,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         this.addSlot(
                 new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.METAL_INGOTS, this.inSlot, 0),
                 SlotSemantic.MACHINE_INPUT);
-        this.addSlot(new QuartzKniveSlot(this.inSlot, 0, -1), SlotSemantic.MACHINE_OUTPUT);
+        this.addSlot(new QuartzKniveSlot(this.inSlot, 0, null), SlotSemantic.MACHINE_OUTPUT);
 
         this.lockPlayerInventorySlot(ip.currentItem);
 
@@ -90,8 +91,8 @@ public class QuartzKnifeContainer extends AEBaseContainer {
     }
 
     private class QuartzKniveSlot extends OutputSlot {
-        QuartzKniveSlot(IItemHandler inv, int invSlot, int iconIdx) {
-            super(inv, invSlot, iconIdx);
+        QuartzKniveSlot(IItemHandler inv, int invSlot, Icon icon) {
+            super(inv, invSlot, icon);
         }
 
         @Override

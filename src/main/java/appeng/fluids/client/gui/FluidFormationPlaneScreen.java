@@ -18,26 +18,20 @@
 
 package appeng.fluids.client.gui;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.TabButton;
 import appeng.container.SlotSemantic;
-import appeng.container.implementations.PriorityContainer;
-import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidFormationPlaneContainer;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneContainer> {
 
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+                                     ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank config = container.getFluidConfigInventory();

@@ -19,7 +19,9 @@
 package appeng.container.slot;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import appeng.client.gui.Icon;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
@@ -45,9 +47,10 @@ public class AppEngSlot extends Slot {
     private boolean isPlayerSide = false;
     private AEBaseContainer container = null;
     /**
-     * Shows an icon from the icon sprite-sheet in the background of this slot, -1 means no icon
+     * Shows an icon from the icon sprite-sheet in the background of this slot.
      */
-    private int iconIndex = -1;
+    @Nullable
+    private Icon icon;
     /**
      * Caches if the item stack currently contained in this slot is "valid" or not for UI purposes.
      */
@@ -187,20 +190,16 @@ public class AppEngSlot extends Slot {
         return false;
     }
 
-    public int getIcon() {
-        return this.getIconIndex();
-    }
-
     public boolean isPlayerSide() {
         return this.isPlayerSide;
     }
 
-    private int getIconIndex() {
-        return this.iconIndex;
+    public Icon getIcon() {
+        return this.icon;
     }
 
-    public void setIconIndex(final int iIcon) {
-        this.iconIndex = iIcon;
+    public void setIcon(Icon icon) {
+        this.icon = icon;
     }
 
     /**

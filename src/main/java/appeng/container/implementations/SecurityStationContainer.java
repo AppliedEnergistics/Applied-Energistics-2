@@ -71,7 +71,7 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
         AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory(this, 2);
         this.addSlot(this.wirelessIn = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODABLE_ITEM,
                 wirelessEncoder, 0), SlotSemantic.MACHINE_INPUT);
-        this.addSlot(this.wirelessOut = new OutputSlot(wirelessEncoder, 1, -1), SlotSemantic.MACHINE_OUTPUT);
+        this.addSlot(this.wirelessOut = new OutputSlot(wirelessEncoder, 1, null), SlotSemantic.MACHINE_OUTPUT);
 
         this.createPlayerInventorySlots(ip);
     }

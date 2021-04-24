@@ -63,7 +63,7 @@ public class IOPortContainer extends UpgradeableContainer {
 
         for (int i = 0; i < 6; i++) {
             this.addSlot(new OutputSlot(cells, 6 + i,
-                    RestrictedInputSlot.PlacableItemType.STORAGE_CELLS.IIcon), SlotSemantic.MACHINE_OUTPUT);
+                    RestrictedInputSlot.PlacableItemType.STORAGE_CELLS.icon), SlotSemantic.MACHINE_OUTPUT);
         }
 
         this.setupUpgrades();
