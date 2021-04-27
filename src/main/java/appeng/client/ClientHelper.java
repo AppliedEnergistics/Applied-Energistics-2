@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Random;
 
 import appeng.client.gui.AEBaseGui;
+import appeng.container.interfaces.IJEIGhostIngredients;
 import appeng.helpers.HighlighterHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -319,7 +320,7 @@ public class ClientHelper extends ServerHelper
 	public void MouseClickEvent( final GuiScreenEvent.MouseInputEvent.Pre me )
 	{
 		final Minecraft mc = Minecraft.getMinecraft();
-		if( mc.currentScreen instanceof AEBaseGui )
+		if( mc.currentScreen instanceof IJEIGhostIngredients )
 		{
 			AEBaseGui gui = ( (AEBaseGui) mc.currentScreen );
 			Object ingredient = gui.getBookmarkedIngredient();
