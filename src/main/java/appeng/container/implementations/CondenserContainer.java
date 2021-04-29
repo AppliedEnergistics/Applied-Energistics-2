@@ -50,7 +50,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
     public CondenserOutput output = CondenserOutput.TRASH;
 
     public CondenserContainer(int id, final PlayerInventory ip, final CondenserTileEntity condenser) {
-        super(TYPE, id, ip, condenser, null);
+        super(TYPE, id, ip, condenser);
         this.condenser = condenser;
 
         IItemHandler inv = condenser.getInternalInventory();

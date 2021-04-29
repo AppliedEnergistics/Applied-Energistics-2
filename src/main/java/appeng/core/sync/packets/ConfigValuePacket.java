@@ -186,9 +186,7 @@ public class ConfigValuePacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Container c = player.openContainer;
 
-        if (this.Name.startsWith("SyncDat.")) {
-            ((AEBaseContainer) c).stringSync(Integer.parseInt(this.Name.substring(8)), this.Value);
-        } else if (c instanceof IConfigurableObject) {
+        if (c instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
 
             for (final Settings e : cm.getSettings()) {

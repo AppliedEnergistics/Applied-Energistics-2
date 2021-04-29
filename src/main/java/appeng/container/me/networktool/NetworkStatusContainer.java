@@ -44,7 +44,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
     private int delay = 40;
 
     public NetworkStatusContainer(int id, PlayerInventory ip, final INetworkTool te) {
-        super(TYPE, id, ip, null, null);
+        super(TYPE, id, ip, null);
         final IGridHost host = te.getGridHost();
 
         if (host != null) {

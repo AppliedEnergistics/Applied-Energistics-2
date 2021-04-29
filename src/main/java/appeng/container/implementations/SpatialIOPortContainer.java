@@ -63,7 +63,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     public int zSize;
 
     public SpatialIOPortContainer(int id, final PlayerInventory ip, final SpatialIOPortTileEntity spatialIOPort) {
-        super(TYPE, id, ip, spatialIOPort, null);
+        super(TYPE, id, ip, spatialIOPort);
 
         if (isServer()) {
             this.network = spatialIOPort.getGridNode(AEPartLocation.INTERNAL).getGrid();

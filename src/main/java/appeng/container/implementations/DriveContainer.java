@@ -36,7 +36,7 @@ public class DriveContainer extends AEBaseContainer {
             .build("drive");
 
     public DriveContainer(int id, final PlayerInventory ip, final DriveTileEntity drive) {
-        super(TYPE, id, ip, drive, null);
+        super(TYPE, id, ip, drive);
 
         for (int i = 0; i < 10; i++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,

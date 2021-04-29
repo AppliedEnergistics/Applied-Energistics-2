@@ -55,7 +55,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
     private String currentName = "";
 
     public QuartzKnifeContainer(int id, final PlayerInventory ip, final QuartzKnifeObj te) {
-        super(TYPE, id, ip, null, null);
+        super(TYPE, id, ip, te);
         this.toolInv = te;
 
         this.addSlot(

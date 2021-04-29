@@ -40,7 +40,7 @@ public class SkyChestContainer extends AEBaseContainer {
     private final SkyChestTileEntity chest;
 
     public SkyChestContainer(int id, final PlayerInventory ip, final SkyChestTileEntity chest) {
-        super(TYPE, id, ip, chest, null);
+        super(TYPE, id, ip, chest);
         this.chest = chest;
 
         IItemHandler inv = this.chest.getInternalInventory();

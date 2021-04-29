@@ -87,6 +87,8 @@ public class PatternTermContainer extends ItemTerminalContainer
     private final ICraftingHelper craftingHelper = Api.INSTANCE.crafting();
 
     private ICraftingRecipe currentRecipe;
+    private boolean currentRecipeCraftingMode;
+
     @GuiSync(97)
     public boolean craftingMode = true;
     @GuiSync(96)
@@ -147,6 +149,7 @@ public class PatternTermContainer extends ItemTerminalContainer
 
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, world)) {
             this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
+            this.currentRecipeCraftingMode = this.craftingMode;
         }
 
         final ItemStack is;
@@ -373,10 +376,10 @@ public class PatternTermContainer extends ItemTerminalContainer
     }
 
     @Override
-    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
-        super.onUpdate(field, oldValue, newValue);
+    public void onServerDataSync() {
+        super.onServerDataSync();
 
-        if (field.equals("craftingMode")) {
+        if (this.currentRecipeCraftingMode != this.craftingMode) {
             this.getAndUpdateOutput();
         }
     }

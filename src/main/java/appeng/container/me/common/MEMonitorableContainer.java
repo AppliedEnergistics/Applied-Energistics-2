@@ -32,7 +32,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -42,7 +41,6 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.implementations.tiles.IViewCellStorage;
@@ -56,7 +54,6 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.parts.IPart;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
@@ -115,9 +112,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     public MEMonitorableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
             final ITerminalHost host, final boolean bindInventory,
             IStorageChannel<T> storageChannel) {
-        super(containerType, id, ip, host instanceof TileEntity ? (TileEntity) host : null,
-                host instanceof IPart ? (IPart) host : null,
-                host instanceof IGuiItemObject ? (IGuiItemObject) host : null);
+        super(containerType, id, ip, host);
 
         this.storageChannel = storageChannel;
 
@@ -271,14 +266,14 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     }
 
     @Override
-    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
+    public void onServerDataSync() {
+        super.onServerDataSync();
+
         // When the canEditViewCells field changes on the client-side after a data sync from the server,
         // update the associated slots accordingly
         for (RestrictedInputSlot slot : viewCellSlots) {
             slot.setAllowEdit(this.canEditViewCells);
         }
-
-        super.onUpdate(field, oldValue, newValue);
     }
 
     private void updateActiveCraftingJobs() {
