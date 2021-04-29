@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import appeng.core.sync.packets.GuiDataSyncPacket;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.core.sync.packets.AssemblerAnimationPacket;
@@ -36,6 +35,7 @@ import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.core.sync.packets.CraftConfirmPlanPacket;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.core.sync.packets.FluidSlotPacket;
+import appeng.core.sync.packets.GuiDataSyncPacket;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.ItemTransitionEffectPacket;

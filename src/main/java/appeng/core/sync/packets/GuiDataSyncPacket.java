@@ -1,14 +1,16 @@
 package appeng.core.sync.packets;
 
-import appeng.container.AEBaseContainer;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
+import java.util.function.Consumer;
+
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 
-import java.util.function.Consumer;
+import appeng.container.AEBaseContainer;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.INetworkInfo;
 
 public class GuiDataSyncPacket extends BasePacket {
     private final int windowId;

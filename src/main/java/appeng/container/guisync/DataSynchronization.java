@@ -1,17 +1,17 @@
 package appeng.container.guisync;
 
-import appeng.core.AELog;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.inventory.container.Container;
+import net.minecraft.network.PacketBuffer;
+
+import appeng.core.AELog;
+
 /**
- * Helper class for synchronizing fields from server-side containers to client-side containers.
- * Fields need to be annotated with {@link GuiSync} and given a unique key within the class
- * hierarchy.
+ * Helper class for synchronizing fields from server-side containers to client-side containers. Fields need to be
+ * annotated with {@link GuiSync} and given a unique key within the class hierarchy.
  */
 public class DataSynchronization {
 
@@ -27,7 +27,8 @@ public class DataSynchronization {
                 final GuiSync annotation = f.getAnnotation(GuiSync.class);
                 short key = annotation.value();
                 if (this.fields.containsKey(key)) {
-                    throw new IllegalStateException("Class " + host.getClass() + " declares the same sync id twice: " + key);
+                    throw new IllegalStateException(
+                            "Class " + host.getClass() + " declares the same sync id twice: " + key);
                 }
                 this.fields.put(key, SynchronizedField.create(host, f));
             }
@@ -50,16 +51,14 @@ public class DataSynchronization {
     }
 
     /**
-     * Write the data for all fields to the given buffer,
-     * and marks all fields as unchanged.
+     * Write the data for all fields to the given buffer, and marks all fields as unchanged.
      */
     public void writeFull(PacketBuffer data) {
         writeFields(data, true);
     }
 
     /**
-     * Write the data for changed fields to the given buffer,
-     * and marks all fields as unchanged.
+     * Write the data for changed fields to the given buffer, and marks all fields as unchanged.
      */
     public void writeUpdate(PacketBuffer data) {
         writeFields(data, false);
