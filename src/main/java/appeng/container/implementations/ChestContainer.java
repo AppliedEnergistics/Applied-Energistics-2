@@ -38,7 +38,7 @@ public class ChestContainer extends AEBaseContainer {
             .build("chest");
 
     public ChestContainer(int id, final PlayerInventory ip, final ChestTileEntity chest) {
-        super(TYPE, id, ip, chest, null);
+        super(TYPE, id, ip, chest);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
                 chest.getInternalInventory(), 1), SlotSemantic.STORAGE_CELL);

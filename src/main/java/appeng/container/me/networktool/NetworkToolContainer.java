@@ -45,7 +45,7 @@ public class NetworkToolContainer extends AEBaseContainer {
     public boolean facadeMode;
 
     public NetworkToolContainer(int id, final PlayerInventory ip, final INetworkTool te) {
-        super(TYPE, id, ip, null, null);
+        super(TYPE, id, ip, null);
         this.toolInv = te;
 
         this.lockPlayerInventorySlot(ip.currentItem);

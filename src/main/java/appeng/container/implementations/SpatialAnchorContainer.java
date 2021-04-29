@@ -77,7 +77,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
     public int allChunks;
 
     public SpatialAnchorContainer(int id, final PlayerInventory ip, final SpatialAnchorTileEntity spatialAnchor) {
-        super(TYPE, id, ip, spatialAnchor, null);
+        super(TYPE, id, ip, spatialAnchor);
 
         if (isServer()) {
             this.network = spatialAnchor.getGridNode(AEPartLocation.INTERNAL).getGrid();

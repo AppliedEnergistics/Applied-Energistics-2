@@ -46,7 +46,7 @@ public class WirelessContainer extends AEBaseContainer {
     public long drain = 0;
 
     public WirelessContainer(int id, final PlayerInventory ip, final WirelessTileEntity te) {
-        super(TYPE, id, ip, te, null);
+        super(TYPE, id, ip, te);
 
         this.addSlot(this.boosterSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.RANGE_BOOSTER,
                 te.getInternalInventory(), 0), SlotSemantic.STORAGE);

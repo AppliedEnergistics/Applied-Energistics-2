@@ -18,30 +18,6 @@
 
 package appeng.container;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.networking.IGrid;
@@ -51,8 +27,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPart;
-import appeng.container.guisync.GuiSync;
-import appeng.container.guisync.SyncData;
+import appeng.container.guisync.DataSynchronization;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.CraftingMatrixSlot;
 import appeng.container.slot.CraftingTermSlot;
@@ -60,20 +35,43 @@ import appeng.container.slot.DisabledSlot;
 import appeng.container.slot.FakeSlot;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.PlayerInvSlot;
-import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.GuiDataSyncPacket;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ArrayListMultimap;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class AEBaseContainer extends Container {
     private final IActionSource mySrc;
     private final TileEntity tileEntity;
     private final IPart part;
     private final IGuiItemObject guiItem;
-    private final HashMap<Integer, SyncData> syncData = new HashMap<>();
+    private final DataSynchronization dataSync = new DataSynchronization(this);
     private final PlayerInventory playerInventory;
     private final List<AppEngSlot> playerInventorySlots = new ArrayList<>();
     private final Set<Integer> lockedPlayerInventorySlots = new HashSet<>();
@@ -83,37 +81,19 @@ public abstract class AEBaseContainer extends Container {
     private ContainerLocator locator;
     private int ticksSinceCheck = 900;
 
-    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
-            final IPart myPart) {
-        this(containerType, id, ip, myTile, myPart, null);
-    }
-
     public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory playerInventory,
-            final TileEntity myTile,
-            final IPart myPart, final IGuiItemObject gio) {
-        super(containerType, id);
-        this.playerInventory = playerInventory;
-        this.tileEntity = myTile;
-        this.part = myPart;
-        this.guiItem = gio;
-        this.mySrc = new PlayerSource(playerInventory.player, this.getActionHost());
-        this.prepareSync();
-    }
-
-    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory playerInventory,
-            final Object host) {
+                           final Object host) {
         super(containerType, id);
         this.playerInventory = playerInventory;
         this.tileEntity = host instanceof TileEntity ? (TileEntity) host : null;
         this.part = host instanceof IPart ? (IPart) host : null;
         this.guiItem = host instanceof IGuiItemObject ? (IGuiItemObject) host : null;
 
-        if (this.tileEntity == null && this.part == null && this.guiItem == null) {
+        if (host != null && this.tileEntity == null && this.part == null && this.guiItem == null) {
             throw new IllegalArgumentException("Must have a valid host, instead " + host + " in " + playerInventory);
         }
 
         this.mySrc = new PlayerSource(playerInventory.player, this.getActionHost());
-        this.prepareSync();
     }
 
     protected IActionHost getActionHost() {
@@ -134,19 +114,6 @@ public abstract class AEBaseContainer extends Container {
 
     public boolean isRemote() {
         return this.playerInventory.player.getEntityWorld().isRemote();
-    }
-
-    private void prepareSync() {
-        for (final Field f : this.getClass().getFields()) {
-            if (f.isAnnotationPresent(GuiSync.class)) {
-                final GuiSync annotation = f.getAnnotation(GuiSync.class);
-                if (this.syncData.containsKey(annotation.value())) {
-                    AELog.warn("Channel already in use: " + annotation.value() + " for " + f.getName());
-                } else {
-                    this.syncData.put(annotation.value(), new SyncData(this, f, annotation));
-                }
-            }
-        }
     }
 
     public IActionSource getActionSource() {
@@ -224,21 +191,6 @@ public abstract class AEBaseContainer extends Container {
         return this.tileEntity;
     }
 
-    public final void updateFullProgressBar(final int idx, final long value) {
-        if (this.syncData.containsKey(idx)) {
-            this.syncData.get(idx).update(value);
-            return;
-        }
-
-        this.updateProgressBar(idx, (int) value);
-    }
-
-    public void stringSync(final int idx, final String value) {
-        if (this.syncData.containsKey(idx)) {
-            this.syncData.get(idx).update(value);
-        }
-    }
-
     protected final void createPlayerInventorySlots(PlayerInventory playerInventory) {
         Preconditions.checkState(playerInventorySlots.isEmpty(), "Player inventory was already created");
 
@@ -292,10 +244,8 @@ public abstract class AEBaseContainer extends Container {
                 this.setValidContainer(false);
             }
 
-            for (final IContainerListener listener : this.listeners) {
-                for (final SyncData sd : this.syncData.values()) {
-                    sd.tick(listener);
-                }
+            if (dataSync.hasChanges()) {
+                sendPacketToClient(new GuiDataSyncPacket(windowId, dataSync::writeUpdate));
             }
         }
 
@@ -466,13 +416,6 @@ public abstract class AEBaseContainer extends Container {
             }
         }
         return false;
-    }
-
-    @Override
-    public final void updateProgressBar(final int idx, final int value) {
-        if (this.syncData.containsKey(idx)) {
-            this.syncData.get(idx).update((long) value);
-        }
     }
 
     @Override
@@ -674,8 +617,11 @@ public abstract class AEBaseContainer extends Container {
         b.putStack(testB);
     }
 
-    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
-
+    /**
+     * Can be overridden in subclasses to be notified of GUI data updates sent by the server.
+     */
+    @OverridingMethodsMustInvokeSuper
+    public void onServerDataSync() {
     }
 
     public void onSlotChange(final Slot s) {
@@ -747,5 +693,27 @@ public abstract class AEBaseContainer extends Container {
         }
 
         return false;
+    }
+
+    @Override
+    public void addListener(IContainerListener listener) {
+        super.addListener(listener);
+
+        // The first listener that is added is our opportunity to send the initial data packet, since
+        // this happens after the OpenContainer packet has been sent to the client, but before any other
+        // processing continues.
+        if (listener instanceof ServerPlayerEntity) {
+            if (dataSync.hasFields()) {
+                sendPacketToClient(new GuiDataSyncPacket(windowId, dataSync::writeFull));
+            }
+        }
+    }
+
+    /**
+     * Receives data from the server for synchronizing fields of this class.
+     */
+    public final void receiveSyncData(GuiDataSyncPacket packet) {
+        this.dataSync.readUpdate(packet.getData());
+        this.onServerDataSync();
     }
 }

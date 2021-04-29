@@ -49,8 +49,7 @@ public class PriorityContainer extends AEBaseContainer {
     private int priorityValue;
 
     public PriorityContainer(int id, final PlayerInventory ip, final IPriorityHost te) {
-        super(TYPE, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
-                (IPart) (te instanceof IPart ? te : null));
+        super(TYPE, id, ip, te);
         this.priHost = te;
         this.priorityValue = te.getPriority();
     }

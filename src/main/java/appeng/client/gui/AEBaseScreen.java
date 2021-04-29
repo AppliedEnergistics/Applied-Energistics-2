@@ -233,11 +233,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 this.drawTooltip(matrixStack, (ITooltip) c, mouseX, mouseY);
             }
         }
-
-        List<Rectangle2d> exclusionZones = getExclusionZones();
-        for (Rectangle2d rectangle2d : exclusionZones) {
-            fillRect(matrixStack, rectangle2d, 0x7f00FF00);
-        }
     }
 
     protected void drawGuiSlot(MatrixStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,

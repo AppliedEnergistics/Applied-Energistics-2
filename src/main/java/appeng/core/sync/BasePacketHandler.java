@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import appeng.core.sync.packets.GuiDataSyncPacket;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.core.sync.packets.AssemblerAnimationPacket;
@@ -48,7 +49,6 @@ import appeng.core.sync.packets.NetworkStatusPacket;
 import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.core.sync.packets.PatternSlotPacket;
-import appeng.core.sync.packets.ProgressBarPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 
@@ -82,7 +82,7 @@ public class BasePacketHandler {
 
         BLOCK_TRANSITION_EFFECT(BlockTransitionEffectPacket.class, BlockTransitionEffectPacket::new),
 
-        PROGRESS_VALUE(ProgressBarPacket.class, ProgressBarPacket::new),
+        GUI_DATA_SYNC(GuiDataSyncPacket.class, GuiDataSyncPacket::new),
 
         CLICK(ClickPacket.class, ClickPacket::new),
 

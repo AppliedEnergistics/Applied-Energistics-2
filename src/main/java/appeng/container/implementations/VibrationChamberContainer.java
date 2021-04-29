@@ -45,7 +45,7 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
 
     public VibrationChamberContainer(int id, final PlayerInventory ip,
             final VibrationChamberTileEntity vibrationChamber) {
-        super(TYPE, id, ip, vibrationChamber, null);
+        super(TYPE, id, ip, vibrationChamber);
         this.vibrationChamber = vibrationChamber;
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.FUEL,

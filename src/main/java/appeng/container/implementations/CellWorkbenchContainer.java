@@ -160,12 +160,10 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
-        if (field.equals("copyMode")) {
-            this.workBench.getConfigManager().putSetting(Settings.COPY_MODE, this.getCopyMode());
-        }
+    public void onServerDataSync() {
+        super.onServerDataSync();
 
-        super.onUpdate(field, oldValue, newValue);
+        this.workBench.getConfigManager().putSetting(Settings.COPY_MODE, this.getCopyMode());
     }
 
     public void clear() {

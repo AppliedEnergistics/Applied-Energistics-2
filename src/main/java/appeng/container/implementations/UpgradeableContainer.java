@@ -64,8 +64,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
 
     public UpgradeableContainer(ContainerType<?> containerType, int id, final PlayerInventory ip,
             final IUpgradeableHost te) {
-        super(containerType, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
-                (IPart) (te instanceof IPart ? te : null));
+        super(containerType, id, ip, te);
         this.upgradeable = te;
 
         World w = null;

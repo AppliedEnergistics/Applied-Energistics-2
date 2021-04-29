@@ -40,7 +40,7 @@ public class GrinderContainer extends AEBaseContainer {
             .build("grinder");
 
     public GrinderContainer(int id, final PlayerInventory ip, final GrinderTileEntity grinder) {
-        super(TYPE, id, ip, grinder, null);
+        super(TYPE, id, ip, grinder);
 
         IItemHandler inv = grinder.getInternalInventory();
 
