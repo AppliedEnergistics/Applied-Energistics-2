@@ -2,6 +2,7 @@ package appeng.client.gui.me.common;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -196,6 +197,10 @@ public abstract class Repo<T extends IAEStack<T>> {
     protected abstract boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, T stack);
 
     protected abstract Comparator<? super T> getComparator(SortOrder sortBy, SortDir sortDir);
+
+    public Set<GridInventoryEntry<T>> getAllEntries() {
+        return entries.values();
+    }
 
     protected enum SearchMode {
         MOD,

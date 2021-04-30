@@ -92,7 +92,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     private static String memoryText = "";
     private final TerminalStyle style;
-    private final Repo<T> repo;
+    protected final Repo<T> repo;
     private final List<ItemStack> currentViewCells = new ArrayList<>();
     private final IConfigManager configSrc;
     private final boolean supportsViewCells;

@@ -724,6 +724,7 @@
   "jei.appliedenergistics2.recipe_too_large": "Recipe larger than 3x3",
   "jei.appliedenergistics2.requires_processing_mode": "Requires processing mode",
   "jei.appliedenergistics2.no_output": "Recipe has no output",
+  "jei.appliedenergistics2.missing_items": "Missing Items",
   "gui.appliedenergistics2.ConfirmCraftCpuStatus": "Storage: %s : Co Processors: %s",
   "gui.appliedenergistics2.ConfirmCraftNoCpu": "Storage: N/A : Co Processors: N/A"
 }
