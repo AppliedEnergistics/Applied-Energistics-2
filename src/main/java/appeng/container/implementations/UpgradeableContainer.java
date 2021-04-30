@@ -105,7 +105,6 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
                 RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES,
                         this.tbInventory.getInternalInventory(), i);
                 // The toolbox is in the network tool that is part of the player inventory
-                slot.setPlayerSide();
                 this.addSlot(slot, SlotSemantic.TOOLBOX);
             }
         }
