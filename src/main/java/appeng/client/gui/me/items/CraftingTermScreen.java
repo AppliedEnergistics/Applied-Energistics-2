@@ -18,13 +18,19 @@
 
 package appeng.client.gui.me.items;
 
+import java.util.List;
+
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
+import appeng.container.SlotSemantic;
 import appeng.container.me.items.CraftingTermContainer;
+import appeng.util.Platform;
 
 /**
  * This screen extends the item terminal with a crafting grid. The content of the crafting grid is stored server-side in
@@ -39,6 +45,25 @@ public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer
         ActionButton clearBtn = new ActionButton(ActionItems.STASH, btn -> container.clearCraftingGrid());
         clearBtn.setHalfSize(true);
         widgets.add("clearCraftingGrid", clearBtn);
+    }
+
+    @Override
+    public boolean hasItemType(List<ItemStack> itemStacks) {
+        // In addition to the base item repo, also check the crafting grid if it
+        // already contains some of the needed items
+        for (Slot slot : container.getSlots(SlotSemantic.CRAFTING_GRID)) {
+            ItemStack stackInSlot = slot.getStack();
+            if (!stackInSlot.isEmpty()) {
+                for (ItemStack itemStack : itemStacks) {
+                    if (itemStack != null && Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
+                        return true;
+                    }
+                }
+            }
+
+        }
+
+        return super.hasItemType(itemStacks);
     }
 
 }

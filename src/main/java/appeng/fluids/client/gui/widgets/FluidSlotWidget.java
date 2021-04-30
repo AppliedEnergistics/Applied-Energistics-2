@@ -21,6 +21,8 @@ package appeng.fluids.client.gui.widgets;
 import java.util.Collections;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
@@ -38,6 +40,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.gui.IIngredientSupplier;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.core.sync.network.NetworkHandler;
@@ -46,7 +49,7 @@ import appeng.fluids.client.gui.FluidBlitter;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidTank;
 
-public class FluidSlotWidget extends CustomSlotWidget {
+public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupplier {
     private final IAEFluidTank fluids;
 
     public FluidSlotWidget(IAEFluidTank fluids, int slot) {
@@ -107,4 +110,15 @@ public class FluidSlotWidget extends CustomSlotWidget {
         NetworkHandler.instance()
                 .sendToServer(new FluidSlotPacket(Collections.singletonMap(this.getId(), this.getFluidStack())));
     }
+
+    @Nullable
+    @Override
+    public FluidStack getFluidIngredient() {
+        IAEFluidStack fluidStack = getFluidStack();
+        if (fluidStack != null) {
+            return fluidStack.getFluidStack();
+        }
+        return null;
+    }
+
 }

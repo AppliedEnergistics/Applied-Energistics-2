@@ -18,6 +18,8 @@
 
 package appeng.fluids.client.gui.widgets;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.gui.widget.Widget;
@@ -25,15 +27,17 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.gui.IIngredientSupplier;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.fluids.client.gui.FluidBlitter;
 import appeng.fluids.util.IAEFluidTank;
 
 @OnlyIn(Dist.CLIENT)
-public class FluidTankWidget extends Widget implements ITooltip {
+public class FluidTankWidget extends Widget implements ITooltip, IIngredientSupplier {
     private final IAEFluidTank tank;
     private final int slot;
 
@@ -111,6 +115,12 @@ public class FluidTankWidget extends Widget implements ITooltip {
     @Override
     public boolean isTooltipAreaVisible() {
         return true;
+    }
+
+    @Nullable
+    @Override
+    public FluidStack getFluidIngredient() {
+        return tank.getFluidInTank(this.slot).copy();
     }
 
 }

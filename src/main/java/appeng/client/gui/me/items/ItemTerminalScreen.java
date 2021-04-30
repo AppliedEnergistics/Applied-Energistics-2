@@ -31,8 +31,8 @@ import appeng.util.prioritylist.IPartitionList;
 public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
         extends MEMonitorableScreen<IAEItemStack, C> {
     public ItemTerminalScreen(C container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style1) {
-        super(container, playerInventory, title, style1);
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override
@@ -119,6 +119,21 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
 
         // Otherwise only craft if there are no stored items
         return entry.getStoredAmount() == 0 && entry.isCraftable();
+    }
+
+    public boolean hasItemType(List<ItemStack> itemStacks) {
+        for (ItemStack itemStack : itemStacks) {
+            if (itemStack == null) {
+                continue;
+            }
+
+            for (GridInventoryEntry<IAEItemStack> stack : repo.getAllEntries()) {
+                if (stack.getStack().equals(itemStack)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

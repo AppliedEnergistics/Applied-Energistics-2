@@ -70,7 +70,6 @@ import appeng.client.gui.style.Text;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
-import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
@@ -418,11 +417,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             }
         }
 
-        for (CustomSlotWidget slot : this.guiSlots) {
-            if (this.isPointInRegion(slot.getTooltipAreaX(), slot.getTooltipAreaY(), slot.getTooltipAreaWidth(),
-                    slot.getTooltipAreaHeight(), xCoord, yCoord) && slot.canClick(getPlayer())) {
-                slot.slotClicked(getPlayer().inventory.getItemStack(), btn);
-            }
+        CustomSlotWidget slot = getGuiSlotAt(xCoord, yCoord);
+        if (slot != null) {
+            slot.slotClicked(getPlayer().inventory.getItemStack(), btn);
         }
 
         if (widgets.onMouseDown(getMousePoint(xCoord, yCoord), btn)) {
@@ -682,13 +679,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         getMinecraft().getTextureManager().bindTexture(loc);
     }
 
-    public void bindTexture(final ResourceLocation loc) {
-        getMinecraft().getTextureManager().bindTexture(loc);
-    }
-
-    protected void setScrollBar(final Scrollbar myScrollBar) {
-    }
-
     @Override
     public void tick() {
         super.tick();
@@ -764,6 +754,24 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
+    /**
+     * Gets the GUI slot under the given coordinates.
+     *
+     * @param x X coordinate in window space.
+     * @param y Y coordinate in window space.
+     */
+    @Nullable
+    private CustomSlotWidget getGuiSlotAt(double x, double y) {
+        for (CustomSlotWidget slot : this.guiSlots) {
+            if (this.isPointInRegion(slot.getTooltipAreaX(), slot.getTooltipAreaY(), slot.getTooltipAreaWidth(),
+                    slot.getTooltipAreaHeight(), x, y) && slot.canClick(getPlayer())) {
+                return slot;
+            }
+        }
+
+        return null;
+    }
+
     public List<CustomSlotWidget> getGuiSlots() {
         return Collections.unmodifiableList(guiSlots);
     }
@@ -777,5 +785,42 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     public ScreenStyle getStyle() {
         return style;
+    }
+
+    /**
+     * Return a Vanilla ItemStack or FluidStack if there is one at the given window coordinates. This is used by JEI to
+     * allow the U and R hotkeys to work for ingredients (such as fluids) that are not stored in normal slots.
+     * <p/>
+     * The given coordinates are in window space.
+     */
+    @Nullable
+    public Object getIngredientUnderMouse(double mouseX, double mouseY) {
+        IIngredientSupplier ingredientSupplier = null;
+
+        // First search for custom widgets
+        CustomSlotWidget guiSlot = getGuiSlotAt(mouseX, mouseY);
+        if (guiSlot instanceof IIngredientSupplier) {
+            ingredientSupplier = (IIngredientSupplier) guiSlot;
+        }
+
+        // Then any of the children
+        if (ingredientSupplier == null) {
+            for (IGuiEventListener child : super.children) {
+                if (child instanceof IIngredientSupplier && child.isMouseOver(mouseX, mouseY)) {
+                    ingredientSupplier = (IIngredientSupplier) child;
+                    break;
+                }
+            }
+        }
+
+        Object ingredient = null;
+        if (ingredientSupplier != null) {
+            ingredient = ingredientSupplier.getFluidIngredient();
+            if (ingredient == null) {
+                ingredient = ingredientSupplier.getItemIngredient();
+            }
+        }
+
+        return ingredient;
     }
 }

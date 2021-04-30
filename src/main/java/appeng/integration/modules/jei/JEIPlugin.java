@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.Minecraft;
@@ -195,6 +197,19 @@ public class JEIPlugin implements IModPlugin {
                 } else {
                     return Collections.emptyList();
                 }
+            }
+
+            @Nullable
+            @Override
+            public Object getIngredientUnderMouse(ContainerScreen<?> containerScreen, double mouseX, double mouseY) {
+                // The following code allows the player to show recipes involving fluids in AE fluid terminals or
+                // AE fluid tanks shown in fluid interfaces and other UI.
+                if (containerScreen instanceof AEBaseScreen) {
+                    AEBaseScreen<?> baseScreen = (AEBaseScreen<?>) containerScreen;
+                    return baseScreen.getIngredientUnderMouse(mouseX, mouseY);
+                }
+
+                return null;
             }
         });
 
