@@ -149,6 +149,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private int isWorking = -1;
 	private final Accessor accessor = new Accessor();
 	private GTCEInventoryAdaptor GTad;
+	EnumSet<EnumFacing> visitedFaces = EnumSet.noneOf( EnumFacing.class );
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
@@ -939,8 +940,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		final World w = tile.getWorld();
 
 		final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
+
 		for( final EnumFacing s : possibleDirections )
 		{
+			if (visitedFaces.contains( s ))
+				continue;
+
 			final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 			if( te instanceof IInterfaceHost )
 			{
@@ -964,6 +969,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				{
 					if( cm.pushPattern( patternDetails, table, s.getOpposite() ) )
 					{
+						visitedFaces.add( s );
 						return true;
 					}
 					continue;
@@ -1004,10 +1010,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						}
 					}
 					this.pushItemsOut( possibleDirections );
+					visitedFaces.add( s );
 					return true;
 				}
 			}
 		}
+		visitedFaces.clear();
 
 		return false;
 	}

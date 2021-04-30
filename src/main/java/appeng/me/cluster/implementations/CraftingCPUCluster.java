@@ -93,6 +93,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private final List<TileCraftingTile> storage = new ArrayList<>();
 	private final List<TileCraftingMonitorTile> status = new ArrayList<>();
 	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
+	private final Map<ICraftingPatternDetails,List<ICraftingMedium>> visitedMediums = new HashMap<>();
 	private ICraftingLink myLastLink;
 	private String myName = "";
 	private boolean isDestroyed = false;
@@ -652,6 +653,22 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 					{
 						continue;
 					}
+
+					if (visitedMediums.containsKey( details ))
+					{
+						if( visitedMediums.get( details ).containsAll( cc.getMediums( e.getKey() ) ) )
+						{
+							visitedMediums.put( details, new ArrayList<>() );
+						}
+					}
+
+					visitedMediums.putIfAbsent( details, new ArrayList<>() );
+
+					if( visitedMediums.get( details ).contains( m ) )
+					{
+						continue;
+					}
+					visitedMediums.get( details ).add( m );
 
 					if( !m.isBusy() )
 					{
