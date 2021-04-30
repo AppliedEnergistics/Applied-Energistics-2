@@ -255,18 +255,35 @@ public abstract class AEBaseContainer extends Container {
         super.detectAndSendChanges();
     }
 
+    /**
+     * Check if a given slot is considered to be "on the player side" for the purposes of shift-clicking items back and
+     * forth between the opened container and the player's inventory.
+     */
+    private boolean isPlayerSideSlot(Slot slot) {
+        if (slot.inventory == playerInventory) {
+            return true;
+        }
+
+        SlotSemantic slotSemantic = semanticBySlot.get(slot);
+        return slotSemantic == SlotSemantic.PLAYER_INVENTORY
+                || slotSemantic == SlotSemantic.PLAYER_HOTBAR
+                // The crafting grid in the crafting terminal also shift-clicks into the network
+                || slotSemantic == SlotSemantic.CRAFTING_GRID;
+    }
+
     @Override
     public ItemStack transferStackInSlot(final PlayerEntity p, final int idx) {
         if (isRemote()) {
             return ItemStack.EMPTY;
         }
 
-        final AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get(idx); // require AE Slots!
+        final Slot clickSlot = this.inventorySlots.get(idx);
+        boolean playerSide = isPlayerSideSlot(clickSlot);
 
         if (clickSlot instanceof DisabledSlot || clickSlot instanceof InaccessibleSlot) {
             return ItemStack.EMPTY;
         }
-        if (clickSlot != null && clickSlot.getHasStack()) {
+        if (clickSlot.getHasStack()) {
             ItemStack tis = clickSlot.getStack();
 
             if (tis.isEmpty()) {
@@ -276,15 +293,13 @@ public abstract class AEBaseContainer extends Container {
             final List<Slot> selectedSlots = new ArrayList<>();
 
             // Gather a list of valid destinations.
-            if (clickSlot.isPlayerSide()) {
+            if (playerSide) {
                 tis = this.transferStackToContainer(tis);
 
                 if (!tis.isEmpty()) {
                     // target slots in the container...
-                    for (final Object inventorySlot : this.inventorySlots) {
-                        final AppEngSlot cs = (AppEngSlot) inventorySlot;
-
-                        if (!(cs.isPlayerSide()) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)) {
+                    for (final Slot cs : this.inventorySlots) {
+                        if (!isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)) {
                             if (cs.isItemValid(tis)) {
                                 selectedSlots.add(cs);
                             }
@@ -298,7 +313,7 @@ public abstract class AEBaseContainer extends Container {
                 for (final Object inventorySlot : this.inventorySlots) {
                     final AppEngSlot cs = (AppEngSlot) inventorySlot;
 
-                    if ((cs.isPlayerSide()) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)) {
+                    if (isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)) {
                         if (cs.isItemValid(tis)) {
                             selectedSlots.add(cs);
                         }
@@ -307,14 +322,14 @@ public abstract class AEBaseContainer extends Container {
             }
 
             // Handle Fake Slot Shift clicking.
-            if (selectedSlots.isEmpty() && clickSlot.isPlayerSide()) {
+            if (selectedSlots.isEmpty() && playerSide) {
                 if (!tis.isEmpty()) {
                     // target slots in the container...
                     for (final Object inventorySlot : this.inventorySlots) {
                         final AppEngSlot cs = (AppEngSlot) inventorySlot;
                         final ItemStack destination = cs.getStack();
 
-                        if (!(cs.isPlayerSide()) && cs instanceof FakeSlot) {
+                        if (!isPlayerSideSlot(cs) && cs instanceof FakeSlot) {
                             if (Platform.itemComparisons().isSameItem(destination, tis)) {
                                 break;
                             } else if (destination.isEmpty()) {
@@ -383,7 +398,7 @@ public abstract class AEBaseContainer extends Container {
         return ItemStack.EMPTY;
     }
 
-    private boolean x(AppEngSlot clickSlot, ItemStack tis, Slot d) {
+    private boolean x(Slot clickSlot, ItemStack tis, Slot d) {
         final ItemStack t = d.getStack().copy();
 
         if (Platform.itemComparisons().isSameItem(t, tis)) {

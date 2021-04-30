@@ -25,8 +25,6 @@ public class PlayerInvSlot extends AppEngSlot {
 
     public PlayerInvSlot(final IItemHandler inv, final int invSlot) {
         super(inv, invSlot);
-
-        this.setPlayerSide(true);
     }
 
 }

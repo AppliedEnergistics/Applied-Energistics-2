@@ -41,11 +41,8 @@ public class AppEngSlot extends Slot {
     private final int invSlot;
 
     private boolean isDraggable = true;
-    /**
-     * Indicates that this slot is part of the player's inventory.
-     */
-    private boolean isPlayerSide = false;
     private AEBaseContainer container = null;
+
     /**
      * Shows an icon from the icon sprite-sheet in the background of this slot.
      */
@@ -65,11 +62,6 @@ public class AppEngSlot extends Slot {
 
     public Slot setNotDraggable() {
         this.setDraggable(false);
-        return this;
-    }
-
-    public Slot setPlayerSide() {
-        this.isPlayerSide = true;
         return this;
     }
 
@@ -190,10 +182,6 @@ public class AppEngSlot extends Slot {
         return false;
     }
 
-    public boolean isPlayerSide() {
-        return this.isPlayerSide;
-    }
-
     public Icon getIcon() {
         return this.icon;
     }
@@ -216,10 +204,6 @@ public class AppEngSlot extends Slot {
 
     private void setDraggable(final boolean isDraggable) {
         this.isDraggable = isDraggable;
-    }
-
-    void setPlayerSide(final boolean isPlayerSide) {
-        this.isPlayerSide = isPlayerSide;
     }
 
     protected AEBaseContainer getContainer() {

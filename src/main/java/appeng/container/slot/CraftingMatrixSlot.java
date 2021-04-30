@@ -48,11 +48,6 @@ public class CraftingMatrixSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean isPlayerSide() {
-        return true;
-    }
-
-    @Override
     public ItemStack decrStackSize(final int par1) {
         final ItemStack is = super.decrStackSize(par1);
         this.c.onCraftMatrixChanged(this.wrappedInventory);
