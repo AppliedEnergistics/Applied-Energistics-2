@@ -48,22 +48,20 @@ public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer
     }
 
     @Override
-    public boolean hasItemType(List<ItemStack> itemStacks) {
+    public boolean hasItemType(ItemStack itemStack, int amount) {
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
         for (Slot slot : container.getSlots(SlotSemantic.CRAFTING_GRID)) {
             ItemStack stackInSlot = slot.getStack();
             if (!stackInSlot.isEmpty()) {
-                for (ItemStack itemStack : itemStacks) {
-                    if (itemStack != null && Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
-                        return true;
-                    }
+                if (Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
+                    return itemStack.getCount() >= amount;
                 }
             }
 
         }
 
-        return super.hasItemType(itemStacks);
+        return super.hasItemType(itemStack, amount);
     }
 
 }

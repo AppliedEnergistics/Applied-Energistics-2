@@ -39,7 +39,6 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -60,7 +59,6 @@ import appeng.container.slot.CraftingTermSlot;
 import appeng.container.slot.DisabledSlot;
 import appeng.container.slot.FakeSlot;
 import appeng.container.slot.InaccessibleSlot;
-import appeng.container.slot.PlayerInvSlot;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.GuiDataSyncPacket;
@@ -76,7 +74,6 @@ public abstract class AEBaseContainer extends Container {
     private final IGuiItemObject guiItem;
     private final DataSynchronization dataSync = new DataSynchronization(this);
     private final PlayerInventory playerInventory;
-    private final List<AppEngSlot> playerInventorySlots = new ArrayList<>();
     private final Set<Integer> lockedPlayerInventorySlots = new HashSet<>();
     private final Map<Slot, SlotSemantic> semanticBySlot = new HashMap<>();
     private final ArrayListMultimap<SlotSemantic, Slot> slotsBySemantic = ArrayListMultimap.create();
@@ -167,13 +164,9 @@ public abstract class AEBaseContainer extends Container {
         return this.playerInventory;
     }
 
-    public List<AppEngSlot> getPlayerInventorySlots() {
-        return playerInventorySlots;
-    }
-
     public void lockPlayerInventorySlot(final int invSlot) {
         Preconditions.checkArgument(invSlot >= 0 && invSlot < playerInventory.mainInventory.size(),
-                "cannot lock plaer inventory slot: %s", invSlot);
+                "cannot lock player inventory slot: %s", invSlot);
         this.lockedPlayerInventorySlots.add(invSlot);
     }
 
@@ -195,18 +188,19 @@ public abstract class AEBaseContainer extends Container {
     }
 
     protected final void createPlayerInventorySlots(PlayerInventory playerInventory) {
-        Preconditions.checkState(playerInventorySlots.isEmpty(), "Player inventory was already created");
+        Preconditions.checkState(
+                getSlots(SlotSemantic.PLAYER_INVENTORY).isEmpty(),
+                "Player inventory was already created");
 
         IItemHandler ih = new PlayerInvWrapper(playerInventory);
 
         for (int i = 0; i < playerInventory.mainInventory.size(); i++) {
-            AppEngSlot slot;
+            Slot slot;
             if (this.lockedPlayerInventorySlots.contains(i)) {
                 slot = new DisabledSlot(ih, i);
             } else {
-                slot = new PlayerInvSlot(ih, i);
+                slot = new Slot(playerInventory, i, 0, 0);
             }
-            playerInventorySlots.add(slot);
             SlotSemantic s = i < PlayerInventory.getHotbarSize()
                     ? SlotSemantic.PLAYER_HOTBAR
                     : SlotSemantic.PLAYER_INVENTORY;
@@ -232,11 +226,8 @@ public abstract class AEBaseContainer extends Container {
         if (newSlot instanceof AppEngSlot) {
             final AppEngSlot s = (AppEngSlot) newSlot;
             s.setContainer(this);
-            return super.addSlot(newSlot);
-        } else {
-            throw new IllegalArgumentException(
-                    "Invalid Slot [" + newSlot + "] for AE Container instead of AppEngSlot.");
         }
+        return super.addSlot(newSlot);
     }
 
     @Override
@@ -310,9 +301,7 @@ public abstract class AEBaseContainer extends Container {
                 tis = tis.copy();
 
                 // target slots in the container...
-                for (final Object inventorySlot : this.inventorySlots) {
-                    final AppEngSlot cs = (AppEngSlot) inventorySlot;
-
+                for (final Slot cs : this.inventorySlots) {
                     if (isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)) {
                         if (cs.isItemValid(tis)) {
                             selectedSlots.add(cs);
@@ -325,8 +314,7 @@ public abstract class AEBaseContainer extends Container {
             if (selectedSlots.isEmpty() && playerSide) {
                 if (!tis.isEmpty()) {
                     // target slots in the container...
-                    for (final Object inventorySlot : this.inventorySlots) {
-                        final AppEngSlot cs = (AppEngSlot) inventorySlot;
+                    for (final Slot cs : this.inventorySlots) {
                         final ItemStack destination = cs.getStack();
 
                         if (!isPlayerSideSlot(cs) && cs instanceof FakeSlot) {
@@ -449,7 +437,11 @@ public abstract class AEBaseContainer extends Container {
 
     @Override
     public boolean canDragIntoSlot(final Slot s) {
-        return ((AppEngSlot) s).isDraggable();
+        if (s instanceof AppEngSlot) {
+            return ((AppEngSlot) s).isDraggable();
+        } else {
+            return super.canDragIntoSlot(s);
+        }
     }
 
     /**
