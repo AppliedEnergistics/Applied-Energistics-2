@@ -18,8 +18,6 @@
 
 package appeng.client.gui.me.items;
 
-import java.util.List;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -55,7 +53,10 @@ public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer
             ItemStack stackInSlot = slot.getStack();
             if (!stackInSlot.isEmpty()) {
                 if (Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
-                    return itemStack.getCount() >= amount;
+                    if (itemStack.getCount() >= amount) {
+                        return true;
+                    }
+                    amount -= itemStack.getCount();
                 }
             }
 
