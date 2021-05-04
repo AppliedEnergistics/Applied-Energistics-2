@@ -19,13 +19,9 @@
 package appeng.me.cluster.implementations;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 
@@ -34,8 +30,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -93,7 +87,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private final List<TileCraftingTile> storage = new ArrayList<>();
 	private final List<TileCraftingMonitorTile> status = new ArrayList<>();
 	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
-	private final Map<ICraftingPatternDetails,List<ICraftingMedium>> visitedMediums = new HashMap<>();
+	private final Map<ICraftingPatternDetails, Queue<ICraftingMedium>> visitedMediums = new HashMap<>();
 	private ICraftingLink myLastLink;
 	private String myName = "";
 	private boolean isDestroyed = false;
@@ -647,30 +641,22 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			{
 				InventoryCrafting ic = null;
 
-				for( final ICraftingMedium m : cc.getMediums( e.getKey() ) )
+				if (!visitedMediums.containsKey( details ) || visitedMediums.get( details ).isEmpty())
 				{
+					visitedMediums.put( details, new ArrayDeque<>( cc.getMediums( details ).stream().filter( Objects::nonNull ).collect( Collectors.toList()) ) );
+				}
+
+				while (!visitedMediums.get( details ).isEmpty())
+				{
+
+					ICraftingMedium m = visitedMediums.get( details ).poll();
+
 					if( e.getValue().value <= 0 )
 					{
 						continue;
 					}
 
-					if (visitedMediums.containsKey( details ))
-					{
-						if( visitedMediums.get( details ).containsAll( cc.getMediums( e.getKey() ) ) )
-						{
-							visitedMediums.put( details, new ArrayList<>() );
-						}
-					}
-
-					visitedMediums.putIfAbsent( details, new ArrayList<>() );
-
-					if( visitedMediums.get( details ).contains( m ) )
-					{
-						continue;
-					}
-					visitedMediums.get( details ).add( m );
-
-					if( !m.isBusy() )
+					if( m != null && !m.isBusy() )
 					{
 						if( ic == null )
 						{

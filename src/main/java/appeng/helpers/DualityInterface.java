@@ -19,18 +19,13 @@
 package appeng.helpers;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import appeng.integration.modules.gregtech.GTCEInventoryAdaptor;
 import appeng.util.*;
+import appeng.util.inv.*;
 import com.google.common.collect.ImmutableSet;
 
 import gregtech.api.block.machines.BlockMachine;
@@ -93,8 +88,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -106,10 +99,6 @@ import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.IInventoryDestination;
-import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 import static gregtech.api.block.machines.BlockMachine.getMetaTileEntity;
@@ -117,8 +106,6 @@ import static gregtech.api.block.machines.BlockMachine.getMetaTileEntity;
 
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
 {
-	private int[] failedCraftTriesSlot = {0,0,0,0,0,0,0,0,0};
-
 	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
 	public static final int NUMBER_OF_CONFIG_SLOTS = 9;
 	public static final int NUMBER_OF_PATTERN_SLOTS = 9;
@@ -148,8 +135,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private IMEInventory<IAEItemStack> destination;
 	private int isWorking = -1;
 	private final Accessor accessor = new Accessor();
-	private GTCEInventoryAdaptor GTad;
-	EnumSet<EnumFacing> visitedFaces = EnumSet.noneOf( EnumFacing.class );
+	private EnumSet<EnumFacing> visitedFaces = EnumSet.noneOf( EnumFacing.class );
+	private EnumMap<EnumFacing,List<ItemStack>> waitingToSendFacing = new EnumMap<>(EnumFacing.class);
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
@@ -243,6 +230,27 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 		}
 		data.setTag( "waitingToSend", waitingToSend );
+
+		NBTTagCompound sidedWaitList = new NBTTagCompound();
+
+		if (this.waitingToSendFacing != null)
+		{
+			for( EnumFacing s : this.iHost.getTargets() )
+			{
+				NBTTagList waitingListSided = new NBTTagList();
+				if (this.waitingToSendFacing.containsKey( s ))
+				{
+					for( final ItemStack is : this.waitingToSendFacing.get( s ) )
+					{
+						final NBTTagCompound item = new NBTTagCompound();
+						is.writeToNBT( item );
+						waitingListSided.appendTag( item );
+					}
+					sidedWaitList.setTag( s.name(), waitingListSided );
+				}
+			}
+		}
+		data.setTag( "sidedWaitList", sidedWaitList );
 	}
 
 	public void readFromNBT( final NBTTagCompound data )
@@ -261,6 +269,23 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				}
 			}
 		}
+
+		this.waitingToSendFacing = null;
+		final NBTTagCompound waitingListSided = data.getCompoundTag("sidedWaitList");
+
+		for (EnumFacing s : EnumFacing.values())
+			if (waitingListSided.hasKey( s.name() )) {
+				NBTTagList w = waitingListSided.getTagList( s.name(), 10 );
+				for( int x = 0; x < w.tagCount(); x++ )
+				{
+					final NBTTagCompound c = w.getCompoundTagAt( x );
+					if( c != null )
+					{
+						final ItemStack is = new ItemStack( c );
+						this.addToSendListFacing( is , EnumFacing.getFront( s.getIndex() ) );
+					}
+				}
+			}
 
 		this.craftingTracker.readFromNBT( data );
 		this.upgrades.readFromNBT( data, "upgrades" );
@@ -286,6 +311,30 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 
 		this.waitingToSend.add( is );
+
+		try
+		{
+			this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
+		}
+		catch( final GridAccessException e )
+		{
+			// :P
+		}
+	}
+
+	private void addToSendListFacing( final ItemStack is, EnumFacing f )
+	{
+		if( is.isEmpty() )
+		{
+			return;
+		}
+		if (this.waitingToSendFacing == null){
+			this.waitingToSendFacing = new EnumMap<>(EnumFacing.class);
+		}
+
+		this.waitingToSendFacing.computeIfAbsent( f, k -> new ArrayList<>() );
+
+		this.waitingToSendFacing.get( f ).add( is );
 
 		try
 		{
@@ -394,24 +443,22 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	private boolean hasWorkToDo()
-	{
-		if( this.hasItemsToSend() )
-		{
+	private boolean hasWorkToDo() {
+
+		if (hasItemsToSend()){
 			return true;
 		}
-		else
-		{
-			for( final IAEItemStack requiredWork : this.requireWork )
-			{
-				if( requiredWork != null )
-				{
-					return true;
-				}
-			}
 
-			return false;
+		if(hasItemsToSendFacing()){
+			return true;
 		}
+
+		for (final IAEItemStack requiredWork : this.requireWork) {
+			if (requiredWork != null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void updatePlan( final int slot )
@@ -516,6 +563,21 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.waitingToSend != null && !this.waitingToSend.isEmpty();
 	}
 
+	private boolean hasItemsToSendFacing()
+	{
+		if (waitingToSendFacing != null)
+		{
+			for( EnumFacing enumFacing : waitingToSendFacing.keySet() )
+			{
+				if( !waitingToSendFacing.get( enumFacing ).isEmpty() )
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public boolean canInsert( final ItemStack stack )
 	{
@@ -587,9 +649,19 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return TickRateModulation.SLEEP;
 		}
 
+		//Previous version might have items saved in this list
+		//recover them
 		if( this.hasItemsToSend() )
 		{
 			this.pushItemsOut( this.iHost.getTargets() );
+		}
+
+		if (hasItemsToSendFacing())
+		{
+			for( EnumFacing enumFacing : waitingToSendFacing.keySet() )
+			{
+				this.pushItemsOut( enumFacing );
+			}
 		}
 
 		final boolean couldDoWork = this.updateStorage();
@@ -649,6 +721,47 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		if( this.waitingToSend.isEmpty() )
 		{
 			this.waitingToSend = null;
+		}
+	}
+
+	private void pushItemsOut( final EnumFacing s )
+	{
+		if( this.waitingToSendFacing.get(s) == null || this.waitingToSendFacing.get( s ).isEmpty() )
+		{
+			return;
+		}
+
+		final TileEntity tile = this.iHost.getTileEntity();
+		final World w = tile.getWorld();
+
+		final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
+		if( te == null )
+		{
+			return;
+		}
+
+		final Iterator<ItemStack> i = this.waitingToSendFacing.get( s ).iterator();
+		while ( i.hasNext() )
+		{
+			ItemStack whatToSend = i.next();
+			final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+			if( ad != null )
+			{
+				final ItemStack result = ad.addItems( whatToSend );
+				if( !result.isEmpty() )
+				{
+					whatToSend.setCount( whatToSend.getCount() - ( whatToSend.getCount() - result.getCount() ) );
+				}
+				else
+				{
+					i.remove();
+				}
+			}
+		}
+
+		if( this.waitingToSendFacing.get( s ).isEmpty() )
+		{
+			this.waitingToSendFacing.get( s ).clear();
 		}
 	}
 
@@ -771,17 +884,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 && itemStack != null )
 			{
-				if (this.failedCraftTriesSlot[x] <= 0)
-				{
-					boolean crafted = this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorld(),
+				return this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorld(),
 						this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource );
-
-					if (crafted) this.failedCraftTriesSlot[x] = 0;
-					else{
-						this.failedCraftTriesSlot[x] += 2;
-					}
-				}
-				this.failedCraftTriesSlot[x] -= 1;
 			}
 		}
 		catch( final GridAccessException e )
@@ -914,24 +1018,28 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		};
 	}
 
-	private static boolean invIsBlocked( InventoryAdaptor inv )
+	private boolean invIsBlocked( InventoryAdaptor inv )
 	{
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.INSANE_BLOCKING_MODE ) )
+		final Iterator<ICraftingPatternDetails> i = this.craftingList.iterator();
+		ICraftingPatternDetails patt = i.next();
+		for ( ItemSlot itemSlot : inv)
 		{
-			return !inv.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty();
+			if (itemSlot.getItemStack().isEmpty()){
+				continue;
+			}
+			for ( IAEItemStack iaeItemStack : patt.getCondensedInputs()){
+				if (iaeItemStack.isSameType( itemSlot.getItemStack() )){
+					return true;
+				}
+			}
 		}
-		else return inv.containsItems();
-	}
-
-	private static boolean invIsBlockedGTCE( GTCEInventoryAdaptor inv )
-	{
-		return ( !inv.canRemoveAllExceptCircuits() );
+		return false;
 	}
 
 	@Override
 	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
 	{
-		if( this.hasItemsToSend() || !this.gridProxy.isActive() || !this.craftingList.contains( patternDetails ) )
+		if( this.hasItemsToSend() || this.hasItemsToSendFacing() || !this.gridProxy.isActive() || !this.craftingList.contains( patternDetails ) )
 		{
 			return false;
 		}
@@ -939,13 +1047,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		final TileEntity tile = this.iHost.getTileEntity();
 		final World w = tile.getWorld();
 
-		final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
-
-		for( final EnumFacing s : possibleDirections )
+		if( this.visitedFaces.isEmpty() )
 		{
-			if (visitedFaces.contains( s ))
-				continue;
+			this.visitedFaces = this.iHost.getTargets();
+		}
 
+		for( final EnumFacing s : visitedFaces )
+		{
 			final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 			if( te instanceof IInterfaceHost )
 			{
@@ -953,6 +1061,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				{
 					if( ( (IInterfaceHost) te ).getInterfaceDuality().sameGrid( this.gridProxy.getGrid() ) )
 					{
+						visitedFaces.remove( s );
 						continue;
 					}
 				}
@@ -969,9 +1078,10 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				{
 					if( cm.pushPattern( patternDetails, table, s.getOpposite() ) )
 					{
-						visitedFaces.add( s );
+						visitedFaces.remove( s );
 						return true;
 					}
+					visitedFaces.remove( s );
 					continue;
 				}
 			}
@@ -979,56 +1089,44 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 			if( ad != null )
 			{
+				boolean isDrawer = te.getBlockType().getRegistryName().getResourceDomain().equals( "storagedrawers" );
 				if( this.isBlocking() )
 				{
-					if( te.getBlockType().getRegistryName().getResourceDomain().equals( "gregtech" ) )
+					if( invIsBlocked( ad ) )
 					{
-						GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
-						if( invIsBlockedGTCE( GTad ) )
-						{
-							continue;
-						}
-					}
-					else
-					{
-						if( invIsBlocked( ad ) )
-						{
-							continue;
-						}
+						continue;
 					}
 				}
 
-				if( this.acceptsItems( ad, table ) )
+				if( this.acceptsItems( ad, patternDetails, isDrawer ) )
 				{
 					for( int x = 0; x < table.getSizeInventory(); x++ )
 					{
 						final ItemStack is = table.getStackInSlot( x );
 						if( !is.isEmpty() )
 						{
-							final ItemStack added = ad.addItems( is );
-							this.addToSendList( added );
+							addToSendListFacing( is, s );
 						}
+						pushItemsOut( s );
 					}
-					this.pushItemsOut( possibleDirections );
-					visitedFaces.add( s );
+					visitedFaces.remove( s );
 					return true;
 				}
 			}
+			visitedFaces.remove( s );
 		}
-		visitedFaces.clear();
-
 		return false;
 	}
 
 	@Override
 	public boolean isBusy()
 	{
-		if( this.hasItemsToSend() )
+		boolean busy = false;
+
+		if( this.hasItemsToSend() || hasItemsToSendFacing() )
 		{
 			return true;
 		}
-
-		boolean busy = false;
 
 		if( this.isBlocking() )
 		{
@@ -1045,23 +1143,10 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
-					if( te.getBlockType().getRegistryName().getResourceDomain().equals( "gregtech" ) )
+					if( !invIsBlocked( ad ) )
 					{
-						GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
-						if( !invIsBlockedGTCE( GTad ) )
-						{
-							allAreBusy = false;
-							break;
-						}
-					}
-					else
-					{
-						if( !invIsBlocked( ad ) )
-						{
-							allAreBusy = false;
-							break;
-						}
-
+						allAreBusy = false;
+						break;
 					}
 				}
 			}
@@ -1080,23 +1165,85 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.cm.getSetting( Settings.BLOCK ) == YesNo.YES;
 	}
 
-	private boolean acceptsItems( final InventoryAdaptor ad, final InventoryCrafting table )
+	private boolean acceptsItems( final InventoryAdaptor ad, final ICraftingPatternDetails patternDetails, boolean isDrawer )
 	{
-		for( int x = 0; x < table.getSizeInventory(); x++ )
+		List<ItemStack> patternedStacks = Arrays.stream( patternDetails.getCondensedInputs() ).map( IAEItemStack::createItemStack ).collect( Collectors.toList() );
+		List<ItemSlot> copiedItemSlots = new ArrayList<>();
+
+		if( patternedStacks.size() == 1 )
 		{
-			final ItemStack is = table.getStackInSlot( x );
-			if( is.isEmpty() )
-			{
-				continue;
-			}
-
-			if( !ad.simulateAdd( is.copy() ).isEmpty() )
-			{
-				return false;
-			}
+			return ad.simulateAdd( patternedStacks.get( 0 ) ).isEmpty();
 		}
+		else
+		{
+			Iterator<ItemSlot> adit = ad.iterator();
+			while ( adit.hasNext() )
+			{
+				ItemSlot is = adit.next();
+				//skip storage drawers slot 0 to avoid voiding items due to broken itemhandler implementation
+				if( isDrawer && is.getSlot() == 0 ) is = adit.next();
 
-		return true;
+				//some inventory may expose their special slots ( for upgrades, etc )
+				//if its empty AND we cant fit any of the items in the recipes, skip it.
+				if( is.getItemStack().isEmpty() )
+				{
+					boolean validInputSlotForIngredients = false;
+					for( IAEItemStack aeItemStack : patternDetails.getCondensedInputs() )
+					{
+						if( is.insertItem( aeItemStack.getDefinition() ).isEmpty() )
+						{
+							validInputSlotForIngredients = true;
+							break;
+						}
+					}
+					if( validInputSlotForIngredients )
+					{
+						copiedItemSlots.add( is.copy() );
+					}
+				}
+				else if( !is.getItemStack().isEmpty() && is.getItemStack().getCount() < is.getSlotLimit() )
+				{
+					copiedItemSlots.add( is.copy() );
+				}
+			}
+			Iterator<ItemSlot> copiedItemSlotIterator = copiedItemSlots.iterator();
+			while ( copiedItemSlotIterator.hasNext() )
+			{
+				ItemSlot copiedItemSlot = copiedItemSlotIterator.next();
+
+				Iterator<ItemStack> psi = patternedStacks.iterator();
+				while ( psi.hasNext() )
+				{
+					ItemStack patternedStack = psi.next();
+					ItemStack remainder = copiedItemSlot.insertItem( patternedStack );
+
+					if( !remainder.isEmpty() )
+					{
+						patternedStack.setCount( patternedStack.getCount() - ( patternedStack.getCount() - remainder.getCount() ) );
+						if( copiedItemSlot.getSlotLimit() == copiedItemSlot.getItemStack().getCount() )
+						{
+							copiedItemSlotIterator.remove();
+							break;
+						}
+					}
+					else
+					{
+						if( copiedItemSlot.getSlotLimit() == copiedItemSlot.getItemStack().getCount() )
+						{
+							copiedItemSlotIterator.remove();
+						}
+						psi.remove();
+						break;
+					}
+				}
+
+				if( patternedStacks.size() == 0 )
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 
 public class ItemSlot
@@ -33,6 +34,25 @@ public class ItemSlot
 	// one or the other..
 	private IAEItemStack aeItemStack;
 	private ItemStack itemStack;
+
+	public void setItemHandler( IItemHandler itemHandler )
+	{
+		this.itemHandler = itemHandler;
+	}
+
+	private IItemHandler itemHandler;
+
+	public int getSlotLimit()
+	{
+		return slotLimit;
+	}
+
+	public void setSlotLimit( int slotLimit )
+	{
+		this.slotLimit = slotLimit;
+	}
+
+	private int slotLimit;
 
 	public ItemStack getItemStack()
 	{
@@ -76,5 +96,20 @@ public class ItemSlot
 	public void setSlot( final int slot )
 	{
 		this.slot = slot;
+	}
+
+	public ItemSlot copy()
+	{
+		ItemSlot copy = new ItemSlot();
+		copy.setSlot( this.slot );
+		copy.setSlotLimit( this.slotLimit );
+		copy.setItemStack( this.getItemStack() );
+		copy.setExtractable( this.isExtractable );
+		copy.setItemHandler( this.itemHandler );
+		return copy;
+	}
+
+	public ItemStack insertItem( ItemStack sourceItemStack){
+		return this.itemHandler.insertItem( this.slot, sourceItemStack , true );
 	}
 }
