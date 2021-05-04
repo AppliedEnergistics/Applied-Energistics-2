@@ -148,7 +148,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private IMEInventory<IAEItemStack> destination;
 	private int isWorking = -1;
 	private final Accessor accessor = new Accessor();
-	private GTCEInventoryAdaptor GTad;
+	private EnumSet<EnumFacing> visitedFaces = EnumSet.noneOf( EnumFacing.class );
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
@@ -913,18 +913,22 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		};
 	}
 
-	private static boolean invIsBlocked( InventoryAdaptor inv )
+	private boolean invIsBlocked( InventoryAdaptor inv )
 	{
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.INSANE_BLOCKING_MODE ) )
+		final Iterator<ICraftingPatternDetails> i = this.craftingList.iterator();
+		ICraftingPatternDetails patt = i.next();
+		for ( ItemSlot itemSlot : inv)
 		{
-			return !inv.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty();
+			if (itemSlot.getItemStack().isEmpty()){
+				continue;
+			}
+			for ( IAEItemStack iaeItemStack : patt.getCondensedInputs()){
+				if (iaeItemStack.isSameType( itemSlot.getItemStack() )){
+					return true;
+				}
+			}
 		}
-		else return inv.containsItems();
-	}
-
-	private static boolean invIsBlockedGTCE( GTCEInventoryAdaptor inv )
-	{
-		return ( !inv.canRemoveAllExceptCircuits() );
+		return false;
 	}
 
 	@Override
@@ -975,21 +979,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			{
 				if( this.isBlocking() )
 				{
-					if( te.getBlockType().getRegistryName().getResourceDomain().equals( "gregtech" ) )
+					if( invIsBlocked( ad ) )
 					{
-						GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
-						if( invIsBlockedGTCE( GTad ) )
-						{
-							continue;
-						}
+						continue;
 					}
-					else
-					{
-						if( invIsBlocked( ad ) )
-						{
-							continue;
-						}
-					}
+				}
 				}
 
 				if( this.acceptsItems( ad, table ) )
@@ -1037,23 +1031,10 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
-					if( te.getBlockType().getRegistryName().getResourceDomain().equals( "gregtech" ) )
+					if( !invIsBlocked( ad ) )
 					{
-						GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
-						if( !invIsBlockedGTCE( GTad ) )
-						{
-							allAreBusy = false;
-							break;
-						}
-					}
-					else
-					{
-						if( !invIsBlocked( ad ) )
-						{
-							allAreBusy = false;
-							break;
-						}
-
+						allAreBusy = false;
+						break;
 					}
 				}
 			}
