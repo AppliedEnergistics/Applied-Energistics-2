@@ -164,7 +164,6 @@ public enum AEFeature
 	PATTERNS( "Patterns", Constants.CATEGORY_CRAFTING_FEATURES ),
 	CRAFTING_CPU( "CraftingCPU", Constants.CATEGORY_CRAFTING_FEATURES ),
 	CRAFTING_MANAGER_FALLBACK( "CraftingManagerFallback", Constants.CATEGORY_CRAFTING_FEATURES, "Use CraftingManager to find an alternative recipe, after a pattern rejected an ingredient. Should be enabled to avoid issues, but can have a minor performance impact." ),
-	INSANE_BLOCKING_MODE( "InsaneBlockingMode", Constants.CATEGORY_CRAFTING_FEATURES, "Use the default AE2 blocking mode that doesn't work on any machines" ),
 
 	BASIC_CARDS( "BasicCards", Constants.CATEGORY_UPGRADES ),
 	ADVANCED_CARDS( "AdvancedCards", Constants.CATEGORY_UPGRADES ),
