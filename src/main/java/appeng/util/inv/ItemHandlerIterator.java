@@ -55,6 +55,8 @@ class ItemHandlerIterator implements Iterator<ItemSlot>
 		this.itemSlot.setExtractable( !this.itemHandler.extractItem( this.slot, 1, true ).isEmpty() );
 		this.itemSlot.setItemStack( this.itemHandler.getStackInSlot( this.slot ) );
 		this.itemSlot.setSlot( this.slot );
+		this.itemSlot.setSlotLimit( this.itemHandler.getSlotLimit( this.slot ) );
+		this.itemSlot.setItemHandler( this.itemHandler );
 		this.slot++;
 		return this.itemSlot;
 	}
