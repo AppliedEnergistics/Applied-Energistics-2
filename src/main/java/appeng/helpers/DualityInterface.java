@@ -726,8 +726,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	private void pushItemsOut( final EnumFacing s )
 	{
-		if( this.waitingToSendFacing.get(s) == null || this.waitingToSendFacing.get( s ).isEmpty() )
-		{
+		if (!this.waitingToSendFacing.containsKey(s) ||
+				(this.waitingToSendFacing.containsKey(s) && this.waitingToSendFacing.get( s ).isEmpty())) {
 			return;
 		}
 
@@ -761,7 +761,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		if( this.waitingToSendFacing.get( s ).isEmpty() )
 		{
-			this.waitingToSendFacing.get( s ).clear();
+			this.waitingToSendFacing.remove( s );
 		}
 	}
 
@@ -1076,12 +1076,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final ICraftingMachine cm = (ICraftingMachine) te;
 				if( cm.acceptsPlans() )
 				{
+					visitedFaces.remove( s );
 					if( cm.pushPattern( patternDetails, table, s.getOpposite() ) )
 					{
-						visitedFaces.remove( s );
 						return true;
 					}
-					visitedFaces.remove( s );
 					continue;
 				}
 			}
@@ -1100,6 +1099,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				if( this.acceptsItems( ad, patternDetails, isDrawer ) )
 				{
+					visitedFaces.remove( s );
 					for( int x = 0; x < table.getSizeInventory(); x++ )
 					{
 						final ItemStack is = table.getStackInSlot( x );
@@ -1107,9 +1107,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						{
 							addToSendListFacing( is, s );
 						}
-						pushItemsOut( s );
 					}
-					visitedFaces.remove( s );
+					pushItemsOut( s );
 					return true;
 				}
 			}
