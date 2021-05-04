@@ -1175,67 +1175,57 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 		else
 		{
-			Iterator<ItemSlot> adit = ad.iterator();
-			while ( adit.hasNext() )
+			for ( ItemSlot itemSlot : ad )
 			{
-				ItemSlot is = adit.next();
 				//skip storage drawers slot 0 to avoid voiding items due to broken itemhandler implementation
-				if( isDrawer && is.getSlot() == 0 ) is = adit.next();
-
+				if( isDrawer && itemSlot.getSlot() == 0 ){
+					continue;
+				}
 				//some inventory may expose their special slots ( for upgrades, etc )
 				//if its empty AND we cant fit any of the items in the recipes, skip it.
-				if( is.getItemStack().isEmpty() )
+				ItemStack stackInSlot = itemSlot.getItemStack();
+				for ( IAEItemStack aeItemStack : patternDetails.getCondensedInputs() )
 				{
-					boolean validInputSlotForIngredients = false;
-					for( IAEItemStack aeItemStack : patternDetails.getCondensedInputs() )
+					if( stackInSlot.isEmpty() )
 					{
-						if( is.insertItem( aeItemStack.getDefinition() ).isEmpty() )
+						if( itemSlot.insertItem( aeItemStack.getDefinition() ).isEmpty() )
 						{
-							validInputSlotForIngredients = true;
+							copiedItemSlots.add( itemSlot.copy() );
 							break;
 						}
 					}
-					if( validInputSlotForIngredients )
+					// copy partially filled slots for merging logic
+					else if( stackInSlot.getCount() < Math.min( itemSlot.getSlotLimit(), stackInSlot.getMaxStackSize() ) )
 					{
-						copiedItemSlots.add( is.copy() );
+						if( aeItemStack.isSameType( stackInSlot ) )
+						{
+							copiedItemSlots.add( itemSlot.copy() );
+							break;
+						}
 					}
 				}
-				else if( !is.getItemStack().isEmpty() && is.getItemStack().getCount() < is.getSlotLimit() )
-				{
-					copiedItemSlots.add( is.copy() );
-				}
 			}
-			Iterator<ItemSlot> copiedItemSlotIterator = copiedItemSlots.iterator();
-			while ( copiedItemSlotIterator.hasNext() )
-			{
-				ItemSlot copiedItemSlot = copiedItemSlotIterator.next();
 
-				Iterator<ItemStack> psi = patternedStacks.iterator();
-				while ( psi.hasNext() )
+			// start merging in order of slots, left to right.
+			for ( ItemSlot copiedItemSlot : copiedItemSlots )
+			{
+				Iterator<ItemStack> patStackIterator = patternedStacks.iterator();
+				while ( patStackIterator.hasNext() )
 				{
-					ItemStack patternedStack = psi.next();
-					ItemStack remainder = copiedItemSlot.insertItem( patternedStack );
+					ItemStack patStack = patStackIterator.next();
+					ItemStack remainder = copiedItemSlot.insertItem( patStack );
 
 					if( !remainder.isEmpty() )
 					{
-						patternedStack.setCount( patternedStack.getCount() - ( patternedStack.getCount() - remainder.getCount() ) );
-						if( copiedItemSlot.getSlotLimit() == copiedItemSlot.getItemStack().getCount() )
-						{
-							copiedItemSlotIterator.remove();
-							break;
-						}
+						patStack.setCount( patStack.getCount() - ( patStack.getCount() - remainder.getCount() ) );
 					}
-					else
+					else //entire stack got injected
 					{
-						if( copiedItemSlot.getSlotLimit() == copiedItemSlot.getItemStack().getCount() )
-						{
-							copiedItemSlotIterator.remove();
-						}
-						psi.remove();
+						patStackIterator.remove();
 						break;
 					}
 				}
-
+				// if we merged EVERYTHING successfully , return true.
 				if( patternedStacks.size() == 0 )
 				{
 					return true;
