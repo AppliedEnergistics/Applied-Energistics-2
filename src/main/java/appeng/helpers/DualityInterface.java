@@ -1271,6 +1271,20 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 		}
 
+		if( this.waitingToSendFacing != null )
+		{
+			for (List<ItemStack> itemList : waitingToSendFacing.values())
+			{
+				for (final ItemStack is : itemList)
+				{
+					if (!is.isEmpty())
+					{
+						drops.add(is);
+					}
+				}
+			}
+		}
+
 		for( final ItemStack is : this.upgrades )
 		{
 			if( !is.isEmpty() )
