@@ -109,7 +109,7 @@ public class ItemSlot
 		return copy;
 	}
 
-	public ItemStack insertItem( ItemStack sourceItemStack){
+	public ItemStack simulateInsertItem( ItemStack sourceItemStack){
 		return this.itemHandler.insertItem( this.slot, sourceItemStack , true );
 	}
 }

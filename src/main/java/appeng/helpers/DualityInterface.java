@@ -1093,6 +1093,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				{
 					if( invIsBlocked( ad ) )
 					{
+						visitedFaces.remove( s );
 						continue;
 					}
 				}
@@ -1188,7 +1189,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				{
 					if( stackInSlot.isEmpty() )
 					{
-						if( itemSlot.insertItem( aeItemStack.getDefinition() ).isEmpty() )
+						if( itemSlot.simulateInsertItem( aeItemStack.getDefinition() ).isEmpty() )
 						{
 							copiedItemSlots.add( itemSlot.copy() );
 							break;
@@ -1213,7 +1214,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				while ( patStackIterator.hasNext() )
 				{
 					ItemStack patStack = patStackIterator.next();
-					ItemStack remainder = copiedItemSlot.insertItem( patStack );
+					ItemStack remainder = copiedItemSlot.simulateInsertItem( patStack );
 
 					if( !remainder.isEmpty() )
 					{
