@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import net.minecraftforge.items.IItemHandler;
 
 
-class ItemHandlerIterator implements Iterator<ItemSlot>
+public class ItemHandlerIterator implements Iterator<ItemSlot>
 {
 
 	private final IItemHandler itemHandler;
@@ -34,7 +34,7 @@ class ItemHandlerIterator implements Iterator<ItemSlot>
 
 	private int slot = 0;
 
-	ItemHandlerIterator( IItemHandler itemHandler )
+	public ItemHandlerIterator( IItemHandler itemHandler )
 	{
 		this.itemHandler = itemHandler;
 	}
