@@ -81,9 +81,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/annihilation_plane");
 
-    private static final ITag.INamedTag<Block> BLOCK_BLACKLIST = BlockTags.makeWrapperTag(TAG_BLACKLIST.toString());
+    private static final ITag.INamedTag<Block> BLOCK_BLACKLIST = BlockTags.createOptional(TAG_BLACKLIST);
 
-    private static final ITag.INamedTag<Item> ITEM_BLACKLIST = ItemTags.makeWrapperTag(TAG_BLACKLIST.toString());
+    private static final ITag.INamedTag<Item> ITEM_BLACKLIST = ItemTags.createOptional(TAG_BLACKLIST);
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane", "part/annihilation_plane_on");
 
