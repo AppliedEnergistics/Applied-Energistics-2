@@ -34,6 +34,10 @@
       "left": 170,
       "top": -4,
       "hideEdge": true
+    },
+    "viewCells": {
+      "right": -2,
+      "top": 0
     }
   }
 }

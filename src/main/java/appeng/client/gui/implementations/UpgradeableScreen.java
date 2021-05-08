@@ -18,21 +18,29 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
+import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.parts.IPart;
+import appeng.api.parts.PartItemStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.container.SlotSemantic;
 import appeng.container.implementations.UpgradeableContainer;
+import appeng.core.localization.GuiText;
 
 /**
  * This screen adds the ability for {@link IUpgradeableHost} screens to show the upgrade inventory and the player's
@@ -40,41 +48,49 @@ import appeng.container.implementations.UpgradeableContainer;
  */
 public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
 
-    // Margin used to position additional elements to the right of the UI
-    private static final int MARGIN = 2;
-
-    private final UpgradesPanel upgradesPanel;
-
-    private final ToolboxPanel toolboxPanel;
-
     public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        upgradesPanel = new UpgradesPanel(xSize + MARGIN, 0, container.getSlots(SlotSemantic.UPGRADE));
-        toolboxPanel = new ToolboxPanel(xSize + MARGIN, ySize - 90, container.getSlots(SlotSemantic.TOOLBOX));
-    }
-
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
-
-        upgradesPanel.draw(matrices, getBlitOffset(), offsetX, offsetY);
-
+        this.widgets.add("upgrades", new UpgradesPanel(
+                container.getSlots(SlotSemantic.UPGRADE),
+                this::getCompatibleUpgrades));
         if (container.hasToolbox()) {
-            toolboxPanel.draw(matrices, getBlitOffset(), offsetX, offsetY);
+            this.widgets.add("toolbox", new ToolboxPanel(style));
         }
     }
 
-    @Override
-    public List<Rectangle2d> getExclusionZones() {
-        List<Rectangle2d> rects = super.getExclusionZones();
-        if (container.hasToolbox()) {
-            toolboxPanel.addExclusionZones(guiLeft, guiTop, rects);
+    /**
+     * Gets the tooltip text that is shown for empty slots of the upgrade panel to indicate which upgrades are
+     * compatible.
+     */
+    protected List<ITextComponent> getCompatibleUpgrades() {
+        IUpgradeableHost host = container.getUpgradeable();
+
+        Item item;
+        if (host instanceof IPart) {
+            item = ((IPart) host).getItemStack(PartItemStack.NETWORK).getItem();
+        } else {
+            return Collections.emptyList();
         }
 
-        upgradesPanel.addExclusionZones(guiLeft, guiTop, rects);
-
-        return rects;
+        return getCompatibleUpgrades(item);
     }
+
+    protected List<ITextComponent> getCompatibleUpgrades(Item machineItem) {
+        List<ITextComponent> list = new ArrayList<>();
+        list.add(GuiText.CompatibleUpgrades.text());
+
+        for (Upgrades upgrade : Upgrades.values()) {
+            for (Upgrades.Supported supported : upgrade.getSupported()) {
+                if (supported.isSupported(machineItem)) {
+                    list.add(GuiText.CompatibleUpgrade.text(upgrade.getDisplayName(), supported.getMaxCount())
+                            .mergeStyle(TextFormatting.GRAY));
+                    break;
+                }
+            }
+        }
+
+        return list;
+    }
+
 }

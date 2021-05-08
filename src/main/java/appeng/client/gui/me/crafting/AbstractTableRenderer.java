@@ -52,8 +52,6 @@ public abstract class AbstractTableRenderer<T> {
 
         final int textColor = screen.getStyle().getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
         List<ITextComponent> tooltipLines = null;
-        int tooltipX = 0;
-        int tooltipY = 0;
 
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
@@ -108,15 +106,13 @@ public abstract class AbstractTableRenderer<T> {
                 if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH) {
                     if (mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT) {
                         tooltipLines = getEntryTooltip(entry);
-                        tooltipX = cellX + CELL_WIDTH - 8;
-                        tooltipY = itemY + 8;
                     }
                 }
             }
         }
 
         if (tooltipLines != null) {
-            screen.drawTooltip(matrixStack, tooltipX, tooltipY, tooltipLines);
+            screen.drawTooltip(matrixStack, mouseX, mouseY, tooltipLines);
         }
     }
 

@@ -251,6 +251,14 @@
         "texture": {
           "type": "string"
         },
+        "textureWidth": {
+          "type": "integer",
+          "default": 256
+        },
+        "textureHeight": {
+          "type": "integer",
+          "default": 256
+        },
         "srcRect": {
           "$ref": "#/definitions/rect"
         }
@@ -312,6 +320,7 @@
           "STORAGE",
           "PLAYER_INVENTORY",
           "PLAYER_HOTBAR",
+          "TOOLBOX",
           "CONFIG",
           "UPGRADE",
           "STORAGE_CELL",

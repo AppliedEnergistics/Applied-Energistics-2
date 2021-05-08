@@ -20,6 +20,7 @@ package appeng.client.gui.me.common;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,6 +42,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
@@ -96,9 +98,6 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private final List<ItemStack> currentViewCells = new ArrayList<>();
     private final IConfigManager configSrc;
     private final boolean supportsViewCells;
-    // The box on the right of the terminal shown behind the view cell slots
-    @Nullable
-    private final UpgradesPanel viewCellBg;
     private TabButton craftingStatusBtn;
     private AETextField searchField;
     private int rows = 0;
@@ -133,9 +132,8 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         List<Slot> viewCellSlots = container.getSlots(SlotSemantic.VIEW_CELL);
         this.supportsViewCells = !viewCellSlots.isEmpty();
         if (this.supportsViewCells) {
-            viewCellBg = new UpgradesPanel(xSize + 2, 0, viewCellSlots);
-        } else {
-            viewCellBg = null;
+            List<ITextComponent> tooltip = Collections.singletonList(GuiText.TerminalViewCellsTooltip.text());
+            this.widgets.add("viewCells", new UpgradesPanel(viewCellSlots, () -> tooltip));
         }
 
         if (this.style.isSupportsAutoCrafting()) {
@@ -385,10 +383,6 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
         style.getBottom().dest(offsetX, y).blit(matrixStack, getBlitOffset());
 
-        if (viewCellBg != null) {
-            viewCellBg.draw(matrixStack, getBlitOffset(), offsetX, offsetY);
-        }
-
         if (this.searchField != null) {
             this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
         }
@@ -619,15 +613,6 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         SE next = btn.getNextValue(backwards);
         NetworkHandler.instance().sendToServer(new ConfigValuePacket(btn.getSetting().name(), next.name()));
         btn.set(next);
-    }
-
-    @Override
-    public List<Rectangle2d> getExclusionZones() {
-        List<Rectangle2d> result = super.getExclusionZones();
-        if (viewCellBg != null) {
-            viewCellBg.addExclusionZones(guiLeft, guiTop, result);
-        }
-        return result;
     }
 
     private void reinitalize() {

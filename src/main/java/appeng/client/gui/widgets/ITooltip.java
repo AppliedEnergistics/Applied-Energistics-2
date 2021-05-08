@@ -18,10 +18,21 @@
 
 package appeng.client.gui.widgets;
 
-import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+
+import appeng.client.gui.Tooltip;
 
 /**
  * AEBaseGui controlled Tooltip Interface.
@@ -70,4 +81,38 @@ public interface ITooltip {
      * @return true if button being drawn
      */
     boolean isTooltipAreaVisible();
+
+    @Nullable
+    default Tooltip getTooltip(int mouseX, int mouseY) {
+        if (!isTooltipAreaVisible()) {
+            return null;
+        }
+
+        int x = getTooltipAreaX();
+        int y = getTooltipAreaY();
+
+        if (x < mouseX && x + getTooltipAreaWidth() > mouseX
+                && y < mouseY && y + getTooltipAreaHeight() > mouseY) {
+            List<ITextComponent> content = new ArrayList<>();
+            getTooltipMessage().getComponentWithStyle((style, text) -> {
+                for (String line : text.split("\n")) {
+                    IFormattableTextComponent textLine = new StringTextComponent(line).mergeStyle(style);
+                    if (content.isEmpty()) {
+                        textLine.mergeStyle(TextFormatting.WHITE);
+                    } else {
+                        textLine.mergeStyle(TextFormatting.GRAY);
+                    }
+                    content.add(textLine);
+                }
+                return Optional.empty();
+            }, Style.EMPTY);
+
+            Rectangle2d anchorBounds = new Rectangle2d(getTooltipAreaX(), getTooltipAreaY(),
+                    getTooltipAreaWidth(), getTooltipAreaHeight());
+            return new Tooltip(content);
+        }
+
+        return null;
+    }
+
 }

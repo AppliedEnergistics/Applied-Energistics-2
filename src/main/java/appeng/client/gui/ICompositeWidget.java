@@ -3,6 +3,8 @@ package appeng.client.gui;
 import java.util.List;
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.gui.screen.Screen;
@@ -75,6 +77,18 @@ public interface ICompositeWidget {
      * Perform layout directly before any rendering methods are called.
      */
     default void updateBeforeRender() {
+    }
+
+    /**
+     * Draw this composite widget on the background layer of the screen.
+     *
+     * @param matrices The current matrix stack. Is NOT transformed to the screen, but rather is at the origin of the
+     *                 window.
+     * @param zIndex   The z-index to draw at.
+     * @param bounds   The bounds of the current dialog in window coordinates.
+     * @param mouse    The current mouse position relative to the dialogs origin.
+     */
+    default void drawBackgroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
     }
 
     /**
@@ -152,4 +166,17 @@ public interface ICompositeWidget {
     default boolean wantsAllMouseWheelEvents() {
         return false;
     }
+
+    /**
+     * Gets a tooltip at the given mouse position for this widget.
+     *
+     * @param mouseX The mouse x-coordinate relative to the screen.
+     * @param mouseY The mouse y-coordinate relative to the screen.
+     * @return Null if no tooltip is present, the tooltip otherwise.
+     */
+    @Nullable
+    default Tooltip getTooltip(int mouseX, int mouseY) {
+        return null;
+    }
+
 }

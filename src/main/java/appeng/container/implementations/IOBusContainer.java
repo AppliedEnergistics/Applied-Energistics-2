@@ -11,6 +11,7 @@ import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
 import appeng.parts.automation.ExportBusPart;
 import appeng.parts.automation.ImportBusPart;
+import appeng.parts.automation.SharedItemBusPart;
 
 /**
  * Used for {@link appeng.parts.automation.ImportBusPart} and {@link appeng.parts.automation.ExportBusPart}
@@ -29,7 +30,7 @@ public class IOBusContainer extends UpgradeableContainer {
             .requirePermission(SecurityPermissions.BUILD)
             .build("import_bus");
 
-    public IOBusContainer(ContainerType<?> containerType, int id, PlayerInventory ip, IUpgradeableHost te) {
+    public IOBusContainer(ContainerType<?> containerType, int id, PlayerInventory ip, SharedItemBusPart te) {
         super(containerType, id, ip, te);
     }
 

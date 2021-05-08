@@ -18,7 +18,11 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.IItemHandler;
@@ -28,6 +32,7 @@ import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
@@ -41,9 +46,9 @@ import appeng.core.sync.packets.ConfigValuePacket;
 
 public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContainer> {
 
-    private ToggleButton copyMode;
+    private final ToggleButton copyMode;
 
-    private SettingToggleButton<FuzzyMode> fuzzyMode;
+    private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
             ITextComponent title, ScreenStyle style) {
@@ -55,6 +60,19 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
         this.addToLeftToolbar(new ActionButton(ActionItems.CLOSE, act -> action("Clear")));
         this.copyMode = this.addToLeftToolbar(new ToggleButton(Icon.COPY_MODE_ON, Icon.COPY_MODE_OFF,
                 GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal(), act -> action("CopyMode")));
+    }
+
+    /**
+     * For cell workbenches it is the item currently in the slot that determines which upgrades are compatible.
+     */
+    @Override
+    protected List<ITextComponent> getCompatibleUpgrades() {
+        ItemStack workbenchItem = container.getWorkbenchItem();
+        if (workbenchItem.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return super.getCompatibleUpgrades(workbenchItem.getItem());
     }
 
     @Override

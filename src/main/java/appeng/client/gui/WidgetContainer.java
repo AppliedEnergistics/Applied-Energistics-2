@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -21,6 +23,7 @@ import appeng.client.gui.style.WidgetStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.PriorityContainer;
+import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
@@ -148,6 +151,15 @@ public class WidgetContainer {
     }
 
     /**
+     * @see ICompositeWidget#drawBackgroundLayer(MatrixStack, int, Rectangle2d, Point)
+     */
+    public void drawBackgroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
+        for (ICompositeWidget widget : compositeWidgets.values()) {
+            widget.drawBackgroundLayer(matrices, zIndex, bounds, mouse);
+        }
+    }
+
+    /**
      * @see ICompositeWidget#drawForegroundLayer(MatrixStack, int, Rectangle2d, Point)
      */
     public void drawForegroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
@@ -236,4 +248,19 @@ public class WidgetContainer {
         NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
+    @Nullable
+    public Tooltip getTooltip(int mouseX, int mouseY) {
+        for (ICompositeWidget c : this.compositeWidgets.values()) {
+            Rectangle2d bounds = c.getBounds();
+            if (mouseX >= bounds.getX() && mouseX < bounds.getX() + bounds.getWidth()
+                    && mouseY >= bounds.getY() && mouseY < bounds.getY() + bounds.getHeight()) {
+                Tooltip tooltip = c.getTooltip(mouseX, mouseY);
+                if (tooltip != null) {
+                    return tooltip;
+                }
+            }
+        }
+
+        return null;
+    }
 }

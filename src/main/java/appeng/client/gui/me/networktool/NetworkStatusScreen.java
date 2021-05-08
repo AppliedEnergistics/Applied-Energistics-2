@@ -83,9 +83,6 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
         final int viewEnd = viewStart + COLUMNS * ROWS;
 
         List<ITextComponent> tooltip = null;
-        int toolPosX = 0;
-        int toolPosY = 0;
-
         List<MachineGroup> machines = status.getGroupedMachines();
         for (int i = viewStart; i < Math.min(viewEnd, machines.size()); i++) {
             MachineGroup entry = machines.get(i);
@@ -111,11 +108,6 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
                     tooltip.add(GuiText.EnergyDrain
                             .text(Platform.formatPower(entry.getIdlePowerUsage(), true)));
                 }
-
-                // Hard to know why drawTooltip uses these offsets, it seems to be the center of the item stack (16x16)
-                // which leads to the tooltip being perfectly to the right of it.
-                toolPosX = itemX + 8;
-                toolPosY = itemY + 8;
             }
 
             if (++x >= COLUMNS) {
@@ -125,7 +117,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
         }
 
         if (tooltip != null) {
-            this.drawTooltip(matrixStack, toolPosX, toolPosY, tooltip);
+            // We need to relativize the offset because the matrix stack is currently "pushed" to the local coordinates
+            this.drawTooltip(matrixStack, mouseX - offsetX, mouseY - offsetY, tooltip);
         }
     }
 
