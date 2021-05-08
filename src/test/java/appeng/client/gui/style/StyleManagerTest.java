@@ -44,6 +44,7 @@ class StyleManagerTest {
         assertThat(style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB()).isEqualTo(0xff404040);
         assertThat(style.getText()).hasSize(2);
         assertThat(style.getSlots()).containsOnlyKeys(
+                SlotSemantic.TOOLBOX,
                 SlotSemantic.PLAYER_INVENTORY,
                 SlotSemantic.PLAYER_HOTBAR,
                 SlotSemantic.CONFIG,
