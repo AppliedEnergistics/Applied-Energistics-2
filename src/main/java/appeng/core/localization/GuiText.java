@@ -28,9 +28,14 @@ public enum GuiText {
     Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, SkyChest,
 
     VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
+    TerminalViewCellsTooltip,
 
     Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ImportBusFluids, ExportBus,
     ExportBusFluids,
+
+    CompatibleUpgrades, CompatibleUpgrade,
+
+    ToolboxSlots,
 
     CellWorkbench, NetworkDetails, StorageCells, IOBuses, IOBusesFluids,
 

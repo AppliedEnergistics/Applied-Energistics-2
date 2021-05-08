@@ -18,13 +18,13 @@
 
 package appeng.container.implementations;
 
+import java.util.List;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -35,8 +35,6 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.parts.IPart;
 import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
@@ -67,35 +65,14 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
         super(containerType, id, ip, te);
         this.upgradeable = te;
 
-        World w = null;
-        int xCoord = 0;
-        int yCoord = 0;
-        int zCoord = 0;
-
-        if (te instanceof TileEntity) {
-            final TileEntity myTile = (TileEntity) te;
-            w = myTile.getWorld();
-            xCoord = myTile.getPos().getX();
-            yCoord = myTile.getPos().getY();
-            zCoord = myTile.getPos().getZ();
-        }
-
-        if (te instanceof IPart) {
-            final TileEntity mk = te.getTile();
-            w = mk.getWorld();
-            xCoord = mk.getPos().getX();
-            yCoord = mk.getPos().getY();
-            zCoord = mk.getPos().getZ();
-        }
-
         final IInventory pi = this.getPlayerInventory();
         for (int x = 0; x < pi.getSizeInventory(); x++) {
             final ItemStack pii = pi.getStackInSlot(x);
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem) {
                 this.lockPlayerInventorySlot(x);
                 this.tbSlot = x;
-                this.tbInventory = (NetworkToolViewer) ((IGuiItem) pii.getItem()).getGuiObject(pii, x, w,
-                        new BlockPos(xCoord, yCoord, zCoord));
+                this.tbInventory = ((NetworkToolItem) pii.getItem()).getGuiObject(pii, x,
+                        getPlayerInventory().player.world, null);
                 break;
             }
         }
@@ -121,7 +98,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
     protected abstract void setupConfig();
 
     protected final void setupUpgrades() {
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final IItemHandler upgrades = this.getUpgradeable().getUpgradeInventory();
 
         for (int i = 0; i < availableUpgrades(); i++) {
             RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades,

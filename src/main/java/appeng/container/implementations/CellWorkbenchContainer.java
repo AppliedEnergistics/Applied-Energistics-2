@@ -74,7 +74,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     public void setFuzzy(final FuzzyMode valueOf) {
         final ICellWorkbenchItem cwi = this.workBench.getCell();
         if (cwi != null) {
-            cwi.setFuzzyMode(this.workBench.getInventoryByName("cell").getStackInSlot(0), valueOf);
+            cwi.setFuzzyMode(getWorkbenchItem(), valueOf);
         }
     }
 
@@ -112,7 +112,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
 
     @Override
     public int availableUpgrades() {
-        final ItemStack is = this.workBench.getInventoryByName("cell").getStackInSlot(0);
+        final ItemStack is = getWorkbenchItem();
         if (this.prevStack != is) {
             this.prevStack = is;
             this.lastUpgrades = this.getCellUpgradeInventory().getSlots();
@@ -120,9 +120,13 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         return this.lastUpgrades;
     }
 
+    public ItemStack getWorkbenchItem() {
+        return this.workBench.getInventoryByName("cell").getStackInSlot(0);
+    }
+
     @Override
     public void detectAndSendChanges() {
-        final ItemStack is = this.workBench.getInventoryByName("cell").getStackInSlot(0);
+        final ItemStack is = getWorkbenchItem();
         if (isServer()) {
             for (final IContainerListener listener : this.listeners) {
                 if (this.prevStack != is) {
@@ -174,7 +178,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     private FuzzyMode getWorkBenchFuzzyMode() {
         final ICellWorkbenchItem cwi = this.workBench.getCell();
         if (cwi != null) {
-            return cwi.getFuzzyMode(this.workBench.getInventoryByName("cell").getStackInSlot(0));
+            return cwi.getFuzzyMode(getWorkbenchItem());
         }
         return FuzzyMode.IGNORE_ALL;
     }
@@ -183,7 +187,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
 
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
 
-        final ItemStack is = this.getUpgradeable().getInventoryByName("cell").getStackInSlot(0);
+        final ItemStack is = getWorkbenchItem();
         final IStorageChannel<?> channel = is.getItem() instanceof IStorageCell
                 ? ((IStorageCell<?>) is.getItem()).getChannel()
                 : Api.instance().storage().getStorageChannel(IItemStorageChannel.class);

@@ -3,7 +3,7 @@
   "includes": ["common/common.json"],
   "background": {
     "texture": "guis/networkstatus.png",
-    "srcRect": [0, 0, 195, 153]
+    "srcRect": [0, 0, 195, 147]
   },
   "text": {
     "dialog_title": {

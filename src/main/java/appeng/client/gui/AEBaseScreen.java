@@ -19,7 +19,6 @@
 package appeng.client.gui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -29,7 +28,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
@@ -58,7 +56,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 
@@ -79,6 +76,7 @@ import appeng.container.slot.DisabledSlot;
 import appeng.container.slot.FakeSlot;
 import appeng.container.slot.IOptionalSlot;
 import appeng.container.slot.PatternTermSlot;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
@@ -220,17 +218,55 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
         RenderSystem.disableDepthTest();
         for (final CustomSlotWidget c : this.guiSlots) {
-            this.drawTooltip(matrixStack, c, mouseX - this.guiLeft, mouseY - this.guiTop);
+            Tooltip tooltip = c.getTooltip(mouseX, mouseY);
+            if (tooltip != null) {
+                drawTooltip(matrixStack, tooltip, mouseX, mouseY);
+            }
         }
         matrixStack.pop();
         RenderSystem.enableDepthTest();
 
+        renderTooltips(matrixStack, mouseX, mouseY);
+
+        if (AEConfig.instance().isShowDebugGuiOverlays()) {
+            // Show a green overlay on exclusion zones
+            List<Rectangle2d> exclusionZones = getExclusionZones();
+            for (Rectangle2d rectangle2d : exclusionZones) {
+                fillRect(matrixStack, rectangle2d, 0x7f00FF00);
+            }
+
+            hLine(matrixStack, guiLeft, guiLeft + xSize - 1, guiTop, 0xFFFFFFFF);
+            hLine(matrixStack, guiLeft, guiLeft + xSize - 1, guiTop + ySize - 1, 0xFFFFFFFF);
+            vLine(matrixStack, guiLeft, guiTop, guiTop + ySize, 0xFFFFFFFF);
+            vLine(matrixStack, guiLeft + xSize - 1, guiTop, guiTop + ySize - 1, 0xFFFFFFFF);
+        }
+    }
+
+    /**
+     * Renders a potential tooltip (from one of the possible tooltip sources)
+     */
+    private void renderTooltips(MatrixStack matrixStack, int mouseX, int mouseY) {
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
 
-        for (final Object c : this.buttons) {
+        // The line above should have render a tooltip if this condition is true, and no
+        // additional tooltips should be shown
+        if (this.hoveredSlot != null && this.hoveredSlot.getHasStack()) {
+            return;
+        }
+
+        for (Widget c : this.buttons) {
             if (c instanceof ITooltip) {
-                this.drawTooltip(matrixStack, (ITooltip) c, mouseX, mouseY);
+                Tooltip tooltip = ((ITooltip) c).getTooltip(mouseX, mouseY);
+                if (tooltip != null) {
+                    drawTooltip(matrixStack, tooltip, mouseX, mouseY);
+                }
             }
+        }
+
+        // Widget-container uses screen-relative coordinates while the rest uses window-relative
+        Tooltip tooltip = this.widgets.getTooltip(mouseX - guiLeft, mouseY - guiTop);
+        if (tooltip != null) {
+            drawTooltip(matrixStack, tooltip, mouseX, mouseY);
         }
     }
 
@@ -253,31 +289,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
-    private void drawTooltip(MatrixStack matrixStack, ITooltip tooltip, int mouseX, int mouseY) {
-        final int x = tooltip.getTooltipAreaX();
-        int y = tooltip.getTooltipAreaY();
+    private void drawTooltip(MatrixStack matrixStack, Tooltip tooltip, int mouseX, int mouseY) {
+        this.renderWrappedToolTip(matrixStack, tooltip.getContent(), mouseX, mouseY, font);
 
-        if (x < mouseX && x + tooltip.getTooltipAreaWidth() > mouseX && tooltip.isTooltipAreaVisible()) {
-            if (y < mouseY && y + tooltip.getTooltipAreaHeight() > mouseY) {
-                if (y < 15) {
-                    y = 15;
-                }
-
-                final ITextComponent msg = tooltip.getTooltipMessage();
-                this.drawTooltip(matrixStack, x + 11, y + 4, msg);
-            }
-        }
-    }
-
-    protected void drawTooltip(MatrixStack matrices, int x, int y, ITextComponent message) {
-        String tooltipText = message.getString();
-
-        if (!tooltipText.isEmpty()) {
-            String[] lines = tooltipText.split("\n"); // FIXME FABRIC
-            List<ITextComponent> textLines = Arrays.stream(lines).map(StringTextComponent::new)
-                    .collect(Collectors.toList());
-            this.drawTooltip(matrices, x, y, textLines);
-        }
     }
 
     // FIXME FABRIC: move out to json (?)
@@ -354,6 +368,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             final int y) {
 
         this.drawBG(matrixStack, guiLeft, guiTop, x, y, f);
+
+        widgets.drawBackgroundLayer(matrixStack, getBlitOffset(), getBounds(true), new Point(x - guiLeft, y - guiTop));
 
         for (final Slot slot : this.getInventorySlots()) {
             if (slot instanceof IOptionalSlot) {

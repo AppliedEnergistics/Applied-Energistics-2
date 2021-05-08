@@ -1,20 +1,31 @@
 package appeng.client.gui.widgets;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.util.text.ITextComponent;
 
+import appeng.client.Point;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Rects;
+import appeng.client.gui.Tooltip;
 import appeng.client.gui.style.Blitter;
 import appeng.container.slot.AppEngSlot;
 
 /**
  * A panel that can draw a dynamic number of upgrade slots in a vertical layout.
  */
-public final class UpgradesPanel {
+public final class UpgradesPanel implements ICompositeWidget {
 
     private static final int SLOT_SIZE = 18;
     private static final int PADDING = 7;
@@ -25,26 +36,81 @@ public final class UpgradesPanel {
 
     private final List<Slot> slots;
 
+    // The screen origin in window space (used to layout slots)
+    private Point screenOrigin = Point.ZERO;
+
     // Relative to current screen origin (not window)
     private int x;
     private int y;
 
-    public UpgradesPanel(int x, int y, List<Slot> slots) {
-        this.slots = slots;
-        this.setPos(x, y);
+    private final Supplier<List<ITextComponent>> tooltipSupplier;
+
+    public UpgradesPanel(List<Slot> slots) {
+        this(slots, Collections::emptyList);
     }
 
-    public void draw(MatrixStack matrices, int zIndex, int offsetX, int offsetY) {
+    public UpgradesPanel(List<Slot> slots, Supplier<List<ITextComponent>> tooltipSupplier) {
+        this.slots = slots;
+        this.tooltipSupplier = tooltipSupplier;
+    }
+
+    @Override
+    public void setPosition(Point position) {
+        x = position.getX();
+        y = position.getY();
+    }
+
+    /**
+     * Changes where the panel is positioned. Coordinates are relative to the current screen's origin.
+     */
+    @Override
+    public void setSize(int width, int height) {
+        // Size of upgrades panel cannot be set via JSON
+    }
+
+    /**
+     * The overall bounding box in screen coordinates.
+     */
+    @Override
+    public Rectangle2d getBounds() {
+        int slotCount = getUpgradeSlotCount();
+
+        int height = 2 * PADDING + Math.min(MAX_ROWS, slotCount) * SLOT_SIZE;
+        int width = 2 * PADDING + (slotCount + MAX_ROWS - 1) / MAX_ROWS * SLOT_SIZE;
+        return new Rectangle2d(x, y, width, height);
+    }
+
+    @Override
+    public void populateScreen(Consumer<Widget> addWidget, Rectangle2d bounds, AEBaseScreen<?> screen) {
+        this.screenOrigin = Point.fromTopLeft(bounds);
+    }
+
+    @Override
+    public void updateBeforeRender() {
+        int slotOriginX = this.x + PADDING;
+        int slotOriginY = this.y + PADDING;
+
+        for (Slot slot : slots) {
+            if (!slot.isEnabled()) {
+                continue;
+            }
+
+            slot.xPos = slotOriginX + 1;
+            slot.yPos = slotOriginY + 1;
+            slotOriginY += SLOT_SIZE;
+        }
+    }
+
+    @Override
+    public void drawBackgroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
         int slotCount = getUpgradeSlotCount();
         if (slotCount <= 0) {
             return;
         }
 
-        this.layoutSlots();
-
         // This is the absolute x,y coord of the first slot within the panel
-        int slotOriginX = offsetX + this.x + PADDING;
-        int slotOriginY = offsetY + this.y + PADDING;
+        int slotOriginX = screenOrigin.getX() + this.x + PADDING;
+        int slotOriginY = screenOrigin.getY() + this.y + PADDING;
 
         for (int i = 0; i < slotCount; i++) {
             // Unlike other UIs, this is drawn top-to-bottom,left-to-right
@@ -71,11 +137,10 @@ public final class UpgradesPanel {
         }
     }
 
-    /**
-     * Computes the exclusion zones of this widget in window coordinates, given the offset of the current screen's
-     * origin in the window.
-     */
-    public void addExclusionZones(int offsetX, int offsetY, List<Rectangle2d> zones) {
+    @Override
+    public void addExclusionZones(List<Rectangle2d> exclusionZones, Rectangle2d screenBounds) {
+        int offsetX = screenBounds.getX();
+        int offsetY = screenBounds.getY();
 
         int slotCount = getUpgradeSlotCount();
 
@@ -87,7 +152,7 @@ public final class UpgradesPanel {
         int rightEdge = offsetX + x;
         if (fullCols > 0) {
             int fullColWidth = PADDING * 2 + fullCols * SLOT_SIZE;
-            zones.add(Rects.expand(new Rectangle2d(
+            exclusionZones.add(Rects.expand(new Rectangle2d(
                     rightEdge,
                     offsetY + y,
                     fullColWidth,
@@ -98,7 +163,7 @@ public final class UpgradesPanel {
         // If there's a partially populated row at the end, add a smaller rectangle for it
         int remaining = slotCount - fullCols * MAX_ROWS;
         if (remaining > 0) {
-            zones.add(Rects.expand(new Rectangle2d(
+            exclusionZones.add(Rects.expand(new Rectangle2d(
                     rightEdge,
                     offsetY + y,
                     // We need to add padding in case there's no full column that already includes it
@@ -108,12 +173,19 @@ public final class UpgradesPanel {
 
     }
 
-    /**
-     * Changes where the panel is positioned. Coordinates are relative to the current screen's origin.
-     */
-    public void setPos(int x, int y) {
-        this.x = x;
-        this.y = y;
+    @Nullable
+    @Override
+    public Tooltip getTooltip(int mouseX, int mouseY) {
+        if (getUpgradeSlotCount() == 0) {
+            return null;
+        }
+
+        List<ITextComponent> tooltip = this.tooltipSupplier.get();
+        if (tooltip.isEmpty()) {
+            return null;
+        }
+
+        return new Tooltip(tooltip);
     }
 
     private static void drawSlot(MatrixStack matrices, int zIndex, int x, int y,
@@ -157,21 +229,6 @@ public final class UpgradesPanel {
             }
         }
         return count;
-    }
-
-    private void layoutSlots() {
-        int slotOriginX = this.x + PADDING;
-        int slotOriginY = this.y + PADDING;
-
-        for (Slot slot : slots) {
-            if (!slot.isEnabled()) {
-                continue;
-            }
-
-            slot.xPos = slotOriginX + 1;
-            slot.yPos = slotOriginY + 1;
-            slotOriginY += SLOT_SIZE;
-        }
     }
 
 }
