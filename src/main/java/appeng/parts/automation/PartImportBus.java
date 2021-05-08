@@ -218,6 +218,11 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	private boolean importStuff( final InventoryAdaptor myAdaptor, final IAEItemStack whatToImport, final IMEMonitor<IAEItemStack> inv, final IEnergySource energy, final FuzzyMode fzMode )
 	{
 		final int toSend = this.calculateMaximumAmountToImport( myAdaptor, whatToImport, inv, fzMode );
+
+		if( toSend == 0 ){
+			return false;
+		}
+
 		final ItemStack newItems;
 
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
@@ -288,6 +293,10 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		if( itemAmountNotStorable != null )
 		{
+			if (simResult.getCount() == itemAmountNotStorable.getStackSize())
+			{
+				return 0;
+			}
 			return (int) Math.min( simResult.getCount() - itemAmountNotStorable.getStackSize(), toSend );
 		}
 

@@ -19,12 +19,7 @@
 package appeng.parts.misc;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
@@ -42,11 +37,11 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.IGridProxyable;
 import appeng.me.storage.ITickingMonitor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import org.apache.commons.lang3.tuple.Pair;
 
 
 /**
@@ -81,11 +76,19 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 		int slotCount = this.itemHandler.getSlots();
 		boolean simulate = ( type == Actionable.SIMULATE );
-
+		List<Pair<Integer,Integer>> injectedList = new ArrayList<>();
 		// This uses a brute force approach and tries to jam it in every slot the inventory exposes.
 		for( int i = 0; i < slotCount && !remaining.isEmpty(); i++ )
 		{
+			int countPre = remaining.getCount();
 			remaining = this.itemHandler.insertItem( i, remaining, simulate );
+			int countPos = remaining.getCount();
+			if (remaining.isEmpty()){
+				injectedList.add( Pair.of( i,countPre ) );
+			}
+			else if (countPos > countPre) {
+				injectedList.add( Pair.of( i,countPos - countPre ) );
+			}
 		}
 
 		// At this point, we still have some items left...
@@ -97,13 +100,17 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 		if( type == Actionable.MODULATE )
 		{
-			try
+			if (this.cache.cachedAeStacks.length == 0) this.cache.update();
+			for ( Pair<Integer, Integer> pair : injectedList )
 			{
-				this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
-			}
-			catch( GridAccessException ex )
-			{
-				// meh
+				if( this.cache.cachedAeStacks[pair.getKey()] == null )
+				{
+					this.cache.cachedAeStacks[pair.getKey()] = iox.copy().setStackSize( pair.getValue() );
+				}
+				else
+				{
+					this.cache.cachedAeStacks[pair.getKey()].incStackSize( pair.getValue() );
+				}
 			}
 		}
 
@@ -121,8 +128,10 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		ItemStack gathered = ItemStack.EMPTY;
 
 		final boolean simulate = ( mode == Actionable.SIMULATE );
+		List<Pair<Integer, Integer>> extractedList = new ArrayList<>();
 
-		for( int i = 0; i < this.itemHandler.getSlots(); i++ )
+
+		for ( int i = 0; i < this.itemHandler.getSlots(); i++ )
 		{
 			ItemStack stackInInventorySlot = this.itemHandler.getStackInSlot( i );
 
@@ -140,6 +149,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			do
 			{
 				extracted = this.itemHandler.extractItem( i, remainingCurrentSlot, simulate );
+
 				if( !extracted.isEmpty() )
 				{
 					if( extracted.getCount() > remainingCurrentSlot )
@@ -150,6 +160,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 								this.itemHandler.getClass().getName(), extracted.toString(), remainingCurrentSlot );
 						extracted.setCount( remainingCurrentSlot );
 					}
+
+					extractedList.add( Pair.of( i, extracted.getCount() ) );
 
 					// We're just gonna use the first stack we get our hands on as the template for the rest.
 					// In case some stupid itemhandler (aka forge) returns an internal state we have to do a second
@@ -165,7 +177,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					remainingCurrentSlot -= extracted.getCount();
 				}
 			}
-			while( !extracted.isEmpty() && remainingCurrentSlot > 0 );
+			while ( !extracted.isEmpty() && remainingCurrentSlot > 0 );
 
 			remainingSize -= stackSizeCurrentSlot - remainingCurrentSlot;
 
@@ -180,13 +192,14 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		{
 			if( mode == Actionable.MODULATE )
 			{
-				try
+				if (this.cache.cachedAeStacks.length == 0) this.cache.update();
+				for ( Pair<Integer, Integer> pair : extractedList )
 				{
-					this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
-				}
-				catch( GridAccessException ex )
-				{
-					// meh
+					this.cache.cachedAeStacks[pair.getKey()].decStackSize( pair.getValue() );
+					if( this.cache.cachedAeStacks[pair.getKey()].getStackSize() == 0 )
+					{
+						this.cache.cachedAeStacks[pair.getKey()] = null;
+					}
 				}
 			}
 
