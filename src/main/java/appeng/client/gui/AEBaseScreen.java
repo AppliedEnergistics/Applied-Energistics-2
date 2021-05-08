@@ -328,36 +328,38 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             for (Map.Entry<String, Text> entry : style.getText().entrySet()) {
                 // Process text overrides
                 TextOverride override = textOverrides.get(entry.getKey());
-
-                // Don't draw if the screen decided to hide this
-                if (override != null && override.isHidden()) {
-                    continue;
-                }
-
-                Text text = entry.getValue();
-                int color = style.getColor(text.getColor()).toARGB();
-
-                // Allow overrides for which content is shown
-                ITextComponent content = text.getText();
-                if (override != null && override.getContent() != null) {
-                    content = override.getContent();
-                }
-
-                Point pos = text.getPosition().resolve(getBounds(false));
-
-                if (text.isCenterHorizontally()) {
-                    int textWidth = this.font.getStringPropertyWidth(content);
-                    pos = pos.move(-textWidth / 2, 0);
-                }
-
-                this.font.func_243248_b(
-                        matrixStack,
-                        content,
-                        pos.getX(),
-                        pos.getY(),
-                        color);
+                drawText(matrixStack, entry.getValue(), override);
             }
         }
+    }
+
+    private void drawText(MatrixStack matrixStack, Text text, @Nullable TextOverride override) {
+        // Don't draw if the screen decided to hide this
+        if (override != null && override.isHidden()) {
+            return;
+        }
+
+        int color = style.getColor(text.getColor()).toARGB();
+
+        // Allow overrides for which content is shown
+        ITextComponent content = text.getText();
+        if (override != null && override.getContent() != null) {
+            content = override.getContent();
+        }
+
+        Point pos = text.getPosition().resolve(getBounds(false));
+
+        if (text.isCenterHorizontally()) {
+            int textWidth = this.font.getStringPropertyWidth(content);
+            pos = pos.move(-textWidth / 2, 0);
+        }
+
+        this.font.func_243248_b(
+                matrixStack,
+                content,
+                pos.getX(),
+                pos.getY(),
+                color);
     }
 
     public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {

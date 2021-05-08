@@ -3,7 +3,7 @@
   "includes": ["common/common.json"],
   "background": {
     "texture": "guis/priority.png",
-    "srcRect": [0, 0, 176, 107]
+    "srcRect": [0, 0, 176, 125]
   },
   "text": {
     "dialog_title": {
@@ -13,6 +13,24 @@
       "position": {
         "left": 8,
         "top": 6
+      }
+    },
+    "priority_insertion_hint": {
+      "text": {
+        "translate": "gui.appliedenergistics2.PriorityInsertionHint"
+      },
+      "position": {
+        "left": 8,
+        "top": 98
+      }
+    },
+    "priority_extraction_hint": {
+      "text": {
+        "translate": "gui.appliedenergistics2.PriorityExtractionHint"
+      },
+      "position": {
+        "left": 8,
+        "top": 110
       }
     }
   },
