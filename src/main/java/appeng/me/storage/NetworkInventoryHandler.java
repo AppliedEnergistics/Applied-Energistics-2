@@ -59,13 +59,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
     }
 
     public void addNewStorage(final IMEInventoryHandler<T> h) {
-        final int priority = h.getPriority();
-        List<IMEInventoryHandler<T>> list = this.priorityInventory.get(priority);
-        if (list == null) {
-            this.priorityInventory.put(priority, list = new ArrayList<>());
-        }
-
-        list.add(h);
+        this.priorityInventory.computeIfAbsent(h.getPriority(), k -> new ArrayList<>()).add(h);
     }
 
     @Override
@@ -178,7 +172,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
             return null;
         }
 
-        final Iterator<List<IMEInventoryHandler<T>>> i = this.priorityInventory.descendingMap().values().iterator();// priorityInventory.asMap().descendingMap().entrySet().iterator();
+        final Iterator<List<IMEInventoryHandler<T>>> i = this.priorityInventory.descendingMap().values().iterator();
 
         final T output = request.copy();
         request = request.copy();

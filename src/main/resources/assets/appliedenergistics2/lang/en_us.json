@@ -248,6 +248,8 @@
   "gui.appliedenergistics2.Precise": "Precise",
   "gui.appliedenergistics2.PressureTunnel": "Pressure",
   "gui.appliedenergistics2.Priority": "Priority",
+  "gui.appliedenergistics2.PriorityInsertionHint": "Insertion: Higher priority first",
+  "gui.appliedenergistics2.PriorityExtractionHint": "Extraction: Lower priority first",
   "gui.appliedenergistics2.ProcessingPattern": "Processing Pattern",
   "gui.appliedenergistics2.Purple": "Purple",
   "gui.appliedenergistics2.QuantumLinkChamber": "Quantum Link Chamber",
