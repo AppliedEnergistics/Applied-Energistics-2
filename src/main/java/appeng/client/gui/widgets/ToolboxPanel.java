@@ -5,6 +5,8 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
@@ -21,11 +23,14 @@ public class ToolboxPanel implements ICompositeWidget {
     // Backdrop for the 3x3 toolbox offered by the network-tool
     private final Blitter background;
 
+    private final ITextComponent toolbeltName;
+
     // Relative to the origin of the current screen (not window)
     private Rectangle2d bounds = new Rectangle2d(0, 0, 0, 0);
 
-    public ToolboxPanel(ScreenStyle style) {
-        background = style.getImage("toolbox");
+    public ToolboxPanel(ScreenStyle style, ITextComponent toolbeltName) {
+        this.background = style.getImage("toolbox");
+        this.toolbeltName = toolbeltName;
     }
 
     @Override
@@ -55,7 +60,9 @@ public class ToolboxPanel implements ICompositeWidget {
     @Nullable
     @Override
     public Tooltip getTooltip(int mouseX, int mouseY) {
-        return new Tooltip(GuiText.ToolboxSlots);
+        return new Tooltip(
+                this.toolbeltName,
+                GuiText.UpgradeToolbelt.text().copyRaw().mergeStyle(TextFormatting.GRAY));
     }
 
 }

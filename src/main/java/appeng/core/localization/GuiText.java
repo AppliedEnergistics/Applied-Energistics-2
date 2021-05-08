@@ -33,9 +33,7 @@ public enum GuiText {
     Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ImportBusFluids, ExportBus,
     ExportBusFluids,
 
-    CompatibleUpgrades, CompatibleUpgrade,
-
-    ToolboxSlots,
+    CompatibleUpgrades, CompatibleUpgrade, UpgradeToolbelt,
 
     CellWorkbench, NetworkDetails, StorageCells, IOBuses, IOBusesFluids,
 
