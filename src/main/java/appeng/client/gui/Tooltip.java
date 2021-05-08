@@ -1,6 +1,7 @@
 package appeng.client.gui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,11 +22,15 @@ public final class Tooltip {
         this.content = content;
     }
 
+    public Tooltip(ITextComponent... content) {
+        this.content = Arrays.asList(content);
+    }
+
     public Tooltip(ITextComponent content) {
         this.content = Collections.singletonList(content);
     }
 
-    public Tooltip(GuiText text) {
+    public Tooltip(GuiText text, Object... args) {
         String[] lines = text.getLocal().split("\n");
 
         this.content = new ArrayList<>();

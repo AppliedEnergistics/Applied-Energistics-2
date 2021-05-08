@@ -22,9 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.ITextComponent;
@@ -55,7 +52,7 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
                 container.getSlots(SlotSemantic.UPGRADE),
                 this::getCompatibleUpgrades));
         if (container.hasToolbox()) {
-            this.widgets.add("toolbox", new ToolboxPanel(style));
+            this.widgets.add("toolbox", new ToolboxPanel(style, container.getToolboxName()));
         }
     }
 

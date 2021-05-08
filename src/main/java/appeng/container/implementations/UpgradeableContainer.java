@@ -18,13 +18,14 @@
 
 package appeng.container.implementations;
 
-import java.util.List;
+import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -93,6 +94,12 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
 
     public boolean hasToolbox() {
         return this.tbInventory != null;
+    }
+
+    @Nonnull
+    public ITextComponent getToolboxName() {
+        return this.tbInventory != null ? this.tbInventory.getItemStack().getDisplayName()
+                : StringTextComponent.EMPTY;
     }
 
     protected abstract void setupConfig();
