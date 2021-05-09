@@ -71,13 +71,24 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
         if( type == Actionable.MODULATE )
         {
-            try
+            if (this.cache.cachedAeStacks.length == 0) this.cache.update();
+            boolean found = false;
+            for (IAEItemStack iaeItemStack : this.cache.cachedAeStacks)
             {
-                this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
+                if( iaeItemStack == null )
+                {
+                    continue;
+                }
+                if( iaeItemStack.equals( iox ) )
+                {
+                    found = true;
+                    iaeItemStack.incStackSize( iox.getStackSize() );
+                }
             }
-            catch( GridAccessException ex )
+            if (!found)
             {
-                // meh
+                this.cache.cachedAeStacks = Arrays.copyOf( this.cache.cachedAeStacks, this.cache.cachedAeStacks.length + 1 );
+                this.cache.cachedAeStacks[this.cache.cachedAeStacks.length - 1] = iox.copy();
             }
         }
 
@@ -107,15 +118,27 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
         if( !extracted.isEmpty() )
         {
+            if (this.cache.cachedAeStacks.length == 0) this.cache.update();
+            IAEItemStack iaeExtracted = AEItemStack.fromItemStack( extracted );
+
             if( mode == Actionable.MODULATE )
             {
-                try
+                for ( int i = 0; i < this.cache.cachedAeStacks.length; i++ )
                 {
-                    this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
-                }
-                catch( GridAccessException ex )
-                {
-                    // meh
+                    IAEItemStack iaeItemStack = this.cache.cachedAeStacks[i];
+                    if( iaeExtracted.equals( iaeItemStack ) )
+                    {
+                        if( iaeExtracted.getStackSize() >= iaeItemStack.getStackSize() )
+                        {
+                            iaeExtracted.decStackSize( iaeItemStack.getStackSize() );
+                            this.cache.cachedAeStacks[i] = null;
+                        }
+                        else
+                        {
+                            iaeItemStack.decStackSize( iaeExtracted.getStackSize() );
+                            break;
+                        }
+                    }
                 }
             }
 
