@@ -19,6 +19,7 @@
 package appeng.integration.modules.jei;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +41,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.registration.IAdvancedRegistration;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
@@ -56,6 +58,8 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.implementations.GrinderScreen;
+import appeng.client.gui.implementations.InscriberScreen;
 import appeng.container.me.items.CraftingTermContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.core.AEConfig;
@@ -210,6 +214,21 @@ public class JEIPlugin implements IModPlugin {
                 }
 
                 return null;
+            }
+
+            @Override
+            public Collection<IGuiClickableArea> getGuiClickableAreas(ContainerScreen<?> containerScreen, double mouseX,
+                    double mouseY) {
+                if (containerScreen instanceof GrinderScreen) {
+                    return Arrays.asList(
+                            IGuiClickableArea.createBasic(18, 34, 55, 22, GrinderRecipeCategory.UID),
+                            IGuiClickableArea.createBasic(103, 40, 55, 22, GrinderRecipeCategory.UID));
+                } else if (containerScreen instanceof InscriberScreen) {
+                    return Collections.singletonList(
+                            IGuiClickableArea.createBasic(82, 39, 26, 16, InscriberRecipeCategory.UID));
+                }
+
+                return Collections.emptyList();
             }
         });
 
