@@ -1,11 +1,6 @@
 package appeng.parts.misc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import appeng.api.storage.IStorageChannel;
@@ -71,9 +66,9 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
         if( type == Actionable.MODULATE )
         {
-            if (this.cache.cachedAeStacks.length == 0) this.cache.update();
+            if( this.cache.cachedAeStacks.length == 0 ) this.cache.update();
             boolean found = false;
-            for (IAEItemStack iaeItemStack : this.cache.cachedAeStacks)
+            for( IAEItemStack iaeItemStack : this.cache.cachedAeStacks )
             {
                 if( iaeItemStack == null )
                 {
@@ -85,11 +80,18 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
                     iaeItemStack.incStackSize( iox.getStackSize() );
                 }
             }
-            if (!found)
+            if( !found )
             {
                 this.cache.cachedAeStacks = Arrays.copyOf( this.cache.cachedAeStacks, this.cache.cachedAeStacks.length + 1 );
-                this.cache.cachedAeStacks[this.cache.cachedAeStacks.length - 1] = iox.copy();
+                IAEItemStack inserted = iox.copy();
+                if (remaining.isEmpty())
+                {
+                    this.cache.cachedAeStacks[this.cache.cachedAeStacks.length - 1] = inserted;
+                } else {
+                    this.cache.cachedAeStacks[this.cache.cachedAeStacks.length - 1] = inserted.setStackSize( iox.getStackSize() - remaining.getCount() );
+                }
             }
+
         }
 
         return AEItemStack.fromItemStack( remaining );
@@ -99,8 +101,8 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
     @Override
     public IAEItemStack extractItems( IAEItemStack request, Actionable mode, IActionSource src )
     {
-        ItemStack requestedItemStack = request.createItemStack();
-        int remainingSize = requestedItemStack.getCount();
+        ItemStack requestedItemStack = request.getDefinition();
+        int remainingSize = (int) Math.min( Integer.MAX_VALUE, request.getStackSize());
 
         final boolean simulate = ( mode == Actionable.SIMULATE );
 
@@ -126,7 +128,7 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
                 for ( int i = 0; i < this.cache.cachedAeStacks.length; i++ )
                 {
                     IAEItemStack iaeItemStack = this.cache.cachedAeStacks[i];
-                    if( iaeExtracted.equals( iaeItemStack ) )
+                    if( iaeExtracted.isSameType( iaeItemStack ) )
                     {
                         if( iaeExtracted.getStackSize() >= iaeItemStack.getStackSize() )
                         {

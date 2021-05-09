@@ -71,23 +71,28 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	@Override
 	public IAEItemStack injectItems( IAEItemStack iox, Actionable type, IActionSource src )
 	{
+		if( this.cache.cachedAeStacks.length == 0 ) this.cache.update();
+
 		ItemStack orgInput = iox.createItemStack();
 		ItemStack remaining = orgInput;
 
 		int slotCount = this.itemHandler.getSlots();
 		boolean simulate = ( type == Actionable.SIMULATE );
-		List<Pair<Integer,Integer>> injectedList = new ArrayList<>();
+		List<Pair<Integer, Integer>> injectedList = new ArrayList<>();
 		// This uses a brute force approach and tries to jam it in every slot the inventory exposes.
 		for( int i = 0; i < slotCount && !remaining.isEmpty(); i++ )
 		{
 			int countPre = remaining.getCount();
 			remaining = this.itemHandler.insertItem( i, remaining, simulate );
 			int countPos = remaining.getCount();
-			if (remaining.isEmpty()){
-				injectedList.add( Pair.of( i,countPre ) );
+			if( remaining.isEmpty() )
+			{
+				injectedList.add( Pair.of( i, countPre ) );
+				break;
 			}
-			else if (countPos > countPre) {
-				injectedList.add( Pair.of( i,countPos - countPre ) );
+			else if( countPos > countPre )
+			{
+				injectedList.add( Pair.of( i, countPos - countPre ) );
 			}
 		}
 
@@ -100,8 +105,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 		if( type == Actionable.MODULATE )
 		{
-			if (this.cache.cachedAeStacks.length == 0) this.cache.update();
-			for ( Pair<Integer, Integer> pair : injectedList )
+			for( Pair<Integer, Integer> pair : injectedList )
 			{
 				if( this.cache.cachedAeStacks[pair.getKey()] == null )
 				{
@@ -112,6 +116,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					this.cache.cachedAeStacks[pair.getKey()].incStackSize( pair.getValue() );
 				}
 			}
+
 		}
 
 		return AEItemStack.fromItemStack( remaining );
@@ -161,8 +166,6 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 						extracted.setCount( remainingCurrentSlot );
 					}
 
-					extractedList.add( Pair.of( i, extracted.getCount() ) );
-
 					// We're just gonna use the first stack we get our hands on as the template for the rest.
 					// In case some stupid itemhandler (aka forge) returns an internal state we have to do a second
 					// expensive copy again.
@@ -181,6 +184,11 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 			remainingSize -= stackSizeCurrentSlot - remainingCurrentSlot;
 
+			if (!gathered.isEmpty())
+			{
+				extractedList.add( Pair.of( i, gathered.getCount() ) );
+			}
+
 			// Done?
 			if( remainingSize <= 0 )
 			{
@@ -192,13 +200,21 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		{
 			if( mode == Actionable.MODULATE )
 			{
-				if (this.cache.cachedAeStacks.length == 0) this.cache.update();
+
 				for ( Pair<Integer, Integer> pair : extractedList )
 				{
-					this.cache.cachedAeStacks[pair.getKey()].decStackSize( pair.getValue() );
-					if( this.cache.cachedAeStacks[pair.getKey()].getStackSize() == 0 )
+					if (pair.getKey() >= this.cache.cachedAeStacks.length)
 					{
-						this.cache.cachedAeStacks[pair.getKey()] = null;
+						this.cache.update();
+						break;
+					}
+					if( this.cache.cachedAeStacks[pair.getKey()] != null )
+					{
+						this.cache.cachedAeStacks[pair.getKey()].decStackSize( pair.getValue() );
+						if( this.cache.cachedAeStacks[pair.getKey()].getStackSize() == 0 )
+						{
+							this.cache.cachedAeStacks[pair.getKey()] = null;
+						}
 					}
 				}
 			}
