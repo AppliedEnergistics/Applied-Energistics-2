@@ -219,8 +219,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	{
 		final int toSend = this.calculateMaximumAmountToImport( myAdaptor, whatToImport, inv, fzMode );
 
-		if( toSend == 0 ){
-			return false;
+		if( toSend == 0 )
+		{
+			return true;
 		}
 
 		final ItemStack newItems;
@@ -291,9 +292,14 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			itemAmountNotStorable = inv.injectItems( AEItemStack.fromItemStack( simResult ), Actionable.SIMULATE, this.source );
 		}
 
+		if( simResult.isEmpty() )
+		{
+			return 0;
+		}
+
 		if( itemAmountNotStorable != null )
 		{
-			if (simResult.getCount() == itemAmountNotStorable.getStackSize())
+			if( simResult.getCount() == itemAmountNotStorable.getStackSize() )
 			{
 				return 0;
 			}

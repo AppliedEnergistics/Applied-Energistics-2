@@ -72,8 +72,24 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
         if( type == Actionable.MODULATE )
         {
             if (this.cache.cachedAeStacks.length == 0) this.cache.update();
-            this.cache.cachedAeStacks = Arrays.copyOf( this.cache.cachedAeStacks, this.cache.cachedAeStacks.length + 1 );
-            this.cache.cachedAeStacks[this.cache.cachedAeStacks.length - 1] = iox.copy();
+            boolean found = false;
+            for (IAEItemStack iaeItemStack : this.cache.cachedAeStacks)
+            {
+                if( iaeItemStack == null )
+                {
+                    continue;
+                }
+                if( iaeItemStack.equals( iox ) )
+                {
+                    found = true;
+                    iaeItemStack.incStackSize( iox.getStackSize() );
+                }
+            }
+            if (!found)
+            {
+                this.cache.cachedAeStacks = Arrays.copyOf( this.cache.cachedAeStacks, this.cache.cachedAeStacks.length + 1 );
+                this.cache.cachedAeStacks[this.cache.cachedAeStacks.length - 1] = iox.copy();
+            }
         }
 
         return AEItemStack.fromItemStack( remaining );
