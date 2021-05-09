@@ -24,6 +24,7 @@ import java.util.List;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -38,6 +39,7 @@ import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.container.SlotSemantic;
 import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.localization.GuiText;
+import appeng.tile.AEBaseTileEntity;
 
 /**
  * This screen adds the ability for {@link IUpgradeableHost} screens to show the upgrade inventory and the player's
@@ -66,6 +68,9 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
         Item item;
         if (host instanceof IPart) {
             item = ((IPart) host).getItemStack(PartItemStack.NETWORK).getItem();
+        } else if (host instanceof TileEntity) {
+            TileEntity te = (TileEntity) host;
+            item = te.getBlockState().getBlock().asItem();
         } else {
             return Collections.emptyList();
         }

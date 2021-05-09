@@ -59,7 +59,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
         this.addToLeftToolbar(new ActionButton(ActionItems.WRENCH, act -> action("Partition")));
         this.addToLeftToolbar(new ActionButton(ActionItems.CLOSE, act -> action("Clear")));
         this.copyMode = this.addToLeftToolbar(new ToggleButton(Icon.COPY_MODE_ON, Icon.COPY_MODE_OFF,
-                GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal(), act -> action("CopyMode")));
+                GuiText.CopyMode.text(), GuiText.CopyModeDesc.text(), act -> action("CopyMode")));
     }
 
     /**

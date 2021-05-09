@@ -18,6 +18,10 @@
 
 package appeng.fluids.client.gui.widgets;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -83,13 +87,14 @@ public class FluidTankWidget extends Widget implements ITooltip, IIngredientSupp
     }
 
     @Override
-    public ITextComponent getTooltipMessage() {
+    public List<ITextComponent> getTooltipMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
-            return fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()).deepCopy()
-                    .appendString("\n" + (fluid.getStackSize() + "mB"));
+            return Arrays.asList(
+                    fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()),
+                    new StringTextComponent(fluid.getStackSize() + "mB"));
         }
-        return StringTextComponent.EMPTY;
+        return Collections.emptyList();
     }
 
     @Override

@@ -18,6 +18,10 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.gui.widget.Widget;
@@ -89,14 +93,16 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     @Override
-    public ITextComponent getTooltipMessage() {
+    public List<ITextComponent> getTooltipMessage() {
         if (this.fullMsg != null) {
-            return this.fullMsg;
+            return Collections.singletonList(this.fullMsg);
         }
-        ITextComponent result = this.titleName != null ? this.titleName : StringTextComponent.EMPTY;
 
-        return result.deepCopy().appendString("\n").appendString(this.source.getCurrentProgress() + " ")
-                .append(GuiText.Of.text().deepCopy().appendString(" " + this.source.getMaxProgress()));
+        ITextComponent result = this.titleName != null ? this.titleName : StringTextComponent.EMPTY;
+        return Arrays.asList(
+                result,
+                new StringTextComponent(this.source.getCurrentProgress() + " ")
+                        .append(GuiText.Of.text().deepCopy().appendString(" " + this.source.getMaxProgress())));
     }
 
     @Override

@@ -19,6 +19,7 @@
 package appeng.fluids.client.gui.widgets;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -26,22 +27,17 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.IIngredientSupplier;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.FluidSlotPacket;
@@ -88,12 +84,12 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
     }
 
     @Override
-    public ITextComponent getTooltipMessage() {
+    public List<ITextComponent> getTooltipMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
-            return new TranslationTextComponent(fluid.getFluidStack().getTranslationKey());
+            return Collections.singletonList(new TranslationTextComponent(fluid.getFluidStack().getTranslationKey()));
         }
-        return StringTextComponent.EMPTY;
+        return Collections.emptyList();
     }
 
     @Override

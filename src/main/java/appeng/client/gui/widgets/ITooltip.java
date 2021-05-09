@@ -19,13 +19,13 @@
 package appeng.client.gui.widgets;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -41,13 +41,13 @@ public interface ITooltip {
 
     /**
      * Returns the tooltip message.
-     * <p>
-     * Should use {@link StringTextComponent#EMPTY} for no tooltip
      *
-     * @return tooltip message
+     * @return tooltip message or an empty list to not show a tooltip
      */
     @Nonnull
-    ITextComponent getTooltipMessage();
+    default List<ITextComponent> getTooltipMessage() {
+        return Collections.emptyList();
+    }
 
     /**
      * x Location for the object that triggers the tooltip.
@@ -93,23 +93,15 @@ public interface ITooltip {
 
         if (x < mouseX && x + getTooltipAreaWidth() > mouseX
                 && y < mouseY && y + getTooltipAreaHeight() > mouseY) {
-            List<ITextComponent> content = new ArrayList<>();
-            getTooltipMessage().getComponentWithStyle((style, text) -> {
-                for (String line : text.split("\n")) {
-                    IFormattableTextComponent textLine = new StringTextComponent(line).mergeStyle(style);
-                    if (content.isEmpty()) {
-                        textLine.mergeStyle(TextFormatting.WHITE);
-                    } else {
-                        textLine.mergeStyle(TextFormatting.GRAY);
-                    }
-                    content.add(textLine);
-                }
-                return Optional.empty();
-            }, Style.EMPTY);
 
-            Rectangle2d anchorBounds = new Rectangle2d(getTooltipAreaX(), getTooltipAreaY(),
-                    getTooltipAreaWidth(), getTooltipAreaHeight());
-            return new Tooltip(content);
+            List<ITextComponent> lines = getTooltipMessage();
+
+            // Don't show empty tooltips
+            if (lines.isEmpty()) {
+                return null;
+            }
+
+            return new Tooltip(lines);
         }
 
         return null;

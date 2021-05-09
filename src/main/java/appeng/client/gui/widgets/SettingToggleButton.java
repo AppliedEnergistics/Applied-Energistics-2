@@ -18,11 +18,16 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -54,13 +59,10 @@ import appeng.core.localization.ButtonToolTips;
 import appeng.util.EnumCycler;
 
 public class SettingToggleButton<T extends Enum<T>> extends IconButton {
-    private static final Pattern COMPILE = Pattern.compile("%s");
-    private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
     private static Map<EnumPair, ButtonAppearance> appearances;
     private final Settings buttonSetting;
     private final IHandler<SettingToggleButton<T>> onPress;
     private final EnumSet<T> validValues;
-    private String fillVar;
     private T currentValue;
 
     @FunctionalInterface
@@ -283,11 +285,12 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
     private static void registerApp(final Icon icon, final Settings setting, final Enum<?> val,
             final ButtonToolTips title, final ITextComponent hint) {
-        final ButtonAppearance a = new ButtonAppearance();
-        a.displayName = title.text();
-        a.displayValue = hint;
-        a.icon = icon;
-        appearances.put(new EnumPair(setting, val), a);
+        appearances.put(
+                new EnumPair(setting, val),
+                new ButtonAppearance(
+                        icon,
+                        title.text(),
+                        hint));
     }
 
     private static void registerApp(final Icon icon, final Settings setting, final Enum<?> val,
@@ -325,51 +328,19 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     @Override
-    public ITextComponent getTooltipMessage() {
-        ITextComponent displayName = null;
-        ITextComponent displayValue = null;
+    public List<ITextComponent> getTooltipMessage() {
 
-        if (this.buttonSetting != null && this.currentValue != null) {
-            final ButtonAppearance buttonAppearance = appearances
-                    .get(new EnumPair(this.buttonSetting, this.currentValue));
-            if (buttonAppearance == null) {
-                return new StringTextComponent("No Such Message");
-            }
-
-            displayName = buttonAppearance.displayName;
-            displayValue = buttonAppearance.displayValue;
+        if (this.buttonSetting == null || this.currentValue == null) {
+            return Collections.emptyList();
         }
 
-        if (displayName != null) {
-            String name = displayName.getString();
-            String value = displayValue.getString();
-
-            if (this.fillVar != null) {
-                value = COMPILE.matcher(value).replaceFirst(this.fillVar);
-            }
-
-            value = PATTERN_NEW_LINE.matcher(value).replaceAll("\n");
-            final StringBuilder sb = new StringBuilder(value);
-
-            int i = sb.lastIndexOf("\n");
-            if (i <= 0) {
-                i = 0;
-            }
-            while (i + 30 < sb.length() && (i = sb.lastIndexOf(" ", i + 30)) != -1) {
-                sb.replace(i, i + 1, "\n");
-            }
-
-            return new StringTextComponent(name + '\n' + sb);
+        final ButtonAppearance buttonAppearance = appearances
+                .get(new EnumPair(this.buttonSetting, this.currentValue));
+        if (buttonAppearance == null) {
+            return Collections.singletonList(new StringTextComponent("No Such Message"));
         }
-        return StringTextComponent.EMPTY;
-    }
 
-    public String getFillVar() {
-        return this.fillVar;
-    }
-
-    public void setFillVar(final String fillVar) {
-        this.fillVar = fillVar;
+        return Arrays.asList(buttonAppearance.displayName, buttonAppearance.hint);
     }
 
     private static final class EnumPair {
@@ -401,8 +372,17 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     private static class ButtonAppearance {
-        public Icon icon;
-        public ITextComponent displayName;
-        public ITextComponent displayValue;
+        @Nonnull
+        public final Icon icon;
+        @Nonnull
+        public final ITextComponent displayName;
+        @Nonnull
+        public final ITextComponent hint;
+
+        public ButtonAppearance(Icon icon, ITextComponent displayName, ITextComponent hint) {
+            this.icon = Objects.requireNonNull(icon);
+            this.displayName = Objects.requireNonNull(displayName);
+            this.hint = Objects.requireNonNull(hint);
+        }
     }
 }
