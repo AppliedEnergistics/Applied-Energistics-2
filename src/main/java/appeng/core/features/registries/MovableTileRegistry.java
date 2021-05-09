@@ -55,8 +55,8 @@ public class MovableTileRegistry implements IMovableRegistry {
     private final ITag.INamedTag<Block> blockTagBlackList;
 
     public MovableTileRegistry() {
-        this.blockTagWhiteList = BlockTags.makeWrapperTag(TAG_WHITELIST.toString());
-        this.blockTagBlackList = BlockTags.makeWrapperTag(TAG_BLACKLIST.toString());
+        this.blockTagWhiteList = BlockTags.createOptional(TAG_WHITELIST);
+        this.blockTagBlackList = BlockTags.createOptional(TAG_BLACKLIST);
     }
 
     @Override
