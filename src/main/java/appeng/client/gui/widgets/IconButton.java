@@ -18,6 +18,9 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -102,8 +105,8 @@ public abstract class IconButton extends Button implements ITooltip {
     protected abstract Icon getIcon();
 
     @Override
-    public ITextComponent getTooltipMessage() {
-        return getMessage();
+    public List<ITextComponent> getTooltipMessage() {
+        return Collections.singletonList(getMessage());
     }
 
     @Override

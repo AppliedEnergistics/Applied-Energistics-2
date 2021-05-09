@@ -18,6 +18,9 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.gui.widget.button.Button;
@@ -84,8 +87,8 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public ITextComponent getTooltipMessage() {
-        return getMessage();
+    public List<ITextComponent> getTooltipMessage() {
+        return Collections.singletonList(getMessage());
     }
 
     @Override

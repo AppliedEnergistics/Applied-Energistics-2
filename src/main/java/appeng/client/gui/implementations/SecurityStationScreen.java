@@ -54,19 +54,19 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
         encodingBg = style.getImage("encoding");
 
         this.inject = new ToggleButton(Icon.PERMISSION_INJECT, Icon.PERMISSION_INJECT_DISABLED,
-                SecurityPermissions.INJECT.getTranslatedName(), SecurityPermissions.INJECT.getTranslatedTip(),
+                SecurityPermissions.INJECT.getDisplayName(), SecurityPermissions.INJECT.getDisplayHint(),
                 btn -> toggleOption(SecurityPermissions.INJECT));
         this.extract = new ToggleButton(Icon.PERMISSION_EXTRACT, Icon.PERMISSION_EXTRACT_DISABLED,
-                SecurityPermissions.EXTRACT.getTranslatedName(), SecurityPermissions.EXTRACT.getTranslatedTip(),
+                SecurityPermissions.EXTRACT.getDisplayName(), SecurityPermissions.EXTRACT.getDisplayHint(),
                 btn -> toggleOption(SecurityPermissions.EXTRACT));
         this.craft = new ToggleButton(Icon.PERMISSION_CRAFT, Icon.PERMISSION_CRAFT_DISABLED,
-                SecurityPermissions.CRAFT.getTranslatedName(), SecurityPermissions.CRAFT.getTranslatedTip(),
+                SecurityPermissions.CRAFT.getDisplayName(), SecurityPermissions.CRAFT.getDisplayHint(),
                 btn -> toggleOption(SecurityPermissions.CRAFT));
         this.build = new ToggleButton(Icon.PERMISSION_BUILD, Icon.PERMISSION_BUILD_DISABLED,
-                SecurityPermissions.BUILD.getTranslatedName(), SecurityPermissions.BUILD.getTranslatedTip(),
+                SecurityPermissions.BUILD.getDisplayName(), SecurityPermissions.BUILD.getDisplayHint(),
                 btn -> toggleOption(SecurityPermissions.BUILD));
         this.security = new ToggleButton(Icon.PERMISSION_SECURITY, Icon.PERMISSION_SECURITY_DISABLED,
-                SecurityPermissions.SECURITY.getTranslatedName(), SecurityPermissions.SECURITY.getTranslatedTip(),
+                SecurityPermissions.SECURITY.getDisplayName(), SecurityPermissions.SECURITY.getDisplayHint(),
                 btn -> toggleOption(SecurityPermissions.SECURITY));
 
         widgets.add("permissionInject", this.inject);

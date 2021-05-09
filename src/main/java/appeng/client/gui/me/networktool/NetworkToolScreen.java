@@ -39,7 +39,7 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
         super(container, playerInventory, title, style);
 
         this.transparentFacadesButton = new ToggleButton(Icon.TRANSPARENT_FACADES_OFF, Icon.TRANSPARENT_FACADES_ON,
-                GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal(),
+                GuiText.TransparentFacades.text(), GuiText.TransparentFacadesHint.text(),
                 btn -> toggleFacades());
 
         addToLeftToolbar(this.transparentFacadesButton);

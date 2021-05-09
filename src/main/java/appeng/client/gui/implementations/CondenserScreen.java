@@ -51,7 +51,6 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
         super.updateBeforeRender();
 
         this.mode.set(this.container.getOutput());
-        this.mode.setFillVar(String.valueOf(this.container.getOutput().requiredPower));
     }
 
 }
