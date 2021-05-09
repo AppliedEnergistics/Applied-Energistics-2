@@ -19,6 +19,7 @@
 package appeng.integration.modules.jei;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +27,11 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import appeng.client.gui.implementations.GrinderScreen;
+import appeng.client.gui.implementations.InscriberScreen;
 import com.google.common.collect.ImmutableList;
 
+import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.Rectangle2d;
@@ -210,6 +214,22 @@ public class JEIPlugin implements IModPlugin {
                 }
 
                 return null;
+            }
+
+            @Override
+            public Collection<IGuiClickableArea> getGuiClickableAreas(ContainerScreen<?> containerScreen, double mouseX, double mouseY) {
+                if (containerScreen instanceof GrinderScreen) {
+                    return Arrays.asList(
+                            IGuiClickableArea.createBasic(18, 34, 55, 22, GrinderRecipeCategory.UID),
+                            IGuiClickableArea.createBasic(103, 40, 55, 22, GrinderRecipeCategory.UID)
+                    );
+                } else if (containerScreen instanceof InscriberScreen) {
+                    return Collections.singletonList(
+                            IGuiClickableArea.createBasic(82, 39, 26, 16, InscriberRecipeCategory.UID)
+                    );
+                }
+
+                return Collections.emptyList();
             }
         });
 
