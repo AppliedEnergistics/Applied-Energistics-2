@@ -1,8 +1,7 @@
 package appeng.client.gui;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,7 +27,7 @@ public final class MockResourceManager {
     }
 
     public static IReloadableResourceManager create() throws IOException {
-        IReloadableResourceManager resourceManager = mock(IReloadableResourceManager.class);
+        IReloadableResourceManager resourceManager = mock(IReloadableResourceManager.class, withSettings().lenient());
 
         when(resourceManager.getResource(any())).thenAnswer(invoc -> {
             ResourceLocation loc = invoc.getArgument(0);
