@@ -21,6 +21,8 @@ package appeng.client.gui.style;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -41,6 +43,7 @@ import appeng.core.AppEng;
 /**
  * Utility class for drawing rectangular textures in the UI.
  */
+@OnlyIn(Dist.CLIENT)
 public final class Blitter {
 
     // This assumption is obviously bogus, but currently all textures are this size,

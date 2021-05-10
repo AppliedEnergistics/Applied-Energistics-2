@@ -297,19 +297,25 @@ public enum Icon {
     UNUSED_15_14(224, 240),
     TOOLBAR_BUTTON_BACKGROUND(240, 240);
 
-    private final Blitter blitter;
+    private final int x;
+    private final int y;
+    private final int width;
+    private final int height;
 
     Icon(int x, int y) {
         this(x, y, 16, 16);
     }
 
     Icon(int x, int y, int width, int height) {
-        blitter = Blitter.texture("guis/states.png", 256, 256)
-                .src(x, y, width, height);
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     public Blitter getBlitter() {
-        return blitter.copy();
+        return Blitter.texture("guis/states.png", 256, 256)
+                .src(x, y, width, height);
     }
 
 }
