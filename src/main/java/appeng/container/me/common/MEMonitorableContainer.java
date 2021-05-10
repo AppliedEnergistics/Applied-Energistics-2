@@ -162,7 +162,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         this.powerSource = powerSource;
 
         // Create slots for the view cells, in case the terminal host supports those
-        if (host instanceof IViewCellStorage) {
+        if (!hideViewCells() && host instanceof IViewCellStorage) {
             IItemHandler viewCellStorage = ((IViewCellStorage) host).getViewCellStorage();
             this.viewCellSlots = new ArrayList<>(viewCellStorage.getSlots());
             for (int i = 0; i < viewCellStorage.getSlots(); i++) {
@@ -179,6 +179,10 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         if (bindInventory) {
             this.createPlayerInventorySlots(ip);
         }
+    }
+
+    protected boolean hideViewCells() {
+        return false;
     }
 
     public IGridNode getNetworkNode() {

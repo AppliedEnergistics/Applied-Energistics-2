@@ -66,6 +66,11 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
     }
 
     @Override
+    protected boolean hideViewCells() {
+        return true;
+    }
+
+    @Override
     protected void handleNetworkInteraction(ServerPlayerEntity player, @Nullable IAEFluidStack stack,
             InventoryAction action) {
 
