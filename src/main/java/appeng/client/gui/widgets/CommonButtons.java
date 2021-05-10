@@ -27,8 +27,8 @@ public final class CommonButtons {
     private CommonButtons() {
     }
 
-    public static SettingToggleButton<PowerUnits> togglePowerUnit(int x, int y) {
-        return new SettingToggleButton<>(x, y, Settings.POWER_UNITS, AEConfig.instance().getSelectedPowerUnit(),
+    public static SettingToggleButton<PowerUnits> togglePowerUnit() {
+        return new SettingToggleButton<>(Settings.POWER_UNITS, AEConfig.instance().getSelectedPowerUnit(),
                 CommonButtons::togglePowerUnit);
     }
 

@@ -24,8 +24,8 @@ import net.minecraftforge.items.IItemHandler;
 public class OptionalTypeOnlyFakeSlot extends OptionalFakeSlot {
 
     public OptionalTypeOnlyFakeSlot(final IItemHandler inv, final IOptionalSlotHost containerBus, final int invSlot,
-            final int x, final int y, final int offX, final int offY, final int groupNum) {
-        super(inv, containerBus, invSlot, x, y, offX, offY, groupNum);
+            final int groupNum) {
+        super(inv, containerBus, invSlot, groupNum);
     }
 
     @Override

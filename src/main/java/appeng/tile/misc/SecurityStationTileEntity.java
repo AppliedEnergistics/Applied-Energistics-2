@@ -75,7 +75,6 @@ import appeng.tile.grid.AENetworkTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
-import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;

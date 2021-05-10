@@ -21,36 +21,28 @@ package appeng.fluids.container;
 import java.util.Collections;
 import java.util.Map;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.util.IAEFluidTank;
 
+/**
+ * @see appeng.fluids.client.gui.FluidInterfaceScreen
+ */
 public class FluidInterfaceContainer extends FluidConfigurableContainer {
 
-    public static ContainerType<FluidInterfaceContainer> TYPE;
-
-    private static final ContainerHelper<FluidInterfaceContainer, IFluidInterfaceHost> helper = new ContainerHelper<>(
-            FluidInterfaceContainer::new, IFluidInterfaceHost.class, SecurityPermissions.BUILD);
-
-    public static FluidInterfaceContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<FluidInterfaceContainer> TYPE = ContainerTypeBuilder
+            .create(FluidInterfaceContainer::new, IFluidInterfaceHost.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("fluid_interface");
 
     private final DualityFluidInterface myDuality;
     private final FluidSyncHelper tankSync;
@@ -60,11 +52,6 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
 
         this.myDuality = te.getDualityFluidInterface();
         this.tankSync = new FluidSyncHelper(this.myDuality.getTanks(), DualityFluidInterface.NUMBER_OF_TANKS);
-    }
-
-    @Override
-    protected int getHeight() {
-        return 231;
     }
 
     public IAEFluidTank getTanks() {

@@ -1,0 +1,39 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/wireless.png",
+    "srcRect": [0, 0, 176, 166]
+  },
+  "slots": {
+    "STORAGE": {
+      "left": 80,
+      "top": 47
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.appliedenergistics2.Wireless"
+      },
+      "position": {
+        "left": 8,
+        "top": 7
+      }
+    },
+    "range": {
+      "position": {
+        "left": 88,
+        "top": 20
+      },
+      "centerHorizontally": true
+    },
+    "energy_use": {
+      "position": {
+        "left": 88,
+        "top": 32
+      },
+      "centerHorizontally": true
+    }
+  }
+}

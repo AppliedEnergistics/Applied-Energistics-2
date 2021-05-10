@@ -18,53 +18,44 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.client.gui.Icon;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.grindstone.GrinderTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.GrinderScreen
+ */
 public class GrinderContainer extends AEBaseContainer {
 
-    public static ContainerType<GrinderContainer> TYPE;
-
-    private static final ContainerHelper<GrinderContainer, GrinderTileEntity> helper = new ContainerHelper<>(
-            GrinderContainer::new, GrinderTileEntity.class);
-
-    public static GrinderContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<GrinderContainer> TYPE = ContainerTypeBuilder
+            .create(GrinderContainer::new, GrinderTileEntity.class)
+            .build("grinder");
 
     public GrinderContainer(int id, final PlayerInventory ip, final GrinderTileEntity grinder) {
-        super(TYPE, id, ip, grinder, null);
+        super(TYPE, id, ip, grinder);
 
         IItemHandler inv = grinder.getInternalInventory();
 
-        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ORE, inv, 0, 12, 17,
-                this.getPlayerInventory()));
-        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ORE, inv, 1, 12 + 18, 17,
-                this.getPlayerInventory()));
-        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ORE, inv, 2, 12 + 36, 17,
-                this.getPlayerInventory()));
+        for (int i = 0; i < 3; i++) {
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ORE, inv, i),
+                    SlotSemantic.MACHINE_INPUT);
+        }
 
-        this.addSlot(new InaccessibleSlot(inv, 6, 80, 40));
+        this.addSlot(new InaccessibleSlot(inv, 6), SlotSemantic.MACHINE_PROCESSING);
 
-        this.addSlot(new OutputSlot(inv, 3, 112, 63, 2 * 16 + 15));
-        this.addSlot(new OutputSlot(inv, 4, 112 + 18, 63, 2 * 16 + 15));
-        this.addSlot(new OutputSlot(inv, 5, 112 + 36, 63, 2 * 16 + 15));
+        for (int i = 0; i < 3; i++) {
+            this.addSlot(new OutputSlot(inv, 3 + i, Icon.BACKGROUND_DUST), SlotSemantic.MACHINE_OUTPUT);
+        }
 
-        this.bindPlayerInventory(ip, 0, 176 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
 }

@@ -30,5 +30,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface GuiSync {
 
-    int value();
+    short value();
 }

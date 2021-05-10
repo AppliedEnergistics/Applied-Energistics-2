@@ -18,33 +18,18 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.GrinderContainer;
-import appeng.core.localization.GuiText;
 
 public class GrinderScreen extends AEBaseScreen<GrinderContainer> {
 
-    public GrinderScreen(GrinderContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 176;
+    public GrinderScreen(GrinderContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
-    @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrices, this.getGuiDisplayName(GuiText.GrindStone.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrices, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
-    }
-
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.bindTexture("guis/grinder.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
 }

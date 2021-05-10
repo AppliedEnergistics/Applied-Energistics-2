@@ -162,7 +162,6 @@ public class QuadCornerKicker extends QuadTransformer {
          * @param sideA Side one.
          * @param sideB Side two.
          * @param sideC Side three.
-         *
          * @return The corner at the 3 sides.
          */
         public static Corner fromSides(int sideA, int sideB, int sideC) {

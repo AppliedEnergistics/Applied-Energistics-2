@@ -46,6 +46,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
+import appeng.client.gui.Icon;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.tile.misc.CondenserTileEntity;
@@ -75,9 +76,9 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/condenser.png");
         this.background = guiHelper.createDrawable(location, 50, 25, 94, 48);
 
-        ResourceLocation statesLocation = new ResourceLocation(AppEng.MOD_ID, "textures/guis/states.png");
-        this.iconTrash = guiHelper.drawableBuilder(statesLocation, 241, 81, 14, 14).addPadding(28, 0, 2, 0).build();
-        this.iconButton = guiHelper.drawableBuilder(statesLocation, 240, 240, 16, 16).addPadding(28, 0, 78, 0).build();
+        // This is shown on the "input slot" for condenser operations to indicate that any item can be used
+        this.iconTrash = new IconDrawable(Icon.BACKGROUND_TRASH, 1, 27);
+        this.iconButton = new IconDrawable(Icon.TOOLBAR_BUTTON_BACKGROUND, 78, 26);
 
         IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location, 178, 25, 6, 18).addPadding(0, 0, 70, 0)
                 .build();
@@ -87,9 +88,9 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
         this.buttonIcons = new EnumMap<>(CondenserOutput.class);
 
         this.buttonIcons.put(CondenserOutput.MATTER_BALLS,
-                guiHelper.drawableBuilder(statesLocation, 16, 112, 14, 14).addPadding(28, 0, 78, 0).build());
+                new IconDrawable(Icon.CONDENSER_OUTPUT_MATTER_BALL, 78, 26));
         this.buttonIcons.put(CondenserOutput.SINGULARITY,
-                guiHelper.drawableBuilder(statesLocation, 32, 112, 14, 14).addPadding(28, 0, 78, 0).build());
+                new IconDrawable(Icon.CONDENSER_OUTPUT_SINGULARITY, 78, 26));
     }
 
     private ItemStack getOutput(CondenserOutput recipe) {

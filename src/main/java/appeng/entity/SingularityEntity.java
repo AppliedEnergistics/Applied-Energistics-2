@@ -35,7 +35,6 @@ import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.util.Platform;
 
 public final class SingularityEntity extends AEBaseItemEntity {
 

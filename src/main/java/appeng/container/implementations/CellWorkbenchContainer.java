@@ -20,14 +20,12 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -41,7 +39,7 @@ import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalRestrictedInputSlot;
@@ -53,12 +51,14 @@ import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperSupplierItemHandler;
 import appeng.util.iterators.NullIterator;
 
+/**
+ * @see appeng.client.gui.implementations.CellWorkbenchScreen
+ */
 public class CellWorkbenchContainer extends UpgradeableContainer {
 
-    public static ContainerType<CellWorkbenchContainer> TYPE;
-
-    private static final ContainerHelper<CellWorkbenchContainer, CellWorkbenchTileEntity> helper = new ContainerHelper<>(
-            CellWorkbenchContainer::new, CellWorkbenchTileEntity.class);
+    public static final ContainerType<CellWorkbenchContainer> TYPE = ContainerTypeBuilder
+            .create(CellWorkbenchContainer::new, CellWorkbenchTileEntity.class)
+            .build("cellworkbench");
 
     private final CellWorkbenchTileEntity workBench;
     @GuiSync(2)
@@ -71,18 +71,10 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         this.workBench = te;
     }
 
-    public static CellWorkbenchContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
-
     public void setFuzzy(final FuzzyMode valueOf) {
         final ICellWorkbenchItem cwi = this.workBench.getCell();
         if (cwi != null) {
-            cwi.setFuzzyMode(this.workBench.getInventoryByName("cell").getStackInSlot(0), valueOf);
+            cwi.setFuzzyMode(getWorkbenchItem(), valueOf);
         }
     }
 
@@ -95,42 +87,32 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     }
 
     @Override
-    protected int getHeight() {
-        return 251;
-    }
-
-    @Override
     protected void setupConfig() {
         final IItemHandler cell = this.getUpgradeable().getInventoryByName("cell");
-        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8,
-                this.getPlayerInv()));
+        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0),
+                SlotSemantic.STORAGE_CELL);
 
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
         final WrapperSupplierItemHandler upgradeInventory = new WrapperSupplierItemHandler(
                 this::getCellUpgradeInventory);
 
-        int offset = 0;
-        final int y = 29;
-        final int x = 8;
-        for (int w = 0; w < 7; w++) {
-            for (int z = 0; z < 9; z++) {
-                this.addSlot(new FakeTypeOnlySlot(inv, offset, x + z * 18, y + w * 18));
-                offset++;
-            }
+        for (int i = 0; i < 7 * 9; i++) {
+            this.addSlot(new FakeTypeOnlySlot(inv, i), SlotSemantic.CONFIG);
         }
 
-        for (int zz = 0; zz < 3; zz++) {
-            for (int z = 0; z < 8; z++) {
-                final int iSLot = zz * 8 + z;
-                this.addSlot(new OptionalRestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES,
-                        upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this.getPlayerInventory()));
-            }
+        // We support up to 24 upgrade slots, see ICellWorkbenchItem, but we need to pre-create all slots here
+        // while the active number of slots changes depending on the item inserted
+        for (int i = 0; i < 24; i++) {
+            OptionalRestrictedInputSlot slot = new OptionalRestrictedInputSlot(
+                    RestrictedInputSlot.PlacableItemType.UPGRADES,
+                    upgradeInventory, this, i, i, this.getPlayerInventory());
+            this.addSlot(slot, SlotSemantic.UPGRADE);
         }
     }
 
     @Override
     public int availableUpgrades() {
-        final ItemStack is = this.workBench.getInventoryByName("cell").getStackInSlot(0);
+        final ItemStack is = getWorkbenchItem();
         if (this.prevStack != is) {
             this.prevStack = is;
             this.lastUpgrades = this.getCellUpgradeInventory().getSlots();
@@ -138,9 +120,13 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         return this.lastUpgrades;
     }
 
+    public ItemStack getWorkbenchItem() {
+        return this.workBench.getInventoryByName("cell").getStackInSlot(0);
+    }
+
     @Override
     public void detectAndSendChanges() {
-        final ItemStack is = this.workBench.getInventoryByName("cell").getStackInSlot(0);
+        final ItemStack is = getWorkbenchItem();
         if (isServer()) {
             for (final IContainerListener listener : this.listeners) {
                 if (this.prevStack != is) {
@@ -178,12 +164,10 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
-        if (field.equals("copyMode")) {
-            this.workBench.getConfigManager().putSetting(Settings.COPY_MODE, this.getCopyMode());
-        }
+    public void onServerDataSync() {
+        super.onServerDataSync();
 
-        super.onUpdate(field, oldValue, newValue);
+        this.workBench.getConfigManager().putSetting(Settings.COPY_MODE, this.getCopyMode());
     }
 
     public void clear() {
@@ -194,7 +178,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     private FuzzyMode getWorkBenchFuzzyMode() {
         final ICellWorkbenchItem cwi = this.workBench.getCell();
         if (cwi != null) {
-            return cwi.getFuzzyMode(this.workBench.getInventoryByName("cell").getStackInSlot(0));
+            return cwi.getFuzzyMode(getWorkbenchItem());
         }
         return FuzzyMode.IGNORE_ALL;
     }
@@ -203,22 +187,15 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
 
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
 
-        final ItemStack is = this.getUpgradeable().getInventoryByName("cell").getStackInSlot(0);
-        final IStorageChannel channel = is.getItem() instanceof IStorageCell
-                ? ((IStorageCell) is.getItem()).getChannel()
+        final ItemStack is = getWorkbenchItem();
+        final IStorageChannel<?> channel = is.getItem() instanceof IStorageCell
+                ? ((IStorageCell<?>) is.getItem()).getChannel()
                 : Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
 
-        final IMEInventory cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
-
-        Iterator<IAEStack> i = new NullIterator<>();
-        if (cellInv != null) {
-            final IItemList list = cellInv.getAvailableItems(channel.createList());
-            i = list.iterator();
-        }
+        Iterator<? extends IAEStack<?>> i = iterateCellItems(is, channel);
 
         for (int x = 0; x < inv.getSlots(); x++) {
             if (i.hasNext()) {
-                // TODO: check if ok
                 final ItemStack g = i.next().asItemStackRepresentation();
                 ItemHandlerUtil.setStackInSlot(inv, x, g);
             } else {
@@ -227,6 +204,17 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         }
 
         this.detectAndSendChanges();
+    }
+
+    private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is,
+            IStorageChannel<T> channel) {
+        final IMEInventory<T> cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
+        if (cellInv != null) {
+            final IItemList<T> list = cellInv.getAvailableItems(channel.createList());
+            return list.iterator();
+        } else {
+            return new NullIterator<>();
+        }
     }
 
     public CopyMode getCopyMode() {

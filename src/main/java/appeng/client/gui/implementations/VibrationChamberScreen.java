@@ -19,63 +19,59 @@
 package appeng.client.gui.implementations;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.VibrationChamberContainer;
-import appeng.core.localization.GuiText;
 import appeng.tile.misc.VibrationChamberTileEntity;
 
 public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContainer> {
 
-    private ProgressBar pb;
+    // Burn indicator similar to the "flame" in a vanilla furnace
+    private static final Blitter BURN_PROGRESS = Blitter.texture("guis/vibchamber.png").src(176, 0, 14, 13);
+
+    // "Progress-bar" that indicates the energy generation rate
+    private final ProgressBar generationRateBar;
 
     public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 166;
+            ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
+
+        this.generationRateBar = new ProgressBar(this.container, style.getImage("generationRateBar"),
+                Direction.VERTICAL);
+        widgets.add("generationRateBar", this.generationRateBar);
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        this.pb = new ProgressBar(this.container, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL);
-        this.addButton(this.pb);
+        this.generationRateBar.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
+                * this.container.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
     }
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrices, this.getGuiDisplayName(GuiText.VibrationChamber.text()).getString(), 8, 6,
-                4210752);
-        this.font.drawString(matrices, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
-
-        this.pb.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
-                * this.container.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
-
+        // Show the flame "burning down" as we burn through an item of fuel
         if (this.container.getRemainingBurnTime() > 0) {
-            final int i1 = this.container.getRemainingBurnTime() * 12 / 100;
-            this.bindTexture("guis/vibchamber.png");
-            RenderSystem.color3f(1, 1, 1);
-            final int l = -15;
-            final int k = 25;
-            blit(matrices, k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2);
+            int f = this.container.getRemainingBurnTime() * BURN_PROGRESS.getSrcHeight() / 100;
+            BURN_PROGRESS.copy()
+                    .src(
+                            BURN_PROGRESS.getSrcX(),
+                            BURN_PROGRESS.getSrcY() + BURN_PROGRESS.getSrcHeight() - f,
+                            BURN_PROGRESS.getSrcWidth(),
+                            f)
+                    .dest(80, 20 + BURN_PROGRESS.getSrcHeight() - f)
+                    .blit(matrices, getBlitOffset());
         }
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.bindTexture("guis/vibchamber.png");
-        this.pb.x = 99 + this.guiLeft;
-        this.pb.y = 36 + this.guiTop;
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
-    }
 }

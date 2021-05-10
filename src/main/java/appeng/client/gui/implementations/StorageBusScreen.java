@@ -18,8 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -28,68 +26,49 @@ import appeng.api.config.ActionItems;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
+import appeng.api.config.Upgrades;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.client.gui.widgets.TabButton;
-import appeng.container.implementations.PriorityContainer;
 import appeng.container.implementations.StorageBusContainer;
-import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
 
-    private SettingToggleButton<AccessRestriction> rwMode;
-    private SettingToggleButton<StorageFilter> storageFilter;
+    private final SettingToggleButton<AccessRestriction> rwMode;
+    private final SettingToggleButton<StorageFilter> storageFilter;
+    private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
-    public StorageBusScreen(StorageBusContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 251;
-    }
+    public StorageBusScreen(StorageBusContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
 
-    @Override
-    protected void addButtons() {
-        addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, btn -> clear()));
-        addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, btn -> partition()));
-        this.rwMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS,
+        widgets.addOpenPriorityButton();
+
+        addToLeftToolbar(new ActionButton(ActionItems.CLOSE, btn -> clear()));
+        addToLeftToolbar(new ActionButton(ActionItems.WRENCH, btn -> partition()));
+        this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
+        this.storageFilter = new ServerSettingToggleButton<>(
                 Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui()));
-
-        this.addButton(this.storageFilter);
-        this.addButton(this.fuzzyMode);
-        this.addButton(this.rwMode);
+        this.addToLeftToolbar(this.storageFilter);
+        this.addToLeftToolbar(this.fuzzyMode);
+        this.addToLeftToolbar(this.rwMode);
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.StorageBus.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        if (this.fuzzyMode != null) {
-            this.fuzzyMode.set(this.cvb.getFuzzyMode());
-        }
-
-        if (this.storageFilter != null) {
-            this.storageFilter.set(((StorageBusContainer) this.cvb).getStorageFilter());
-        }
-
-        if (this.rwMode != null) {
-            this.rwMode.set(((StorageBusContainer) this.cvb).getReadWriteMode());
-        }
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/storagebus.png";
+        this.storageFilter.set(this.container.getStorageFilter());
+        this.rwMode.set(this.container.getReadWriteMode());
+        this.fuzzyMode.set(this.container.getFuzzyMode());
+        this.fuzzyMode.setVisibility(container.hasUpgrade(Upgrades.FUZZY));
     }
 
     private void partition() {
@@ -98,10 +77,6 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
 
     private void clear() {
         NetworkHandler.instance().sendToServer(new ConfigValuePacket("StorageBus.Action", "Clear"));
-    }
-
-    private void openPriorityGui() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
     }
 
 }

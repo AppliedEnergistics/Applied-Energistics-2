@@ -21,6 +21,8 @@ package appeng.items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import appeng.items.contents.NetworkToolViewer;
+
 public abstract class AEBaseItem extends Item {
 
     public AEBaseItem(Item.Properties properties) {

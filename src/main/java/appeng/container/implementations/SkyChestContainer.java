@@ -21,43 +21,36 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
-import appeng.container.slot.NormalSlot;
+import appeng.container.SlotSemantic;
+import appeng.container.slot.AppEngSlot;
 import appeng.tile.storage.SkyChestTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.SkyChestScreen
+ */
 public class SkyChestContainer extends AEBaseContainer {
 
-    public static ContainerType<SkyChestContainer> TYPE;
-
-    private static final ContainerHelper<SkyChestContainer, SkyChestTileEntity> helper = new ContainerHelper<>(
-            SkyChestContainer::new, SkyChestTileEntity.class);
+    public static final ContainerType<SkyChestContainer> TYPE = ContainerTypeBuilder
+            .create(SkyChestContainer::new, SkyChestTileEntity.class)
+            .build("skychest");
 
     private final SkyChestTileEntity chest;
 
     public SkyChestContainer(int id, final PlayerInventory ip, final SkyChestTileEntity chest) {
-        super(TYPE, id, ip, chest, null);
+        super(TYPE, id, ip, chest);
         this.chest = chest;
 
-        for (int y = 0; y < 4; y++) {
-            for (int x = 0; x < 9; x++) {
-                this.addSlot(new NormalSlot(this.chest.getInternalInventory(), y * 9 + x, 8 + 18 * x, 24 + 18 * y));
-            }
+        IItemHandler inv = this.chest.getInternalInventory();
+        for (int i = 0; i < inv.getSlots(); i++) {
+            this.addSlot(new AppEngSlot(inv, i), SlotSemantic.STORAGE);
         }
 
         this.chest.openInventory(ip.player);
 
-        this.bindPlayerInventory(ip, 0, 195 - /* height of player inventory */82);
-    }
-
-    public static SkyChestContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
+        this.createPlayerInventorySlots(ip);
     }
 
     @Override

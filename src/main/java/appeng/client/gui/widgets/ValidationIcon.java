@@ -27,6 +27,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
 
+import appeng.client.gui.Icon;
+
 /**
  * Displays a small icon that shows validation errors for some input control.
  */
@@ -34,10 +36,8 @@ public class ValidationIcon extends IconButton {
 
     private final List<ITextComponent> tooltip = new ArrayList<>();
 
-    private boolean valid;
-
-    public ValidationIcon(int x, int y) {
-        super(x, y, btn -> {
+    public ValidationIcon() {
+        super(btn -> {
         });
         setDisableBackground(true);
         setDisableClickSound(true);
@@ -57,8 +57,8 @@ public class ValidationIcon extends IconButton {
     }
 
     @Override
-    protected int getIconIndex() {
-        return 16 * 8;
+    protected Icon getIcon() {
+        return Icon.INVALID;
     }
 
     @Override

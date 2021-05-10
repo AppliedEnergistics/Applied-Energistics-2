@@ -25,7 +25,8 @@ public enum PlayerMessages {
     ChestCannotReadStorageCell, InvalidMachine, LoadedSettings, SavedSettings, ResetSettings, MachineNotPowered,
 
     isNowLocked, isNowUnlocked, AmmoDepleted, CommunicationError, OutOfRange, DeviceNotPowered,
-    DeviceNotWirelessTerminal, DeviceNotLinked, StationCanNotBeLocated, SettingCleared,;
+    DeviceNotWirelessTerminal, DeviceNotLinked, StationCanNotBeLocated, SettingCleared,
+    ;
 
     public ITextComponent get() {
         return new TranslationTextComponent(this.getTranslationKey());

@@ -40,6 +40,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
+import appeng.client.gui.style.StyleManager;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
@@ -57,6 +58,13 @@ public class ClientHelper extends ServerHelper {
     private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
 
     private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
+
+    public ClientHelper() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft != null) {
+            StyleManager.initialize(minecraft.getResourceManager());
+        }
+    }
 
     public void clientInit() {
         MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);

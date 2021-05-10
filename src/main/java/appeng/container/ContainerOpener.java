@@ -34,14 +34,14 @@ public final class ContainerOpener {
     private ContainerOpener() {
     }
 
-    private static final Map<ContainerType<? extends AEBaseContainer>, Opener<?>> registry = new HashMap<>();
+    private static final Map<ContainerType<? extends AEBaseContainer>, Opener> registry = new HashMap<>();
 
-    public static <T extends AEBaseContainer> void addOpener(ContainerType<T> type, Opener<T> opener) {
+    public static <T extends AEBaseContainer> void addOpener(ContainerType<T> type, Opener opener) {
         registry.put(type, opener);
     }
 
     public static boolean openContainer(ContainerType<?> type, PlayerEntity player, ContainerLocator locator) {
-        Opener<?> opener = registry.get(type);
+        Opener opener = registry.get(type);
         if (opener == null) {
             AELog.warn("Trying to open container for unknown container type {}", type);
             return false;
@@ -51,7 +51,7 @@ public final class ContainerOpener {
     }
 
     @FunctionalInterface
-    public interface Opener<T extends AEBaseContainer> {
+    public interface Opener {
 
         boolean open(PlayerEntity player, ContainerLocator locator);
 

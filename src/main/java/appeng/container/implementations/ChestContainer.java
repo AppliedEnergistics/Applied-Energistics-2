@@ -18,39 +18,32 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.storage.ChestTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.ChestScreen
+ */
 public class ChestContainer extends AEBaseContainer {
 
-    public static ContainerType<ChestContainer> TYPE;
-
-    private static final ContainerHelper<ChestContainer, ChestTileEntity> helper = new ContainerHelper<>(
-            ChestContainer::new, ChestTileEntity.class, SecurityPermissions.BUILD);
+    public static final ContainerType<ChestContainer> TYPE = ContainerTypeBuilder
+            .create(ChestContainer::new, ChestTileEntity.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("chest");
 
     public ChestContainer(int id, final PlayerInventory ip, final ChestTileEntity chest) {
-        super(TYPE, id, ip, chest, null);
+        super(TYPE, id, ip, chest);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
-                chest.getInternalInventory(), 1, 80, 37, this.getPlayerInventory()));
+                chest.getInternalInventory(), 1), SlotSemantic.STORAGE_CELL);
 
-        this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
-    }
-
-    public static ChestContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
+        this.createPlayerInventorySlots(ip);
     }
 
 }

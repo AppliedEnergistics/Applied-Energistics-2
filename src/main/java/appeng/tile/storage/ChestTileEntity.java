@@ -91,9 +91,9 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
-import appeng.container.implementations.MEMonitorableContainer;
+import appeng.container.me.fluids.FluidTerminalContainer;
+import appeng.container.me.items.ItemTerminalContainer;
 import appeng.core.Api;
-import appeng.fluids.container.FluidTerminalContainer;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -840,7 +840,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         if (this.cellHandler != null) {
             if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IItemStorageChannel.class)) {
-                return MEMonitorableContainer.TYPE;
+                return ItemTerminalContainer.TYPE;
             }
             if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IFluidStorageChannel.class)) {

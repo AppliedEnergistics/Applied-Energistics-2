@@ -20,8 +20,6 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
@@ -32,19 +30,18 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.client.gui.implementations.CraftingCPUScreen;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.container.implementations.CraftConfirmContainer;
-import appeng.container.implementations.CraftingCPUContainer;
-import appeng.container.implementations.CraftingCPUCyclingContainer;
 import appeng.container.implementations.LevelEmitterContainer;
-import appeng.container.implementations.NetworkToolContainer;
-import appeng.container.implementations.PatternTermContainer;
 import appeng.container.implementations.PriorityContainer;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.container.implementations.StorageBusContainer;
+import appeng.container.me.crafting.CraftConfirmContainer;
+import appeng.container.me.crafting.CraftingCPUContainer;
+import appeng.container.me.crafting.CraftingCPUCyclingContainer;
+import appeng.container.me.items.PatternTermContainer;
+import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.FluidLevelEmitterContainer;
@@ -189,14 +186,7 @@ public class ConfigValuePacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Container c = player.openContainer;
 
-        if (this.Name.startsWith("SyncDat.")) {
-            ((AEBaseContainer) c).stringSync(Integer.parseInt(this.Name.substring(8)), this.Value);
-        } else if (this.Name.equals("CraftingStatus") && this.Value.equals("Clear")) {
-            final Screen gs = Minecraft.getInstance().currentScreen;
-            if (gs instanceof CraftingCPUScreen) {
-                ((CraftingCPUScreen<?>) gs).clearItems();
-            }
-        } else if (c instanceof IConfigurableObject) {
+        if (c instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
 
             for (final Settings e : cm.getSettings()) {

@@ -32,7 +32,7 @@ public interface INetworkEncodable {
      *
      * @param item item
      *
-     * @return string key of item
+     * @return the encoded encryption key or an empty string if none is encoded
      */
     String getEncryptionKey(ItemStack item);
 

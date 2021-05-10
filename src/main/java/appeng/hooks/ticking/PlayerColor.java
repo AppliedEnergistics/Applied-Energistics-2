@@ -53,7 +53,7 @@ public class PlayerColor {
 
     /**
      * Indicates that this color is done and can be removed.
-     * 
+     *
      * @return true once done.
      */
     boolean isDone() {

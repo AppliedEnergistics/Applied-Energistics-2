@@ -395,6 +395,10 @@ public final class AEConfig {
         return COMMON.improvedFluidMultiplier.get().floatValue();
     }
 
+    public boolean isShowDebugGuiOverlays() {
+        return CLIENT.debugGuiOverlays.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -405,6 +409,7 @@ public final class AEConfig {
         public final BooleanValue useColoredCraftingStatus;
         public final BooleanValue disableColoredCableRecipesInJEI;
         public final EnumValue<PowerUnits> selectedPowerUnit;
+        public final BooleanValue debugGuiOverlays;
 
         // GUI Buttons
         private static final int[] BTN_BY_STACK_DEFAULTS = { 1, 10, 100, 1000 };
@@ -426,6 +431,8 @@ public final class AEConfig {
             this.useColoredCraftingStatus = builder.comment("TODO").define("useColoredCraftingStatus", true);
             this.selectedPowerUnit = builder.comment("Power unit shown in AE UIs").defineEnum("PowerUnit",
                     PowerUnits.AE, PowerUnits.values());
+            this.debugGuiOverlays = builder.comment("Show debugging GUI overlays")
+                    .define("showDebugGuiOverlays", false);
 
             this.craftByStacks = new ArrayList<>(4);
             this.priorityByStacks = new ArrayList<>(4);
