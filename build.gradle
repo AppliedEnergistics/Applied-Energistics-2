@@ -30,7 +30,7 @@ buildscript {
 
 plugins {
     id "maven-publish"
-    id "com.diffplug.gradle.spotless" version "4.3.0"
+    id "com.diffplug.spotless" version "5.12.4"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "idea"
 }
@@ -339,13 +339,17 @@ publishing {
 /////////////
 // Spotless
 spotless {
+
     java {
         target 'src/*/java/appeng/**/*.java'
 
+        endWithNewline()
         indentWithSpaces()
+        removeUnusedImports()
         eclipse().configFile 'codeformat/codeformat.xml'
         importOrderFile 'codeformat/ae2.importorder'
     }
+
     format 'json', {
         target 'src/*/resources/**/*.json'
         targetExclude 'src/generated/resources/**'

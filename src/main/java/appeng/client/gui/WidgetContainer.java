@@ -41,7 +41,6 @@ import appeng.client.gui.style.WidgetStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.PriorityContainer;
-import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
@@ -106,7 +105,7 @@ public class WidgetContainer {
     }
 
     public Button addButton(String id, ITextComponent text, Button.IPressable action) {
-        return addButton(id, text, action, Button.field_238486_s_);
+        return addButton(id, text, action, Button.EMPTY_TOOLTIP);
     }
 
     public Button addButton(String id, ITextComponent text, Runnable action, Button.ITooltip tooltip) {
@@ -114,7 +113,7 @@ public class WidgetContainer {
     }
 
     public Button addButton(String id, ITextComponent text, Runnable action) {
-        return addButton(id, text, action, Button.field_238486_s_);
+        return addButton(id, text, action, Button.EMPTY_TOOLTIP);
     }
 
     /**

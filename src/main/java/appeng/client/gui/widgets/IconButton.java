@@ -59,7 +59,7 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, float partial) {
+    public void renderWidget(MatrixStack matrixStack, final int mouseX, final int mouseY, float partial) {
 
         Minecraft minecraft = Minecraft.getInstance();
 

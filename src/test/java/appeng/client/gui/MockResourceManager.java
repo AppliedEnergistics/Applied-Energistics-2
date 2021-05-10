@@ -19,7 +19,9 @@
 package appeng.client.gui;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

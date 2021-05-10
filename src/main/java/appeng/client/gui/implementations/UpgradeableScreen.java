@@ -39,7 +39,6 @@ import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.container.SlotSemantic;
 import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.localization.GuiText;
-import appeng.tile.AEBaseTileEntity;
 
 /**
  * This screen adds the ability for {@link IUpgradeableHost} screens to show the upgrade inventory and the player's

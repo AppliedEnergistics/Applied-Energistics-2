@@ -36,7 +36,6 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.IPartHost;
@@ -53,10 +52,8 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
-import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
-import appeng.util.inv.IAEAppEngInventory;
 
 public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
 

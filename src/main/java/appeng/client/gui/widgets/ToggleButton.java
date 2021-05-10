@@ -53,7 +53,7 @@ public class ToggleButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
+    public void renderWidget(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
         if (this.visible) {
             Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
             getIcon().getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());

@@ -67,7 +67,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
         lines.add(GuiText.StoredEnergy.text().deepCopy()
                 .appendString(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                .append(PowerUnits.AE.textComponent())
+                .appendSibling(PowerUnits.AE.textComponent())
                 .appendString(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
     }
 

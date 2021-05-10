@@ -168,7 +168,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
                 if (msg == null) {
                     msg = sp.getDisplayName();
                 } else {
-                    msg = msg.deepCopy().appendString(", ").append(sp.getDisplayName());
+                    msg = msg.deepCopy().appendString(", ").appendSibling(sp.getDisplayName());
                 }
             }
             lines.add(msg);

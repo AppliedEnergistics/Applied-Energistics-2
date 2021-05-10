@@ -36,10 +36,10 @@ public class MeteoriteStructure extends Structure<NoFeatureConfig> {
 
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
 
-    public static final Structure<NoFeatureConfig> INSTANCE = new MeteoriteStructure(NoFeatureConfig.field_236558_a_);
+    public static final Structure<NoFeatureConfig> INSTANCE = new MeteoriteStructure(NoFeatureConfig.CODEC);
 
     public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_INSTANCE = INSTANCE
-            .withConfiguration(NoFeatureConfig.field_236559_b_);
+            .withConfiguration(NoFeatureConfig.INSTANCE);
 
     public MeteoriteStructure(Codec<NoFeatureConfig> configCodec) {
         super(configCodec);

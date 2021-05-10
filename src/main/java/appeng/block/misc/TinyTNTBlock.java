@@ -116,7 +116,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             if (entityarrow.isBurning()) {
                 LivingEntity igniter = null;
                 // Check if the shooter still exists
-                Entity shooter = entityarrow.func_234616_v_();
+                Entity shooter = entityarrow.getShooter();
                 if (shooter instanceof LivingEntity) {
                     igniter = (LivingEntity) shooter;
                 }

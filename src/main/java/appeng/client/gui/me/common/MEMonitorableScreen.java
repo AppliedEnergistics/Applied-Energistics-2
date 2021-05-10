@@ -42,7 +42,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
@@ -291,7 +290,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             // The stack size renderer expects a 16x16 slot, while the button is normally
             // bigger
             int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
-            int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeightRealms() - 16) / 2;
+            int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeight() - 16) / 2;
 
             style.getStackSizeRenderer().renderSizeLabel(font, x - this.guiLeft, y - this.guiTop,
                     String.valueOf(container.activeCraftingJobs));

@@ -104,7 +104,7 @@ public abstract class AbstractTableRenderer<T> {
                 matrixStack.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
                 for (ITextComponent line : lines) {
                     final int w = fontRenderer.getStringPropertyWidth(line);
-                    fontRenderer.func_243248_b(matrixStack, line,
+                    fontRenderer.drawText(matrixStack, line,
                             (int) ((itemX - 2 - (w * TEXT_SCALE)) * INV_TEXT_SCALE),
                             textY * INV_TEXT_SCALE, textColor);
                     textY += lineHeight + LINE_SPACING;

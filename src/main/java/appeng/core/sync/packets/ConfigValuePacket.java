@@ -30,7 +30,6 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.container.AEBaseContainer;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.container.implementations.LevelEmitterContainer;
 import appeng.container.implementations.PriorityContainer;

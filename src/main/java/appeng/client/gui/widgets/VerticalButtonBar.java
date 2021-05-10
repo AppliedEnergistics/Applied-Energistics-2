@@ -90,7 +90,7 @@ public class VerticalButtonBar implements ICompositeWidget {
             button.x = screenOrigin.getX() + position.getX() - MARGIN - button.getWidth();
             button.y = screenOrigin.getY() + currentY;
 
-            currentY += button.getHeightRealms() + VERTICAL_SPACING;
+            currentY += button.getHeight() + VERTICAL_SPACING;
             maxWidth = Math.max(button.getWidth(), maxWidth);
         }
 

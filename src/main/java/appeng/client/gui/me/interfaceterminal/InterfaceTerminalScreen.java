@@ -197,7 +197,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                         name = name + " (" + rows + ')';
                     }
 
-                    name = this.font.func_238413_a_(name, TEXT_MAX_WIDTH, true);
+                    name = this.font.getLineScrollOffset(name, TEXT_MAX_WIDTH, true);
 
                     this.font.drawString(matrixStack, name, GUI_PADDING_X + INTERFACE_NAME_MARGIN_X,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor);
