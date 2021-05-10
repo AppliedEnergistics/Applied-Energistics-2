@@ -107,6 +107,11 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		{
 			for( Pair<Integer, Integer> pair : injectedList )
 			{
+				if (pair.getKey() >= this.cache.cachedAeStacks.length)
+				{
+					this.cache.update();
+					break;
+				}
 				if( this.cache.cachedAeStacks[pair.getKey()] == null )
 				{
 					this.cache.cachedAeStacks[pair.getKey()] = iox.copy().setStackSize( pair.getValue() );
@@ -125,7 +130,6 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	@Override
 	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, IActionSource src )
 	{
-
 		ItemStack requestedItemStack = request.createItemStack();
 		int remainingSize = requestedItemStack.getCount();
 
