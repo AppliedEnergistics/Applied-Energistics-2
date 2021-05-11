@@ -197,7 +197,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             extra = new TranslationTextComponent(selected.translationKey);
         }
 
-        return super.getDisplayName(is).deepCopy().appendString(" - ").append(extra);
+        return super.getDisplayName(is).deepCopy().appendString(" - ").appendSibling(extra);
     }
 
     public AEColor getActiveColor(final ItemStack tol) {

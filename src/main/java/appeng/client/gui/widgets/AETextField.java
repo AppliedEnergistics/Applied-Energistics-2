@@ -69,7 +69,7 @@ public class AETextField extends TextFieldWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         if (this.getVisible()) {
             if (this.isFocused()) {
                 fill(matrixStack, this.x - PADDING + 1, this.y - PADDING + 1,
@@ -80,7 +80,7 @@ public class AETextField extends TextFieldWidget {
                         this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
                         0xFFA8A8A8);
             }
-            super.renderButton(matrixStack, mouseX, mouseY, partial);
+            super.renderWidget(matrixStack, mouseX, mouseY, partial);
         }
     }
 

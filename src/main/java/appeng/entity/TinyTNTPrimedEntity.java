@@ -76,7 +76,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
     @Nullable
     @Override
-    public LivingEntity getTntPlacedBy() {
+    public LivingEntity getIgniter() {
         return this.placedBy;
     }
 

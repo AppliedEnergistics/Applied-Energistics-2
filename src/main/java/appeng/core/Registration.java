@@ -713,7 +713,7 @@ final class Registration {
                                 AEConfig.instance().getQuartzOresPerCluster()))
                 .withPlacement(Placement.RANGE/* RANGE */.configure(new TopSolidRangeConfig(12, 12, 72)))
                 .square/* spreadHorizontally */()
-                .func_242731_b/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
+                .count/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
     }
 
     private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {

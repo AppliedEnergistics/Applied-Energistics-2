@@ -1165,7 +1165,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
             if (te.hasCustomInventoryName()) {
                 if (this.myName != null) {
-                    this.myName.deepCopy().appendString(" ").append(te.getCustomInventoryName());
+                    this.myName.deepCopy().appendString(" ").appendSibling(te.getCustomInventoryName());
                 } else {
                     this.myName = te.getCustomInventoryName().deepCopy();
                 }

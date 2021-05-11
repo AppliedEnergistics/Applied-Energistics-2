@@ -61,7 +61,7 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             int max = this.source.getMaxProgress();
             int current = this.source.getCurrentProgress();
@@ -102,7 +102,7 @@ public class ProgressBar extends Widget implements ITooltip {
         return Arrays.asList(
                 result,
                 new StringTextComponent(this.source.getCurrentProgress() + " ")
-                        .append(GuiText.Of.text().deepCopy().appendString(" " + this.source.getMaxProgress())));
+                        .appendSibling(GuiText.Of.text().deepCopy().appendString(" " + this.source.getMaxProgress())));
     }
 
     @Override

@@ -355,7 +355,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             pos = pos.move(-textWidth / 2, 0);
         }
 
-        this.font.func_243248_b(
+        this.font.drawText(
                 matrixStack,
                 content,
                 pos.getX(),

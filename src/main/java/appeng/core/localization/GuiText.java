@@ -123,7 +123,7 @@ public enum GuiText {
     }
 
     public IFormattableTextComponent withSuffix(ITextComponent text) {
-        return text().deepCopy().append(text);
+        return text().deepCopy().appendSibling(text);
     }
 
     public IFormattableTextComponent text(Object... args) {

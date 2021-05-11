@@ -23,7 +23,6 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.IUpgradeableHost;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;

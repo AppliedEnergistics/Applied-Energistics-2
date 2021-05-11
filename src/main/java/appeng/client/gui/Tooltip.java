@@ -85,7 +85,7 @@ public final class Tooltip {
                 String line = parts[i];
                 IFormattableTextComponent part = new StringTextComponent(line).setStyle(style);
                 if (currentPart != null) {
-                    currentPart = currentPart.append(part);
+                    currentPart = currentPart.appendSibling(part);
                 } else {
                     currentPart = part;
                 }

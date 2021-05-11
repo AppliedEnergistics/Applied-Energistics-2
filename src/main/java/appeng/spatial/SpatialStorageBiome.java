@@ -39,6 +39,6 @@ public class SpatialStorageBiome {
             .temperature(0.5F).downfall(0.5F)
             .setEffects(new BiomeAmbience.Builder().setWaterColor(4159204).setWaterFogColor(329011).setFogColor(0)
                     .withSkyColor(0x111111).build())
-            .withMobSpawnSettings(new MobSpawnInfo.Builder().withCreatureSpawnProbability(0).copy()).build();
+            .withMobSpawnSettings(new MobSpawnInfo.Builder().withCreatureSpawnProbability(0).build()).build();
 
 }

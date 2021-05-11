@@ -59,7 +59,7 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, final int x, final int y, float partial) {
+    public void renderWidget(MatrixStack matrixStack, final int x, final int y, float partial) {
         if (this.visible) {
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot
