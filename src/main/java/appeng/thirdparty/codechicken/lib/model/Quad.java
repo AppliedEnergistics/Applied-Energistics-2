@@ -147,7 +147,6 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
      *
      * @param helper The helper.
      * @param s      The axis. side >> 1;
-     *
      * @return The same helper.
      */
     public InterpHelper resetInterp(InterpHelper helper, int s) {
@@ -229,7 +228,6 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
      * the same format.
      *
      * @param quad The Quad to copy from.
-     *
      * @return This quad.
      */
     public Quad copyFrom(Quad quad) {
@@ -360,7 +358,6 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
          * Gets the 2d X coord for the given axis.
          *
          * @param s The axis. side >> 1
-         *
          * @return The x coord.
          */
         public float dx(int s) {
@@ -375,7 +372,6 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
          * Gets the 2d Y coord for the given axis.
          *
          * @param s The axis. side >> 1
-         *
          * @return The y coord.
          */
         public float dy(int s) {
@@ -391,7 +387,6 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
          *
          * @param interpHelper The InterpHelper to use.
          * @param others       The other Vertices to use as a template.
-         *
          * @return The same Vertex.
          */
         public Vertex interpColorFrom(InterpHelper interpHelper, Vertex[] others) {
@@ -413,7 +408,6 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
          *
          * @param interpHelper The InterpHelper to use.
          * @param others       The other Vertices to use as a template.
-         *
          * @return The same Vertex.
          */
         public Vertex interpUVFrom(InterpHelper interpHelper, Vertex[] others) {
@@ -434,7 +428,6 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
          *
          * @param interpHelper The InterpHelper to use.
          * @param others       The other Vertices to use as a template.
-         *
          * @return The same Vertex.
          */
         public Vertex interpLightMapFrom(InterpHelper interpHelper, Vertex[] others) {

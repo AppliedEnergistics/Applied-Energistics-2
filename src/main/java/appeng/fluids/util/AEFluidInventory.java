@@ -27,7 +27,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
-import appeng.util.Platform;
 
 public class AEFluidInventory implements IAEFluidTank {
 

@@ -1,0 +1,17 @@
+{
+  "$schema": "schema.json",
+  "includes": ["crafting_cpu.json"],
+  "widgets": {
+    "selectCpu": {
+      "left": 8,
+      "bottom": 25,
+      "width": 150,
+      "height": 20
+    },
+    "back": {
+      "left": 213,
+      "top": -4,
+      "hideEdge": true
+    }
+  }
+}

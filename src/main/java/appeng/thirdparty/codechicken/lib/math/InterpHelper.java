@@ -101,7 +101,6 @@ public class InterpHelper {
      * @param q1 Value at dx1 dy1
      * @param q2 Value at dx2 dy2
      * @param q3 Value at dx3 dy3
-     *
      * @return The result.
      */
     public float interpolate(float q0, float q1, float q2, float q3) {

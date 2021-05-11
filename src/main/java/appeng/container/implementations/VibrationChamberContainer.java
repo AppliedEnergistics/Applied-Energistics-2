@@ -18,32 +18,24 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.misc.VibrationChamberTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.VibrationChamberScreen
+ */
 public class VibrationChamberContainer extends AEBaseContainer implements IProgressProvider {
 
-    public static ContainerType<VibrationChamberContainer> TYPE;
-
-    private static final ContainerHelper<VibrationChamberContainer, VibrationChamberTileEntity> helper = new ContainerHelper<>(
-            VibrationChamberContainer::new, VibrationChamberTileEntity.class);
-
-    public static VibrationChamberContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<VibrationChamberContainer> TYPE = ContainerTypeBuilder
+            .create(VibrationChamberContainer::new, VibrationChamberTileEntity.class)
+            .build("vibrationchamber");
 
     private final VibrationChamberTileEntity vibrationChamber;
     @GuiSync(0)
@@ -53,13 +45,13 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
 
     public VibrationChamberContainer(int id, final PlayerInventory ip,
             final VibrationChamberTileEntity vibrationChamber) {
-        super(TYPE, id, ip, vibrationChamber, null);
+        super(TYPE, id, ip, vibrationChamber);
         this.vibrationChamber = vibrationChamber;
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.FUEL,
-                vibrationChamber.getInternalInventory(), 0, 80, 37, this.getPlayerInventory()));
+                vibrationChamber.getInternalInventory(), 0), SlotSemantic.MACHINE_INPUT);
 
-        this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     @Override
@@ -78,6 +70,9 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
         return this.burnSpeed;
     }
 
+    /**
+     * @return A percentage value [0,100] to indicate how much of the current fuel item still remains.
+     */
     public int getRemainingBurnTime() {
         return this.remainingBurnTime;
     }

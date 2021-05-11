@@ -18,6 +18,11 @@
 
 package appeng.container.slot;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import appeng.client.Point;
+
 /**
  * @author BrockWS
  * @version rv6 - 2/05/2018
@@ -28,7 +33,9 @@ public interface IOptionalSlot {
         return false;
     }
 
-    int getSourceX();
+    boolean isSlotEnabled();
 
-    int getSourceY();
+    @OnlyIn(Dist.CLIENT)
+    Point getBackgroundPos();
+
 }

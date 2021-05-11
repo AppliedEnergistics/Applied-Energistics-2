@@ -18,10 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FullnessMode;
@@ -29,26 +27,21 @@ import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.storage.IOPortTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.IOPortScreen
+ */
 public class IOPortContainer extends UpgradeableContainer {
 
-    public static ContainerType<IOPortContainer> TYPE;
-
-    private static final ContainerHelper<IOPortContainer, IOPortTileEntity> helper = new ContainerHelper<>(
-            IOPortContainer::new, IOPortTileEntity.class, SecurityPermissions.BUILD);
-
-    public static IOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<IOPortContainer> TYPE = ContainerTypeBuilder
+            .create(IOPortContainer::new, IOPortTileEntity.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("ioport");
 
     @GuiSync(2)
     public FullnessMode fMode = FullnessMode.EMPTY;
@@ -60,40 +53,20 @@ public class IOPortContainer extends UpgradeableContainer {
     }
 
     @Override
-    protected int getHeight() {
-        return 166;
-    }
-
-    @Override
     protected void setupConfig() {
-        int offX = 19;
-        int offY = 17;
-
         final IItemHandler cells = this.getUpgradeable().getInventoryByName("cells");
 
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 2; x++) {
-                this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, cells,
-                        x + y * 2, offX + x * 18, offY + y * 18, this.getPlayerInventory()));
-            }
+        for (int i = 0; i < 6; i++) {
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, cells, i),
+                    SlotSemantic.MACHINE_INPUT);
         }
 
-        offX = 122;
-        offY = 17;
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 2; x++) {
-                this.addSlot(new OutputSlot(cells, 6 + x + y * 2, offX + x * 18, offY + y * 18,
-                        RestrictedInputSlot.PlacableItemType.STORAGE_CELLS.IIcon));
-            }
+        for (int i = 0; i < 6; i++) {
+            this.addSlot(new OutputSlot(cells, 6 + i,
+                    RestrictedInputSlot.PlacableItemType.STORAGE_CELLS.icon), SlotSemantic.MACHINE_OUTPUT);
         }
 
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 2, 187,
-                8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
+        this.setupUpgrades();
     }
 
     @Override

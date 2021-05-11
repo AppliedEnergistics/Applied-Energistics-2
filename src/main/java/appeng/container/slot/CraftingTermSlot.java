@@ -42,7 +42,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
-import appeng.container.implementations.CraftingTermContainer;
+import appeng.container.me.items.CraftingTermContainer;
 import appeng.core.Api;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.helpers.InventoryAction;
@@ -67,8 +67,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
     public CraftingTermSlot(final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc,
             final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
-            final IItemHandler output, final int x, final int y, final IContainerCraftingPacket ccp) {
-        super(player, cMatrix, output, 0, x, y);
+            final IContainerCraftingPacket ccp) {
+        super(player, cMatrix);
         this.energySrc = energySrc;
         this.storage = storage;
         this.mySrc = mySrc;

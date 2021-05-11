@@ -20,6 +20,7 @@ package appeng.fluids.parts;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -44,6 +45,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
+import appeng.fluids.container.FluidIOBusContainer;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -75,6 +77,11 @@ public class FluidExportBusPart extends SharedFluidBusPart {
         this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
         this.getConfigManager().registerSetting(Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
         this.source = new MachineSource(this);
+    }
+
+    @Override
+    protected ContainerType<?> getContainerType() {
+        return FluidIOBusContainer.EXPORT_TYPE;
     }
 
     @Override

@@ -38,7 +38,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
-import appeng.mixins.ItemStackAccessor;
 import appeng.util.Platform;
 
 public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack {
@@ -83,11 +82,11 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         }
 
         final ItemStack itemstack = ItemStack.read(i.getCompound(NBT_ITEMSTACK));
-        if (itemstack.isEmpty()) {
+        final AEItemStack item = AEItemStack.fromItemStack(itemstack);
+        if (item == null) {
             return null;
         }
 
-        final AEItemStack item = AEItemStack.fromItemStack(itemstack);
         item.setStackSize(i.getLong(NBT_STACKSIZE));
         item.setCountRequestable(i.getLong(NBT_REQUESTABLE));
         item.setCraftable(i.getBoolean(NBT_CRAFTABLE));
@@ -109,19 +108,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         final boolean isCraftable = buffer.readBoolean();
         final long stackSize = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
-
-        // based on buffer.readItemStack()
-        // Adapted to also handle forge capabilities
-        ItemStack itemstack = ItemStack.EMPTY;
-        if (buffer.readBoolean()) {
-            int i = buffer.readVarInt();
-            int j = buffer.readByte();
-            CompoundNBT nbt = buffer.readCompoundTag();
-            CompoundNBT forgeCap = buffer.readCompoundTag();
-
-            itemstack = new ItemStack(Item.getItemById(i), j, forgeCap);
-            itemstack.readShareTag(nbt);
-        }
+        final ItemStack itemstack = buffer.readItemStack();
 
         if (itemstack.isEmpty()) {
             return null;
@@ -138,21 +125,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         buffer.writeBoolean(this.isCraftable());
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
-        buffer.writeItemStack(getDefinition(), false);
-
-        // Workaround to also serialize caps as writeItemStack will ignore these.
-        buffer.writeCompoundTag(getCapabilityTag());
-    }
-
-    /**
-     * We're assuming that using capNBT here is safe, because {@link #getDefinition()} should have been created by
-     * {@link ItemStack#copy()}, and then never mutated. Copying an item stack will automatically serialize the
-     * capabilities of the source stack and initialize the target stacks capNBT field using that tag, which we are then
-     * reusing here.
-     */
-    @SuppressWarnings("ConstantConditions")
-    private CompoundNBT getCapabilityTag() {
-        return ((ItemStackAccessor) (Object) getDefinition()).appeng2_getCapNBT();
+        buffer.writeItemStack(this.getDefinition(), true);
     }
 
     @Override

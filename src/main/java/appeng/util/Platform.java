@@ -72,7 +72,6 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
-import appeng.api.exceptions.AppEngException;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGrid;
@@ -97,7 +96,6 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.stats.AeStats;
-import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.me.GridAccessException;
@@ -149,12 +147,13 @@ public class Platform {
      *
      * @param n      to be formatted long value
      * @param isRate if true it adds a /t to the formatted string
-     *
      * @return formatted long value
      */
     public static String formatPowerLong(final long n, final boolean isRate) {
-        double p = ((double) n) / 100;
+        return formatPower(((double) n) / 100, isRate);
+    }
 
+    public static String formatPower(double p, boolean isRate) {
         final PowerUnits displayUnits = AEConfig.instance().getSelectedPowerUnit();
         p = PowerUnits.AE.convertTo(displayUnits, p);
 
@@ -384,23 +383,12 @@ public class Platform {
         }
     }
 
-    public static ITextComponent getFluidDisplayName(Object o) {
+    public static ITextComponent getFluidDisplayName(IAEFluidStack o) {
         if (o == null) {
             return new StringTextComponent("** Null");
         }
-        FluidStack fluidStack = null;
-        if (o instanceof AEFluidStack) {
-            fluidStack = ((AEFluidStack) o).getFluidStack();
-        } else if (o instanceof FluidStack) {
-            fluidStack = (FluidStack) o;
-        } else {
-            return new StringTextComponent("**Invalid Object");
-        }
-        ITextComponent n = fluidStack.getDisplayName();
-        if (n == null) {
-            n = new TranslationTextComponent(fluidStack.getTranslationKey());
-        }
-        return n;
+        FluidStack fluidStack = o.getFluidStack();
+        return fluidStack.getDisplayName();
     }
 
     public static boolean isChargeable(final ItemStack i) {

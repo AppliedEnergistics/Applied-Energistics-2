@@ -46,6 +46,7 @@ import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.DistExecutor.SafeRunnable;
@@ -86,7 +87,7 @@ public class TickHandler {
     /**
      * A stop watch to limit processing the additional queues to honor
      * {@link TickHandler#TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS}.
-     * 
+     * <p>
      * This cumulative for all queues of one server tick.
      */
     private final Stopwatch sw = Stopwatch.createUnstarted();
@@ -104,8 +105,10 @@ public class TickHandler {
         eventBus.addListener(INSTANCE::onServerTick);
         eventBus.addListener(INSTANCE::onWorldTick);
         eventBus.addListener(INSTANCE::onUnloadChunk);
-        eventBus.addListener(INSTANCE::onLoadWorld);
-        eventBus.addListener(INSTANCE::onUnloadWorld);
+        // Try to go first for world loads since we use it to initialize state
+        eventBus.addListener(EventPriority.HIGHEST, INSTANCE::onLoadWorld);
+        // Try to go last for world unloads since we use it to clean-up state
+        eventBus.addListener(EventPriority.LOWEST, INSTANCE::onUnloadWorld);
 
         // DistExecutor does not like functional interfaces
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new SafeRunnable() {
@@ -128,7 +131,7 @@ public class TickHandler {
 
     /**
      * Add a server or world callback which gets called the next time the queue is ticked.
-     *
+     * <p>
      * Callbacks on the client are not support.
      * <p>
      * Using null as world will queue it into the global {@link ServerTickEvent}, otherwise it will be ticked with the
@@ -156,9 +159,9 @@ public class TickHandler {
 
     /**
      * Add a {@link AEBaseTileEntity} to be initializes with the next update.
-     * 
+     * <p>
      * Must be called on the server.
-     * 
+     *
      * @param tile to be added, must be not null
      */
     public void addInit(final AEBaseTileEntity tile) {
@@ -171,9 +174,9 @@ public class TickHandler {
 
     /**
      * Add a new grid for ticking on the next update.
-     * 
+     * <p>
      * Must only be called on the server.
-     * 
+     *
      * @param grid the {@link Grid} to add, must be not null
      */
     public void addNetwork(final Grid grid) {
@@ -184,9 +187,9 @@ public class TickHandler {
 
     /**
      * Mark a {@link Grid} to be removed with the next update.
-     * 
+     * <p>
      * Must only be called on the server.
-     * 
+     *
      * @param grid the {@link Grid} to remove, must be not null
      */
     public void removeNetwork(final Grid grid) {
@@ -208,7 +211,7 @@ public class TickHandler {
 
     /**
      * Handles a chunk being unloaded (on the server)
-     * 
+     * <p>
      * Removes any pending initialization callbacks for tile-entities in that chunk.
      */
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
@@ -270,7 +273,7 @@ public class TickHandler {
 
     /**
      * Tick a single {@link World}
-     * 
+     * <p>
      * This can happen multiple times per world, but each world should only be ticked once per minecraft tick.
      */
     public void onWorldTick(final WorldTickEvent ev) {
@@ -415,12 +418,11 @@ public class TickHandler {
 
     /**
      * Process the {@link IWorldCallable} queue in this {@link World}
-     * 
+     * <p>
      * This has a hard limit of about 50 ms before deferring further processing into the next tick.
-     * 
+     *
      * @param queue the queue to process
      * @param world the world in which the queue is processed or null for the server queue
-     * 
      * @return the amount of remaining callbacks
      */
     private int processQueue(final Queue<IWorldCallable<?>> queue, final World world) {

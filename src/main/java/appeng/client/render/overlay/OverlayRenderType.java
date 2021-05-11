@@ -34,10 +34,10 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
  */
 public class OverlayRenderType extends RenderType {
 
-    public OverlayRenderType(String p_i225992_1_, VertexFormat p_i225992_2_, int p_i225992_3_, int p_i225992_4_,
-            boolean p_i225992_5_, boolean p_i225992_6_, Runnable p_i225992_7_, Runnable p_i225992_8_) {
-        super(p_i225992_1_, p_i225992_2_, p_i225992_3_, p_i225992_4_, p_i225992_5_, p_i225992_6_, p_i225992_7_,
-                p_i225992_8_);
+    public OverlayRenderType(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
+            boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
+        super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn,
+                clearTaskIn);
     }
 
     public static RenderType getBlockHilightFace() {

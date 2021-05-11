@@ -21,7 +21,6 @@ package appeng.block.misc;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -41,7 +40,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 import appeng.block.AEBaseBlock;
 import appeng.entity.TinyTNTPrimedEntity;
@@ -118,7 +116,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             if (entityarrow.isBurning()) {
                 LivingEntity igniter = null;
                 // Check if the shooter still exists
-                Entity shooter = entityarrow.func_234616_v_();
+                Entity shooter = entityarrow.getShooter();
                 if (shooter instanceof LivingEntity) {
                     igniter = (LivingEntity) shooter;
                 }

@@ -49,7 +49,6 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.tile.misc.ChargerTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 

@@ -70,7 +70,7 @@ public class FluidSyncHelper {
         }
     }
 
-    private final Map<Integer, IAEFluidStack> createDiffMap(final boolean full) {
+    private Map<Integer, IAEFluidStack> createDiffMap(final boolean full) {
         final Map<Integer, IAEFluidStack> ret = new HashMap<>();
         for (int i = 0; i < this.inv.getSlots(); ++i) {
             if (full || !this.equalsSlot(i)) {
@@ -83,7 +83,7 @@ public class FluidSyncHelper {
         return ret;
     }
 
-    private final boolean equalsSlot(int slot) {
+    private boolean equalsSlot(int slot) {
         final IAEFluidStack stackA = this.inv.getFluidInSlot(slot);
         final IAEFluidStack stackB = this.cache.getFluidInSlot(slot);
 

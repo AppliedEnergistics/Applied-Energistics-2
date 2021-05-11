@@ -18,37 +18,34 @@
 
 package appeng.client.gui.widgets;
 
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-public class ToggleButton extends Button implements ITooltip {
-    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
-            "textures/guis/states.png");
-    private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
-    private final int iconIdxOn;
-    private final int iconIdxOff;
+import appeng.client.gui.Icon;
 
-    private final String displayName;
-    private final String displayHint;
+public class ToggleButton extends Button implements ITooltip {
+    private final Icon icon;
+    private final Icon iconDisabled;
+
+    private final ITextComponent displayName;
+    private final ITextComponent displayHint;
 
     private boolean isActive;
 
-    public ToggleButton(final int x, final int y, final int on, final int off, final String displayName,
-            final String displayHint, IPressable onPress) {
-        super(x, y, 16, 16, StringTextComponent.EMPTY, onPress);
-        this.iconIdxOn = on;
-        this.iconIdxOff = off;
-        this.displayName = displayName;
-        this.displayHint = displayHint;
+    public ToggleButton(final Icon on, final Icon off, final ITextComponent displayName,
+            final ITextComponent displayHint, IPressable onPress) {
+        super(0, 0, 16, 16, StringTextComponent.EMPTY, onPress);
+        this.icon = on;
+        this.iconDisabled = off;
+        this.displayName = Objects.requireNonNull(displayName);
+        this.displayHint = Objects.requireNonNull(displayHint);
     }
 
     public void setState(final boolean isOn) {
@@ -56,52 +53,22 @@ public class ToggleButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
+    public void renderWidget(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
         if (this.visible) {
-            final int iconIndex = this.getIconIndex();
-
-            RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE_STATES);
-
-            final int uv_y = iconIndex / 16;
-            final int uv_x = iconIndex - uv_y * 16;
-
-            blit(matrixStack, this.x, this.y, 256 - 16, 256 - 16, 16, 16);
-            blit(matrixStack, this.x, this.y, uv_x * 16, uv_y * 16, 16, 16);
+            Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
+            getIcon().getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
         }
     }
 
-    private int getIconIndex() {
-        return this.isActive ? this.iconIdxOn : this.iconIdxOff;
+    private Icon getIcon() {
+        return this.isActive ? this.icon : this.iconDisabled;
     }
 
     @Override
-    public ITextComponent getTooltipMessage() {
-        if (this.displayName != null) {
-            String name = I18n.format(this.displayName);
-            String value = I18n.format(this.displayHint);
-
-            if (name == null || name.isEmpty()) {
-                name = this.displayName;
-            }
-            if (value == null || value.isEmpty()) {
-                value = this.displayHint;
-            }
-
-            value = PATTERN_NEW_LINE.matcher(value).replaceAll("\n");
-            final StringBuilder sb = new StringBuilder(value);
-
-            int i = sb.lastIndexOf("\n");
-            if (i <= 0) {
-                i = 0;
-            }
-            while (i + 30 < sb.length() && (i = sb.lastIndexOf(" ", i + 30)) != -1) {
-                sb.replace(i, i + 1, "\n");
-            }
-
-            return new StringTextComponent(name + '\n' + sb);
-        }
-        return StringTextComponent.EMPTY;
+    public List<ITextComponent> getTooltipMessage() {
+        return Arrays.asList(
+                displayName,
+                displayHint);
     }
 
     @Override

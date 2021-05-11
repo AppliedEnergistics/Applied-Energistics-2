@@ -126,7 +126,8 @@ public class InvalidPatternHelper {
         }
 
         public ITextComponent getFormattedToolTip() {
-            IFormattableTextComponent result = new StringTextComponent(this.getCount() + " ").append(this.getName());
+            IFormattableTextComponent result = new StringTextComponent(this.getCount() + " ")
+                    .appendSibling(this.getName());
 
             if (!this.isValid()) {
                 result.mergeStyle(TextFormatting.RED);

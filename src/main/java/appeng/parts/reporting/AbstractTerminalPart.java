@@ -40,7 +40,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.MEMonitorableContainer;
+import appeng.container.me.items.ItemTerminalContainer;
 import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -50,7 +50,7 @@ import appeng.util.inv.InvOperation;
 
 /**
  * Anything resembling an network terminal with view cells can reuse this.
- *
+ * <p>
  * Note this applies only to terminals like the ME Terminal. It does not apply for more specialized terminals like the
  * Interface Terminal.
  *
@@ -114,7 +114,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     public ContainerType<?> getContainerType(final PlayerEntity player) {
-        return MEMonitorableContainer.TYPE;
+        return ItemTerminalContainer.TYPE;
     }
 
     @Override

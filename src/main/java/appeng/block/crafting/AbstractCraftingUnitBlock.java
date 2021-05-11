@@ -36,7 +36,7 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.CraftingCPUContainer;
+import appeng.container.me.crafting.CraftingCPUContainer;
 import appeng.tile.crafting.CraftingTileEntity;
 import appeng.util.InteractionUtil;
 

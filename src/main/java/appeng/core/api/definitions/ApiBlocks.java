@@ -97,6 +97,7 @@ import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
 import appeng.client.render.crafting.CraftingMonitorTESR;
+import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import appeng.client.render.spatial.SpatialPylonRendering;
 import appeng.client.render.tesr.ChargerTESR;
 import appeng.client.render.tesr.ChestTileEntityRenderer;
@@ -128,7 +129,6 @@ import appeng.hooks.TinyTNTDispenseItemBehavior;
 import appeng.tile.crafting.CraftingMonitorTileEntity;
 import appeng.tile.crafting.CraftingStorageTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
-import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 import appeng.tile.grindstone.CrankTileEntity;
 import appeng.tile.grindstone.GrinderTileEntity;
@@ -243,10 +243,10 @@ public final class ApiBlocks implements IBlocks {
     private final IBlockDefinition energyGenerator;
 
     private static final AbstractBlock.Properties QUARTZ_PROPERTIES = defaultProps(Material.ROCK)
-            .hardnessAndResistance(3, 5);
+            .hardnessAndResistance(3, 5).setRequiresTool().harvestLevel(1);
 
     private static final AbstractBlock.Properties SKYSTONE_PROPERTIES = defaultProps(Material.ROCK)
-            .hardnessAndResistance(50, 150);
+            .hardnessAndResistance(50, 150).setRequiresTool();
 
     public ApiBlocks(FeatureFactory registry) {
         this.quartzOre = registry.block("quartz_ore", () -> new QuartzOreBlock(QUARTZ_PROPERTIES))
@@ -306,7 +306,7 @@ public final class ApiBlocks implements IBlocks {
                 .features(
                         AEFeature.SKY_STONE)
                 .block("sky_stone_block", () -> new SkyStoneBlock(SkystoneType.STONE,
-                        defaultProps(Material.ROCK).hardnessAndResistance(50, 150).harvestLevel(3)))
+                        defaultProps(Material.ROCK).hardnessAndResistance(50, 150).setRequiresTool().harvestLevel(3)))
                 .build();
 
         this.smoothSkyStoneBlock = registry.features(AEFeature.SKY_STONE)

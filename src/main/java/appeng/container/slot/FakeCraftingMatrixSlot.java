@@ -22,7 +22,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public class FakeCraftingMatrixSlot extends FakeSlot {
 
-    public FakeCraftingMatrixSlot(final IItemHandler inv, final int invSlot, final int x, final int y) {
-        super(inv, invSlot, x, y);
+    public FakeCraftingMatrixSlot(final IItemHandler inv, final int invSlot) {
+        super(inv, invSlot);
     }
 }

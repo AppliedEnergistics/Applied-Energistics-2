@@ -145,7 +145,7 @@ class FuzzyItemVariantList extends ItemVariantList {
      * higher number than the upper bound.
      */
     static ItemDamageBound makeLowerBound(final ItemStack stack, final FuzzyMode fuzzy) {
-        Preconditions.checkState(stack.isDamageable(), "ItemStack#isDamageable() has to be true");
+        Preconditions.checkState(stack.getItem().isDamageable(), "Item#isDamageable() has to be true");
 
         int damage;
         if (fuzzy == FuzzyMode.IGNORE_ALL) {
@@ -163,7 +163,7 @@ class FuzzyItemVariantList extends ItemVariantList {
      * lower number than the lower bound. It also is exclusive.
      */
     static ItemDamageBound makeUpperBound(final ItemStack stack, final FuzzyMode fuzzy) {
-        Preconditions.checkState(stack.isDamageable(), "ItemStack#isDamageable() has to be true");
+        Preconditions.checkState(stack.getItem().isDamageable(), "Item#isDamageable() has to be true");
 
         int damage;
         if (fuzzy == FuzzyMode.IGNORE_ALL) {

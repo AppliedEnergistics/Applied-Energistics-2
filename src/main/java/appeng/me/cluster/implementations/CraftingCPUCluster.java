@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.CraftingInventory;
@@ -233,7 +234,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
-        if (!(input instanceof IAEItemStack)) {
+        // also stop accepting items when the job is complete, i.e. to prevent re-insertion when pushing out
+        // items during storeItems
+        if (input == null || isComplete) {
             return input;
         }
 
@@ -397,6 +400,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             AELog.crafting(LOG_MARK_AS_COMPLETE, logStack);
         }
 
+        // Waiting for can potentially contain items at this point, if the user has a 64xplank->64xbutton processing
+        // recipe for example, but only requested 1xbutton. We just ignore the rest since it will be dumped
+        // back into the network inventory regardless. For this to work it's important that injectItems in this CPU
+        // does not accept any further items if isComplete is true.
+        this.waitingFor.resetStatus();
         this.remainingItemCount = 0;
         this.startItemCount = 0;
         this.lastTime = 0;
@@ -541,11 +549,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.myLastLink = null;
         this.tasks.clear();
 
-        // final ImmutableSet<IAEItemStack> items = ImmutableSet.copyOf( this.waitingFor
-        // );
         final List<IAEItemStack> items = new ArrayList<>(this.waitingFor.size());
         this.waitingFor.forEach(stack -> items.add(stack.copy().setStackSize(-stack.getStackSize())));
-
         this.waitingFor.resetStatus();
 
         for (final IAEItemStack is : items) {
@@ -781,6 +786,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
      * Tries to dump all locally stored items back into the storage network.
      */
     private void storeItems() {
+        Preconditions.checkState(isComplete, "CPU should be complete to prevent re-insertion when dumping items");
         final IGrid g = this.getGrid();
 
         if (g == null) {
@@ -1159,7 +1165,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
             if (te.hasCustomInventoryName()) {
                 if (this.myName != null) {
-                    this.myName.deepCopy().appendString(" ").append(te.getCustomInventoryName());
+                    this.myName.deepCopy().appendString(" ").appendSibling(te.getCustomInventoryName());
                 } else {
                     this.myName = te.getCustomInventoryName().deepCopy();
                 }

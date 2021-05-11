@@ -74,7 +74,6 @@ import appeng.me.storage.MEInventoryHandler;
 import appeng.parts.automation.AbstractFormationPlanePart;
 import appeng.parts.automation.PlaneModelData;
 import appeng.parts.automation.PlaneModels;
-import appeng.util.Platform;
 import appeng.util.prioritylist.PrecisePriorityList;
 
 public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluidStack>

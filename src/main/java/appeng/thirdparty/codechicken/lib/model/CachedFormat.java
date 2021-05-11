@@ -37,7 +37,6 @@ public class CachedFormat {
      * Lookup or create the CachedFormat for a given VertexFormat.
      *
      * @param format The format to lookup.
-     *
      * @return The CachedFormat.
      */
     public static CachedFormat lookup(VertexFormat format) {

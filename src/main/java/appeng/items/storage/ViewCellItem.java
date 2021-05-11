@@ -18,6 +18,8 @@
 
 package appeng.items.storage;
 
+import java.util.Collection;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -44,7 +46,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
         super(properties);
     }
 
-    public static IPartitionList<IAEItemStack> createFilter(final ItemStack[] list) {
+    public static IPartitionList<IAEItemStack> createFilter(Collection<ItemStack> list) {
         IPartitionList<IAEItemStack> myPartitionList = null;
 
         final MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<>();

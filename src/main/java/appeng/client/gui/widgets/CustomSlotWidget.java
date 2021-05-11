@@ -24,22 +24,25 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+
+import appeng.client.Point;
 
 public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
-    private final int x;
-    private final int y;
-    private final int id;
+    private final int serverId;
+    private int x;
+    private int y;
 
-    public CustomSlotWidget(final int id, final int x, final int y) {
-        this.x = x;
-        this.y = y;
-        this.id = id;
+    public CustomSlotWidget(int serverId) {
+        this.serverId = serverId;
     }
 
     public int getId() {
-        return this.id;
+        return this.serverId;
+    }
+
+    public void setPos(Point pos) {
+        this.x = pos.getX();
+        this.y = pos.getY();
     }
 
     public boolean canClick(final PlayerEntity player) {
@@ -51,14 +54,6 @@ public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
 
     public abstract void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
             final float partialTicks);
-
-    public void drawBackground(MatrixStack matrices, int guileft, int guitop, int currentZIndex) {
-    }
-
-    @Override
-    public ITextComponent getTooltipMessage() {
-        return StringTextComponent.EMPTY;
-    }
 
     @Override
     public int getTooltipAreaX() {

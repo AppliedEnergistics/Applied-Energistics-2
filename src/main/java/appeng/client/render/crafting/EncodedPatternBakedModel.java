@@ -41,7 +41,7 @@ import appeng.items.misc.EncodedPatternItem;
  * This model is used to substitute the crafting result's item model for our encoded pattern model if these two
  * conditions are met: - The player is holding shift - The itemstack is being rendered in the UI (not on the ground,
  * etc.)
- *
+ * <p>
  * We do this by abusing a custom {@link ItemOverrideList} since it will be called each frame with the itemstack that is
  * about to be rendered. We return a custom IBakedModel ({@link ShiftHoldingModelWrapper} if the player is holding down
  * shift from the override list. This custom baked model implements {@link #doesHandlePerspectives()} and returns the

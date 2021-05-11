@@ -80,7 +80,7 @@ class ServerTileRepo {
 
     /**
      * Removes a unloaded chunk within a world.
-     * 
+     * <p>
      * There is no related addWorldChunk. The necessary queue will be created once the first tile is added to a chunk to
      * save memory.
      */

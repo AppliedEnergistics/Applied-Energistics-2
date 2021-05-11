@@ -18,10 +18,15 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+
+import appeng.client.gui.Tooltip;
 
 /**
  * AEBaseGui controlled Tooltip Interface.
@@ -31,12 +36,12 @@ public interface ITooltip {
     /**
      * Returns the tooltip message.
      *
-     * Should use {@link StringTextComponent#EMPTY} for no tooltip
-     *
-     * @return tooltip message
+     * @return tooltip message or an empty list to not show a tooltip
      */
     @Nonnull
-    ITextComponent getTooltipMessage();
+    default List<ITextComponent> getTooltipMessage() {
+        return Collections.emptyList();
+    }
 
     /**
      * x Location for the object that triggers the tooltip.
@@ -70,4 +75,30 @@ public interface ITooltip {
      * @return true if button being drawn
      */
     boolean isTooltipAreaVisible();
+
+    @Nullable
+    default Tooltip getTooltip(int mouseX, int mouseY) {
+        if (!isTooltipAreaVisible()) {
+            return null;
+        }
+
+        int x = getTooltipAreaX();
+        int y = getTooltipAreaY();
+
+        if (x < mouseX && x + getTooltipAreaWidth() > mouseX
+                && y < mouseY && y + getTooltipAreaHeight() > mouseY) {
+
+            List<ITextComponent> lines = getTooltipMessage();
+
+            // Don't show empty tooltips
+            if (lines.isEmpty()) {
+                return null;
+            }
+
+            return new Tooltip(lines);
+        }
+
+        return null;
+    }
+
 }

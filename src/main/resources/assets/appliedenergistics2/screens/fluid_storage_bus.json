@@ -1,0 +1,15 @@
+{
+  "$schema": "schema.json",
+  "includes": ["storage_bus.json"],
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.appliedenergistics2.StorageBusFluids"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  }
+}

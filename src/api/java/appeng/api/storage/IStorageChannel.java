@@ -23,8 +23,6 @@
 
 package appeng.api.storage;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -43,8 +41,6 @@ public interface IStorageChannel<T extends IAEStack<T>> {
      *
      * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the item channel transferring a full bucket per
      * operation.
-     *
-     * @return
      */
     default int transferFactor() {
         return 1;
@@ -62,8 +58,6 @@ public interface IStorageChannel<T extends IAEStack<T>> {
 
     /**
      * Create a new {@link IItemList} of the specific type.
-     *
-     * @return
      */
     @Nonnull
     IItemList<T> createList();
@@ -82,19 +76,11 @@ public interface IStorageChannel<T extends IAEStack<T>> {
     @Nullable
     T createStack(@Nonnull Object input);
 
-    /**
-     * @param input
-     * @return
-     * @throws IOException
-     */
     @Nullable
     T readFromPacket(@Nonnull PacketBuffer input);
 
     /**
      * create from nbt data
-     *
-     * @param nbt
-     * @return
      */
     @Nullable
     T createFromNBT(@Nonnull CompoundNBT nbt);

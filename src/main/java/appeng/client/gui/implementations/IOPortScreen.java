@@ -28,53 +28,40 @@ import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.definitions.IDefinitions;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.IOPortContainer;
 import appeng.core.Api;
-import appeng.core.localization.GuiText;
 
 public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
 
-    private SettingToggleButton<FullnessMode> fullMode;
-    private SettingToggleButton<OperationMode> operationMode;
+    private final SettingToggleButton<FullnessMode> fullMode;
+    private final SettingToggleButton<OperationMode> operationMode;
+    private final SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 166;
-    }
+    public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
 
-    @Override
-    protected void addButtons() {
-        this.fullMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.FULLNESS_MODE,
+        this.fullMode = new ServerSettingToggleButton<>(Settings.FULLNESS_MODE,
                 FullnessMode.EMPTY);
-        this.operationMode = new ServerSettingToggleButton<>(this.guiLeft + 80, this.guiTop + 17,
-                Settings.OPERATION_MODE, OperationMode.EMPTY);
-
-        this.addButton(this.operationMode);
-        this.addButton(this.fullMode);
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+        addToLeftToolbar(this.fullMode);
+        this.redstoneMode = new ServerSettingToggleButton<>(
                 Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
-        addButton(this.redstoneMode);
+        addToLeftToolbar(this.redstoneMode);
+
+        this.operationMode = new ServerSettingToggleButton<>(Settings.OPERATION_MODE, OperationMode.EMPTY);
+        widgets.add("operationMode", this.operationMode);
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.IOPort.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        if (this.redstoneMode != null) {
-            this.redstoneMode.set(this.cvb.getRedStoneMode());
-        }
-
-        if (this.operationMode != null) {
-            this.operationMode.set(((IOPortContainer) this.cvb).getOperationMode());
-        }
-
-        if (this.fullMode != null) {
-            this.fullMode.set(((IOPortContainer) this.cvb).getFullMode());
-        }
+        this.redstoneMode.set(this.container.getRedStoneMode());
+        this.operationMode.set(this.container.getOperationMode());
+        this.fullMode.set(this.container.getFullMode());
     }
 
     @Override
@@ -89,11 +76,6 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
 
         definitions.blocks().drive().maybeStack(1)
                 .ifPresent(driveStack -> this.drawItem(offsetX + 94 + 8, offsetY + 17, driveStack));
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/io_port.png";
     }
 
 }

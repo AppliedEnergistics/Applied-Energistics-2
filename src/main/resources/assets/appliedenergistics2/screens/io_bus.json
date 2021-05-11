@@ -1,0 +1,15 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/bus.png",
+    "srcRect": [0, 0, 176, 184]
+  },
+  "slots": {
+    "CONFIG": {
+      "left": 80,
+      "top": 40,
+      "grid": "IO_BUS_CONFIG"
+    }
+  }
+}

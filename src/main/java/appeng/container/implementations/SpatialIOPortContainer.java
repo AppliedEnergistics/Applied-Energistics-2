@@ -18,10 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -30,18 +28,21 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.SpatialIOPortScreen
+ */
 public class SpatialIOPortContainer extends AEBaseContainer {
 
-    public static ContainerType<SpatialIOPortContainer> TYPE;
-
-    private static final ContainerHelper<SpatialIOPortContainer, SpatialIOPortTileEntity> helper = new ContainerHelper<>(
-            SpatialIOPortContainer::new, SpatialIOPortTileEntity.class, SecurityPermissions.BUILD);
+    public static final ContainerType<SpatialIOPortContainer> TYPE = ContainerTypeBuilder
+            .create(SpatialIOPortContainer::new, SpatialIOPortTileEntity.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("spatialioport");
 
     @GuiSync(0)
     public long currentPower;
@@ -62,26 +63,18 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     public int zSize;
 
     public SpatialIOPortContainer(int id, final PlayerInventory ip, final SpatialIOPortTileEntity spatialIOPort) {
-        super(TYPE, id, ip, spatialIOPort, null);
+        super(TYPE, id, ip, spatialIOPort);
 
         if (isServer()) {
             this.network = spatialIOPort.getGridNode(AEPartLocation.INTERNAL).getGrid();
         }
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS,
-                spatialIOPort.getInternalInventory(), 0, 52, 48, this.getPlayerInventory()));
-        this.addSlot(new OutputSlot(spatialIOPort.getInternalInventory(), 1, 113, 48,
-                RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon));
+                spatialIOPort.getInternalInventory(), 0), SlotSemantic.MACHINE_INPUT);
+        this.addSlot(new OutputSlot(spatialIOPort.getInternalInventory(), 1,
+                RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS.icon), SlotSemantic.MACHINE_OUTPUT);
 
-        this.bindPlayerInventory(ip, 0, 197 - /* height of player inventory */82);
-    }
-
-    public static SpatialIOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
+        this.createPlayerInventorySlots(ip);
     }
 
     @Override

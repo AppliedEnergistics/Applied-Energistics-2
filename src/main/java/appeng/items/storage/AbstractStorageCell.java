@@ -51,7 +51,6 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.materials.MaterialType;
 import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
 
 /**
  * @author DrummerMC

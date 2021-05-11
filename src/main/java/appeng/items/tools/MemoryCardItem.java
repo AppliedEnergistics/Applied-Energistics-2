@@ -85,7 +85,6 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
      * Find the localized string...
      *
      * @param name possible names for the localized string
-     *
      * @return localized name
      */
     private String getFirstValidTranslationKey(final String... name) {

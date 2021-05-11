@@ -18,38 +18,29 @@
 
 package appeng.fluids.container;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
+import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.IAEFluidTank;
 
 public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
-    public static ContainerType<FluidLevelEmitterContainer> TYPE;
 
-    private static final ContainerHelper<FluidLevelEmitterContainer, FluidLevelEmitterPart> helper = new ContainerHelper<>(
-            FluidLevelEmitterContainer::new, FluidLevelEmitterPart.class, SecurityPermissions.BUILD);
-
-    public static FluidLevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf, (host, container, buffer) -> {
-            container.reportingValue = buffer.readVarLong();
-        });
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator, (host, buffer) -> {
-            buffer.writeVarLong(host.getReportingValue());
-        });
-    }
+    public static final ContainerType<FluidLevelEmitterContainer> TYPE = ContainerTypeBuilder
+            .create(FluidLevelEmitterContainer::new, FluidLevelEmitterPart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .withInitialData((host, buffer) -> {
+                buffer.writeVarLong(host.getReportingValue());
+            }, (host, container, buffer) -> {
+                container.reportingValue = buffer.readVarLong();
+            })
+            .build("fluid_level_emitter");
 
     private final FluidLevelEmitterPart lvlEmitter;
 
