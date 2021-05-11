@@ -23,10 +23,8 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.Multiset;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -38,20 +36,21 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.me.GridAccessException;
 import appeng.me.cache.StatisticsCache;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.SpatialAnchorScreen
+ */
 public class SpatialAnchorContainer extends AEBaseContainer {
 
-    public static ContainerType<SpatialAnchorContainer> TYPE;
-
-    private static final ContainerHelper<SpatialAnchorContainer, SpatialAnchorTileEntity> helper = new ContainerHelper<>(
-            SpatialAnchorContainer::new, SpatialAnchorTileEntity.class, SecurityPermissions.BUILD);
+    public static final ContainerType<SpatialAnchorContainer> TYPE = ContainerTypeBuilder
+            .create(SpatialAnchorContainer::new, SpatialAnchorTileEntity.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("spatialanchor");
 
     private static final int UPDATE_DELAY = 20;
 
@@ -78,19 +77,11 @@ public class SpatialAnchorContainer extends AEBaseContainer {
     public int allChunks;
 
     public SpatialAnchorContainer(int id, final PlayerInventory ip, final SpatialAnchorTileEntity spatialAnchor) {
-        super(TYPE, id, ip, spatialAnchor, null);
+        super(TYPE, id, ip, spatialAnchor);
 
         if (isServer()) {
             this.network = spatialAnchor.getGridNode(AEPartLocation.INTERNAL).getGrid();
         }
-    }
-
-    public static SpatialAnchorContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
     }
 
     @Override
@@ -115,13 +106,12 @@ public class SpatialAnchorContainer extends AEBaseContainer {
                     for (IGridNode machine : anchors) {
                         SpatialAnchorTileEntity a = (SpatialAnchorTileEntity) machine.getMachine();
                         World world = machine.getGridBlock().getLocation().getWorld();
-                        stats.merge(world, a.countLoadedChunks(), (left, right) -> Math.max(left, right));
+                        stats.merge(world, a.countLoadedChunks(), Math::max);
                     }
 
-                    this.allLoadedChunks = stats.values().stream().reduce((left, right) -> left + right).orElse(0);
+                    this.allLoadedChunks = stats.values().stream().reduce(Integer::sum).orElse(0);
                     this.allLoadedWorlds = stats.keySet().size();
-
-                } catch (GridAccessException e) {
+                } catch (GridAccessException ignored) {
                 }
 
                 this.allWorlds = statistics.getChunks().size();
@@ -135,10 +125,6 @@ public class SpatialAnchorContainer extends AEBaseContainer {
         }
 
         super.detectAndSendChanges();
-    }
-
-    protected void loadSettingsFromHost(final IConfigManager cm) {
-        this.setOverlayMode((YesNo) cm.getSetting(Settings.OVERLAY_MODE));
     }
 
     public YesNo getOverlayMode() {

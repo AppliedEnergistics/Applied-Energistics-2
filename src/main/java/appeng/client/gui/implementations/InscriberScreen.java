@@ -18,69 +18,33 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.InscriberContainer;
-import appeng.core.localization.GuiText;
 
-public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
+public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
 
-    private ProgressBar pb;
+    private final ProgressBar pb;
 
-    public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 176;
-        this.xSize = this.hasToolbox() ? 246 : 211;
-    }
+    public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
 
-    private boolean hasToolbox() {
-        return this.container.hasToolbox();
+        this.pb = new ProgressBar(this.container, style.getImage("progressBar"), Direction.VERTICAL);
+        widgets.add("progressBar", this.pb);
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-        this.pb = new ProgressBar(this.container, "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL);
-        this.addButton(this.pb);
+        int progress = this.container.getCurrentProgress() * 100 / this.container.getMaxProgress();
+        this.pb.setFullMsg(new StringTextComponent(progress + "%"));
     }
 
-    @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.pb.setFullMsg(new StringTextComponent(
-                this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%"));
-
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Inscriber.text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
-    }
-
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.bindTexture("guis/inscriber.png");
-        this.pb.x = 135 + this.guiLeft;
-        this.pb.y = 39 + this.guiTop;
-
-        blit(matrices, offsetX, offsetY, 0, 0, 211 - 34, this.ySize);
-
-        if (this.drawUpgrades()) {
-            blit(matrices, offsetX + 177, offsetY, 177, 0, 35, 14 + this.container.availableUpgrades() * 18);
-        }
-        if (this.hasToolbox()) {
-            blit(matrices, offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90,
-                    68, 68);
-        }
-    }
-
-    private boolean drawUpgrades() {
-        return true;
-    }
 }

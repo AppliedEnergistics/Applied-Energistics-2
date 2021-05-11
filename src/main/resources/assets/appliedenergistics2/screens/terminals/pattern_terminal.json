@@ -1,0 +1,96 @@
+{
+  "$schema": "../schema.json",
+  "includes": ["item_terminal.json"],
+  "slots": {
+    "BLANK_PATTERN": {
+      "left": 147,
+      "bottom": 161
+    },
+    "ENCODED_PATTERN": {
+      "left": 147,
+      "bottom": 118
+    },
+    "CRAFTING_GRID": {
+      "left": 18,
+      "bottom": 156,
+      "grid": "BREAK_AFTER_3COLS"
+    },
+    "CRAFTING_RESULT": {
+      "left": 110,
+      "bottom": 138
+    },
+    "PROCESSING_RESULT": {
+      "left": 110,
+      "bottom": 156,
+      "grid": "VERTICAL"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.appliedenergistics2.Terminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "crafting_grid_title": {
+      "text": {
+        "translate": "gui.appliedenergistics2.PatternTerminal"
+      },
+      "position": {
+        "left": 8,
+        "bottom": 175
+      }
+    }
+  },
+  "terminalStyle": {
+    "header": {
+      "texture": "guis/pattern.png",
+      "srcRect": [0, 0, 195, 17]
+    },
+    "firstRow": {
+      "texture": "guis/pattern.png",
+      "srcRect": [0, 17, 195, 18]
+    },
+    "row": {
+      "texture": "guis/pattern.png",
+      "srcRect": [0, 35, 195, 18]
+    },
+    "lastRow": {
+      "texture": "guis/pattern.png",
+      "srcRect": [0, 53, 195, 18]
+    },
+    "bottom": {
+      "texture": "guis/pattern.png",
+      "srcRect": [0, 71, 195, 178]
+    }
+  },
+  "widgets": {
+    "craftingPatternMode": {
+      "left": 173,
+      "bottom": 177
+    },
+    "processingPatternMode": {
+      "left": 173,
+      "bottom": 177
+    },
+    "substitutionsEnabled": {
+      "left": 84,
+      "bottom": 163
+    },
+    "substitutionsDisabled": {
+      "left": 84,
+      "bottom": 163
+    },
+    "clearPattern": {
+      "left": 74,
+      "bottom": 163
+    },
+    "encodePattern": {
+      "left": 147,
+      "bottom": 142
+    }
+  }
+}

@@ -117,12 +117,12 @@ public class SpatialStoragePlot {
      * The origin of this plot within the spatial storage dimension.
      * <p>
      * To map an integer to a specific position, it uses the following algorithm.
-     *
+     * <p>
      * The 2 least significant bits determine the sign for the x and z axis. Every other pack of 2 bits locate the plot
      * within a quadrant of a increasing area by the bit position.
-     *
+     * <p>
      * The first 2 bits after the sign address a quadrant within 1024x1024 blocks (or 4 region files)
-     *
+     * <p>
      * Every further will continue to double both x and z values. E.g. 2048x2048 for the 3rd pack and 4096x4096 for the
      * 4th.
      *

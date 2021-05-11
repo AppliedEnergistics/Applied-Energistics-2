@@ -29,8 +29,8 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartModel;
-import appeng.container.implementations.CraftingTermContainer;
-import appeng.container.implementations.MEMonitorableContainer;
+import appeng.container.me.items.CraftingTermContainer;
+import appeng.container.me.items.ItemTerminalContainer;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
@@ -82,7 +82,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
             return CraftingTermContainer.TYPE;
         }
-        return MEMonitorableContainer.TYPE;
+        return ItemTerminalContainer.TYPE;
     }
 
     @Override

@@ -28,9 +28,12 @@ public enum GuiText {
     Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, SkyChest,
 
     VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
+    TerminalViewCellsTooltip,
 
     Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ImportBusFluids, ExportBus,
     ExportBusFluids,
+
+    CompatibleUpgrades, CompatibleUpgrade, UpgradeToolbelt,
 
     CellWorkbench, NetworkDetails, StorageCells, IOBuses, IOBusesFluids,
 
@@ -71,13 +74,13 @@ public enum GuiText {
 
     ConfirmCrafting, Stored, Crafting, Scheduled, CraftingStatus, Cancel, ETA, ETAFormat,
 
-    FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start, Bytes,
+    FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start,
 
-    CraftingCPU, Automatic, CoProcessors, Simulation, Missing,
+    SelectedCraftingCPU, Automatic, Simulation, Missing, ConfirmCraftCpuStatus, ConfirmCraftNoCpu,
 
     InterfaceTerminal, NoCraftingCPUs, Clean, InvalidPattern,
 
-    InterfaceTerminalHint, Range, TransparentFacades, TransparentFacadesHint,
+    InterfaceTerminalHint, WirelessRange, TransparentFacades, TransparentFacadesHint,
 
     NoCraftingJobs, CPUs, FacadeCrafting, inWorldCraftingPresses, ChargedQuartzFind,
 
@@ -120,7 +123,7 @@ public enum GuiText {
     }
 
     public IFormattableTextComponent withSuffix(ITextComponent text) {
-        return text().deepCopy().append(text);
+        return text().deepCopy().appendSibling(text);
     }
 
     public IFormattableTextComponent text(Object... args) {

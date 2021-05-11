@@ -23,8 +23,8 @@ import net.minecraftforge.items.IItemHandler;
 
 public class FakeTypeOnlySlot extends FakeSlot {
 
-    public FakeTypeOnlySlot(final IItemHandler inv, final int invSlot, final int x, final int y) {
-        super(inv, invSlot, x, y);
+    public FakeTypeOnlySlot(final IItemHandler inv, final int invSlot) {
+        super(inv, invSlot);
     }
 
     @Override

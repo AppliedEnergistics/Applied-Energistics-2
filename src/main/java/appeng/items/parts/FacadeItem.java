@@ -59,7 +59,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
      * Block tag used to explicitly whitelist blocks for use in facades.
      */
     private static final ITag.INamedTag<Block> BLOCK_WHITELIST = BlockTags
-            .makeWrapperTag(AppEng.makeId("whitelisted/facades").toString());
+            .createOptional(AppEng.makeId("whitelisted/facades"));
 
     private static final String NBT_ITEM_ID = "item";
 
@@ -78,7 +78,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         try {
             final ItemStack in = this.getTextureItem(is);
             if (!in.isEmpty()) {
-                return super.getDisplayName(is).deepCopy().appendString(" - ").append(in.getDisplayName());
+                return super.getDisplayName(is).deepCopy().appendString(" - ").appendSibling(in.getDisplayName());
             }
         } catch (final Throwable ignored) {
 

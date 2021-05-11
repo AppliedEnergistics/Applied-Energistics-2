@@ -21,15 +21,18 @@ package appeng.container.slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.client.gui.Icon;
+
 public class OutputSlot extends AppEngSlot {
 
-    public OutputSlot(final IItemHandler inv, final int invSlot, final int x, final int y, final int iconIndex) {
-        super(inv, invSlot, x, y);
-        this.setIIcon(iconIndex);
+    public OutputSlot(final IItemHandler inv, final int invSlot, final Icon icon) {
+        super(inv, invSlot);
+        this.setIcon(icon);
     }
 
     @Override
     public boolean isItemValid(final ItemStack stack) {
         return false;
     }
+
 }

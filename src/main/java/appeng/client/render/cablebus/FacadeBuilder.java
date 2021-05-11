@@ -403,7 +403,6 @@ public class FacadeBuilder {
      * @param fb   The Facade's box.
      * @param hole The hole to 'cut'.
      * @param axis The axis the facade is on.
-     *
      * @return The box segments.
      */
     private static List<AxisAlignedBB> getBoxes(AxisAlignedBB fb, AEAxisAlignedBB hole, Axis axis) {

@@ -31,9 +31,18 @@ import net.minecraft.network.PacketBuffer;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.IFluidSyncContainer;
 import appeng.fluids.util.AEFluidStack;
 
+/**
+ * Similar to {@link net.minecraft.network.play.server.SSetSlotPacket}, but for fluids, and used in both directions
+ * (server->client and client->server).
+ * <p/>
+ * The key used in for synchronization is {@link FluidSlotWidget#getId()}.
+ * <p/>
+ * The container on both sides of the synchronization must implement {@link IFluidSyncContainer}.
+ */
 public class FluidSlotPacket extends BasePacket {
     private final Map<Integer, IAEFluidStack> list;
 

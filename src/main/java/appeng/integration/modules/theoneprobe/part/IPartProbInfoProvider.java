@@ -31,7 +31,6 @@ import appeng.api.parts.IPart;
 
 /**
  * Similar to {@link IProbeInfoProvider}, but already providing the {@link IPart} being looked at.
- *
  */
 public interface IPartProbInfoProvider {
 

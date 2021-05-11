@@ -106,7 +106,7 @@ class CableBuilder {
 
     /**
      * Adds the core of a cable to the given list of quads.
-     *
+     * <p>
      * The type of cable core is automatically deduced from the given cable type.
      */
     public void addCableCore(AECableType cableType, AEColor color, List<BakedQuad> quadsOut) {

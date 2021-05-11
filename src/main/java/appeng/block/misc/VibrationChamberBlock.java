@@ -75,7 +75,7 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
 
         if (!w.isRemote()) {
             final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
-            if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
+            if (tc != null) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getFace()));
             }

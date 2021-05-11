@@ -74,7 +74,7 @@ import appeng.util.Platform;
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
     public static final ITag.INamedTag<Fluid> TAG_BLACKLIST = FluidTags
-            .makeWrapperTag(AppEng.makeId("blacklisted/fluid_annihilation_plane").toString());
+            .createOptional(AppEng.makeId("blacklisted/fluid_annihilation_plane"));
 
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
             "part/fluid_annihilation_plane_on");

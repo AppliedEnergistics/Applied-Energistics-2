@@ -41,8 +41,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.ITileDefinition;
 import appeng.api.implementations.IPowerChannelState;
@@ -72,8 +70,6 @@ import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
@@ -84,7 +80,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
-        implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState {
+        implements IUpgradeableHost, IGridTickable, ICraftingMachine, IPowerChannelState {
 
     public static final String INVENTORY_MAIN = "molecular_assembler";
 
@@ -93,7 +89,6 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     private final AppEngInternalInventory patternInv = new AppEngInternalInventory(this, 1, 1);
     private final IItemHandler gridInvExt = new WrapperFilteredItemHandler(this.gridInv, new CraftingGridFilter());
     private final IItemHandler internalInv = new WrapperChainedItemHandler(this.gridInv, this.patternInv);
-    private final IConfigManager settings;
     private final UpgradeInventory upgrades;
     private boolean isPowered = false;
     private AEPartLocation pushDirection = AEPartLocation.INTERNAL;
@@ -111,8 +106,6 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         super(tileEntityTypeIn);
         final ITileDefinition assembler = Api.instance().definitions().blocks().molecularAssembler();
 
-        this.settings = new ConfigManager(this);
-        this.settings.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         this.getProxy().setIdlePowerUsage(0.0);
         this.upgrades = new DefinitionUpgradeInventory(assembler, this, this.getUpgradeSlots());
         this.craftingInv = new CraftingInventory(new ContainerNull(), 3, 3);
@@ -216,7 +209,6 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         }
 
         this.upgrades.writeToNBT(data, "upgrades");
-        this.settings.writeToNBT(data);
         return data;
     }
 
@@ -238,7 +230,6 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         }
 
         this.upgrades.readFromNBT(data, "upgrades");
-        this.settings.readFromNBT(data);
         this.recalculatePlan();
     }
 
@@ -285,7 +276,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
     @Override
     public IConfigManager getConfigManager() {
-        return this.settings;
+        return null;
     }
 
     @Override
@@ -299,11 +290,6 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         }
 
         return null;
-    }
-
-    @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
-
     }
 
     @Override

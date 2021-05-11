@@ -81,9 +81,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/annihilation_plane");
 
-    private static final ITag.INamedTag<Block> BLOCK_BLACKLIST = BlockTags.makeWrapperTag(TAG_BLACKLIST.toString());
+    private static final ITag.INamedTag<Block> BLOCK_BLACKLIST = BlockTags.createOptional(TAG_BLACKLIST);
 
-    private static final ITag.INamedTag<Item> ITEM_BLACKLIST = ItemTags.makeWrapperTag(TAG_BLACKLIST.toString());
+    private static final ITag.INamedTag<Item> ITEM_BLACKLIST = ItemTags.createOptional(TAG_BLACKLIST);
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane", "part/annihilation_plane_on");
 
@@ -227,7 +227,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * Stores an {@link ItemStack} inside the network.
      *
      * @param item {@link ItemStack} to store
-     *
      * @return the leftover items, which could not be stored inside the network
      */
     private IAEItemStack storeItemStack(final ItemStack item) {
@@ -255,7 +254,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      *
      * @param entityItem the entity to update or destroy
      * @param overflow   the leftover {@link IAEItemStack}
-     *
      * @return true, if the entity was changed otherwise false.
      */
     private boolean handleOverflow(final ItemEntity entityItem, final IAEItemStack overflow) {
@@ -426,11 +424,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     /**
      * Checks if the network can store the possible drops.
-     *
+     * <p>
      * It also sets isAccepting to false, if the item can not be stored.
      *
      * @param itemStacks an array of {@link ItemStack} to test
-     *
      * @return true, if the network can store at least a single item of all drops or no drops are reported
      */
     private boolean canStoreItemStacks(final List<ItemStack> itemStacks) {

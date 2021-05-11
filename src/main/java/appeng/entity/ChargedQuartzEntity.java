@@ -39,7 +39,6 @@ import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.util.Platform;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
 

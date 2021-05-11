@@ -33,7 +33,6 @@ import net.minecraft.util.text.StringTextComponent;
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickableTileEntity {
 

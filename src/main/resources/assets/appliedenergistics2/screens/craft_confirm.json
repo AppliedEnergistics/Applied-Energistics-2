@@ -1,0 +1,48 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json"],
+  "background": {
+    "texture": "guis/craftingreport.png",
+    "srcRect": [0, 0, 238, 206]
+  },
+  "text": {
+    "dialog_title": {
+      "position": {
+        "left": 8,
+        "top": 7
+      }
+    },
+    "cpu_status": {
+      "position": {
+        "left": 109,
+        "top": 165
+      },
+      "centerHorizontally": true
+    }
+  },
+  "widgets": {
+    "scrollbar": {
+      "left": 218,
+      "top": 19,
+      "height": 114
+    },
+    "selectCpu": {
+      "left": 19,
+      "bottom": 68,
+      "width": 180,
+      "height": 20
+    },
+    "start": {
+      "left": 162,
+      "bottom": 25,
+      "width": 50,
+      "height": 20
+    },
+    "cancel": {
+      "left": 6,
+      "bottom": 25,
+      "width": 50,
+      "height": 20
+    }
+  }
+}

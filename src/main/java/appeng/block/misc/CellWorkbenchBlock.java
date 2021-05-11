@@ -31,6 +31,7 @@ import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.tile.misc.CellWorkbenchTileEntity;
 import appeng.util.InteractionUtil;
@@ -51,7 +52,7 @@ public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity>
         final CellWorkbenchTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (!w.isRemote()) {
-                CellWorkbenchContainer.open(p, ContainerLocator.forTileEntity(tg));
+                ContainerOpener.openContainer(CellWorkbenchContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
             return ActionResultType.func_233537_a_(w.isRemote());
         }

@@ -25,87 +25,71 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
-import appeng.api.config.PowerUnits;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.client.gui.NumberEntryType;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.LevelEmitterContainer;
-import appeng.core.localization.GuiText;
 
 public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer> {
 
-    private NumberEntryWidget level;
-    private SettingToggleButton<LevelType> levelMode;
-    private SettingToggleButton<YesNo> craftingMode;
+    private final SettingToggleButton<LevelType> levelMode;
+    private final SettingToggleButton<YesNo> craftingMode;
+    private final SettingToggleButton<RedstoneMode> redstoneMode;
+    private final SettingToggleButton<FuzzyMode> fuzzyMode;
+    private final NumberEntryWidget level;
 
-    public LevelEmitterScreen(LevelEmitterContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-    }
+    public LevelEmitterScreen(LevelEmitterContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
 
-    @Override
-    public void init() {
-        super.init();
+        this.levelMode = new ServerSettingToggleButton<>(Settings.LEVEL_TYPE,
+                LevelType.ITEM_LEVEL);
+        this.redstoneMode = new ServerSettingToggleButton<>(
+                Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
+        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE,
+                FuzzyMode.IGNORE_ALL);
+        this.craftingMode = new ServerSettingToggleButton<>(
+                Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
+        this.addToLeftToolbar(this.levelMode);
+        this.addToLeftToolbar(this.redstoneMode);
+        this.addToLeftToolbar(this.craftingMode);
+        this.addToLeftToolbar(this.fuzzyMode);
 
-        this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_ITEM_COUNT);
+        this.level = new NumberEntryWidget(NumberEntryType.LEVEL_ITEM_COUNT);
         this.level.setTextFieldBounds(25, 44, 75);
-        this.level.addButtons(children::add, this::addButton);
         this.level.setValue(container.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
         this.level.setOnConfirm(this::closeScreen);
-
-        this.changeFocus(true);
-    }
-
-    private void saveReportingValue() {
-        this.level.getLongValue().ifPresent(container::setReportingValue);
+        widgets.add("level", this.level);
     }
 
     @Override
-    protected void addButtons() {
-        this.levelMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.LEVEL_TYPE,
-                LevelType.ITEM_LEVEL);
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
-                Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE,
-                FuzzyMode.IGNORE_ALL);
-        this.craftingMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48,
-                Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
-        this.addButton(this.levelMode);
-        this.addButton(this.redstoneMode);
-        this.addButton(this.craftingMode);
-    }
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
 
-    @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        final boolean notCraftingMode = this.bc.getInstalledUpgrades(Upgrades.CRAFTING) == 0;
+        this.fuzzyMode.set(container.getFuzzyMode());
+        this.fuzzyMode.setVisibility(container.hasUpgrade(Upgrades.FUZZY));
 
         // configure enabled status...
+        final boolean notCraftingMode = !container.hasUpgrade(Upgrades.CRAFTING);
         this.level.setActive(notCraftingMode);
-        this.levelMode.active = notCraftingMode;
+
         this.redstoneMode.active = notCraftingMode;
+        this.redstoneMode.set(container.getRedStoneMode());
 
-        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
+        LevelType currentLevelMode = this.container.getLevelMode();
+        this.levelMode.active = notCraftingMode;
+        this.levelMode.set(currentLevelMode);
 
-        if (this.craftingMode != null) {
-            this.craftingMode.set(this.cvb.getCraftingMode());
-        }
+        this.craftingMode.set(this.container.getCraftingMode());
+        this.craftingMode.setVisibility(!notCraftingMode);
 
-        if (this.levelMode != null) {
-            LevelType currentLevelMode = ((LevelEmitterContainer) this.cvb).getLevelMode();
-            this.levelMode.set(currentLevelMode);
-
-            if (notCraftingMode) {
-                if (currentLevelMode == LevelType.ENERGY_LEVEL) {
-                    this.font.drawString(matrixStack, PowerUnits.AE.textComponent().getString(), 110, 44,
-                            COLOR_DARK_GRAY);
-                }
-            }
-        }
+        setTextHidden("energy_unit", !notCraftingMode || currentLevelMode != LevelType.ENERGY_LEVEL);
     }
 
     @Override
@@ -115,20 +99,8 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         this.level.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
-    @Override
-    protected void handleButtonVisibility() {
-        this.craftingMode.setVisibility(this.bc.getInstalledUpgrades(Upgrades.CRAFTING) > 0);
-        this.fuzzyMode.setVisibility(this.bc.getInstalledUpgrades(Upgrades.FUZZY) > 0);
-    }
-
-    @Override
-    protected String getBackground() {
-        return "guis/lvlemitter.png";
-    }
-
-    @Override
-    protected GuiText getName() {
-        return GuiText.LevelEmitter;
+    private void saveReportingValue() {
+        this.level.getLongValue().ifPresent(container::setReportingValue);
     }
 
 }

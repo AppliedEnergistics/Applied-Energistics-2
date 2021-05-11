@@ -24,8 +24,8 @@ import net.minecraftforge.items.IItemHandler;
 
 public class DisabledSlot extends AppEngSlot {
 
-    public DisabledSlot(final IItemHandler par1iInventory, final int invSlot, final int x, final int y) {
-        super(par1iInventory, invSlot, x, y);
+    public DisabledSlot(final IItemHandler inventory, final int invSlot) {
+        super(inventory, invSlot);
     }
 
     @Override

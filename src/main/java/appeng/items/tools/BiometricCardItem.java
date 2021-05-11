@@ -166,10 +166,9 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
             for (final SecurityPermissions sp : perms) {
                 if (msg == null) {
-                    msg = new TranslationTextComponent(sp.getTranslatedName());
+                    msg = sp.getDisplayName();
                 } else {
-                    msg = msg.deepCopy().appendString(", ")
-                            .append(new TranslationTextComponent(sp.getTranslatedName()));
+                    msg = msg.deepCopy().appendString(", ").appendSibling(sp.getDisplayName());
                 }
             }
             lines.add(msg);

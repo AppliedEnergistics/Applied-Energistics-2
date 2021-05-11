@@ -18,10 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -29,27 +27,23 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
-import appeng.container.slot.RestrictedInputSlot;
 import appeng.parts.automation.FormationPlanePart;
 
+/**
+ * This is used by both annihilation and formation planes.
+ *
+ * @see appeng.client.gui.implementations.FormationPlaneScreen
+ */
 public class FormationPlaneContainer extends UpgradeableContainer {
 
-    public static ContainerType<FormationPlaneContainer> TYPE;
-
-    private static final ContainerHelper<FormationPlaneContainer, FormationPlanePart> helper = new ContainerHelper<>(
-            FormationPlaneContainer::new, FormationPlanePart.class, SecurityPermissions.BUILD);
-
-    public static FormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<FormationPlaneContainer> TYPE = ContainerTypeBuilder
+            .create(FormationPlaneContainer::new, FormationPlanePart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("formationplane");
 
     @GuiSync(7)
     public YesNo placeMode;
@@ -59,37 +53,20 @@ public class FormationPlaneContainer extends UpgradeableContainer {
     }
 
     @Override
-    protected int getHeight() {
-        return 251;
-    }
-
-    @Override
     protected void setupConfig() {
-        final int xo = 8;
-        final int yo = 23 + 6;
-
         final IItemHandler config = this.getUpgradeable().getInventoryByName("config");
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
+                int invIdx = y * 9 + x;
                 if (y < 2) {
-                    this.addSlot(new FakeTypeOnlySlot(config, y * 9 + x, xo + x * 18, yo + y * 18));
+                    this.addSlot(new FakeTypeOnlySlot(config, invIdx), SlotSemantic.CONFIG);
                 } else {
-                    this.addSlot(new OptionalTypeOnlyFakeSlot(config, this, y * 9 + x, xo, yo, x, y, y - 2));
+                    this.addSlot(new OptionalTypeOnlyFakeSlot(config, this, invIdx, y - 2), SlotSemantic.CONFIG);
                 }
             }
         }
 
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 2, 187,
-                8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 3, 187,
-                8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 4, 187,
-                8 + 18 * 4, this.getPlayerInventory())).setNotDraggable());
+        this.setupUpgrades();
     }
 
     @Override

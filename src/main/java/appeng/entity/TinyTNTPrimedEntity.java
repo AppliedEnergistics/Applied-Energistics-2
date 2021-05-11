@@ -49,7 +49,6 @@ import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.MockExplosionPacket;
-import appeng.util.Platform;
 
 public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAdditionalSpawnData {
 
@@ -77,7 +76,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
     @Nullable
     @Override
-    public LivingEntity getTntPlacedBy() {
+    public LivingEntity getIgniter() {
         return this.placedBy;
     }
 

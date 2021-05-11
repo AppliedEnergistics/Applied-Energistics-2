@@ -28,16 +28,15 @@ import appeng.api.config.FuzzyMode;
 
 /**
  * A helper class for comparing {@link Item}, {@link ItemStack} or NBT
- *
  */
 public class ItemComparisonHelper {
 
     /**
      * Compare the two {@link ItemStack}s based on the same {@link Item} and damage value.
-     *
+     * <p>
      * In case of the item being damageable, only the {@link Item} will be considered. If not it will also compare both
      * damage values.
-     *
+     * <p>
      * Ignores NBT.
      *
      * @return true, if both are equal.
@@ -48,7 +47,7 @@ public class ItemComparisonHelper {
 
     /**
      * Compares two {@link ItemStack} and their NBT tag for equality.
-     *
+     * <p>
      * Use this when a precise check is required and the same item is required. Not just something with different NBT
      * tags.
      *

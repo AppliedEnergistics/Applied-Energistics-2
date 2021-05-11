@@ -26,6 +26,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperInvItemHandler;
@@ -35,28 +37,24 @@ public class AppEngCraftingSlot extends AppEngSlot {
     /**
      * The craft matrix inventory linked to this result slot.
      */
-    private final IItemHandler craftMatrix;
+    private final IItemHandler craftingGrid;
 
     /**
      * The player that is using the GUI where this slot resides.
      */
-    private final PlayerEntity thePlayer;
+    private final PlayerEntity player;
 
     /**
      * The number of items that have been crafted so far. Gets passed to ItemStack.onCrafting before being reset.
      */
     private int amountCrafted;
 
-    public AppEngCraftingSlot(final PlayerEntity par1PlayerEntity, final IItemHandler par2IInventory,
-            final IItemHandler inv, final int invSlot, final int x, final int y) {
-        super(inv, invSlot, x, y);
-        this.thePlayer = par1PlayerEntity;
-        this.craftMatrix = par2IInventory;
+    public AppEngCraftingSlot(PlayerEntity player, IItemHandler craftingGrid) {
+        super(new ItemStackHandler(1), 0);
+        this.player = player;
+        this.craftingGrid = craftingGrid;
     }
 
-    /**
-     * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
-     */
     @Override
     public boolean isItemValid(final ItemStack stack) {
         return false;
@@ -77,45 +75,52 @@ public class AppEngCraftingSlot extends AppEngSlot {
      */
     @Override
     protected void onCrafting(final ItemStack par1ItemStack) {
-        par1ItemStack.onCrafting(this.thePlayer.world, this.thePlayer, this.amountCrafted);
+        par1ItemStack.onCrafting(this.player.world, this.player, this.amountCrafted);
         this.amountCrafted = 0;
     }
 
     @Override
     public ItemStack onTake(final PlayerEntity playerIn, final ItemStack stack) {
-        BasicEventHooks.firePlayerCraftingEvent(playerIn, stack, new WrapperInvItemHandler(this.craftMatrix));
+        BasicEventHooks.firePlayerCraftingEvent(playerIn, stack, new WrapperInvItemHandler(this.craftingGrid));
         this.onCrafting(stack);
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
         final CraftingInventory ic = new CraftingInventory(this.getContainer(), 3, 3);
 
-        for (int x = 0; x < this.craftMatrix.getSlots(); x++) {
-            ic.setInventorySlotContents(x, this.craftMatrix.getStackInSlot(x));
+        for (int x = 0; x < this.craftingGrid.getSlots(); x++) {
+            ic.setInventorySlotContents(x, this.craftingGrid.getStackInSlot(x));
         }
 
         final NonNullList<ItemStack> aitemstack = this.getRemainingItems(ic, playerIn.world);
 
-        ItemHandlerUtil.copy(ic, this.craftMatrix, false);
+        ItemHandlerUtil.copy(ic, this.craftingGrid, false);
 
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
 
         for (int i = 0; i < aitemstack.size(); ++i) {
-            final ItemStack itemstack1 = this.craftMatrix.getStackInSlot(i);
+            final ItemStack itemstack1 = this.craftingGrid.getStackInSlot(i);
             final ItemStack itemstack2 = aitemstack.get(i);
 
             if (!itemstack1.isEmpty()) {
-                this.craftMatrix.extractItem(i, 1, false);
+                this.craftingGrid.extractItem(i, 1, false);
             }
 
             if (!itemstack2.isEmpty()) {
-                if (this.craftMatrix.getStackInSlot(i).isEmpty()) {
-                    ItemHandlerUtil.setStackInSlot(this.craftMatrix, i, itemstack2);
-                } else if (!this.thePlayer.inventory.addItemStackToInventory(itemstack2)) {
-                    this.thePlayer.dropItem(itemstack2, false);
+                if (this.craftingGrid.getStackInSlot(i).isEmpty()) {
+                    ItemHandlerUtil.setStackInSlot(this.craftingGrid, i, itemstack2);
+                } else if (!this.player.inventory.addItemStackToInventory(itemstack2)) {
+                    this.player.dropItem(itemstack2, false);
                 }
             }
         }
 
         return stack;
+    }
+
+    /**
+     * Overrides what is being shown as the crafting output, but doesn't notify parent container.
+     */
+    public void setDisplayedCraftingOutput(ItemStack stack) {
+        ((IItemHandlerModifiable) getItemHandler()).setStackInSlot(0, stack);
     }
 
     /**

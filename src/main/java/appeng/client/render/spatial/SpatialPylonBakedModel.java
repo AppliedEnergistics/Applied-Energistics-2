@@ -79,9 +79,7 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
                     builder.setUvRotation(Direction.UP, 1);
                     builder.setUvRotation(Direction.DOWN, 1);
                 }
-            }
-
-            else if (displayAxis == SpatialPylonTileEntity.DISPLAY_Y) {
+            } else if (displayAxis == SpatialPylonTileEntity.DISPLAY_Y) {
                 ori = Direction.UP;
                 if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
                     builder.setUvRotation(Direction.NORTH, 3);
@@ -89,9 +87,7 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
                     builder.setUvRotation(Direction.EAST, 3);
                     builder.setUvRotation(Direction.WEST, 3);
                 }
-            }
-
-            else if (displayAxis == SpatialPylonTileEntity.DISPLAY_Z) {
+            } else if (displayAxis == SpatialPylonTileEntity.DISPLAY_Z) {
                 ori = Direction.NORTH;
                 if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
                     builder.setUvRotation(Direction.EAST, 2);
