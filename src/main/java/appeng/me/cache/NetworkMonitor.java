@@ -44,6 +44,8 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.storage.ItemWatcher;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 
 public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
@@ -58,7 +60,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	@Nonnull
 	private final IItemList<T> cachedList;
 	@Nonnull
-	private final Map<IMEMonitorHandlerReceiver<T>, Object> listeners;
+	private final Object2ObjectMap<IMEMonitorHandlerReceiver<T>, Object> listeners;
 
 	private boolean sendEvent = false;
 	private boolean hasChanged = false;
@@ -70,7 +72,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		this.myGridCache = cache;
 		this.myChannel = chan;
 		this.cachedList = chan.createList();
-		this.listeners = new HashMap<>();
+		this.listeners = new Object2ObjectOpenHashMap<>();
 	}
 
 	@Override

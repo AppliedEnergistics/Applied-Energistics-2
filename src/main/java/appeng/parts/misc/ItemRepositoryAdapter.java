@@ -7,6 +7,8 @@ import appeng.api.storage.IStorageChannel;
 
 import appeng.core.AELog;
 import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -33,7 +35,7 @@ import javax.annotation.Nonnull;
 
 class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor
 {
-    private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
+    private final Object2ObjectMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new Object2ObjectOpenHashMap<>();
     private IActionSource mySource;
     private final IItemRepository itemRepository;
     private final IGridProxyable proxyable;

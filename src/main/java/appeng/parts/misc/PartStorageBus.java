@@ -258,19 +258,19 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource source )
 	{
-		try
+		if( source == this.mySrc || source.machine().map( machine -> machine == this ).orElse( false ) )
 		{
-			if( this.getProxy().isActive() )
+			try
 			{
-				this.getProxy()
-						.getStorage()
-						.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), change,
-								this.mySrc );
+				if( this.getProxy().isActive() )
+				{
+					this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), change, this.mySrc );
+				}
 			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :(
+			catch( final GridAccessException e )
+			{
+				// :(
+			}
 		}
 	}
 

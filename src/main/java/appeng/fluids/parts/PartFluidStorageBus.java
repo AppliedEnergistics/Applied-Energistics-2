@@ -264,18 +264,19 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	@Override
 	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change, final IActionSource source )
 	{
-		try
+		if( source == this.source || source.machine().map( machine -> machine == this ).orElse( false ) )
 		{
-			if( this.getProxy().isActive() )
+			try
 			{
-				this.getProxy()
-						.getStorage()
-						.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), change, this.source );
+				if( this.getProxy().isActive() )
+				{
+					this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), change, this.source );
+				}
 			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :(
+			catch( final GridAccessException e )
+			{
+				// :(
+			}
 		}
 	}
 

@@ -23,6 +23,8 @@ import java.util.*;
 
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -49,7 +51,7 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor
 {
-	private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
+	private final Object2ObjectMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new Object2ObjectOpenHashMap<>();
 	private IActionSource mySource;
 	private final IItemHandler itemHandler;
 	private final IGridProxyable proxyable;
