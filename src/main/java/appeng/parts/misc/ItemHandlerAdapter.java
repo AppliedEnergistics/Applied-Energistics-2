@@ -73,7 +73,6 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	@Override
 	public IAEItemStack injectItems( IAEItemStack iox, Actionable type, IActionSource src )
 	{
-		if( this.cache.cachedAeStacks.length == 0 ) this.cache.update();
 
 		ItemStack orgInput = iox.createItemStack();
 		ItemStack remaining = orgInput;
@@ -92,7 +91,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 				injectedList.add( Pair.of( i, countPre ) );
 				break;
 			}
-			else if( countPos > countPre )
+			else if( countPos < countPre )
 			{
 				injectedList.add( Pair.of( i, countPos - countPre ) );
 			}
@@ -107,20 +106,27 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 		if( type == Actionable.MODULATE )
 		{
-			for( Pair<Integer, Integer> pair : injectedList )
+			if( this.cache.cachedAeStacks.length == 0 )
 			{
-				if (pair.getKey() >= this.cache.cachedAeStacks.length)
+				this.cache.update();
+			}
+			else
+			{
+				for( Pair<Integer, Integer> pair : injectedList )
 				{
-					this.cache.update();
-					break;
-				}
-				if( this.cache.cachedAeStacks[pair.getKey()] == null )
-				{
-					this.cache.cachedAeStacks[pair.getKey()] = iox.copy().setStackSize( pair.getValue() );
-				}
-				else
-				{
-					this.cache.cachedAeStacks[pair.getKey()].incStackSize( pair.getValue() );
+					if( pair.getKey() >= this.cache.cachedAeStacks.length )
+					{
+						this.cache.update();
+						break;
+					}
+					if( this.cache.cachedAeStacks[pair.getKey()] == null )
+					{
+						this.cache.cachedAeStacks[pair.getKey()] = iox.copy().setStackSize( pair.getValue() );
+					}
+					else
+					{
+						this.cache.cachedAeStacks[pair.getKey()].incStackSize( pair.getValue() );
+					}
 				}
 			}
 
@@ -206,20 +212,21 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		{
 			if( mode == Actionable.MODULATE )
 			{
-
-				for ( Pair<Integer, Integer> pair : extractedList )
+				if( this.cache.cachedAeStacks.length == 0 )
 				{
-					if (pair.getKey() >= this.cache.cachedAeStacks.length)
+					this.cache.update();
+				}
+				else
+				{
+					for( Pair<Integer, Integer> pair : extractedList )
 					{
-						this.cache.update();
-						break;
-					}
-					if( this.cache.cachedAeStacks[pair.getKey()] != null )
-					{
-						this.cache.cachedAeStacks[pair.getKey()].decStackSize( pair.getValue() );
-						if( this.cache.cachedAeStacks[pair.getKey()].getStackSize() == 0 )
+						if( this.cache.cachedAeStacks[pair.getKey()] != null )
 						{
-							this.cache.cachedAeStacks[pair.getKey()] = null;
+							this.cache.cachedAeStacks[pair.getKey()].decStackSize( pair.getValue() );
+							if( this.cache.cachedAeStacks[pair.getKey()].getStackSize() == 0 )
+							{
+								this.cache.cachedAeStacks[pair.getKey()] = null;
+							}
 						}
 					}
 				}
