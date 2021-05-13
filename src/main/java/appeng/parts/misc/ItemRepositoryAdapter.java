@@ -68,32 +68,14 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
         if( type == Actionable.MODULATE )
         {
-            if( this.cache.cachedAeStacks.length == 0 ) this.cache.update();
-            boolean found = false;
-            for( IAEItemStack iaeItemStack : this.cache.cachedAeStacks )
+            try
             {
-                if( iaeItemStack == null )
-                {
-                    continue;
-                }
-                if( iaeItemStack.equals( iox ) )
-                {
-                    found = true;
-                    iaeItemStack.incStackSize( iox.getStackSize() );
-                }
+                this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
             }
-            if( !found )
+            catch( GridAccessException ex )
             {
-                this.cache.cachedAeStacks = Arrays.copyOf( this.cache.cachedAeStacks, this.cache.cachedAeStacks.length + 1 );
-                IAEItemStack inserted = iox.copy();
-                if (remaining.isEmpty())
-                {
-                    this.cache.cachedAeStacks[this.cache.cachedAeStacks.length - 1] = inserted;
-                } else {
-                    this.cache.cachedAeStacks[this.cache.cachedAeStacks.length - 1] = inserted.setStackSize( iox.getStackSize() - remaining.getCount() );
-                }
+                // meh
             }
-
         }
 
         return AEItemStack.fromItemStack( remaining );
@@ -108,8 +90,7 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
         final boolean simulate = ( mode == Actionable.SIMULATE );
 
-        ItemStack extracted;
-        extracted = this.itemRepository.extractItem( requestedItemStack, remainingSize, simulate );
+        ItemStack extracted = this.itemRepository.extractItem( requestedItemStack, remainingSize, simulate );
 
         if( extracted.getCount() > remainingSize )
         {
@@ -122,33 +103,19 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
         if( !extracted.isEmpty() )
         {
-            if (this.cache.cachedAeStacks.length == 0) this.cache.update();
-            IAEItemStack iaeExtracted = AEItemStack.fromItemStack( extracted );
-
             if( mode == Actionable.MODULATE )
             {
-                for ( int i = 0; i < this.cache.cachedAeStacks.length; i++ )
+                try
                 {
-                    IAEItemStack iaeItemStack = this.cache.cachedAeStacks[i];
-                    if( iaeExtracted.isSameType( iaeItemStack ) )
-                    {
-                        if( iaeExtracted.getStackSize() >= iaeItemStack.getStackSize() )
-                        {
-                            iaeExtracted.decStackSize( iaeItemStack.getStackSize() );
-                            this.cache.cachedAeStacks[i] = null;
-                        }
-                        else
-                        {
-                            iaeItemStack.decStackSize( iaeExtracted.getStackSize() );
-                            break;
-                        }
-                    }
+                    this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
+                }
+                catch( GridAccessException ex )
+                {
+                    // meh
                 }
             }
-
             return AEItemStack.fromItemStack( extracted );
         }
-
         return null;
     }
 

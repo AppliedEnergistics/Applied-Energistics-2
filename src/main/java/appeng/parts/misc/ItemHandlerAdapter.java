@@ -93,7 +93,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			}
 			else if( countPos < countPre )
 			{
-				injectedList.add( Pair.of( i, countPos - countPre ) );
+				injectedList.add( Pair.of( i, countPre - countPos ) );
 			}
 		}
 
