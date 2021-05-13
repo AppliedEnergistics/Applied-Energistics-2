@@ -406,7 +406,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			if( oldAeIS != null )
 			{
 				oldAeIS.setStackSize( -oldAeIS.getStackSize() );
-				changes.add( oldAeIS.copy() );
+				changes.add( oldAeIS );
 			}
 
 			// Notify the network about the new stack. Note that this is null if newIS was null
