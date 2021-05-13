@@ -19,6 +19,7 @@
 package appeng.parts.automation;
 
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import appeng.me.Grid;
@@ -26,6 +27,7 @@ import appeng.me.GridNode;
 import appeng.util.item.AEItemStack;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
@@ -126,6 +128,8 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	static Object2LongMap<Grid> gridItemCount = new Object2LongOpenHashMap<>();
 	static Object2ObjectOpenHashMap<Grid, Object2LongMap<AEItemStack>> fuzzyAEItemStackCount = new Object2ObjectOpenHashMap<>();
 	static Object2ObjectOpenHashMap<Grid, Object2LongMap<AEItemStack>> preciseAEItemStackCount = new Object2ObjectOpenHashMap<>();
+	static Object2ObjectMap<Grid,Iterable<IAEItemStack>> previousChange = new Object2ObjectOpenHashMap<>();
+	static Object2ObjectMap<Grid,IItemList<IAEItemStack>> cachedStorageList = new Object2ObjectOpenHashMap<>();
 
 	@Reflected
 	public PartLevelEmitter( final ItemStack is )
@@ -324,54 +328,90 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 	private void updateReportingValue( final IMEMonitor<IAEItemStack> monitor )
 	{
-		updateReportingValue( monitor,null );
+		updateReportingValue( monitor, new ArrayList<>() );
 	}
 
 	private void updateReportingValue( final IMEMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change )
 	{
 		final IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
 
-		GridNode node = (GridNode) (this.getGridNode());
+		GridNode node = (GridNode) ( this.getGridNode() );
 
 		if( node != null )
 		{
-
 			final Grid g = node.getInternalGrid();
+
+			IItemList<IAEItemStack> l;
+			boolean alreadyEvaluated = false;
+
+			if( previousChange.containsKey( g ) )
+			{
+				if( change.iterator().hasNext() && previousChange.get( g ).iterator().hasNext() )
+				{
+					IAEItemStack a = change.iterator().next();
+					IAEItemStack b = previousChange.get( g ).iterator().next();
+					if( a == b )
+					{
+						alreadyEvaluated = true;
+					}
+				}
+				else {
+					alreadyEvaluated = true;
+				}
+			}
+
+			if( alreadyEvaluated )
+			{
+				l = cachedStorageList.get( g );
+			}
+			else
+			{
+				l = monitor.getStorageList();
+				cachedStorageList.put( g, l );
+				if ( change.iterator().hasNext() )
+				{
+					previousChange.put( g, change );
+				}
+				else
+				{
+					previousChange.put( g, new ArrayList<>() );
+				}
+			}
 
 			if( myStack == null )
 			{
-				if( change != null )
+				if( gridItemCount.containsKey( g ) )
 				{
-					if( gridItemCount.containsKey( g ) )
-					{
-						change.forEach( iaeItemStack -> lastReportedValue += iaeItemStack.getStackSize() );
-					}
+					change.forEach( iaeItemStack -> lastReportedValue += iaeItemStack.getStackSize() );
 				}
+
 				gridItemCount.computeIfAbsent( g, ( aLong ) -> {
 					this.lastReportedValue = 0;
-					monitor.getStorageList().forEach( iaeItemStack -> lastReportedValue += iaeItemStack.getStackSize() );
+					l.forEach( iaeItemStack -> lastReportedValue += iaeItemStack.getStackSize() );
 					return ( lastReportedValue );
 				} );
 				this.lastReportedValue = gridItemCount.get( g );
+
 			}
 
 			else if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 			{
 				final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
-				if( change != null )
+
+				if( fuzzyAEItemStackCount.containsKey( g ) )
 				{
-					if( fuzzyAEItemStackCount.containsKey( g ) )
-					{
-						change.forEach( iaeItemStack -> {
-							if( iaeItemStack.sameOre( myStack ) ) lastReportedValue += iaeItemStack.getStackSize();
-						} );
-					}
+					change.forEach( iaeItemStack -> {
+						if( iaeItemStack.sameOre( myStack ) )
+						{
+							lastReportedValue += iaeItemStack.getStackSize();
+						}
+					} );
 				}
 
 				fuzzyAEItemStackCount.computeIfAbsent( g, ( grid -> new Object2LongOpenHashMap<>() ) );
 				fuzzyAEItemStackCount.get( g ).computeIfAbsent( (AEItemStack) myStack, ( aLong -> {
 					this.lastReportedValue = 0;
-					monitor.getStorageList().findFuzzy( myStack, fzMode ).forEach( iaeItemStack -> lastReportedValue += iaeItemStack.getStackSize() );
+					l.findFuzzy( myStack, fzMode ).forEach( iaeItemStack -> lastReportedValue += iaeItemStack.getStackSize() );
 					return ( lastReportedValue );
 				} ) );
 
@@ -384,19 +424,17 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			}
 			else
 			{
-				if( change != null )
+				if( preciseAEItemStackCount.containsKey( g ) )
 				{
-					if( preciseAEItemStackCount.containsKey( g ) )
-					{
-						change.forEach( iaeItemStack -> {
-							if( iaeItemStack.isSameType( myStack ) ) lastReportedValue += iaeItemStack.getStackSize();
-						} );
-					}
+					change.forEach( iaeItemStack -> {
+						if( iaeItemStack.isSameType( myStack ) ) lastReportedValue += iaeItemStack.getStackSize();
+					} );
 				}
+
 				preciseAEItemStackCount.computeIfAbsent( g, ( grid -> new Object2LongOpenHashMap<>() ) );
 				preciseAEItemStackCount.get( g ).computeIfAbsent( (AEItemStack) myStack, ( aLong -> {
 					this.lastReportedValue = 0;
-					IAEItemStack precise = monitor.getStorageList().findPrecise( myStack );
+					IAEItemStack precise = l.findPrecise( myStack );
 					if( precise != null ) lastReportedValue = precise.getStackSize();
 					return ( lastReportedValue );
 				} ) );

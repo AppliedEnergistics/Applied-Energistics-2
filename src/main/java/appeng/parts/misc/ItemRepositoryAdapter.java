@@ -284,7 +284,7 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
             if( oldAeIS != null )
             {
                 oldAeIS.setStackSize( -oldAeIS.getStackSize() );
-                changes.add( oldAeIS );
+                changes.add( oldAeIS.copy() );
             }
 
             // Notify the network about the new stack. Note that this is null if newIS was null
