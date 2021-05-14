@@ -310,7 +310,7 @@ public class PartPlacement {
 
         final ItemStack held = player.getHeldItem(hand);
         if (place(held, hit.getPos(), hit.getFace(), player, hand, player.world, PlaceType.INTERACT_FIRST_PASS,
-                0) == ActionResultType.SUCCESS) {
+                0) == ActionResultType.func_233537_a_(world.isRemote)) {
             return ActionResultType.SUCCESS;
         }
 

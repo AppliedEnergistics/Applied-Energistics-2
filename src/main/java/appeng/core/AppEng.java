@@ -67,6 +67,11 @@ public interface AppEng {
     CableRenderMode getCableRenderMode();
 
     /**
+     * Get the current world on the client. Throws an exception if the world is currently null, or on the server.
+     */
+    World getClientWorld();
+
+    /**
      * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that
      * player's cable render mode from calls to {@link #getCableRenderMode()}, until another player or null is set.
      *

@@ -24,9 +24,13 @@ public class TileEntityRendererComponent<T extends TileEntity> implements IClien
         this.renderer = renderer;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void setup() {
-        BlockEntityRendererRegistry.INSTANCE.register(type, renderer);
+        // We have to add this cast because the registry expects ? super T and we pass it T, apparently Java doesn't
+        // like it.
+        BlockEntityRendererRegistry.INSTANCE.register(type,
+                (Function<TileEntityRendererDispatcher, TileEntityRenderer<? super T>>) (Function) renderer);
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -300,6 +301,11 @@ public final class AppEngClient extends AppEngBase {
         KeyBinding binding = this.bindings.get(key);
 
         return !binding.isInvalid() && binding.matchesKey(input.getKeyCode(), -1);
+    }
+
+    @Override
+    public World getClientWorld() {
+        return Objects.requireNonNull(Minecraft.getInstance().world);
     }
 
     protected void registerParticleRenderers() {

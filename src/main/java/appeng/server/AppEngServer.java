@@ -83,4 +83,8 @@ public final class AppEngServer extends AppEngBase {
         return server != null && server.isOnExecutionThread();
     }
 
+    @Override
+    public World getClientWorld() {
+        throw new UnsupportedOperationException("Cannot call getClientWorld() on the server.");
+    }
 }

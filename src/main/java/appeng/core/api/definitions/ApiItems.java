@@ -19,6 +19,7 @@
 package appeng.core.api.definitions;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

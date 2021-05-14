@@ -205,7 +205,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
             return out;
         }
 
-        final World w = Minecraft.getInstance().world;
+        final World w = AppEng.instance().getClientWorld();
         if (w == null) {
             return ItemStack.EMPTY;
         }
