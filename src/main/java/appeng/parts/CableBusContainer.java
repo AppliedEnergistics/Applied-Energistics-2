@@ -877,12 +877,27 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         this.getFacadeContainer().readFromNBT(data);
     }
 
-    public List<ItemStack> getDrops(final List<ItemStack> drops) {
+    /**
+     * Append the contents of the parts to the drop list, e.g. crafting patterns but not the parts or facades
+     * themselves.
+     */
+    public void appendPartContentDrops(final List<ItemStack> drops) {
+        for (final AEPartLocation s : AEPartLocation.values()) {
+            final IPart part = this.getPart(s);
+            if (part != null) {
+                part.getDrops(drops, false);
+            }
+        }
+    }
+
+    /**
+     * Append the parts and facades to the drop list, but not their contents.
+     */
+    public void appendPartStacks(final List<ItemStack> drops) {
         for (final AEPartLocation s : AEPartLocation.values()) {
             final IPart part = this.getPart(s);
             if (part != null) {
                 drops.add(part.getItemStack(PartItemStack.BREAK));
-                part.getDrops(drops, false);
             }
 
             if (s != AEPartLocation.INTERNAL) {
@@ -892,19 +907,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 }
             }
         }
-
-        return drops;
-    }
-
-    public List<ItemStack> getNoDrops(final List<ItemStack> drops) {
-        for (final AEPartLocation s : AEPartLocation.values()) {
-            final IPart part = this.getPart(s);
-            if (part != null) {
-                part.getDrops(drops, false);
-            }
-        }
-
-        return drops;
     }
 
     @Override

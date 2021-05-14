@@ -184,14 +184,14 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity>
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
         LootContext lootContext = builder.withParameter(LootParameters.BLOCK_STATE, state)
                 .build(LootParameterSets.BLOCK);
-        TileEntity be = lootContext.get(LootParameters.BLOCK_ENTITY);
-        if (be instanceof CableBusTileEntity) {
-            CableBusTileEntity bus = (CableBusTileEntity) be;
+        TileEntity te = lootContext.get(LootParameters.BLOCK_ENTITY);
+        if (te instanceof CableBusTileEntity) {
+            CableBusTileEntity bus = (CableBusTileEntity) te;
             List<ItemStack> drops = new ArrayList<>();
-            bus.getCableBus().getDrops(drops);
+            bus.getCableBus().appendPartStacks(drops);
             return drops;
         } else {
-            AELog.debug("The block entity was either null or of the wrong type! Skipped cable bus drops!");
+            AELog.warn("The tile entity was either null or of the wrong type! Skipped cable bus drops!");
             return Collections.emptyList();
         }
     }
