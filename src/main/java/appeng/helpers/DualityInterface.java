@@ -1093,13 +1093,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 			if( ad != null )
 			{
-				boolean isDrawer = te.getBlockType().getRegistryName().getResourceDomain().equals( "storagedrawers" );
 				if( this.isBlocking() )
 				{
 					if( te.getBlockType().getRegistryName().getResourceDomain().equals( "gregtech" ) )
 					{
 						GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
-						if( invIsBlockedGTCE( GTad ) )
+						if( GTad != null && !invIsBlockedGTCE( GTad ) )
 						{
 							visitedFaces.remove( s );
 							continue;
@@ -1112,7 +1111,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					}
 				}
 
-				if( this.acceptsItems( ad, patternDetails, isDrawer ) )
+				if( this.acceptsItems( ad, table ) )
 				{
 					visitedFaces.remove( s );
 					for( int x = 0; x < table.getSizeInventory(); x++ )
@@ -1160,7 +1159,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					if( te.getBlockType().getRegistryName().getResourceDomain().equals( "gregtech" ) )
 					{
 						GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
-						if( !invIsBlockedGTCE( GTad ) )
+						if( GTad != null && !invIsBlockedGTCE( GTad ) )
 						{
 							allAreBusy = false;
 							break;
@@ -1188,75 +1187,23 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.cm.getSetting( Settings.BLOCK ) == YesNo.YES;
 	}
 
-	private boolean acceptsItems( final InventoryAdaptor ad, final ICraftingPatternDetails patternDetails, boolean isDrawer )
+	private boolean acceptsItems( final InventoryAdaptor ad, final InventoryCrafting table )
 	{
-		List<ItemStack> patternedStacks = Arrays.stream( patternDetails.getCondensedInputs() ).map( IAEItemStack::createItemStack ).collect( Collectors.toList() );
-		List<ItemSlot> copiedItemSlots = new ArrayList<>();
-
-		if( patternedStacks.size() == 1 )
+		for( int x = 0; x < table.getSizeInventory(); x++ )
 		{
-			return ad.simulateAdd( patternedStacks.get( 0 ) ).isEmpty();
-		}
-		else
-		{
-			for ( ItemSlot itemSlot : ad )
+			final ItemStack is = table.getStackInSlot( x );
+			if( is.isEmpty() )
 			{
-				//skip storage drawers slot 0 to avoid voiding items due to broken itemhandler implementation
-				if( isDrawer && itemSlot.getSlot() == 0 ){
-					continue;
-				}
-				//some inventory may expose their special slots ( for upgrades, etc )
-				//if its empty AND we cant fit any of the items in the recipes, skip it.
-				ItemStack stackInSlot = itemSlot.getItemStack();
-				for ( IAEItemStack aeItemStack : patternDetails.getCondensedInputs() )
-				{
-					if( stackInSlot.isEmpty() )
-					{
-						if( itemSlot.simulateInsertItem( aeItemStack.getDefinition() ).isEmpty() )
-						{
-							copiedItemSlots.add( itemSlot.copy() );
-							break;
-						}
-					}
-					// copy partially filled slots for merging logic
-					else if( stackInSlot.getCount() < Math.min( itemSlot.getSlotLimit(), stackInSlot.getMaxStackSize() ) )
-					{
-						if( aeItemStack.isSameType( stackInSlot ) )
-						{
-							copiedItemSlots.add( itemSlot.copy() );
-							break;
-						}
-					}
-				}
+				continue;
 			}
 
-			// start merging in order of slots, left to right.
-			for ( ItemSlot copiedItemSlot : copiedItemSlots )
+			if( !ad.simulateAdd( is.copy() ).isEmpty() )
 			{
-				Iterator<ItemStack> patStackIterator = patternedStacks.iterator();
-				while ( patStackIterator.hasNext() )
-				{
-					ItemStack patStack = patStackIterator.next();
-					ItemStack remainder = copiedItemSlot.simulateInsertItem( patStack );
-
-					if( !remainder.isEmpty() )
-					{
-						patStack.setCount( patStack.getCount() - ( patStack.getCount() - remainder.getCount() ) );
-					}
-					else //entire stack got injected
-					{
-						patStackIterator.remove();
-						break;
-					}
-				}
-				// if we merged EVERYTHING successfully , return true.
-				if( patternedStacks.size() == 0 )
-				{
-					return true;
-				}
+				return false;
 			}
-			return false;
 		}
+
+		return true;
 	}
 
 	@Override

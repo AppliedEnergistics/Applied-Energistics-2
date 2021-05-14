@@ -20,10 +20,13 @@ package appeng.util;
 
 
 import appeng.util.inv.*;
+import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -37,12 +40,23 @@ import appeng.api.config.FuzzyMode;
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
+	@CapabilityInject( IItemRepository.class)
+	public static Capability<IItemRepository> ITEM_REPOSITORY_CAPABILITY = null;
+
 	public static InventoryAdaptor getAdaptor( final TileEntity te, final EnumFacing d )
 	{
 		if( te != null )
 		{
-			if( te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d ) )
+			if( ITEM_REPOSITORY_CAPABILITY != null && te.hasCapability( ITEM_REPOSITORY_CAPABILITY, d ) )
 			{
+				IItemRepository itemRepository = te.getCapability( ITEM_REPOSITORY_CAPABILITY, d );
+				if (itemRepository != null){
+					return new AdaptorItemRepository( itemRepository );
+				}
+			}
+			else if( te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d ) )
+			{
+
 				// Attempt getting an IItemHandler for the given side via caps
 				IItemHandler itemHandler = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d );
 				if( itemHandler != null )
