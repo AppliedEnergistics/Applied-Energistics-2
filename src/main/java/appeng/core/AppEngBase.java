@@ -4,6 +4,15 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import appeng.me.cache.CraftingGridCache;
+import appeng.me.cache.EnergyGridCache;
+import appeng.me.cache.GridStorageCache;
+import appeng.me.cache.P2PCache;
+import appeng.me.cache.PathGridCache;
+import appeng.me.cache.SecurityCache;
+import appeng.me.cache.SpatialPylonCache;
+import appeng.me.cache.StatisticsCache;
+import appeng.me.cache.TickManagerCache;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -108,14 +117,6 @@ import appeng.hooks.ToolItemHook;
 import appeng.integration.modules.trenergy.ItemPowerStorageAdapter;
 import appeng.items.parts.FacadeItem;
 import appeng.items.tools.NetworkToolItem;
-import appeng.me.cache.CraftingGridCache;
-import appeng.me.cache.EnergyGridCache;
-import appeng.me.cache.GridStorageCache;
-import appeng.me.cache.P2PCache;
-import appeng.me.cache.PathGridCache;
-import appeng.me.cache.SecurityCache;
-import appeng.me.cache.SpatialPylonCache;
-import appeng.me.cache.TickManagerCache;
 import appeng.mixins.CriteriaRegisterMixin;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
@@ -179,6 +180,7 @@ public abstract class AppEngBase implements AppEng {
         gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache::new);
         gcr.registerGridCache(ISecurityGrid.class, SecurityCache::new);
         gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache::new);
+        gcr.registerGridCache(StatisticsCache.class, StatisticsCache::new);
 
         registries.cell().addCellHandler(new BasicCellHandler());
         registries.cell().addCellHandler(new CreativeCellHandler());
