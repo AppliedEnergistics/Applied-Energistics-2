@@ -250,8 +250,9 @@ public final class ApiBlocks implements IBlocks {
     private static final FabricBlockSettings QUARTZ_PROPERTIES = (FabricBlockSettings) defaultProps(ROCK_REQUIRES_TOOL)
             .hardnessAndResistance(3, 5).setRequiresTool();
 
-    private static final FabricBlockSettings SKYSTONE_PROPERTIES = (FabricBlockSettings) defaultProps(ROCK_REQUIRES_TOOL)
-            .hardnessAndResistance(50, 150).setRequiresTool();
+    private static final FabricBlockSettings SKYSTONE_PROPERTIES = (FabricBlockSettings) defaultProps(
+            ROCK_REQUIRES_TOOL)
+                    .hardnessAndResistance(50, 150).setRequiresTool();
 
     public ApiBlocks(FeatureFactory registry) {
         this.quartzOre = registry.block("quartz_ore", () -> new QuartzOreBlock(QUARTZ_PROPERTIES))
@@ -311,7 +312,8 @@ public final class ApiBlocks implements IBlocks {
                 .features(
                         AEFeature.SKY_STONE)
                 .block("sky_stone_block", () -> new SkyStoneBlock(SkystoneType.STONE,
-                        defaultProps(Material.ROCK).strength(50, 150).breakByTool(FabricToolTags.PICKAXES, 3).setRequiresTool()))
+                        defaultProps(Material.ROCK).strength(50, 150).breakByTool(FabricToolTags.PICKAXES, 3)
+                                .setRequiresTool()))
                 .build();
 
         this.smoothSkyStoneBlock = registry.features(AEFeature.SKY_STONE)

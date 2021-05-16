@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
-import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -83,6 +82,7 @@ import appeng.client.render.SimpleModelLoader;
 import appeng.client.render.cablebus.CableBusModelLoader;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.client.render.crafting.CraftingCubeModel;
+import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;

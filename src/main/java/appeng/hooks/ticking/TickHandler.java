@@ -44,6 +44,8 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.AbstractChunkProvider;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.server.ServerWorld;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
@@ -56,8 +58,6 @@ import appeng.me.Grid;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.server.ServerWorld;
 
 public class TickHandler {
 
@@ -109,8 +109,8 @@ public class TickHandler {
      *
      * Callbacks on the client are not support.
      * <p>
-     * Using null as world will queue it into the global server tick, otherwise it will be ticked with the
-     * corresponding world tick event.
+     * Using null as world will queue it into the global server tick, otherwise it will be ticked with the corresponding
+     * world tick event.
      *
      * @param w null or the specific {@link World}
      * @param c the callback
