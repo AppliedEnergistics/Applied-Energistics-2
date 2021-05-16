@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.tile.crafting;
+package appeng.client.render.crafting;
 
 import net.minecraft.item.ItemStack;
 

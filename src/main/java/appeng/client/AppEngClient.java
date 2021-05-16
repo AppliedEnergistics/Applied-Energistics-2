@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -158,7 +159,6 @@ import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.fluids.container.FluidTerminalContainer;
 import appeng.hooks.ClientTickHandler;
 import appeng.parts.automation.PlaneModel;
-import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.util.Platform;
 
 @Environment(EnvType.CLIENT)
@@ -364,7 +364,7 @@ public final class AppEngClient extends AppEngBase {
 
     private void registerModelProviders() {
 
-        ModelLoadingRegistry.INSTANCE.registerAppender((resourceManager, consumer) -> {
+        ModelLoadingRegistry.INSTANCE.registerModelProvider((resourceManager, consumer) -> {
             consumer.accept(MolecularAssemblerRenderer.LIGHTS_MODEL);
         });
         ModelLoadingRegistry.INSTANCE.registerVariantProvider((resourceManager) -> {

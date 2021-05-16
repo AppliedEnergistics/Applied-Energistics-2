@@ -23,12 +23,14 @@ import static appeng.block.AEBaseBlock.defaultProps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySize;
@@ -98,6 +100,7 @@ import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
 import appeng.client.render.crafting.CraftingMonitorTESR;
+import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import appeng.client.render.spatial.SpatialPylonRendering;
 import appeng.client.render.tesr.ChargerTESR;
 import appeng.client.render.tesr.ChestTileEntityRenderer;
@@ -128,7 +131,6 @@ import appeng.hooks.TinyTNTDispenseItemBehavior;
 import appeng.tile.crafting.CraftingMonitorTileEntity;
 import appeng.tile.crafting.CraftingStorageTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
-import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 import appeng.tile.grindstone.CrankTileEntity;
 import appeng.tile.grindstone.GrinderTileEntity;
@@ -242,11 +244,14 @@ public final class ApiBlocks implements IBlocks {
     private final IBlockDefinition cubeGenerator;
     private IBlockDefinition energyGenerator;
 
-    private static final FabricBlockSettings QUARTZ_PROPERTIES = (FabricBlockSettings) defaultProps(Material.ROCK)
-            .hardnessAndResistance(3, 5);
+    // Using the vanilla ROCK material would allow tools with a low mining level to break our blocks.
+    private static final Material ROCK_REQUIRES_TOOL = new FabricMaterialBuilder(MaterialColor.STONE).build();
 
-    private static final FabricBlockSettings SKYSTONE_PROPERTIES = (FabricBlockSettings) defaultProps(Material.ROCK)
-            .hardnessAndResistance(50, 150);
+    private static final FabricBlockSettings QUARTZ_PROPERTIES = (FabricBlockSettings) defaultProps(ROCK_REQUIRES_TOOL)
+            .hardnessAndResistance(3, 5).setRequiresTool();
+
+    private static final FabricBlockSettings SKYSTONE_PROPERTIES = (FabricBlockSettings) defaultProps(ROCK_REQUIRES_TOOL)
+            .hardnessAndResistance(50, 150).setRequiresTool();
 
     public ApiBlocks(FeatureFactory registry) {
         this.quartzOre = registry.block("quartz_ore", () -> new QuartzOreBlock(QUARTZ_PROPERTIES))
@@ -306,7 +311,7 @@ public final class ApiBlocks implements IBlocks {
                 .features(
                         AEFeature.SKY_STONE)
                 .block("sky_stone_block", () -> new SkyStoneBlock(SkystoneType.STONE,
-                        defaultProps(Material.ROCK).strength(50, 150).breakByTool(FabricToolTags.PICKAXES, 3)))
+                        defaultProps(Material.ROCK).strength(50, 150).breakByTool(FabricToolTags.PICKAXES, 3).setRequiresTool()))
                 .build();
 
         this.smoothSkyStoneBlock = registry.features(AEFeature.SKY_STONE)
