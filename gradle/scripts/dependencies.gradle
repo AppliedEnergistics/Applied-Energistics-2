@@ -20,11 +20,6 @@ repositories {
     mavenLocal()
 
     maven {
-        name = "storagedrawers"
-        url = "https://dl.bintray.com/jaquadro/dev/"
-    }
-
-    maven {
         name "Mobius"
         url "http://mobiusstrip.eu/maven"
     }
@@ -37,6 +32,11 @@ repositories {
     maven {
         name = "Tesla repo"
         url "http://maven.mcmoddev.com"
+    }
+
+    maven {
+        name "Ellpeck"
+        url "https://maven.ellpeck.de"
     }
 
     maven {
@@ -57,11 +57,6 @@ repositories {
     maven { // McJtyLib
         name 'mcjty'
         url "http://maven.k-4u.nl/"
-    }
-
-    maven { // Hwyla
-        name 'tehnut'
-        url "http://tehnut.info/maven"
     }
 
    	maven { // CraftTweaker
@@ -102,6 +97,7 @@ dependencies {
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}"
 	compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
     compileOnly "team.chisel.ctm:CTM:${ctm_version}"
+    compileOnly "de.ellpeck.actuallyadditions:ActuallyAdditions:1.12.2-r152.16:api"
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
