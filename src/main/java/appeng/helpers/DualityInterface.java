@@ -1100,13 +1100,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				if( this.isBlocking() )
 				{
 					IPhantomTile phantomTE = null;
-					if( Loader.isModLoaded( "actuallyadditions" ) && te instanceof IPhantomTile )
+					if( Loader.isModLoaded( "actuallyadditions" ) && Loader.isModLoaded( "gregtech" ) && te instanceof IPhantomTile )
 					{
 						phantomTE = ( (IPhantomTile) te );
 						if( phantomTE.hasBoundPosition() )
 						{
 							TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
-							if( phantom != null && isGTCEblocked( phantom, s ) )
+							if( phantom instanceof MetaTileEntityHolder && isGTCEblocked( phantom, s ) )
 							{
 								visitedFaces.remove( s );
 								continue;
@@ -1176,13 +1176,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
-					if( Loader.isModLoaded( "actuallyadditions" ) && te instanceof IPhantomTile )
+					if( Loader.isModLoaded( "actuallyadditions") && Loader.isModLoaded( "gregtech" ) && te instanceof IPhantomTile )
 					{
 						phantomTE = ( (IPhantomTile) te );
 						if( phantomTE.hasBoundPosition() )
 						{
 							TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
-							if( phantom != null && !isGTCEblocked( phantom, s ) )
+							if( phantom instanceof MetaTileEntityHolder && !isGTCEblocked( phantom, s ) )
 							{
 								allAreBusy = false;
 								break;
