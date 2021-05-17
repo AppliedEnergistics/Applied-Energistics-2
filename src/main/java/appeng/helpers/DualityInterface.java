@@ -32,6 +32,9 @@ import com.google.common.collect.ImmutableSet;
 import de.ellpeck.actuallyadditions.api.tile.IPhantomTile;
 import gregtech.api.block.machines.BlockMachine;
 import gregtech.api.metatileentity.MetaTileEntity;
+import gregtech.api.metatileentity.MetaTileEntityHolder;
+import gregtech.api.metatileentity.TieredMetaTileEntity;
+import gregtech.api.metatileentity.WorkableTieredMetaTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
@@ -1097,7 +1100,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				if( this.isBlocking() )
 				{
 					IPhantomTile phantomTE = null;
-					if (Loader.isModLoaded( "actuallyadditions" ) && te instanceof IPhantomTile )
+					if( Loader.isModLoaded( "actuallyadditions" ) && te instanceof IPhantomTile )
 					{
 						phantomTE = ( (IPhantomTile) te );
 						if( phantomTE.hasBoundPosition() )
@@ -1110,12 +1113,17 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 							}
 						}
 					}
-					if( isGTCEblocked( te, s ) )
+
+					else if( Loader.isModLoaded( "gregtech" ) && te instanceof MetaTileEntityHolder )
 					{
-						visitedFaces.remove( s );
-						continue;
+						if( isGTCEblocked( te, s ) )
+						{
+							visitedFaces.remove( s );
+							continue;
+						}
 					}
-					if( invIsBlocked( ad ) )
+
+					else if( invIsBlocked( ad ) )
 					{
 						visitedFaces.remove( s );
 						continue;
@@ -1168,26 +1176,27 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
-					if (Loader.isModLoaded( "actuallyadditions" ))
+					if( Loader.isModLoaded( "actuallyadditions" ) && te instanceof IPhantomTile )
 					{
-						if( te instanceof IPhantomTile )
+						phantomTE = ( (IPhantomTile) te );
+						if( phantomTE.hasBoundPosition() )
 						{
-							phantomTE = ( (IPhantomTile) te );
-							if( phantomTE.hasBoundPosition() && phantomTE.isBoundThingInRange())
+							TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
+							if( phantom != null && !isGTCEblocked( phantom, s ) )
 							{
-								TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
-								if( phantom != null && isGTCEblocked( phantom, s ) )
-								{
-									allAreBusy = false;
-									break;
-								}
+								allAreBusy = false;
+								break;
 							}
 						}
 					}
-					else if( !isGTCEblocked(te,s) )
+
+					else if( Loader.isModLoaded( "gregtech" ) && te instanceof MetaTileEntityHolder )
 					{
-						allAreBusy = false;
-						break;
+						if( !isGTCEblocked( te, s ) )
+						{
+							allAreBusy = false;
+							break;
+						}
 					}
 
 					else if( !invIsBlocked( ad ) )
@@ -1204,12 +1213,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	boolean isGTCEblocked(TileEntity te, EnumFacing s)
 	{
-		if( te.getBlockType().getRegistryName().getResourceDomain().equals( "gregtech" ) )
-		{
-			GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
-			return invIsBlockedGTCE( GTad );
-		}
-		return false;
+		GTad = GTCEInventoryAdaptor.getAdaptor( te, s.getOpposite() );
+		return invIsBlockedGTCE( GTad );
 	}
 
 	private boolean sameGrid( final IGrid grid ) throws GridAccessException
