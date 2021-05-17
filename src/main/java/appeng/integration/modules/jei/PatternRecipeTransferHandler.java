@@ -18,9 +18,9 @@
 
 package appeng.integration.modules.jei;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -41,11 +41,13 @@ public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternT
         if (container.isCraftingMode()
                 && recipeLayout.getRecipeCategory().getUid() != VanillaRecipeCategoryUid.CRAFTING) {
             return this.helper
-                    .createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.requires_processing_mode"));
+                    .createUserErrorWithTooltip(
+                            new TranslationTextComponent("jei.appliedenergistics2.requires_processing_mode"));
         }
 
         if (recipe.getRecipeOutput().isEmpty()) {
-            return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.no_output"));
+            return this.helper
+                    .createUserErrorWithTooltip(new TranslationTextComponent("jei.appliedenergistics2.no_output"));
         }
 
         return null;

@@ -36,6 +36,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -137,44 +139,46 @@ public class JEIPlugin implements IModPlugin {
     private void registerDescriptions(IDefinitions definitions, IRecipeRegistration registry) {
         IMaterials materials = definitions.materials();
 
-        final String[] message;
+        final ITextComponent[] message;
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
-            message = new String[] { GuiText.ChargedQuartz.getTranslationKey(), "",
-                    GuiText.ChargedQuartzFind.getTranslationKey() };
+            // " " Used to enforce a new paragraph
+            message = new ITextComponent[] { GuiText.ChargedQuartz.text(), new StringTextComponent(" "),
+                    GuiText.ChargedQuartzFind.text() };
         } else {
-            message = new String[] { GuiText.ChargedQuartzFind.getTranslationKey() };
+            message = new ITextComponent[] { GuiText.ChargedQuartz.text() };
         }
         this.addDescription(registry, materials.certusQuartzCrystalCharged(), message);
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
             this.addDescription(registry, materials.logicProcessorPress(),
-                    GuiText.inWorldCraftingPresses.getTranslationKey());
+                    GuiText.inWorldCraftingPresses.text());
             this.addDescription(registry, materials.calcProcessorPress(),
-                    GuiText.inWorldCraftingPresses.getTranslationKey());
+                    GuiText.inWorldCraftingPresses.text());
             this.addDescription(registry, materials.engProcessorPress(),
-                    GuiText.inWorldCraftingPresses.getTranslationKey());
+                    GuiText.inWorldCraftingPresses.text());
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_FLUIX)) {
-            this.addDescription(registry, materials.fluixCrystal(), GuiText.inWorldFluix.getTranslationKey());
+            this.addDescription(registry, materials.fluixCrystal(), GuiText.inWorldFluix.text());
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_SINGULARITY)) {
-            this.addDescription(registry, materials.qESingularity(), GuiText.inWorldSingularity.getTranslationKey());
+            this.addDescription(registry, materials.qESingularity(), GuiText.inWorldSingularity.text());
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_PURIFICATION)) {
             this.addDescription(registry, materials.purifiedCertusQuartzCrystal(),
-                    GuiText.inWorldPurificationCertus.getTranslationKey());
+                    GuiText.inWorldPurificationCertus.text());
             this.addDescription(registry, materials.purifiedNetherQuartzCrystal(),
-                    GuiText.inWorldPurificationNether.getTranslationKey());
+                    GuiText.inWorldPurificationNether.text());
             this.addDescription(registry, materials.purifiedFluixCrystal(),
-                    GuiText.inWorldPurificationFluix.getTranslationKey());
+                    GuiText.inWorldPurificationFluix.text());
         }
 
     }
 
-    private void addDescription(IRecipeRegistration registry, IItemDefinition itemDefinition, String... message) {
+    private void addDescription(IRecipeRegistration registry, IItemDefinition itemDefinition,
+            ITextComponent... message) {
         registry.addIngredientInfo(itemDefinition.stack(1), VanillaTypes.ITEM, message);
     }
 
@@ -206,8 +210,8 @@ public class JEIPlugin implements IModPlugin {
             @Nullable
             @Override
             public Object getIngredientUnderMouse(ContainerScreen<?> containerScreen, double mouseX, double mouseY) {
-                // The following code allows the player to show recipes involving fluids in AE fluid terminals or
-                // AE fluid tanks shown in fluid interfaces and other UI.
+                // The following code allows the player to show recipes involving fluids in AE fluid terminals or AE
+                // fluid tanks shown in fluid interfaces and other UI.
                 if (containerScreen instanceof AEBaseScreen) {
                     AEBaseScreen<?> baseScreen = (AEBaseScreen<?>) containerScreen;
                     return baseScreen.getIngredientUnderMouse(mouseX, mouseY);
@@ -244,8 +248,7 @@ public class JEIPlugin implements IModPlugin {
     private void hideDebugTools(IJeiRuntime jeiRuntime) {
         Collection<ItemStack> toRemove = new ArrayList<>();
 
-        // We use the internal API here as exception as debug tools are not part of the
-        // public one by design.
+        // We use the internal API here as exception as debug tools are not part of the public one by design.
         toRemove.add(Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack(1).orElse(null));
 
         if (!AEConfig.instance().isFeatureEnabled(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS)) {

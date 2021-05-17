@@ -27,3 +27,17 @@ description="A Mod about Matter, Energy and using them to conquer the world.."
     versionRange="${minecraft_version}"
     ordering="NONE"
     side="BOTH"
+
+[[dependencies.appliedenergistics2]]
+    modId="jei"
+    mandatory=false
+    versionRange="${jei_version}"
+    ordering="AFTER"
+    side="CLIENT"
+
+[[dependencies.appliedenergistics2]]
+    modId="theoneprobe"
+    mandatory=false
+    versionRange="${top_version}"
+    ordering="AFTER"
+    side="BOTH"

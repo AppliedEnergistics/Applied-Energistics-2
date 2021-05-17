@@ -230,7 +230,8 @@ processResources {
     exclude '.cache'
 
     filesMatching("META-INF/mods.toml") {
-        expand 'version': version, 'minecraft_version': project.minecraft_version_range, 'forge_version': project.forge_version_range
+        expand 'version': version, 'minecraft_version': project.minecraft_version_range, 'forge_version': project.forge_version_range,
+            'jei_version': project.jei_version_range, 'top_version': project.top_version_range
     }
 }
 
