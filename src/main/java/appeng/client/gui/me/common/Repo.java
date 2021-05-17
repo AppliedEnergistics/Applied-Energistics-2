@@ -20,6 +20,7 @@ package appeng.client.gui.me.common;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -39,6 +40,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.container.me.common.GridInventoryEntry;
+import appeng.container.me.common.IClientRepo;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.integration.abstraction.JEIFacade;
@@ -48,7 +50,7 @@ import appeng.util.prioritylist.IPartitionList;
  * For showing the network content of a storage channel, this class will maintain a client-side copy of the current
  * server-side storage, which is continuously synchronized to the client while it is open.
  */
-public abstract class Repo<T extends IAEStack<T>> {
+public abstract class Repo<T extends IAEStack<T>> implements IClientRepo<T> {
 
     private int rowSize = 9;
 
@@ -58,6 +60,7 @@ public abstract class Repo<T extends IAEStack<T>> {
     private final BiMap<Long, GridInventoryEntry<T>> entries = HashBiMap.create();
     private final ArrayList<GridInventoryEntry<T>> view = new ArrayList<>();
     private IPartitionList<T> partitionList;
+    private Runnable updateViewListener;
 
     private final IScrollSource src;
     private final ISortSource sortSrc;
@@ -75,7 +78,20 @@ public abstract class Repo<T extends IAEStack<T>> {
         }
     }
 
-    public final void postUpdate(GridInventoryEntry<T> serverEntry) {
+    @Override
+    public final void handleUpdate(boolean fullUpdate, List<GridInventoryEntry<T>> entries) {
+        if (fullUpdate) {
+            clear();
+        }
+
+        for (GridInventoryEntry<T> entry : entries) {
+            handleUpdate(entry);
+        }
+
+        updateView();
+    }
+
+    private void handleUpdate(GridInventoryEntry<T> serverEntry) {
 
         GridInventoryEntry<T> localEntry = entries.get(serverEntry.getSerial());
         if (localEntry == null) {
@@ -156,6 +172,10 @@ public abstract class Repo<T extends IAEStack<T>> {
         SortDir sortDir = this.sortSrc.getSortDir();
 
         this.view.sort(Comparator.comparing(GridInventoryEntry::getStack, getComparator(sortOrder, sortDir)));
+
+        if (this.updateViewListener != null) {
+            this.updateViewListener.run();
+        }
     }
 
     @Nullable
@@ -218,6 +238,10 @@ public abstract class Repo<T extends IAEStack<T>> {
 
     public Set<GridInventoryEntry<T>> getAllEntries() {
         return entries.values();
+    }
+
+    public final void setUpdateViewListener(Runnable updateViewListener) {
+        this.updateViewListener = updateViewListener;
     }
 
     protected enum SearchMode {
