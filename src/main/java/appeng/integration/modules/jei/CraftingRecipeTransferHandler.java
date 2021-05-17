@@ -24,12 +24,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
@@ -70,9 +73,9 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
             // Find every "slot" (in JEI parlance) that has no equivalent item in the item repo or player inventory
             List<Integer> missingSlots = new ArrayList<>();
 
-            // We need to track how many of a given item stack we've already used for other slots in
-            // the recipe. Otherwise recipes that need 4x<item> will not correctly show missing
-            // items if at least 1 of <item> is in the grid.
+            // We need to track how many of a given item stack we've already used for other slots in the recipe.
+            // Otherwise recipes that need 4x<item> will not correctly show missing items if at least 1 of <item> is in
+            // the grid.
             Map<IAEItemStack, Integer> reservedGridAmounts = new HashMap<>();
 
             for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : recipeLayout.getItemStacks()
@@ -112,8 +115,8 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
             }
 
             if (!missingSlots.isEmpty()) {
-                String tooltip = I18n.format("jei.appliedenergistics2.missing_items");
-                return helper.createUserErrorForSlots(tooltip, missingSlots);
+                ITextComponent message = new TranslationTextComponent("jei.appliedenergistics2.missing_items");
+                return new TransferWarning(helper.createUserErrorForSlots(message, missingSlots));
             }
         }
 
@@ -123,6 +126,27 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
     @Override
     protected boolean isCrafting() {
         return true;
+    }
+
+    private static class TransferWarning implements IRecipeTransferError {
+
+        private final IRecipeTransferError parent;
+
+        public TransferWarning(IRecipeTransferError parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public Type getType() {
+            return Type.COSMETIC;
+        }
+
+        @Override
+        public void showError(MatrixStack matrixStack, int mouseX, int mouseY, IRecipeLayout recipeLayout, int recipeX,
+                int recipeY) {
+            this.parent.showError(matrixStack, mouseX, mouseY, recipeLayout, recipeX, recipeY);
+        }
+
     }
 
 }

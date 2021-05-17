@@ -20,7 +20,6 @@ package appeng.integration.modules.jei;
 
 import java.util.Map;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
@@ -30,10 +29,12 @@ import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
+import mezz.jei.api.recipe.transfer.IRecipeTransferError.Type;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
@@ -67,47 +68,40 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
         final ResourceLocation recipeId = irecipe.getId();
 
         if (recipeId == null) {
-            return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.missing_id"));
+            return this.helper
+                    .createUserErrorWithTooltip(new TranslationTextComponent("jei.appliedenergistics2.missing_id"));
         }
 
-        // Check that the recipe can actually be looked up via the manager, i.e. our
-        // facade recipes
-        // have an ID, but are never registered with the recipe manager.
+        // Check that the recipe can actually be looked up via the manager, i.e. our facade recipes have an ID, but are
+        // never registered with the recipe manager.
         boolean canSendReference = true;
         if (!player.getEntityWorld().getRecipeManager().getRecipe(recipeId).isPresent()) {
-            // Validate that the recipe is a shapeless or shapedrecipe, since we can
-            // serialize those
+            // Validate that the recipe is a shapeless or shapedrecipe, since we can serialize those
             if (!(recipe instanceof ShapedRecipe) && !(recipe instanceof ShapelessRecipe)) {
-                return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.missing_id"));
+                return this.helper
+                        .createUserErrorWithTooltip(new TranslationTextComponent("jei.appliedenergistics2.missing_id"));
             }
             canSendReference = false;
         }
 
         if (!irecipe.canFit(3, 3)) {
-            return this.helper.createUserErrorWithTooltip(I18n.format("jei.appliedenergistics2.recipe_too_large"));
+            return this.helper.createUserErrorWithTooltip(
+                    new TranslationTextComponent("jei.appliedenergistics2.recipe_too_large"));
         }
 
         final IRecipeTransferError error = doTransferRecipe(container, irecipe, recipeLayout, player, maxTransfer);
 
-        if (error != null) {
-            return error;
-        }
-
-        if (doTransfer) {
+        if (doTransfer && this.canTransfer(error)) {
             if (canSendReference) {
                 NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipeId, isCrafting()));
             } else {
-                // To avoid earlier problems of too large packets being sent that crashed the
-                // client,
-                // as a fallback when the recipe ID could not be resolved, we'll just send the
-                // displayed
-                // items.
+                // To avoid earlier problems of too large packets being sent that crashed the client, as a fallback when
+                // the recipe ID could not be resolved, we'll just send the displayed items.
                 NonNullList<Ingredient> flatIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
                 ItemStack output = ItemStack.EMPTY;
 
-                // Determine the first JEI slot that has an actual input, we'll use this to
-                // offset the
-                // crafting grid target slot
+                // Determine the first JEI slot that has an actual input, we'll use this to offset the crafting grid
+                // target slot
                 int firstInputSlot = recipeLayout.getItemStacks().getGuiIngredients().entrySet().stream()
                         .filter(e -> e.getValue().isInput()).mapToInt(Map.Entry::getKey).min().orElse(0);
 
@@ -135,11 +129,15 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
             }
         }
 
-        return null;
+        return error;
     }
 
     protected abstract IRecipeTransferError doTransferRecipe(T container, IRecipe<?> recipe, IRecipeLayout recipeLayout,
             PlayerEntity player, boolean maxTransfer);
 
     protected abstract boolean isCrafting();
+
+    private boolean canTransfer(IRecipeTransferError error) {
+        return error == null || error.getType() == Type.COSMETIC;
+    }
 }
