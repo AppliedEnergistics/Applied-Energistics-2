@@ -348,8 +348,9 @@ public abstract class AEBaseContainer extends Container {
                 for (final Slot d : selectedSlots) {
                     if (d.isItemValid(tis)) {
                         if (d.getHasStack()) {
-                            if (x(clickSlot, tis, d))
+                            if (x(clickSlot, tis, d)) {
                                 return ItemStack.EMPTY;
+                            }
                         } else {
                             int maxSize = tis.getMaxStackSize();
                             if (maxSize > d.getSlotStackLimit()) {
