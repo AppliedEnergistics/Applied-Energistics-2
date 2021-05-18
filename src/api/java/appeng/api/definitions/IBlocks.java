@@ -83,6 +83,22 @@ public interface IBlocks {
 
     IBlockDefinition quartzPillarStairs();
 
+    IBlockDefinition skyStoneWall();
+
+    IBlockDefinition smoothSkyStoneWall();
+
+    IBlockDefinition skyStoneBrickWall();
+
+    IBlockDefinition skyStoneSmallBrickWall();
+
+    IBlockDefinition fluixWall();
+
+    IBlockDefinition quartzWall();
+
+    IBlockDefinition chiseledQuartzWall();
+
+    IBlockDefinition quartzPillarWall();
+
     IBlockDefinition skyStoneSlab();
 
     IBlockDefinition smoothSkyStoneSlab();
