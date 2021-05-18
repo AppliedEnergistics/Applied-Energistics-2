@@ -78,7 +78,9 @@ public class MultiCraftingTracker {
 
             if (this.getLink(x) != null) {
                 return false;
-            } else if (craftingJob != null) {
+            }
+
+            if (craftingJob != null) {
 
                 try {
                     ICraftingJob job = null;

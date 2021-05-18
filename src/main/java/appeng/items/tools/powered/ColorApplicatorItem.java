@@ -337,7 +337,6 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 ct.recolourBlock(side, newColor, p);
                 return true;
             }
-            return false;
         }
 
         return false;

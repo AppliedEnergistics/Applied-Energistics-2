@@ -72,12 +72,11 @@ public class AdaptorItemHandler extends InventoryAdaptor {
                 // Use the first stack as a template for the result
                 rv = extracted;
                 filter = extracted;
-                amount -= extracted.getCount();
             } else {
                 // Subsequent stacks will just increase the extracted size
                 rv.grow(extracted.getCount());
-                amount -= extracted.getCount();
             }
+            amount -= extracted.getCount();
         }
 
         return rv;
@@ -107,12 +106,11 @@ public class AdaptorItemHandler extends InventoryAdaptor {
                     // Use the first stack as a template for the result
                     rv = extracted.copy();
                     filter = extracted;
-                    amount -= extracted.getCount();
                 } else {
                     // Subsequent stacks will just increase the extracted size
                     rv.grow(extracted.getCount());
-                    amount -= extracted.getCount();
                 }
+                amount -= extracted.getCount();
             }
         }
 

@@ -778,9 +778,8 @@ public class Platform {
     }
 
     public static boolean securityCheck(final GridNode a, final GridNode b) {
-        if (a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1) {
-            return true;
-        } else if (a.getLastSecurityKey() == b.getLastSecurityKey()) {
+        if ((a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1)
+                || (a.getLastSecurityKey() == b.getLastSecurityKey())) {
             return true;
         }
 

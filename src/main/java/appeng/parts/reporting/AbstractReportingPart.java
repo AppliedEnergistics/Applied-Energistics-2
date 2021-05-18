@@ -193,9 +193,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         super.onPlacement(player, hand, held, side);
 
         final byte rotation = (byte) (MathHelper.floor((player.rotationYaw * 4F) / 360F + 2.5D) & 3);
-        if (side == AEPartLocation.UP) {
-            this.spin = rotation;
-        } else if (side == AEPartLocation.DOWN) {
+        if ((side == AEPartLocation.UP) || (side == AEPartLocation.DOWN)) {
             this.spin = rotation;
         }
     }

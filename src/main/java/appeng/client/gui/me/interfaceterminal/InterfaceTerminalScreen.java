@@ -507,7 +507,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         if (cache.isEmpty() && searchTerm.length() > 1) {
             cache.addAll(this.getCacheForSearchTerm(searchTerm.substring(0, searchTerm.length() - 1)));
-            return cache;
         }
 
         return cache;

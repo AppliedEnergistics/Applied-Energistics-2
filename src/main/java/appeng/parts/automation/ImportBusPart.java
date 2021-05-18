@@ -235,13 +235,11 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
         final ItemStack simResult;
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             simResult = myAdaptor.simulateSimilarRemove(toSend, itemStackToImport, fzMode, this);
-            itemAmountNotStorable = inv.injectItems(AEItemStack.fromItemStack(simResult), Actionable.SIMULATE,
-                    this.source);
         } else {
             simResult = myAdaptor.simulateRemove(toSend, itemStackToImport, this);
-            itemAmountNotStorable = inv.injectItems(AEItemStack.fromItemStack(simResult), Actionable.SIMULATE,
-                    this.source);
         }
+        itemAmountNotStorable = inv.injectItems(AEItemStack.fromItemStack(simResult), Actionable.SIMULATE,
+                this.source);
 
         if (itemAmountNotStorable != null) {
             return (int) Math.min(simResult.getCount() - itemAmountNotStorable.getStackSize(), toSend);

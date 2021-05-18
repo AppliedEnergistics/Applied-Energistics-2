@@ -41,11 +41,12 @@ public class Splotch {
         if (side == Direction.SOUTH || side == Direction.NORTH) {
             x = position.x;
             y = position.y;
-        } else if (side == Direction.UP || side == Direction.DOWN) {
-            x = position.x;
-            y = position.z;
         } else {
-            x = position.y;
+            if (side == Direction.UP || side == Direction.DOWN) {
+                x = position.x;
+            } else {
+                x = position.y;
+            }
             y = position.z;
         }
 

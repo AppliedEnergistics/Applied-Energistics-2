@@ -141,16 +141,12 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
         // just move on...
         try {
             if (!this.getProxy().getPath().isNetworkBooting()) {
-                if (!this.getProxy().getEnergy().isNetworkPowered()) {
+                if (!this.getProxy().getEnergy().isNetworkPowered() || !this.getProxy().isActive()) {
                     this.connection.markDestroy();
-                    TickHandler.instance().addCallable(this.getTile().getWorld(), this.connection);
-                } else if (this.getProxy().isActive()) {
-                    this.connection.markCreate();
-                    TickHandler.instance().addCallable(this.getTile().getWorld(), this.connection);
                 } else {
-                    this.connection.markDestroy();
-                    TickHandler.instance().addCallable(this.getTile().getWorld(), this.connection);
+                    this.connection.markCreate();
                 }
+                TickHandler.instance().addCallable(this.getTile().getWorld(), this.connection);
 
                 return TickRateModulation.SLEEP;
             }
@@ -174,10 +170,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             while (i.hasNext()) {
                 final TunnelConnection cw = i.next();
                 try {
-                    if (cw.getTunnel().getProxy().getGrid() != this.getProxy().getGrid()) {
-                        cw.getConnection().destroy();
-                        i.remove();
-                    } else if (!cw.getTunnel().getProxy().isActive()) {
+                    if ((cw.getTunnel().getProxy().getGrid() != this.getProxy().getGrid())
+                            || !cw.getTunnel().getProxy().isActive()) {
                         cw.getConnection().destroy();
                         i.remove();
                     }

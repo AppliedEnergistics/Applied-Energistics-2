@@ -98,7 +98,6 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
                     final String Out = this.name.getText();
                     container.setName(Out);
                     NetworkHandler.instance().sendToServer(new ConfigValuePacket("QuartzKnife.Name", Out));
-                    return true;
                 }
 
                 // We need to swallow key presses if the field is focused because typing 'e'

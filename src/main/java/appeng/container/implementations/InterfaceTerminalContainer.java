@@ -144,9 +144,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                 }
 
                 final InvTracker t = this.diList.get(ih);
-                if (t == null) {
-                    state.forceFullUpdate = true;
-                } else if (!t.name.equals(dual.getTermName())) {
+                if ((t == null) || !t.name.equals(dual.getTermName())) {
                     state.forceFullUpdate = true;
                 }
 

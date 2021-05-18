@@ -608,9 +608,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     // extract items!
                     changed = true;
                     final ItemStack removed = adaptor.removeItems((int) diff, ItemStack.EMPTY, null);
-                    if (removed.isEmpty()) {
-                        throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
-                    } else if (removed.getCount() != diff) {
+                    if (removed.isEmpty() || (removed.getCount() != diff)) {
                         throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
                     }
                 }
