@@ -80,10 +80,8 @@ public final class InscriberRecipes {
             final boolean matchA = recipe.getTopOptional().test(plateA) && recipe.getBottomOptional().test(plateB);
             final boolean matchB = recipe.getTopOptional().test(plateB) && recipe.getBottomOptional().test(plateA);
 
-            if (matchA || matchB) {
-                if (recipe.getMiddleInput().test(input)) {
-                    return recipe;
-                }
+            if ((matchA || matchB) && recipe.getMiddleInput().test(input)) {
+                return recipe;
             }
         }
 

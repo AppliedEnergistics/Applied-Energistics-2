@@ -98,11 +98,9 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         } else {
             BlockPos pos = target.getPos();
             final BlockState state = w.getBlockState(pos);
-            if (!state.getFluidState().isEmpty()) {
-                if (Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
-                    ItemUseContext context = new ItemUseContext(p, hand, target);
-                    this.onItemUse(context);
-                }
+            if (!state.getFluidState().isEmpty() && Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
+                ItemUseContext context = new ItemUseContext(p, hand, target);
+                this.onItemUse(context);
             }
         }
 

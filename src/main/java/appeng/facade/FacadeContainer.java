@@ -56,13 +56,11 @@ public class FacadeContainer implements IFacadeContainer {
 
     @Override
     public void removeFacade(final IPartHost host, final AEPartLocation side) {
-        if (side != null && side != AEPartLocation.INTERNAL) {
-            if (this.storage.getFacade(side.ordinal()) != null) {
-                this.storage.setFacade(side.ordinal(), null);
-                this.notifyChange();
-                if (host != null) {
-                    host.markForUpdate();
-                }
+        if ((side != null && side != AEPartLocation.INTERNAL) && (this.storage.getFacade(side.ordinal()) != null)) {
+            this.storage.setFacade(side.ordinal(), null);
+            this.notifyChange();
+            if (host != null) {
+                host.markForUpdate();
             }
         }
     }

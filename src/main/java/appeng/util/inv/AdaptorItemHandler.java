@@ -96,10 +96,8 @@ public class AdaptorItemHandler extends InventoryAdaptor {
                     continue;
                 }
 
-                if (destination != null) {
-                    if (!destination.canInsert(extracted)) {
-                        continue;
-                    }
+                if ((destination != null) && !destination.canInsert(extracted)) {
+                    continue;
                 }
 
                 if (rv.isEmpty()) {
@@ -168,10 +166,8 @@ public class AdaptorItemHandler extends InventoryAdaptor {
             // Attempt extracting it
             extracted = this.itemHandler.extractItem(slot, amount, true);
 
-            if (!extracted.isEmpty() && destination != null) {
-                if (!destination.canInsert(extracted)) {
-                    extracted = ItemStack.EMPTY; // Keep on looking...
-                }
+            if ((!extracted.isEmpty() && destination != null) && !destination.canInsert(extracted)) {
+                extracted = ItemStack.EMPTY; // Keep on looking...
             }
         }
 

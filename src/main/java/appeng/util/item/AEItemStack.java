@@ -263,18 +263,16 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     private boolean fuzzyItemStackComparison(ItemStack a, ItemStack b, FuzzyMode mode) {
-        if (a.getItem() == b.getItem()) {
-            if (a.getItem().isDamageable()) {
-                if (mode == FuzzyMode.IGNORE_ALL) {
-                    return true;
-                } else if (mode == FuzzyMode.PERCENT_99) {
-                    return (a.getDamage() > 1) == (b.getDamage() > 1);
-                } else {
-                    final float percentDamageOfA = (float) a.getDamage() / a.getMaxDamage();
-                    final float percentDamageOfB = (float) b.getDamage() / b.getMaxDamage();
+        if ((a.getItem() == b.getItem()) && a.getItem().isDamageable()) {
+            if (mode == FuzzyMode.IGNORE_ALL) {
+                return true;
+            } else if (mode == FuzzyMode.PERCENT_99) {
+                return (a.getDamage() > 1) == (b.getDamage() > 1);
+            } else {
+                final float percentDamageOfA = (float) a.getDamage() / a.getMaxDamage();
+                final float percentDamageOfB = (float) b.getDamage() / b.getMaxDamage();
 
-                    return (percentDamageOfA > mode.breakPoint) == (percentDamageOfB > mode.breakPoint);
-                }
+                return (percentDamageOfA > mode.breakPoint) == (percentDamageOfB > mode.breakPoint);
             }
         }
 

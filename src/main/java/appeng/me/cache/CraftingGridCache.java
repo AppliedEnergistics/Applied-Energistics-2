@@ -414,14 +414,13 @@ public class CraftingGridCache
         if (res == null) {
             if (details != null && details.isCraftable()) {
                 for (final IAEItemStack ais : this.craftableItems.keySet()) {
-                    if (ais.getItem() == whatToCraft.getItem()
-                            && (!ais.getItem().isDamageable() || ais.getItemDamage() == whatToCraft.getItemDamage())) {
-                        // TODO: check if OK
-                        // TODO: this is slightly hacky, but fine as long as we only deal with
-                        // itemstacks
-                        if (details.isValidItemForSlot(slotIndex, ais.asItemStackRepresentation(), world)) {
-                            return this.craftableItems.get(ais);
-                        }
+                    // TODO: check if OK
+                    // TODO: this is slightly hacky, but fine as long as we only deal with
+                    // itemstacks
+                    if ((ais.getItem() == whatToCraft.getItem()
+                            && (!ais.getItem().isDamageable() || ais.getItemDamage() == whatToCraft.getItemDamage()))
+                            && details.isValidItemForSlot(slotIndex, ais.asItemStackRepresentation(), world)) {
+                        return this.craftableItems.get(ais);
                     }
                 }
             }

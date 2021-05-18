@@ -287,12 +287,10 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
 
     private void updateActiveCraftingJobs() {
         IGridNode hostNode = networkNode;
-        if (hostNode == null) {
-            // Wireless terminals do not directly expose the target grid (even though they
-            // have one)
-            if (host instanceof IActionHost) {
-                hostNode = ((IActionHost) host).getActionableNode();
-            }
+        // Wireless terminals do not directly expose the target grid (even though they
+        // have one)
+        if ((hostNode == null) && (host instanceof IActionHost)) {
+            hostNode = ((IActionHost) host).getActionableNode();
         }
         IGrid grid = null;
         if (hostNode != null) {

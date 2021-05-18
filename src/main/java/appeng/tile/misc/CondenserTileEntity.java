@@ -103,12 +103,10 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
     public double getStorage() {
         final ItemStack is = this.storageSlot.getStackInSlot(0);
-        if (!is.isEmpty()) {
-            if (is.getItem() instanceof IStorageComponent) {
-                final IStorageComponent sc = (IStorageComponent) is.getItem();
-                if (sc.isStorageComponent(is)) {
-                    return sc.getBytes(is) * BYTE_MULTIPLIER;
-                }
+        if (!is.isEmpty() && (is.getItem() instanceof IStorageComponent)) {
+            final IStorageComponent sc = (IStorageComponent) is.getItem();
+            if (sc.isStorageComponent(is)) {
+                return sc.getBytes(is) * BYTE_MULTIPLIER;
             }
         }
         return 0;

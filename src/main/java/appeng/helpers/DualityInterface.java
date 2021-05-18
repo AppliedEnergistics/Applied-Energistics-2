@@ -775,10 +775,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
             final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
             if (ad != null) {
-                if (this.isBlocking()) {
-                    if (!ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
-                        continue;
-                    }
+                if (this.isBlocking() && !ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
+                    continue;
                 }
 
                 if (this.acceptsItems(ad, table)) {
@@ -817,11 +815,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 final TileEntity te = w.getTileEntity(tile.getPos().offset(s));
 
                 final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
-                if (ad != null) {
-                    if (ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
-                        allAreBusy = false;
-                        break;
-                    }
+                if ((ad != null) && ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
+                    allAreBusy = false;
+                    break;
                 }
             }
 
@@ -978,13 +974,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                             direction.getZOffset());
                     final BlockRayTraceResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
                     // https://github.com/MinecraftForge/MinecraftForge/pull/6708
-                    if (hit != null && !BAD_BLOCKS.contains(directedBlock)) {
-                        if (hit.getPos().equals(directedTile.getPos())) {
-                            final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
-                                    directedTile.getPos(), null);
-                            if (!g.isEmpty()) {
-                                what = g;
-                            }
+                    if ((hit != null && !BAD_BLOCKS.contains(directedBlock))
+                            && hit.getPos().equals(directedTile.getPos())) {
+                        final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
+                                directedTile.getPos(), null);
+                        if (!g.isEmpty()) {
+                            what = g;
                         }
                     }
                 } catch (final Throwable t) {

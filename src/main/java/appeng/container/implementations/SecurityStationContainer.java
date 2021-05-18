@@ -135,32 +135,30 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
-        if (!this.wirelessOut.getHasStack()) {
-            if (this.wirelessIn.getHasStack()) {
-                final ItemStack term = this.wirelessIn.getStack().copy();
-                INetworkEncodable networkEncodable = null;
+        if (!this.wirelessOut.getHasStack() && this.wirelessIn.getHasStack()) {
+            final ItemStack term = this.wirelessIn.getStack().copy();
+            INetworkEncodable networkEncodable = null;
 
-                if (term.getItem() instanceof INetworkEncodable) {
-                    networkEncodable = (INetworkEncodable) term.getItem();
-                }
+            if (term.getItem() instanceof INetworkEncodable) {
+                networkEncodable = (INetworkEncodable) term.getItem();
+            }
 
-                final IWirelessTermHandler wTermHandler = Api.instance().registries().wireless()
-                        .getWirelessTerminalHandler(term);
-                if (wTermHandler != null) {
-                    networkEncodable = wTermHandler;
-                }
+            final IWirelessTermHandler wTermHandler = Api.instance().registries().wireless()
+                    .getWirelessTerminalHandler(term);
+            if (wTermHandler != null) {
+                networkEncodable = wTermHandler;
+            }
 
-                if (networkEncodable != null) {
-                    networkEncodable.setEncryptionKey(term, String.valueOf(this.securityBox.getSecurityKey()), "");
+            if (networkEncodable != null) {
+                networkEncodable.setEncryptionKey(term, String.valueOf(this.securityBox.getSecurityKey()), "");
 
-                    this.wirelessIn.putStack(ItemStack.EMPTY);
-                    this.wirelessOut.putStack(term);
+                this.wirelessIn.putStack(ItemStack.EMPTY);
+                this.wirelessOut.putStack(term);
 
-                    // update the two slots in question...
-                    for (final IContainerListener listener : this.listeners) {
-                        listener.sendSlotContents(this, this.wirelessIn.slotNumber, this.wirelessIn.getStack());
-                        listener.sendSlotContents(this, this.wirelessOut.slotNumber, this.wirelessOut.getStack());
-                    }
+                // update the two slots in question...
+                for (final IContainerListener listener : this.listeners) {
+                    listener.sendSlotContents(this, this.wirelessIn.slotNumber, this.wirelessIn.getStack());
+                    listener.sendSlotContents(this, this.wirelessOut.slotNumber, this.wirelessOut.getStack());
                 }
             }
         }

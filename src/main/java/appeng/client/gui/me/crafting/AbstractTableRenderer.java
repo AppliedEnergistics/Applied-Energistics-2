@@ -121,10 +121,9 @@ public abstract class AbstractTableRenderer<T> {
                     AbstractGui.fill(matrixStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, overlay);
                 }
 
-                if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH) {
-                    if (mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT) {
-                        tooltipLines = getEntryTooltip(entry);
-                    }
+                if ((mouseX >= cellX && mouseX <= cellX + CELL_WIDTH)
+                        && (mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT)) {
+                    tooltipLines = getEntryTooltip(entry);
                 }
             }
         }

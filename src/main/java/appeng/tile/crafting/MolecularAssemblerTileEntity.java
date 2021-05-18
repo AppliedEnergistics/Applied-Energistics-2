@@ -431,13 +431,11 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         if (this.gridInv.getStackInSlot(9).isEmpty()) {
             for (int x = 0; x < 9; x++) {
                 final ItemStack is = this.gridInv.getStackInSlot(x);
-                if (!is.isEmpty()) {
-                    if (this.myPlan == null || !this.myPlan.isValidItemForSlot(x, is, this.world)) {
-                        this.gridInv.setStackInSlot(9, is);
-                        this.gridInv.setStackInSlot(x, ItemStack.EMPTY);
-                        this.saveChanges();
-                        return;
-                    }
+                if (!is.isEmpty() && (this.myPlan == null || !this.myPlan.isValidItemForSlot(x, is, this.world))) {
+                    this.gridInv.setStackInSlot(9, is);
+                    this.gridInv.setStackInSlot(x, ItemStack.EMPTY);
+                    this.saveChanges();
+                    return;
                 }
             }
         }

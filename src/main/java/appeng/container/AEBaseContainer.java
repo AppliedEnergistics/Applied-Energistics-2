@@ -177,10 +177,7 @@ public abstract class AEBaseContainer extends Container {
         if (this.part != null) {
             return this.part;
         }
-        if (this.guiItem != null) {
-            return this.guiItem;
-        }
-        return null;
+        return this.guiItem;
     }
 
     public TileEntity getTileEntity() {
@@ -290,10 +287,9 @@ public abstract class AEBaseContainer extends Container {
                 if (!tis.isEmpty()) {
                     // target slots in the container...
                     for (final Slot cs : this.inventorySlots) {
-                        if (!isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)) {
-                            if (cs.isItemValid(tis)) {
-                                selectedSlots.add(cs);
-                            }
+                        if ((!isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot))
+                                && cs.isItemValid(tis)) {
+                            selectedSlots.add(cs);
                         }
                     }
                 }
@@ -302,30 +298,27 @@ public abstract class AEBaseContainer extends Container {
 
                 // target slots in the container...
                 for (final Slot cs : this.inventorySlots) {
-                    if (isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)) {
-                        if (cs.isItemValid(tis)) {
-                            selectedSlots.add(cs);
-                        }
+                    if ((isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot))
+                            && cs.isItemValid(tis)) {
+                        selectedSlots.add(cs);
                     }
                 }
             }
 
             // Handle Fake Slot Shift clicking.
-            if (selectedSlots.isEmpty() && playerSide) {
-                if (!tis.isEmpty()) {
-                    // target slots in the container...
-                    for (final Slot cs : this.inventorySlots) {
-                        final ItemStack destination = cs.getStack();
+            if ((selectedSlots.isEmpty() && playerSide) && !tis.isEmpty()) {
+                // target slots in the container...
+                for (final Slot cs : this.inventorySlots) {
+                    final ItemStack destination = cs.getStack();
 
-                        if (!isPlayerSideSlot(cs) && cs instanceof FakeSlot) {
-                            if (Platform.itemComparisons().isSameItem(destination, tis)) {
-                                break;
-                            } else if (destination.isEmpty()) {
-                                cs.putStack(tis.copy());
-                                // ???
-                                this.detectAndSendChanges();
-                                break;
-                            }
+                    if (!isPlayerSideSlot(cs) && cs instanceof FakeSlot) {
+                        if (Platform.itemComparisons().isSameItem(destination, tis)) {
+                            break;
+                        } else if (destination.isEmpty()) {
+                            cs.putStack(tis.copy());
+                            // ???
+                            this.detectAndSendChanges();
+                            break;
                         }
                     }
                 }
@@ -334,12 +327,8 @@ public abstract class AEBaseContainer extends Container {
             if (!tis.isEmpty()) {
                 // find slots to stack the item into
                 for (final Slot d : selectedSlots) {
-                    if (d.isItemValid(tis)) {
-                        if (d.getHasStack()) {
-                            if (x(clickSlot, tis, d)) {
-                                return ItemStack.EMPTY;
-                            }
-                        }
+                    if ((d.isItemValid(tis) && d.getHasStack()) && x(clickSlot, tis, d)) {
+                        return ItemStack.EMPTY;
                     }
                 }
 
@@ -713,10 +702,8 @@ public abstract class AEBaseContainer extends Container {
         // The first listener that is added is our opportunity to send the initial data packet, since
         // this happens after the OpenContainer packet has been sent to the client, but before any other
         // processing continues.
-        if (listener instanceof ServerPlayerEntity) {
-            if (dataSync.hasFields()) {
-                sendPacketToClient(new GuiDataSyncPacket(windowId, dataSync::writeFull));
-            }
+        if ((listener instanceof ServerPlayerEntity) && dataSync.hasFields()) {
+            sendPacketToClient(new GuiDataSyncPacket(windowId, dataSync::writeFull));
         }
     }
 

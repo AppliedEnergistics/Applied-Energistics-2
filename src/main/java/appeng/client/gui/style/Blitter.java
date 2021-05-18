@@ -264,16 +264,16 @@ public final class Blitter {
 
         BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX);
-        bufferbuilder.pos(matrix, x1, y2, (float) zIndex)
+        bufferbuilder.pos(matrix, x1, y2, zIndex)
                 .color(r, g, b, a)
                 .tex(minU, maxV).endVertex();
-        bufferbuilder.pos(matrix, x2, y2, (float) zIndex)
+        bufferbuilder.pos(matrix, x2, y2, zIndex)
                 .color(r, g, b, a)
                 .tex(maxU, maxV).endVertex();
-        bufferbuilder.pos(matrix, x2, y1, (float) zIndex)
+        bufferbuilder.pos(matrix, x2, y1, zIndex)
                 .color(r, g, b, a)
                 .tex(maxU, minV).endVertex();
-        bufferbuilder.pos(matrix, x1, y1, (float) zIndex)
+        bufferbuilder.pos(matrix, x1, y1, zIndex)
                 .color(r, g, b, a)
                 .tex(minU, minV).endVertex();
         bufferbuilder.finishDrawing();

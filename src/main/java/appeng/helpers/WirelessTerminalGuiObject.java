@@ -236,10 +236,8 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 
         if (this.targetGrid != null && this.itemStorage != null) {
             if (this.myWap != null) {
-                if (this.myWap.getGrid() == this.targetGrid) {
-                    if (this.testWap(this.myWap)) {
-                        return true;
-                    }
+                if ((this.myWap.getGrid() == this.targetGrid) && this.testWap(this.myWap)) {
+                    return true;
                 }
                 return false;
             }
@@ -272,12 +270,10 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
             final double offZ = dc.z - this.myPlayer.getPosZ();
 
             final double r = offX * offX + offY * offY + offZ * offZ;
-            if (r < rangeLimit && this.sqRange > r) {
-                if (wap.isActive()) {
-                    this.sqRange = r;
-                    this.myRange = Math.sqrt(r);
-                    return true;
-                }
+            if ((r < rangeLimit && this.sqRange > r) && wap.isActive()) {
+                this.sqRange = r;
+                this.myRange = Math.sqrt(r);
+                return true;
             }
         }
         return false;

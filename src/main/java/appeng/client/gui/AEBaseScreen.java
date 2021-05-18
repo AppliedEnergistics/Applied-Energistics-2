@@ -410,10 +410,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
-        if (wheelDelta != 0) {
-            if (widgets.onMouseWheel(getMousePoint(x, y), wheelDelta)) {
-                return true;
-            }
+        if ((wheelDelta != 0) && widgets.onMouseWheel(getMousePoint(x, y), wheelDelta)) {
+            return true;
         }
         return false;
     }
@@ -588,10 +586,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 if (getMinecraft().gameSettings.keyBindsHotbar[j].isActiveAndMatches(input)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
-                        if (s.getSlotIndex() == j && s.inventory == this.container.getPlayerInventory()) {
-                            if (!s.canTakeStack(this.container.getPlayerInventory().player)) {
-                                return false;
-                            }
+                        if ((s.getSlotIndex() == j && s.inventory == this.container.getPlayerInventory())
+                                && !s.canTakeStack(this.container.getPlayerInventory().player)) {
+                            return false;
                         }
                     }
 
@@ -669,13 +666,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
         // If the slot has a background icon, render it, but only if the slot is empty
         // or it requests the icon to be always drawn
-        if ((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled()) {
-            if (s.getIcon() != null) {
-                s.getIcon().getBlitter()
-                        .dest(s.xPos, s.yPos)
-                        .opacity(s.getOpacityOfIcon())
-                        .blit(matrices, getBlitOffset());
-            }
+        if (((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled()) && (s.getIcon() != null)) {
+            s.getIcon().getBlitter()
+                    .dest(s.xPos, s.yPos)
+                    .opacity(s.getOpacityOfIcon())
+                    .blit(matrices, getBlitOffset());
         }
 
         // Draw a red background for slots that are in an invalid state

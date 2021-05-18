@@ -214,10 +214,8 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability) {
 
-        if (capability == Capabilities.FORGE_ENERGY) {
-            if (this.getPowerSides().equals(ALL_SIDES)) {
-                return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
-            }
+        if ((capability == Capabilities.FORGE_ENERGY) && this.getPowerSides().equals(ALL_SIDES)) {
+            return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
         }
 
         return super.getCapability(capability);
@@ -228,10 +226,8 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-        if (capability == Capabilities.FORGE_ENERGY) {
-            if (this.getPowerSides().contains(facing)) {
-                return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
-            }
+        if ((capability == Capabilities.FORGE_ENERGY) && this.getPowerSides().contains(facing)) {
+            return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
         }
         return super.getCapability(capability, facing);
     }

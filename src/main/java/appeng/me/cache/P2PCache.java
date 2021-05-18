@@ -81,10 +81,8 @@ public class P2PCache implements IGridCache {
     @Override
     public void removeNode(final IGridNode node, final IGridHost machine) {
         if (machine instanceof P2PTunnelPart) {
-            if (machine instanceof MEP2PTunnelPart) {
-                if (!node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
-                    return;
-                }
+            if ((machine instanceof MEP2PTunnelPart) && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
+                return;
             }
 
             final P2PTunnelPart t = (P2PTunnelPart) machine;
@@ -103,10 +101,8 @@ public class P2PCache implements IGridCache {
     @Override
     public void addNode(final IGridNode node, final IGridHost machine) {
         if (machine instanceof P2PTunnelPart) {
-            if (machine instanceof MEP2PTunnelPart) {
-                if (!node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
-                    return;
-                }
+            if ((machine instanceof MEP2PTunnelPart) && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
+                return;
             }
 
             final P2PTunnelPart t = (P2PTunnelPart) machine;

@@ -75,7 +75,7 @@ class CraftingCPUCycler {
                 matches++;
             }
 
-            if (found == !matched) {
+            if (found ^ matched) {
                 changed = true;
             }
         }

@@ -53,11 +53,9 @@ public class CompassManager {
             res = new CompassResult(false, true, 0);
             this.requests.put(r, res);
             this.requestUpdate(r);
-        } else if (now - res.getTime() > 1000 * 3) {
-            if (!res.isRequested()) {
-                res.setRequested(true);
-                this.requestUpdate(r);
-            }
+        } else if ((now - res.getTime() > 1000 * 3) && !res.isRequested()) {
+            res.setRequested(true);
+            this.requestUpdate(r);
         }
 
         return res;

@@ -183,11 +183,9 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         this.testFrame.setInventorySlotContents(slotIndex, i);
 
         // If we cannot substitute, the items must match exactly
-        if (!canSubstitute && slotIndex < sparseInputs.length) {
-            if (!sparseInputs[slotIndex].isSameType(i)) {
-                this.markItemAs(slotIndex, i, TestStatus.DECLINE);
-                return false;
-            }
+        if ((!canSubstitute && slotIndex < sparseInputs.length) && !sparseInputs[slotIndex].isSameType(i)) {
+            this.markItemAs(slotIndex, i, TestStatus.DECLINE);
+            return false;
         }
 
         if (this.standardRecipe.matches(this.testFrame, w)) {

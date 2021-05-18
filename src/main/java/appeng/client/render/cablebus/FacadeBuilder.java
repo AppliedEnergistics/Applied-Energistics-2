@@ -172,10 +172,8 @@ public class FacadeBuilder {
 
             BlockState blockState = facadeRenderState.getSourceBlock();
             // If we aren't forcing transparency let the block decide if it should render.
-            if (layer != null) {
-                if (!RenderTypeLookup.canRenderInLayer(blockState, layer)) {
-                    continue;
-                }
+            if ((layer != null) && !RenderTypeLookup.canRenderInLayer(blockState, layer)) {
+                continue;
             }
 
             AxisAlignedBB fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
