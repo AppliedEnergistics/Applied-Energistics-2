@@ -133,30 +133,28 @@ public class ClickPacket extends BasePacket {
                 ((CableBusBlock) block).onBlockClickPacket(player.world, pos, player, this.hand,
                         new Vector3d(this.hitX, this.hitY, this.hitZ));
             }
-        } else {
-            if (!is.isEmpty()) {
-                if (is.getItem() instanceof NetworkToolItem) {
-                    final NetworkToolItem tnt = (NetworkToolItem) is.getItem();
+        } else if (!is.isEmpty()) {
+            if (is.getItem() instanceof NetworkToolItem) {
+                final NetworkToolItem tnt = (NetworkToolItem) is.getItem();
 
-                    if (hasBlockContext()) {
-                        // Reconstruct an item use context
-                        ItemUseContext useContext = new ItemUseContext(player, hand,
-                                new BlockRayTraceResult(new Vector3d(hitX, hitY, hitZ), side, pos, false));
-                        tnt.serverSideToolLogic(useContext);
-                    } else {
-                        ContainerOpener.openContainer(NetworkToolContainer.TYPE, player,
-                                ContainerLocator.forHand(player, hand));
-                    }
+                if (hasBlockContext()) {
+                    // Reconstruct an item use context
+                    ItemUseContext useContext = new ItemUseContext(player, hand,
+                            new BlockRayTraceResult(new Vector3d(hitX, hitY, hitZ), side, pos, false));
+                    tnt.serverSideToolLogic(useContext);
+                } else {
+                    ContainerOpener.openContainer(NetworkToolContainer.TYPE, player,
+                            ContainerLocator.forHand(player, hand));
                 }
+            }
 
-                if (maybeMemoryCard.isSameAs(is)) {
-                    final IMemoryCard mem = (IMemoryCard) is.getItem();
-                    mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
-                    is.setTag(null);
-                } else if (maybeColorApplicator.isSameAs(is)) {
-                    final ColorApplicatorItem mem = (ColorApplicatorItem) is.getItem();
-                    mem.cycleColors(is, mem.getColor(is), 1);
-                }
+            if (maybeMemoryCard.isSameAs(is)) {
+                final IMemoryCard mem = (IMemoryCard) is.getItem();
+                mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
+                is.setTag(null);
+            } else if (maybeColorApplicator.isSameAs(is)) {
+                final ColorApplicatorItem mem = (ColorApplicatorItem) is.getItem();
+                mem.cycleColors(is, mem.getColor(is), 1);
             }
         }
     }

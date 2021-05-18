@@ -73,10 +73,8 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
                 if (!this.isBlockAtLocation(w, p, blocks.quantumLink())) {
                     return false;
                 }
-            } else {
-                if (!this.isBlockAtLocation(w, p, blocks.quantumRing())) {
-                    return false;
-                }
+            } else if (!this.isBlockAtLocation(w, p, blocks.quantumRing())) {
+                return false;
             }
         }
         return true;

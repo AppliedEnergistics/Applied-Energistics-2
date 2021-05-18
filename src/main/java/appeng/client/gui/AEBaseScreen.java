@@ -766,10 +766,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                     slot.yPos = HIDDEN_SLOT_POS.getY();
                 }
             }
-        } else {
-            if (hiddenSlots.remove(semantic) && style != null) {
-                positionSlots(style);
-            }
+        } else if (hiddenSlots.remove(semantic) && style != null) {
+            positionSlots(style);
         }
     }
 

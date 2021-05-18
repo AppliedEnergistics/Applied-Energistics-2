@@ -309,14 +309,12 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             } else {
                 return ROW_INVENTORY_MIDDLE_BBOX;
             }
+        } else if (firstLine) {
+            return ROW_TEXT_TOP_BBOX;
+        } else if (lastLine) {
+            return ROW_TEXT_BOTTOM_BBOX;
         } else {
-            if (firstLine) {
-                return ROW_TEXT_TOP_BBOX;
-            } else if (lastLine) {
-                return ROW_TEXT_BOTTOM_BBOX;
-            } else {
-                return ROW_TEXT_MIDDLE_BBOX;
-            }
+            return ROW_TEXT_MIDDLE_BBOX;
         }
     }
 

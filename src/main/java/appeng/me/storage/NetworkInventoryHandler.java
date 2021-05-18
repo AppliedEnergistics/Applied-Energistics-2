@@ -223,12 +223,10 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
         if (cDepth.isEmpty()) {
             currentPass++;
             this.myPass = currentPass;
+        } else if (currentPass == this.myPass) {
+            return true;
         } else {
-            if (currentPass == this.myPass) {
-                return true;
-            } else {
-                this.myPass = currentPass;
-            }
+            this.myPass = currentPass;
         }
 
         cDepth.push(this);

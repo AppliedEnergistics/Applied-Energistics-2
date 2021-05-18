@@ -360,17 +360,15 @@ public final class MeteoritePlacer {
                                 }
                             }
                         }
-                    } else {
+                    } else if (world.isAirBlock(blockPosUp)) {
                         // decay.
-                        if (world.isAirBlock(blockPosUp)) {
-                            if (Math.random() > 0.4) {
-                                final double dx = i - x;
-                                final double dy = j - y;
-                                final double dz = k - z;
+                        if (Math.random() > 0.4) {
+                            final double dx = i - x;
+                            final double dy = j - y;
+                            final double dz = k - z;
 
-                                if (dx * dx + dy * dy + dz * dz < this.crater * 1.6) {
-                                    this.type.getRandomInset(world, blockPos);
-                                }
+                            if (dx * dx + dy * dy + dz * dz < this.crater * 1.6) {
+                                this.type.getRandomInset(world, blockPos);
                             }
                         }
                     }

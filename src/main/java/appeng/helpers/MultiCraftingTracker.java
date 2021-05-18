@@ -102,13 +102,11 @@ public class MultiCraftingTracker {
                 } catch (final ExecutionException e) {
                     // :P
                 }
-            } else {
-                if (this.getLink(x) == null) {
-                    final IAEItemStack aisC = ais.copy();
-                    aisC.setStackSize(itemToCraft);
+            } else if (this.getLink(x) == null) {
+                final IAEItemStack aisC = ais.copy();
+                aisC.setStackSize(itemToCraft);
 
-                    this.setJob(x, cg.beginCraftingJob(w, g, mySrc, aisC, null));
-                }
+                this.setJob(x, cg.beginCraftingJob(w, g, mySrc, aisC, null));
             }
         }
         return false;
