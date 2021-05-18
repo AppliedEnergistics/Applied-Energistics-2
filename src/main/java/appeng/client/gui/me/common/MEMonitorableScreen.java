@@ -419,6 +419,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         return viewModeToggle != null && viewModeToggle.getCurrentValue() == ViewItems.CRAFTABLE;
     }
 
+    @Override
     protected void renderHoveredTooltip(MatrixStack matrixStack, int x, int y) {
         // Vanilla doesn't show item tooltips when the player have something in their hand
         if (style.isShowTooltipsWithItemInHand() || getPlayer().inventory.getItemStack().isEmpty()) {

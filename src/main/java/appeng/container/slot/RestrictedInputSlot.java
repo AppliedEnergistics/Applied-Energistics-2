@@ -244,6 +244,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         this.allowEdit = allowEdit;
     }
 
+    @Override
     protected boolean getCurrentValidationState() {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
             // Allow either an empty slot, or a valid encoded pattern

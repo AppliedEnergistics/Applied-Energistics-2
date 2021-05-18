@@ -236,6 +236,7 @@ public abstract class Repo<T extends IAEStack<T>> implements IClientRepo<T> {
 
     protected abstract Comparator<? super T> getComparator(SortOrder sortBy, SortDir sortDir);
 
+    @Override
     public Set<GridInventoryEntry<T>> getAllEntries() {
         return entries.values();
     }

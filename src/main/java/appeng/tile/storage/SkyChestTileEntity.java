@@ -127,6 +127,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
                 this.world.rand.nextFloat() * 0.1f + 0.9f);
     }
 
+    @Override
     public boolean receiveClientEvent(int id, int type) {
         if (id == 1) {
             this.numPlayersUsing = type;
