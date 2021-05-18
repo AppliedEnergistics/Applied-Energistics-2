@@ -109,7 +109,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
 
             if (fhOpt.isPresent()) {
                 try {
-                    final IFluidHandler fh = fhOpt.orElseThrow(() -> new IllegalStateException());
+                    final IFluidHandler fh = fhOpt.orElseThrow(IllegalStateException::new);
                     final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory(this.getChannel());
 
                     final FluidStack fluidStack = fh.drain(this.calculateAmountToSend(), FluidAction.SIMULATE);

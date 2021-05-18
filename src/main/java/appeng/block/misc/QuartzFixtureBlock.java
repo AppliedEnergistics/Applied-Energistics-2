@@ -87,7 +87,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     public QuartzFixtureBlock() {
         super(defaultProps(
                 AEMaterials.FIXTURE).doesNotBlockMovement().notSolid().hardnessAndResistance(0)
-                        .setLightLevel((b) -> 14).sound(SoundType.GLASS));
+                        .setLightLevel(b -> 14).sound(SoundType.GLASS));
 
         this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false).with(WATERLOGGED, false));
     }

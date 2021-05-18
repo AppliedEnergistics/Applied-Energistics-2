@@ -63,9 +63,7 @@ class ScreenRegistrationTest {
     @Test
     void testMissingStyles() {
         List<String> missingStyles = ScreenRegistration.CONTAINER_STYLES.values().stream()
-                .filter(f -> {
-                    return getClass().getResourceAsStream("/assets/appliedenergistics2" + f) == null;
-                })
+                .filter(f -> (getClass().getResourceAsStream("/assets/appliedenergistics2" + f) == null))
                 .collect(Collectors.toList());
         assertThat(missingStyles).isEmpty();
     }
