@@ -1,0 +1,11 @@
+{
+  "result": {
+    "item": "appliedenergistics2:cable_energy_acceptor"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:energy_acceptor"
+    }
+  ]
+}
