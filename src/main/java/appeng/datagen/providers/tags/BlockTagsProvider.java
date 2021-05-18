@@ -22,6 +22,7 @@ import java.nio.file.Path;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
@@ -76,6 +77,17 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
                 Tags.Blocks.STAINED_GLASS,
                 BLOCKS.quartzGlass(),
                 BLOCKS.quartzVibrantGlass());
+
+        // Special behavior is associated with this tag
+        add(BlockTags.WALLS.getName(),
+                BLOCKS.skyStoneWall().block(),
+                BLOCKS.smoothSkyStoneWall().block(),
+                BLOCKS.skyStoneBrickWall().block(),
+                BLOCKS.skyStoneSmallBrickWall().block(),
+                BLOCKS.fluixWall().block(),
+                BLOCKS.quartzWall().block(),
+                BLOCKS.chiseledQuartzWall().block(),
+                BLOCKS.quartzPillarWall().block());
     }
 
     private void addForge(String tagName, Object... blockSources) {

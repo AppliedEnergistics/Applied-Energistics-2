@@ -102,7 +102,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private int rows = 0;
     private SettingToggleButton<ViewItems> viewModeToggle;
     private SettingToggleButton<SortOrder> sortByToggle;
-    private SettingToggleButton<SortDir> sortDirToggle;
+    private final SettingToggleButton<SortDir> sortDirToggle;
     private boolean isAutoFocus = false;
     private int currentMouseX = 0;
     private int currentMouseY = 0;
@@ -120,7 +120,9 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.repo = createRepo(scrollbar);
-        setScrollBar();
+        container.setClientRepo(this.repo);
+        this.repo.setUpdateViewListener(this::updateScrollbar);
+        updateScrollbar();
 
         this.xSize = this.style.getScreenWidth();
         this.ySize = this.style.getScreenHeight(0);
@@ -178,20 +180,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     protected abstract void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<T> entry, int mouseButton,
             ClickType clickType);
 
-    public void postUpdate(boolean fullUpdate, final List<GridInventoryEntry<T>> list) {
-        if (fullUpdate) {
-            this.repo.clear();
-        }
-
-        for (GridInventoryEntry<T> entry : list) {
-            this.repo.postUpdate(entry);
-        }
-
-        this.repo.updateView();
-        this.setScrollBar();
-    }
-
-    private void setScrollBar() {
+    private void updateScrollbar() {
         scrollbar.setHeight(this.rows * style.getRow().getSrcHeight() - 2);
         int totalRows = (this.repo.size() + getSlotsPerRow() - 1) / getSlotsPerRow();
         scrollbar.setRange(0, totalRows - this.rows, Math.max(1, this.rows / 6));
@@ -263,7 +252,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             this.repo.updateView();
         }
 
-        this.setScrollBar();
+        this.updateScrollbar();
     }
 
     @Override
@@ -308,7 +297,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             this.searchField.setText("");
             this.repo.setSearchString("");
             this.repo.updateView();
-            this.setScrollBar();
+            this.updateScrollbar();
             return true;
         }
 
@@ -401,7 +390,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                     try {
                         renderGridInventoryEntry(matrices, s.xPos, s.yPos, entry);
                     } catch (final Exception err) {
-                        AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err.toString());
+                        AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
                     }
 
                     // If a view mode is selected that only shows craftable items, display the "craftable" text
@@ -499,7 +488,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         if (this.searchField.isFocused() && this.searchField.charTyped(character, p_charTyped_2_)) {
             this.repo.setSearchString(this.searchField.getText());
             this.repo.updateView();
-            this.setScrollBar();
+            this.updateScrollbar();
             return true;
         }
 
@@ -529,7 +518,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                 if (this.searchField.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
                     this.repo.setSearchString(this.searchField.getText());
                     this.repo.updateView();
-                    this.setScrollBar();
+                    this.updateScrollbar();
                 }
 
                 // We need to swallow key presses if the field is focused because typing 'e'

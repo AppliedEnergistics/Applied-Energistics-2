@@ -30,8 +30,9 @@ import com.google.common.base.Preconditions;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -39,10 +40,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.container.me.common.GridInventoryEntry;
+import appeng.container.me.common.IClientRepo;
 import appeng.container.me.common.IncrementalUpdateHelper;
 import appeng.container.me.common.MEMonitorableContainer;
+import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
@@ -73,9 +75,9 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         this.list = new ArrayList<>(itemCount);
 
         // We need to access the current screen to know which storage channel was used to serialize this data
-        MEMonitorableScreen<T, ? extends MEMonitorableContainer<T>> screen = getScreen();
-        if (screen != null) {
-            IStorageChannel<T> storageChannel = screen.getContainer().getStorageChannel();
+        MEMonitorableContainer<T> container = getContainer();
+        if (container != null) {
+            IStorageChannel<T> storageChannel = container.getStorageChannel();
             for (int i = 0; i < itemCount; i++) {
                 this.list.add(GridInventoryEntry.read(storageChannel, data));
             }
@@ -83,20 +85,26 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     }
 
     @SuppressWarnings("unchecked")
-    private MEMonitorableScreen<T, ? extends MEMonitorableContainer<T>> getScreen() {
+    private MEMonitorableContainer<T> getContainer() {
         // This is slightly dangerous since it accesses the game thread from the network thread,
-        // but reading the current screen is atomic (reference field), and from then the window id
+        // but reading the current container is atomic (reference field), and from then the window id
         // and storage channel are immutable.
-        Screen currentScreen = Minecraft.getInstance().currentScreen;
-        if (!(currentScreen instanceof MEMonitorableScreen)) {
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        if (player == null) {
+            // Probably a race-condition when the player already has left the game
+            return null;
+        }
+
+        Container currentContainer = player.openContainer;
+        if (!(currentContainer instanceof MEMonitorableContainer)) {
             // Ignore a packet for a screen that has already been closed
             return null;
         }
 
         // If the window id matches, this unsafe cast should actually be safe
-        MEMonitorableScreen<?, ?> meScreen = (MEMonitorableScreen<?, ?>) currentScreen;
-        if (meScreen.getContainer().windowId == windowId) {
-            return (MEMonitorableScreen<T, ? extends MEMonitorableContainer<T>>) meScreen;
+        MEMonitorableContainer<?> meContainer = (MEMonitorableContainer<?>) currentContainer;
+        if (meContainer.windowId == windowId) {
+            return (MEMonitorableContainer<T>) meContainer;
         }
 
         return null;
@@ -245,11 +253,19 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        MEMonitorableScreen<T, ? extends MEMonitorableContainer<T>> screen = getScreen();
-
-        if (screen != null) {
-            screen.postUpdate(fullUpdate, list);
+        MEMonitorableContainer<T> container = getContainer();
+        if (container == null) {
+            AELog.info("Ignoring ME inventory update packet because the target container isn't open.");
+            return;
         }
+
+        IClientRepo<T> clientRepo = container.getClientRepo();
+        if (clientRepo == null) {
+            AELog.info("Ignoring ME inventory update packet because no client repo is available.");
+            return;
+        }
+
+        clientRepo.handleUpdate(fullUpdate, list);
     }
 
 }
