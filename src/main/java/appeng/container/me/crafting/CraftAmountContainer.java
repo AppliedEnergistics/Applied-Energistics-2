@@ -83,7 +83,7 @@ public class CraftAmountContainer extends AEBaseContainer {
     }
 
     public IGrid getGrid() {
-        final IActionHost h = ((IActionHost) this.getTarget());
+        final IActionHost h = (IActionHost) this.getTarget();
         return h.getActionableNode().getGrid();
     }
 

@@ -177,12 +177,12 @@ public class PartPlacement {
             }
         }
 
-        if (held.isEmpty() && (host != null && InteractionUtil.isInAlternateUseMode(player) && world.isAirBlock(pos))) {
+        if (held.isEmpty() && host != null && InteractionUtil.isInAlternateUseMode(player) && world.isAirBlock(pos)) {
             if (mop.getType() == RayTraceResult.Type.BLOCK) {
                 Vector3d hitVec = mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(),
                         -mop.getPos().getZ());
                 final SelectedPart sPart = selectPart(player, host, hitVec);
-                if ((sPart != null && sPart.part != null) && sPart.part.onShiftActivate(player, hand, hitVec)) {
+                if (sPart != null && sPart.part != null && sPart.part.onShiftActivate(player, hand, hitVec)) {
                     if (world.isRemote()) {
                         NetworkHandler.instance()
                                 .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
@@ -280,8 +280,8 @@ public class PartPlacement {
                 final SelectedPart sp = selectPart(player, host,
                         mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
 
-                if ((sp.part != null) && (!InteractionUtil.isInAlternateUseMode(player)
-                        && sp.part.onActivate(player, hand, mop.getHitVec()))) {
+                if (sp.part != null && !InteractionUtil.isInAlternateUseMode(player)
+                        && sp.part.onActivate(player, hand, mop.getHitVec())) {
                     return ActionResultType.FAIL;
                 }
             }

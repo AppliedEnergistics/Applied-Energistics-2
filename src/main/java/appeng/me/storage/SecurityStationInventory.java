@@ -46,8 +46,8 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 
     @Override
     public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
-        if ((this.hasPermission(src)
-                && Api.instance().definitions().items().biometricCard().isSameAs(input.createItemStack()))
+        if (this.hasPermission(src)
+                && Api.instance().definitions().items().biometricCard().isSameAs(input.createItemStack())
                 && this.canAccept(input)) {
             if (type == Actionable.SIMULATE) {
                 return null;

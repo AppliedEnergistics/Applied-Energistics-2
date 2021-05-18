@@ -106,7 +106,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
         FluidState fluidState = context.getWorld().getFluidState(pos);
 
         // Set the even/odd property
-        boolean oddPlacement = ((pos.getX() + pos.getY() + pos.getZ()) % 2) != 0;
+        boolean oddPlacement = (pos.getX() + pos.getY() + pos.getZ()) % 2 != 0;
         blockstate = blockstate.with(ODD, oddPlacement).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
 
         IWorldReader iworldreader = context.getWorld();

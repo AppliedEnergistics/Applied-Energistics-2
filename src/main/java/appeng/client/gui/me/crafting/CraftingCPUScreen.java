@@ -80,7 +80,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
             final long elapsedTime = status.getElapsedTime();
             final double remainingItems = status.getRemainingItemCount();
             final double startItems = status.getStartItemCount();
-            final long eta = (long) (elapsedTime / Math.max(1d, (startItems - remainingItems))
+            final long eta = (long) (elapsedTime / Math.max(1d, startItems - remainingItems)
                     * remainingItems);
 
             if (eta > 0 && !getVisualEntries().isEmpty()) {

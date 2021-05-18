@@ -108,7 +108,7 @@ public class QuadCornerKicker extends QuadTransformer {
         int side = this.quad.orientation.ordinal();
         if (side != this.mySide && side != (this.mySide ^ 1)) {
             for (int hoz : horizonals[this.mySide]) {
-                if ((side != hoz && side != (hoz ^ 1)) && ((this.facadeMask & (1 << hoz)) != 0)) {
+                if (side != hoz && side != (hoz ^ 1) && (this.facadeMask & 1 << hoz) != 0) {
                     Corner corner = Corner.fromSides(this.mySide ^ 1, side, hoz);
                     for (Vertex vertex : this.quad.vertices) {
                         float x = vertex.vec[0];

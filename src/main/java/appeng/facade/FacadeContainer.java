@@ -56,7 +56,7 @@ public class FacadeContainer implements IFacadeContainer {
 
     @Override
     public void removeFacade(final IPartHost host, final AEPartLocation side) {
-        if ((side != null && side != AEPartLocation.INTERNAL) && (this.storage.getFacade(side.ordinal()) != null)) {
+        if (side != null && side != AEPartLocation.INTERNAL && this.storage.getFacade(side.ordinal()) != null) {
             this.storage.setFacade(side.ordinal(), null);
             this.notifyChange();
             if (host != null) {
@@ -108,7 +108,7 @@ public class FacadeContainer implements IFacadeContainer {
 
         for (int x = 0; x < this.facades; x++) {
             final AEPartLocation side = AEPartLocation.fromOrdinal(x);
-            final int ix = (1 << x);
+            final int ix = 1 << x;
             if ((facadeSides & ix) == ix) {
                 final int id = Math.abs(out.readInt());
 
@@ -155,7 +155,7 @@ public class FacadeContainer implements IFacadeContainer {
         int facadeSides = 0;
         for (int x = 0; x < this.facades; x++) {
             if (this.getFacade(AEPartLocation.fromOrdinal(x)) != null) {
-                facadeSides |= (1 << x);
+                facadeSides |= 1 << x;
             }
         }
         out.writeByte((byte) facadeSides);

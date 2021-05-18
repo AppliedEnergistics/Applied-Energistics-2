@@ -154,7 +154,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
     private void setScrollBar() {
         final int size = this.status.getGroupedMachines().size();
-        int overflowRows = (size + (COLUMNS - 1)) / COLUMNS - ROWS;
+        int overflowRows = (size + COLUMNS - 1) / COLUMNS - ROWS;
         scrollbar.setRange(0, overflowRows, 1);
     }
 

@@ -262,7 +262,7 @@ public final class MeteoritePlacer {
                 for (int zz = 0; zz < secondary; zz++) {
                     switch ((int) (Math.random() * 1000) % 3) {
                         case 0:
-                            final int amount = (int) ((Math.random() * SKYSTONE_SPAWN_LIMIT) + 1);
+                            final int amount = (int) (Math.random() * SKYSTONE_SPAWN_LIMIT + 1);
                             ap.addItems(new ItemStack(skyStoneItem, amount));
                             break;
                         case 1:
@@ -361,7 +361,7 @@ public final class MeteoritePlacer {
                             }
                         }
                     } else // decay.
-                    if (world.isAirBlock(blockPosUp) && (Math.random() > 0.4)) {
+                    if (world.isAirBlock(blockPosUp) && Math.random() > 0.4) {
                         final double dx = i - x;
                         final double dy = j - y;
                         final double dz = k - z;

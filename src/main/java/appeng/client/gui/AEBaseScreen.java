@@ -308,7 +308,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         // All lines after the first are colored gray
         List<ITextComponent> styledLines = new ArrayList<>(lines.size());
         for (int i = 0; i < lines.size(); i++) {
-            Style style = (i == 0) ? TOOLTIP_HEADER : TOOLTIP_BODY;
+            Style style = i == 0 ? TOOLTIP_HEADER : TOOLTIP_BODY;
             styledLines.add(lines.get(i).deepCopy().modifyStyle(s -> style));
         }
 
@@ -410,7 +410,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
-        if ((wheelDelta != 0) && widgets.onMouseWheel(getMousePoint(x, y), wheelDelta)) {
+        if (wheelDelta != 0 && widgets.onMouseWheel(getMousePoint(x, y), wheelDelta)) {
             return true;
         }
         return false;
@@ -521,7 +521,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 action = InventoryAction.CRAFT_SHIFT;
             } else {
                 // Craft stack on right-click, craft single on left-click
-                action = (mouseButton == 1) ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
+                action = mouseButton == 1 ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
             }
 
             final InventoryActionPacket p = new InventoryActionPacket(action, slotIdx, 0);
@@ -586,7 +586,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 if (getMinecraft().gameSettings.keyBindsHotbar[j].isActiveAndMatches(input)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
-                        if ((s.getSlotIndex() == j && s.inventory == this.container.getPlayerInventory())
+                        if (s.getSlotIndex() == j && s.inventory == this.container.getPlayerInventory()
                                 && !s.canTakeStack(this.container.getPlayerInventory().player)) {
                             return false;
                         }
@@ -666,7 +666,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
         // If the slot has a background icon, render it, but only if the slot is empty
         // or it requests the icon to be always drawn
-        if (((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled()) && (s.getIcon() != null)) {
+        if ((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled() && s.getIcon() != null) {
             s.getIcon().getBlitter()
                     .dest(s.xPos, s.yPos)
                     .opacity(s.getOpacityOfIcon())

@@ -116,7 +116,7 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     @Override
     public int getUsedChannels() {
-        return (this.channelData >> 8) & 0xff;
+        return this.channelData >> 8 & 0xff;
     }
 
     @Override

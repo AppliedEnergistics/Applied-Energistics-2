@@ -105,7 +105,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
             this.crafting.setInventorySlotContents(x, gs);
 
-            if (!gs.isEmpty() && (!this.isCraftable) || !gs.hasTag()) {
+            if (!gs.isEmpty() && !this.isCraftable || !gs.hasTag()) {
                 this.markItemAs(x, gs, TestStatus.ACCEPT);
             }
 
@@ -183,7 +183,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         this.testFrame.setInventorySlotContents(slotIndex, i);
 
         // If we cannot substitute, the items must match exactly
-        if ((!canSubstitute && slotIndex < sparseInputs.length) && !sparseInputs[slotIndex].isSameType(i)) {
+        if (!canSubstitute && slotIndex < sparseInputs.length && !sparseInputs[slotIndex].isSameType(i)) {
             this.markItemAs(slotIndex, i, TestStatus.DECLINE);
             return false;
         }
@@ -289,8 +289,8 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         // Compute the x,y of the slot, as-if the recipe was anchored to 0,0
-        int slotX = (slot % CRAFTING_GRID_DIMENSION) - leftOffset;
-        int slotY = (slot / CRAFTING_GRID_DIMENSION) - topOffset;
+        int slotX = slot % CRAFTING_GRID_DIMENSION - leftOffset;
+        int slotY = slot / CRAFTING_GRID_DIMENSION - topOffset;
 
         // Compute the index into the recipe's ingredient list now
         int ingredientIndex = slotY * recipeWidth + slotX;
@@ -439,9 +439,9 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
         public TestLookup(final int slot, final Item item, final int dmg) {
             this.slot = slot;
-            this.ref = (dmg << Platform.DEF_OFFSET) | (Item.getIdFromItem(item) & 0xffff);
+            this.ref = dmg << Platform.DEF_OFFSET | Item.getIdFromItem(item) & 0xffff;
             final int offset = 3 * slot;
-            this.hash = (this.ref << offset) | (this.ref >> (offset + 32));
+            this.hash = this.ref << offset | this.ref >> offset + 32;
         }
 
         @Override

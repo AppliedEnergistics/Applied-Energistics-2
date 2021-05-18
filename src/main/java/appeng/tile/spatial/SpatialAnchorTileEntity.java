@@ -296,7 +296,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     private void updatePowerConsumption() {
-        int energy = 80 + (this.chunks.size() * (this.chunks.size() + 1)) / 2;
+        int energy = 80 + this.chunks.size() * (this.chunks.size() + 1) / 2;
         this.getProxy().setIdlePowerUsage(energy);
     }
 

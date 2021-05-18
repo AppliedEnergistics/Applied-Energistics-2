@@ -118,7 +118,7 @@ public class SpatialStorageHelper {
             }
         });
 
-        if ((entity != null) && !passengersOnOtherSide.isEmpty()) {
+        if (entity != null && !passengersOnOtherSide.isEmpty()) {
             for (Entity passanger : passengersOnOtherSide) {
                 passanger.startRiding(entity, true);
             }

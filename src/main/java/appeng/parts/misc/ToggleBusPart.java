@@ -162,8 +162,8 @@ public class ToggleBusPart extends BasicStatePart {
 
     private void updateInternalState() {
         final boolean intention = this.getIntention();
-        if ((intention == (this.connection == null))
-                && (this.getProxy().getNode() != null && this.getOuterProxy().getNode() != null)) {
+        if (intention == (this.connection == null)
+                && this.getProxy().getNode() != null && this.getOuterProxy().getNode() != null) {
             if (intention) {
                 try {
                     this.connection = Api.instance().grid().createGridConnection(this.getProxy().getNode(),

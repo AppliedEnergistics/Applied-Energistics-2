@@ -145,7 +145,7 @@ public class ApiCrafting implements ICraftingHelper {
                 .orElse(null);
 
         // Check that it matches the expected output
-        if ((potentialRecipe != null) && products.get(0).isSameType(potentialRecipe.getCraftingResult(testInventory))) {
+        if (potentialRecipe != null && products.get(0).isSameType(potentialRecipe.getCraftingResult(testInventory))) {
             // Yay we found a match, reencode the pattern
             AELog.debug("Re-Encoding pattern from %s -> %s", currentRecipeId, potentialRecipe.getId());
             ItemStack[] in = ingredients.stream().map(ais -> ais != null ? ais.createItemStack() : ItemStack.EMPTY)

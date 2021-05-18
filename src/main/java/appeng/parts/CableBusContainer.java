@@ -172,7 +172,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     @Override
     public AEPartLocation addPart(ItemStack is, final AEPartLocation side, final @Nullable PlayerEntity player,
             final @Nullable Hand hand) {
-        if (this.canAddPart(is, side) && (is.getItem() instanceof IPartItem)) {
+        if (this.canAddPart(is, side) && is.getItem() instanceof IPartItem) {
             final IPartItem<?> bi = (IPartItem<?>) is.getItem();
 
             is = is.copy();
@@ -700,7 +700,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     public boolean isLadder(final LivingEntity entity) {
         for (final AEPartLocation side : AEPartLocation.values()) {
             final IPart p = this.getPart(side);
-            if ((p != null) && p.isLadder(entity)) {
+            if (p != null && p.isLadder(entity)) {
                 return true;
             }
         }
@@ -737,7 +737,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         for (int x = 0; x < 7; x++) {
             final IPart p = this.getPart(AEPartLocation.fromOrdinal(x));
             if (p != null) {
-                sides |= (1 << x);
+                sides |= 1 << x;
             }
         }
 
@@ -764,7 +764,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
         for (int x = 0; x < 7; x++) {
             AEPartLocation side = AEPartLocation.fromOrdinal(x);
-            if (((sides & (1 << x)) == (1 << x))) {
+            if ((sides & 1 << x) == 1 << x) {
                 IPart p = this.getPart(side);
 
                 final int itemID = data.readVarInt();
@@ -1089,7 +1089,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             }
 
             if ((Api.instance().partHelper().getCableRenderMode().opaqueFacades || forCollision)
-                    && (s != AEPartLocation.INTERNAL)) {
+                    && s != AEPartLocation.INTERNAL) {
                 final IFacadePart fp = fc.getFacade(s);
                 if (fp != null) {
                     fp.getBoxes(bch, forItemEntity);

@@ -174,8 +174,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.fluid == null) ? 0 : this.fluid.hashCode());
-        result = prime * result + ((this.tagCompound == null) ? 0 : this.tagCompound.hashCode());
+        result = prime * result + (this.fluid == null ? 0 : this.fluid.hashCode());
+        result = prime * result + (this.tagCompound == null ? 0 : this.tagCompound.hashCode());
 
         return result;
     }

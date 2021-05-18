@@ -156,8 +156,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        return (x >= boundsMin.getX() && y >= boundsMin.getY() && z >= boundsMin.getZ() && x <= boundsMax.getX()
-                && y <= boundsMax.getY() && z <= boundsMax.getZ());
+        return x >= boundsMin.getX() && y >= boundsMin.getY() && z >= boundsMin.getZ() && x <= boundsMax.getX()
+                && y <= boundsMax.getY() && z <= boundsMax.getZ();
     }
 
     private boolean isValidTileAt(final World w, final int x, final int y, final int z) {

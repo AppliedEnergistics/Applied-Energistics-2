@@ -473,8 +473,8 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     @Override
     public void provideCrafting(final ICraftingProviderHelper craftingTracker) {
-        if ((this.getInstalledUpgrades(Upgrades.CRAFTING) > 0)
-                && (this.getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE) == YesNo.YES)) {
+        if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0
+                && this.getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE) == YesNo.YES) {
             final IAEItemStack what = this.config.getAEStackInSlot(0);
             if (what != null) {
                 craftingTracker.setEmitable(what);

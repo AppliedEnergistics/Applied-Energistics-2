@@ -105,7 +105,7 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
             final IBiometricCard bc = (IBiometricCard) a.getItem();
 
             for (final SecurityPermissions sp : bc.getPermissions(a)) {
-                this.setPermissionMode(this.getPermissionMode() | (1 << sp.ordinal()));
+                this.setPermissionMode(this.getPermissionMode() | 1 << sp.ordinal());
             }
         }
 

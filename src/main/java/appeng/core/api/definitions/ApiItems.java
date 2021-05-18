@@ -248,7 +248,7 @@ public final class ApiItems implements IItems {
                                     // re-search its
                                     // inventory for a new paintball everytime
                                     AEColor col = colorApplicatorItem.getActiveColor(itemStack);
-                                    return (col != null) ? 1 : 0;
+                                    return col != null ? 1 : 0;
                                 });
                     }
                 }).rendering(new ColorApplicatorItemRendering()).build();

@@ -170,7 +170,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             while (i.hasNext()) {
                 final TunnelConnection cw = i.next();
                 try {
-                    if ((cw.getTunnel().getProxy().getGrid() != this.getProxy().getGrid())
+                    if (cw.getTunnel().getProxy().getGrid() != this.getProxy().getGrid()
                             || !cw.getTunnel().getProxy().isActive()) {
                         cw.getConnection().destroy();
                         i.remove();

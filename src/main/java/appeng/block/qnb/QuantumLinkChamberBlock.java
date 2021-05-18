@@ -62,7 +62,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     @Override
     public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
         final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
-        if (((bridge != null) && bridge.hasQES()) && AppEng.proxy.shouldAddParticles(rand)) {
+        if (bridge != null && bridge.hasQES() && AppEng.proxy.shouldAddParticles(rand)) {
             AppEng.proxy.spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                     null);
         }

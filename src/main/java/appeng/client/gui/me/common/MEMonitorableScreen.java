@@ -445,7 +445,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         final List<ITextComponent> currentToolTip = this.getTooltipFromItem(stack);
 
         long storedAmount = entry.getStoredAmount();
-        if (storedAmount > bigNumber || (storedAmount > 1 && stack.isDamaged())) {
+        if (storedAmount > bigNumber || storedAmount > 1 && stack.isDamaged()) {
             final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                     .format(storedAmount);
             currentToolTip

@@ -139,7 +139,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     private IGrid getGrid() {
-        final IActionHost h = ((IActionHost) this.getTarget());
+        final IActionHost h = (IActionHost) this.getTarget();
         return h.getActionableNode().getGrid();
     }
 

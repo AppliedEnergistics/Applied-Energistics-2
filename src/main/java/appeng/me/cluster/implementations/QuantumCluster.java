@@ -117,12 +117,12 @@ public class QuantumCluster implements ILocatable, IAECluster {
                 }
 
                 try {
-                    if ((sideA.connection != null) && (sideA.connection.getConnection() != null)) {
+                    if (sideA.connection != null && sideA.connection.getConnection() != null) {
                         sideA.connection.getConnection().destroy();
                         sideA.connection = new ConnectionWrapper(null);
                     }
 
-                    if ((sideB.connection != null) && (sideB.connection.getConnection() != null)) {
+                    if (sideB.connection != null && sideB.connection.getConnection() != null) {
                         sideB.connection.getConnection().destroy();
                         sideB.connection = new ConnectionWrapper(null);
                     }
@@ -140,7 +140,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
             shutdown = true;
         }
 
-        if ((shutdown && this.connection != null) && (this.connection.getConnection() != null)) {
+        if (shutdown && this.connection != null && this.connection.getConnection() != null) {
             this.connection.getConnection().destroy();
             this.connection.setConnection(null);
             this.connection = new ConnectionWrapper(null);

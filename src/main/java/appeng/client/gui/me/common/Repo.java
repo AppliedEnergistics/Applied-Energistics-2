@@ -149,7 +149,7 @@ public abstract class Repo<T extends IAEStack<T>> implements IClientRepo<T> {
         ViewItems viewMode = this.sortSrc.getSortDisplay();
 
         for (GridInventoryEntry<T> entry : this.entries.values()) {
-            if ((this.partitionList != null) && !this.partitionList.isListed(entry.getStack())) {
+            if (this.partitionList != null && !this.partitionList.isListed(entry.getStack())) {
                 continue;
             }
 

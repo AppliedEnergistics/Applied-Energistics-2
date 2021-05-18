@@ -148,7 +148,7 @@ public class WorldCoord {
 
     @Override
     public int hashCode() {
-        return (this.y << 24) ^ this.x ^ this.z;
+        return this.y << 24 ^ this.x ^ this.z;
     }
 
     @Override

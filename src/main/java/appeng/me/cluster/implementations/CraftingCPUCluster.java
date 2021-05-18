@@ -275,7 +275,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                 return leftOver;
             }
-        } else if ((type == Actionable.MODULATE) && (is != null && is.getStackSize() > 0)) {
+        } else if (type == Actionable.MODULATE && is != null && is.getStackSize() > 0) {
             this.waiting = false;
 
             this.postChange(what, src);
@@ -566,7 +566,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return;
         }
 
-        if ((this.myLastLink != null) && this.myLastLink.isCanceled()) {
+        if (this.myLastLink != null && this.myLastLink.isCanceled()) {
             this.myLastLink = null;
             this.cancel();
         }

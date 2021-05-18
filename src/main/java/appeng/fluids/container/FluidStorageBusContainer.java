@@ -137,7 +137,7 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
         }
 
         for (int x = 0; x < h.getSlots(); x++) {
-            if (i.hasNext() && this.isSlotEnabled((x / 9) - 2)) {
+            if (i.hasNext() && this.isSlotEnabled(x / 9 - 2)) {
                 h.setFluidInSlot(x, i.next());
             } else {
                 h.setFluidInSlot(x, null);

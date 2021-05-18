@@ -33,7 +33,7 @@ public class ItemSlot {
 
     public ItemStack getItemStack() {
         return this.itemStack.isEmpty()
-                ? (this.aeItemStack == null ? ItemStack.EMPTY : (this.itemStack = this.aeItemStack.createItemStack()))
+                ? this.aeItemStack == null ? ItemStack.EMPTY : (this.itemStack = this.aeItemStack.createItemStack())
                 : this.itemStack;
     }
 
@@ -44,7 +44,7 @@ public class ItemSlot {
 
     public IAEItemStack getAEItemStack() {
         return this.aeItemStack == null
-                ? (this.itemStack.isEmpty() ? null : (this.aeItemStack = AEItemStack.fromItemStack(this.itemStack)))
+                ? this.itemStack.isEmpty() ? null : (this.aeItemStack = AEItemStack.fromItemStack(this.itemStack))
                 : this.aeItemStack;
     }
 

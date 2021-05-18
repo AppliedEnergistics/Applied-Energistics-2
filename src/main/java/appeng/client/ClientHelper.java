@@ -202,9 +202,9 @@ public class ClientHelper extends ServerHelper {
     }
 
     private void spawnEnergy(final World w, final double posX, final double posY, final double posZ) {
-        final float x = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-        final float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-        final float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
+        final float x = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
+        final float y = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
+        final float z = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
 
         Minecraft.getInstance().particles.addParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y, posZ + z,
                 -x * 0.1, -y * 0.1, -z * 0.1);

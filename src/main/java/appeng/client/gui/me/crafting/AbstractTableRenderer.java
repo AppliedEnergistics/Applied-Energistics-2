@@ -105,7 +105,7 @@ public abstract class AbstractTableRenderer<T> {
                 for (ITextComponent line : lines) {
                     final int w = fontRenderer.getStringPropertyWidth(line);
                     fontRenderer.drawText(matrixStack, line,
-                            (int) ((itemX - 2 - (w * TEXT_SCALE)) * INV_TEXT_SCALE),
+                            (int) ((itemX - 2 - w * TEXT_SCALE) * INV_TEXT_SCALE),
                             textY * INV_TEXT_SCALE, textColor);
                     textY += lineHeight + LINE_SPACING;
                 }
@@ -121,8 +121,8 @@ public abstract class AbstractTableRenderer<T> {
                     AbstractGui.fill(matrixStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, overlay);
                 }
 
-                if ((mouseX >= cellX && mouseX <= cellX + CELL_WIDTH)
-                        && (mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT)) {
+                if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH
+                        && mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT) {
                     tooltipLines = getEntryTooltip(entry);
                 }
             }

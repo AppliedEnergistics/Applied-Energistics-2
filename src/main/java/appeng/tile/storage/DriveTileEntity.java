@@ -135,7 +135,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         }
         for (int x = 0; x < this.getCellCount(); x++) {
             final int o = this.getCellStatus(x).ordinal();
-            final int i = (o << (BIT_CELL_STATE_BITS * x));
+            final int i = o << BIT_CELL_STATE_BITS * x;
             newState |= i;
         }
 
@@ -233,7 +233,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     @Override
     public CellState getCellStatus(final int slot) {
         if (isRemote()) {
-            final int cellState = ((this.state >> (slot * BIT_CELL_STATE_BITS)) & BIT_CELL_STATE_MASK);
+            final int cellState = this.state >> slot * BIT_CELL_STATE_BITS & BIT_CELL_STATE_MASK;
             return CellState.values()[cellState];
         }
 
@@ -296,7 +296,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         }
 
         for (int x = 0; x < this.getCellCount(); x++) {
-            newState |= (this.getCellStatus(x).ordinal() << (BIT_CELL_STATE_BITS * x));
+            newState |= this.getCellStatus(x).ordinal() << BIT_CELL_STATE_BITS * x;
         }
 
         if (newState != this.state) {

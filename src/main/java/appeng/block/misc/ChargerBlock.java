@@ -90,7 +90,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
         }
 
         final ChargerTileEntity tile = this.getTileEntity(w, pos);
-        if ((tile != null) && Api.instance().definitions().materials().certusQuartzCrystalCharged()
+        if (tile != null && Api.instance().definitions().materials().certusQuartzCrystalCharged()
                 .isSameAs(tile.getInternalInventory().getStackInSlot(0))) {
             final double xOff = 0.0;
             final double yOff = 0.0;

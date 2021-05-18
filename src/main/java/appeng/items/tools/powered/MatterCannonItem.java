@@ -372,8 +372,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         final BlockState bs = w.getBlockState(blockPos);
 
                         final float hardness = bs.getBlockHardness(w, blockPos) * 9.0f;
-                        if ((hardness >= 0.0) && (penetration > hardness
-                                && Platform.hasPermissions(new DimensionalCoord(w, blockPos), p))) {
+                        if (hardness >= 0.0 && penetration > hardness
+                                && Platform.hasPermissions(new DimensionalCoord(w, blockPos), p)) {
                             hasDestroyed = true;
                             penetration -= hardness;
                             penetration *= 0.60;

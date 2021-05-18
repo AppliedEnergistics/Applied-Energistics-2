@@ -39,11 +39,11 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
     @Override
     public boolean checkMultiblockScale(final BlockPos min, final BlockPos max) {
         if ((max.getX() - min.getX() + 1) * (max.getY() - min.getY() + 1) * (max.getZ() - min.getZ() + 1) == 9) {
-            final int ones = ((max.getX() - min.getX()) == 0 ? 1 : 0) + ((max.getY() - min.getY()) == 0 ? 1 : 0)
-                    + ((max.getZ() - min.getZ()) == 0 ? 1 : 0);
+            final int ones = (max.getX() - min.getX() == 0 ? 1 : 0) + (max.getY() - min.getY() == 0 ? 1 : 0)
+                    + (max.getZ() - min.getZ() == 0 ? 1 : 0);
 
-            final int threes = ((max.getX() - min.getX()) == 2 ? 1 : 0) + ((max.getY() - min.getY()) == 2 ? 1 : 0)
-                    + ((max.getZ() - min.getZ()) == 2 ? 1 : 0);
+            final int threes = (max.getX() - min.getX() == 2 ? 1 : 0) + (max.getY() - min.getY() == 2 ? 1 : 0)
+                    + (max.getZ() - min.getZ() == 2 ? 1 : 0);
 
             return ones == 1 && threes == 2;
         }

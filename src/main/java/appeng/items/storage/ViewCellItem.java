@@ -56,7 +56,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                 continue;
             }
 
-            if ((currentViewCell.getItem() instanceof ViewCellItem)) {
+            if (currentViewCell.getItem() instanceof ViewCellItem) {
                 final IItemList<IAEItemStack> priorityList = Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createList();
 

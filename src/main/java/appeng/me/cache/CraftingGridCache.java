@@ -417,8 +417,8 @@ public class CraftingGridCache
                     // TODO: check if OK
                     // TODO: this is slightly hacky, but fine as long as we only deal with
                     // itemstacks
-                    if ((ais.getItem() == whatToCraft.getItem()
-                            && (!ais.getItem().isDamageable() || ais.getItemDamage() == whatToCraft.getItemDamage()))
+                    if (ais.getItem() == whatToCraft.getItem()
+                            && (!ais.getItem().isDamageable() || ais.getItemDamage() == whatToCraft.getItemDamage())
                             && details.isValidItemForSlot(slotIndex, ais.asItemStackRepresentation(), world)) {
                         return this.craftableItems.get(ais);
                     }

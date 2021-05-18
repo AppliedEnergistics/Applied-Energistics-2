@@ -168,7 +168,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public final int getLightLevel() {
-        return this.blockLight(this.isPowered() ? (this.isLightSource() ? 15 : 9) : 0);
+        return this.blockLight(this.isPowered() ? this.isLightSource() ? 15 : 9 : 0);
     }
 
     @Override
@@ -192,8 +192,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
 
-        final byte rotation = (byte) (MathHelper.floor((player.rotationYaw * 4F) / 360F + 2.5D) & 3);
-        if ((side == AEPartLocation.UP) || (side == AEPartLocation.DOWN)) {
+        final byte rotation = (byte) (MathHelper.floor(player.rotationYaw * 4F / 360F + 2.5D) & 3);
+        if (side == AEPartLocation.UP || side == AEPartLocation.DOWN) {
             this.spin = rotation;
         }
     }
@@ -215,7 +215,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             if (!isRemote()) {
                 return this.getProxy().getEnergy().isNetworkPowered();
             } else {
-                return ((this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG);
+                return (this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG;
             }
         } catch (final GridAccessException e) {
             return false;
@@ -225,9 +225,9 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     @Override
     public final boolean isActive() {
         if (!this.isLightSource()) {
-            return ((this.getClientFlags()
+            return (this.getClientFlags()
                     & (PanelPart.CHANNEL_FLAG | PanelPart.POWERED_FLAG)) == (PanelPart.CHANNEL_FLAG
-                            | PanelPart.POWERED_FLAG));
+                            | PanelPart.POWERED_FLAG);
         } else {
             return this.isPowered();
         }

@@ -110,40 +110,40 @@ public class SpatialPylonCache implements ISpatialCache {
                     case X:
 
                         this.isValid = this.isValid
-                                && ((this.captureMax.y == cl.getBoundsMin().getY()
-                                        || this.captureMin.y == cl.getBoundsMax().getY())
-                                        || (this.captureMax.z == cl.getBoundsMin().getZ()
-                                                || this.captureMin.z == cl.getBoundsMax().getZ()))
-                                && ((this.captureMax.y == cl.getBoundsMax().getY()
-                                        || this.captureMin.y == cl.getBoundsMin().getY())
-                                        || (this.captureMax.z == cl.getBoundsMax().getZ()
-                                                || this.captureMin.z == cl.getBoundsMin().getZ()));
+                                && (this.captureMax.y == cl.getBoundsMin().getY()
+                                        || this.captureMin.y == cl.getBoundsMax().getY()
+                                        || this.captureMax.z == cl.getBoundsMin().getZ()
+                                        || this.captureMin.z == cl.getBoundsMax().getZ())
+                                && (this.captureMax.y == cl.getBoundsMax().getY()
+                                        || this.captureMin.y == cl.getBoundsMin().getY()
+                                        || this.captureMax.z == cl.getBoundsMax().getZ()
+                                        || this.captureMin.z == cl.getBoundsMin().getZ());
 
                         break;
                     case Y:
 
                         this.isValid = this.isValid
-                                && ((this.captureMax.x == cl.getBoundsMin().getX()
-                                        || this.captureMin.x == cl.getBoundsMax().getX())
-                                        || (this.captureMax.z == cl.getBoundsMin().getZ()
-                                                || this.captureMin.z == cl.getBoundsMax().getZ()))
-                                && ((this.captureMax.x == cl.getBoundsMax().getX()
-                                        || this.captureMin.x == cl.getBoundsMin().getX())
-                                        || (this.captureMax.z == cl.getBoundsMax().getZ()
-                                                || this.captureMin.z == cl.getBoundsMin().getZ()));
+                                && (this.captureMax.x == cl.getBoundsMin().getX()
+                                        || this.captureMin.x == cl.getBoundsMax().getX()
+                                        || this.captureMax.z == cl.getBoundsMin().getZ()
+                                        || this.captureMin.z == cl.getBoundsMax().getZ())
+                                && (this.captureMax.x == cl.getBoundsMax().getX()
+                                        || this.captureMin.x == cl.getBoundsMin().getX()
+                                        || this.captureMax.z == cl.getBoundsMax().getZ()
+                                        || this.captureMin.z == cl.getBoundsMin().getZ());
 
                         break;
                     case Z:
 
                         this.isValid = this.isValid
-                                && ((this.captureMax.y == cl.getBoundsMin().getY()
-                                        || this.captureMin.y == cl.getBoundsMax().getY())
-                                        || (this.captureMax.x == cl.getBoundsMin().getX()
-                                                || this.captureMin.x == cl.getBoundsMax().getX()))
-                                && ((this.captureMax.y == cl.getBoundsMax().getY()
-                                        || this.captureMin.y == cl.getBoundsMin().getY())
-                                        || (this.captureMax.x == cl.getBoundsMax().getX()
-                                                || this.captureMin.x == cl.getBoundsMin().getX()));
+                                && (this.captureMax.y == cl.getBoundsMin().getY()
+                                        || this.captureMin.y == cl.getBoundsMax().getY()
+                                        || this.captureMax.x == cl.getBoundsMin().getX()
+                                        || this.captureMin.x == cl.getBoundsMax().getX())
+                                && (this.captureMax.y == cl.getBoundsMax().getY()
+                                        || this.captureMin.y == cl.getBoundsMin().getY()
+                                        || this.captureMax.x == cl.getBoundsMax().getX()
+                                        || this.captureMin.x == cl.getBoundsMin().getX());
 
                         break;
                     case UNFORMED:
@@ -155,7 +155,7 @@ public class SpatialPylonCache implements ISpatialCache {
             final int reqX = this.captureMax.x - this.captureMin.x;
             final int reqY = this.captureMax.y - this.captureMin.y;
             final int reqZ = this.captureMax.z - this.captureMin.z;
-            final int requirePylonBlocks = Math.max(6, ((reqX * reqZ + reqX * reqY + reqY * reqZ) * 3) / 8);
+            final int requirePylonBlocks = Math.max(6, (reqX * reqZ + reqX * reqY + reqY * reqZ) * 3 / 8);
 
             this.efficiency = (double) pylonBlocks / (double) requirePylonBlocks;
 

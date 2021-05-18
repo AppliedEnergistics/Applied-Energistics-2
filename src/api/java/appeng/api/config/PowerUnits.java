@@ -57,7 +57,7 @@ public enum PowerUnits {
      * @return value converted to target units, from this units.
      */
     public double convertTo(final PowerUnits target, final double value) {
-        return (value * this.conversionRatio) / target.conversionRatio;
+        return value * this.conversionRatio / target.conversionRatio;
     }
 
     public ITextComponent textComponent() {

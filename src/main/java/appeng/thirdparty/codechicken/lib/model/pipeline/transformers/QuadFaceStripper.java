@@ -75,7 +75,7 @@ public class QuadFaceStripper extends QuadTransformer {
             return true;// No mask, nothing changes.
         }
         // If the bit for this quad is set, then check if we should strip.
-        if ((this.mask & (1 << this.quad.orientation.ordinal())) != 0) {
+        if ((this.mask & 1 << this.quad.orientation.ordinal()) != 0) {
             AxisDirection dir = this.quad.orientation.getAxisDirection();
             Vertex[] vertices = this.quad.vertices;
             switch (this.quad.orientation.getAxis()) {

@@ -131,7 +131,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         final BlockState bs = w.getBlockState(pos);
         if (!InteractionUtil.isInAlternateUseMode(p)) {
             final TileEntity te = w.getTileEntity(pos);
-            if (!(te instanceof IGridHost) && (bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs)) {
+            if (!(te instanceof IGridHost) && bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
                 bs.neighborChanged(w, pos, Blocks.AIR, pos, false);
                 p.swingArm(hand);
                 return !w.isRemote;

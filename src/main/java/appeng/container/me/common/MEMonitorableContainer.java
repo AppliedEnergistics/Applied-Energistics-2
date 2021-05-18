@@ -138,7 +138,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
 
-                if ((host instanceof IPortableCell) || (host instanceof IMEChest)) {
+                if (host instanceof IPortableCell || host instanceof IMEChest) {
                     powerSource = (IEnergySource) host;
                 } else if (host instanceof IGridHost || host instanceof IActionHost) {
                     final IGridNode node;
@@ -289,7 +289,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         IGridNode hostNode = networkNode;
         // Wireless terminals do not directly expose the target grid (even though they
         // have one)
-        if ((hostNode == null) && (host instanceof IActionHost)) {
+        if (hostNode == null && host instanceof IActionHost) {
             hostNode = ((IActionHost) host).getActionableNode();
         }
         IGrid grid = null;

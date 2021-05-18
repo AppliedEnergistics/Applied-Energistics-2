@@ -68,7 +68,7 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
      * determining the item model.
      */
     public static int getStorageLevelFromFillFactor(double fillFactor) {
-        byte factor = (byte) (8.0 * (fillFactor));
+        byte factor = (byte) (8.0 * fillFactor);
 
         return MathHelper.clamp(factor, 0, EnergyCellBlock.MAX_FULLNESS);
     }

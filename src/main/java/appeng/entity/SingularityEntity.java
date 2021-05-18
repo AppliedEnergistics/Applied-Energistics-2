@@ -105,7 +105,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
                                 materials.qESingularity().maybeStack(2).ifPresent(singularityStack -> {
                                     final CompoundNBT cmp = singularityStack.getOrCreateTag();
-                                    cmp.putLong("freq", (new Date()).getTime() * 100 + (randTickSeed) % 100);
+                                    cmp.putLong("freq", new Date().getTime() * 100 + randTickSeed % 100);
                                     randTickSeed++;
                                     item.grow(-1);
 

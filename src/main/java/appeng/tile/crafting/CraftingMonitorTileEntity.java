@@ -112,10 +112,10 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     }
 
     public void setJob(final IAEItemStack is) {
-        if ((is == null) != (this.dspPlay == null)) {
+        if (is == null != (this.dspPlay == null)) {
             this.dspPlay = is == null ? null : is.copy();
             this.markForUpdate();
-        } else if ((is != null && this.dspPlay != null) && (is.getStackSize() != this.dspPlay.getStackSize())) {
+        } else if (is != null && this.dspPlay != null && is.getStackSize() != this.dspPlay.getStackSize()) {
             this.dspPlay = is.copy();
             this.markForUpdate();
         }

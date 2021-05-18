@@ -172,7 +172,7 @@ public class FacadeBuilder {
 
             BlockState blockState = facadeRenderState.getSourceBlock();
             // If we aren't forcing transparency let the block decide if it should render.
-            if ((layer != null) && !RenderTypeLookup.canRenderInLayer(blockState, layer)) {
+            if (layer != null && !RenderTypeLookup.canRenderInLayer(blockState, layer)) {
                 continue;
             }
 

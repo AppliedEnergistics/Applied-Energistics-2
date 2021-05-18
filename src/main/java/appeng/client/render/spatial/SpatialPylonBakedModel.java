@@ -148,8 +148,8 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
 
         if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_MIDDLE) {
             return SpatialPylonTextureType.BASE_SPANNED;
-        } else if (((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN)
-                || ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX)) {
+        } else if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN
+                || (flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
             return SpatialPylonTextureType.BASE_END;
         }
 
@@ -165,8 +165,8 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
 
         if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_MIDDLE) {
             return good ? SpatialPylonTextureType.DIM_SPANNED : SpatialPylonTextureType.RED_SPANNED;
-        } else if (((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN)
-                || ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX)) {
+        } else if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN
+                || (flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
             return good ? SpatialPylonTextureType.DIM_END : SpatialPylonTextureType.RED_END;
         }
 

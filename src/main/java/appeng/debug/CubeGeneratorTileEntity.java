@@ -52,7 +52,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
 
             if (this.countdown % 20 == 0) {
                 for (final PlayerEntity e : AppEng.proxy.getPlayers()) {
-                    e.sendMessage(new StringTextComponent("Spawning in... " + (this.countdown / 20)), Util.DUMMY_UUID);
+                    e.sendMessage(new StringTextComponent("Spawning in... " + this.countdown / 20), Util.DUMMY_UUID);
                 }
             }
 

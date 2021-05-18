@@ -82,7 +82,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
         if (!world.isRemote() && mat.isLiquid()) {
             this.transformTime++;
-            if ((this.transformTime > 60) && !this.transform()) {
+            if (this.transformTime > 60 && !this.transform()) {
                 this.transformTime = 0;
             }
         } else {

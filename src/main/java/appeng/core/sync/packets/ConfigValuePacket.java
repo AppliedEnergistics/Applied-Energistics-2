@@ -76,10 +76,10 @@ public class ConfigValuePacket extends BasePacket {
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final Container c = player.openContainer;
 
-        if (this.Name.equals("Item") && ((!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
-                && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem)
-                || (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
-                        && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem))) {
+        if (this.Name.equals("Item") && (!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
+                && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem
+                || !player.getHeldItem(Hand.OFF_HAND).isEmpty()
+                        && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem)) {
             final Hand hand;
             if (!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
                     && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {

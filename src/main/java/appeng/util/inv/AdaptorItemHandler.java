@@ -46,7 +46,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
 
         for (int slot = 0; slot < slots && amount > 0; slot++) {
             final ItemStack is = this.itemHandler.getStackInSlot(slot);
-            if (is.isEmpty() || (!filter.isEmpty() && !Platform.itemComparisons().isSameItem(is, filter))) {
+            if (is.isEmpty() || !filter.isEmpty() && !Platform.itemComparisons().isSameItem(is, filter)) {
                 continue;
             }
 
@@ -96,7 +96,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
                     continue;
                 }
 
-                if ((destination != null) && !destination.canInsert(extracted)) {
+                if (destination != null && !destination.canInsert(extracted)) {
                     continue;
                 }
 
@@ -128,7 +128,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
         for (int slot = 0; slot < slots && extracted.isEmpty(); slot++) {
             final ItemStack is = this.itemHandler.getStackInSlot(slot);
             if (is.isEmpty()
-                    || (!filter.isEmpty() && !Platform.itemComparisons().isFuzzyEqualItem(is, filter, fuzzyMode))) {
+                    || !filter.isEmpty() && !Platform.itemComparisons().isFuzzyEqualItem(is, filter, fuzzyMode)) {
                 continue;
             }
 
@@ -159,14 +159,14 @@ public class AdaptorItemHandler extends InventoryAdaptor {
         for (int slot = 0; slot < slots && extracted.isEmpty(); slot++) {
             final ItemStack is = this.itemHandler.getStackInSlot(slot);
             if (is.isEmpty()
-                    || (!filter.isEmpty() && !Platform.itemComparisons().isFuzzyEqualItem(is, filter, fuzzyMode))) {
+                    || !filter.isEmpty() && !Platform.itemComparisons().isFuzzyEqualItem(is, filter, fuzzyMode)) {
                 continue;
             }
 
             // Attempt extracting it
             extracted = this.itemHandler.extractItem(slot, amount, true);
 
-            if ((!extracted.isEmpty() && destination != null) && !destination.canInsert(extracted)) {
+            if (!extracted.isEmpty() && destination != null && !destination.canInsert(extracted)) {
                 extracted = ItemStack.EMPTY; // Keep on looking...
             }
         }

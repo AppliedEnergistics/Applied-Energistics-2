@@ -191,7 +191,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
 
         @Override
         public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
-            return (slot == 0 && SpatialIOPortTileEntity.this.isSpatialCell(stack));
+            return slot == 0 && SpatialIOPortTileEntity.this.isSpatialCell(stack);
         }
 
     }

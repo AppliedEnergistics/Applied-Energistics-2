@@ -68,7 +68,7 @@ public final class InscriberRecipes {
             boolean isNameA = namePress.isSameAs(plateA);
             boolean isNameB = namePress.isSameAs(plateB);
 
-            if ((isNameA && isNameB) || isNameA && plateB.isEmpty()) {
+            if (isNameA && isNameB || isNameA && plateB.isEmpty()) {
                 return makeNamePressRecipe(input, plateA, plateB);
             } else if (plateA.isEmpty() && isNameB) {
                 return makeNamePressRecipe(input, plateB, plateA);

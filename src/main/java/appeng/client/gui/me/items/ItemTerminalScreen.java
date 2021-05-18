@@ -78,7 +78,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
         if (entry == null) {
             // The only interaction allowed on an empty virtual slot is putting down the currently held item
             if (clickType == ClickType.PICKUP && !playerInventory.getItemStack().isEmpty()) {
-                InventoryAction action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+                InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                         : InventoryAction.PICKUP_OR_SET_DOWN;
                 container.handleInteraction(-1, action);
             }
@@ -95,7 +95,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
 
             switch (clickType) {
                 case PICKUP: // pickup / set-down.
-                    action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+                    action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                             : InventoryAction.PICKUP_OR_SET_DOWN;
 
                     if (action == InventoryAction.PICKUP_OR_SET_DOWN
@@ -107,7 +107,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
 
                     break;
                 case QUICK_MOVE:
-                    action = (mouseButton == 1) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+                    action = mouseButton == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
                     break;
 
                 case CLONE: // creative dupe:

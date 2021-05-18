@@ -126,8 +126,8 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
             FluidStack newIS = this.handler.getFluidInTank(tank);
             // We have to actually check if we could extract _anything_
             // Just to safeguard against tanks that prevent non-bucket-size extractions
-            if (((!newIS.isEmpty() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY)
-                    && this.handler.drain(1, IFluidHandler.FluidAction.SIMULATE).isEmpty())
+            if (!newIS.isEmpty() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY
+                    && this.handler.drain(1, IFluidHandler.FluidAction.SIMULATE).isEmpty()
                     && this.handler.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE)
                             .isEmpty()) {
                 newIS = FluidStack.EMPTY;
@@ -156,9 +156,9 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
                 IAEFluidStack stack = null;
 
                 if (!newIS.isEmpty()) {
-                    stack = (old == null || old.aeStack == null
+                    stack = old == null || old.aeStack == null
                             ? Api.instance().storage().getStorageChannel(IFluidStorageChannel.class).createStack(newIS)
-                            : old.aeStack.copy());
+                            : old.aeStack.copy();
                 }
                 if (stack != null) {
                     stack.setStackSize(newSize);

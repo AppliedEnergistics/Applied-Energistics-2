@@ -103,7 +103,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
                 return ItemStack.EMPTY;
             }
 
-            if (RestrictedInputSlot.isMetalIngot(input) && (QuartzKnifeContainer.this.currentName.length() > 0)) {
+            if (RestrictedInputSlot.isMetalIngot(input) && QuartzKnifeContainer.this.currentName.length() > 0) {
                 return Api.instance().definitions().materials().namePress().maybeStack(1).map(namePressStack -> {
                     final CompoundNBT compound = namePressStack.getOrCreateTag();
                     compound.putString(MaterialItem.TAG_INSCRIBE_NAME, QuartzKnifeContainer.this.currentName);

@@ -181,7 +181,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             final ItemStack newType = ItemStack.read(data);
             final short freq = data.getShort("freq");
 
-            if (!newType.isEmpty() && (newType.getItem() instanceof IPartItem)) {
+            if (!newType.isEmpty() && newType.getItem() instanceof IPartItem) {
                 final IPart testPart = ((IPartItem<?>) newType.getItem()).createPart(newType);
                 if (testPart instanceof P2PTunnelPart) {
                     this.getHost().removePart(this.getSide(), true);

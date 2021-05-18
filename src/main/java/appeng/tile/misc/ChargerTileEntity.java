@@ -215,9 +215,9 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
                         changed = true;
                     }
                 }
-            } else if ((this.getInternalCurrentPower() > POWER_THRESHOLD
-                    && materials.certusQuartzCrystal().isSameAs(myItem)) && (Platform.getRandomFloat() > 0.8f)) // simulate
-                                                                                                                // wait
+            } else if (this.getInternalCurrentPower() > POWER_THRESHOLD
+                    && materials.certusQuartzCrystal().isSameAs(myItem) && Platform.getRandomFloat() > 0.8f) // simulate
+                                                                                                             // wait
             {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
