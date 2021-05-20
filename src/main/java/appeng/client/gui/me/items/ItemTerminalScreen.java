@@ -139,16 +139,4 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
         return entry.getStoredAmount() == 0 && entry.isCraftable();
     }
 
-    public boolean hasItemType(ItemStack itemStack, int amount) {
-        for (GridInventoryEntry<IAEItemStack> stack : repo.getAllEntries()) {
-            if (stack.getStack().equals(itemStack)) {
-                if (stack.getStoredAmount() >= amount) {
-                    return true;
-                }
-                amount -= stack.getStoredAmount();
-            }
-        }
-        return false;
-    }
-
 }

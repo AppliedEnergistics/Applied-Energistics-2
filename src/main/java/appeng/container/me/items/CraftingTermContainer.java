@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -43,6 +44,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.helpers.InventoryAction;
+import appeng.util.Platform;
 import appeng.util.inv.WrapperInvItemHandler;
 
 /**
@@ -132,6 +134,26 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
         CraftingMatrixSlot slot = craftingSlots[0];
         final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.slotNumber, 0);
         NetworkHandler.instance().sendToServer(p);
+    }
+
+    @Override
+    public boolean hasItemType(ItemStack itemStack, int amount) {
+        // In addition to the base item repo, also check the crafting grid if it
+        // already contains some of the needed items
+        for (Slot slot : getSlots(SlotSemantic.CRAFTING_GRID)) {
+            ItemStack stackInSlot = slot.getStack();
+            if (!stackInSlot.isEmpty()) {
+                if (Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
+                    if (itemStack.getCount() >= amount) {
+                        return true;
+                    }
+                    amount -= itemStack.getCount();
+                }
+            }
+
+        }
+
+        return super.hasItemType(itemStack, amount);
     }
 
 }

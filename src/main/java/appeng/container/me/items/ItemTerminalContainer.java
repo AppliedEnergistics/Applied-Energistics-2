@@ -32,6 +32,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerTypeBuilder;
+import appeng.container.me.common.GridInventoryEntry;
+import appeng.container.me.common.IClientRepo;
 import appeng.container.me.common.MEMonitorableContainer;
 import appeng.container.me.crafting.CraftAmountContainer;
 import appeng.core.AELog;
@@ -275,6 +277,23 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(input),
                 this.getActionSource());
         return ais == null ? ItemStack.EMPTY : ais.createItemStack();
+    }
+
+    public boolean hasItemType(ItemStack itemStack, int amount) {
+        IClientRepo<IAEItemStack> clientRepo = getClientRepo();
+
+        if (clientRepo != null) {
+            for (GridInventoryEntry<IAEItemStack> stack : clientRepo.getAllEntries()) {
+                if (stack.getStack().equals(itemStack)) {
+                    if (stack.getStoredAmount() >= amount) {
+                        return true;
+                    }
+                    amount -= stack.getStoredAmount();
+                }
+            }
+        }
+
+        return false;
     }
 
 }

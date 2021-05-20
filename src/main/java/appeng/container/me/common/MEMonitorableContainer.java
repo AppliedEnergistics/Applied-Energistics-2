@@ -109,6 +109,13 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
 
     private final IStorageChannel<T> storageChannel;
 
+    /**
+     * The repository of entries currently known on the client-side. This is maintained by the screen associated with
+     * this container and will only be non-null on the client-side.
+     */
+    @Nullable
+    private IClientRepo<T> clientRepo;
+
     public MEMonitorableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
             final ITerminalHost host, final boolean bindInventory,
             IStorageChannel<T> storageChannel) {
@@ -434,6 +441,15 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
 
     public IStorageChannel<T> getStorageChannel() {
         return this.storageChannel;
+    }
+
+    @Nullable
+    public IClientRepo<T> getClientRepo() {
+        return clientRepo;
+    }
+
+    public void setClientRepo(@Nullable IClientRepo<T> clientRepo) {
+        this.clientRepo = clientRepo;
     }
 
 }
