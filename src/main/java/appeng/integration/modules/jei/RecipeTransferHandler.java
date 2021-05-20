@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import appeng.container.implementations.ContainerPatternTerm;
+import appeng.core.sync.packets.PacketValueConfig;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import mezz.jei.transfer.RecipeTransferErrorInternal;
 import mezz.jei.transfer.RecipeTransferErrorTooltip;
@@ -73,24 +74,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 	{
 		final String recipeType = recipeLayout.getRecipeCategory().getUid();
 
-		if (!recipeType.equals( VanillaRecipeCategoryUid.INFORMATION) && !recipeType.equals(VanillaRecipeCategoryUid.FUEL))
-		{
-			if( container instanceof ContainerPatternTerm )
-			{
-				if( !( (ContainerPatternTerm) container ).isCraftingMode() )
-				{
-					if( recipeType.equals( VanillaRecipeCategoryUid.CRAFTING ) )
-					{
-						return new RecipeTransferErrorTooltip( I18n.format( "gui.appliedenergistics2.CraftingPattern" ) );
-					}
-				}
-				else if( !recipeType.equals( VanillaRecipeCategoryUid.CRAFTING ) )
-				{
-					return new RecipeTransferErrorTooltip( I18n.format( "gui.appliedenergistics2.ProcessingPattern" ) );
-				}
-			}
-		}
-		else
+		if (recipeType.equals( VanillaRecipeCategoryUid.INFORMATION) || recipeType.equals(VanillaRecipeCategoryUid.FUEL))
 		{
 			return RecipeTransferErrorInternal.INSTANCE;
 		}
@@ -98,6 +82,30 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 		if( !doTransfer )
 		{
 			return null;
+		}
+
+		if( container instanceof ContainerPatternTerm )
+		{
+			try
+			{
+				if( !( (ContainerPatternTerm) container ).isCraftingMode() )
+				{
+					if( recipeType.equals( VanillaRecipeCategoryUid.CRAFTING ) )
+					{
+						NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.CraftMode", "1" ) );
+					}
+				}
+				else if( !recipeType.equals( VanillaRecipeCategoryUid.CRAFTING ) )
+				{
+
+					NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.CraftMode", "0" ) );
+				}
+
+			}
+			catch( IOException e )
+			{
+				e.printStackTrace();
+			}
 		}
 
 		Map<Integer, ? extends IGuiIngredient<ItemStack>> ingredients = recipeLayout.getItemStacks().getGuiIngredients();
