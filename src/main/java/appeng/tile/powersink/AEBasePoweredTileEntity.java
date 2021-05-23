@@ -18,19 +18,17 @@
 
 package appeng.tile.powersink;
 
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.IdentityHashMap;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
-import dev.technici4n.fasttransferlib.api.energy.EnergyApi;
 import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
 
 import appeng.api.config.AccessRestriction;
@@ -54,13 +52,14 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     private static final Set<Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf(Direction.class));
     private Set<Direction> internalPowerSides = ALL_SIDES;
     private final EnergyIo ftlEnergyIo;
+    public static final BlockApiLookup.BlockEntityApiProvider<EnergyIo, Direction> ENERGY_PROVIDER = (be,
+            dir) -> ((AEBasePoweredTileEntity) be).ftlEnergyIo;
 
     // IC2 private IC2PowerSink ic2Sink;
 
     public AEBasePoweredTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.ftlEnergyIo = new FtlEnergyAdapter(this);
-        registerEnergyIfNecessary();
         // IC2 this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
         // IC2 this.ic2Sink.setValidFaces( this.internalPowerSides );
     }
@@ -230,17 +229,6 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
         super.remove();
 
         // IC2 this.ic2Sink.invalidate();
-    }
-
-    // Lazily register energy API
-    // TODO: find a better way to streamline API registrations (likely for fabric 1.17, with item/fluid API)
-    private static final Set<TileEntityType<?>> REGISTERED_TILES = Collections.newSetFromMap(new IdentityHashMap<>());
-
-    private synchronized void registerEnergyIfNecessary() {
-        if (REGISTERED_TILES.add(getType())) {
-            EnergyApi.SIDED.registerForBlockEntities((be, dir) -> ((AEBasePoweredTileEntity) be).ftlEnergyIo,
-                    getType());
-        }
     }
 
 }
