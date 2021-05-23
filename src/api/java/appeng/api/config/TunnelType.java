@@ -29,4 +29,5 @@ public enum TunnelType {
     FLUID, // Fluid Tunnel
     ITEM, // Item Tunnel
     LIGHT, // Light Tunnel
+    ENERGY, // (FTL) Energy Tunnel
 }

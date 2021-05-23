@@ -234,6 +234,10 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                     newType = parts.p2PTunnelRedstone().maybeStack(1).orElse(ItemStack.EMPTY);
                     break;
 
+                case ENERGY:
+                    newType = parts.p2PTunnelEnergy().maybeStack(1).orElse(ItemStack.EMPTY);
+                    break;
+
                 default:
                     newType = ItemStack.EMPTY;
                     break;

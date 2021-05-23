@@ -73,6 +73,8 @@ public interface IParts {
 
     IItemDefinition p2PTunnelLight();
 
+    IItemDefinition p2PTunnelEnergy();
+
     IItemDefinition cableAnchor();
 
     IItemDefinition monitor();

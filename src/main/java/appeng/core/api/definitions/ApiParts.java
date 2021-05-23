@@ -62,11 +62,7 @@ import appeng.parts.networking.GlassCablePart;
 import appeng.parts.networking.QuartzFiberPart;
 import appeng.parts.networking.SmartCablePart;
 import appeng.parts.networking.SmartDenseCablePart;
-import appeng.parts.p2p.FluidP2PTunnelPart;
-import appeng.parts.p2p.ItemP2PTunnelPart;
-import appeng.parts.p2p.LightP2PTunnelPart;
-import appeng.parts.p2p.MEP2PTunnelPart;
-import appeng.parts.p2p.RedstoneP2PTunnelPart;
+import appeng.parts.p2p.*;
 import appeng.parts.reporting.ConversionMonitorPart;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.DarkPanelPart;
@@ -106,6 +102,7 @@ public final class ApiParts implements IParts {
     private final IItemDefinition p2PTunnelItems;
     private final IItemDefinition p2PTunnelFluids;
     private final IItemDefinition p2PTunnelLight;
+    private final IItemDefinition p2PTunnelEnergy;
     private final IItemDefinition cableAnchor;
     private final IItemDefinition monitor;
     private final IItemDefinition semiDarkMonitor;
@@ -175,6 +172,7 @@ public final class ApiParts implements IParts {
         this.p2PTunnelItems = createPart("item_p2p_tunnel", ItemP2PTunnelPart.class, ItemP2PTunnelPart::new);
         this.p2PTunnelFluids = createPart("fluid_p2p_tunnel", FluidP2PTunnelPart.class, FluidP2PTunnelPart::new);
         this.p2PTunnelLight = createPart("light_p2p_tunnel", LightP2PTunnelPart.class, LightP2PTunnelPart::new);
+        this.p2PTunnelEnergy = createPart("energy_p2p_tunnel", FtlP2PTunnelPart.class, FtlP2PTunnelPart::new);
         this.interfaceTerminal = createPart("interface_terminal", InterfaceTerminalPart.class,
                 InterfaceTerminalPart::new);
         this.fluidTerminal = createPart("fluid_terminal", FluidTerminalPart.class, FluidTerminalPart::new);
@@ -319,6 +317,11 @@ public final class ApiParts implements IParts {
     @Override
     public IItemDefinition p2PTunnelLight() {
         return this.p2PTunnelLight;
+    }
+
+    @Override
+    public IItemDefinition p2PTunnelEnergy() {
+        return p2PTunnelEnergy;
     }
 
     @Override
