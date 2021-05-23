@@ -18,7 +18,9 @@
 
 package appeng.tile.powersink;
 
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.IdentityHashMap;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -27,11 +29,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
 
-import team.reborn.energy.EnergySide;
-import team.reborn.energy.EnergyStorage;
-import team.reborn.energy.EnergyTier;
+import dev.technici4n.fasttransferlib.api.energy.EnergyApi;
+import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -39,11 +39,10 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
-import appeng.core.AEConfig;
 import appeng.tile.AEBaseInvTileEntity;
 
 public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
-        implements IAEPowerStorage, IExternalPowerSink, EnergyStorage {
+        implements IAEPowerStorage, IExternalPowerSink {
 
     // values that determine general function, are set by inheriting classes if
     // needed. These should generally remain static.
@@ -54,11 +53,14 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     private double internalCurrentPower = 0;
     private static final Set<Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf(Direction.class));
     private Set<Direction> internalPowerSides = ALL_SIDES;
+    private final EnergyIo ftlEnergyIo;
 
     // IC2 private IC2PowerSink ic2Sink;
 
     public AEBasePoweredTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
+        this.ftlEnergyIo = new FtlEnergyAdapter(this);
+        registerEnergyIfNecessary();
         // IC2 this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
         // IC2 this.ic2Sink.setValidFaces( this.internalPowerSides );
     }
@@ -230,38 +232,15 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
         // IC2 this.ic2Sink.invalidate();
     }
 
-    @Override
-    public double getMaxInput(EnergySide side) {
-        double attemptedInsert = AEConfig.instance().getPowerTransactionLimitTechReborn();
-        double overflow = this.injectExternalPower(PowerUnits.TR, attemptedInsert, Actionable.SIMULATE);
-        double couldInsert = attemptedInsert - overflow;
-        if (couldInsert < 0.001) {
-            return 0;
+    // Lazily register energy API
+    // TODO: find a better way to streamline API registrations (likely for fabric 1.17, with item/fluid API)
+    private static final Set<TileEntityType<?>> REGISTERED_TILES = Collections.newSetFromMap(new IdentityHashMap<>());
+
+    private synchronized void registerEnergyIfNecessary() {
+        if (REGISTERED_TILES.add(getType())) {
+            EnergyApi.SIDED.registerForBlockEntities((be, dir) -> ((AEBasePoweredTileEntity) be).ftlEnergyIo,
+                    getType());
         }
-
-        return PowerUnits.AE.convertTo(PowerUnits.TR, couldInsert);
-    }
-
-    @Override
-    public double getStored(EnergySide energySide) {
-        // This block acts as if it cannot actually store any energy
-        return 0.0;
-    }
-
-    @Override
-    public void setStored(double v) {
-        v = MathHelper.clamp(v, 0.001, getMaxStoredPower());
-        this.injectExternalPower(PowerUnits.TR, v, Actionable.MODULATE);
-    }
-
-    @Override
-    public double getMaxStoredPower() {
-        return AEConfig.instance().getPowerTransactionLimitTechReborn();
-    }
-
-    @Override
-    public EnergyTier getTier() {
-        return EnergyTier.INFINITE;
     }
 
 }
