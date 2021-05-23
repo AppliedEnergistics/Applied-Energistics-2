@@ -62,6 +62,7 @@ public class HighlighterHandler
         tessellator.draw();
 
         GlStateManager.enableTexture2D();
+        GlStateManager.enableDepth();
         GlStateManager.popMatrix();
     }
 
