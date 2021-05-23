@@ -34,6 +34,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
+import dev.technici4n.fasttransferlib.api.energy.EnergyApi;
+
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
@@ -43,6 +45,7 @@ import appeng.core.AppEng;
 import appeng.core.features.ActivityState;
 import appeng.core.features.BlockStackSrc;
 import appeng.tile.AEBaseTileEntity;
+import appeng.tile.powersink.AEBasePoweredTileEntity;
 import appeng.util.Platform;
 
 /**
@@ -118,6 +121,11 @@ public class TileEntityBuilder<T extends AEBaseTileEntity> {
                     AEBaseTileBlock<T> baseTileBlock = (AEBaseTileBlock<T>) block;
                     baseTileBlock.setTileEntity(tileClass, factory);
                 }
+            }
+
+            // Register FTL energy API
+            if (AEBasePoweredTileEntity.class.isAssignableFrom(tileClass)) {
+                EnergyApi.SIDED.registerForBlockEntities(AEBasePoweredTileEntity.ENERGY_PROVIDER, type);
             }
 
             if (Platform.hasClientClasses()) {

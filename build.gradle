@@ -54,6 +54,14 @@ repositories {
             includeGroup "me.shedaniel.cloth.api"
         }
     }
+    maven {
+        name = "Technici4n"
+        url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/"
+        content {
+            includeGroup "dev.technici4n"
+            includeGroup "net.fabricmc.fabric-api" // until ItemApiLookup PR #1352 is merged.
+        }
+    }
 }
 
 dependencies {
@@ -72,8 +80,9 @@ dependencies {
     include "alexiil.mc.lib:libblockattributes-fluids:${libblockattributes_version}"
 
     // Energy API
-    modApi "teamreborn:energy:${tr_energy_version}"
-    include "teamreborn:energy:${tr_energy_version}"
+    modApi include("dev.technici4n:FastTransferLib:${project.ftl_version}", {
+        exclude group: "teamreborn"
+    })
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems:${rei_version}") {
         exclude group: "net.fabricmc.fabric-api"

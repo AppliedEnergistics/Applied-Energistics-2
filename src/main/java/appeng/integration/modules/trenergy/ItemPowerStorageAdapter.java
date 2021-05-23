@@ -2,10 +2,9 @@ package appeng.integration.modules.trenergy;
 
 import net.minecraft.item.ItemStack;
 
-import team.reborn.energy.Energy;
-import team.reborn.energy.EnergySide;
-import team.reborn.energy.EnergyStorage;
-import team.reborn.energy.EnergyTier;
+import dev.technici4n.fasttransferlib.api.Simulation;
+import dev.technici4n.fasttransferlib.api.energy.EnergyApi;
+import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
@@ -13,9 +12,9 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 
 /**
  * Adapts an itemstack that implements {@link appeng.api.implementations.items.IAEItemPowerStorage} to the interface
- * used by TechReborn's energy API.
+ * used by FTL energy.
  */
-public final class ItemPowerStorageAdapter implements EnergyStorage {
+public final class ItemPowerStorageAdapter implements EnergyIo {
 
     private final IAEItemPowerStorage item;
 
@@ -26,40 +25,37 @@ public final class ItemPowerStorageAdapter implements EnergyStorage {
         this.stack = stack;
     }
 
-    @Override
-    public double getStored(EnergySide energySide) {
-        return PowerUnits.AE.convertTo(PowerUnits.TR, this.item.getAECurrentPower(this.stack));
+    public static void register() {
+        // Register our charged items as TechReborn Energy compatible
+        EnergyApi.ITEM.registerFallback((stack, ignored) -> {
+            if (stack.getItem() instanceof IAEItemPowerStorage) {
+                return new ItemPowerStorageAdapter((IAEItemPowerStorage) stack.getItem(), stack);
+            }
+
+            return null;
+        });
     }
 
     @Override
-    public void setStored(double v) {
-        double newPower = PowerUnits.TR.convertTo(PowerUnits.AE, v);
-        double currentPower = this.item.getAECurrentPower(this.stack);
-        double toInject = newPower - currentPower;
-        if (toInject > 0.0000001) {
-            this.item.injectAEPower(stack, toInject, Actionable.MODULATE);
-        }
+    public double getEnergy() {
+        return PowerUnits.AE.convertTo(PowerUnits.TR, item.getAECurrentPower(stack));
     }
 
     @Override
-    public double getMaxStoredPower() {
+    public double getEnergyCapacity() {
         return PowerUnits.AE.convertTo(PowerUnits.TR, this.item.getAEMaxPower(this.stack));
     }
 
     @Override
-    public EnergyTier getTier() {
-        return EnergyTier.INFINITE;
+    public double insert(double maxAmount, Simulation simulation) {
+        double convertedOffer = PowerUnits.TR.convertTo(PowerUnits.AE, maxAmount);
+        double overflow = item.injectAEPower(stack, convertedOffer,
+                simulation.isSimulating() ? Actionable.SIMULATE : Actionable.MODULATE);
+        return PowerUnits.AE.convertTo(PowerUnits.TR, overflow);
     }
 
-    public static void register() {
-        // Register our charged items as TechReborn Energy compatible
-        Energy.registerHolder(
-                (Object obj) -> obj instanceof ItemStack && ((ItemStack) obj).getItem() instanceof IAEItemPowerStorage,
-                (Object obj) -> {
-                    ItemStack stack = (ItemStack) obj;
-                    IAEItemPowerStorage item = (IAEItemPowerStorage) stack.getItem();
-                    return new ItemPowerStorageAdapter(item, stack);
-                });
+    @Override
+    public boolean supportsExtraction() {
+        return false;
     }
-
 }
