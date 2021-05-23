@@ -25,6 +25,7 @@ import java.util.*;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiImgButton;
+import appeng.core.worlddata.IWorldPlayerMapping;
 import appeng.util.BlockPosUtils;
 import com.google.common.collect.HashMultimap;
 
@@ -49,6 +50,7 @@ import appeng.util.Platform;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.DimensionManager;
 import org.lwjgl.input.Mouse;
 
 
@@ -79,6 +81,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private PartInterfaceTerminal partInterfaceTerminal;
 	private GuiButton guiButtonHide;
 	private GuiButton guiButtonNextAssembler;
+	private HashMap<ClientDCInternalInv,Integer> dimHashMap = new HashMap<>();
 
 	public GuiInterfaceTerminal( final InventoryPlayer inventoryPlayer, final PartInterfaceTerminal te )
 	{
@@ -217,9 +220,17 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		{
 			BlockPos blockPos = blockPosHashMap.get( guiButtonHashMap.get( this.selectedButton ) );
 			BlockPos blockPos2 = mc.player.getPosition();
-			int dimension = mc.world.provider.getDimension();
-			hilightBlock( blockPos, System.currentTimeMillis() + 500 * BlockPosUtils.getDistance(blockPos, blockPos2), dimension );
-			mc.player.sendStatusMessage( new TextComponentString( "The interface is now highlighted at " + "X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() ), false );
+			int playerDim = mc.world.provider.getDimension();
+			int interfaceDim = dimHashMap.get( guiButtonHashMap.get( this.selectedButton ) );
+			if( playerDim != interfaceDim )
+			{
+				mc.player.sendStatusMessage( new TextComponentString( "Interface located at dimension: " + interfaceDim + " [" + DimensionManager.getWorld( interfaceDim ).provider.getDimensionType().getName() + "] and cant be highlighted" ), false );
+			}
+			else
+			{
+				hilightBlock( blockPos, System.currentTimeMillis() + 500 * BlockPosUtils.getDistance( blockPos, blockPos2 ), playerDim );
+				mc.player.sendStatusMessage( new TextComponentString( "The interface is now highlighted at " + "X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() ), false );
+			}
 			mc.player.closeScreen();
 		}
 
@@ -325,6 +336,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					final NBTTagCompound invData = in.getCompoundTag( key );
 					final ClientDCInternalInv current = this.getById( id, invData.getLong( "sortBy" ), invData.getString( "un" ) );
 					blockPosHashMap.put( current, NBTUtil.getPosFromTag( invData.getCompoundTag( "pos" )) );
+					dimHashMap.put( current, invData.getInteger( "dim" ));
 
 					for( int x = 0; x < current.getInventory().getSlots(); x++ )
 					{
