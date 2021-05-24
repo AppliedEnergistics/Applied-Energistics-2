@@ -44,7 +44,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.style.Text;
+import appeng.util.LoadTranslations;
 
+@LoadTranslations
 @MockitoSettings
 class ScreenRegistrationTest {
 
