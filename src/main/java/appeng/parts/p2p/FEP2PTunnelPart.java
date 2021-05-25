@@ -172,9 +172,15 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
     }
 
     private class OutputEnergyStorage implements IEnergyStorage {
+        private IEnergyStorage getInputStorage() {
+            @Nullable
+            FEP2PTunnelPart input = getInput();
+            return input != null ? input.getAttachedEnergyStorage() : NULL_ENERGY_STORAGE;
+        }
+
         @Override
         public int extractEnergy(int maxExtract, boolean simulate) {
-            final int total = FEP2PTunnelPart.this.getAttachedEnergyStorage().extractEnergy(maxExtract, simulate);
+            final int total = getInputStorage().extractEnergy(maxExtract, simulate);
 
             if (!simulate) {
                 FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
@@ -190,7 +196,7 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
 
         @Override
         public boolean canExtract() {
-            return FEP2PTunnelPart.this.getAttachedEnergyStorage().canExtract();
+            return getInputStorage().canExtract();
         }
 
         @Override
@@ -200,12 +206,12 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
 
         @Override
         public int getMaxEnergyStored() {
-            return FEP2PTunnelPart.this.getAttachedEnergyStorage().getMaxEnergyStored();
+            return getInputStorage().getMaxEnergyStored();
         }
 
         @Override
         public int getEnergyStored() {
-            return FEP2PTunnelPart.this.getAttachedEnergyStorage().getEnergyStored();
+            return getInputStorage().getEnergyStored();
         }
     }
 

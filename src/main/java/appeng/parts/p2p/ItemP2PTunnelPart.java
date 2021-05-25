@@ -21,6 +21,7 @@ package appeng.parts.p2p;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -173,16 +174,21 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
     }
 
     private class OutputItemHandler implements IItemHandler {
+        private IItemHandler getInputHandler() {
+            @Nullable
+            ItemP2PTunnelPart input = getInput();
+            return input != null ? input.getAttachedItemHandler() : NULL_ITEM_HANDLER;
+        }
 
         @Override
         public int getSlots() {
-            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().getSlots();
+            return getInputHandler().getSlots();
         }
 
         @Override
         @Nonnull
         public ItemStack getStackInSlot(int slot) {
-            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().getStackInSlot(slot);
+            return getInputHandler().getStackInSlot(slot);
         }
 
         @Override
@@ -194,17 +200,23 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().extractItem(slot, amount, simulate);
+            ItemStack result = getInputHandler().extractItem(slot, amount, simulate);
+
+            if (!simulate) {
+                queueTunnelDrain(PowerUnits.RF, result.getCount());
+            }
+
+            return result;
         }
 
         @Override
         public int getSlotLimit(int slot) {
-            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().getSlotLimit(slot);
+            return getInputHandler().getSlotLimit(slot);
         }
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().isItemValid(slot, stack);
+            return getInputHandler().isItemValid(slot, stack);
         }
     }
 

@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -78,6 +80,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         return null;
     }
 
+    @Nullable
     public T getInput() {
         if (this.getFrequency() == 0) {
             return null;
