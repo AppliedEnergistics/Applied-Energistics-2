@@ -288,7 +288,7 @@ public class PartPlacement {
                 if (sp.part != null) {
                     if (!InteractionUtil.isInAlternateUseMode(player)
                             && sp.part.onActivate(player, hand, mop.getHitVec())) {
-                        return ActionResultType.FAIL;
+                        return ActionResultType.CONSUME;
                     }
                 }
             }
