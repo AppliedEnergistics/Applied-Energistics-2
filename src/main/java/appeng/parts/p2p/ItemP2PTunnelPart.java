@@ -28,6 +28,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
@@ -104,7 +105,8 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         @Override
         @Nonnull
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            final ItemStack remainder = stack.copy();
+            final ItemStack testStack = stack.copy();
+            int remainder = stack.getCount();
 
             try {
                 final int outputTunnels = ItemP2PTunnelPart.this.getOutputs().size();
@@ -120,34 +122,31 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
                 for (ItemP2PTunnelPart target : ItemP2PTunnelPart.this.getOutputs()) {
                     final IItemHandler output = target.getAttachedItemHandler();
                     final int toSend = amountPerOutput + overflow;
-                    final ItemStack fillWithItemStack = stack.copy();
-                    fillWithItemStack.setCount(toSend);
 
-                    ItemStack received = ItemStack.EMPTY;
-
-                    for (int i = 0; i < output.getSlots(); i++) {
-                        received = output.insertItem(i, fillWithItemStack, simulate);
-
-                        if (received.isEmpty()) {
-                            break;
-                        }
-                    }
-
-                    overflow = received.getCount();
-                    remainder.setCount(remainder.getCount() - toSend - received.getCount());
-
-                    if (remainder.isEmpty()) {
+                    if (toSend <= 0) {
+                        // Both overflow and amountPerOutput are 0, so they will be for further outputs as well.
                         break;
                     }
+
+                    // So in theory copying the stack should not be necessary because it is not supposed to be stored
+                    // or modifed by insertItem. However, ItemStackHandler will gladly store the stack so we need to do
+                    // a defensive copy.
+                    ItemStack stackCopy = stack.copy();
+                    stackCopy.setCount(toSend);
+                    final int sent = toSend - ItemHandlerHelper.insertItem(output, stackCopy, simulate).getCount();
+
+                    overflow = toSend - sent;
+                    remainder -= sent;
                 }
 
                 if (!simulate) {
-                    ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, stack.getCount() - remainder.getCount());
+                    ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, amount - remainder);
                 }
             } catch (GridAccessException ignored) {
             }
 
-            return remainder;
+            testStack.setCount(remainder);
+            return testStack;
         }
 
         @Override
