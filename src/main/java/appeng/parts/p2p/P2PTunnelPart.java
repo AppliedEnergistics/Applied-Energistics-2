@@ -258,7 +258,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                 final boolean oldOutput = this.isOutput();
                 final short myFreq = this.getFrequency();
 
-                this.getHost().removePart(this.getSide(), false);
+                this.getHost().removePart(this.getSide(), true);
                 final AEPartLocation dir = this.getHost().addPart(newType, this.getSide(), player, hand);
                 final IPart newBus = this.getHost().getPart(dir);
 
