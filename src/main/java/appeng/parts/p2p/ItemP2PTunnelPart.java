@@ -105,7 +105,6 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         @Override
         @Nonnull
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            final ItemStack testStack = stack.copy();
             int remainder = stack.getCount();
 
             try {
@@ -128,9 +127,10 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
                         break;
                     }
 
-                    // So in theory copying the stack should not be necessary because it is not supposed to be stored
-                    // or modifed by insertItem. However, ItemStackHandler will gladly store the stack so we need to do
-                    // a defensive copy.
+                    // So the documentation says that copying the stack should not be necessary because it is not
+                    // supposed to be stored or modifed by insertItem. However, ItemStackHandler will gladly store the
+                    // stack so we need to do a defensive copy. Forgecord says this is the intended behavior, and the
+                    // documentation is wrong.
                     ItemStack stackCopy = stack.copy();
                     stackCopy.setCount(toSend);
                     final int sent = toSend - ItemHandlerHelper.insertItem(output, stackCopy, simulate).getCount();
@@ -145,8 +145,13 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
             } catch (GridAccessException ignored) {
             }
 
-            testStack.setCount(remainder);
-            return testStack;
+            if (remainder == stack.getCount()) {
+                return stack;
+            } else {
+                ItemStack copy = stack.copy();
+                copy.setCount(remainder);
+                return copy;
+            }
         }
 
         @Override
