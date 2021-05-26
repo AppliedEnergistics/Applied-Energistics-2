@@ -112,6 +112,8 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
 
             if (remainder == stack.getCount()) {
                 return stack;
+            } else if (remainder == 0) {
+                return ItemStack.EMPTY;
             } else {
                 ItemStack copy = stack.copy();
                 copy.setCount(remainder);
