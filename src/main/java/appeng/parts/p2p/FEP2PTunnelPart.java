@@ -42,7 +42,7 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
         super(is, CapabilityEnergy.ENERGY);
         inputHandler = new InputEnergyStorage();
         outputHandler = new OutputEnergyStorage();
-        nullHandler = NULL_ENERGY_STORAGE;
+        emptyHandler = NULL_ENERGY_STORAGE;
     }
 
     @Override
@@ -132,13 +132,15 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
     private class OutputEnergyStorage implements IEnergyStorage {
         @Override
         public int extractEnergy(int maxExtract, boolean simulate) {
-            final int total = getInputCapability().extractEnergy(maxExtract, simulate);
+            try (InputCapability input = inputCapability()) {
+                final int total = input.get().extractEnergy(maxExtract, simulate);
 
-            if (!simulate) {
-                FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
+                if (!simulate) {
+                    FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
+                }
+
+                return total;
             }
-
-            return total;
         }
 
         @Override
@@ -148,7 +150,9 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
 
         @Override
         public boolean canExtract() {
-            return getInputCapability().canExtract();
+            try (InputCapability input = inputCapability()) {
+                return input.get().canExtract();
+            }
         }
 
         @Override
@@ -158,12 +162,16 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
 
         @Override
         public int getMaxEnergyStored() {
-            return getInputCapability().getMaxEnergyStored();
+            try (InputCapability input = inputCapability()) {
+                return input.get().getMaxEnergyStored();
+            }
         }
 
         @Override
         public int getEnergyStored() {
-            return getInputCapability().getEnergyStored();
+            try (InputCapability input = inputCapability()) {
+                return input.get().getEnergyStored();
+            }
         }
     }
 

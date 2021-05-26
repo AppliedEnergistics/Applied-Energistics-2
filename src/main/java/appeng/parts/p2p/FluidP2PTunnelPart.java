@@ -46,7 +46,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
         super(is, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
         inputHandler = new InputFluidHandler();
         outputHandler = new OutputFluidHandler();
-        nullHandler = NULL_FLUID_HANDLER;
+        emptyHandler = NULL_FLUID_HANDLER;
     }
 
     @Override
@@ -130,23 +130,31 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
     private class OutputFluidHandler implements IFluidHandler {
         @Override
         public int getTanks() {
-            return getInputCapability().getTanks();
+            try (InputCapability input = inputCapability()) {
+                return input.get().getTanks();
+            }
         }
 
         @Override
         @Nonnull
         public FluidStack getFluidInTank(int tank) {
-            return getInputCapability().getFluidInTank(tank);
+            try (InputCapability input = inputCapability()) {
+                return input.get().getFluidInTank(tank);
+            }
         }
 
         @Override
         public int getTankCapacity(int tank) {
-            return getInputCapability().getTankCapacity(tank);
+            try (InputCapability input = inputCapability()) {
+                return input.get().getTankCapacity(tank);
+            }
         }
 
         @Override
         public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-            return getInputCapability().isFluidValid(tank, stack);
+            try (InputCapability input = inputCapability()) {
+                return input.get().isFluidValid(tank, stack);
+            }
         }
 
         @Override
@@ -157,25 +165,29 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
         @Override
         @Nonnull
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            FluidStack result = getInputCapability().drain(resource, action);
+            try (InputCapability input = inputCapability()) {
+                FluidStack result = input.get().drain(resource, action);
 
-            if (action.execute()) {
-                queueTunnelDrain(PowerUnits.RF, result.getAmount());
+                if (action.execute()) {
+                    queueTunnelDrain(PowerUnits.RF, result.getAmount());
+                }
+
+                return result;
             }
-
-            return result;
         }
 
         @Override
         @Nonnull
         public FluidStack drain(int maxDrain, FluidAction action) {
-            FluidStack result = getInputCapability().drain(maxDrain, action);
+            try (InputCapability input = inputCapability()) {
+                FluidStack result = input.get().drain(maxDrain, action);
 
-            if (action.execute()) {
-                queueTunnelDrain(PowerUnits.RF, result.getAmount());
+                if (action.execute()) {
+                    queueTunnelDrain(PowerUnits.RF, result.getAmount());
+                }
+
+                return result;
             }
-
-            return result;
         }
     }
 

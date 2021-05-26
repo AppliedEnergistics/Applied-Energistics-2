@@ -46,7 +46,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
         super(is, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         inputHandler = new InputItemHandler();
         outputHandler = new OutputItemHandler();
-        nullHandler = NULL_ITEM_HANDLER;
+        emptyHandler = NULL_ITEM_HANDLER;
     }
 
     @Override
@@ -140,13 +140,17 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
     private class OutputItemHandler implements IItemHandler {
         @Override
         public int getSlots() {
-            return getInputCapability().getSlots();
+            try (InputCapability input = inputCapability()) {
+                return input.get().getSlots();
+            }
         }
 
         @Override
         @Nonnull
         public ItemStack getStackInSlot(int slot) {
-            return getInputCapability().getStackInSlot(slot);
+            try (InputCapability input = inputCapability()) {
+                return input.get().getStackInSlot(slot);
+            }
         }
 
         @Override
@@ -158,23 +162,29 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            ItemStack result = getInputCapability().extractItem(slot, amount, simulate);
+            try (InputCapability input = inputCapability()) {
+                ItemStack result = input.get().extractItem(slot, amount, simulate);
 
-            if (!simulate) {
-                queueTunnelDrain(PowerUnits.RF, result.getCount());
+                if (!simulate) {
+                    queueTunnelDrain(PowerUnits.RF, result.getCount());
+                }
+
+                return result;
             }
-
-            return result;
         }
 
         @Override
         public int getSlotLimit(int slot) {
-            return getInputCapability().getSlotLimit(slot);
+            try (InputCapability input = inputCapability()) {
+                return input.get().getSlotLimit(slot);
+            }
         }
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return getInputCapability().isItemValid(slot, stack);
+            try (InputCapability input = inputCapability()) {
+                return input.get().isItemValid(slot, stack);
+            }
         }
     }
 
