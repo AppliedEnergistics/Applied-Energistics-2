@@ -285,6 +285,7 @@ public class PacketJEIRecipe extends AppEngPacket
 				IItemHandler outputSlots = cct.getInventoryByName( "output" );
 				for( int i = 0; i < this.output.length; ++i )
 				{
+					if( this.output[i] == null ) continue;
 					ItemHandlerUtil.setStackInSlot( outputSlots, i, this.output[i] );
 				}
 			}
