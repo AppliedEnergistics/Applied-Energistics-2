@@ -21,12 +21,8 @@ package appeng.parts.p2p;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -36,13 +32,10 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 
-public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
-    private static final float POWER_DRAIN = 2.0f;
+public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart, IItemHandler> {
+
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_items");
     private static final IItemHandler NULL_ITEM_HANDLER = new NullItemHandler();
-
-    private final IItemHandler inputHandler = new InputItemHandler();
-    private final IItemHandler outputHandler = new OutputItemHandler();
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -50,44 +43,15 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
     }
 
     public ItemP2PTunnelPart(final ItemStack is) {
-        super(is);
-    }
-
-    @Override
-    protected float getPowerDrainPerTick() {
-        return POWER_DRAIN;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        if (capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (this.isOutput()) {
-                return (LazyOptional<T>) LazyOptional.of(() -> this.outputHandler);
-            }
-            return (LazyOptional<T>) LazyOptional.of(() -> this.inputHandler);
-        }
-
-        return super.getCapability(capabilityClass);
+        super(is, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        inputHandler = new InputItemHandler();
+        outputHandler = new OutputItemHandler();
+        nullHandler = NULL_ITEM_HANDLER;
     }
 
     @Override
     public IPartModel getStaticModels() {
         return MODELS.getModel(this.isPowered(), this.isActive());
-    }
-
-    private IItemHandler getAttachedItemHandler() {
-        LazyOptional<IItemHandler> itemHandler = LazyOptional.empty();
-        if (this.isActive()) {
-            final TileEntity self = this.getTile();
-            final TileEntity te = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
-
-            if (te != null) {
-                itemHandler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                        this.getSide().getOpposite().getFacing());
-            }
-        }
-        return itemHandler.orElse(NULL_ITEM_HANDLER);
     }
 
     private class InputItemHandler implements IItemHandler {
@@ -120,7 +84,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
                 int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
                 for (ItemP2PTunnelPart target : ItemP2PTunnelPart.this.getOutputs()) {
-                    final IItemHandler output = target.getAttachedItemHandler();
+                    final IItemHandler output = target.getAdjacentCapability();
                     final int toSend = amountPerOutput + overflow;
 
                     if (toSend <= 0) {
@@ -174,21 +138,15 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
     }
 
     private class OutputItemHandler implements IItemHandler {
-        private IItemHandler getInputHandler() {
-            @Nullable
-            ItemP2PTunnelPart input = getInput();
-            return input != null ? input.getAttachedItemHandler() : NULL_ITEM_HANDLER;
-        }
-
         @Override
         public int getSlots() {
-            return getInputHandler().getSlots();
+            return getInputCapability().getSlots();
         }
 
         @Override
         @Nonnull
         public ItemStack getStackInSlot(int slot) {
-            return getInputHandler().getStackInSlot(slot);
+            return getInputCapability().getStackInSlot(slot);
         }
 
         @Override
@@ -200,7 +158,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            ItemStack result = getInputHandler().extractItem(slot, amount, simulate);
+            ItemStack result = getInputCapability().extractItem(slot, amount, simulate);
 
             if (!simulate) {
                 queueTunnelDrain(PowerUnits.RF, result.getCount());
@@ -211,12 +169,12 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
 
         @Override
         public int getSlotLimit(int slot) {
-            return getInputHandler().getSlotLimit(slot);
+            return getInputCapability().getSlotLimit(slot);
         }
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return getInputHandler().isItemValid(slot, stack);
+            return getInputCapability().isItemValid(slot, stack);
         }
     }
 
