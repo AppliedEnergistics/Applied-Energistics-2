@@ -22,12 +22,12 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
       - name: Clean gradle
-        run: ./gradlew clean --no-daemon --max-workers 1
+        run: ./gradlew clean --no-daemon
       - name: Validate no assets
         run: test ! -d ./src/generated
       - name: Generate assets
-        run: ./gradlew runData --no-daemon --max-workers 1
+        run: ./gradlew runData --no-daemon
       - name: Validate assets
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon --max-workers 1
+        run: ./gradlew build --no-daemon --info

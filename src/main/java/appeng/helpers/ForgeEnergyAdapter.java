@@ -16,21 +16,22 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.tile.powersink;
+package appeng.helpers;
 
 import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
+import appeng.tile.powersink.IExternalPowerSink;
 
 /**
  * Adapts an {@link IExternalPowerSink} to Forges {@link IEnergyStorage}.
  */
-class ForgeEnergyAdapter implements IEnergyStorage {
+public class ForgeEnergyAdapter implements IEnergyStorage {
 
     private final IExternalPowerSink sink;
 
-    ForgeEnergyAdapter(IExternalPowerSink sink) {
+    public ForgeEnergyAdapter(IExternalPowerSink sink) {
         this.sink = sink;
     }
 

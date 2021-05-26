@@ -40,6 +40,7 @@ import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.capabilities.Capabilities;
+import appeng.helpers.ForgeEnergyAdapter;
 import appeng.tile.AEBaseInvTileEntity;
 
 public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
@@ -58,14 +59,10 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     // Cache the optional to not continuously re-allocate it or the supplier
     private final LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
 
-    // IC2 private IC2PowerSink ic2Sink;
-
     public AEBasePoweredTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
         this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
-        // IC2 this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
-        // IC2 this.ic2Sink.setValidFaces( this.internalPowerSides );
     }
 
     protected final Set<Direction> getPowerSides() {
@@ -74,8 +71,6 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
 
     protected void setPowerSides(final Set<Direction> sides) {
         this.internalPowerSides = ImmutableSet.copyOf(sides);
-        // IC2 this.ic2Sink.setValidFaces( sides );
-        // trigger re-calc!
     }
 
     @Override
@@ -212,27 +207,6 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
 
     public void setInternalPowerFlow(final AccessRestriction internalPowerFlow) {
         this.internalPowerFlow = internalPowerFlow;
-    }
-
-    @Override
-    public void onReady() {
-        super.onReady();
-
-        // IC2 this.ic2Sink.onLoad();
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-
-        // IC2 this.ic2Sink.onChunkUnloaded();
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-
-        // IC2 this.ic2Sink.invalidate();
     }
 
     @SuppressWarnings("unchecked")

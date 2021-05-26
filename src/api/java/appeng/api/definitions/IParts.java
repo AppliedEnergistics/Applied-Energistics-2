@@ -110,4 +110,6 @@ public interface IParts {
     IItemDefinition fluidAnnihilationPlane();
 
     IItemDefinition fluidFormationnPlane();
+
+    IItemDefinition energyAcceptor();
 }

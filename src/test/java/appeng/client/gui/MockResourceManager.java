@@ -30,7 +30,7 @@ import java.util.Collections;
 
 import javax.annotation.Nullable;
 
-import org.junit.jupiter.api.Assertions;
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
@@ -58,15 +58,15 @@ public final class MockResourceManager {
             return Collections.singletonList(getResource(loc));
         });
 
-        when(resourceManager.getResourceNamespaces()).thenReturn(Collections.singleton(AppEng.MOD_ID));
+        when(resourceManager.getResourceNamespaces()).thenReturn(
+                ImmutableSet.of("minecraft", AppEng.MOD_ID));
 
         return resourceManager;
     }
 
     private static IResource getResource(ResourceLocation loc) throws FileNotFoundException {
-        Assertions.assertEquals(AppEng.MOD_ID, loc.getNamespace());
         InputStream in = MockResourceManager.class
-                .getResourceAsStream("/assets/appliedenergistics2/" + loc.getPath());
+                .getResourceAsStream("/assets/" + loc.getNamespace() + "/" + loc.getPath());
         if (in == null) {
             throw new FileNotFoundException("Missing resource: " + loc.getPath());
         }

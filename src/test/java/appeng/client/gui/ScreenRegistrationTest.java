@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.style.Text;
+import appeng.util.LoadTranslations;
 
+@LoadTranslations
 @MockitoSettings
 class ScreenRegistrationTest {
 
@@ -107,7 +110,7 @@ class ScreenRegistrationTest {
 
         StyleManager.initialize(MockResourceManager.create());
 
-        List<String> errors = new ArrayList<>();
+        Map<String, String> errors = new HashMap<>();
         for (String path : ScreenRegistration.CONTAINER_STYLES.values()) {
             ScreenStyle style = StyleManager.loadStyleDoc(path);
 
@@ -116,15 +119,15 @@ class ScreenRegistrationTest {
             }
         }
 
-        assertThat(errors).isEmpty();
+        assertThat(errors).withFailMessage(formatMissingTranslations(errors)).isEmpty();
     }
 
-    private void collectMissingTranslations(String path, ITextComponent text, List<String> errors,
+    private void collectMissingTranslations(String path, ITextComponent text, Map<String, String> errors,
             Set<String> i18nKeys) {
         if (text instanceof TranslationTextComponent) {
-            String t = ((TranslationTextComponent) text).getKey();
-            if (!i18nKeys.contains(t)) {
-                errors.add(path + " Missing translation key: " + t);
+            String key = ((TranslationTextComponent) text).getKey();
+            if (!i18nKeys.contains(key)) {
+                errors.merge(path, key, (a, b) -> a + ", " + b);
             }
         }
 
@@ -132,4 +135,14 @@ class ScreenRegistrationTest {
             collectMissingTranslations(path, sibling, errors, i18nKeys);
         }
     }
+
+    private String formatMissingTranslations(Map<String, String> errors) {
+        StringBuilder builder = new StringBuilder("Missing Translations: " + '\n');
+        for (Entry<String, String> entry : errors.entrySet()) {
+            builder.append(entry.getKey()).append(": ").append(entry.getValue()).append('\n');
+        }
+
+        return builder.toString();
+    }
+
 }
