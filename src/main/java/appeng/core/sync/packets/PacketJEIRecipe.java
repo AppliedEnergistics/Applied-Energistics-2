@@ -215,7 +215,7 @@ public class PacketJEIRecipe extends AppEngPacket
 										IAEItemStack mostDamaged = null;
 										for( IAEItemStack is : outList )
 										{
-											if( !is.isCraftable() && is.getItem().isDamageable() )
+											if( !is.isCraftable() )
 											{
 												if( mostDamaged == null || mostDamaged.getItemDamage() < is.getItemDamage() )
 												{
