@@ -19,8 +19,9 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
     // Prevents recursive block updates.
     private boolean inBlockUpdate = false;
     // Prevents recursive capability queries.
-    private int insertionNesting = 0;
-    private final InputCapability inputCapability = new InputCapability();
+    private int capabilityNesting = 0;
+    private final AdjCapability adjCapability = new AdjCapability();
+    private final EmptyAdjCapability emptyAdjCapability = new EmptyAdjCapability();
     protected C inputHandler;
     protected C outputHandler;
     protected C emptyHandler;
@@ -46,47 +47,61 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         return LazyOptional.empty();
     }
 
-    protected C getAdjacentCapability() {
-        C adjacentCapability = null;
-
-        if (this.isActive()) {
-            final TileEntity self = this.getTile();
-            final TileEntity te = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
-
-            if (te != null) {
-                adjacentCapability = te.getCapability(capability, this.getSide().getOpposite().getFacing())
-                        .orElse(null);
-            }
-        }
-
-        return adjacentCapability == null ? emptyHandler : adjacentCapability;
+    /**
+     * Return the capability connected to side of this P2P connection, or the empty handler if it's not available. The
+     * RAII guard will prevent infinite recursion. Use with try-with-resources!
+     */
+    protected AdjCapability getAdjacentCapability() {
+        capabilityNesting++;
+        return adjCapability;
     }
 
-    protected InputCapability inputCapability() {
-        insertionNesting++;
-        return inputCapability;
-    }
-
-    protected class InputCapability implements AutoCloseable {
+    protected class AdjCapability implements AutoCloseable {
         @Override
         public void close() {
-            insertionNesting--;
+            capabilityNesting--;
         }
 
         /**
-         * Return the capability connected to the input side of this P2P connection, or the empty handler if it's not
-         * available. The RAII guard will prevent infinite recursion.
+         * Get the capability, or a null handler if not available. Use within the scope of the enclosing AdjCapability.
          */
         protected C get() {
-            if (insertionNesting == 0) {
+            if (capabilityNesting == 0) {
                 throw new IllegalStateException("This should be at least 1.");
-            } else if (insertionNesting == 1) {
-                P input = getInput();
-                return input == null ? emptyHandler : input.getAdjacentCapability();
+            } else if (capabilityNesting == 1) {
+                C adjacentCapability = null;
+                if (isActive()) {
+                    final TileEntity self = getTile();
+                    final TileEntity te = self.getWorld().getTileEntity(self.getPos().offset(getSide().getFacing()));
+
+                    if (te != null) {
+                        adjacentCapability = te.getCapability(capability, getSide().getOpposite().getFacing())
+                                .orElse(null);
+                    }
+                }
+
+                return adjacentCapability == null ? emptyHandler : adjacentCapability;
             } else {
                 return emptyHandler;
             }
         }
+    }
+
+    // Override when there is no capability to retrieve.
+    protected class EmptyAdjCapability extends AdjCapability implements AutoCloseable {
+        @Override
+        public void close() {
+        }
+
+        @Override
+        protected C get() {
+            return emptyHandler;
+        }
+    }
+
+    protected AdjCapability inputCapability() {
+        P input = getInput();
+        return input == null ? emptyAdjCapability : input.getAdjacentCapability();
     }
 
     // Send a block update on p2p status change, or any update on another endpoint.

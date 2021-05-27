@@ -71,12 +71,14 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
                 int overflow = amountPerOutput == 0 ? maxReceive : maxReceive % amountPerOutput;
 
                 for (FEP2PTunnelPart target : FEP2PTunnelPart.this.getOutputs()) {
-                    final IEnergyStorage output = target.getAdjacentCapability();
-                    final int toSend = amountPerOutput + overflow;
-                    final int received = output.receiveEnergy(toSend, simulate);
+                    try (AdjCapability adjCapability = target.getAdjacentCapability()) {
+                        final IEnergyStorage output = adjCapability.get();
+                        final int toSend = amountPerOutput + overflow;
+                        final int received = output.receiveEnergy(toSend, simulate);
 
-                    overflow = toSend - received;
-                    total += received;
+                        overflow = toSend - received;
+                        total += received;
+                    }
                 }
 
                 if (!simulate) {
@@ -104,7 +106,9 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
 
             try {
                 for (FEP2PTunnelPart t : FEP2PTunnelPart.this.getOutputs()) {
-                    total += t.getAdjacentCapability().getMaxEnergyStored();
+                    try (AdjCapability adjCapability = t.getAdjacentCapability()) {
+                        total += adjCapability.get().getMaxEnergyStored();
+                    }
                 }
             } catch (GridAccessException e) {
                 return 0;
@@ -119,7 +123,9 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
 
             try {
                 for (FEP2PTunnelPart t : FEP2PTunnelPart.this.getOutputs()) {
-                    total += t.getAdjacentCapability().getEnergyStored();
+                    try (AdjCapability adjCapability = t.getAdjacentCapability()) {
+                        total += adjCapability.get().getEnergyStored();
+                    }
                 }
             } catch (GridAccessException e) {
                 return 0;
@@ -132,7 +138,7 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
     private class OutputEnergyStorage implements IEnergyStorage {
         @Override
         public int extractEnergy(int maxExtract, boolean simulate) {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 final int total = input.get().extractEnergy(maxExtract, simulate);
 
                 if (!simulate) {
@@ -150,7 +156,7 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
 
         @Override
         public boolean canExtract() {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().canExtract();
             }
         }
@@ -162,14 +168,14 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IE
 
         @Override
         public int getMaxEnergyStored() {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().getMaxEnergyStored();
             }
         }
 
         @Override
         public int getEnergyStored() {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().getEnergyStored();
             }
         }

@@ -84,24 +84,26 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
                 int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
                 for (ItemP2PTunnelPart target : ItemP2PTunnelPart.this.getOutputs()) {
-                    final IItemHandler output = target.getAdjacentCapability();
-                    final int toSend = amountPerOutput + overflow;
+                    try (AdjCapability adjCapability = target.getAdjacentCapability()) {
+                        final IItemHandler output = adjCapability.get();
+                        final int toSend = amountPerOutput + overflow;
 
-                    if (toSend <= 0) {
-                        // Both overflow and amountPerOutput are 0, so they will be for further outputs as well.
-                        break;
+                        if (toSend <= 0) {
+                            // Both overflow and amountPerOutput are 0, so they will be for further outputs as well.
+                            break;
+                        }
+
+                        // So the documentation says that copying the stack should not be necessary because it is not
+                        // supposed to be stored or modifed by insertItem. However, ItemStackHandler will gladly store
+                        // the stack so we need to do a defensive copy. Forgecord says this is the intended behavior,
+                        // and the documentation is wrong.
+                        ItemStack stackCopy = stack.copy();
+                        stackCopy.setCount(toSend);
+                        final int sent = toSend - ItemHandlerHelper.insertItem(output, stackCopy, simulate).getCount();
+
+                        overflow = toSend - sent;
+                        remainder -= sent;
                     }
-
-                    // So the documentation says that copying the stack should not be necessary because it is not
-                    // supposed to be stored or modifed by insertItem. However, ItemStackHandler will gladly store the
-                    // stack so we need to do a defensive copy. Forgecord says this is the intended behavior, and the
-                    // documentation is wrong.
-                    ItemStack stackCopy = stack.copy();
-                    stackCopy.setCount(toSend);
-                    final int sent = toSend - ItemHandlerHelper.insertItem(output, stackCopy, simulate).getCount();
-
-                    overflow = toSend - sent;
-                    remainder -= sent;
                 }
 
                 if (!simulate) {
@@ -142,7 +144,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
     private class OutputItemHandler implements IItemHandler {
         @Override
         public int getSlots() {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().getSlots();
             }
         }
@@ -150,7 +152,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
         @Override
         @Nonnull
         public ItemStack getStackInSlot(int slot) {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().getStackInSlot(slot);
             }
         }
@@ -164,7 +166,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 ItemStack result = input.get().extractItem(slot, amount, simulate);
 
                 if (!simulate) {
@@ -177,14 +179,14 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
 
         @Override
         public int getSlotLimit(int slot) {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().getSlotLimit(slot);
             }
         }
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().isItemValid(slot, stack);
             }
         }

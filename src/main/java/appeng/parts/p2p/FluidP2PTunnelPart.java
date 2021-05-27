@@ -93,15 +93,17 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
                 int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
                 for (FluidP2PTunnelPart target : FluidP2PTunnelPart.this.getOutputs()) {
-                    final IFluidHandler output = target.getAdjacentCapability();
-                    final int toSend = amountPerOutput + overflow;
-                    final FluidStack fillWithFluidStack = resource.copy();
-                    fillWithFluidStack.setAmount(toSend);
+                    try (AdjCapability adjCapability = target.getAdjacentCapability()) {
+                        final IFluidHandler output = adjCapability.get();
+                        final int toSend = amountPerOutput + overflow;
+                        final FluidStack fillWithFluidStack = resource.copy();
+                        fillWithFluidStack.setAmount(toSend);
 
-                    final int received = output.fill(fillWithFluidStack, action);
+                        final int received = output.fill(fillWithFluidStack, action);
 
-                    overflow = toSend - received;
-                    total += received;
+                        overflow = toSend - received;
+                        total += received;
+                    }
                 }
 
                 if (action == FluidAction.EXECUTE) {
@@ -130,7 +132,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
     private class OutputFluidHandler implements IFluidHandler {
         @Override
         public int getTanks() {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().getTanks();
             }
         }
@@ -138,21 +140,21 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
         @Override
         @Nonnull
         public FluidStack getFluidInTank(int tank) {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().getFluidInTank(tank);
             }
         }
 
         @Override
         public int getTankCapacity(int tank) {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().getTankCapacity(tank);
             }
         }
 
         @Override
         public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 return input.get().isFluidValid(tank, stack);
             }
         }
@@ -165,7 +167,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
         @Override
         @Nonnull
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 FluidStack result = input.get().drain(resource, action);
 
                 if (action.execute()) {
@@ -179,7 +181,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
         @Override
         @Nonnull
         public FluidStack drain(int maxDrain, FluidAction action) {
-            try (InputCapability input = inputCapability()) {
+            try (AdjCapability input = inputCapability()) {
                 FluidStack result = input.get().drain(maxDrain, action);
 
                 if (action.execute()) {
