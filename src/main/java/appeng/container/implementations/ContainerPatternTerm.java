@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import appeng.container.slot.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -51,12 +52,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
 import appeng.container.guisync.GuiSync;
-import appeng.container.slot.IOptionalSlotHost;
-import appeng.container.slot.OptionalSlotFake;
-import appeng.container.slot.SlotFakeCraftingMatrix;
-import appeng.container.slot.SlotPatternOutputs;
-import appeng.container.slot.SlotPatternTerm;
-import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ItemViewCell;
@@ -131,6 +126,26 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		this.bindPlayerInventory( ip, 0, 0 );
 		this.updateOrderOfOutputSlots();
 	}
+
+	@Override
+	public ItemStack transferStackInSlot( final EntityPlayer p, final int idx )
+	{
+		if( Platform.isClient() )
+		{
+			return ItemStack.EMPTY;
+		}
+
+		final AppEngSlot clickSlot = ( AppEngSlot ) this.inventorySlots.get( idx ); // require AE SLots!
+		ItemStack itemStack = clickSlot.getStack();
+		if( AEApi.instance().definitions().materials().blankPattern().isSameAs( itemStack ) )
+		{
+			IItemHandler patternInv = this.getPatternTerminal().getInventoryByName( "pattern" );
+			ItemStack remainder = patternInv.insertItem( 0, itemStack, false );
+			clickSlot.putStack( remainder );
+		}
+		return super.transferStackInSlot( p, idx );
+	}
+
 
 	private void updateOrderOfOutputSlots()
 	{
