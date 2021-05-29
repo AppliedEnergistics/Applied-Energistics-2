@@ -82,6 +82,8 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
 
                 return adjacentCapability == null ? emptyHandler : adjacentCapability;
             } else {
+                // This capability is already in use (as the nesting is > 1), so we return an empty handler to prevent
+                // infinite recursion.
                 return emptyHandler;
             }
         }
@@ -110,11 +112,15 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
     protected void sendBlockUpdate() {
         if (!inBlockUpdate) {
             inBlockUpdate = true;
-            // getHost().notifyNeighbors() would queue a callback, but we want to do an update synchronously!
-            // (otherwise we can't detect infinite recursion, it would just queue updates endlessly)
-            TileEntity self = getTile();
-            self.getWorld().notifyNeighborsOfStateChange(self.getPos(), Blocks.AIR);
-            inBlockUpdate = false;
+
+            try {
+                // getHost().notifyNeighbors() would queue a callback, but we want to do an update synchronously!
+                // (otherwise we can't detect infinite recursion, it would just queue updates endlessly)
+                TileEntity self = getTile();
+                self.getWorld().notifyNeighborsOfStateChange(self.getPos(), Blocks.AIR);
+            } finally {
+                inBlockUpdate = false;
+            }
         }
     }
 
@@ -128,22 +134,25 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         if (!inBlockUpdate) {
             inBlockUpdate = true;
 
-            if (isOutput()) {
-                P input = getInput();
+            try {
+                if (isOutput()) {
+                    P input = getInput();
 
-                if (input != null) {
-                    input.sendBlockUpdate();
-                }
-            } else {
-                try {
-                    for (P output : getOutputs()) {
-                        output.sendBlockUpdate();
+                    if (input != null) {
+                        input.sendBlockUpdate();
                     }
-                } catch (GridAccessException ignored) {
-                    // :-P
+                } else {
+                    try {
+                        for (P output : getOutputs()) {
+                            output.sendBlockUpdate();
+                        }
+                    } catch (GridAccessException ignored) {
+                        // :-P
+                    }
                 }
+            } finally {
+                inBlockUpdate = false;
             }
-            inBlockUpdate = false;
         }
     }
 }
