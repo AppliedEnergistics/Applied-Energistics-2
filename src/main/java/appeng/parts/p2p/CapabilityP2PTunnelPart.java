@@ -21,7 +21,7 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
     // Prevents recursive access to the adjacent capability in case P2P input/output faces touch
     private int accessDepth = 0;
     private final CapabilityGuard capabilityGuard = new CapabilityGuard();
-    private final EmptyCapabilityGuard emptyAdjCapability = new EmptyCapabilityGuard();
+    private final EmptyCapabilityGuard emptyCapabilityGuard = new EmptyCapabilityGuard();
     protected C inputHandler;
     protected C outputHandler;
     protected C emptyHandler;
@@ -64,7 +64,7 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
      */
     protected final CapabilityGuard getInputCapability() {
         P input = getInput();
-        return input == null ? emptyAdjCapability : input.getAdjacentCapability();
+        return input == null ? emptyCapabilityGuard : input.getAdjacentCapability();
     }
 
     protected class CapabilityGuard implements AutoCloseable {
