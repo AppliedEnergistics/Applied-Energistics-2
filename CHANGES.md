@@ -43,5 +43,5 @@ QOL:
 
 HOTKEYS:
 
-Implemented mousetweaks API. AE2 custom keybinds now work. (Try right clicking and use the scroll-wheel on the terminals)
-Holding SHIFT and scrolling UP and DOWN will increase the items set on the configured slots of Interfaces and Pattern Terminal (Processing mode)
+ - Implemented mousetweaks API. AE2 custom keybinds now work. (Try right clicking and use the scroll-wheel on the terminals)
+ - Holding SHIFT and scrolling UP and DOWN will increase the items set on the configured slots of Interfaces and Pattern Terminal (Processing mode)
