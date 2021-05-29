@@ -18,10 +18,10 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
     private final Capability<C> capability;
     // Prevents recursive block updates.
     private boolean inBlockUpdate = false;
-    // Prevents recursive capability queries.
-    private int capabilityNesting = 0;
-    private final AdjCapability adjCapability = new AdjCapability();
-    private final EmptyAdjCapability emptyAdjCapability = new EmptyAdjCapability();
+    // Prevents recursive access to the adjacent capability in case P2P input/output faces touch
+    private int accessDepth = 0;
+    private final CapabilityGuard capabilityGuard = new CapabilityGuard();
+    private final EmptyCapabilityGuard emptyAdjCapability = new EmptyCapabilityGuard();
     protected C inputHandler;
     protected C outputHandler;
     protected C emptyHandler;
@@ -48,49 +48,70 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
     }
 
     /**
-     * Return the capability connected to side of this P2P connection, or the empty handler if it's not available. The
-     * RAII guard will prevent infinite recursion. Use with try-with-resources!
+     * Return the capability connected to this side of this P2P connection. If this method is called again on this
+     * tunnel while the returned object has not been closed, further calls to {@link CapabilityGuard#get()} will return
+     * a dummy capability.
      */
-    protected AdjCapability getAdjacentCapability() {
-        capabilityNesting++;
-        return adjCapability;
+    protected final CapabilityGuard getAdjacentCapability() {
+        accessDepth++;
+        return capabilityGuard;
     }
 
-    protected class AdjCapability implements AutoCloseable {
-        @Override
-        public void close() {
-            capabilityNesting--;
-        }
+    /**
+     * Returns the capability attached to the input side of this tunnel's P2P connection. If this method is called again
+     * on this tunnel while the returned object has not been closed, further calls to {@link CapabilityGuard#get()} will
+     * return a dummy capability.
+     */
+    protected final CapabilityGuard getInputCapability() {
+        P input = getInput();
+        return input == null ? emptyAdjCapability : input.getAdjacentCapability();
+    }
 
+    protected class CapabilityGuard implements AutoCloseable {
         /**
          * Get the capability, or a null handler if not available. Use within the scope of the enclosing AdjCapability.
          */
         protected C get() {
-            if (capabilityNesting == 0) {
-                throw new IllegalStateException("This should be at least 1.");
-            } else if (capabilityNesting == 1) {
-                C adjacentCapability = null;
+            if (accessDepth == 0) {
+                throw new IllegalStateException("get was called after closing the wrapper");
+            } else if (accessDepth == 1) {
                 if (isActive()) {
                     final TileEntity self = getTile();
-                    final TileEntity te = self.getWorld().getTileEntity(self.getPos().offset(getSide().getFacing()));
+                    final TileEntity te = self.getWorld().getTileEntity(getFacingPos());
 
                     if (te != null) {
-                        adjacentCapability = te.getCapability(capability, getSide().getOpposite().getFacing())
-                                .orElse(null);
+                        return te.getCapability(capability, getSide().getOpposite().getFacing())
+                                .orElse(emptyHandler);
                     }
                 }
 
-                return adjacentCapability == null ? emptyHandler : adjacentCapability;
+                return emptyHandler;
             } else {
                 // This capability is already in use (as the nesting is > 1), so we return an empty handler to prevent
                 // infinite recursion.
                 return emptyHandler;
             }
         }
+
+        @Override
+        public void close() {
+            if (--accessDepth < 0) {
+                throw new IllegalStateException("Close has been called multiple times");
+            }
+        }
     }
 
-    // Override when there is no capability to retrieve.
-    protected class EmptyAdjCapability extends AdjCapability implements AutoCloseable {
+    /**
+     * The position right in front of this P2P tunnel.
+     */
+    private BlockPos getFacingPos() {
+        return getHost().getLocation().getPos().offset(getSide().getFacing());
+    }
+
+    /**
+     * This specialization is used when the tunnel is not connected.
+     */
+    protected class EmptyCapabilityGuard extends CapabilityGuard implements AutoCloseable {
         @Override
         public void close() {
         }
@@ -101,15 +122,9 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         }
     }
 
-    protected AdjCapability inputCapability() {
-        P input = getInput();
-        return input == null ? emptyAdjCapability : input.getAdjacentCapability();
-    }
-
     // Send a block update on p2p status change, or any update on another endpoint.
-    // Prevent recursive block updates.
-
     protected void sendBlockUpdate() {
+        // Prevent recursive block updates.
         if (!inBlockUpdate) {
             inBlockUpdate = true;
 
@@ -129,8 +144,18 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         sendBlockUpdate();
     }
 
+    /**
+     * Forward block updates from the attached tile's position to the other end of the tunnel. Required for TE's on the
+     * other end to know that the available caps may have changed.
+     */
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+        // We only care about block updates on the side this tunnel is facing
+        if (!getFacingPos().equals(neighbor)) {
+            return;
+        }
+
+        // Prevent recursive block updates.
         if (!inBlockUpdate) {
             inBlockUpdate = true;
 

@@ -84,8 +84,8 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
                 int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
                 for (ItemP2PTunnelPart target : ItemP2PTunnelPart.this.getOutputs()) {
-                    try (AdjCapability adjCapability = target.getAdjacentCapability()) {
-                        final IItemHandler output = adjCapability.get();
+                    try (CapabilityGuard capabilityGuard = target.getAdjacentCapability()) {
+                        final IItemHandler output = capabilityGuard.get();
                         final int toSend = amountPerOutput + overflow;
 
                         if (toSend <= 0) {
@@ -144,7 +144,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
     private class OutputItemHandler implements IItemHandler {
         @Override
         public int getSlots() {
-            try (AdjCapability input = inputCapability()) {
+            try (CapabilityGuard input = getInputCapability()) {
                 return input.get().getSlots();
             }
         }
@@ -152,7 +152,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
         @Override
         @Nonnull
         public ItemStack getStackInSlot(int slot) {
-            try (AdjCapability input = inputCapability()) {
+            try (CapabilityGuard input = getInputCapability()) {
                 return input.get().getStackInSlot(slot);
             }
         }
@@ -166,7 +166,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            try (AdjCapability input = inputCapability()) {
+            try (CapabilityGuard input = getInputCapability()) {
                 ItemStack result = input.get().extractItem(slot, amount, simulate);
 
                 if (!simulate) {
@@ -179,14 +179,14 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
 
         @Override
         public int getSlotLimit(int slot) {
-            try (AdjCapability input = inputCapability()) {
+            try (CapabilityGuard input = getInputCapability()) {
                 return input.get().getSlotLimit(slot);
             }
         }
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            try (AdjCapability input = inputCapability()) {
+            try (CapabilityGuard input = getInputCapability()) {
                 return input.get().isItemValid(slot, stack);
             }
         }
