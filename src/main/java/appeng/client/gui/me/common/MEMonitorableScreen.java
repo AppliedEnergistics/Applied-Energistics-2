@@ -26,7 +26,6 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import org.lwjgl.glfw.GLFW;
@@ -464,7 +463,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                     .add(new StringTextComponent("Serial: " + entry.getSerial()).mergeStyle(TextFormatting.DARK_GRAY));
         }
 
-        this.renderToolTip(matrices, Lists.transform(currentToolTip, ITextComponent::func_241878_f), x, y, this.font);
+        this.renderWrappedToolTip(matrices, currentToolTip, x, y, this.font);
     }
 
     private int getMaxRows() {
