@@ -164,6 +164,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         this.searchField.setVisible(true);
         this.searchField.setResponder(str -> this.refreshList());
         this.addListener(this.searchField);
+        this.setListenerDefault(this.searchField);
         this.changeFocus(true);
 
         // numLines may have changed, recalculate scroll bar.
