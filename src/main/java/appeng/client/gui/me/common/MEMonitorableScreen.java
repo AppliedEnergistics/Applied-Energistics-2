@@ -240,6 +240,9 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                 || SearchBoxMode.JEI_MANUAL_SEARCH == searchMode;
 
         this.searchField.setFocused2(this.isAutoFocus);
+        if (this.searchField.isFocused()) {
+            this.setListener(this.searchField);
+        }
 
         if (isJEIEnabled) {
             memoryText = JEIFacade.instance().getSearchText();
@@ -482,7 +485,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         }
 
         if (this.isAutoFocus && !this.searchField.isFocused() && isHovered()) {
-            this.searchField.setFocused2(true);
+            this.setFocusedDefault(this.searchField);
         }
 
         if (this.searchField.isFocused() && this.searchField.charTyped(character, p_charTyped_2_)) {
@@ -503,15 +506,16 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
             if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
                 this.searchField.setFocused2(!this.searchField.isFocused());
+                if (this.searchField.isFocused()) {
+                    this.setListener(this.searchField);
+                }
                 return true;
-            }
-            if (!this.searchField.isFocused() && this.isAutoFocus && isHovered()) {
-                this.searchField.setFocused2(true);
             }
 
             if (this.searchField.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
                     this.searchField.setFocused2(false);
+                    this.setListener(null);
                     return true;
                 }
 
