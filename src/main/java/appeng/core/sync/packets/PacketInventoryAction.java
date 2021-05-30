@@ -20,6 +20,7 @@ package appeng.core.sync.packets;
 
 
 import java.io.IOException;
+import java.util.Collections;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.slot.IJEITargetSlot;
@@ -224,7 +225,9 @@ public class PacketInventoryAction extends AppEngPacket
 						IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
 						if( aefs != null )
 						{
+							aefs.setStackSize( 1000 );
 							( (ContainerFluidConfigurable) sender.openContainer ).getFluidConfigInventory().setFluidInSlot( this.slot, aefs );
+							NetworkHandler.instance().sendToServer( new PacketFluidSlot( Collections.singletonMap( this.slot, aefs ) ) );
 						}
 					}
 				}
