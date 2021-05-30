@@ -24,11 +24,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -39,6 +42,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -59,6 +63,7 @@ import appeng.container.slot.CraftingTermSlot;
 import appeng.container.slot.DisabledSlot;
 import appeng.container.slot.FakeSlot;
 import appeng.container.slot.InaccessibleSlot;
+import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.GuiDataSyncPacket;
@@ -77,6 +82,7 @@ public abstract class AEBaseContainer extends Container {
     private final Set<Integer> lockedPlayerInventorySlots = new HashSet<>();
     private final Map<Slot, SlotSemantic> semanticBySlot = new HashMap<>();
     private final ArrayListMultimap<SlotSemantic, Slot> slotsBySemantic = ArrayListMultimap.create();
+    private final Map<String, ClientAction<?>> clientActions = new HashMap<>();
     private boolean isContainerValid = true;
     private ContainerLocator locator;
     private int ticksSinceCheck = 900;
@@ -722,8 +728,127 @@ public abstract class AEBaseContainer extends Container {
     /**
      * Receives data from the server for synchronizing fields of this class.
      */
-    public final void receiveSyncData(GuiDataSyncPacket packet) {
+    public final void receiveServerSyncData(GuiDataSyncPacket packet) {
         this.dataSync.readUpdate(packet.getData());
         this.onServerDataSync();
     }
+
+    /**
+     * Receives a container action from the client.
+     */
+    public final void receiveClientAction(GuiDataSyncPacket packet) {
+        PacketBuffer data = packet.getData();
+        String name = data.readString(256);
+
+        ClientAction<?> action = clientActions.get(name);
+        if (action == null) {
+            throw new IllegalArgumentException("Unknown client action: '" + name + "'");
+        }
+
+        action.handle(data);
+    }
+
+    /**
+     * Registers a handler for a client-initiated GUI action. Keep in mind in your handler that the client can send
+     * arbitrary data. The given argument class will be serialized as JSON across the wire, so it must be GSON
+     * serializable.
+     */
+    protected final <T> void registerClientAction(String name, Class<T> argClass, Consumer<T> handler) {
+        if (clientActions.containsKey(name)) {
+            throw new IllegalArgumentException("Duplicate client action registered: " + name);
+        }
+
+        clientActions.put(name, new ClientAction<>(name, argClass, handler));
+    }
+
+    /**
+     * Convenience function for registering a client action with no argument.
+     *
+     * @see #registerClientAction(String, Class, Consumer)
+     */
+    protected final void registerClientAction(String name, Runnable callback) {
+        registerClientAction(name, Void.class, arg -> callback.run());
+    }
+
+    /**
+     * Trigger a client action on the server.
+     */
+    protected final <T> void sendClientAction(String action, T arg) {
+        ClientAction<?> clientAction = clientActions.get(action);
+        if (clientAction == null) {
+            throw new IllegalArgumentException("Trying to send unregistered client action: " + action);
+        }
+
+        // Serialize the argument to JSON for sending it in the packet
+        String jsonPayload;
+        if (clientAction.argClass == Void.class) {
+            if (arg != null) {
+                throw new IllegalArgumentException(
+                        "Client action " + action + " requires no argument, but it was given");
+            }
+            jsonPayload = null;
+        } else {
+            if (arg == null) {
+                throw new IllegalArgumentException(
+                        "Client action " + action + " requires an argument, but none was given");
+            }
+            if (clientAction.argClass != arg.getClass()) {
+                throw new IllegalArgumentException(
+                        "Trying to send client action " + action + " with wrong argument type " + arg.getClass()
+                                + ", expected: " + clientAction.argClass);
+            }
+            jsonPayload = clientAction.gson.toJson(arg);
+        }
+
+        // We do not allow for longer strings than BasePacket.MAX_STRING_LENGTH
+        if (jsonPayload != null && jsonPayload.length() > BasePacket.MAX_STRING_LENGTH) {
+            throw new IllegalArgumentException(
+                    "Cannot send client action " + action + " because serialized argument is longer than "
+                            + BasePacket.MAX_STRING_LENGTH + " (" + jsonPayload.length() + ")");
+        }
+
+        NetworkHandler.instance().sendToServer(new GuiDataSyncPacket(windowId, writer -> {
+            writer.writeString(clientAction.name);
+            if (jsonPayload != null) {
+                writer.writeString(jsonPayload);
+            }
+        }));
+    }
+
+    /**
+     * Sends a previously registered client action to the server.
+     */
+    protected final void sendClientAction(String action) {
+        sendClientAction(action, (Void) null);
+    }
+
+    /**
+     * Registration for an action that a client can initiate.
+     */
+    private static class ClientAction<T> {
+        private final Gson gson = new GsonBuilder().create();
+        private final String name;
+        private final Class<T> argClass;
+        private final Consumer<T> handler;
+
+        public ClientAction(String name, Class<T> argClass, Consumer<T> handler) {
+            this.name = name;
+            this.argClass = argClass;
+            this.handler = handler;
+        }
+
+        public void handle(PacketBuffer buffer) {
+            T arg = null;
+            if (argClass != Void.class) {
+                String payload = buffer.readString(BasePacket.MAX_STRING_LENGTH);
+                AELog.debug("Handling client action '%s' with payload %s", name, payload);
+                arg = gson.fromJson(payload, argClass);
+            } else {
+                AELog.debug("Handling client action '%s'", name);
+            }
+
+            this.handler.accept(arg);
+        }
+    }
+
 }
