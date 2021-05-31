@@ -18,13 +18,16 @@
 
 package appeng.core.features.registries;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
+import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,6 +37,7 @@ import net.minecraft.util.registry.Registry;
 
 import alexiil.mc.lib.attributes.Attribute;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
+import dev.technici4n.fasttransferlib.api.energy.EnergyApi;
 
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.IBlocks;
@@ -50,6 +54,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
     private final Map<ItemStack, TunnelType> tunnels = new HashMap<>(INITIAL_CAPACITY);
     private final Map<String, TunnelType> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
     private final Map<Attribute<?>, TunnelType> attrTunnels = new HashMap<>(INITIAL_CAPACITY);
+    private final List<ItemApiLookupAttunement> lookupTunnels = new ArrayList<>();
 
     public void configure() {
 
@@ -112,6 +117,12 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
         this.addNewAttunement(FluidAttributes.FIXED_INV, TunnelType.FLUID);
         this.addNewAttunement(FluidAttributes.GROUPED_INV, TunnelType.FLUID);
 
+        /*
+         * attune for energy
+         */
+        this.addNewAttunement(EnergyApi.ITEM, null, TunnelType.ENERGY);
+        this.addNewAttunement("extragenerators", TunnelType.ENERGY);
+        this.addNewAttunement("wirelessnetworks", TunnelType.ENERGY);
     }
 
     @Override
@@ -139,6 +150,14 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
         this.tunnels.put(trigger, type);
     }
 
+    @Override
+    public <A, C> void addNewAttunement(@NotNull ItemApiLookup<A, C> lookup, C context, @Nullable TunnelType type) {
+        Objects.requireNonNull(lookup);
+        Objects.requireNonNull(type);
+
+        this.lookupTunnels.add(new ItemApiLookupAttunement(lookup, context, type));
+    }
+
     @Nullable
     @Override
     public TunnelType getTunnelTypeByItem(final ItemStack trigger) {
@@ -160,6 +179,13 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
             for (Entry<Attribute<?>, TunnelType> entry : this.attrTunnels.entrySet()) {
                 if (entry.getKey().getFirstOrNull(trigger) != null) {
                     return entry.getValue();
+                }
+            }
+
+            // Otherwise check api lookups
+            for (ItemApiLookupAttunement lookupAttunement : this.lookupTunnels) {
+                if (lookupAttunement.predicate.test(trigger)) {
+                    return lookupAttunement.type;
                 }
             }
 
@@ -193,5 +219,15 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
 
     private void addNewAttunement(final IItemDefinition definition, final TunnelType type) {
         definition.maybeStack(1).ifPresent(definitionStack -> this.addNewAttunement(definitionStack, type));
+    }
+
+    private static class ItemApiLookupAttunement {
+        final TunnelType type;
+        final Predicate<ItemStack> predicate;
+
+        <A, C> ItemApiLookupAttunement(ItemApiLookup<A, C> lookup, C context, TunnelType type) {
+            this.type = type;
+            this.predicate = stack -> lookup.find(stack, context) != null;
+        }
     }
 }

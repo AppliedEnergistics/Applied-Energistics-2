@@ -26,6 +26,7 @@ package appeng.api.features;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.minecraft.item.ItemStack;
 
 import alexiil.mc.lib.attributes.Attribute;
@@ -48,6 +49,13 @@ public interface IP2PTunnelRegistry {
     void addNewAttunement(@Nonnull String ModId, @Nullable TunnelType type);
 
     void addNewAttunement(@Nonnull Attribute<?> attr, @Nullable TunnelType type);
+
+    /**
+     * Add a new attunement to items offering an API through {@link ItemApiLookup}.
+     * <p>
+     * Any item returning a non-null API for the passed lookup and context will be attuned to the passed tunnel type.
+     */
+    <A, C> void addNewAttunement(@Nonnull ItemApiLookup<A, C> lookup, C context, @Nullable TunnelType type);
 
     /**
      * returns null if no attunement can be found.

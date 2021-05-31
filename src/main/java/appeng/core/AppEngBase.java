@@ -33,6 +33,8 @@ import net.minecraft.tileentity.SkullTileEntity;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
+import dev.technici4n.fasttransferlib.api.energy.EnergyApi;
+
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
@@ -49,6 +51,7 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.CableRenderMode;
+import appeng.api.parts.PartApiLookup;
 import appeng.bootstrap.IBootstrapComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.client.render.effects.ParticleTypes;
@@ -118,6 +121,7 @@ import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.StatisticsCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.mixins.CriteriaRegisterMixin;
+import appeng.parts.p2p.FtlP2PTunnelPart;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
 import appeng.recipes.game.DisassembleRecipe;
@@ -356,6 +360,12 @@ public abstract class AppEngBase implements AppEng {
          */
         mr.whiteListTileEntity(AEBaseTileEntity.class);
 
+        /*
+         * Setup part API Providers.
+         */
+        PartApiLookup partApiLookup = registries.partApiLookup();
+
+        partApiLookup.register(EnergyApi.SIDED, FtlP2PTunnelPart.API_PROVIDER, FtlP2PTunnelPart.class);
     }
 
     protected void registerParticleTypes() {
