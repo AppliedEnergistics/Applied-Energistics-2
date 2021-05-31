@@ -18,6 +18,7 @@
 
 package appeng.capabilities;
 
+import appeng.api.implementations.items.IAEWrench;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -37,6 +38,8 @@ public final class Capabilities {
 
     public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR;
 
+    public static Capability<IAEWrench> WRENCH;
+
     public static Capability<IEnergyStorage> FORGE_ENERGY;
 
     /**
@@ -45,11 +48,17 @@ public final class Capabilities {
     public static void register() {
         CapabilityManager.INSTANCE.register(IStorageMonitorableAccessor.class, createNullStorage(),
                 NullMENetworkAccessor::new);
+        CapabilityManager.INSTANCE.register(IAEWrench.class, createNullStorage(), NullWrench::new);
     }
 
     @CapabilityInject(IStorageMonitorableAccessor.class)
     private static void capIStorageMonitorableAccessorRegistered(Capability<IStorageMonitorableAccessor> cap) {
         STORAGE_MONITORABLE_ACCESSOR = cap;
+    }
+
+    @CapabilityInject(IAEWrench.class)
+    private static void capIAEWrenchRegistered(Capability<IAEWrench> cap) {
+        WRENCH = cap;
     }
 
     @CapabilityInject(IEnergyStorage.class)
@@ -71,4 +80,5 @@ public final class Capabilities {
             }
         };
     }
+
 }
