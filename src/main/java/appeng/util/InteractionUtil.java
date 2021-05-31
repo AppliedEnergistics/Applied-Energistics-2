@@ -20,13 +20,10 @@ package appeng.util;
 
 import java.util.List;
 
-import appeng.capabilities.Capabilities;
-import appeng.datagen.AE2DataGenerators;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -38,11 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeMod;
 
 import appeng.api.implementations.items.IAEWrench;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.util.LazyOptional;
-
-import javax.annotation.Nonnull;
+import appeng.capabilities.Capabilities;
 
 /**
  * Utility functions revolving around using or placing items.
