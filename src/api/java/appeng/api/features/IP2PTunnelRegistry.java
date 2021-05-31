@@ -50,6 +50,11 @@ public interface IP2PTunnelRegistry {
 
     void addNewAttunement(@Nonnull Attribute<?> attr, @Nullable TunnelType type);
 
+    /**
+     * Add a new attunement to items offering an API through {@link ItemApiLookup}.
+     * <p>
+     * Any item returning a non-null API for the passed lookup and context will be attuned to the passed tunnel type.
+     */
     <A, C> void addNewAttunement(@Nonnull ItemApiLookup<A, C> lookup, C context, @Nullable TunnelType type);
 
     /**
