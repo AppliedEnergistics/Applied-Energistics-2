@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import appeng.api.config.Upgrades;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -405,6 +406,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			tag.setString( "un", inv.unlocalizedName );
 			tag.setTag( "pos", NBTUtil.createPosTag( inv.pos ) );
 			tag.setInteger( "dim", inv.dim );
+			tag.setInteger( "numUpgrades", inv.numUpgrades );
 		}
 
 		for( int x = 0; x < length; x++ )
@@ -437,6 +439,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		private final IItemHandler server;
 		private final BlockPos pos;
 		private final int dim;
+		private final int numUpgrades;
 
 		public InvTracker( final DualityInterface dual, final IItemHandler patterns, final String unlocalizedName )
 		{
@@ -446,6 +449,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			this.sortBy = dual.getSortValue();
 			this.pos = dual.getLocation().getPos();
 			this.dim = dual.getLocation().getWorld().provider.getDimension();
+			this.numUpgrades = dual.getInstalledUpgrades( Upgrades.PATTERN_EXPANSION);
 		}
 	}
 

@@ -164,6 +164,8 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 				return Upgrades.INVERTER;
 			case CARD_CRAFTING:
 				return Upgrades.CRAFTING;
+			case CARD_PATTERN_EXPANSION:
+				return Upgrades.PATTERN_EXPANSION;
 			default:
 				return null;
 		}

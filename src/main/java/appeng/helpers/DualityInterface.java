@@ -20,7 +20,6 @@ package appeng.helpers;
 
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -33,8 +32,6 @@ import de.ellpeck.actuallyadditions.api.tile.IPhantomTile;
 import gregtech.api.block.machines.BlockMachine;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
-import gregtech.api.metatileentity.TieredMetaTileEntity;
-import gregtech.api.metatileentity.WorkableTieredMetaTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
@@ -115,7 +112,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
 	public static final int NUMBER_OF_CONFIG_SLOTS = 9;
-	public static final int NUMBER_OF_PATTERN_SLOTS = 9;
+	public static final int NUMBER_OF_PATTERN_SLOTS = 36;
 
 	private static final Collection<Block> BAD_BLOCKS = new HashSet<>( 100 );
 	private final IAEItemStack[] requireWork = { null, null, null, null, null, null, null, null, null };
@@ -151,7 +148,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.gridProxy = networkProxy;
 		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 
-		this.upgrades = new StackUpgradeInventory( this.gridProxy.getMachineRepresentation(), this, 1 );
+		this.upgrades = new StackUpgradeInventory( this.gridProxy.getMachineRepresentation(), this, 4);
 		this.cm.registerSetting( Settings.BLOCK, YesNo.NO );
 		this.cm.registerSetting( Settings.INTERFACE_TERMINAL, YesNo.YES );
 
@@ -279,10 +276,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 
 		this.waitingToSendFacing = null;
-		final NBTTagCompound waitingListSided = data.getCompoundTag("sidedWaitList");
+		final NBTTagCompound waitingListSided = data.getCompoundTag( "sidedWaitList" );
 
-		for (EnumFacing s : EnumFacing.values())
-			if (waitingListSided.hasKey( s.name() )) {
+		for( EnumFacing s : EnumFacing.values() )
+			if( waitingListSided.hasKey( s.name() ) )
+			{
 				NBTTagList w = waitingListSided.getTagList( s.name(), 10 );
 				for( int x = 0; x < w.tagCount(); x++ )
 				{
@@ -290,12 +288,21 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					if( c != null )
 					{
 						final ItemStack is = new ItemStack( c );
-						this.addToSendListFacing( is , EnumFacing.getFront( s.getIndex() ) );
+						this.addToSendListFacing( is, EnumFacing.getFront( s.getIndex() ) );
 					}
 				}
 			}
 
 		this.craftingTracker.readFromNBT( data );
+
+		// fix upgrade slot size mismatch
+		NBTTagCompound up = data.getCompoundTag( "upgrades" );
+		if( up.hasKey( "Size" ) && up.getInteger( "Size" ) != this.upgrades.getSlots() )
+		{
+			up.setInteger( "Size", this.upgrades.getSlots() );
+			this.upgrades.writeToNBT( up, "upgrades" );
+		}
+
 		this.upgrades.readFromNBT( data, "upgrades" );
 		this.config.readFromNBT( data, "config" );
 		this.patterns.readFromNBT( data, "patterns" );
@@ -400,9 +407,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	private void updateCraftingList()
 	{
-		final Boolean[] accountedFor = { false, false, false, false, false, false, false, false, false }; // 9...
-
-		assert ( accountedFor.length == this.patterns.getSlots() );
+		final Boolean[] accountedFor = new Boolean[this.patterns.getSlots()];
+		Arrays.fill( accountedFor, false );
 
 		if( !this.gridProxy.isReady() )
 		{
@@ -417,7 +423,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final ICraftingPatternDetails details = i.next();
 				boolean found = false;
 
-				for( int x = 0; x < accountedFor.length; x++ )
+				for( int x = 0; x < accountedFor.length ; x++ )
 				{
 					final ItemStack is = this.patterns.getStackInSlot( x );
 					if( details.getPattern() == is )
@@ -433,7 +439,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 		}
 
-		for( int x = 0; x < accountedFor.length; x++ )
+		for( int x = 0; x < accountedFor.length ; x++ )
 		{
 			if( !accountedFor[x] )
 			{

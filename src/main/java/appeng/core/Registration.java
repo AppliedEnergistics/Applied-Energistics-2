@@ -363,6 +363,8 @@ final class Registration
 		// Interface
 		Upgrades.CRAFTING.registerItem( parts.iface(), 1 );
 		Upgrades.CRAFTING.registerItem( blocks.iface(), 1 );
+		Upgrades.PATTERN_EXPANSION.registerItem( parts.iface(), 3 );
+		Upgrades.PATTERN_EXPANSION.registerItem( blocks.iface(), 3 );
 
 		// IO Port!
 		Upgrades.SPEED.registerItem( blocks.iOPort(), 3 );

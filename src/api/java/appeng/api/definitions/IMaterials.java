@@ -89,6 +89,8 @@ public interface IMaterials
 
 	IItemDefinition cardCapacity();
 
+	IItemDefinition cardPatternExpansion();
+
 	IItemDefinition cardFuzzy();
 
 	IItemDefinition cardInverter();

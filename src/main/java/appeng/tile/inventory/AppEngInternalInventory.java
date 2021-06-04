@@ -206,7 +206,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
 		this.enableClientEvents = enableClientEvents;
 	}
 
-	private IAEAppEngInventory getTileEntity()
+	public IAEAppEngInventory getTileEntity()
 	{
 		return this.te;
 	}

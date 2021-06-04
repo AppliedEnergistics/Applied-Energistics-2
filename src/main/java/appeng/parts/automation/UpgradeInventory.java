@@ -19,7 +19,13 @@
 package appeng.parts.automation;
 
 
+import javax.annotation.Nonnull;
+import appeng.container.slot.SlotRestrictedInput;
+import appeng.core.Api;
+import appeng.helpers.DualityInterface;
+import appeng.util.inv.ItemHandlerIterator;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,6 +51,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	private int capacityUpgrades = 0;
 	private int inverterUpgrades = 0;
 	private int craftingUpgrades = 0;
+	private int patternExpansionUpgrades = 0;
 
 	public UpgradeInventory( final IAEAppEngInventory parent, final int s )
 	{
@@ -81,6 +88,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 				return this.inverterUpgrades;
 			case CRAFTING:
 				return this.craftingUpgrades;
+			case PATTERN_EXPANSION:
+				return this.patternExpansionUpgrades;
 			default:
 				return 0;
 		}
@@ -91,7 +100,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	private void updateUpgradeInfo()
 	{
 		this.cached = true;
-		this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = 0;
+		this.patternExpansionUpgrades = this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = 0;
 
 		for( final ItemStack is : this )
 		{
@@ -121,6 +130,9 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 				case CRAFTING:
 					this.craftingUpgrades++;
 					break;
+				case PATTERN_EXPANSION:
+					this.patternExpansionUpgrades++;
+					break;
 				default:
 					break;
 			}
@@ -132,6 +144,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 		this.speedUpgrades = Math.min( this.speedUpgrades, this.getMaxInstalled( Upgrades.SPEED ) );
 		this.inverterUpgrades = Math.min( this.inverterUpgrades, this.getMaxInstalled( Upgrades.INVERTER ) );
 		this.craftingUpgrades = Math.min( this.craftingUpgrades, this.getMaxInstalled( Upgrades.CRAFTING ) );
+		this.patternExpansionUpgrades = Math.min( this.patternExpansionUpgrades, this.getMaxInstalled( Upgrades.PATTERN_EXPANSION ) );
 	}
 
 	@Override
@@ -158,6 +171,28 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 		{
 			this.parent.onChangeInventory( inv, slot, mc, removedStack, newStack );
 		}
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack extractItem( int slot, int amount, boolean simulate )
+	{
+		if( patternExpansionUpgrades > 0 )
+		{
+			if( parent instanceof DualityInterface )
+			{
+				IItemHandler patternInv = ( (DualityInterface) parent ).getPatterns();
+				for( int invSlot = 0; invSlot < patternInv.getSlots(); invSlot++ )
+				{
+					ItemStack is = patternInv.getStackInSlot( invSlot );
+					if( invSlot > patternExpansionUpgrades * 9 && !is.isEmpty() )
+					{
+						return ItemStack.EMPTY;
+					}
+				}
+			}
+		}
+		return super.extractItem( slot, amount, simulate );
 	}
 
 	private class UpgradeInvFilter implements IAEItemFilter
