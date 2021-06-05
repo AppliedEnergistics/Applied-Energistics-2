@@ -20,15 +20,19 @@ package appeng.parts.automation;
 
 
 import javax.annotation.Nonnull;
+import appeng.api.AEApi;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.Api;
 import appeng.helpers.DualityInterface;
 import appeng.util.inv.ItemHandlerIterator;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
@@ -38,6 +42,9 @@ import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class UpgradeInventory extends AppEngInternalInventory implements IAEAppEngInventory
@@ -177,21 +184,6 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	@Override
 	public ItemStack extractItem( int slot, int amount, boolean simulate )
 	{
-		if( patternExpansionUpgrades > 0 )
-		{
-			if( parent instanceof DualityInterface )
-			{
-				IItemHandler patternInv = ( (DualityInterface) parent ).getPatterns();
-				for( int invSlot = 0; invSlot < patternInv.getSlots(); invSlot++ )
-				{
-					ItemStack is = patternInv.getStackInSlot( invSlot );
-					if( invSlot > patternExpansionUpgrades * 9 && !is.isEmpty() )
-					{
-						return ItemStack.EMPTY;
-					}
-				}
-			}
-		}
 		return super.extractItem( slot, amount, simulate );
 	}
 

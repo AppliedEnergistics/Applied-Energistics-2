@@ -23,6 +23,7 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
+import appeng.api.definitions.IItemDefinition;
 import appeng.integration.modules.gregtech.GTCEInventoryAdaptor;
 import appeng.util.*;
 import appeng.util.inv.*;
@@ -34,6 +35,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -176,7 +178,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			return;
 		}
-
 		if( inv == this.config )
 		{
 			this.readConfig();
@@ -590,6 +591,28 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 		}
 		return false;
+	}
+
+	public void dropExcessPatterns()
+	{
+		IItemHandler patterns = getPatterns();
+
+		List<ItemStack> dropList = new ArrayList<>();
+		for( int invSlot = 0; invSlot < patterns.getSlots(); invSlot++ )
+		{
+			if( invSlot >= 9 + ( this.getInstalledUpgrades( Upgrades.PATTERN_EXPANSION ) ) * 9 )
+			{
+				ItemStack is = patterns.getStackInSlot( invSlot );
+				if( is.isEmpty() ) continue;
+				dropList.add( patterns.extractItem( invSlot, Integer.MAX_VALUE, false ) );
+			}
+		}
+		if( dropList.size() > 1 )
+		{
+			World world = this.getLocation().getWorld();
+			BlockPos blockPos = this.getLocation().getPos();
+			Platform.spawnDrops( world, blockPos, dropList );
+		}
 	}
 
 	@Override

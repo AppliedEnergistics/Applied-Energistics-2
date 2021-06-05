@@ -21,6 +21,7 @@ package appeng.container.implementations;
 
 import appeng.api.config.Upgrades;
 import appeng.container.slot.*;
+import appeng.util.Platform;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.config.SecurityPermissions;
@@ -42,6 +43,9 @@ public class ContainerInterface extends ContainerUpgradeable implements IOptiona
 
 	@GuiSync( 4 )
 	public YesNo iTermMode = YesNo.YES;
+
+	@GuiSync( 7 )
+	public int patternExpansions = 0;
 
 	public ContainerInterface( final InventoryPlayer ip, final IInterfaceHost te )
 	{
@@ -103,7 +107,20 @@ public class ContainerInterface extends ContainerUpgradeable implements IOptiona
 	public void detectAndSendChanges()
 	{
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
+
+		if (patternExpansions != getPatternUpgrades())
+		{
+			patternExpansions = getPatternUpgrades();
+			this.myDuality.dropExcessPatterns();
+		}
 		super.detectAndSendChanges();
+	}
+
+	@Override
+	public void onUpdate( final String field, final Object oldValue, final Object newValue ) {
+		super.onUpdate(field, oldValue, newValue);
+		if ( Platform.isClient() && field.equals("patternExpansions"))
+			this.myDuality.dropExcessPatterns();
 	}
 
 	@Override
