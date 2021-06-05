@@ -134,14 +134,16 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		{
 			return ItemStack.EMPTY;
 		}
-
-		final AppEngSlot clickSlot = ( AppEngSlot ) this.inventorySlots.get( idx ); // require AE SLots!
-		ItemStack itemStack = clickSlot.getStack();
-		if( AEApi.instance().definitions().materials().blankPattern().isSameAs( itemStack ) )
+		if( this.inventorySlots.get( idx ) instanceof SlotPlayerInv || this.inventorySlots.get( idx ) instanceof SlotPlayerHotBar )
 		{
-			IItemHandler patternInv = this.getPatternTerminal().getInventoryByName( "pattern" );
-			ItemStack remainder = patternInv.insertItem( 0, itemStack, false );
-			clickSlot.putStack( remainder );
+			final AppEngSlot clickSlot = ( AppEngSlot ) this.inventorySlots.get( idx ); // require AE SLots!
+			ItemStack itemStack = clickSlot.getStack();
+			if( AEApi.instance().definitions().materials().blankPattern().isSameAs( itemStack ) )
+			{
+				IItemHandler patternInv = this.getPatternTerminal().getInventoryByName( "pattern" );
+				ItemStack remainder = patternInv.insertItem( 0, itemStack, false );
+				clickSlot.putStack( remainder );
+			}
 		}
 		return super.transferStackInSlot( p, idx );
 	}
