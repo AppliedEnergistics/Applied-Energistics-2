@@ -377,6 +377,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         }
 
         final Material material = state.getMaterial();
+        // Note: bedrock, portals, and other unbreakable blocks have a hardness < 0, hence the >= 0 check below.
         final float hardness = state.getBlockHardness(w, pos);
         final boolean ignoreMaterials = material == Material.AIR || material == Material.LAVA
                 || material == Material.WATER || material.isLiquid();
@@ -393,14 +394,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         ItemStack harvestTool = createHarvestTool(state);
 
-        if (harvestTool == null) {
-            if (!state.getRequiresTool()) {
-                harvestTool = ItemStack.EMPTY;
-            } else {
-                // In case the block does NOT allow us to harvest it without a tool, or the
-                // proper tool, do not return anything.
-                return Collections.emptyList();
-            }
+        if (!state.getRequiresTool() && !harvestTool.isEnchanted()) {
+            // If the state does not require a tool, and the tool is not enchanted (with silk touch for example in case
+            // of the identity annihilation plane), then we don't use a tool.
+            harvestTool = ItemStack.EMPTY;
         }
 
         TileEntity te = w.getTileEntity(pos);
@@ -506,13 +503,15 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         // Try to use the right tool...
         ToolType harvestToolType = state.getBlock().getHarvestTool(state);
         if (harvestToolType == ToolType.AXE) {
-            return new ItemStack(Items.DIAMOND_AXE, 1);
+            return new ItemStack(Items.NETHERITE_AXE, 1);
         } else if (harvestToolType == ToolType.SHOVEL) {
-            return new ItemStack(Items.DIAMOND_SHOVEL, 1);
+            return new ItemStack(Items.NETHERITE_SHOVEL, 1);
         } else if (harvestToolType == ToolType.PICKAXE) {
-            return new ItemStack(Items.DIAMOND_PICKAXE, 1);
+            return new ItemStack(Items.NETHERITE_PICKAXE, 1);
         } else {
-            return null;
+            // In doubt, try with a pickaxe. As of 1.16.5, some blocks require a pickaxe, but return null in
+            // getHarvestTool(). This workaround should allow correctly retrieving their drops.
+            return new ItemStack(Items.NETHERITE_PICKAXE, 1);
         }
     }
 
