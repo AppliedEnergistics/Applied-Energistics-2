@@ -390,3 +390,9 @@ if (System.getProperty("idea.sync.active") == "true") {
         }
     }
 }
+
+// See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5259
+// Gradle module metadata contains mapped dependencies, making our artifacts unconsumable
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
+}
