@@ -377,6 +377,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         }
 
         final Material material = state.getMaterial();
+        // Note: bedrock, portals, and other unbreakable blocks have a hardness < 0, hence the >= 0 check below.
         final float hardness = state.getBlockHardness(w, pos);
         final boolean ignoreMaterials = material == Material.AIR || material == Material.LAVA
                 || material == Material.WATER || material.isLiquid();
