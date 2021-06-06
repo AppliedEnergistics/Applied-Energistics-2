@@ -391,17 +391,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         final BlockState state = w.getBlockState(pos);
 
-        ItemStack harvestTool = createHarvestTool(state);
-
-        if (harvestTool == null) {
-            if (!state.getRequiresTool()) {
-                harvestTool = ItemStack.EMPTY;
-            } else {
-                // In case the block does NOT allow us to harvest it without a tool, or the
-                // proper tool, do not return anything.
-                return Collections.emptyList();
-            }
-        }
+        ItemStack harvestTool = state.getRequiresTool() ? createHarvestTool(state) : ItemStack.EMPTY;
 
         TileEntity te = w.getTileEntity(pos);
         return Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
@@ -506,13 +496,15 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         // Try to use the right tool...
         ToolType harvestToolType = state.getBlock().getHarvestTool(state);
         if (harvestToolType == ToolType.AXE) {
-            return new ItemStack(Items.DIAMOND_AXE, 1);
+            return new ItemStack(Items.NETHERITE_AXE, 1);
         } else if (harvestToolType == ToolType.SHOVEL) {
-            return new ItemStack(Items.DIAMOND_SHOVEL, 1);
+            return new ItemStack(Items.NETHERITE_SHOVEL, 1);
         } else if (harvestToolType == ToolType.PICKAXE) {
-            return new ItemStack(Items.DIAMOND_PICKAXE, 1);
+            return new ItemStack(Items.NETHERITE_PICKAXE, 1);
         } else {
-            return null;
+            // In doubt, try with a pickaxe. As of 1.16.5, some blocks require a pickaxe, but return null in
+            // getHarvestTool(). This workaround should allow correctly retrieving their drops.
+            return new ItemStack(Items.NETHERITE_PICKAXE, 1);
         }
     }
 
