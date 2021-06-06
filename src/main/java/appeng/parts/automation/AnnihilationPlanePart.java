@@ -391,7 +391,13 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         final BlockState state = w.getBlockState(pos);
 
-        ItemStack harvestTool = state.getRequiresTool() ? createHarvestTool(state) : ItemStack.EMPTY;
+        ItemStack harvestTool = createHarvestTool(state);
+
+        if (!state.getRequiresTool() && !harvestTool.isEnchanted()) {
+            // If the state does not require a tool, and the tool is not enchanted (with silk touch for example in case
+            // of the identity annihilation plane), then we don't use a tool.
+            harvestTool = ItemStack.EMPTY;
+        }
 
         TileEntity te = w.getTileEntity(pos);
         return Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
