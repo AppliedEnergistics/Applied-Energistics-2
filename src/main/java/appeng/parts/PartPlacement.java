@@ -286,7 +286,7 @@ public class PartPlacement {
 
                 if (sp.part != null && !InteractionUtil.isInAlternateUseMode(player)
                         && sp.part.onActivate(player, hand, mop.getLocation())) {
-                    return InteractionResult.FAIL;
+                    return InteractionResult.CONSUME;
                 }
             }
 
