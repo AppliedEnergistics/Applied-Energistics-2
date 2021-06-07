@@ -30,6 +30,10 @@ import appeng.container.AEBaseContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 
+/**
+ * This packet is used for two purposes: Server->Client to synchronize GUI data. Client->Server to synchronize GUI
+ * actions.
+ */
 public class GuiDataSyncPacket extends BasePacket {
     private final int windowId;
 
@@ -59,7 +63,15 @@ public class GuiDataSyncPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo manager, final PlayerEntity player) {
         Container c = player.openContainer;
         if (c instanceof AEBaseContainer && c.windowId == this.windowId) {
-            ((AEBaseContainer) c).receiveSyncData(this);
+            ((AEBaseContainer) c).receiveServerSyncData(this);
+        }
+    }
+
+    @Override
+    public void serverPacketData(INetworkInfo manager, PlayerEntity player) {
+        Container c = player.openContainer;
+        if (c instanceof AEBaseContainer && c.windowId == this.windowId) {
+            ((AEBaseContainer) c).receiveClientAction(this);
         }
     }
 

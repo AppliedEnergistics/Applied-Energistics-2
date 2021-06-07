@@ -31,7 +31,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.container.me.crafting.CraftConfirmContainer;
@@ -65,8 +64,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
         this.selectCPU.active = false;
 
-        AESubScreen subGui = new AESubScreen(container.getTarget());
-        widgets.addButton("cancel", GuiText.Cancel.text(), subGui::goBack);
+        widgets.addButton("cancel", GuiText.Cancel.text(), container::goBack);
     }
 
     @Override
