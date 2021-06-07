@@ -57,18 +57,14 @@ class ServerTileRepo {
 
         Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = this.tiles.get(world);
 
-        worldQueue.computeIfAbsent(chunkPos, key -> {
-            return new ArrayList<>();
-        }).add(tile);
+        worldQueue.computeIfAbsent(chunkPos, key -> new ArrayList<>()).add(tile);
     }
 
     /**
      * Sets up the necessary defaults when a new world is loaded
      */
     synchronized void addWorld(IWorld world) {
-        this.tiles.computeIfAbsent(world, (key) -> {
-            return new Long2ObjectOpenHashMap<>();
-        });
+        this.tiles.computeIfAbsent(world, key -> new Long2ObjectOpenHashMap<>());
     }
 
     /**

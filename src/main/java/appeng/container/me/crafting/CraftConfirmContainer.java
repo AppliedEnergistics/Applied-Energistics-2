@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.util.Util;
@@ -40,6 +41,7 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpener;
 import appeng.container.guisync.GuiSync;
@@ -61,6 +63,8 @@ import appeng.parts.reporting.TerminalPart;
  */
 public class CraftConfirmContainer extends AEBaseContainer implements CraftingCPUCyclingContainer {
 
+    private static final String ACTION_BACK = "back";
+
     public static final ContainerType<CraftConfirmContainer> TYPE = ContainerTypeBuilder
             .create(CraftConfirmContainer::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
@@ -70,6 +74,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
 
     private ICraftingCPU selectedCpu;
 
+    private IAEItemStack itemToCreate;
     private Future<ICraftingJob> job;
     private ICraftingJob result;
 
@@ -96,6 +101,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         this.cpuCycler = new CraftingCPUCycler(this::cpuMatches, this::onCPUSelectionChanged);
         // A player can select no crafting CPU to use a suitable one automatically
         this.cpuCycler.setAllowNoSelection(true);
+
+        registerClientAction(ACTION_BACK, this::goBack);
     }
 
     @Override
@@ -117,11 +124,9 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
             try {
                 this.result = this.job.get();
 
-                if (!this.result.isSimulation()) {
-                    if (this.isAutoStart()) {
-                        this.startJob();
-                        return;
-                    }
+                if (!this.result.isSimulation() && this.isAutoStart()) {
+                    this.startJob();
+                    return;
                 }
 
                 this.plan = CraftingPlanSummary.fromJob(getGrid(), getActionSrc(), this.result);
@@ -141,7 +146,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     private IGrid getGrid() {
-        final IActionHost h = ((IActionHost) this.getTarget());
+        final IActionHost h = (IActionHost) this.getTarget();
         return h.getActionableNode().getGrid();
     }
 
@@ -248,6 +253,10 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         return this.noCPU;
     }
 
+    public void setItemToCreate(IAEItemStack itemToCreate) {
+        this.itemToCreate = itemToCreate;
+    }
+
     public void setJob(final Future<ICraftingJob> job) {
         this.job = job;
     }
@@ -265,4 +274,15 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         this.plan = plan;
     }
 
+    public void goBack() {
+        PlayerEntity player = getPlayerInventory().player;
+        if (player instanceof ServerPlayerEntity) {
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+            if (itemToCreate != null) {
+                CraftAmountContainer.open(serverPlayer, getLocator(), itemToCreate, (int) itemToCreate.getStackSize());
+            }
+        } else {
+            sendClientAction(ACTION_BACK);
+        }
+    }
 }

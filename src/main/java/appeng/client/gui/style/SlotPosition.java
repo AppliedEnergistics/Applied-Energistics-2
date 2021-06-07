@@ -42,6 +42,6 @@ public class SlotPosition extends Position {
     @Override
     public String toString() {
         String result = super.toString();
-        return grid != null ? (result + "grid=" + grid) : result;
+        return grid != null ? result + "grid=" + grid : result;
     }
 }

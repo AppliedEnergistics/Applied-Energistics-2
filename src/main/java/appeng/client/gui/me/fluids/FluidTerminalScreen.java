@@ -86,7 +86,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
         list.add(new StringTextComponent(formattedAmount));
         list.add(new StringTextComponent(modName));
 
-        this.func_243308_b(matrices, list, x, y);
+        this.renderWrappedToolTip(matrices, list, x, y, this.font);
     }
 
     @Override

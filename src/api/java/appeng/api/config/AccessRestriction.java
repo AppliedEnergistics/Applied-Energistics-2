@@ -59,6 +59,6 @@ public enum AccessRestriction {
     }
 
     public AccessRestriction removePermissions(final AccessRestriction ar) {
-        return this.getPermByBit(this.permissionBit & (~ar.permissionBit));
+        return this.getPermByBit(this.permissionBit & ~ar.permissionBit);
     }
 }

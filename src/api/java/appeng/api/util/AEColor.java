@@ -160,9 +160,9 @@ public enum AEColor {
             case TINTINDEX_MEDIUM_BRIGHT:
                 final int light = this.whiteVariant;
                 final int dark = this.mediumVariant;
-                return (((((light >> 16) & 0xff) + ((dark >> 16) & 0xff)) / 2) << 16)
-                        | (((((light >> 8) & 0xff) + ((dark >> 8) & 0xff)) / 2) << 8)
-                        | ((((light) & 0xff) + ((dark) & 0xff)) / 2);
+                return ((light >> 16 & 0xff) + (dark >> 16 & 0xff)) / 2 << 16
+                        | ((light >> 8 & 0xff) + (dark >> 8 & 0xff)) / 2 << 8
+                        | ((light & 0xff) + (dark & 0xff)) / 2;
             default:
                 return -1;
         }

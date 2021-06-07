@@ -63,11 +63,7 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
                 Blocks.RED_TERRACOTTA,
                 Blocks.BLACK_TERRACOTTA);
 
-        addAe2("blacklisted/annihilation_plane",
-                Blocks.BEDROCK,
-                Blocks.END_PORTAL,
-                Blocks.END_PORTAL_FRAME,
-                Blocks.COMMAND_BLOCK);
+        addAe2("blacklisted/annihilation_plane");
 
         addAe2("spatial/blacklist");
         addAe2("spatial/whitelist");

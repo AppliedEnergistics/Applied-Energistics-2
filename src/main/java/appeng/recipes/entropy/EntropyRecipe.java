@@ -248,9 +248,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         boolean isValid = true;
 
         if (fluidState.getFluid() == this.getInputFluid()) {
-            isValid = this.inputFluidMatchers.stream().allMatch(m -> {
-                return m.matches(fluidState);
-            });
+            isValid = this.inputFluidMatchers.stream().allMatch(m -> m.matches(fluidState));
         }
 
         return isValid;

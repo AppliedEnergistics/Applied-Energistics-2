@@ -52,30 +52,35 @@ public enum SlotGridLayout {
     },
 
     BREAK_AFTER_9COLS {
+        @Override
         public Point getPosition(int x, int y, int semanticIdx) {
             return SlotGridLayout.getRowBreakPosition(x, y, semanticIdx, 9);
         }
     },
 
     BREAK_AFTER_3COLS {
+        @Override
         public Point getPosition(int x, int y, int semanticIdx) {
             return SlotGridLayout.getRowBreakPosition(x, y, semanticIdx, 3);
         }
     },
 
     BREAK_AFTER_2COLS {
+        @Override
         public Point getPosition(int x, int y, int semanticIdx) {
             return SlotGridLayout.getRowBreakPosition(x, y, semanticIdx, 2);
         }
     },
 
     HORIZONTAL {
+        @Override
         public Point getPosition(int x, int y, int semanticIdx) {
             return new Point(x, y).move(semanticIdx * 18, 0);
         }
     },
 
     VERTICAL {
+        @Override
         public Point getPosition(int x, int y, int semanticIdx) {
             return new Point(x, y).move(0, semanticIdx * 18);
         }

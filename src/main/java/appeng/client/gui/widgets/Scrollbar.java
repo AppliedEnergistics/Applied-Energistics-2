@@ -283,6 +283,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
      * Ticks the scrollbar for the purposes of input-repeats (since mouse-downs are not repeat-triggered), used to
      * repeatedly page-up or page-down when the mouse is held in the area above or below the scrollbar handle.
      */
+    @Override
     public void tick() {
         this.eventRepeater.tick();
     }

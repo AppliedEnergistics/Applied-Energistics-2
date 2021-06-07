@@ -34,9 +34,9 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
 
     @Override
     public boolean checkMultiblockScale(final BlockPos min, final BlockPos max) {
-        return (min.getX() == max.getX() && min.getY() == max.getY() && min.getZ() != max.getZ())
-                || (min.getX() == max.getX() && min.getY() != max.getY() && min.getZ() == max.getZ())
-                || (min.getX() != max.getX() && min.getY() == max.getY() && min.getZ() == max.getZ());
+        return min.getX() == max.getX() && min.getY() == max.getY() && min.getZ() != max.getZ()
+                || min.getX() == max.getX() && min.getY() != max.getY() && min.getZ() == max.getZ()
+                || min.getX() != max.getX() && min.getY() == max.getY() && min.getZ() == max.getZ();
     }
 
     @Override

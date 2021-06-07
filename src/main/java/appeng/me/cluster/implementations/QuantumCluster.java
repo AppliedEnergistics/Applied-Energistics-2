@@ -117,18 +117,14 @@ public class QuantumCluster implements ILocatable, IAECluster {
                 }
 
                 try {
-                    if (sideA.connection != null) {
-                        if (sideA.connection.getConnection() != null) {
-                            sideA.connection.getConnection().destroy();
-                            sideA.connection = new ConnectionWrapper(null);
-                        }
+                    if (sideA.connection != null && sideA.connection.getConnection() != null) {
+                        sideA.connection.getConnection().destroy();
+                        sideA.connection = new ConnectionWrapper(null);
                     }
 
-                    if (sideB.connection != null) {
-                        if (sideB.connection.getConnection() != null) {
-                            sideB.connection.getConnection().destroy();
-                            sideB.connection = new ConnectionWrapper(null);
-                        }
+                    if (sideB.connection != null && sideB.connection.getConnection() != null) {
+                        sideB.connection.getConnection().destroy();
+                        sideB.connection = new ConnectionWrapper(null);
                     }
 
                     sideA.connection = sideB.connection = new ConnectionWrapper(
@@ -144,12 +140,10 @@ public class QuantumCluster implements ILocatable, IAECluster {
             shutdown = true;
         }
 
-        if (shutdown && this.connection != null) {
-            if (this.connection.getConnection() != null) {
-                this.connection.getConnection().destroy();
-                this.connection.setConnection(null);
-                this.connection = new ConnectionWrapper(null);
-            }
+        if (shutdown && this.connection != null && this.connection.getConnection() != null) {
+            this.connection.getConnection().destroy();
+            this.connection.setConnection(null);
+            this.connection = new ConnectionWrapper(null);
         }
     }
 

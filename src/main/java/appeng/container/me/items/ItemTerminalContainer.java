@@ -30,7 +30,6 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.me.common.GridInventoryEntry;
 import appeng.container.me.common.IClientRepo;
@@ -82,13 +81,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
             case AUTO_CRAFT:
                 final ContainerLocator locator = getLocator();
                 if (locator != null) {
-                    ContainerOpener.openContainer(CraftAmountContainer.TYPE, player, locator);
-
-                    if (player.openContainer instanceof CraftAmountContainer) {
-                        CraftAmountContainer cca = (CraftAmountContainer) player.openContainer;
-                        cca.setItemToCraft(stack);
-                        cca.detectAndSendChanges();
-                    }
+                    CraftAmountContainer.open(player, locator, stack, 1);
                 }
                 break;
 
@@ -183,7 +176,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
 
                     if (ais != null) {
                         final long stackSize = Math.min(maxSize, ais.getStackSize());
-                        ais.setStackSize((stackSize + 1) >> 1);
+                        ais.setStackSize(stackSize + 1 >> 1);
                         ais = Platform.poweredExtraction(powerSource, monitor, ais,
                                 this.getActionSource());
                     }

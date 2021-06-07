@@ -156,7 +156,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     @Override
     public boolean isActive() {
         if (isRemote()) {
-            return this.isPowered() && (CHANNEL_FLAG == (this.getClientFlags() & CHANNEL_FLAG));
+            return this.isPowered() && CHANNEL_FLAG == (this.getClientFlags() & CHANNEL_FLAG);
         }
 
         return this.getProxy().isActive();

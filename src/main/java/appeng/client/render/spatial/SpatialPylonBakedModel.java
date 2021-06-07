@@ -68,14 +68,14 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
                     builder.setUvRotation(Direction.NORTH, 1);
                     builder.setUvRotation(Direction.UP, 2);
                     builder.setUvRotation(Direction.DOWN, 2);
-                } else if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN) {
-                    builder.setUvRotation(Direction.SOUTH, 2);
-                    builder.setUvRotation(Direction.NORTH, 2);
-                    builder.setUvRotation(Direction.UP, 1);
-                    builder.setUvRotation(Direction.DOWN, 1);
                 } else {
-                    builder.setUvRotation(Direction.SOUTH, 1);
-                    builder.setUvRotation(Direction.NORTH, 1);
+                    if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN) {
+                        builder.setUvRotation(Direction.SOUTH, 2);
+                        builder.setUvRotation(Direction.NORTH, 2);
+                    } else {
+                        builder.setUvRotation(Direction.SOUTH, 1);
+                        builder.setUvRotation(Direction.NORTH, 1);
+                    }
                     builder.setUvRotation(Direction.UP, 1);
                     builder.setUvRotation(Direction.DOWN, 1);
                 }
@@ -122,14 +122,13 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
                     this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.SOUTH)),
                     this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.EAST)),
                     this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.WEST)));
-            builder.addCube(0, 0, 0, 16, 16, 16);
         } else {
             builder.setTexture(this.textures.get(SpatialPylonTextureType.BASE));
             builder.addCube(0, 0, 0, 16, 16, 16);
 
             builder.setTexture(this.textures.get(SpatialPylonTextureType.DIM));
-            builder.addCube(0, 0, 0, 16, 16, 16);
         }
+        builder.addCube(0, 0, 0, 16, 16, 16);
 
         // Reset back to default
         builder.setEmissiveMaterial(false);
@@ -149,9 +148,8 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
 
         if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_MIDDLE) {
             return SpatialPylonTextureType.BASE_SPANNED;
-        } else if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN) {
-            return SpatialPylonTextureType.BASE_END;
-        } else if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
+        } else if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN
+                || (flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
             return SpatialPylonTextureType.BASE_END;
         }
 
@@ -167,9 +165,8 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
 
         if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_MIDDLE) {
             return good ? SpatialPylonTextureType.DIM_SPANNED : SpatialPylonTextureType.RED_SPANNED;
-        } else if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN) {
-            return good ? SpatialPylonTextureType.DIM_END : SpatialPylonTextureType.RED_END;
-        } else if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
+        } else if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN
+                || (flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
             return good ? SpatialPylonTextureType.DIM_END : SpatialPylonTextureType.RED_END;
         }
 

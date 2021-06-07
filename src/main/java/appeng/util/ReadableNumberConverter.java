@@ -99,7 +99,7 @@ public enum ReadableNumberConverter implements ISlimReadableNumberConverter, IWi
         final String withPrecision = this.format.format(last / DIVISION_BASE) + postFix;
         final String withoutPrecision = Long.toString(base) + postFix;
 
-        final String slimResult = (withPrecision.length() <= width) ? withPrecision : withoutPrecision;
+        final String slimResult = withPrecision.length() <= width ? withPrecision : withoutPrecision;
 
         // post condition
         assert slimResult.length() <= width;

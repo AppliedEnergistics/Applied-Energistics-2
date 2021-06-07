@@ -65,8 +65,8 @@ public class EnergyThreshold implements Comparable<EnergyThreshold> {
         int result = 1;
         long temp;
         temp = Double.doubleToLongBits(this.threshold);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result + ((this.watcher == null) ? 0 : this.watcher.hashCode());
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        result = prime * result + (this.watcher == null ? 0 : this.watcher.hashCode());
         return result;
     }
 

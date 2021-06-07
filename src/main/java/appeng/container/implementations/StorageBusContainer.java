@@ -134,7 +134,7 @@ public class StorageBusContainer extends UpgradeableContainer {
         }
 
         for (int x = 0; x < inv.getSlots(); x++) {
-            if (i.hasNext() && this.isSlotEnabled((x / 9) - 2)) {
+            if (i.hasNext() && this.isSlotEnabled(x / 9 - 2)) {
                 // TODO: check if ok
                 final ItemStack g = i.next().asItemStackRepresentation();
                 ItemHandlerUtil.setStackInSlot(inv, x, g);

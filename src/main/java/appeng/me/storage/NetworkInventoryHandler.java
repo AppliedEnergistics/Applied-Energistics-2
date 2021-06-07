@@ -120,22 +120,20 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
             if (!this.security.hasPermission(src.player().get(), permission)) {
                 return true;
             }
-        } else if (src.machine().isPresent()) {
-            if (this.security.isAvailable()) {
-                final IGridNode n = src.machine().get().getActionableNode();
-                if (n == null) {
+        } else if (src.machine().isPresent() && this.security.isAvailable()) {
+            final IGridNode n = src.machine().get().getActionableNode();
+            if (n == null) {
+                return true;
+            }
+
+            final IGrid gn = n.getGrid();
+            if (gn != this.security.getGrid()) {
+
+                final ISecurityGrid sg = gn.getCache(ISecurityGrid.class);
+                final int playerID = sg.getOwner();
+
+                if (!this.security.hasPermission(playerID, permission)) {
                     return true;
-                }
-
-                final IGrid gn = n.getGrid();
-                if (gn != this.security.getGrid()) {
-
-                    final ISecurityGrid sg = gn.getCache(ISecurityGrid.class);
-                    final int playerID = sg.getOwner();
-
-                    if (!this.security.hasPermission(playerID, permission)) {
-                        return true;
-                    }
                 }
             }
         }
@@ -222,14 +220,10 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
         final Deque cDepth = this.getDepth(type);
         if (cDepth.isEmpty()) {
             currentPass++;
-            this.myPass = currentPass;
-        } else {
-            if (currentPass == this.myPass) {
-                return true;
-            } else {
-                this.myPass = currentPass;
-            }
+        } else if (currentPass == this.myPass) {
+            return true;
         }
+        this.myPass = currentPass;
 
         cDepth.push(this);
         return false;

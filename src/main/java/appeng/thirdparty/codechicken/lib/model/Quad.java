@@ -108,7 +108,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
             this.vertices[this.vertexIndex] = v;
         }
         System.arraycopy(data, 0, v.raw[element], 0, data.length);
-        if (element == (this.format.elementCount - 1)) {
+        if (element == this.format.elementCount - 1) {
             this.vertexIndex++;
             if (this.vertexIndex == 4) {
                 this.vertexIndex = 0;

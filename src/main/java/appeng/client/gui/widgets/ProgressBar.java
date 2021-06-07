@@ -74,12 +74,12 @@ public class ProgressBar extends Widget implements ITooltip {
             int destY = y;
 
             if (this.layout == Direction.VERTICAL) {
-                int diff = this.height - (max > 0 ? (this.height * current) / max : 0);
+                int diff = this.height - (max > 0 ? this.height * current / max : 0);
                 destY += diff;
                 srcY += diff;
                 srcH -= diff;
             } else {
-                int diff = this.width - (max > 0 ? (this.width * current) / max : 0);
+                int diff = this.width - (max > 0 ? this.width * current / max : 0);
                 srcX += diff;
                 srcW -= diff;
             }

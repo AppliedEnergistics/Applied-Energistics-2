@@ -163,9 +163,7 @@ public class StatisticsCache implements IGridCache {
     }
 
     private Multiset<ChunkPos> getChunks(IWorld world) {
-        return this.chunks.computeIfAbsent(world, w -> {
-            return HashMultiset.create();
-        });
+        return this.chunks.computeIfAbsent(world, w -> HashMultiset.create());
     }
 
     /**

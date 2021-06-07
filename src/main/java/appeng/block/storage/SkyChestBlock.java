@@ -128,18 +128,18 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
 
         // for x/z top and bottom is swapped
         final double minX = Math.max(0.0,
-                offsetX + (up.getXOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getXOffset() * AABB_OFFSET_TOP)));
+                offsetX + (up.getXOffset() < 0 ? AABB_OFFSET_BOTTOM : up.getXOffset() * AABB_OFFSET_TOP));
         final double minY = Math.max(0.0,
-                offsetY + (up.getYOffset() < 0 ? AABB_OFFSET_TOP : (up.getYOffset() * AABB_OFFSET_BOTTOM)));
+                offsetY + (up.getYOffset() < 0 ? AABB_OFFSET_TOP : up.getYOffset() * AABB_OFFSET_BOTTOM));
         final double minZ = Math.max(0.0,
-                offsetZ + (up.getZOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getZOffset() * AABB_OFFSET_TOP)));
+                offsetZ + (up.getZOffset() < 0 ? AABB_OFFSET_BOTTOM : up.getZOffset() * AABB_OFFSET_TOP));
 
         final double maxX = Math.min(1.0,
-                1.0 - offsetX - (up.getXOffset() < 0 ? AABB_OFFSET_TOP : (up.getXOffset() * AABB_OFFSET_BOTTOM)));
+                1.0 - offsetX - (up.getXOffset() < 0 ? AABB_OFFSET_TOP : up.getXOffset() * AABB_OFFSET_BOTTOM));
         final double maxY = Math.min(1.0,
-                1.0 - offsetY - (up.getYOffset() < 0 ? AABB_OFFSET_BOTTOM : (up.getYOffset() * AABB_OFFSET_TOP)));
+                1.0 - offsetY - (up.getYOffset() < 0 ? AABB_OFFSET_BOTTOM : up.getYOffset() * AABB_OFFSET_TOP));
         final double maxZ = Math.min(1.0,
-                1.0 - offsetZ - (up.getZOffset() < 0 ? AABB_OFFSET_TOP : (up.getZOffset() * AABB_OFFSET_BOTTOM)));
+                1.0 - offsetZ - (up.getZOffset() < 0 ? AABB_OFFSET_TOP : up.getZOffset() * AABB_OFFSET_BOTTOM));
 
         return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }

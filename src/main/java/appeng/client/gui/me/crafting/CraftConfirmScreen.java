@@ -31,7 +31,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.container.me.crafting.CraftConfirmContainer;
@@ -65,8 +64,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
         this.selectCPU.active = false;
 
-        AESubScreen subGui = new AESubScreen(container.getTarget());
-        widgets.addButton("cancel", GuiText.Cancel.text(), subGui::goBack);
+        widgets.addButton("cancel", GuiText.Cancel.text(), container::goBack);
     }
 
     @Override
@@ -134,11 +132,10 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     // Allow players to confirm a craft via the enter key
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
-            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
-                this.start();
-                return true;
-            }
+        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))
+                && (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER)) {
+            this.start();
+            return true;
         }
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }

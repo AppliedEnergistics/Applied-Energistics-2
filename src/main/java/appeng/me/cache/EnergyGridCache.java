@@ -174,7 +174,7 @@ public class EnergyGridCache implements IEnergyGrid {
                     break;
             }
         } else {
-            (new RuntimeException("Attempt to ask the IEnergyGrid to charge a non public energy store."))
+            new RuntimeException("Attempt to ask the IEnergyGrid to charge a non public energy store.")
                     .printStackTrace();
         }
     }

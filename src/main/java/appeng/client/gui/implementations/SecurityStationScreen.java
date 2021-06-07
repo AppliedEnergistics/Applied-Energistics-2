@@ -85,11 +85,11 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.inject.setState((container.getPermissionMode() & (1 << SecurityPermissions.INJECT.ordinal())) > 0);
-        this.extract.setState((container.getPermissionMode() & (1 << SecurityPermissions.EXTRACT.ordinal())) > 0);
-        this.craft.setState((container.getPermissionMode() & (1 << SecurityPermissions.CRAFT.ordinal())) > 0);
-        this.build.setState((container.getPermissionMode() & (1 << SecurityPermissions.BUILD.ordinal())) > 0);
-        this.security.setState((container.getPermissionMode() & (1 << SecurityPermissions.SECURITY.ordinal())) > 0);
+        this.inject.setState((container.getPermissionMode() & 1 << SecurityPermissions.INJECT.ordinal()) > 0);
+        this.extract.setState((container.getPermissionMode() & 1 << SecurityPermissions.EXTRACT.ordinal()) > 0);
+        this.craft.setState((container.getPermissionMode() & 1 << SecurityPermissions.CRAFT.ordinal()) > 0);
+        this.build.setState((container.getPermissionMode() & 1 << SecurityPermissions.BUILD.ordinal()) > 0);
+        this.security.setState((container.getPermissionMode() & 1 << SecurityPermissions.SECURITY.ordinal()) > 0);
     }
 
     @Override

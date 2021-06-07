@@ -68,7 +68,7 @@ public class ReplicatorCardItem extends AEBaseItem {
 
             tag.putInt("r", replications);
 
-            playerIn.sendMessage(new StringTextComponent((replications + 1) + "³ Replications"), Util.DUMMY_UUID);
+            playerIn.sendMessage(new StringTextComponent(replications + 1 + "³ Replications"), Util.DUMMY_UUID);
         }
 
         return super.onItemRightClick(worldIn, playerIn, handIn);
@@ -165,9 +165,9 @@ public class ReplicatorCardItem extends AEBaseItem {
 
                                             // Offset x/z by the rotation index.
                                             // For sake of simplicity always grow upwards.
-                                            final int rel_x = min.x - src_x + x + (r_x * sc_size_x * x_rot);
-                                            final int rel_y = min.y - src_y + y + (r_y * sc_size_y);
-                                            final int rel_z = min.z - src_z + z + (r_z * sc_size_z * z_rot);
+                                            final int rel_x = min.x - src_x + x + r_x * sc_size_x * x_rot;
+                                            final int rel_y = min.y - src_y + y + r_y * sc_size_y;
+                                            final int rel_z = min.z - src_z + z + r_z * sc_size_z * z_rot;
 
                                             // Copy a single SC instance completely
                                             for (int i = 1; i < sc_size_x; i++) {

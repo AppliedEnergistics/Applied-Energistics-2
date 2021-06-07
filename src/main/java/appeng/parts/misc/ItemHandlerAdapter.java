@@ -67,7 +67,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
         ItemStack remaining = orgInput;
 
         int slotCount = this.itemHandler.getSlots();
-        boolean simulate = (type == Actionable.SIMULATE);
+        boolean simulate = type == Actionable.SIMULATE;
 
         // This uses a brute force approach and tries to jam it in every slot the inventory exposes.
         for (int i = 0; i < slotCount && !remaining.isEmpty(); i++) {
@@ -100,7 +100,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
         // Use this to gather the requested items
         ItemStack gathered = ItemStack.EMPTY;
 
-        final boolean simulate = (mode == Actionable.SIMULATE);
+        final boolean simulate = mode == Actionable.SIMULATE;
 
         for (int i = 0; i < this.itemHandler.getSlots(); i++) {
             ItemStack stackInInventorySlot = this.itemHandler.getStackInSlot(i);

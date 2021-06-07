@@ -81,9 +81,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
         }
 
         // Pre-compute the quad count to avoid list resizes
-        List<BakedQuad> quads = new ArrayList<>();
-        quads.addAll(this.base.getQuads(state, side, rand, extraData));
-
+        List<BakedQuad> quads = new ArrayList<>(this.base.getQuads(state, side, rand, extraData));
         // We'll add the pointer as "sideless"
         if (side == null) {
             // Set up the rotation around the Y-axis for the pointer

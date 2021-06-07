@@ -352,7 +352,7 @@ public class ItemListTest {
             if (stack == swordAbove100) {
                 return 101;
             }
-            return (int) ((1.0f - (stack.getItemDamage() / (float) stack.getDefinition().getMaxDamage())) * 100);
+            return (int) ((1.0f - stack.getItemDamage() / (float) stack.getDefinition().getMaxDamage()) * 100);
         }
     }
 

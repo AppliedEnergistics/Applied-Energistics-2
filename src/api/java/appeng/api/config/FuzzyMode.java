@@ -62,7 +62,7 @@ public enum FuzzyMode {
     }
 
     public int calculateBreakPoint(final int maxDamage) {
-        return (int) ((this.percentage * maxDamage) / 100.0f);
+        return (int) (this.percentage * maxDamage / 100.0f);
     }
 
 }

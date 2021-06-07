@@ -302,7 +302,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     private void updateCraftingList() {
         final Boolean[] accountedFor = { false, false, false, false, false, false, false, false, false }; // 9...
 
-        assert (accountedFor.length == this.patterns.getSlots());
+        assert accountedFor.length == this.patterns.getSlots();
 
         if (!this.gridProxy.isReady()) {
             return;
@@ -494,7 +494,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         }
 
         final boolean couldDoWork = this.updateStorage();
-        return this.hasWorkToDo() ? (couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER)
+        return this.hasWorkToDo() ? couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER
                 : TickRateModulation.SLEEP;
     }
 
@@ -608,9 +608,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     // extract items!
                     changed = true;
                     final ItemStack removed = adaptor.removeItems((int) diff, ItemStack.EMPTY, null);
-                    if (removed.isEmpty()) {
-                        throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
-                    } else if (removed.getCount() != diff) {
+                    if (removed.isEmpty() || removed.getCount() != diff) {
                         throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
                     }
                 }
@@ -777,10 +775,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
             final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
             if (ad != null) {
-                if (this.isBlocking()) {
-                    if (!ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
-                        continue;
-                    }
+                if (this.isBlocking() && !ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
+                    continue;
                 }
 
                 if (this.acceptsItems(ad, table)) {
@@ -819,11 +815,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 final TileEntity te = w.getTileEntity(tile.getPos().offset(s));
 
                 final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
-                if (ad != null) {
-                    if (ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
-                        allAreBusy = false;
-                        break;
-                    }
+                if (ad != null && ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
+                    allAreBusy = false;
+                    break;
                 }
             }
 
@@ -980,13 +974,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                             direction.getZOffset());
                     final BlockRayTraceResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
                     // https://github.com/MinecraftForge/MinecraftForge/pull/6708
-                    if (hit != null && !BAD_BLOCKS.contains(directedBlock)) {
-                        if (hit.getPos().equals(directedTile.getPos())) {
-                            final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
-                                    directedTile.getPos(), null);
-                            if (!g.isEmpty()) {
-                                what = g;
-                            }
+                    if (hit != null && !BAD_BLOCKS.contains(directedBlock)
+                            && hit.getPos().equals(directedTile.getPos())) {
+                        final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
+                                directedTile.getPos(), null);
+                        if (!g.isEmpty()) {
+                            what = g;
                         }
                     }
                 } catch (final Throwable t) {
@@ -1009,7 +1002,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
     public long getSortValue() {
         final TileEntity te = this.iHost.getTileEntity();
-        return (te.getPos().getZ() << 24) ^ (te.getPos().getX() << 8) ^ te.getPos().getY();
+        return te.getPos().getZ() << 24 ^ te.getPos().getX() << 8 ^ te.getPos().getY();
     }
 
     public void initialize() {

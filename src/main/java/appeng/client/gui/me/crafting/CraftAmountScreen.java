@@ -41,6 +41,8 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     private final NumberEntryWidget amountToCraft;
 
+    private boolean initialAmountInitialized;
+
     public CraftAmountScreen(CraftAmountContainer container, PlayerInventory playerInventory, ITextComponent title,
             ScreenStyle style) {
         super(container, playerInventory, title, style);
@@ -62,6 +64,11 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
+
+        if (this.container.getInitialAmount() != -1 && !this.initialAmountInitialized) {
+            this.amountToCraft.setValue(this.container.getInitialAmount());
+            this.initialAmountInitialized = true;
+        }
 
         this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
         this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;

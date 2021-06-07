@@ -36,9 +36,9 @@ public class PaintBallItemRendering extends ItemRenderingCustomizer {
     @Override
     public void customize(IItemRendering rendering) {
         final int colorValue = lumen ? color.mediumVariant : color.mediumVariant;
-        final int r = (colorValue >> 16) & 0xff;
-        final int g = (colorValue >> 8) & 0xff;
-        final int b = (colorValue) & 0xff;
+        final int r = colorValue >> 16 & 0xff;
+        final int g = colorValue >> 8 & 0xff;
+        final int b = colorValue & 0xff;
 
         int renderColor;
         if (lumen) {

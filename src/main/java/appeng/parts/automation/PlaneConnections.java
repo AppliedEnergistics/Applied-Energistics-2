@@ -99,7 +99,7 @@ public final class PlaneConnections {
 
     @Override
     public int hashCode() {
-        int result = (this.up ? 1 : 0);
+        int result = this.up ? 1 : 0;
         result = 31 * result + (this.right ? 1 : 0);
         result = 31 * result + (this.down ? 1 : 0);
         result = 31 * result + (this.left ? 1 : 0);

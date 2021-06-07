@@ -46,10 +46,8 @@ public final class LocatableRegistry implements ILocatableRegistry {
             if (tileEntity.getWorld() == null || tileEntity.getWorld().isRemote()) {
                 return;
             }
-        } else {
-            if (Platform.isClient()) {
-                return; // IGNORE!
-            }
+        } else if (Platform.isClient()) {
+            return; // IGNORE!
         }
 
         if (e.change == LocatableEvent.REGISTER) {

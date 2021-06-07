@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.world.World;
@@ -41,6 +42,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.SlotSemantic;
+import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.core.AELog;
@@ -69,11 +71,28 @@ public class CraftAmountContainer extends AEBaseContainer {
      */
     private IAEItemStack itemToCreate;
 
+    @GuiSync(1)
+    private int initialAmount = -1;
+
     public CraftAmountContainer(int id, PlayerInventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);
 
         this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(null, 1), 0);
         this.addSlot(this.craftingItem, SlotSemantic.MACHINE_OUTPUT);
+    }
+
+    /**
+     * Opens the craft amount screen for the given player.
+     */
+    public static void open(ServerPlayerEntity player, ContainerLocator locator, IAEItemStack itemToCraft,
+            int initialAmount) {
+        ContainerOpener.openContainer(CraftAmountContainer.TYPE, player, locator);
+
+        if (player.openContainer instanceof CraftAmountContainer) {
+            CraftAmountContainer cca = (CraftAmountContainer) player.openContainer;
+            cca.setItemToCraft(itemToCraft, initialAmount);
+            cca.detectAndSendChanges();
+        }
     }
 
     @Override
@@ -83,7 +102,7 @@ public class CraftAmountContainer extends AEBaseContainer {
     }
 
     public IGrid getGrid() {
-        final IActionHost h = ((IActionHost) this.getTarget());
+        final IActionHost h = (IActionHost) this.getTarget();
         return h.getActionableNode().getGrid();
     }
 
@@ -95,9 +114,10 @@ public class CraftAmountContainer extends AEBaseContainer {
         return new PlayerSource(this.getPlayerInventory().player, (IActionHost) this.getTarget());
     }
 
-    public void setItemToCraft(@Nonnull final IAEItemStack itemToCreate) {
+    private void setItemToCraft(@Nonnull final IAEItemStack itemToCreate, int initialAmount) {
         // Make a copy because this stack will be modified with the requested amount
         this.itemToCreate = itemToCreate.copy();
+        this.initialAmount = initialAmount;
         this.craftingItem.putStack(itemToCreate.asItemStackRepresentation());
     }
 
@@ -143,6 +163,7 @@ public class CraftAmountContainer extends AEBaseContainer {
                     if (player.openContainer instanceof CraftConfirmContainer) {
                         final CraftConfirmContainer ccc = (CraftConfirmContainer) player.openContainer;
                         ccc.setAutoStart(autoStart);
+                        ccc.setItemToCreate(this.itemToCreate.copy());
                         ccc.setJob(futureJob);
                         detectAndSendChanges();
                     }
@@ -155,5 +176,9 @@ public class CraftAmountContainer extends AEBaseContainer {
             }
         }
 
+    }
+
+    public int getInitialAmount() {
+        return initialAmount;
     }
 }
