@@ -36,7 +36,7 @@ public final class ServerPacketHandler extends BasePacketHandler implements IPac
             final BasePacket pack = PacketTypes.getPacket(packetType).parsePacket(packet);
             pack.serverPacketData(manager, player);
         } catch (final IllegalArgumentException e) {
-            AELog.debug(e);
+            AELog.warn(e);
         }
     }
 }
