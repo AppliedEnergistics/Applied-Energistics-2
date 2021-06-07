@@ -190,10 +190,9 @@ public class WidgetContainer {
      */
     public boolean onMouseDown(Point mousePos, int btn) {
         for (ICompositeWidget widget : compositeWidgets.values()) {
-            if (widget.wantsAllMouseDownEvents() || mousePos.isIn(widget.getBounds())) {
-                if (widget.onMouseDown(mousePos, btn)) {
-                    return true;
-                }
+            if ((widget.wantsAllMouseDownEvents() || mousePos.isIn(widget.getBounds()))
+                    && widget.onMouseDown(mousePos, btn)) {
+                return true;
             }
         }
 
@@ -205,10 +204,9 @@ public class WidgetContainer {
      */
     public boolean onMouseUp(Point mousePos, int btn) {
         for (ICompositeWidget widget : compositeWidgets.values()) {
-            if (widget.wantsAllMouseUpEvents() || mousePos.isIn(widget.getBounds())) {
-                if (widget.onMouseUp(mousePos, btn)) {
-                    return true;
-                }
+            if ((widget.wantsAllMouseUpEvents() || mousePos.isIn(widget.getBounds()))
+                    && widget.onMouseUp(mousePos, btn)) {
+                return true;
             }
         }
 
@@ -233,10 +231,9 @@ public class WidgetContainer {
      */
     boolean onMouseWheel(Point mousePos, double wheelDelta) {
         for (ICompositeWidget widget : compositeWidgets.values()) {
-            if (widget.wantsAllMouseWheelEvents() || mousePos.isIn(widget.getBounds())) {
-                if (widget.onMouseWheel(mousePos, wheelDelta)) {
-                    return true;
-                }
+            if ((widget.wantsAllMouseWheelEvents() || mousePos.isIn(widget.getBounds()))
+                    && widget.onMouseWheel(mousePos, wheelDelta)) {
+                return true;
             }
         }
 

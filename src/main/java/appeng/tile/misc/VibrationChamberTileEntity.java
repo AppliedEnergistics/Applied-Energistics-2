@@ -122,13 +122,11 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
-        if (this.getBurnTime() <= 0) {
-            if (this.canEatFuel()) {
-                try {
-                    this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
-                } catch (final GridAccessException e) {
-                    // wake up!
-                }
+        if (this.getBurnTime() <= 0 && this.canEatFuel()) {
+            try {
+                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+            } catch (final GridAccessException e) {
+                // wake up!
             }
         }
     }
@@ -234,7 +232,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
         }
 
         // state change
-        if ((!this.isOn && this.getBurnTime() > 0) || (this.isOn && this.getBurnTime() <= 0)) {
+        if (!this.isOn && this.getBurnTime() > 0 || this.isOn && this.getBurnTime() <= 0) {
             this.isOn = this.getBurnTime() > 0;
             this.markForUpdate();
 

@@ -176,7 +176,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
 
                     if (ais != null) {
                         final long stackSize = Math.min(maxSize, ais.getStackSize());
-                        ais.setStackSize((stackSize + 1) >> 1);
+                        ais.setStackSize(stackSize + 1 >> 1);
                         ais = Platform.poweredExtraction(powerSource, monitor, ais,
                                 this.getActionSource());
                     }

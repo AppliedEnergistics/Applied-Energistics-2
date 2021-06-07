@@ -116,7 +116,7 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     @Override
     public int getUsedChannels() {
-        return (this.channelData >> 8) & 0xff;
+        return this.channelData >> 8 & 0xff;
     }
 
     @Override
@@ -228,20 +228,18 @@ public class GridConnection implements IGridConnection, IPathItem {
         // Update both nodes with the new connection.
         if (a.getMyGrid() == null) {
             b.setGrid(a.getInternalGrid());
+        } else if (a.getMyGrid() == null) {
+            final GridPropagator gp = new GridPropagator(b.getInternalGrid());
+            aNode.beginVisit(gp);
+        } else if (b.getMyGrid() == null) {
+            final GridPropagator gp = new GridPropagator(a.getInternalGrid());
+            bNode.beginVisit(gp);
+        } else if (connection.isNetworkABetter(a, b)) {
+            final GridPropagator gp = new GridPropagator(a.getInternalGrid());
+            b.beginVisit(gp);
         } else {
-            if (a.getMyGrid() == null) {
-                final GridPropagator gp = new GridPropagator(b.getInternalGrid());
-                aNode.beginVisit(gp);
-            } else if (b.getMyGrid() == null) {
-                final GridPropagator gp = new GridPropagator(a.getInternalGrid());
-                bNode.beginVisit(gp);
-            } else if (connection.isNetworkABetter(a, b)) {
-                final GridPropagator gp = new GridPropagator(a.getInternalGrid());
-                b.beginVisit(gp);
-            } else {
-                final GridPropagator gp = new GridPropagator(b.getInternalGrid());
-                a.beginVisit(gp);
-            }
+            final GridPropagator gp = new GridPropagator(b.getInternalGrid());
+            a.beginVisit(gp);
         }
 
         // a connection was destroyed RE-PATH!!

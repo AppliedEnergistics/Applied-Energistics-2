@@ -41,17 +41,18 @@ public class Splotch {
         if (side == Direction.SOUTH || side == Direction.NORTH) {
             x = position.x;
             y = position.y;
-        } else if (side == Direction.UP || side == Direction.DOWN) {
-            x = position.x;
-            y = position.z;
         } else {
-            x = position.y;
+            if (side == Direction.UP || side == Direction.DOWN) {
+                x = position.x;
+            } else {
+                x = position.y;
+            }
             y = position.z;
         }
 
         final int a = (int) (x * 0xF);
         final int b = (int) (y * 0xF);
-        this.pos = a | (b << 4);
+        this.pos = a | b << 4;
 
         this.side = side;
     }
@@ -62,13 +63,13 @@ public class Splotch {
         final int val = data.readByte();
 
         this.side = Direction.values()[val & 0x07];
-        this.color = AEColor.values()[(val >> 3) & 0x0F];
-        this.lumen = ((val >> 7) & 0x01) > 0;
+        this.color = AEColor.values()[val >> 3 & 0x0F];
+        this.lumen = (val >> 7 & 0x01) > 0;
     }
 
     public void writeToStream(final PacketBuffer stream) {
         stream.writeByte(this.pos);
-        final int val = this.getSide().ordinal() | (this.getColor().ordinal() << 3) | (this.isLumen() ? 0x80 : 0x00);
+        final int val = this.getSide().ordinal() | this.getColor().ordinal() << 3 | (this.isLumen() ? 0x80 : 0x00);
         stream.writeByte(val);
     }
 
@@ -77,11 +78,11 @@ public class Splotch {
     }
 
     public float y() {
-        return ((this.pos >> 4) & 0x0f) / 15.0f;
+        return (this.pos >> 4 & 0x0f) / 15.0f;
     }
 
     public int getSeed() {
-        final int val = this.getSide().ordinal() | (this.getColor().ordinal() << 3) | (this.isLumen() ? 0x80 : 0x00);
+        final int val = this.getSide().ordinal() | this.getColor().ordinal() << 3 | (this.isLumen() ? 0x80 : 0x00);
         return Math.abs(this.pos + val);
     }
 

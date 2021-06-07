@@ -208,7 +208,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     @Override
     public ItemStack getDisplayStack() {
         // If the slot only takes encoded patterns, show the encoded item instead
-        if (isRemote() && (this.which == PlacableItemType.ENCODED_PATTERN)) {
+        if (isRemote() && this.which == PlacableItemType.ENCODED_PATTERN) {
             final ItemStack is = super.getDisplayStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
@@ -244,6 +244,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         this.allowEdit = allowEdit;
     }
 
+    @Override
     protected boolean getCurrentValidationState() {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
             // Allow either an empty slot, or a valid encoded pattern

@@ -162,21 +162,19 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
                         if (block != null && !block.isAir(state, this.world, point)) {
                             float strength = (float) (2.3f
-                                    - (((x + 0.5f) - this.getPosX()) * ((x + 0.5f) - this.getPosX())
-                                            + ((y + 0.5f) - this.getPosY()) * ((y + 0.5f) - this.getPosY())
-                                            + ((z + 0.5f) - this.getPosZ()) * ((z + 0.5f) - this.getPosZ())));
+                                    - ((x + 0.5f - this.getPosX()) * (x + 0.5f - this.getPosX())
+                                            + (y + 0.5f - this.getPosY()) * (y + 0.5f - this.getPosY())
+                                            + (z + 0.5f - this.getPosZ()) * (z + 0.5f - this.getPosZ())));
 
                             final float resistance = block.getExplosionResistance(state, this.world, point, ex);
                             strength -= (resistance + 0.3F) * 0.11f;
 
-                            if (strength > 0.01) {
-                                if (state.getMaterial() != Material.AIR) {
-                                    if (block.canDropFromExplosion(ex)) {
-                                        block.spawnDrops(state, this.world, point);
-                                    }
-
-                                    block.onBlockExploded(null, this.world, point, ex);
+                            if (strength > 0.01 && state.getMaterial() != Material.AIR) {
+                                if (block.canDropFromExplosion(ex)) {
+                                    block.spawnDrops(state, this.world, point);
                                 }
+
+                                block.onBlockExploded(null, this.world, point, ex);
                             }
                         }
                     }

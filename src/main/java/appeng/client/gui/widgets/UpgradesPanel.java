@@ -185,7 +185,7 @@ public final class UpgradesPanel implements ICompositeWidget {
                     rightEdge,
                     offsetY + y,
                     // We need to add padding in case there's no full column that already includes it
-                    SLOT_SIZE + ((fullCols > 0) ? 0 : PADDING * 2),
+                    SLOT_SIZE + (fullCols > 0 ? 0 : PADDING * 2),
                     PADDING * 2 + remaining * SLOT_SIZE), margin));
         }
 

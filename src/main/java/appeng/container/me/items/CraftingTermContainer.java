@@ -142,13 +142,11 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
         // already contains some of the needed items
         for (Slot slot : getSlots(SlotSemantic.CRAFTING_GRID)) {
             ItemStack stackInSlot = slot.getStack();
-            if (!stackInSlot.isEmpty()) {
-                if (Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
-                    if (itemStack.getCount() >= amount) {
-                        return true;
-                    }
-                    amount -= itemStack.getCount();
+            if (!stackInSlot.isEmpty() && Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
+                if (itemStack.getCount() >= amount) {
+                    return true;
                 }
+                amount -= itemStack.getCount();
             }
 
         }

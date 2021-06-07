@@ -113,7 +113,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         final boolean isTileEntity = block.hasTileEntity(defaultState);
         final boolean isFullCube = defaultState.isNormalCube(EmptyBlockReader.INSTANCE, BlockPos.ZERO);
 
-        final boolean isTileEntityAllowed = !isTileEntity || (areTileEntitiesEnabled && isWhiteListed);
+        final boolean isTileEntityAllowed = !isTileEntity || areTileEntitiesEnabled && isWhiteListed;
         final boolean isBlockAllowed = isFullCube || isWhiteListed;
 
         if (isModel && isTileEntityAllowed && isBlockAllowed) {

@@ -59,7 +59,7 @@ public enum AECableType {
     private final AECableVariant variant;
     private final AECableSize size;
 
-    private AECableType(AECableVariant variant, AECableSize size) {
+    AECableType(AECableVariant variant, AECableSize size) {
         this.variant = variant;
         this.size = size;
     }

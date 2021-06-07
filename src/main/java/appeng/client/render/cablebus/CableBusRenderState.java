@@ -180,14 +180,14 @@ public class CableBusRenderState {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.attachmentConnections == null) ? 0 : this.attachmentConnections.hashCode());
-        result = prime * result + ((this.cableBusAdjacent == null) ? 0 : this.cableBusAdjacent.hashCode());
-        result = prime * result + ((this.cableColor == null) ? 0 : this.cableColor.hashCode());
-        result = prime * result + ((this.cableType == null) ? 0 : this.cableType.hashCode());
-        result = prime * result + ((this.channelsOnSide == null) ? 0 : this.channelsOnSide.hashCode());
-        result = prime * result + ((this.connectionTypes == null) ? 0 : this.connectionTypes.hashCode());
-        result = prime * result + ((this.coreType == null) ? 0 : this.coreType.hashCode());
-        result = prime * result + ((this.partModelData == null) ? 0 : this.partModelData.hashCode());
+        result = prime * result + (this.attachmentConnections == null ? 0 : this.attachmentConnections.hashCode());
+        result = prime * result + (this.cableBusAdjacent == null ? 0 : this.cableBusAdjacent.hashCode());
+        result = prime * result + (this.cableColor == null ? 0 : this.cableColor.hashCode());
+        result = prime * result + (this.cableType == null ? 0 : this.cableType.hashCode());
+        result = prime * result + (this.channelsOnSide == null ? 0 : this.channelsOnSide.hashCode());
+        result = prime * result + (this.connectionTypes == null ? 0 : this.connectionTypes.hashCode());
+        result = prime * result + (this.coreType == null ? 0 : this.coreType.hashCode());
+        result = prime * result + (this.partModelData == null ? 0 : this.partModelData.hashCode());
         return result;
     }
 

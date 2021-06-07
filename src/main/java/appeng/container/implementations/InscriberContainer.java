@@ -113,7 +113,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
             }
 
             return InscriberRecipes.findRecipe(ti.getWorld(), is, top, bot, false) != null;
-        } else if ((s == this.top && !bot.isEmpty()) || (s == this.bottom && !top.isEmpty())) {
+        } else if (s == this.top && !bot.isEmpty() || s == this.bottom && !top.isEmpty()) {
             ItemStack otherSlot;
             if (s == this.top) {
                 otherSlot = this.bottom.getStack();

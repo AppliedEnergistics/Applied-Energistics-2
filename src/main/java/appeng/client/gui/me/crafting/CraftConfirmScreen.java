@@ -132,11 +132,10 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     // Allow players to confirm a craft via the enter key
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
-            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
-                this.start();
-                return true;
-            }
+        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))
+                && (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER)) {
+            this.start();
+            return true;
         }
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }

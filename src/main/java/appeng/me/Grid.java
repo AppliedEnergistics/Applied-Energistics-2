@@ -259,6 +259,6 @@ public class Grid implements IGrid {
 
     public void setImportantFlag(final int i, final boolean publicHasPower) {
         final int flag = 1 << i;
-        this.priority = (this.priority & ~flag) | (publicHasPower ? flag : 0);
+        this.priority = this.priority & ~flag | (publicHasPower ? flag : 0);
     }
 }

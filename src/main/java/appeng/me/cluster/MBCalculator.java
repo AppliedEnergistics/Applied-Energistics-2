@@ -116,34 +116,32 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
                 max.setZ(max.getZ() + 1);
             }
 
-            if (this.checkMultiblockScale(min, max)) {
-                if (this.verifyUnownedRegion(world, min, max)) {
-                    try {
-                        if (!this.verifyInternalStructure(world, min, max)) {
-                            this.disconnect();
-                            return;
-                        }
-                    } catch (final Exception err) {
+            if (this.checkMultiblockScale(min, max) && this.verifyUnownedRegion(world, min, max)) {
+                try {
+                    if (!this.verifyInternalStructure(world, min, max)) {
                         this.disconnect();
                         return;
                     }
-
-                    boolean updateGrid = false;
-                    TCluster cluster = this.target.getCluster();
-                    if (cluster == null || !cluster.getBoundsMin().equals(min) || !cluster.getBoundsMax().equals(max)) {
-                        cluster = this.createCluster(world, min, max);
-                        setModificationInProgress(cluster);
-                        // NOTE: The following will break existing clusters within the bounds
-                        this.updateTiles(cluster, world, min, max);
-
-                        updateGrid = true;
-                    } else {
-                        setModificationInProgress(cluster);
-                    }
-
-                    cluster.updateStatus(updateGrid);
+                } catch (final Exception err) {
+                    this.disconnect();
                     return;
                 }
+
+                boolean updateGrid = false;
+                TCluster cluster = this.target.getCluster();
+                if (cluster == null || !cluster.getBoundsMin().equals(min) || !cluster.getBoundsMax().equals(max)) {
+                    cluster = this.createCluster(world, min, max);
+                    setModificationInProgress(cluster);
+                    // NOTE: The following will break existing clusters within the bounds
+                    this.updateTiles(cluster, world, min, max);
+
+                    updateGrid = true;
+                } else {
+                    setModificationInProgress(cluster);
+                }
+
+                cluster.updateStatus(updateGrid);
+                return;
             }
         } catch (final Throwable err) {
             AELog.debug(err);
@@ -158,8 +156,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        return (x >= boundsMin.getX() && y >= boundsMin.getY() && z >= boundsMin.getZ() && x <= boundsMax.getX()
-                && y <= boundsMax.getY() && z <= boundsMax.getZ());
+        return x >= boundsMin.getX() && y >= boundsMin.getY() && z >= boundsMin.getZ() && x <= boundsMax.getX()
+                && y <= boundsMax.getY() && z <= boundsMax.getZ();
     }
 
     private boolean isValidTileAt(final World w, final int x, final int y, final int z) {

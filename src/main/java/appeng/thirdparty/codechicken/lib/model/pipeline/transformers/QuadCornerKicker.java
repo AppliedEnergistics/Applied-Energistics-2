@@ -108,23 +108,21 @@ public class QuadCornerKicker extends QuadTransformer {
         int side = this.quad.orientation.ordinal();
         if (side != this.mySide && side != (this.mySide ^ 1)) {
             for (int hoz : horizonals[this.mySide]) {
-                if (side != hoz && side != (hoz ^ 1)) {
-                    if ((this.facadeMask & (1 << hoz)) != 0) {
-                        Corner corner = Corner.fromSides(this.mySide ^ 1, side, hoz);
-                        for (Vertex vertex : this.quad.vertices) {
-                            float x = vertex.vec[0];
-                            float y = vertex.vec[1];
-                            float z = vertex.vec[2];
-                            if (epsComp(x, corner.pX(this.box)) && epsComp(y, corner.pY(this.box))
-                                    && epsComp(z, corner.pZ(this.box))) {
-                                Vector3i vec = Direction.values()[hoz].getDirectionVec();
-                                x -= vec.getX() * this.thickness;
-                                y -= vec.getY() * this.thickness;
-                                z -= vec.getZ() * this.thickness;
-                                vertex.vec[0] = x;
-                                vertex.vec[1] = y;
-                                vertex.vec[2] = z;
-                            }
+                if (side != hoz && side != (hoz ^ 1) && (this.facadeMask & 1 << hoz) != 0) {
+                    Corner corner = Corner.fromSides(this.mySide ^ 1, side, hoz);
+                    for (Vertex vertex : this.quad.vertices) {
+                        float x = vertex.vec[0];
+                        float y = vertex.vec[1];
+                        float z = vertex.vec[2];
+                        if (epsComp(x, corner.pX(this.box)) && epsComp(y, corner.pY(this.box))
+                                && epsComp(z, corner.pZ(this.box))) {
+                            Vector3i vec = Direction.values()[hoz].getDirectionVec();
+                            x -= vec.getX() * this.thickness;
+                            y -= vec.getY() * this.thickness;
+                            z -= vec.getZ() * this.thickness;
+                            vertex.vec[0] = x;
+                            vertex.vec[1] = y;
+                            vertex.vec[2] = z;
                         }
                     }
                 }

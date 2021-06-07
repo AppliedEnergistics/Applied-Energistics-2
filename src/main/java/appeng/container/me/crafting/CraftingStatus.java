@@ -136,11 +136,9 @@ public class CraftingStatus {
             long pendingCount = pending != null ? pending.getStackSize() : 0;
 
             ItemStack item = stack.getDefinition();
-            if (!full) {
-                if (changes.getSerial(stack) != null) {
-                    // The item was already sent to the client, so we can skip the item stack
-                    item = ItemStack.EMPTY;
-                }
+            if (!full && changes.getSerial(stack) != null) {
+                // The item was already sent to the client, so we can skip the item stack
+                item = ItemStack.EMPTY;
             }
 
             newEntries.add(new CraftingStatusEntry(

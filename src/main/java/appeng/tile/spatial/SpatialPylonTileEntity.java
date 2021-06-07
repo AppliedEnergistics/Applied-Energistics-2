@@ -45,10 +45,8 @@ import appeng.tile.grid.AENetworkTileEntity;
 
 public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMultiBlock<SpatialPylonCluster> {
 
-    public static final ModelProperty<Integer> STATE = new ModelProperty<>(value -> {
-        // The lower 6 bits are used
-        return (value & ~0x3F) == 0;
-    });
+    // The lower 6 bits are used
+    public static final ModelProperty<Integer> STATE = new ModelProperty<>(value -> ((value & ~0x3F) == 0));
 
     public static final int DISPLAY_END_MIN = 0x01;
     public static final int DISPLAY_END_MAX = 0x02;

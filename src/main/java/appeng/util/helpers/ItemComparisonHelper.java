@@ -78,12 +78,12 @@ public class ItemComparisonHelper {
             if (mode == FuzzyMode.IGNORE_ALL) {
                 return true;
             } else if (mode == FuzzyMode.PERCENT_99) {
-                return (a.getDamage() > 1) == (b.getDamage() > 1);
+                return a.getDamage() > 1 == b.getDamage() > 1;
             } else {
                 final float percentDamagedOfA = (float) a.getDamage() / a.getMaxDamage();
                 final float percentDamagedOfB = (float) b.getDamage() / b.getMaxDamage();
 
-                return (percentDamagedOfA > mode.breakPoint) == (percentDamagedOfB > mode.breakPoint);
+                return percentDamagedOfA > mode.breakPoint == percentDamagedOfB > mode.breakPoint;
             }
         }
 

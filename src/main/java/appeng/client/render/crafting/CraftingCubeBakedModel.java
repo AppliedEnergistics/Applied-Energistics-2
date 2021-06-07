@@ -132,7 +132,7 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
 
             // Select the horizontal or vertical ring texture depending on which side we're
             // filling in
-            if ((side.getAxis() != Direction.Axis.Y)
+            if (side.getAxis() != Direction.Axis.Y
                     && (a == Direction.NORTH || a == Direction.EAST || a == Direction.WEST || a == Direction.SOUTH)) {
                 builder.setTexture(this.ringVer);
             } else if (side.getAxis() == Direction.Axis.Y && (a == Direction.EAST || a == Direction.WEST)) {
@@ -231,12 +231,12 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
             return;
         }
 
-        float x1 = (west == Direction.WEST ? 0 : 13);
-        float y1 = (down == Direction.DOWN ? 0 : 13);
-        float z1 = (north == Direction.NORTH ? 0 : 13);
-        float x2 = (west == Direction.WEST ? 3 : 16);
-        float y2 = (down == Direction.DOWN ? 3 : 16);
-        float z2 = (north == Direction.NORTH ? 3 : 16);
+        float x1 = west == Direction.WEST ? 0 : 13;
+        float y1 = down == Direction.DOWN ? 0 : 13;
+        float z1 = north == Direction.NORTH ? 0 : 13;
+        float x2 = west == Direction.WEST ? 3 : 16;
+        float y2 = down == Direction.DOWN ? 3 : 16;
+        float z2 = north == Direction.NORTH ? 3 : 16;
         builder.addCube(x1, y1, z1, x2, y2, z2);
     }
 

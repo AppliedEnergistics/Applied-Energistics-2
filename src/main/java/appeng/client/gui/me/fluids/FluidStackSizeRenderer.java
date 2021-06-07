@@ -36,6 +36,7 @@ public class FluidStackSizeRenderer extends StackSizeRenderer {
 
     private static final String[] NUMBER_FORMATS = new String[] { "#.000", "#.00", "#.0", "#" };
 
+    @Override
     protected String getToBeRenderedStackSize(final long originalSize) {
         // Handle any value below 100 (large font) or 1000 (small font) Buckets with a
         // custom formatter,

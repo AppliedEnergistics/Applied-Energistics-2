@@ -40,8 +40,8 @@ public class QNBContainer extends AEBaseContainer {
     public QNBContainer(int id, final PlayerInventory ip, final QuantumBridgeTileEntity quantumBridge) {
         super(TYPE, id, ip, quantumBridge);
 
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,
-                quantumBridge.getInternalInventory(), 0)).setStackLimit(1), SlotSemantic.STORAGE);
+        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,
+                quantumBridge.getInternalInventory(), 0).setStackLimit(1), SlotSemantic.STORAGE);
 
         this.createPlayerInventorySlots(ip);
     }

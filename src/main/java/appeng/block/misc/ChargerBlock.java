@@ -90,18 +90,16 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
         }
 
         final ChargerTileEntity tile = this.getTileEntity(w, pos);
-        if (tile != null) {
-            if (Api.instance().definitions().materials().certusQuartzCrystalCharged()
-                    .isSameAs(tile.getInternalInventory().getStackInSlot(0))) {
-                final double xOff = 0.0;
-                final double yOff = 0.0;
-                final double zOff = 0.0;
+        if (tile != null && Api.instance().definitions().materials().certusQuartzCrystalCharged()
+                .isSameAs(tile.getInternalInventory().getStackInSlot(0))) {
+            final double xOff = 0.0;
+            final double yOff = 0.0;
+            final double zOff = 0.0;
 
-                for (int bolts = 0; bolts < 3; bolts++) {
-                    if (AppEng.proxy.shouldAddParticles(r)) {
-                        Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
-                                yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
-                    }
+            for (int bolts = 0; bolts < 3; bolts++) {
+                if (AppEng.proxy.shouldAddParticles(r)) {
+                    Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
+                            yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
                 }
             }
         }

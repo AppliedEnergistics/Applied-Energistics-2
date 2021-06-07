@@ -119,7 +119,7 @@ public class BasePacketHandler {
         }
 
         public static PacketTypes getPacket(final int id) {
-            return (values())[id];
+            return values()[id];
         }
 
         public int getPacketId() {

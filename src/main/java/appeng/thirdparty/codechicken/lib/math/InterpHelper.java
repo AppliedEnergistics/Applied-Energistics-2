@@ -108,9 +108,9 @@ public class InterpHelper {
         this.valCache[1] = q1;
         this.valCache[2] = q2;
         this.valCache[3] = q3;
-        float f0 = (this.valCache[this.p00] * (1 - this.rX)) + (this.valCache[this.p10] * this.rX);
-        float f1 = (this.valCache[this.p01] * (1 - this.rX)) + (this.valCache[this.p11] * this.rX);
+        float f0 = this.valCache[this.p00] * (1 - this.rX) + this.valCache[this.p10] * this.rX;
+        float f1 = this.valCache[this.p01] * (1 - this.rX) + this.valCache[this.p11] * this.rX;
 
-        return (f0 * (1 - this.rY)) + (f1 * this.rY);
+        return f0 * (1 - this.rY) + f1 * this.rY;
     }
 }

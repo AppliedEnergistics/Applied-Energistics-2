@@ -30,10 +30,9 @@ public class QuartzGlassBlock extends AbstractGlassBlock {
 
     @Override
     public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
-        if (adjacentBlockState.getBlock() instanceof QuartzGlassBlock) {
-            if (adjacentBlockState.getRenderType() == state.getRenderType()) {
-                return true;
-            }
+        if (adjacentBlockState.getBlock() instanceof QuartzGlassBlock
+                && adjacentBlockState.getRenderType() == state.getRenderType()) {
+            return true;
         }
 
         return super.isSideInvisible(state, adjacentBlockState, side);

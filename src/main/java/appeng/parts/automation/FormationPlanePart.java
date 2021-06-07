@@ -311,15 +311,15 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         // Spawn it 0.8 blocks away from the center pos when facing in this direction
         // Every other direction will select a position in a .5 block area around the
         // block center.
-        final double offsetX = (side.xOffset == 0) //
-                ? ((RANDOM_OFFSET.nextFloat() * spawnAreaWidth) - spawnAreaWidth / 2)
-                : (side.xOffset * (.525 + entity.getWidth() / 2));
-        final double offsetY = (side.yOffset == 0) //
-                ? (RANDOM_OFFSET.nextFloat() * spawnAreaHeight)
-                : ((side.yOffset) + additionalYOffset);
-        final double offsetZ = (side.zOffset == 0) //
-                ? ((RANDOM_OFFSET.nextFloat() * spawnAreaWidth) - spawnAreaWidth / 2)
-                : (side.zOffset * (.525 + entity.getWidth() / 2));
+        final double offsetX = side.xOffset == 0 //
+                ? RANDOM_OFFSET.nextFloat() * spawnAreaWidth - spawnAreaWidth / 2
+                : side.xOffset * (.525 + entity.getWidth() / 2);
+        final double offsetY = side.yOffset == 0 //
+                ? RANDOM_OFFSET.nextFloat() * spawnAreaHeight
+                : side.yOffset + additionalYOffset;
+        final double offsetZ = side.zOffset == 0 //
+                ? RANDOM_OFFSET.nextFloat() * spawnAreaWidth - spawnAreaWidth / 2
+                : side.zOffset * (.525 + entity.getWidth() / 2);
 
         final double absoluteX = centerX + offsetX;
         final double absoluteY = centerY + offsetY;

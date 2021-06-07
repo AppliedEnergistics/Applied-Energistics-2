@@ -124,11 +124,9 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
             try {
                 this.result = this.job.get();
 
-                if (!this.result.isSimulation()) {
-                    if (this.isAutoStart()) {
-                        this.startJob();
-                        return;
-                    }
+                if (!this.result.isSimulation() && this.isAutoStart()) {
+                    this.startJob();
+                    return;
                 }
 
                 this.plan = CraftingPlanSummary.fromJob(getGrid(), getActionSrc(), this.result);
@@ -148,7 +146,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     private IGrid getGrid() {
-        final IActionHost h = ((IActionHost) this.getTarget());
+        final IActionHost h = (IActionHost) this.getTarget();
         return h.getActionableNode().getGrid();
     }
 

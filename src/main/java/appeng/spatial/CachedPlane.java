@@ -102,13 +102,13 @@ public class CachedPlane {
 
         this.verticalBits = 0;
         for (int cy = 0; cy < cy_size; cy++) {
-            this.verticalBits |= 1 << (minCY + cy);
+            this.verticalBits |= 1 << minCY + cy;
         }
 
         for (int x = 0; x < this.x_size; x++) {
             for (int z = 0; z < this.z_size; z++) {
-                this.myColumns[x][z] = new Column(w.getChunk((minX + x) >> 4, (minZ + z) >> 4), (minX + x) & 0xF,
-                        (minZ + z) & 0xF, minCY, cy_size);
+                this.myColumns[x][z] = new Column(w.getChunk(minX + x >> 4, minZ + z >> 4), minX + x & 0xF,
+                        minZ + z & 0xF, minCY, cy_size);
             }
         }
 
@@ -360,7 +360,7 @@ public class CachedPlane {
 
             // make sure storage exists before hand...
             for (int ay = 0; ay < chunkHeight; ay++) {
-                final int by = (ay + chunkY);
+                final int by = ay + chunkY;
                 ChunkSection extendedblockstorage = storage[by];
                 if (extendedblockstorage == null) {
                     extendedblockstorage = storage[by] = new ChunkSection(by << 4);

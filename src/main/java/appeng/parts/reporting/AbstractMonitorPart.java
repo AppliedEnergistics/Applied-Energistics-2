@@ -306,12 +306,10 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             } else {
                 return on;
             }
+        } else if (this.isLocked()) {
+            return lockedOff;
         } else {
-            if (this.isLocked()) {
-                return lockedOff;
-            } else {
-                return off;
-            }
+            return off;
         }
     }
 

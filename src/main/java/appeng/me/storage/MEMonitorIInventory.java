@@ -156,12 +156,12 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
                 changed = true;
             } else {
-                final int newSize = (newIS.isEmpty() ? 0 : newIS.getCount());
+                final int newSize = newIS.isEmpty() ? 0 : newIS.getCount();
                 final int diff = newSize - (oldIS.isEmpty() ? 0 : oldIS.getCount());
 
-                final IAEItemStack stack = (old == null || old.aeStack == null
+                final IAEItemStack stack = old == null || old.aeStack == null
                         ? Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(newIS)
-                        : old.aeStack.copy());
+                        : old.aeStack.copy();
                 if (stack != null) {
                     stack.setStackSize(newSize);
                     this.list.add(stack);
@@ -205,7 +205,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
             return false;
         }
 
-        if ((a.isEmpty() && !b.isEmpty()) || (!a.isEmpty() && b.isEmpty())) {
+        if (a.isEmpty() && !b.isEmpty() || !a.isEmpty() && b.isEmpty()) {
             return true;
         }
 

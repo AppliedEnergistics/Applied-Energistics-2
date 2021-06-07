@@ -88,7 +88,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
         }
 
         if (this.cell.getStackInSlot(0).getItem() instanceof ICellWorkbenchItem) {
-            return ((ICellWorkbenchItem) this.cell.getStackInSlot(0).getItem());
+            return (ICellWorkbenchItem) this.cell.getStackInSlot(0).getItem();
         }
 
         return null;

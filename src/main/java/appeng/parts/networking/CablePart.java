@@ -249,14 +249,14 @@ public class CablePart extends AEBasePart implements ICablePart {
                 if (side != AEPartLocation.INTERNAL) {
                     writeSide[side.ordinal()] = true;
                     channelsPerSide[side.ordinal()] = gc.getUsedChannels();
-                    flags |= (1 << side.ordinal());
+                    flags |= 1 << side.ordinal();
                 }
             }
         }
 
         try {
             if (this.getProxy().getEnergy().isNetworkPowered()) {
-                flags |= (1 << AEPartLocation.INTERNAL.ordinal());
+                flags |= 1 << AEPartLocation.INTERNAL.ordinal();
             }
         } catch (final GridAccessException e) {
             // aww...
@@ -286,7 +286,7 @@ public class CablePart extends AEBasePart implements ICablePart {
                     this.powered = true;
                 }
             } else {
-                boolean conOnSide = (cs & (1 << d.ordinal())) != 0;
+                boolean conOnSide = (cs & 1 << d.ordinal()) != 0;
                 if (conOnSide) {
                     this.getConnections().add(d);
                 } else {
@@ -300,7 +300,7 @@ public class CablePart extends AEBasePart implements ICablePart {
                 // for
                 // a cable bus
                 if (conOnSide || this.getHost().getPart(d) != null) {
-                    ch = (data.readByte()) & 0xFF;
+                    ch = data.readByte() & 0xFF;
                 }
 
                 if (ch != this.getChannelsOnSide(d.ordinal())) {

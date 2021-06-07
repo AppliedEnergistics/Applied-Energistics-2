@@ -149,10 +149,8 @@ public abstract class Repo<T extends IAEStack<T>> implements IClientRepo<T> {
         ViewItems viewMode = this.sortSrc.getSortDisplay();
 
         for (GridInventoryEntry<T> entry : this.entries.values()) {
-            if (this.partitionList != null) {
-                if (!this.partitionList.isListed(entry.getStack())) {
-                    continue;
-                }
+            if (this.partitionList != null && !this.partitionList.isListed(entry.getStack())) {
+                continue;
             }
 
             if (viewMode == ViewItems.CRAFTABLE && !entry.isCraftable()) {
@@ -236,6 +234,7 @@ public abstract class Repo<T extends IAEStack<T>> implements IClientRepo<T> {
 
     protected abstract Comparator<? super T> getComparator(SortOrder sortBy, SortDir sortDir);
 
+    @Override
     public Set<GridInventoryEntry<T>> getAllEntries() {
         return entries.values();
     }

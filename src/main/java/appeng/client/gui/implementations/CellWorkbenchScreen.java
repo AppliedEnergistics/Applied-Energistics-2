@@ -83,10 +83,9 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
         final IItemHandler inv = this.container.getCellUpgradeInventory();
         for (int x = 0; x < inv.getSlots(); x++) {
             final ItemStack is = inv.getStackInSlot(x);
-            if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule) {
-                if (((IUpgradeModule) is.getItem()).getType(is) == Upgrades.FUZZY) {
-                    hasFuzzy = true;
-                }
+            if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule
+                    && ((IUpgradeModule) is.getItem()).getType(is) == Upgrades.FUZZY) {
+                hasFuzzy = true;
             }
         }
         this.fuzzyMode.setVisibility(hasFuzzy);

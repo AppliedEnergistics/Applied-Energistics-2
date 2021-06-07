@@ -228,11 +228,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
             switch (clickType) {
                 case PICKUP: // pickup / set-down.
-                    action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+                    action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                             : InventoryAction.PICKUP_OR_SET_DOWN;
                     break;
                 case QUICK_MOVE:
-                    action = (mouseButton == 1) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+                    action = mouseButton == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
                     break;
 
                 case CLONE: // creative dupe:
@@ -310,14 +310,12 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             } else {
                 return ROW_INVENTORY_MIDDLE_BBOX;
             }
+        } else if (firstLine) {
+            return ROW_TEXT_TOP_BBOX;
+        } else if (lastLine) {
+            return ROW_TEXT_BOTTOM_BBOX;
         } else {
-            if (firstLine) {
-                return ROW_TEXT_TOP_BBOX;
-            } else if (lastLine) {
-                return ROW_TEXT_BOTTOM_BBOX;
-            } else {
-                return ROW_TEXT_MIDDLE_BBOX;
-            }
+            return ROW_TEXT_MIDDLE_BBOX;
         }
     }
 
@@ -510,7 +508,6 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         if (cache.isEmpty() && searchTerm.length() > 1) {
             cache.addAll(this.getCacheForSearchTerm(searchTerm.substring(0, searchTerm.length() - 1)));
-            return cache;
         }
 
         return cache;

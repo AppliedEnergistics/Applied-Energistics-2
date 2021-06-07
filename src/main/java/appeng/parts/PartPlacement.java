@@ -151,21 +151,20 @@ public class PartPlacement {
                             return ActionResultType.FAIL;
                         }
 
-                        if (host.canAddPart(held, AEPartLocation.fromFacing(side))) {
-                            if (host.getFacadeContainer().addFacade(fp)) {
-                                host.markForSave();
-                                host.markForUpdate();
-                                if (!player.isCreative()) {
-                                    held.grow(-1);
+                        if (host.canAddPart(held, AEPartLocation.fromFacing(side))
+                                && host.getFacadeContainer().addFacade(fp)) {
+                            host.markForSave();
+                            host.markForUpdate();
+                            if (!player.isCreative()) {
+                                held.grow(-1);
 
-                                    if (held.getCount() == 0) {
-                                        player.inventory.mainInventory.set(player.inventory.currentItem,
-                                                ItemStack.EMPTY);
-                                        MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
-                                    }
+                                if (held.getCount() == 0) {
+                                    player.inventory.mainInventory.set(player.inventory.currentItem,
+                                            ItemStack.EMPTY);
+                                    MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
                                 }
-                                return ActionResultType.CONSUME;
                             }
+                            return ActionResultType.CONSUME;
                         }
                     } else {
                         player.swingArm(hand);
@@ -178,21 +177,17 @@ public class PartPlacement {
             }
         }
 
-        if (held.isEmpty()) {
-            if (host != null && InteractionUtil.isInAlternateUseMode(player) && world.isAirBlock(pos)) {
-                if (mop.getType() == RayTraceResult.Type.BLOCK) {
-                    Vector3d hitVec = mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(),
-                            -mop.getPos().getZ());
-                    final SelectedPart sPart = selectPart(player, host, hitVec);
-                    if (sPart != null && sPart.part != null) {
-                        if (sPart.part.onShiftActivate(player, hand, hitVec)) {
-                            if (world.isRemote()) {
-                                NetworkHandler.instance()
-                                        .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                            }
-                            return ActionResultType.func_233537_a_(world.isRemote());
-                        }
+        if (held.isEmpty() && host != null && InteractionUtil.isInAlternateUseMode(player) && world.isAirBlock(pos)) {
+            if (mop.getType() == RayTraceResult.Type.BLOCK) {
+                Vector3d hitVec = mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(),
+                        -mop.getPos().getZ());
+                final SelectedPart sPart = selectPart(player, host, hitVec);
+                if (sPart != null && sPart.part != null && sPart.part.onShiftActivate(player, hand, hitVec)) {
+                    if (world.isRemote()) {
+                        NetworkHandler.instance()
+                                .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                     }
+                    return ActionResultType.func_233537_a_(world.isRemote());
                 }
             }
         }
@@ -285,11 +280,9 @@ public class PartPlacement {
                 final SelectedPart sp = selectPart(player, host,
                         mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
 
-                if (sp.part != null) {
-                    if (!InteractionUtil.isInAlternateUseMode(player)
-                            && sp.part.onActivate(player, hand, mop.getHitVec())) {
-                        return ActionResultType.FAIL;
-                    }
+                if (sp.part != null && !InteractionUtil.isInAlternateUseMode(player)
+                        && sp.part.onActivate(player, hand, mop.getHitVec())) {
+                    return ActionResultType.FAIL;
                 }
             }
 

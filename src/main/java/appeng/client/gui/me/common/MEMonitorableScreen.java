@@ -421,6 +421,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         return viewModeToggle != null && viewModeToggle.getCurrentValue() == ViewItems.CRAFTABLE;
     }
 
+    @Override
     protected void renderHoveredTooltip(MatrixStack matrixStack, int x, int y) {
         // Vanilla doesn't show item tooltips when the player have something in their hand
         if (style.isShowTooltipsWithItemInHand() || getPlayer().inventory.getItemStack().isEmpty()) {
@@ -446,7 +447,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         final List<ITextComponent> currentToolTip = this.getTooltipFromItem(stack);
 
         long storedAmount = entry.getStoredAmount();
-        if (storedAmount > bigNumber || (storedAmount > 1 && stack.isDamaged())) {
+        if (storedAmount > bigNumber || storedAmount > 1 && stack.isDamaged()) {
             final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                     .format(storedAmount);
             currentToolTip

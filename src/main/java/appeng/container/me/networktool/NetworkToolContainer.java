@@ -51,8 +51,8 @@ public class NetworkToolContainer extends AEBaseContainer {
         this.lockPlayerInventorySlot(ip.currentItem);
 
         for (int i = 0; i < 9; i++) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, te.getInventory(),
-                    i)), SlotSemantic.STORAGE);
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, te.getInventory(),
+                    i), SlotSemantic.STORAGE);
         }
 
         this.createPlayerInventorySlots(ip);
