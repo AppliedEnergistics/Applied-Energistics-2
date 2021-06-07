@@ -20,76 +20,33 @@ package appeng.parts.p2p;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
-import appeng.capabilities.Capabilities;
 import appeng.items.parts.PartModels;
 
-public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
+public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IEnergyStorage> {
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_fe");
     private static final IEnergyStorage NULL_ENERGY_STORAGE = new NullEnergyStorage();
-    private final IEnergyStorage inputHandler = new InputEnergyStorage();
-    private final IEnergyStorage outputHandler = new OutputEnergyStorage();
-
-    public FEP2PTunnelPart(ItemStack is) {
-        super(is);
-    }
-
-    @Override
-    protected float getPowerDrainPerTick() {
-        return 2.0f;
-    }
 
     @PartModels
     public static List<IPartModel> getModels() {
         return MODELS.getModels();
     }
 
+    public FEP2PTunnelPart(ItemStack is) {
+        super(is, CapabilityEnergy.ENERGY);
+        inputHandler = new InputEnergyStorage();
+        outputHandler = new OutputEnergyStorage();
+        emptyHandler = NULL_ENERGY_STORAGE;
+    }
+
     @Override
     public IPartModel getStaticModels() {
         return MODELS.getModel(this.isPowered(), this.isActive());
-    }
-
-    @Override
-    public void onTunnelNetworkChange() {
-        this.getHost().notifyNeighbors();
-    }
-
-    private IEnergyStorage getAttachedEnergyStorage() {
-        LazyOptional<IEnergyStorage> energyStorageOpt = LazyOptional.empty();
-        if (this.isActive()) {
-            final BlockEntity self = this.getBlockEntity();
-            final BlockEntity te = self.getLevel()
-                    .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
-
-            if (te != null) {
-                energyStorageOpt = te.getCapability(Capabilities.FORGE_ENERGY,
-                        this.getSide().getOpposite().getDirection());
-            }
-        }
-        return energyStorageOpt.orElse(NULL_ENERGY_STORAGE);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Nullable
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability) {
-        if (capability == Capabilities.FORGE_ENERGY) {
-            if (this.isOutput()) {
-                return (LazyOptional<T>) LazyOptional.of(() -> this.outputHandler);
-            }
-            return (LazyOptional<T>) LazyOptional.of(() -> this.inputHandler);
-        }
-        return super.getCapability(capability);
     }
 
     private class InputEnergyStorage implements IEnergyStorage {
@@ -112,12 +69,14 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
             int overflow = amountPerOutput == 0 ? maxReceive : maxReceive % amountPerOutput;
 
             for (FEP2PTunnelPart target : FEP2PTunnelPart.this.getOutputs()) {
-                final IEnergyStorage output = target.getAttachedEnergyStorage();
-                final int toSend = amountPerOutput + overflow;
-                final int received = output.receiveEnergy(toSend, simulate);
+                try (CapabilityGuard capabilityGuard = target.getAdjacentCapability()) {
+                    final IEnergyStorage output = capabilityGuard.get();
+                    final int toSend = amountPerOutput + overflow;
+                    final int received = output.receiveEnergy(toSend, simulate);
 
-                overflow = toSend - received;
-                total += received;
+                    overflow = toSend - received;
+                    total += received;
+                }
             }
 
             if (!simulate) {
@@ -142,7 +101,9 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
             int total = 0;
 
             for (FEP2PTunnelPart t : FEP2PTunnelPart.this.getOutputs()) {
-                total += t.getAttachedEnergyStorage().getMaxEnergyStored();
+                try (CapabilityGuard capabilityGuard = t.getAdjacentCapability()) {
+                    total += capabilityGuard.get().getMaxEnergyStored();
+                }
             }
 
             return total;
@@ -153,7 +114,9 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
             int total = 0;
 
             for (FEP2PTunnelPart t : FEP2PTunnelPart.this.getOutputs()) {
-                total += t.getAttachedEnergyStorage().getEnergyStored();
+                try (CapabilityGuard capabilityGuard = t.getAdjacentCapability()) {
+                    total += capabilityGuard.get().getEnergyStored();
+                }
             }
 
             return total;
@@ -163,13 +126,15 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
     private class OutputEnergyStorage implements IEnergyStorage {
         @Override
         public int extractEnergy(int maxExtract, boolean simulate) {
-            final int total = FEP2PTunnelPart.this.getAttachedEnergyStorage().extractEnergy(maxExtract, simulate);
+            try (CapabilityGuard input = getInputCapability()) {
+                final int total = input.get().extractEnergy(maxExtract, simulate);
 
-            if (!simulate) {
-                FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
+                if (!simulate) {
+                    FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
+                }
+
+                return total;
             }
-
-            return total;
         }
 
         @Override
@@ -179,7 +144,9 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
 
         @Override
         public boolean canExtract() {
-            return FEP2PTunnelPart.this.getAttachedEnergyStorage().canExtract();
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().canExtract();
+            }
         }
 
         @Override
@@ -189,12 +156,16 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
 
         @Override
         public int getMaxEnergyStored() {
-            return FEP2PTunnelPart.this.getAttachedEnergyStorage().getMaxEnergyStored();
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().getMaxEnergyStored();
+            }
         }
 
         @Override
         public int getEnergyStored() {
-            return FEP2PTunnelPart.this.getAttachedEnergyStorage().getEnergyStored();
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().getEnergyStored();
+            }
         }
     }
 
