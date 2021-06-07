@@ -23,11 +23,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -37,72 +32,26 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 
-public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
+public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPart, IFluidHandler> {
 
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_fluids");
     private static final IFluidHandler NULL_FLUID_HANDLER = new NullFluidHandler();
-
-    private final IFluidHandler inputHandler = new InputFluidHandler();
-    private final IFluidHandler outputHandler = new OutputFluidHandler();
-
-    public FluidP2PTunnelPart(final ItemStack is) {
-        super(is);
-    }
 
     @PartModels
     public static List<IPartModel> getModels() {
         return MODELS.getModels();
     }
 
-    @Override
-    protected float getPowerDrainPerTick() {
-        return 2.0f;
-    }
-
-    @Override
-    public void onTunnelNetworkChange() {
-    }
-
-    @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (this.isOutput()) {
-            final FluidP2PTunnelPart in = this.getInput();
-            if (in != null) {
-                in.onTunnelNetworkChange();
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        if (capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            if (this.isOutput()) {
-                return (LazyOptional<T>) LazyOptional.of(() -> this.outputHandler);
-            }
-            return (LazyOptional<T>) LazyOptional.of(() -> this.inputHandler);
-        }
-
-        return super.getCapability(capabilityClass);
+    public FluidP2PTunnelPart(final ItemStack is) {
+        super(is, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+        inputHandler = new InputFluidHandler();
+        outputHandler = new OutputFluidHandler();
+        emptyHandler = NULL_FLUID_HANDLER;
     }
 
     @Override
     public IPartModel getStaticModels() {
         return MODELS.getModel(this.isPowered(), this.isActive());
-    }
-
-    private IFluidHandler getAttachedFluidHandler() {
-        LazyOptional<IFluidHandler> fluidHandler = LazyOptional.empty();
-        if (this.isActive()) {
-            final TileEntity self = this.getTile();
-            final TileEntity te = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
-
-            if (te != null) {
-                fluidHandler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                        this.getSide().getOpposite().getFacing());
-            }
-        }
-        return fluidHandler.orElse(NULL_FLUID_HANDLER);
     }
 
     private class InputFluidHandler implements IFluidHandler {
@@ -144,15 +93,17 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
                 int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
                 for (FluidP2PTunnelPart target : FluidP2PTunnelPart.this.getOutputs()) {
-                    final IFluidHandler output = target.getAttachedFluidHandler();
-                    final int toSend = amountPerOutput + overflow;
-                    final FluidStack fillWithFluidStack = resource.copy();
-                    fillWithFluidStack.setAmount(toSend);
+                    try (CapabilityGuard capabilityGuard = target.getAdjacentCapability()) {
+                        final IFluidHandler output = capabilityGuard.get();
+                        final int toSend = amountPerOutput + overflow;
+                        final FluidStack fillWithFluidStack = resource.copy();
+                        fillWithFluidStack.setAmount(toSend);
 
-                    final int received = output.fill(fillWithFluidStack, action);
+                        final int received = output.fill(fillWithFluidStack, action);
 
-                    overflow = toSend - received;
-                    total += received;
+                        overflow = toSend - received;
+                        total += received;
+                    }
                 }
 
                 if (action == FluidAction.EXECUTE) {
@@ -179,26 +130,33 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
     }
 
     private class OutputFluidHandler implements IFluidHandler {
-
         @Override
         public int getTanks() {
-            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().getTanks();
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().getTanks();
+            }
         }
 
         @Override
         @Nonnull
         public FluidStack getFluidInTank(int tank) {
-            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().getFluidInTank(tank);
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().getFluidInTank(tank);
+            }
         }
 
         @Override
         public int getTankCapacity(int tank) {
-            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().getTankCapacity(tank);
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().getTankCapacity(tank);
+            }
         }
 
         @Override
         public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().isFluidValid(tank, stack);
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().isFluidValid(tank, stack);
+            }
         }
 
         @Override
@@ -209,13 +167,29 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
         @Override
         @Nonnull
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().drain(resource, action);
+            try (CapabilityGuard input = getInputCapability()) {
+                FluidStack result = input.get().drain(resource, action);
+
+                if (action.execute()) {
+                    queueTunnelDrain(PowerUnits.RF, result.getAmount());
+                }
+
+                return result;
+            }
         }
 
         @Override
         @Nonnull
         public FluidStack drain(int maxDrain, FluidAction action) {
-            return FluidP2PTunnelPart.this.getInput().getAttachedFluidHandler().drain(maxDrain, action);
+            try (CapabilityGuard input = getInputCapability()) {
+                FluidStack result = input.get().drain(maxDrain, action);
+
+                if (action.execute()) {
+                    queueTunnelDrain(PowerUnits.RF, result.getAmount());
+                }
+
+                return result;
+            }
         }
     }
 

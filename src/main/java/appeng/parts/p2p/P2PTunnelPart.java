@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -78,6 +80,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         return null;
     }
 
+    @Nullable
     public T getInput() {
         if (this.getFrequency() == 0) {
             return null;
@@ -256,7 +259,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                 final boolean oldOutput = this.isOutput();
                 final short myFreq = this.getFrequency();
 
-                this.getHost().removePart(this.getSide(), false);
+                this.getHost().removePart(this.getSide(), true);
                 final AEPartLocation dir = this.getHost().addPart(newType, this.getSide(), player, hand);
                 final IPart newBus = this.getHost().getPart(dir);
 
