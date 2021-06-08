@@ -23,6 +23,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Rectangle2d;
@@ -35,15 +37,13 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.core.AppEng;
 
 /**
  * Utility class for drawing rectangular textures in the UI.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class Blitter {
 
     // This assumption is obviously bogus, but currently all textures are this size,

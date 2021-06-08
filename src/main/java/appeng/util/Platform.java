@@ -37,7 +37,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
@@ -49,13 +48,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -63,8 +56,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -77,7 +68,6 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -393,15 +383,7 @@ public class Platform {
         if (o == null) {
             return new StringTextComponent("** Null");
         }
-        FluidVolume fluidStack = null;
-        if (x instanceof AEFluidStack) {
-            fluidStack = ((AEFluidStack) o).getFluidStack();
-        } else if (o instanceof FluidVolume) {
-            fluidStack = (FluidVolume) o;
-        } else {
-            return new StringTextComponent("**Invalid Object");
-        }
-        return fluidStack.getName();
+        return o.getFluidStack().getName();
     }
 
     public static boolean isChargeable(final ItemStack i) {

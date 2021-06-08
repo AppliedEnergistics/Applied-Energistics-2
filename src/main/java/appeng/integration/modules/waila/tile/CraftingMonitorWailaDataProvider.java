@@ -50,7 +50,8 @@ public final class CraftingMonitorWailaDataProvider extends BaseWailaDataProvide
             if (displayStack != null) {
                 final ITextComponent currentCrafting = displayStack.asItemStackRepresentation().getDisplayName();
 
-                tooltip.add(WailaText.Crafting.textComponent().copyRaw().appendString(": ").append(currentCrafting));
+                tooltip.add(
+                        WailaText.Crafting.textComponent().copyRaw().appendString(": ").appendSibling(currentCrafting));
             }
         }
     }

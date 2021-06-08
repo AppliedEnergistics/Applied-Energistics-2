@@ -99,14 +99,14 @@ public class PartPlacement {
                         }
 
                         if (host.canAddPart(held, AEPartLocation.fromFacing(side))
-                                &&host.getFacadeContainer().addFacade(fp)) {
-                                host.markForSave();
-                                host.markForUpdate();
-                                if (!player.isCreative()) {
-                                    held.grow(-1);
-                                    if (held.getCount() == 0) {
-                                        player.inventory.mainInventory.set(player.inventory.currentItem,
-                                                ItemStack.EMPTY);
+                                && host.getFacadeContainer().addFacade(fp)) {
+                            host.markForSave();
+                            host.markForUpdate();
+                            if (!player.isCreative()) {
+                                held.grow(-1);
+                                if (held.getCount() == 0) {
+                                    player.inventory.mainInventory.set(player.inventory.currentItem,
+                                            ItemStack.EMPTY);
                                 }
                             }
                             return ActionResultType.CONSUME;

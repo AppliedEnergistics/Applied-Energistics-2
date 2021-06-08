@@ -22,8 +22,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraft.util.SoundEvents;
+
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
 /**
  * Helps with playing fill/empty sounds for fluids to players.
@@ -33,27 +36,33 @@ public final class FluidSoundHelper {
     private FluidSoundHelper() {
     }
 
-    public static void playFillSound(PlayerEntity player, FluidStack fluidStack) {
+    public static void playFillSound(PlayerEntity player, FluidVolume fluidStack) {
         if (fluidStack.isEmpty()) {
             return;
         }
 
-        SoundEvent fillSound = fluidStack.getFluid().getAttributes().getFillSound(fluidStack);
-        if (fillSound == null) {
-            return;
+        FluidKey fluidKey = fluidStack.getFluidKey();
+        SoundEvent fillSound;
+        if (fluidKey == FluidKeys.LAVA) {
+            fillSound = SoundEvents.ITEM_BUCKET_FILL_LAVA;
+        } else {
+            fillSound = SoundEvents.ITEM_BUCKET_FILL;
         }
 
         playSound(player, fillSound);
     }
 
-    public static void playEmptySound(PlayerEntity player, FluidStack fluidStack) {
+    public static void playEmptySound(PlayerEntity player, FluidVolume fluidStack) {
         if (fluidStack.isEmpty()) {
             return;
         }
 
-        SoundEvent fillSound = fluidStack.getFluid().getAttributes().getEmptySound(fluidStack);
-        if (fillSound == null) {
-            return;
+        FluidKey fluidKey = fluidStack.getFluidKey();
+        SoundEvent fillSound;
+        if (fluidKey == FluidKeys.LAVA) {
+            fillSound = SoundEvents.ITEM_BUCKET_EMPTY_LAVA;
+        } else {
+            fillSound = SoundEvents.ITEM_BUCKET_EMPTY;
         }
 
         playSound(player, fillSound);

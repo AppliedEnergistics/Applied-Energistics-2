@@ -29,7 +29,6 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.StairsBlock;
 import net.minecraft.block.WallBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;

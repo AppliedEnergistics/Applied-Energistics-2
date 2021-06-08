@@ -24,8 +24,8 @@ import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -201,7 +201,7 @@ public class ScreenRegistration {
             StyledScreenFactory<M, U> factory,
             String stylePath) {
         CONTAINER_STYLES.put(type, stylePath);
-        ScreenManager.<M, U>registerFactory(type, (container, playerInv, title) -> {
+        ScreenRegistry.<M, U>register(type, (container, playerInv, title) -> {
             ScreenStyle style;
             try {
                 style = StyleManager.loadStyleDoc(stylePath);

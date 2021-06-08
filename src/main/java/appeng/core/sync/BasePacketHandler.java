@@ -44,12 +44,10 @@ import appeng.core.sync.packets.LightningPacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.core.sync.packets.MatterCannonPacket;
-import appeng.core.sync.packets.MockExplosionPacket;
 import appeng.core.sync.packets.NetworkStatusPacket;
 import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.core.sync.packets.PatternSlotPacket;
-import appeng.core.sync.packets.ProgressBarPacket;
 import appeng.core.sync.packets.SpawnEntityPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
@@ -75,8 +73,6 @@ public class BasePacketHandler {
         LIGHTNING(LightningPacket.class, LightningPacket::new),
 
         MATTER_CANNON(MatterCannonPacket.class, MatterCannonPacket::new),
-
-        MOCK_EXPLOSION(MockExplosionPacket.class, MockExplosionPacket::new),
 
         VALUE_CONFIG(ConfigValuePacket.class, ConfigValuePacket::new),
 

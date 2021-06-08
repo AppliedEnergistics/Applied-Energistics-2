@@ -34,7 +34,6 @@ import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import appeng.core.AppEng;
 

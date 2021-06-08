@@ -38,7 +38,6 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -89,7 +88,6 @@ import appeng.hooks.INeighborChangeSensitive;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
-import appeng.tile.AEBaseTileEntity;
 import appeng.tile.networking.CableBusTileEntity;
 import appeng.util.Platform;
 

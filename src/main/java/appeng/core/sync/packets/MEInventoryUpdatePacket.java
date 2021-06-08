@@ -29,13 +29,13 @@ import com.google.common.base.Preconditions;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
@@ -251,7 +251,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         MEMonitorableContainer<T> container = getContainer();
         if (container == null) {

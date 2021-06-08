@@ -20,9 +20,6 @@ package appeng.fluids.container;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Upgrades;

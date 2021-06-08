@@ -26,8 +26,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
+import alexiil.mc.lib.attributes.item.impl.DirectFixedItemInv;
 
 import appeng.util.helpers.ItemHandlerUtil;
 
@@ -49,7 +48,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     private int amountCrafted;
 
     public AppEngCraftingSlot(PlayerEntity player, FixedItemInv craftingGrid) {
-        super(new ItemStackHandler(1), 0);
+        super(new DirectFixedItemInv(1), 0);
         this.player = player;
         this.craftingGrid = craftingGrid;
     }
@@ -121,7 +120,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * Overrides what is being shown as the crafting output, but doesn't notify parent container.
      */
     public void setDisplayedCraftingOutput(ItemStack stack) {
-        ((IItemHandlerModifiable) getItemHandler()).setStackInSlot(0, stack);
+        itemHandler.forceSetInvStack(0, stack);
     }
 
     /**

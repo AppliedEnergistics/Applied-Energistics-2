@@ -31,7 +31,6 @@ import org.mockito.quality.Strictness;
 
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
 import appeng.client.gui.MockResourceManager;
 import appeng.container.SlotSemantic;
@@ -49,8 +48,8 @@ class StyleManagerTest {
         verify(resourceManager).addReloadListener(reloadCaptor.capture());
         assertThat(reloadCaptor.getValue())
                 .isNotNull()
-                .isInstanceOf(ISelectiveResourceReloadListener.class);
-        ((ISelectiveResourceReloadListener) reloadCaptor.getValue()).onResourceManagerReload(resourceManager);
+                .isInstanceOf(IFutureReloadListener.class);
+        ((IFutureReloadListener) reloadCaptor.getValue()).reload(null, resourceManager, null, null, null, null);
     }
 
     @Test

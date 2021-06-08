@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -55,41 +54,41 @@ import appeng.api.parts.PartApiLookup;
 import appeng.bootstrap.IBootstrapComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.client.render.effects.ParticleTypes;
-import appeng.container.AEBaseContainer;
-import appeng.container.ContainerOpener;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.container.implementations.ChestContainer;
 import appeng.container.implementations.CondenserContainer;
-import appeng.container.implementations.CraftAmountContainer;
-import appeng.container.implementations.CraftConfirmContainer;
-import appeng.container.implementations.CraftingCPUContainer;
-import appeng.container.implementations.CraftingStatusContainer;
-import appeng.container.implementations.CraftingTermContainer;
 import appeng.container.implementations.DriveContainer;
 import appeng.container.implementations.FormationPlaneContainer;
 import appeng.container.implementations.GrinderContainer;
+import appeng.container.implementations.IOBusContainer;
 import appeng.container.implementations.IOPortContainer;
 import appeng.container.implementations.InscriberContainer;
 import appeng.container.implementations.InterfaceContainer;
 import appeng.container.implementations.InterfaceTerminalContainer;
 import appeng.container.implementations.LevelEmitterContainer;
-import appeng.container.implementations.MEMonitorableContainer;
-import appeng.container.implementations.MEPortableCellContainer;
 import appeng.container.implementations.MolecularAssemblerContainer;
-import appeng.container.implementations.NetworkStatusContainer;
-import appeng.container.implementations.NetworkToolContainer;
-import appeng.container.implementations.PatternTermContainer;
 import appeng.container.implementations.PriorityContainer;
 import appeng.container.implementations.QNBContainer;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.container.implementations.SkyChestContainer;
+import appeng.container.implementations.SpatialAnchorContainer;
 import appeng.container.implementations.SpatialIOPortContainer;
 import appeng.container.implementations.StorageBusContainer;
-import appeng.container.implementations.UpgradeableContainer;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.container.implementations.WirelessContainer;
-import appeng.container.implementations.WirelessTermContainer;
+import appeng.container.me.crafting.CraftAmountContainer;
+import appeng.container.me.crafting.CraftConfirmContainer;
+import appeng.container.me.crafting.CraftingCPUContainer;
+import appeng.container.me.crafting.CraftingStatusContainer;
+import appeng.container.me.fluids.FluidTerminalContainer;
+import appeng.container.me.items.CraftingTermContainer;
+import appeng.container.me.items.ItemTerminalContainer;
+import appeng.container.me.items.MEPortableCellContainer;
+import appeng.container.me.items.PatternTermContainer;
+import appeng.container.me.items.WirelessTermContainer;
+import appeng.container.me.networktool.NetworkStatusContainer;
+import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.cell.BasicCellHandler;
 import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
@@ -101,11 +100,10 @@ import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.fluids.container.FluidFormationPlaneContainer;
-import appeng.fluids.container.FluidIOContainer;
+import appeng.fluids.container.FluidIOBusContainer;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;
-import appeng.fluids.container.FluidTerminalContainer;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.hooks.ToolItemHook;
 import appeng.integration.modules.trenergy.ItemPowerStorageAdapter;
@@ -444,88 +442,58 @@ public abstract class AppEngBase implements AppEng {
 
     private void registerScreenHandlerTypes() {
 
-        CellWorkbenchContainer.TYPE = registerScreenHandler("cellworkbench", CellWorkbenchContainer::fromNetwork,
-                CellWorkbenchContainer::open);
-        ChestContainer.TYPE = registerScreenHandler("chest", ChestContainer::fromNetwork, ChestContainer::open);
-        CondenserContainer.TYPE = registerScreenHandler("condenser", CondenserContainer::fromNetwork,
-                CondenserContainer::open);
-        CraftAmountContainer.TYPE = registerScreenHandler("craftamount", CraftAmountContainer::fromNetwork,
-                CraftAmountContainer::open);
-        CraftConfirmContainer.TYPE = registerScreenHandler("craftconfirm", CraftConfirmContainer::fromNetwork,
-                CraftConfirmContainer::open);
-        CraftingCPUContainer.TYPE = registerScreenHandler("craftingcpu", CraftingCPUContainer::fromNetwork,
-                CraftingCPUContainer::open);
-        CraftingStatusContainer.TYPE = registerScreenHandler("craftingstatus", CraftingStatusContainer::fromNetwork,
-                CraftingStatusContainer::open);
-        CraftingTermContainer.TYPE = registerScreenHandler("craftingterm", CraftingTermContainer::fromNetwork,
-                CraftingTermContainer::open);
-        DriveContainer.TYPE = registerScreenHandler("drive", DriveContainer::fromNetwork, DriveContainer::open);
-        FormationPlaneContainer.TYPE = registerScreenHandler("formationplane", FormationPlaneContainer::fromNetwork,
-                FormationPlaneContainer::open);
-        GrinderContainer.TYPE = registerScreenHandler("grinder", GrinderContainer::fromNetwork, GrinderContainer::open);
-        InscriberContainer.TYPE = registerScreenHandler("inscriber", InscriberContainer::fromNetwork,
-                InscriberContainer::open);
-        InterfaceContainer.TYPE = registerScreenHandler("interface", InterfaceContainer::fromNetwork,
-                InterfaceContainer::open);
-        InterfaceTerminalContainer.TYPE = registerScreenHandler("interfaceterminal",
-                InterfaceTerminalContainer::fromNetwork, InterfaceTerminalContainer::open);
-        IOPortContainer.TYPE = registerScreenHandler("ioport", IOPortContainer::fromNetwork, IOPortContainer::open);
-        LevelEmitterContainer.TYPE = registerScreenHandler("levelemitter", LevelEmitterContainer::fromNetwork,
-                LevelEmitterContainer::open);
-        MolecularAssemblerContainer.TYPE = registerScreenHandler("molecular_assembler",
-                MolecularAssemblerContainer::fromNetwork, MolecularAssemblerContainer::open);
-        MEMonitorableContainer.TYPE = registerScreenHandler("memonitorable", MEMonitorableContainer::fromNetwork,
-                MEMonitorableContainer::open);
-        MEPortableCellContainer.TYPE = registerScreenHandler("meportablecell", MEPortableCellContainer::fromNetwork,
-                MEPortableCellContainer::open);
-        NetworkStatusContainer.TYPE = registerScreenHandler("networkstatus", NetworkStatusContainer::fromNetwork,
-                NetworkStatusContainer::open);
-        NetworkToolContainer.TYPE = registerScreenHandler("networktool", NetworkToolContainer::fromNetwork,
-                NetworkToolContainer::open);
-        PatternTermContainer.TYPE = registerScreenHandler("patternterm", PatternTermContainer::fromNetwork,
-                PatternTermContainer::open);
-        PriorityContainer.TYPE = registerScreenHandler("priority", PriorityContainer::fromNetwork,
-                PriorityContainer::open);
-        QNBContainer.TYPE = registerScreenHandler("qnb", QNBContainer::fromNetwork, QNBContainer::open);
-        QuartzKnifeContainer.TYPE = registerScreenHandler("quartzknife", QuartzKnifeContainer::fromNetwork,
-                QuartzKnifeContainer::open);
-        SecurityStationContainer.TYPE = registerScreenHandler("securitystation", SecurityStationContainer::fromNetwork,
-                SecurityStationContainer::open);
-        SkyChestContainer.TYPE = registerScreenHandler("skychest", SkyChestContainer::fromNetwork,
-                SkyChestContainer::open);
-        SpatialIOPortContainer.TYPE = registerScreenHandler("spatialioport", SpatialIOPortContainer::fromNetwork,
-                SpatialIOPortContainer::open);
-        StorageBusContainer.TYPE = registerScreenHandler("storagebus", StorageBusContainer::fromNetwork,
-                StorageBusContainer::open);
-        UpgradeableContainer.TYPE = registerScreenHandler("upgradeable", UpgradeableContainer::fromNetwork,
-                UpgradeableContainer::open);
-        VibrationChamberContainer.TYPE = registerScreenHandler("vibrationchamber",
-                VibrationChamberContainer::fromNetwork, VibrationChamberContainer::open);
-        WirelessContainer.TYPE = registerScreenHandler("wireless", WirelessContainer::fromNetwork,
-                WirelessContainer::open);
-        WirelessTermContainer.TYPE = registerScreenHandler("wirelessterm", WirelessTermContainer::fromNetwork,
-                WirelessTermContainer::open);
+        // The actual registration happens when the TYPE fields are initialized
+        // Which means we need to reference all of these classes to ensure they're being loaded
+        ContainerType<?>[] types = new ContainerType<?>[] {
+                CellWorkbenchContainer.TYPE,
+                ChestContainer.TYPE,
+                CondenserContainer.TYPE,
+                CraftAmountContainer.TYPE,
+                CraftConfirmContainer.TYPE,
+                CraftingCPUContainer.TYPE,
+                CraftingStatusContainer.TYPE,
+                CraftingTermContainer.TYPE,
+                DriveContainer.TYPE,
+                FormationPlaneContainer.TYPE,
+                GrinderContainer.TYPE,
+                InscriberContainer.TYPE,
+                InterfaceContainer.TYPE,
+                InterfaceTerminalContainer.TYPE,
+                IOPortContainer.TYPE,
+                LevelEmitterContainer.TYPE,
+                MolecularAssemblerContainer.TYPE,
+                ItemTerminalContainer.TYPE,
+                MEPortableCellContainer.TYPE,
+                NetworkStatusContainer.TYPE,
+                NetworkToolContainer.TYPE,
+                PatternTermContainer.TYPE,
+                PriorityContainer.TYPE,
+                QNBContainer.TYPE,
+                QuartzKnifeContainer.TYPE,
+                SecurityStationContainer.TYPE,
+                SkyChestContainer.TYPE,
+                SpatialIOPortContainer.TYPE,
+                SpatialAnchorContainer.TYPE,
+                StorageBusContainer.TYPE,
+                IOBusContainer.EXPORT_TYPE,
+                IOBusContainer.IMPORT_TYPE,
+                VibrationChamberContainer.TYPE,
+                WirelessContainer.TYPE,
+                WirelessTermContainer.TYPE,
+                FluidFormationPlaneContainer.TYPE,
+                FluidIOBusContainer.EXPORT_TYPE,
+                FluidIOBusContainer.IMPORT_TYPE,
+                FluidInterfaceContainer.TYPE,
+                FluidLevelEmitterContainer.TYPE,
+                FluidStorageBusContainer.TYPE,
+                FluidTerminalContainer.TYPE
+        };
 
-        FluidFormationPlaneContainer.TYPE = registerScreenHandler("fluid_formation_plane",
-                FluidFormationPlaneContainer::fromNetwork, FluidFormationPlaneContainer::open);
-        FluidIOContainer.TYPE = registerScreenHandler("fluid_io", FluidIOContainer::fromNetwork,
-                FluidIOContainer::open);
-        FluidInterfaceContainer.TYPE = registerScreenHandler("fluid_interface", FluidInterfaceContainer::fromNetwork,
-                FluidInterfaceContainer::open);
-        FluidLevelEmitterContainer.TYPE = registerScreenHandler("fluid_level_emitter",
-                FluidLevelEmitterContainer::fromNetwork, FluidLevelEmitterContainer::open);
-        FluidStorageBusContainer.TYPE = registerScreenHandler("fluid_storage_bus",
-                FluidStorageBusContainer::fromNetwork, FluidStorageBusContainer::open);
-        FluidTerminalContainer.TYPE = registerScreenHandler("fluid_terminal", FluidTerminalContainer::fromNetwork,
-                FluidTerminalContainer::open);
+        for (ContainerType<?> type : types) {
+            // noinspection ResultOfMethodCallIgnored
+            type.toString();
+        }
 
-    }
-
-    private <T extends AEBaseContainer> ContainerType<T> registerScreenHandler(String id,
-            ScreenHandlerRegistry.ExtendedClientHandlerFactory<T> factory, ContainerOpener.Opener<T> opener) {
-        ContainerType<T> type = ScreenHandlerRegistry.registerExtended(AppEng.makeId(id), factory);
-        ContainerOpener.addOpener(type, opener);
-        return type;
     }
 
     private void registerServerCommands() {

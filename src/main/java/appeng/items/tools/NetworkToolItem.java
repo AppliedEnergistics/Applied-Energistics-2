@@ -32,7 +32,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;

@@ -21,7 +21,6 @@ package appeng.block.grindstone;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;

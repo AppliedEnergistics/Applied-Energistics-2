@@ -62,7 +62,6 @@ import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
-import appeng.util.Platform;
 
 public class FluidInterfacePart extends BasicStatePart
         implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {

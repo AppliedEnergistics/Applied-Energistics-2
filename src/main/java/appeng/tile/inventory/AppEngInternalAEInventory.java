@@ -36,7 +36,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;

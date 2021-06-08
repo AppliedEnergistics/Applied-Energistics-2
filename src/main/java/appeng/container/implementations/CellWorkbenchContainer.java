@@ -27,7 +27,6 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
@@ -123,7 +122,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     }
 
     public ItemStack getWorkbenchItem() {
-        return this.workBench.getInventoryByName("cell").getStackInSlot(0);
+        return this.workBench.getInventoryByName("cell").getInvStack(0);
     }
 
     @Override

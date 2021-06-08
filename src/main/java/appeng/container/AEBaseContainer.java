@@ -72,9 +72,6 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorFixedInv;
-import appeng.util.inv.WrapperCursorItemHandler;
-import appeng.util.item.AEItemStack;
 
 public abstract class AEBaseContainer extends Container {
     private final IActionSource mySrc;
@@ -199,11 +196,10 @@ public abstract class AEBaseContainer extends Container {
                 getSlots(SlotSemantic.PLAYER_INVENTORY).isEmpty(),
                 "Player inventory was already created");
 
-        IItemHandler ih = new PlayerInvWrapper(playerInventory);
-
         for (int i = 0; i < playerInventory.mainInventory.size(); i++) {
             Slot slot;
             if (this.lockedPlayerInventorySlots.contains(i)) {
+                FixedItemInv ih = new FixedInventoryVanillaWrapper(playerInventory);
                 slot = new DisabledSlot(ih, i);
             } else {
                 slot = new Slot(playerInventory, i, 0, 0);

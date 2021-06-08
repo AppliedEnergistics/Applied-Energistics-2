@@ -18,13 +18,9 @@
 
 package appeng.services;
 
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.server.ServerWorld;
-
-import appeng.core.AppEng;
-import appeng.tile.spatial.SpatialAnchorTileEntity;
 
 public class ChunkLoadingService /* implements LoadingValidationCallback */ {
 

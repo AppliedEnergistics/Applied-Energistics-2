@@ -31,3 +31,8 @@ accessible method  net/minecraft/block/TNTBlock explode (Lnet/minecraft/world/Wo
 accessible method net/minecraft/client/gui/widget/TextFieldWidget getMaxStringLength ()I
 
 extendable method net/minecraft/entity/item/ItemEntity applyFloatMotion ()V
+
+accessible field net/minecraft/client/gui/widget/Widget height I
+
+# Only used in tests
+accessible field net/minecraft/client/resources/ClientLanguageMap field_239495_c_ Ljava/util/Map;

@@ -12,7 +12,6 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.util.registry.Bootstrap;
 
 import appeng.data.providers.loot.BlockDropProvider;
-import appeng.data.providers.recipes.SlabStairRecipes;
 import appeng.data.providers.tags.ConventionTagProvider;
 import appeng.data.providers.tags.ToolTagProviders;
 
@@ -27,7 +26,6 @@ public class Entrypoint implements PreLaunchEntrypoint {
 
         DataGenerator generator = new DataGenerator(output, Collections.emptyList());
         generator.addProvider(new BlockDropProvider(output));
-        generator.addProvider(new SlabStairRecipes(output));
         generator.addProvider(new ConventionTagProvider(output));
         generator.addProvider(new ToolTagProviders(output));
         generator.run();

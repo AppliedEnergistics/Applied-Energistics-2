@@ -21,7 +21,8 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraftforge.items.IItemHandler;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
@@ -43,8 +44,8 @@ public class SkyChestContainer extends AEBaseContainer {
         super(TYPE, id, ip, chest);
         this.chest = chest;
 
-        IItemHandler inv = this.chest.getInternalInventory();
-        for (int i = 0; i < inv.getSlots(); i++) {
+        FixedItemInv inv = this.chest.getInternalInventory();
+        for (int i = 0; i < inv.getSlotCount(); i++) {
             this.addSlot(new AppEngSlot(inv, i), SlotSemantic.STORAGE);
         }
 

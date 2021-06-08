@@ -34,9 +34,6 @@ import net.minecraft.util.text.StringTextComponent;
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.IIngredientSupplier;
@@ -63,8 +60,11 @@ public class FluidTankWidget extends Widget implements ITooltip, IIngredientSupp
             if (fluidStack != null && fluidStack.getStackSize() > 0) {
                 Blitter blitter = FluidBlitter.create(fluidStack.getFluidStack());
 
-                final int filledHeight = (int) (this.height
-                        * ((float) fluidStack.getStackSize() / this.tank.getTankCapacity(this.slot)));
+                FluidVolume volume = fluidStack.getFluidStack();
+                FluidAmount maxAmount = this.tank.getMaxAmount_F(this.slot);
+                double fillRatio = volume.amount().div(maxAmount).asInexactDouble();
+
+                final int filledHeight = (int) (this.height * fillRatio);
 
                 // We assume the sprite has equal width/height, and to maintain that 1:1 aspect ratio,
                 // We draw rectangles of size width by width to fill our entire height
@@ -96,7 +96,7 @@ public class FluidTankWidget extends Widget implements ITooltip, IIngredientSupp
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
             return Arrays.asList(
-                    fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()),
+                    fluid.getFluidStack().getName(),
                     new StringTextComponent(fluid.getStackSize() + "mB"));
         }
         return Collections.emptyList();
@@ -129,8 +129,8 @@ public class FluidTankWidget extends Widget implements ITooltip, IIngredientSupp
 
     @Nullable
     @Override
-    public FluidStack getFluidIngredient() {
-        return tank.getFluidInTank(this.slot).copy();
+    public FluidVolume getFluidIngredient() {
+        return tank.getInvFluid(this.slot).copy();
     }
 
 }

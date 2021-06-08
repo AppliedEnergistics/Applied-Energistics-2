@@ -22,25 +22,21 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IWirelessTermHandler;
@@ -292,9 +288,9 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
     public ContainerType<C> build(String id) {
         Preconditions.checkState(containerType == null, "build was already called");
 
-        containerType = IForgeContainerType.create(this::fromNetwork);
-        containerType.setRegistryName(AppEng.MOD_ID, id);
+        containerType = ScreenHandlerRegistry.registerExtended(AppEng.makeId(id), this::fromNetwork);
         ContainerOpener.addOpener(containerType, this::open);
+
         return containerType;
     }
 

@@ -19,7 +19,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.client.Minecraft;
@@ -44,39 +43,8 @@ import appeng.bootstrap.ModelsReloadCallback;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
 import appeng.bootstrap.components.IModelBakeComponent;
-import appeng.client.gui.implementations.CellWorkbenchScreen;
-import appeng.client.gui.implementations.ChestScreen;
-import appeng.client.gui.implementations.CondenserScreen;
-import appeng.client.gui.implementations.CraftAmountScreen;
-import appeng.client.gui.implementations.CraftConfirmScreen;
-import appeng.client.gui.implementations.CraftingCPUScreen;
-import appeng.client.gui.implementations.CraftingStatusScreen;
-import appeng.client.gui.implementations.CraftingTermScreen;
-import appeng.client.gui.implementations.DriveScreen;
-import appeng.client.gui.implementations.FormationPlaneScreen;
-import appeng.client.gui.implementations.GrinderScreen;
-import appeng.client.gui.implementations.IOPortScreen;
-import appeng.client.gui.implementations.InscriberScreen;
-import appeng.client.gui.implementations.InterfaceScreen;
-import appeng.client.gui.implementations.InterfaceTerminalScreen;
-import appeng.client.gui.implementations.LevelEmitterScreen;
-import appeng.client.gui.implementations.MEMonitorableScreen;
-import appeng.client.gui.implementations.MEPortableCellScreen;
-import appeng.client.gui.implementations.MolecularAssemblerScreen;
-import appeng.client.gui.implementations.NetworkStatusScreen;
-import appeng.client.gui.implementations.NetworkToolScreen;
-import appeng.client.gui.implementations.PatternTermScreen;
-import appeng.client.gui.implementations.PriorityScreen;
-import appeng.client.gui.implementations.QNBScreen;
-import appeng.client.gui.implementations.QuartzKnifeScreen;
-import appeng.client.gui.implementations.SecurityStationScreen;
-import appeng.client.gui.implementations.SkyChestScreen;
-import appeng.client.gui.implementations.SpatialIOPortScreen;
-import appeng.client.gui.implementations.StorageBusScreen;
-import appeng.client.gui.implementations.UpgradeableScreen;
-import appeng.client.gui.implementations.VibrationChamberScreen;
-import appeng.client.gui.implementations.WirelessScreen;
-import appeng.client.gui.implementations.WirelessTermScreen;
+import appeng.client.gui.ScreenRegistration;
+import appeng.client.gui.style.StyleManager;
 import appeng.client.render.FacadeItemModel;
 import appeng.client.render.SimpleModelLoader;
 import appeng.client.render.cablebus.CableBusModelLoader;
@@ -100,39 +68,6 @@ import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
-import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.container.implementations.ChestContainer;
-import appeng.container.implementations.CondenserContainer;
-import appeng.container.implementations.CraftAmountContainer;
-import appeng.container.implementations.CraftConfirmContainer;
-import appeng.container.implementations.CraftingCPUContainer;
-import appeng.container.implementations.CraftingStatusContainer;
-import appeng.container.implementations.CraftingTermContainer;
-import appeng.container.implementations.DriveContainer;
-import appeng.container.implementations.FormationPlaneContainer;
-import appeng.container.implementations.GrinderContainer;
-import appeng.container.implementations.IOPortContainer;
-import appeng.container.implementations.InscriberContainer;
-import appeng.container.implementations.InterfaceContainer;
-import appeng.container.implementations.InterfaceTerminalContainer;
-import appeng.container.implementations.LevelEmitterContainer;
-import appeng.container.implementations.MEMonitorableContainer;
-import appeng.container.implementations.MEPortableCellContainer;
-import appeng.container.implementations.MolecularAssemblerContainer;
-import appeng.container.implementations.NetworkStatusContainer;
-import appeng.container.implementations.NetworkToolContainer;
-import appeng.container.implementations.PatternTermContainer;
-import appeng.container.implementations.PriorityContainer;
-import appeng.container.implementations.QNBContainer;
-import appeng.container.implementations.QuartzKnifeContainer;
-import appeng.container.implementations.SecurityStationContainer;
-import appeng.container.implementations.SkyChestContainer;
-import appeng.container.implementations.SpatialIOPortContainer;
-import appeng.container.implementations.StorageBusContainer;
-import appeng.container.implementations.UpgradeableContainer;
-import appeng.container.implementations.VibrationChamberContainer;
-import appeng.container.implementations.WirelessContainer;
-import appeng.container.implementations.WirelessTermContainer;
 import appeng.core.Api;
 import appeng.core.ApiDefinitions;
 import appeng.core.AppEng;
@@ -145,18 +80,6 @@ import appeng.entity.GrowingCrystalEntity;
 import appeng.entity.SingularityEntity;
 import appeng.entity.TinyTNTPrimedEntity;
 import appeng.entity.TinyTNTPrimedRenderer;
-import appeng.fluids.client.gui.FluidFormationPlaneScreen;
-import appeng.fluids.client.gui.FluidIOScreen;
-import appeng.fluids.client.gui.FluidInterfaceScreen;
-import appeng.fluids.client.gui.FluidLevelEmitterScreen;
-import appeng.fluids.client.gui.FluidStorageBusScreen;
-import appeng.fluids.client.gui.FluidTerminalScreen;
-import appeng.fluids.container.FluidFormationPlaneContainer;
-import appeng.fluids.container.FluidIOContainer;
-import appeng.fluids.container.FluidInterfaceContainer;
-import appeng.fluids.container.FluidLevelEmitterContainer;
-import appeng.fluids.container.FluidStorageBusContainer;
-import appeng.fluids.container.FluidTerminalContainer;
 import appeng.hooks.ClientTickHandler;
 import appeng.parts.automation.PlaneModel;
 import appeng.util.Platform;
@@ -187,6 +110,8 @@ public final class AppEngClient extends AppEngBase {
         networkHandler = new ClientNetworkHandler();
         tickHandler = new ClientTickHandler();
 
+        StyleManager.initialize();
+
         ModelsReloadCallback.EVENT.register(this::onModelsReloaded);
 
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
@@ -197,7 +122,7 @@ public final class AppEngClient extends AppEngBase {
         registerEntityRenderers();
         registerItemColors();
         registerTextures();
-        registerScreens();
+        ScreenRegistration.register();
 
         // On the client, we'll register for server startup/shutdown to properly setup
         // WorldData
@@ -433,51 +358,6 @@ public final class AppEngClient extends AppEngBase {
     private static <T extends IUnbakedModel> void addBuiltInModel(String id, Supplier<T> modelFactory) {
         ModelLoadingRegistry.INSTANCE
                 .registerResourceProvider(resourceManager -> new SimpleModelLoader<>(AppEng.makeId(id), modelFactory));
-    }
-
-    private void registerScreens() {
-        ScreenRegistry.register(GrinderContainer.TYPE, GrinderScreen::new);
-        ScreenRegistry.register(QNBContainer.TYPE, QNBScreen::new);
-        ScreenRegistry.register(SkyChestContainer.TYPE, SkyChestScreen::new);
-        ScreenRegistry.register(ChestContainer.TYPE, ChestScreen::new);
-        ScreenRegistry.register(WirelessContainer.TYPE, WirelessScreen::new);
-        ScreenRegistry.<MEMonitorableContainer, MEMonitorableScreen<MEMonitorableContainer>>register(
-                MEMonitorableContainer.TYPE, MEMonitorableScreen::new);
-        ScreenRegistry.register(MEPortableCellContainer.TYPE, MEPortableCellScreen::new);
-        ScreenRegistry.register(WirelessTermContainer.TYPE, WirelessTermScreen::new);
-        ScreenRegistry.register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new);
-        ScreenRegistry.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
-                CraftingCPUContainer.TYPE, CraftingCPUScreen::new);
-        ScreenRegistry.register(NetworkToolContainer.TYPE, NetworkToolScreen::new);
-        ScreenRegistry.register(QuartzKnifeContainer.TYPE, QuartzKnifeScreen::new);
-        ScreenRegistry.register(DriveContainer.TYPE, DriveScreen::new);
-        ScreenRegistry.register(VibrationChamberContainer.TYPE, VibrationChamberScreen::new);
-        ScreenRegistry.register(CondenserContainer.TYPE, CondenserScreen::new);
-        ScreenRegistry.register(InterfaceContainer.TYPE, InterfaceScreen::new);
-        ScreenRegistry.register(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new);
-        ScreenRegistry.<UpgradeableContainer, UpgradeableScreen<UpgradeableContainer>>register(
-                UpgradeableContainer.TYPE, UpgradeableScreen::new);
-        ScreenRegistry.register(FluidIOContainer.TYPE, FluidIOScreen::new);
-        ScreenRegistry.register(IOPortContainer.TYPE, IOPortScreen::new);
-        ScreenRegistry.register(StorageBusContainer.TYPE, StorageBusScreen::new);
-        ScreenRegistry.register(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new);
-        ScreenRegistry.register(FormationPlaneContainer.TYPE, FormationPlaneScreen::new);
-        ScreenRegistry.register(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new);
-        ScreenRegistry.register(PriorityContainer.TYPE, PriorityScreen::new);
-        ScreenRegistry.register(SecurityStationContainer.TYPE, SecurityStationScreen::new);
-        ScreenRegistry.register(CraftingTermContainer.TYPE, CraftingTermScreen::new);
-        ScreenRegistry.register(PatternTermContainer.TYPE, PatternTermScreen::new);
-        ScreenRegistry.register(FluidTerminalContainer.TYPE, FluidTerminalScreen::new);
-        ScreenRegistry.register(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
-        ScreenRegistry.register(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
-        ScreenRegistry.register(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new);
-        ScreenRegistry.register(InscriberContainer.TYPE, InscriberScreen::new);
-        ScreenRegistry.register(CellWorkbenchContainer.TYPE, CellWorkbenchScreen::new);
-        ScreenRegistry.register(MolecularAssemblerContainer.TYPE, MolecularAssemblerScreen::new);
-        ScreenRegistry.register(CraftAmountContainer.TYPE, CraftAmountScreen::new);
-        ScreenRegistry.register(CraftConfirmContainer.TYPE, CraftConfirmScreen::new);
-        ScreenRegistry.register(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new);
-        ScreenRegistry.register(CraftingStatusContainer.TYPE, CraftingStatusScreen::new);
     }
 
 }

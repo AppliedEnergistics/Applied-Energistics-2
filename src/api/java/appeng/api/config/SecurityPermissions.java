@@ -70,16 +70,8 @@ public enum SecurityPermissions {
         return this.displayName;
     }
 
-    public ITextComponent nameText() {
-        return new TranslationTextComponent(getTranslatedName());
-    }
-
     public ITextComponent getDisplayHint() {
         return this.displayHint;
-    }
-
-    public ITextComponent tooltipText() {
-        return new TranslationTextComponent(getTranslatedTip());
     }
 
 }

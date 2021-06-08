@@ -48,8 +48,6 @@ import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.sync.packets.ICustomEntity;
 import appeng.core.sync.packets.SpawnEntityPacket;
-import appeng.core.AppEng;
-import appeng.core.sync.packets.MockExplosionPacket;
 
 public final class TinyTNTPrimedEntity extends TNTEntity implements ICustomEntity {
 
@@ -172,7 +170,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements ICustomEntit
                                 }
 
                                 this.world.setBlockState(point, Blocks.AIR.getDefaultState(), 3);
-                                    block.onExplosionDestroy(this.world, point, ex);
+                                block.onExplosionDestroy(this.world, point, ex);
 
                             }
                         }

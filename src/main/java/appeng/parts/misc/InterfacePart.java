@@ -69,7 +69,6 @@ import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
-import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;

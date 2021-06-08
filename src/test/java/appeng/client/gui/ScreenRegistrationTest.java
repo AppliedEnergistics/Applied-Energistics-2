@@ -37,6 +37,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.resources.ClientLanguageMap;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -101,7 +102,8 @@ class ScreenRegistrationTest {
     @Test
     void testMissingTranslationKeys() throws IOException {
         // Load AE2 translation data
-        Map<String, String> i18n = new HashMap<>(LanguageMap.getInstance().getLanguageData());
+        ClientLanguageMap instance = (ClientLanguageMap) LanguageMap.getInstance();
+        Map<String, String> i18n = new HashMap<>(instance.field_239495_c_);
         try (InputStream in = getClass().getResourceAsStream("/assets/appliedenergistics2/lang/en_us.json")) {
             LanguageMap.func_240593_a_(in, i18n::put);
         }

@@ -20,7 +20,8 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraftforge.items.IItemHandler;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.SlotSemantic;
@@ -55,7 +56,7 @@ public class IOBusContainer extends UpgradeableContainer {
     protected void setupConfig() {
         this.setupUpgrades();
 
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final FixedItemInv inv = this.getUpgradeable().getInventoryByName("config");
         final SlotSemantic s = SlotSemantic.CONFIG;
 
         this.addSlot(new FakeTypeOnlySlot(inv, 0), s);

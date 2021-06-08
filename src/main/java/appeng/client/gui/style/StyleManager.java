@@ -27,18 +27,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import net.minecraft.resources.IReloadableResourceManager;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import net.minecraft.resources.ResourcePackType;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.core.AppEng;
 
@@ -184,11 +187,8 @@ public final class StyleManager {
         return style;
     }
 
-    public static void initialize(IResourceManager resourceManager) {
-        if (resourceManager instanceof IReloadableResourceManager) {
-            ((IReloadableResourceManager) resourceManager).addReloadListener(new ReloadListener());
-        }
-        setResourceManager(resourceManager);
+    public static void initialize() {
+        ResourceManagerHelper.get(ResourcePackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
     }
 
     private static void setResourceManager(IResourceManager resourceManager) {
@@ -196,11 +196,19 @@ public final class StyleManager {
         StyleManager.styleCache.clear();
     }
 
-    private static class ReloadListener implements ISelectiveResourceReloadListener {
+    private static class ReloadListener implements IdentifiableResourceReloadListener {
         @Override
-        public void onResourceManagerReload(IResourceManager resourceManager,
-                Predicate<IResourceType> resourcePredicate) {
-            setResourceManager(resourceManager);
+        public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager,
+                IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor,
+                Executor gameExecutor) {
+            return stage.markCompleteAwaitingOthers(null).thenAcceptAsync((object) -> {
+                setResourceManager(resourceManager);
+            }, gameExecutor);
+        }
+
+        @Override
+        public ResourceLocation getFabricId() {
+            return AppEng.makeId("styles");
         }
     }
 

@@ -77,7 +77,7 @@ public class TickHandler {
     /**
      * A stop watch to limit processing the additional queues to honor
      * {@link TickHandler#TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS}.
-     *<p>
+     * <p>
      * This cumulative for all queues of one server tick.
      */
     private final Stopwatch sw = Stopwatch.createUnstarted();
@@ -134,7 +134,7 @@ public class TickHandler {
 
     /**
      * Add a {@link AEBaseTileEntity} to be initializes with the next update.
-     *<p>
+     * <p>
      * Must be called on the server.
      *
      * @param tile to be added, must be not null
@@ -149,7 +149,7 @@ public class TickHandler {
 
     /**
      * Add a new grid for ticking on the next update.
-     *<p>
+     * <p>
      * Must only be called on the server.
      *
      * @param grid the {@link Grid} to add, must be not null
@@ -162,7 +162,7 @@ public class TickHandler {
 
     /**
      * Mark a {@link Grid} to be removed with the next update.
-     *<p>
+     * <p>
      * Must only be called on the server.
      *
      * @param grid the {@link Grid} to remove, must be not null
@@ -194,7 +194,7 @@ public class TickHandler {
 
     /**
      * Handles a chunk being unloaded (on the server)
-     *<p>
+     * <p>
      * Removes any pending initialization callbacks for tile-entities in that chunk.
      */
     public void onUnloadChunk(ServerWorld world, Chunk chunk) {
@@ -363,7 +363,7 @@ public class TickHandler {
 
     /**
      * Process the {@link IWorldCallable} queue in this {@link World}
-     *<p>
+     * <p>
      * This has a hard limit of about 50 ms before deferring further processing into the next tick.
      *
      * @param queue the queue to process

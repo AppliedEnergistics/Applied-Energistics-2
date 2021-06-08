@@ -18,12 +18,8 @@
 
 package appeng.parts.networking;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -34,9 +30,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
-import appeng.helpers.ForgeEnergyAdapter;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
@@ -47,24 +41,10 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
 
     @PartModels
     private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/energy_acceptor"));
-    private ForgeEnergyAdapter forgeEnergyAdapter;
-    private LazyOptional<ForgeEnergyAdapter> forgeEnergyAdapterOptional;
 
     public EnergyAcceptorPart(final ItemStack is) {
         super(is);
         this.getProxy().setIdlePowerUsage(0);
-        this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
-        this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
-    }
-
-    @Override
-    @Nonnull
-    public <T> LazyOptional<T> getCapability(Capability<T> capability) {
-        if (capability == Capabilities.FORGE_ENERGY) {
-            return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
-        }
-
-        return super.getCapability(capability);
     }
 
     @Override

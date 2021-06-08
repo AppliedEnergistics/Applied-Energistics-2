@@ -25,12 +25,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.client.gui.Icon;
 import appeng.container.AEBaseContainer;
@@ -87,9 +83,8 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
     @Override
     public void onContainerClosed(final PlayerEntity player) {
-        ItemStack item = this.inSlot.extractItem(0, Integer.MAX_VALUE, false);
-        if (!item.isEmpty()) {
-            player.dropItem(item, false);
+        if (this.inSlot.getInvStack(0) != null) {
+            player.dropItem(this.inSlot.getInvStack(0), false);
         }
     }
 
@@ -131,13 +126,14 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         }
 
         private void makePlate() {
-            if (isServer() && !this.getItemHandler().extractItem(0, 1, false).isEmpty()) {
+            if (isServer() && !inSlot.getSlot(0).extract(1).isEmpty()) {
                 final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
                 final ItemStack before = item.copy();
                 PlayerInventory playerInv = QuartzKnifeContainer.this.getPlayerInventory();
                 item.damageItem(1, playerInv.player, p -> {
                     playerInv.setInventorySlotContents(playerInv.currentItem, ItemStack.EMPTY);
-                    MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(playerInv.player, before, null));
+                    // FIXME FABRIC equivalent??
+                    // MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(playerInv.player, before, null));
                 });
 
                 QuartzKnifeContainer.this.detectAndSendChanges();

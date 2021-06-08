@@ -106,7 +106,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
     protected abstract void setupConfig();
 
     protected final void setupUpgrades() {
-        final IItemHandler upgrades = this.getUpgradeable().getUpgradeInventory();
+        final FixedItemInv upgrades = this.getUpgradeable().getUpgradeInventory();
 
         for (int i = 0; i < availableUpgrades(); i++) {
             RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades,

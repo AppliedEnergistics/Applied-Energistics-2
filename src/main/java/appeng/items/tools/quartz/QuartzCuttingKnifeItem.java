@@ -36,7 +36,6 @@ import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.mixins.RemainderSetter;
-import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     private final AEFeature type;

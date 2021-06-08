@@ -82,11 +82,11 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
         String modName = Platform.getModName(Platform.getModId(fluidStack));
 
         List<ITextComponent> list = new ArrayList<>();
-        list.add(fluidStack.getFluidStack().getDisplayName());
+        list.add(fluidStack.getFluidStack().getName());
         list.add(new StringTextComponent(formattedAmount));
         list.add(new StringTextComponent(modName));
 
-        this.renderWrappedToolTip(matrices, list, x, y, this.font);
+        this.drawTooltip(matrices, x, y, list);
     }
 
     @Override

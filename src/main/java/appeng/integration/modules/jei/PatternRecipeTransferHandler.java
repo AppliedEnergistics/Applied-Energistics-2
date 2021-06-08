@@ -22,7 +22,7 @@ import me.shedaniel.rei.api.AutoTransferHandler;
 import me.shedaniel.rei.api.RecipeDisplay;
 import me.shedaniel.rei.plugin.DefaultPlugin;
 
-import appeng.container.implementations.PatternTermContainer;
+import appeng.container.me.items.PatternTermContainer;
 
 public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternTermContainer> {
 

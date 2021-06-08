@@ -34,7 +34,6 @@ import net.minecraft.util.text.ITextComponent;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
 import alexiil.mc.lib.attributes.item.SingleItemSlot;
-
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import appeng.api.config.SecurityPermissions;
@@ -160,7 +159,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             // Can occur if the client sent an interaction packet right before an inventory got removed
             return;
         }
-        if (slot < 0 || slot >= inv.server.getSlots()) {
+        if (slot < 0 || slot >= inv.server.getSlotCount()) {
             // Client refers to an invalid slot. This should NOT happen
             AELog.warn("Client refers to invalid slot %d of inventory %s", slot, inv.name.getString());
             return;
@@ -172,9 +171,9 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         final InventoryAdaptor playerHand = new AdaptorFixedInv(new WrapperCursorItemHandler(player.inventory));
 
         // Create a wrapper around the targetted slot that will only allow insertions of
-            // patterns
-            LimitedFixedItemInv limitedSlotInv = inv.server.createLimitedFixedInv();
-            limitedSlotInv.getAllRule().filterInserts(this::isValidPattern);
+        // patterns
+        LimitedFixedItemInv limitedSlotInv = inv.server.createLimitedFixedInv();
+        limitedSlotInv.getAllRule().filterInserts(this::isValidPattern);
         SingleItemSlot theSlot = limitedSlotInv.getSlot(slot);
 
         switch (action) {
@@ -189,7 +188,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                         final ItemStack inHand = player.inventory.getItemStack().copy();
 
                         theSlot.set(ItemStack.EMPTY);
-                            player.inventory.setItemStack(ItemStack.EMPTY);
+                        player.inventory.setItemStack(ItemStack.EMPTY);
 
                         player.inventory.setItemStack(theSlot.insert(inHand.copy()));
 
@@ -198,10 +197,10 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                         } else {
                             player.inventory.setItemStack(inHand);
                             theSlot.set(inSlot);
-                            }
                         }
-                    } else {
-                        theSlot.set(playerHand.addItems(theSlot.get()));
+                    }
+                } else {
+                    theSlot.set(playerHand.addItems(theSlot.get()));
                 }
 
                 break;
@@ -228,8 +227,8 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                 break;
             case SHIFT_CLICK:
 
-                    final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(player);
-                    theSlot.set(playerInv.addItems(theSlot.get()));
+                final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(player);
+                theSlot.set(playerInv.addItems(theSlot.get()));
 
                 break;
             case MOVE_REGION:
@@ -296,8 +295,8 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         CompoundNBT data = null;
         for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
-            for (int x = 0; x < inv.server.getSlots(); x++) {
-                if (this.isDifferent(inv.server.getStackInSlot(x), inv.client.getStackInSlot(x))) {
+            for (int x = 0; x < inv.server.getSlotCount(); x++) {
+                if (this.isDifferent(inv.server.getInvStack(x), inv.client.getInvStack(x))) {
                     if (data == null) {
                         data = new CompoundNBT();
                     }

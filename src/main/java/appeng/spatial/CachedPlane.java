@@ -34,7 +34,6 @@ import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.lighting.WorldLightManager;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerTickList;

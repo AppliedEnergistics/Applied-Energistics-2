@@ -80,7 +80,7 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
-import appeng.integration.abstraction.JEIFacade;
+import appeng.integration.abstraction.ReiFacade;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
@@ -244,7 +244,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         }
 
         if (isJEIEnabled) {
-            memoryText = JEIFacade.instance().getSearchText();
+            memoryText = ReiFacade.instance().getSearchText();
         }
 
         if (isKeepFilter && memoryText != null && !memoryText.isEmpty()) {
@@ -467,7 +467,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                     .add(new StringTextComponent("Serial: " + entry.getSerial()).mergeStyle(TextFormatting.DARK_GRAY));
         }
 
-        this.renderWrappedToolTip(matrices, currentToolTip, x, y, this.font);
+        drawTooltip(matrices, x, y, currentToolTip);
     }
 
     private int getMaxRows() {
@@ -504,7 +504,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
-            if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
+            if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
                 this.searchField.setFocused2(!this.searchField.isFocused());
                 if (this.searchField.isFocused()) {
                     this.setListener(this.searchField);

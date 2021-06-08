@@ -35,11 +35,10 @@ import alexiil.mc.lib.attributes.item.SingleItemSlot;
 import appeng.client.gui.Icon;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
-import appeng.util.helpers.ItemHandlerUtil;
 
 public class AppEngSlot extends Slot {
     private static final IInventory EMPTY_INVENTORY = new Inventory(0);
-    private final FixedItemInv itemHandler;
+    protected final FixedItemInv itemHandler;
     private final SingleItemSlot backingSlot;
     private final int invSlot;
 

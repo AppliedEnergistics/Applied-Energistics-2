@@ -65,7 +65,7 @@ public class CraftingStatusEntry {
         buffer.writeVarLong(activeAmount);
         buffer.writeVarLong(storedAmount);
         buffer.writeVarLong(pendingAmount);
-        buffer.writeItemStack(item, true);
+        buffer.writeItemStack(item);
     }
 
     public static CraftingStatusEntry read(PacketBuffer buffer) {

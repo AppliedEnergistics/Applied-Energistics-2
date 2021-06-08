@@ -60,7 +60,7 @@ public class MachineGroup {
     }
 
     void write(PacketBuffer data) {
-        data.writeItemStack(display, true);
+        data.writeItemStack(display);
         data.writeDouble(idlePowerUsage);
         data.writeVarInt(count);
     }

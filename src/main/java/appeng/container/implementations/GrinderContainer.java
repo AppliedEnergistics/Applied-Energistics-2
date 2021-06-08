@@ -21,7 +21,6 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 
-
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.client.gui.Icon;

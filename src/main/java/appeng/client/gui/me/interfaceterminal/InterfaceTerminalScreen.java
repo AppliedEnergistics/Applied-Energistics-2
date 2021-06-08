@@ -44,6 +44,8 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 
+import alexiil.mc.lib.attributes.Simulation;
+
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -187,7 +189,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                 if (lineObj instanceof InterfaceRecord) {
                     // Note: We have to shift everything after the header up by 1 to avoid black line duplication.
                     final InterfaceRecord inv = (InterfaceRecord) lineObj;
-                    for (int z = 0; z < inv.getInventory().getSlots(); z++) {
+                    for (int z = 0; z < inv.getInventory().getSlotCount(); z++) {
                         this.container.inventorySlots
                                 .add(new InterfaceSlot(inv, z, z * SLOT_SIZE + GUI_PADDING_X, (i + 1) * SLOT_SIZE));
                     }
@@ -248,7 +250,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
             if (action != null) {
                 InterfaceSlot machineSlot = (InterfaceSlot) slot;
-                final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.getSlotIndex(),
+                final InventoryActionPacket p = new InventoryActionPacket(action, getSlotIndex(machineSlot),
                         machineSlot.getMachineInv().getServerId());
                 NetworkHandler.instance().sendToServer(p);
             }
@@ -333,7 +335,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
-            if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
+            if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
                 this.searchField.setFocused2(!this.searchField.isFocused());
                 return true;
             }
@@ -370,10 +372,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     ITextComponent un = ITextComponent.Serializer.getComponentFromJson(invData.getString("un"));
                     final InterfaceRecord current = this.getById(id, invData.getLong("sortBy"), un);
 
-                    for (int x = 0; x < current.getInventory().getSlots(); x++) {
+                    for (int x = 0; x < current.getInventory().getSlotCount(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setStackInSlot(x, ItemStack.read(invData.getCompound(which)));
+                            current.getInventory().setInvStack(x, ItemStack.read(invData.getCompound(which)),
+                                    Simulation.ACTION);
                         }
                     }
                 } catch (final NumberFormatException ignored) {

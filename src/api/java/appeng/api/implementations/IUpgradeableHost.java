@@ -28,7 +28,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.items.IItemHandler;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.tiles.ISegmentedInventory;
@@ -52,7 +53,7 @@ public interface IUpgradeableHost extends IConfigurableObject, ISegmentedInvento
      * @return The inventory used to store the upgrade cards.
      */
     @Nonnull
-    default IItemHandler getUpgradeInventory() {
+    default FixedItemInv getUpgradeInventory() {
         return Objects.requireNonNull(getInventoryByName("upgrades"));
     }
 

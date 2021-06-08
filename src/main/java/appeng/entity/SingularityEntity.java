@@ -94,8 +94,11 @@ public final class SingularityEntity extends AEBaseItemEntity {
                         }
 
                         // check... other name.
-                        if (!matches && other.getItem().getTags().contains(TAG_ENDER_PEARL)) {
-                            matches = true;
+                        if (!matches) {
+                            ITag<Item> tag = ItemTags.getCollection().get(TAG_ENDER_PEARL);
+                            if (tag != null && other.getItem().isIn(tag)) {
+                                matches = true;
+                            }
                         }
 
                         if (matches) {

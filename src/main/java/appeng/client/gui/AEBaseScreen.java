@@ -35,9 +35,11 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
@@ -48,6 +50,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -58,7 +61,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
@@ -292,7 +294,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     private void drawTooltip(MatrixStack matrixStack, Tooltip tooltip, int mouseX, int mouseY) {
         // Only difference between this and the Vanilla function is that we can specify a maximum width here
-        GuiUtils.drawHoveringText(matrixStack, tooltip.getContent(), mouseX, mouseY, width, height, 200, font);
+        this.renderTooltip(matrixStack, Lists.transform(tooltip.getContent(), ITextComponent::func_241878_f), mouseX,
+                mouseY);
     }
 
     // FIXME FABRIC: move out to json (?)
@@ -553,7 +556,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 final List<Slot> slots = this.getInventorySlots();
                 for (final Slot inventorySlot : slots) {
                     if (inventorySlot != null && inventorySlot.canTakeStack(getPlayer()) && inventorySlot.getHasStack()
-                            && inventorySlot.isSameInventory(slot)
+                            && inventorySlot.inventory == slot.inventory
                             && Container.canAddItemToSlot(inventorySlot, this.dbl_whichItem, true)) {
                         this.handleMouseClick(inventorySlot, inventorySlot.slotNumber, 0, ClickType.QUICK_MOVE);
                     }
@@ -578,15 +581,19 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return Preconditions.checkNotNull(getMinecraft().player);
     }
 
+    protected final int getSlotIndex(Slot slot) {
+        return slot.slotIndex;
+    }
+
     protected boolean checkHotbarKeys(final InputMappings.Input input) {
         final Slot theSlot = this.getSlotUnderMouse();
 
         if (getPlayer().inventory.getItemStack().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
-                if (getMinecraft().gameSettings.keyBindsHotbar[j].isActiveAndMatches(input)) {
+                if (isActiveAndMatches(getMinecraft().gameSettings.keyBindsHotbar[j], input)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
-                        if (s.getSlotIndex() == j && s.inventory == this.container.getPlayerInventory()
+                        if (getSlotIndex(s) == j && s.inventory == this.container.getPlayerInventory()
                                 && !s.canTakeStack(this.container.getPlayerInventory().player)) {
                             return false;
                         }
@@ -597,7 +604,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                         return true;
                     } else {
                         for (final Slot s : slots) {
-                            if (s.getSlotIndex() == j
+                            if (getSlotIndex(s) == j
                                     && s.inventory == this.container.getPlayerInventory()) {
                                 NetworkHandler.instance()
                                         .sendToServer(new SwapSlotsPacket(s.slotNumber, theSlot.slotNumber));
@@ -610,6 +617,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
 
         return false;
+    }
+
+    private boolean isActiveAndMatches(KeyBinding keyBinding, InputMappings.Input input) {
+        return !keyBinding.isInvalid() && keyBinding.matchesKey(input.getKeyCode(), -1);
     }
 
     protected Slot getSlot(final int mouseX, final int mouseY) {
@@ -835,4 +846,23 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
         return ingredient;
     }
+
+    @javax.annotation.Nullable
+    public Slot getSlotUnderMouse() {
+        return this.hoveredSlot;
+    }
+
+    @NotNull
+    protected final Minecraft getMinecraft() {
+        return this.minecraft;
+    }
+
+    public int getGuiLeft() {
+        return guiLeft;
+    }
+
+    public int getGuiTop() {
+        return guiTop;
+    }
+
 }

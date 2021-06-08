@@ -40,7 +40,7 @@ import appeng.core.Api;
 import appeng.helpers.InventoryAction;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
 
@@ -102,7 +102,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                     ais = Platform.poweredInsert(powerSource, monitor, ais,
                             this.getActionSource());
                     if (ais == null) {
-                        final InventoryAdaptor ia = new AdaptorItemHandler(
+                        final InventoryAdaptor ia = new AdaptorFixedInv(
                                 new WrapperCursorItemHandler(player.inventory));
 
                         final ItemStack fail = ia.removeItems(1, extracted.getDefinition(), null);
@@ -136,7 +136,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                     ais = Platform.poweredExtraction(powerSource, monitor, ais,
                             this.getActionSource());
                     if (ais != null) {
-                        final InventoryAdaptor ia = new AdaptorItemHandler(
+                        final InventoryAdaptor ia = new AdaptorFixedInv(
                                 new WrapperCursorItemHandler(player.inventory));
 
                         final ItemStack fail = ia.addItems(ais.createItemStack());

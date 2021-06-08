@@ -82,7 +82,7 @@ class SpatialPylonBakedModel implements IBakedModel, FabricBakedModel {
                     builder.setUvRotation(Direction.DOWN, 2);
                 } else {
                     if ((flags
-                        & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN) {
+                            & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN) {
                         builder.setUvRotation(Direction.SOUTH, 2);
                         builder.setUvRotation(Direction.NORTH, 2);
                     } else {

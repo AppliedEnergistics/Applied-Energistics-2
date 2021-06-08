@@ -26,7 +26,6 @@ import net.minecraft.world.World;
 
 import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
-import appeng.util.Platform;
 
 /**
  * Tracer for players hitting blocks

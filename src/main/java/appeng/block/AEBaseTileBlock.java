@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ITileEntityProvider;

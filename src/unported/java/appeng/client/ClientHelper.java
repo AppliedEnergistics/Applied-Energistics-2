@@ -19,12 +19,10 @@
 package appeng.client;
 
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -33,7 +31,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import appeng.block.AEBaseBlock;
 import appeng.client.gui.style.StyleManager;

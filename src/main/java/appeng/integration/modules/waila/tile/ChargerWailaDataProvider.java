@@ -60,7 +60,8 @@ public final class ChargerWailaDataProvider extends BaseWailaDataProvider {
                 final ITextComponent currentInventory = chargingItem.getDisplayName();
                 final PlayerEntity player = accessor.getPlayer();
 
-                tooltip.add(WailaText.Contains.textComponent().copyRaw().appendString(": ").append(currentInventory));
+                tooltip.add(WailaText.Contains.textComponent().copyRaw().appendString(": ")
+                        .appendSibling(currentInventory));
                 ITooltipFlag tooltipFlag = Minecraft.getInstance().gameSettings.advancedItemTooltips
                         ? ITooltipFlag.TooltipFlags.ADVANCED
                         : ITooltipFlag.TooltipFlags.NORMAL;

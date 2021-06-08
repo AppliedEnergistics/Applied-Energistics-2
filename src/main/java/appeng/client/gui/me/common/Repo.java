@@ -43,7 +43,7 @@ import appeng.container.me.common.GridInventoryEntry;
 import appeng.container.me.common.IClientRepo;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.integration.abstraction.JEIFacade;
+import appeng.integration.abstraction.ReiFacade;
 import appeng.util.prioritylist.IPartitionList;
 
 /**
@@ -222,7 +222,7 @@ public abstract class Repo<T extends IAEStack<T>> implements IClientRepo<T> {
     private void updateJEI(String filter) {
         SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
         if (synchronizeWithJEI && searchMode.isRequiresJei()) {
-            JEIFacade.instance().setSearchText(filter);
+            ReiFacade.instance().setSearchText(filter);
         }
     }
 

@@ -32,7 +32,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -168,9 +169,9 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
 
         // Create slots for the view cells, in case the terminal host supports those
         if (!hideViewCells() && host instanceof IViewCellStorage) {
-            IItemHandler viewCellStorage = ((IViewCellStorage) host).getViewCellStorage();
-            this.viewCellSlots = new ArrayList<>(viewCellStorage.getSlots());
-            for (int i = 0; i < viewCellStorage.getSlots(); i++) {
+            FixedItemInv viewCellStorage = ((IViewCellStorage) host).getViewCellStorage();
+            this.viewCellSlots = new ArrayList<>(viewCellStorage.getSlotCount());
+            for (int i = 0; i < viewCellStorage.getSlotCount(); i++) {
                 RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.VIEW_CELL,
                         viewCellStorage, i);
                 this.addSlot(slot, SlotSemantic.VIEW_CELL);

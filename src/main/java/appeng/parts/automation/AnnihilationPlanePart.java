@@ -388,8 +388,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         ItemStack harvestTool = createHarvestTool(state);
 
-        if (!state.getRequiresTool() && state.getHarvestTool() == null && !harvestTool.isEnchanted()) {
-            // Do not use a tool when not required, no hints about it and not enchanted in cases like silk touch.
+        if (!state.getRequiresTool() && harvestTool == null) {
+            // Do not use a tool when no known tool can be used
             harvestTool = ItemStack.EMPTY;
         }
 
@@ -495,18 +495,13 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * @param state The block state of the block about to be broken.
      */
     protected ItemStack createHarvestTool(BlockState state) {
-        ToolType harvestToolType = state.getBlock().getHarvestTool(state);
-
-        if (harvestToolType == ToolType.AXE) {
-            return new ItemStack(Items.DIAMOND_AXE, 1);
-        } else if (harvestToolType == ToolType.SHOVEL) {
-            return new ItemStack(Items.DIAMOND_SHOVEL, 1);
-        } else if (harvestToolType == ToolType.HOE) {
-            return new ItemStack(Items.DIAMOND_HOE, 1);
-        } else {
-            // Use a pickaxe for everything else. Mostly to allow silk touch enchants
-            return new ItemStack(Items.DIAMOND_PICKAXE, 1);
+        // Try to use the right tool...
+        for (Item toolItem : SUPPORTED_HARVEST_TOOLS) {
+            if (toolItem.canHarvestBlock(state)) {
+                return new ItemStack(toolItem);
+            }
         }
+        return null;
     }
 
     public static boolean isBlockBlacklisted(Block b) {

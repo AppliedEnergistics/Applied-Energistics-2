@@ -64,7 +64,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
         final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
         if (bridge != null && bridge.hasQES() && AppEng.instance().shouldAddParticles(rand)) {
             AppEng.instance().spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5,
-                            pos.getZ() + 0.5,
+                    pos.getZ() + 0.5,
                     null);
         }
     }

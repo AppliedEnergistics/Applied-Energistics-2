@@ -20,7 +20,6 @@ package appeng.block;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -33,7 +32,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;

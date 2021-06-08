@@ -28,10 +28,12 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.BaseBoundsHandler;
 import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryRegistry;
@@ -48,8 +50,8 @@ import appeng.api.definitions.IParts;
 import appeng.api.features.AEFeature;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
-import appeng.container.implementations.CraftingTermContainer;
-import appeng.container.implementations.PatternTermContainer;
+import appeng.container.me.items.CraftingTermContainer;
+import appeng.container.me.items.PatternTermContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -158,9 +160,15 @@ public class ReiPlugin implements REIPluginV0 {
 
         baseBoundsHandler.registerExclusionZones(AEBaseScreen.class, () -> {
             AEBaseScreen<?> screen = (AEBaseScreen<?>) Minecraft.getInstance().currentScreen;
-            return screen != null ? screen.getExclusionZones() : Collections.emptyList();
+            return screen != null ? mapRects(screen.getExclusionZones()) : Collections.emptyList();
         });
 
+    }
+
+    private static List<Rectangle> mapRects(List<Rectangle2d> exclusionZones) {
+        return exclusionZones.stream()
+                .map(ez -> new Rectangle(ez.getX(), ez.getY(), ez.getWidth(), ez.getHeight()))
+                .collect(Collectors.toList());
     }
 
     private void registerWorkingStations(RecipeHelper registration) {
