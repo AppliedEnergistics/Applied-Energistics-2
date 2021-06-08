@@ -18,6 +18,8 @@
 
 package appeng.block.networking;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -41,6 +43,9 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
@@ -75,6 +80,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.helpers.AEMaterials;
@@ -154,17 +160,21 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         return super.isReplaceable(state, useContext) && this.cb(useContext.getWorld(), useContext.getPos()).isEmpty();
     }
 
+    // We drop the parts and the facades here, and the contents of the parts are handled by the block entity.
     @Override
-    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player,
-            boolean willHarvest, FluidState fluid) {
-        if (player.abilities.isCreativeMode) {
-            final AEBaseTileEntity tile = this.getTileEntity(world, pos);
-            if (tile != null) {
-                tile.disableDrops();
-            }
-            // maybe ray trace?
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        LootContext lootContext = builder.withParameter(LootParameters.BLOCK_STATE, state)
+                .build(LootParameterSets.BLOCK);
+        TileEntity te = lootContext.get(LootParameters.BLOCK_ENTITY);
+        if (te instanceof CableBusTileEntity) {
+            CableBusTileEntity bus = (CableBusTileEntity) te;
+            List<ItemStack> drops = new ArrayList<>();
+            bus.getCableBus().appendPartStacks(drops);
+            return drops;
+        } else {
+            AELog.warn("The tile entity was either null or of the wrong type! Skipped cable bus drops!");
+            return Collections.emptyList();
         }
-        return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
     }
 
     @Override
