@@ -24,8 +24,8 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class FakeTypeOnlySlot extends FakeSlot {
 
-    public FakeTypeOnlySlot(final FixedItemInv inv, final int invSlot, final int x, final int y) {
-        super(inv, invSlot, x, y);
+    public FakeTypeOnlySlot(final FixedItemInv inv, final int invSlot) {
+        super(inv, invSlot);
     }
 
     @Override

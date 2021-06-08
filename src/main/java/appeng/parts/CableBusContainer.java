@@ -172,111 +172,109 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     @Override
     public AEPartLocation addPart(ItemStack is, final AEPartLocation side, final @Nullable PlayerEntity player,
             final @Nullable Hand hand) {
-        if (this.canAddPart(is, side)) {
-            if (is.getItem() instanceof IPartItem) {
-                final IPartItem<?> bi = (IPartItem<?>) is.getItem();
+        if (this.canAddPart(is, side) && is.getItem() instanceof IPartItem) {
+            final IPartItem<?> bi = (IPartItem<?>) is.getItem();
 
-                is = is.copy();
-                is.setCount(1);
+            is = is.copy();
+            is.setCount(1);
 
-                final IPart bp = bi.createPart(is);
-                if (bp instanceof ICablePart) {
-                    boolean canPlace = true;
-                    for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
-                        if (this.getPart(d) != null
-                                && !this.getPart(d).canBePlacedOn(((ICablePart) bp).supportsBuses())) {
-                            canPlace = false;
-                        }
+            final IPart bp = bi.createPart(is);
+            if (bp instanceof ICablePart) {
+                boolean canPlace = true;
+                for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
+                    if (this.getPart(d) != null
+                            && !this.getPart(d).canBePlacedOn(((ICablePart) bp).supportsBuses())) {
+                        canPlace = false;
                     }
+                }
 
-                    if (!canPlace) {
-                        return null;
-                    }
+                if (!canPlace) {
+                    return null;
+                }
 
-                    if (this.getPart(AEPartLocation.INTERNAL) != null) {
-                        return null;
-                    }
+                if (this.getPart(AEPartLocation.INTERNAL) != null) {
+                    return null;
+                }
 
-                    this.setCenter((ICablePart) bp);
-                    bp.setPartHostInfo(AEPartLocation.INTERNAL, this, this.tcb.getTile());
+                this.setCenter((ICablePart) bp);
+                bp.setPartHostInfo(AEPartLocation.INTERNAL, this, this.tcb.getTile());
 
-                    if (player != null) {
-                        bp.onPlacement(player, hand, is, side);
-                    }
+                if (player != null) {
+                    bp.onPlacement(player, hand, is, side);
+                }
 
-                    if (this.inWorld) {
-                        bp.addToWorld();
-                    }
+                if (this.inWorld) {
+                    bp.addToWorld();
+                }
 
-                    final IGridNode cn = this.getCenter().getGridNode();
-                    if (cn != null) {
-                        for (final AEPartLocation ins : AEPartLocation.SIDE_LOCATIONS) {
-                            final IPart sbp = this.getPart(ins);
-                            if (sbp != null) {
-                                final IGridNode sn = sbp.getGridNode();
-                                if (sn != null) {
-                                    try {
-                                        GridConnection.create(cn, sn, AEPartLocation.INTERNAL);
-                                    } catch (final FailedConnectionException e) {
-                                        AELog.debug(e);
+                final IGridNode cn = this.getCenter().getGridNode();
+                if (cn != null) {
+                    for (final AEPartLocation ins : AEPartLocation.SIDE_LOCATIONS) {
+                        final IPart sbp = this.getPart(ins);
+                        if (sbp != null) {
+                            final IGridNode sn = sbp.getGridNode();
+                            if (sn != null) {
+                                try {
+                                    GridConnection.create(cn, sn, AEPartLocation.INTERNAL);
+                                } catch (final FailedConnectionException e) {
+                                    AELog.debug(e);
 
-                                        bp.removeFromWorld();
-                                        this.setCenter(null);
-                                        return null;
-                                    }
+                                    bp.removeFromWorld();
+                                    this.setCenter(null);
+                                    return null;
                                 }
                             }
                         }
                     }
+                }
 
-                    this.invalidateShapes();
-                    this.updateConnections();
-                    this.markForUpdate();
-                    this.markForSave();
-                    this.partChanged();
-                    return AEPartLocation.INTERNAL;
-                } else if (bp != null && !(bp instanceof ICablePart) && side != AEPartLocation.INTERNAL) {
-                    final IPart cable = this.getPart(AEPartLocation.INTERNAL);
-                    if (cable != null && !bp.canBePlacedOn(((ICablePart) cable).supportsBuses())) {
-                        return null;
-                    }
+                this.invalidateShapes();
+                this.updateConnections();
+                this.markForUpdate();
+                this.markForSave();
+                this.partChanged();
+                return AEPartLocation.INTERNAL;
+            } else if (bp != null && !(bp instanceof ICablePart) && side != AEPartLocation.INTERNAL) {
+                final IPart cable = this.getPart(AEPartLocation.INTERNAL);
+                if (cable != null && !bp.canBePlacedOn(((ICablePart) cable).supportsBuses())) {
+                    return null;
+                }
 
-                    this.setSide(side, bp);
-                    bp.setPartHostInfo(side, this, this.getTile());
+                this.setSide(side, bp);
+                bp.setPartHostInfo(side, this, this.getTile());
 
-                    if (player != null) {
-                        bp.onPlacement(player, hand, is, side);
-                    }
+                if (player != null) {
+                    bp.onPlacement(player, hand, is, side);
+                }
 
-                    if (this.inWorld) {
-                        bp.addToWorld();
-                    }
+                if (this.inWorld) {
+                    bp.addToWorld();
+                }
 
-                    if (this.getCenter() != null) {
-                        final IGridNode cn = this.getCenter().getGridNode();
-                        final IGridNode sn = bp.getGridNode();
+                if (this.getCenter() != null) {
+                    final IGridNode cn = this.getCenter().getGridNode();
+                    final IGridNode sn = bp.getGridNode();
 
-                        if (cn != null && sn != null) {
-                            try {
-                                GridConnection.create(cn, sn, AEPartLocation.INTERNAL);
-                            } catch (final FailedConnectionException e) {
-                                AELog.debug(e);
+                    if (cn != null && sn != null) {
+                        try {
+                            GridConnection.create(cn, sn, AEPartLocation.INTERNAL);
+                        } catch (final FailedConnectionException e) {
+                            AELog.debug(e);
 
-                                bp.removeFromWorld();
-                                this.setSide(side, null);
-                                return null;
-                            }
+                            bp.removeFromWorld();
+                            this.setSide(side, null);
+                            return null;
                         }
                     }
-
-                    this.invalidateShapes();
-                    this.updateDynamicRender();
-                    this.updateConnections();
-                    this.markForUpdate();
-                    this.markForSave();
-                    this.partChanged();
-                    return side;
                 }
+
+                this.invalidateShapes();
+                this.updateDynamicRender();
+                this.updateConnections();
+                this.markForUpdate();
+                this.markForSave();
+                this.partChanged();
+                return side;
             }
         }
         return null;
@@ -702,10 +700,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     public boolean isLadder(final LivingEntity entity) {
         for (final AEPartLocation side : AEPartLocation.values()) {
             final IPart p = this.getPart(side);
-            if (p != null) {
-                if (p.isLadder(entity)) {
-                    return true;
-                }
+            if (p != null && p.isLadder(entity)) {
+                return true;
             }
         }
 
@@ -741,7 +737,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         for (int x = 0; x < 7; x++) {
             final IPart p = this.getPart(AEPartLocation.fromOrdinal(x));
             if (p != null) {
-                sides |= (1 << x);
+                sides |= 1 << x;
             }
         }
 
@@ -768,7 +764,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
         for (int x = 0; x < 7; x++) {
             AEPartLocation side = AEPartLocation.fromOrdinal(x);
-            if (((sides & (1 << x)) == (1 << x))) {
+            if ((sides & 1 << x) == 1 << x) {
                 IPart p = this.getPart(side);
 
                 final int itemID = data.readVarInt();
@@ -1094,12 +1090,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 part.getBoxes(bch);
             }
 
-            if (Api.instance().partHelper().getCableRenderMode().opaqueFacades || forCollision) {
-                if (s != AEPartLocation.INTERNAL) {
-                    final IFacadePart fp = fc.getFacade(s);
-                    if (fp != null) {
-                        fp.getBoxes(bch, forItemEntity);
-                    }
+            if ((Api.instance().partHelper().getCableRenderMode().opaqueFacades || forCollision)
+                    && s != AEPartLocation.INTERNAL) {
+                final IFacadePart fp = fc.getFacade(s);
+                if (fp != null) {
+                    fp.getBoxes(bch, forItemEntity);
                 }
             }
         }

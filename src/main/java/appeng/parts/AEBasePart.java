@@ -364,7 +364,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * null means nothing to store...
      *
      * @param from source of settings
-     *
      * @return compound of source
      */
     private CompoundNBT downloadSettings(final SettingsFrom from) {

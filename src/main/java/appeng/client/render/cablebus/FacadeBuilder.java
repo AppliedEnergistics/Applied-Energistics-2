@@ -217,12 +217,9 @@ public class FacadeBuilder {
 
             BlockState blockState = facadeRenderState.getSourceBlock();
             // If we aren't forcing transparency let the block decide if it should render.
-// FIXME FABRIC            if (!transparent && layer != null) {
-// FIXME FABRIC only one layer per block
-// FIXME FABRIC               if (!RenderLayers.canRenderInLayer(blockState, layer)) {
-// FIXME FABRIC                   continue;
-// FIXME FABRIC               }
-// FIXME FABRIC            }
+            if (layer != null && !RenderTypeLookup.canRenderInLayer(blockState, layer)) {
+                continue;
+            }
 
             AxisAlignedBB fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
             AxisAlignedBB facadeBox = fullBounds;
@@ -476,7 +473,6 @@ public class FacadeBuilder {
      * @param fb   The Facade's box.
      * @param hole The hole to 'cut'.
      * @param axis The axis the facade is on.
-     *
      * @return The box segments.
      */
     private static List<AxisAlignedBB> getBoxes(AxisAlignedBB fb, AEAxisAlignedBB hole, Axis axis) {

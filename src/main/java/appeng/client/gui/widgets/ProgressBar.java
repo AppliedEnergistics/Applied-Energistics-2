@@ -18,59 +18,73 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
+import appeng.client.gui.style.Blitter;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
 
 public class ProgressBar extends Widget implements ITooltip {
 
     private final IProgressProvider source;
-    private final ResourceLocation texture;
-    private final int fill_u;
-    private final int fill_v;
+    private final Blitter blitter;
     private final Direction layout;
+    private final Rectangle2d sourceRect;
     private final ITextComponent titleName;
     private ITextComponent fullMsg;
 
-    public ProgressBar(final IProgressProvider source, final String texture, final int posX, final int posY,
-            final int u, final int y, final int width, final int height, final Direction dir) {
-        this(source, texture, posX, posY, u, y, width, height, dir, null);
+    public ProgressBar(IProgressProvider source, Blitter blitter, Direction dir) {
+        this(source, blitter, dir, null);
     }
 
-    public ProgressBar(final IProgressProvider source, final String texture, final int posX, final int posY,
-            final int u, final int y, final int width, final int height, final Direction dir,
-            final ITextComponent title) {
-        super(posX, posY, width, height, StringTextComponent.EMPTY);
+    public ProgressBar(final IProgressProvider source, Blitter blitter,
+            final Direction dir, final ITextComponent title) {
+        super(0, 0, blitter.getSrcWidth(), blitter.getSrcHeight(), StringTextComponent.EMPTY);
         this.source = source;
-        this.texture = new ResourceLocation("appliedenergistics2", "textures/" + texture);
-        this.fill_u = u;
-        this.fill_v = y;
+        this.blitter = blitter.copy();
         this.layout = dir;
         this.titleName = title;
+        this.sourceRect = new Rectangle2d(
+                blitter.getSrcX(),
+                blitter.getSrcY(),
+                blitter.getSrcWidth(),
+                blitter.getSrcHeight());
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            Minecraft.getInstance().getTextureManager().bindTexture(this.texture);
-            final int max = this.source.getMaxProgress();
-            final int current = this.source.getCurrentProgress();
+            int max = this.source.getMaxProgress();
+            int current = this.source.getCurrentProgress();
+
+            int srcX = sourceRect.getX();
+            int srcY = sourceRect.getY();
+            int srcW = sourceRect.getWidth();
+            int srcH = sourceRect.getHeight();
+            int destX = x;
+            int destY = y;
 
             if (this.layout == Direction.VERTICAL) {
-                final int diff = this.height - (max > 0 ? (this.height * current) / max : 0);
-                blit(matrices, this.x, this.y + diff, this.fill_u, this.fill_v + diff, this.width,
-                        this.height - diff);
+                int diff = this.height - (max > 0 ? this.height * current / max : 0);
+                destY += diff;
+                srcY += diff;
+                srcH -= diff;
             } else {
-                final int diff = this.width - (max > 0 ? (this.width * current) / max : 0);
-                blit(matrices, this.x, this.y, this.fill_u + diff, this.fill_v, this.width - diff, this.height);
+                int diff = this.width - (max > 0 ? this.width * current / max : 0);
+                srcX += diff;
+                srcW -= diff;
             }
+
+            blitter.src(srcX, srcY, srcW, srcH).dest(destX, destY).blit(matrices, getBlitOffset());
         }
     }
 
@@ -79,14 +93,16 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     @Override
-    public ITextComponent getTooltipMessage() {
+    public List<ITextComponent> getTooltipMessage() {
         if (this.fullMsg != null) {
-            return this.fullMsg;
+            return Collections.singletonList(this.fullMsg);
         }
-        ITextComponent result = this.titleName != null ? this.titleName : StringTextComponent.EMPTY;
 
-        return result.deepCopy().appendString("\n").appendString(this.source.getCurrentProgress() + " ")
-                .append(GuiText.Of.text().deepCopy().appendString(" " + this.source.getMaxProgress()));
+        ITextComponent result = this.titleName != null ? this.titleName : StringTextComponent.EMPTY;
+        return Arrays.asList(
+                result,
+                new StringTextComponent(this.source.getCurrentProgress() + " ")
+                        .appendSibling(GuiText.Of.text().deepCopy().appendString(" " + this.source.getMaxProgress())));
     }
 
     @Override

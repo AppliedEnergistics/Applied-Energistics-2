@@ -95,9 +95,9 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
-import appeng.container.implementations.MEMonitorableContainer;
+import appeng.container.me.fluids.FluidTerminalContainer;
+import appeng.container.me.items.ItemTerminalContainer;
 import appeng.core.Api;
-import appeng.fluids.container.FluidTerminalContainer;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -202,7 +202,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         final int oldState = this.state;
 
         for (int x = 0; x < this.getCellCount(); x++) {
-            this.state |= (this.getCellStatus(x).ordinal() << (BIT_CELL_STATE_BITS * x));
+            this.state |= this.getCellStatus(x).ordinal() << BIT_CELL_STATE_BITS * x;
         }
 
         if (this.isPowered()) {
@@ -284,7 +284,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     @Override
     public CellState getCellStatus(final int slot) {
         if (isRemote()) {
-            return CellState.values()[(this.state >> (slot * BIT_CELL_STATE_BITS)) & BIT_CELL_STATE_MASK];
+            return CellState.values()[this.state >> slot * BIT_CELL_STATE_BITS & BIT_CELL_STATE_MASK];
         }
 
         this.updateHandler();
@@ -389,7 +389,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         this.state = 0;
 
         for (int x = 0; x < this.getCellCount(); x++) {
-            this.state |= (this.getCellStatus(x).ordinal() << (3 * x));
+            this.state |= this.getCellStatus(x).ordinal() << 3 * x;
         }
 
         if (this.isPowered()) {
@@ -560,7 +560,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         }
         this.lastStateChange = now;
 
-        this.state |= 1 << (slot * BIT_CELL_STATE_BITS + 2);
+        this.state |= 1 << slot * BIT_CELL_STATE_BITS + 2;
 
         this.recalculateDisplay();
     }
@@ -794,7 +794,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         if (this.cellHandler != null) {
             if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IItemStorageChannel.class)) {
-                return MEMonitorableContainer.TYPE;
+                return ItemTerminalContainer.TYPE;
             }
             if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IFluidStorageChannel.class)) {

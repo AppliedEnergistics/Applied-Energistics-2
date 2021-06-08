@@ -82,11 +82,11 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         }
 
         final ItemStack itemstack = ItemStack.read(i.getCompound(NBT_ITEMSTACK));
-        if (itemstack.isEmpty()) {
+        final AEItemStack item = AEItemStack.fromItemStack(itemstack);
+        if (item == null) {
             return null;
         }
 
-        final AEItemStack item = AEItemStack.fromItemStack(itemstack);
         item.setStackSize(i.getLong(NBT_STACKSIZE));
         item.setCountRequestable(i.getLong(NBT_REQUESTABLE));
         item.setCraftable(i.getBoolean(NBT_CRAFTABLE));
@@ -269,18 +269,16 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     private boolean fuzzyItemStackComparison(ItemStack a, ItemStack b, FuzzyMode mode) {
-        if (a.getItem() == b.getItem()) {
-            if (a.getItem().isDamageable()) {
-                if (mode == FuzzyMode.IGNORE_ALL) {
-                    return true;
-                } else if (mode == FuzzyMode.PERCENT_99) {
-                    return (a.getDamage() > 1) == (b.getDamage() > 1);
-                } else {
-                    final float percentDamageOfA = (float) a.getDamage() / a.getMaxDamage();
-                    final float percentDamageOfB = (float) b.getDamage() / b.getMaxDamage();
+        if (a.getItem() == b.getItem() && a.getItem().isDamageable()) {
+            if (mode == FuzzyMode.IGNORE_ALL) {
+                return true;
+            } else if (mode == FuzzyMode.PERCENT_99) {
+                return a.getDamage() > 1 == b.getDamage() > 1;
+            } else {
+                final float percentDamageOfA = (float) a.getDamage() / a.getMaxDamage();
+                final float percentDamageOfB = (float) b.getDamage() / b.getMaxDamage();
 
-                    return (percentDamageOfA > mode.breakPoint) == (percentDamageOfB > mode.breakPoint);
-                }
+                return percentDamageOfA > mode.breakPoint == percentDamageOfB > mode.breakPoint;
             }
         }
 

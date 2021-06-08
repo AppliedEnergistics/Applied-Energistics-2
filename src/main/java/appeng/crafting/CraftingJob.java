@@ -139,7 +139,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
 
                 for (final String s : this.opsAndMultiplier.keySet()) {
                     final TwoIntegers ti = this.opsAndMultiplier.get(s);
-                    AELog.crafting(s + " * " + ti.times + " = " + (ti.perOp * ti.times));
+                    AELog.crafting(s + " * " + ti.times + " = " + ti.perOp * ti.times);
                 }
 
                 this.logCraftingJob("real", timer);
@@ -162,7 +162,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
 
                     for (final String s : this.opsAndMultiplier.keySet()) {
                         final TwoIntegers ti = this.opsAndMultiplier.get(s);
-                        AELog.crafting(s + " * " + ti.times + " = " + (ti.perOp * ti.times));
+                        AELog.crafting(s + " * " + ti.times + " = " + ti.perOp * ti.times);
                     }
 
                     this.logCraftingJob("simulate", timer);
@@ -269,7 +269,6 @@ public class CraftingJob implements Runnable, ICraftingJob {
      * returns true if this needs more simulation.
      *
      * @param milli milliseconds of simulation
-     *
      * @return true if this needs more simulation
      */
     public boolean simulateFor(final int milli) {

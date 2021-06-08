@@ -62,16 +62,20 @@ public enum SecurityPermissions {
 
     private final String translationKey = "gui.appliedenergistics2.security." + this.name().toLowerCase(Locale.ROOT);
 
-    public String getTranslatedName() {
-        return this.translationKey + ".name";
+    private final ITextComponent displayName = new TranslationTextComponent(this.translationKey + ".name");
+
+    private final ITextComponent displayHint = new TranslationTextComponent(this.translationKey + ".tip");
+
+    public ITextComponent getDisplayName() {
+        return this.displayName;
     }
 
     public ITextComponent nameText() {
         return new TranslationTextComponent(getTranslatedName());
     }
 
-    public String getTranslatedTip() {
-        return this.translationKey + ".tip";
+    public ITextComponent getDisplayHint() {
+        return this.displayHint;
     }
 
     public ITextComponent tooltipText() {

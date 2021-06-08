@@ -28,7 +28,7 @@ public class P2PHelper {
         final AEColor[] colors = new AEColor[4];
 
         for (int i = 0; i < 4; i++) {
-            int nibble = (frequency >> 4 * (3 - i)) & 0xF;
+            int nibble = frequency >> 4 * (3 - i) & 0xF;
 
             colors[i] = AEColor.values()[nibble];
         }

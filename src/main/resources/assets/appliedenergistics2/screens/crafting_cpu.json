@@ -1,0 +1,30 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json"],
+  "background": {
+    "texture": "guis/craftingcpu.png",
+    "srcRect": [0, 0, 238, 184]
+  },
+  "text": {
+    "dialog_title": {
+      "position": {
+        "left": 8,
+        "top": 7
+      }
+    }
+  },
+  "widgets": {
+    "cancel": {
+      "left": 163,
+      "bottom": 25,
+      "width": 50,
+      "height": 20
+    },
+    "scrollbar": {
+      "left": 218,
+      "top": 19,
+      "width": 12,
+      "height": 137
+    }
+  }
+}

@@ -23,7 +23,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -32,8 +32,9 @@ import appeng.api.features.INetworkEncodable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.storage.ITerminalHost;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
+import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
@@ -42,16 +43,17 @@ import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
-public class SecurityStationContainer extends MEMonitorableContainer implements IAEAppEngInventory {
+/**
+ * @see appeng.client.gui.implementations.SecurityStationScreen
+ */
+public class SecurityStationContainer extends ItemTerminalContainer implements IAEAppEngInventory {
 
-    public static ContainerType<SecurityStationContainer> TYPE;
-
-    private static final ContainerHelper<SecurityStationContainer, ITerminalHost> helper = new ContainerHelper<>(
-            SecurityStationContainer::new, ITerminalHost.class, SecurityPermissions.SECURITY);
+    public static final ContainerType<SecurityStationContainer> TYPE = ContainerTypeBuilder
+            .create(SecurityStationContainer::new, ITerminalHost.class)
+            .requirePermission(SecurityPermissions.SECURITY)
+            .build("securitystation");
 
     private final RestrictedInputSlot configSlot;
-
-    private final AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory(this, 2);
 
     private final RestrictedInputSlot wirelessIn;
     private final OutputSlot wirelessOut;
@@ -66,21 +68,14 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
         this.securityBox = (SecurityStationTileEntity) monitorable;
 
         this.addSlot(this.configSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BIOMETRIC_CARD,
-                this.securityBox.getConfigSlot(), 0, 37, -33, ip));
+                this.securityBox.getConfigSlot(), 0), SlotSemantic.BIOMETRIC_CARD);
 
+        AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory(this, 2);
         this.addSlot(this.wirelessIn = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODABLE_ITEM,
-                this.wirelessEncoder, 0, 212, 10, ip));
-        this.addSlot(this.wirelessOut = new OutputSlot(this.wirelessEncoder, 1, 212, 68, -1));
+                wirelessEncoder, 0), SlotSemantic.MACHINE_INPUT);
+        this.addSlot(this.wirelessOut = new OutputSlot(wirelessEncoder, 1, null), SlotSemantic.MACHINE_OUTPUT);
 
-        this.bindPlayerInventory(ip, 0, 0);
-    }
-
-    public static SecurityStationContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
+        this.createPlayerInventorySlots(ip);
     }
 
     public void toggleSetting(final String value, final PlayerEntity player) {
@@ -112,7 +107,7 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
             final IBiometricCard bc = (IBiometricCard) a.getItem();
 
             for (final SecurityPermissions sp : bc.getPermissions(a)) {
-                this.setPermissionMode(this.getPermissionMode() | (1 << sp.ordinal()));
+                this.setPermissionMode(this.getPermissionMode() | 1 << sp.ordinal());
             }
         }
 
@@ -142,32 +137,30 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
-        if (!this.wirelessOut.getHasStack()) {
-            if (this.wirelessIn.getHasStack()) {
-                final ItemStack term = this.wirelessIn.getStack().copy();
-                INetworkEncodable networkEncodable = null;
+        if (!this.wirelessOut.getHasStack() && this.wirelessIn.getHasStack()) {
+            final ItemStack term = this.wirelessIn.getStack().copy();
+            INetworkEncodable networkEncodable = null;
 
-                if (term.getItem() instanceof INetworkEncodable) {
-                    networkEncodable = (INetworkEncodable) term.getItem();
-                }
+            if (term.getItem() instanceof INetworkEncodable) {
+                networkEncodable = (INetworkEncodable) term.getItem();
+            }
 
-                final IWirelessTermHandler wTermHandler = Api.instance().registries().wireless()
-                        .getWirelessTerminalHandler(term);
-                if (wTermHandler != null) {
-                    networkEncodable = wTermHandler;
-                }
+            final IWirelessTermHandler wTermHandler = Api.instance().registries().wireless()
+                    .getWirelessTerminalHandler(term);
+            if (wTermHandler != null) {
+                networkEncodable = wTermHandler;
+            }
 
-                if (networkEncodable != null) {
-                    networkEncodable.setEncryptionKey(term, String.valueOf(this.securityBox.getSecurityKey()), "");
+            if (networkEncodable != null) {
+                networkEncodable.setEncryptionKey(term, String.valueOf(this.securityBox.getSecurityKey()), "");
 
-                    this.wirelessIn.putStack(ItemStack.EMPTY);
-                    this.wirelessOut.putStack(term);
+                this.wirelessIn.putStack(ItemStack.EMPTY);
+                this.wirelessOut.putStack(term);
 
-                    // update the two slots in question...
-                    for (final IContainerListener listener : this.listeners) {
-                        listener.sendSlotContents(this, this.wirelessIn.slotNumber, this.wirelessIn.getStack());
-                        listener.sendSlotContents(this, this.wirelessOut.slotNumber, this.wirelessOut.getStack());
-                    }
+                // update the two slots in question...
+                for (final IContainerListener listener : this.listeners) {
+                    listener.sendSlotContents(this, this.wirelessIn.slotNumber, this.wirelessIn.getStack());
+                    listener.sendSlotContents(this, this.wirelessOut.slotNumber, this.wirelessOut.getStack());
                 }
             }
         }
@@ -179,5 +172,9 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
 
     private void setPermissionMode(final int permissionMode) {
         this.permissionMode = permissionMode;
+    }
+
+    public RestrictedInputSlot getConfigSlot() {
+        return configSlot;
     }
 }

@@ -31,16 +31,21 @@ import appeng.core.sync.packets.CompassRequestPacket;
 import appeng.core.sync.packets.CompassResponsePacket;
 import appeng.core.sync.packets.ConfigButtonPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.core.sync.packets.CraftRequestPacket;
+import appeng.core.sync.packets.ConfirmAutoCraftPacket;
+import appeng.core.sync.packets.CraftConfirmPlanPacket;
+import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.core.sync.packets.FluidSlotPacket;
+import appeng.core.sync.packets.GuiDataSyncPacket;
+import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.ItemTransitionEffectPacket;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.core.sync.packets.LightningPacket;
-import appeng.core.sync.packets.MEFluidInventoryUpdatePacket;
-import appeng.core.sync.packets.MEInterfaceUpdatePacket;
+import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.core.sync.packets.MatterCannonPacket;
+import appeng.core.sync.packets.MockExplosionPacket;
+import appeng.core.sync.packets.NetworkStatusPacket;
 import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.core.sync.packets.PatternSlotPacket;
@@ -48,62 +53,64 @@ import appeng.core.sync.packets.ProgressBarPacket;
 import appeng.core.sync.packets.SpawnEntityPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
-import appeng.core.sync.packets.TargetFluidStackPacket;
-import appeng.core.sync.packets.TargetItemStackPacket;
 
 public class BasePacketHandler {
     private static final Map<Class<? extends BasePacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();
 
     public enum PacketTypes {
-        PACKET_COMPASS_REQUEST(CompassRequestPacket.class, CompassRequestPacket::new),
+        COMPASS_REQUEST(CompassRequestPacket.class, CompassRequestPacket::new),
 
-        PACKET_COMPASS_RESPONSE(CompassResponsePacket.class, CompassResponsePacket::new),
+        COMPASS_RESPONSE(CompassResponsePacket.class, CompassResponsePacket::new),
 
-        PACKET_INVENTORY_ACTION(InventoryActionPacket.class, InventoryActionPacket::new),
+        INVENTORY_ACTION(InventoryActionPacket.class, InventoryActionPacket::new),
 
-        PACKET_ME_INVENTORY_UPDATE(MEInventoryUpdatePacket.class, MEInventoryUpdatePacket::new),
+        ME_INVENTORY_UPDATE(MEInventoryUpdatePacket.class, MEInventoryUpdatePacket::new),
 
-        PACKET_ME_FLUID_INVENTORY_UPDATE(MEFluidInventoryUpdatePacket.class, MEFluidInventoryUpdatePacket::new),
+        ME_INTERACTION(MEInteractionPacket.class, MEInteractionPacket::new),
 
-        PACKET_CONFIG_BUTTON(ConfigButtonPacket.class, ConfigButtonPacket::new),
+        CONFIG_BUTTON(ConfigButtonPacket.class, ConfigButtonPacket::new),
 
-        PACKET_PART_PLACEMENT(PartPlacementPacket.class, PartPlacementPacket::new),
+        PART_PLACEMENT(PartPlacementPacket.class, PartPlacementPacket::new),
 
-        PACKET_LIGHTNING(LightningPacket.class, LightningPacket::new),
+        LIGHTNING(LightningPacket.class, LightningPacket::new),
 
-        PACKET_MATTER_CANNON(MatterCannonPacket.class, MatterCannonPacket::new),
+        MATTER_CANNON(MatterCannonPacket.class, MatterCannonPacket::new),
 
-        PACKET_VALUE_CONFIG(ConfigValuePacket.class, ConfigValuePacket::new),
+        MOCK_EXPLOSION(MockExplosionPacket.class, MockExplosionPacket::new),
 
-        PACKET_ITEM_TRANSITION_EFFECT(ItemTransitionEffectPacket.class, ItemTransitionEffectPacket::new),
+        VALUE_CONFIG(ConfigValuePacket.class, ConfigValuePacket::new),
 
-        PACKET_BLOCK_TRANSITION_EFFECT(BlockTransitionEffectPacket.class, BlockTransitionEffectPacket::new),
+        ITEM_TRANSITION_EFFECT(ItemTransitionEffectPacket.class, ItemTransitionEffectPacket::new),
 
-        PACKET_PROGRESS_VALUE(ProgressBarPacket.class, ProgressBarPacket::new),
+        BLOCK_TRANSITION_EFFECT(BlockTransitionEffectPacket.class, BlockTransitionEffectPacket::new),
 
-        PACKET_CLICK(ClickPacket.class, ClickPacket::new),
+        GUI_DATA_SYNC(GuiDataSyncPacket.class, GuiDataSyncPacket::new),
 
-        PACKET_SWITCH_GUIS(SwitchGuisPacket.class, SwitchGuisPacket::new),
+        CLICK(ClickPacket.class, ClickPacket::new),
 
-        PACKET_SWAP_SLOTS(SwapSlotsPacket.class, SwapSlotsPacket::new),
+        SWITCH_GUIS(SwitchGuisPacket.class, SwitchGuisPacket::new),
 
-        PACKET_PATTERN_SLOT(PatternSlotPacket.class, PatternSlotPacket::new),
+        SWAP_SLOTS(SwapSlotsPacket.class, SwapSlotsPacket::new),
 
-        PACKET_RECIPE_JEI(JEIRecipePacket.class, JEIRecipePacket::new),
+        PATTERN_SLOT(PatternSlotPacket.class, PatternSlotPacket::new),
 
-        PACKET_TARGET_ITEM(TargetItemStackPacket.class, TargetItemStackPacket::new),
+        RECIPE_JEI(JEIRecipePacket.class, JEIRecipePacket::new),
 
-        PACKET_TARGET_FLUID(TargetFluidStackPacket.class, TargetFluidStackPacket::new),
+        CONFIRM_AUTO_CRAFT(ConfirmAutoCraftPacket.class, ConfirmAutoCraftPacket::new),
 
-        PACKET_CRAFTING_REQUEST(CraftRequestPacket.class, CraftRequestPacket::new),
+        ASSEMBLER_ANIMATION(AssemblerAnimationPacket.class, AssemblerAnimationPacket::new),
 
-        PACKET_ASSEMBLER_ANIMATION(AssemblerAnimationPacket.class, AssemblerAnimationPacket::new),
+        ME_INTERFACE_UPDATE(InterfaceTerminalPacket.class, InterfaceTerminalPacket::new),
 
-        PACKET_ME_INTERFACE_UPDATE(MEInterfaceUpdatePacket.class, MEInterfaceUpdatePacket::new),
+        PAINTED_ENTITY(PaintedEntityPacket.class, PaintedEntityPacket::new),
 
-        PACKET_PAINTED_ENTITY(PaintedEntityPacket.class, PaintedEntityPacket::new),
+        FLUID_TANK(FluidSlotPacket.class, FluidSlotPacket::new),
 
-        PACKET_FLUID_TANK(FluidSlotPacket.class, FluidSlotPacket::new),
+        NETWORK_STATUS(NetworkStatusPacket.class, NetworkStatusPacket::new),
+
+        CRAFT_CONFIRM_PLAN(CraftConfirmPlanPacket.class, CraftConfirmPlanPacket::new),
+
+        CRAFTING_STATUS(CraftingStatusPacket.class, CraftingStatusPacket::new),
 
         SPAWN_ENTITY(SpawnEntityPacket.class, SpawnEntityPacket::new);
 
@@ -116,7 +123,11 @@ public class BasePacketHandler {
         }
 
         public static PacketTypes getPacket(final int id) {
-            return (values())[id];
+            return values()[id];
+        }
+
+        public int getPacketId() {
+            return ordinal();
         }
 
         static PacketTypes getID(final Class<? extends BasePacket> c) {

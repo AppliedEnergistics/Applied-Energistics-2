@@ -32,8 +32,8 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.container.implementations.MEMonitorableContainer;
-import appeng.container.implementations.PatternTermContainer;
+import appeng.container.me.items.ItemTerminalContainer;
+import appeng.container.me.items.PatternTermContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
@@ -98,7 +98,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
             return PatternTermContainer.TYPE;
         }
-        return MEMonitorableContainer.TYPE;
+        return ItemTerminalContainer.TYPE;
     }
 
     @Override

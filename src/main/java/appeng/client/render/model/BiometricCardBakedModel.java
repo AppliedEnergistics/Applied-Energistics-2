@@ -99,15 +99,15 @@ class BiometricCardBakedModel implements IBakedModel, FabricBakedModel {
                 if (x == 0 || y == 0 || x == 7 || y == 5) {
                     isLit = false;
                 } else {
-                    isLit = (hash & (1 << x)) != 0 || (hash & (1 << y)) != 0;
+                    isLit = (hash & 1 << x) != 0 || (hash & 1 << y) != 0;
                 }
 
                 if (isLit) {
                     builder.setColorRGB(col.mediumVariant);
                 } else {
                     final float scale = 0.3f / 255.0f;
-                    builder.setColorRGB(((col.blackVariant >> 16) & 0xff) * scale,
-                            ((col.blackVariant >> 8) & 0xff) * scale, (col.blackVariant & 0xff) * scale);
+                    builder.setColorRGB((col.blackVariant >> 16 & 0xff) * scale,
+                            (col.blackVariant >> 8 & 0xff) * scale, (col.blackVariant & 0xff) * scale);
                 }
 
                 builder.addCube(4 + x, 6 + y, 7.5f, 4 + x + 1, 6 + y + 1, 8.5f);

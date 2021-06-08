@@ -18,42 +18,32 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.storage.DriveTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.DriveScreen
+ */
 public class DriveContainer extends AEBaseContainer {
 
-    public static ContainerType<DriveContainer> TYPE;
-
-    private static final ContainerHelper<DriveContainer, DriveTileEntity> helper = new ContainerHelper<>(
-            DriveContainer::new, DriveTileEntity.class);
-
-    public static DriveContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<DriveContainer> TYPE = ContainerTypeBuilder
+            .create(DriveContainer::new, DriveTileEntity.class)
+            .build("drive");
 
     public DriveContainer(int id, final PlayerInventory ip, final DriveTileEntity drive) {
-        super(TYPE, id, ip, drive, null);
+        super(TYPE, id, ip, drive);
 
-        for (int y = 0; y < 5; y++) {
-            for (int x = 0; x < 2; x++) {
-                this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
-                        drive.getInternalInventory(), x + y * 2, 71 + x * 18, 14 + y * 18, this.getPlayerInventory()));
-            }
+        for (int i = 0; i < 10; i++) {
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
+                    drive.getInternalInventory(), i), SlotSemantic.STORAGE_CELL);
         }
 
-        this.bindPlayerInventory(ip, 0, 199 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
 }

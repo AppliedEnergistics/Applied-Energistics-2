@@ -22,15 +22,18 @@ import net.minecraft.item.ItemStack;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
+import appeng.client.gui.Icon;
+
 public class OutputSlot extends AppEngSlot {
 
-    public OutputSlot(final FixedItemInv inv, final int invSlot, final int x, final int y, final int iconIndex) {
-        super(inv, invSlot, x, y);
-        this.setIIcon(iconIndex);
+    public OutputSlot(final FixedItemInv inv, final int invSlot, final Icon icon) {
+        super(inv, invSlot);
+        this.setIcon(icon);
     }
 
     @Override
     public boolean isItemValid(final ItemStack stack) {
         return false;
     }
+
 }

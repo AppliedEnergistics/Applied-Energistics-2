@@ -20,11 +20,10 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -38,30 +37,24 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
-import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.parts.misc.StorageBusPart;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.iterators.NullIterator;
 
+/**
+ * @see appeng.client.gui.implementations.StorageBusScreen
+ */
 public class StorageBusContainer extends UpgradeableContainer {
 
-    public static ContainerType<StorageBusContainer> TYPE;
-
-    private static final ContainerHelper<StorageBusContainer, StorageBusPart> helper = new ContainerHelper<>(
-            StorageBusContainer::new, StorageBusPart.class, SecurityPermissions.BUILD);
-
-    public static StorageBusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<StorageBusContainer> TYPE = ContainerTypeBuilder
+            .create(StorageBusContainer::new, StorageBusPart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .build("storagebus");
 
     private final StorageBusPart storageBus;
 
@@ -77,37 +70,20 @@ public class StorageBusContainer extends UpgradeableContainer {
     }
 
     @Override
-    protected int getHeight() {
-        return 251;
-    }
-
-    @Override
     protected void setupConfig() {
-        final int xo = 8;
-        final int yo = 23 + 6;
-
         final FixedItemInv config = this.getUpgradeable().getInventoryByName("config");
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
+                int invSlot = y * 9 + x;
                 if (y < 2) {
-                    this.addSlot(new FakeTypeOnlySlot(config, y * 9 + x, xo + x * 18, yo + y * 18));
+                    this.addSlot(new FakeTypeOnlySlot(config, invSlot), SlotSemantic.CONFIG);
                 } else {
-                    this.addSlot(new OptionalTypeOnlyFakeSlot(config, this, y * 9 + x, xo, yo, x, y, y - 2));
+                    this.addSlot(new OptionalTypeOnlyFakeSlot(config, this, invSlot, y - 2), SlotSemantic.CONFIG);
                 }
             }
         }
 
-        final FixedItemInv upgrades = this.getUpgradeable().getInventoryByName("upgrades");
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 2, 187,
-                8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 3, 187,
-                8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 4, 187,
-                8 + 18 * 4, this.getPlayerInventory())).setNotDraggable());
+        this.setupUpgrades();
     }
 
     @Override
@@ -160,7 +136,7 @@ public class StorageBusContainer extends UpgradeableContainer {
         }
 
         for (int x = 0; x < inv.getSlotCount(); x++) {
-            if (i.hasNext() && this.isSlotEnabled((x / 9) - 2)) {
+            if (i.hasNext() && this.isSlotEnabled(x / 9 - 2)) {
                 // TODO: check if ok
                 final ItemStack g = i.next().asItemStackRepresentation();
                 ItemHandlerUtil.setStackInSlot(inv, x, g);

@@ -45,7 +45,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.MEPortableCellContainer;
+import appeng.container.me.items.MEPortableCellContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.items.contents.CellConfig;

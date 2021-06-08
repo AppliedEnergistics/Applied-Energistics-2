@@ -18,44 +18,36 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.parts.IPart;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.IPriorityHost;
 
+/**
+ * @see appeng.client.gui.implementations.PriorityScreen
+ */
 public class PriorityContainer extends AEBaseContainer {
 
-    public static ContainerType<PriorityContainer> TYPE;
-
-    private static final ContainerHelper<PriorityContainer, IPriorityHost> helper = new ContainerHelper<>(
-            PriorityContainer::new, IPriorityHost.class, SecurityPermissions.BUILD);
-
-    public static PriorityContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf, (host, container, buffer) -> {
-            container.priorityValue = buffer.readVarInt();
-        });
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator, (host, buffer) -> buffer.writeVarInt(host.getPriority()));
-    }
+    public static final ContainerType<PriorityContainer> TYPE = ContainerTypeBuilder
+            .create(PriorityContainer::new, IPriorityHost.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .withInitialData((host, buffer) -> {
+                buffer.writeVarInt(host.getPriority());
+            }, (host, container, buffer) -> {
+                container.priorityValue = buffer.readVarInt();
+            })
+            .build("priority");
 
     private final IPriorityHost priHost;
 
     private int priorityValue;
 
     public PriorityContainer(int id, final PlayerInventory ip, final IPriorityHost te) {
-        super(TYPE, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
-                (IPart) (te instanceof IPart ? te : null));
+        super(TYPE, id, ip, te);
         this.priHost = te;
         this.priorityValue = te.getPriority();
     }

@@ -20,6 +20,7 @@ package appeng.client.render.overlay;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -61,7 +62,7 @@ public class OverlayManager {
         matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (OverlayRenderer handler : overlayHandlers.entrySet().stream()
-                .filter(e -> e.getKey().getWorld() == minecraft.world).map(e -> e.getValue())
+                .filter(e -> e.getKey().getWorld() == minecraft.world).map(Entry::getValue)
                 .collect(Collectors.toList())) {
             handler.render(matrixStack, buffer);
         }

@@ -183,12 +183,12 @@ public class GridNode implements IGridNode, IPathItem {
         final EnumSet<GridFlags> set = this.gridProxy.getFlags();
 
         this.compressedData = set.contains(GridFlags.CANNOT_CARRY) ? 0
-                : (set.contains(GridFlags.DENSE_CAPACITY) ? 2 : 1);
+                : set.contains(GridFlags.DENSE_CAPACITY) ? 2 : 1;
 
-        this.compressedData |= (this.gridProxy.getGridColor().ordinal() << 3);
+        this.compressedData |= this.gridProxy.getGridColor().ordinal() << 3;
 
         for (final Direction dir : this.gridProxy.getConnectableSides()) {
-            this.compressedData |= (1 << (dir.ordinal() + 8));
+            this.compressedData |= 1 << dir.ordinal() + 8;
         }
 
         this.findConnections();
@@ -312,7 +312,7 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public boolean meetsChannelRequirements() {
-        return (!this.gridProxy.getFlags().contains(GridFlags.REQUIRE_CHANNEL) || this.getUsedChannels() > 0);
+        return !this.gridProxy.getFlags().contains(GridFlags.REQUIRE_CHANNEL) || this.getUsedChannels() > 0;
     }
 
     @Override
@@ -448,11 +448,11 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     private boolean isValidDirection(final AEPartLocation dir) {
-        return (this.compressedData & (1 << (8 + dir.ordinal()))) > 0;
+        return (this.compressedData & 1 << 8 + dir.ordinal()) > 0;
     }
 
     private AEColor getColor() {
-        return AEColor.values()[(this.compressedData >> 3) & 0x1F];
+        return AEColor.values()[this.compressedData >> 3 & 0x1F];
     }
 
     private void visitorConnection(final Object tracker, final IGridVisitor g, final Deque<GridNode> nextRun,
@@ -612,7 +612,7 @@ public class GridNode implements IGridNode, IPathItem {
             final boolean preferredA = o1.getOtherSide(this.gn).hasFlag(GridFlags.PREFERRED);
             final boolean preferredB = o2.getOtherSide(this.gn).hasFlag(GridFlags.PREFERRED);
 
-            return preferredA == preferredB ? 0 : (preferredA ? -1 : 1);
+            return preferredA == preferredB ? 0 : preferredA ? -1 : 1;
         }
     }
 }

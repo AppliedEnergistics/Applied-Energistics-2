@@ -58,6 +58,7 @@ import appeng.parts.misc.StorageBusPart;
 import appeng.parts.misc.ToggleBusPart;
 import appeng.parts.networking.CoveredCablePart;
 import appeng.parts.networking.CoveredDenseCablePart;
+import appeng.parts.networking.EnergyAcceptorPart;
 import appeng.parts.networking.GlassCablePart;
 import appeng.parts.networking.QuartzFiberPart;
 import appeng.parts.networking.SmartCablePart;
@@ -117,6 +118,7 @@ public final class ApiParts implements IParts {
     private final IItemDefinition fluidExportBus;
     private final IItemDefinition fluidTerminal;
     private final IItemDefinition fluidStorageBus;
+    private final IItemDefinition energyAcceptor;
 
     private FeatureFactory registry;
     private PartModels partModels;
@@ -176,6 +178,8 @@ public final class ApiParts implements IParts {
         this.interfaceTerminal = createPart("interface_terminal", InterfaceTerminalPart.class,
                 InterfaceTerminalPart::new);
         this.fluidTerminal = createPart("fluid_terminal", FluidTerminalPart.class, FluidTerminalPart::new);
+
+        this.energyAcceptor = createPart("cable_energy_acceptor", EnergyAcceptorPart.class, EnergyAcceptorPart::new);
 
         this.registry = null;
         this.partModels = null;
@@ -407,5 +411,10 @@ public final class ApiParts implements IParts {
     @Override
     public IItemDefinition fluidFormationnPlane() {
         return this.fluidFormationPlane;
+    }
+
+    @Override
+    public IItemDefinition energyAcceptor() {
+        return this.energyAcceptor;
     }
 }

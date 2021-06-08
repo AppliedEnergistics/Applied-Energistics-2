@@ -1,0 +1,15 @@
+{
+  "$schema": "../schema.json",
+  "includes": ["item_terminal.json"],
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.appliedenergistics2.WirelessTerminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  }
+}

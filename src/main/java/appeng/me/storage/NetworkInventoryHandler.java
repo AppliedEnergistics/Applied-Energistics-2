@@ -59,13 +59,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
     }
 
     public void addNewStorage(final IMEInventoryHandler<T> h) {
-        final int priority = h.getPriority();
-        List<IMEInventoryHandler<T>> list = this.priorityInventory.get(priority);
-        if (list == null) {
-            this.priorityInventory.put(priority, list = new ArrayList<>());
-        }
-
-        list.add(h);
+        this.priorityInventory.computeIfAbsent(h.getPriority(), k -> new ArrayList<>()).add(h);
     }
 
     @Override
@@ -126,22 +120,20 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
             if (!this.security.hasPermission(src.player().get(), permission)) {
                 return true;
             }
-        } else if (src.machine().isPresent()) {
-            if (this.security.isAvailable()) {
-                final IGridNode n = src.machine().get().getActionableNode();
-                if (n == null) {
+        } else if (src.machine().isPresent() && this.security.isAvailable()) {
+            final IGridNode n = src.machine().get().getActionableNode();
+            if (n == null) {
+                return true;
+            }
+
+            final IGrid gn = n.getGrid();
+            if (gn != this.security.getGrid()) {
+
+                final ISecurityGrid sg = gn.getCache(ISecurityGrid.class);
+                final int playerID = sg.getOwner();
+
+                if (!this.security.hasPermission(playerID, permission)) {
                     return true;
-                }
-
-                final IGrid gn = n.getGrid();
-                if (gn != this.security.getGrid()) {
-
-                    final ISecurityGrid sg = gn.getCache(ISecurityGrid.class);
-                    final int playerID = sg.getOwner();
-
-                    if (!this.security.hasPermission(playerID, permission)) {
-                        return true;
-                    }
                 }
             }
         }
@@ -178,7 +170,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
             return null;
         }
 
-        final Iterator<List<IMEInventoryHandler<T>>> i = this.priorityInventory.descendingMap().values().iterator();// priorityInventory.asMap().descendingMap().entrySet().iterator();
+        final Iterator<List<IMEInventoryHandler<T>>> i = this.priorityInventory.descendingMap().values().iterator();
 
         final T output = request.copy();
         request = request.copy();
@@ -228,14 +220,10 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
         final Deque cDepth = this.getDepth(type);
         if (cDepth.isEmpty()) {
             currentPass++;
-            this.myPass = currentPass;
-        } else {
-            if (currentPass == this.myPass) {
-                return true;
-            } else {
-                this.myPass = currentPass;
-            }
+        } else if (currentPass == this.myPass) {
+            return true;
         }
+        this.myPass = currentPass;
 
         cDepth.push(this);
         return false;

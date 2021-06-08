@@ -48,6 +48,8 @@ import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.sync.packets.ICustomEntity;
 import appeng.core.sync.packets.SpawnEntityPacket;
+import appeng.core.AppEng;
+import appeng.core.sync.packets.MockExplosionPacket;
 
 public final class TinyTNTPrimedEntity extends TNTEntity implements ICustomEntity {
 
@@ -75,7 +77,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements ICustomEntit
 
     @Nullable
     @Override
-    public LivingEntity getTntPlacedBy() {
+    public LivingEntity getIgniter() {
         return this.placedBy;
     }
 
@@ -157,22 +159,21 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements ICustomEntit
 
                         if (block != null && !state.isAir()) {
                             float strength = (float) (2.3f
-                                    - (((x + 0.5f) - this.getPosX()) * ((x + 0.5f) - this.getPosX())
-                                            + ((y + 0.5f) - this.getPosY()) * ((y + 0.5f) - this.getPosY())
-                                            + ((z + 0.5f) - this.getPosZ()) * ((z + 0.5f) - this.getPosZ())));
+                                    - ((x + 0.5f - this.getPosX()) * (x + 0.5f - this.getPosX())
+                                            + (y + 0.5f - this.getPosY()) * (y + 0.5f - this.getPosY())
+                                            + (z + 0.5f - this.getPosZ()) * (z + 0.5f - this.getPosZ())));
 
                             final float resistance = block.getExplosionResistance();
                             strength -= (resistance + 0.3F) * 0.11f;
 
-                            if (strength > 0.01) {
-                                if (state.getMaterial() != Material.AIR) {
-                                    if (block.canDropFromExplosion(ex)) {
-                                        block.spawnDrops(state, this.world, point);
-                                    }
-
-                                    this.world.setBlockState(point, Blocks.AIR.getDefaultState(), 3);
-                                    block.onExplosionDestroy(this.world, point, ex);
+                            if (strength > 0.01 && state.getMaterial() != Material.AIR) {
+                                if (block.canDropFromExplosion(ex)) {
+                                    block.spawnDrops(state, this.world, point);
                                 }
+
+                                this.world.setBlockState(point, Blocks.AIR.getDefaultState(), 3);
+                                    block.onExplosionDestroy(this.world, point, ex);
+
                             }
                         }
                     }

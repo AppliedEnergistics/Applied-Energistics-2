@@ -18,6 +18,12 @@
 
 package appeng.fluids.client.gui.widgets;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.fabricmc.api.EnvType;
@@ -28,55 +34,57 @@ import net.minecraft.util.text.StringTextComponent;
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.util.AEColor;
+import appeng.client.gui.IIngredientSupplier;
+import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ITooltip;
+import appeng.fluids.client.gui.FluidBlitter;
 import appeng.fluids.util.IAEFluidTank;
 
 @Environment(EnvType.CLIENT)
-public class FluidTankWidget extends Widget implements ITooltip {
+public class FluidTankWidget extends Widget implements ITooltip, IIngredientSupplier {
     private final IAEFluidTank tank;
     private final int slot;
 
-    public FluidTankWidget(IAEFluidTank tank, int slot, int x, int y, int w, int h) {
-        super(x, y, w, h, StringTextComponent.EMPTY);
+    public FluidTankWidget(IAEFluidTank tank, int slot) {
+        super(0, 0, 0, 0, StringTextComponent.EMPTY);
         this.tank = tank;
         this.slot = slot;
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            fill(matrixStack, this.x, this.y, this.x + this.width, this.y + this.height,
-                    AEColor.GRAY.blackVariant | 0xFF000000);
-
             final IAEFluidStack fluidStack = this.tank.getFluidInSlot(this.slot);
             if (fluidStack != null && fluidStack.getStackSize() > 0) {
+                Blitter blitter = FluidBlitter.create(fluidStack.getFluidStack());
 
-                FluidVolume volume = fluidStack.getFluidStack();
-                FluidAmount maxAmount = this.tank.getMaxAmount_F(this.slot);
-                double fillRatio = volume.amount().div(maxAmount).asInexactDouble();
+                final int filledHeight = (int) (this.height
+                        * ((float) fluidStack.getStackSize() / this.tank.getTankCapacity(this.slot)));
 
-                final int scaledHeight = (int) (this.height * fillRatio);
+                // We assume the sprite has equal width/height, and to maintain that 1:1 aspect ratio,
+                // We draw rectangles of size width by width to fill our entire height
+                final int stepHeight = width;
 
-                // Render the tank's content unstretched in patches of 16x16 squares,
-                // with a partial square for the remainder
-                int iconHeightRemainder = scaledHeight % 16;
-                int top = this.y + this.height - iconHeightRemainder;
-                if (iconHeightRemainder > 0) {
-                    int x1 = this.x;
-                    int y1 = top;
-                    int x2 = x1 + 16;
-                    int y2 = y1 + iconHeightRemainder;
-                    volume.renderGuiRect(x1, y1, x2, y2);
+                // We have to draw in multiples of the step height, but it's possible we need
+                // to draw a "partial". This draws "bottom up"
+                int iconHeightRemainder = filledHeight % stepHeight;
+                for (int i = 0; i < filledHeight / stepHeight; i++) {
+                    blitter.dest(x, y + height - iconHeightRemainder - (i + 1) * stepHeight, stepHeight, stepHeight)
+                            .blit(matrixStack, getBlitOffset());
                 }
-                for (int i = 0; i < scaledHeight / 16; i++) {
-                    int x1 = this.x;
-                    int y1 = top - (i + 1) * 16;
-                    int x2 = x1 + 16;
-                    int y2 = y1 + 16;
-                    volume.renderGuiRect(x1, y1, x2, y2);
+                // Draw the remainder last because it modifies the blitter
+                if (iconHeightRemainder > 0) {
+                    // Compute how much of the src sprite's height will be visible for this last piece
+                    int srcHeightRemainder = (int) (blitter.getSrcHeight()
+                            * (iconHeightRemainder / (float) stepHeight));
+                    blitter.src(blitter.getSrcX(), blitter.getSrcY(), blitter.getSrcWidth(), srcHeightRemainder)
+                            .dest(this.x, this.y + this.height - iconHeightRemainder, width, iconHeightRemainder)
+                            .blit(matrixStack, getBlitOffset());
                 }
             }
 
@@ -84,15 +92,14 @@ public class FluidTankWidget extends Widget implements ITooltip {
     }
 
     @Override
-    public ITextComponent getTooltipMessage() {
+    public List<ITextComponent> getTooltipMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
-            ITextComponent desc = fluid.getFluidStack().getName();
-            String amountToText = fluid.getStackSize() + "mB";
-
-            return desc.copyRaw().appendString("\n").appendString(amountToText);
+            return Arrays.asList(
+                    fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()),
+                    new StringTextComponent(fluid.getStackSize() + "mB"));
         }
-        return StringTextComponent.EMPTY;
+        return Collections.emptyList();
     }
 
     @Override
@@ -118,6 +125,12 @@ public class FluidTankWidget extends Widget implements ITooltip {
     @Override
     public boolean isTooltipAreaVisible() {
         return true;
+    }
+
+    @Nullable
+    @Override
+    public FluidStack getFluidIngredient() {
+        return tank.getFluidInTank(this.slot).copy();
     }
 
 }

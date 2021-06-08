@@ -170,7 +170,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             }
 
             IFormattableTextComponent msg = new StringTextComponent(" #" + (i + 1) + " ");
-            msg.append(getClickablePosition(world, settings, pos)).append(restOfLine);
+            msg.appendSibling(getClickablePosition(world, settings, pos)).appendSibling(restOfLine);
 
             // Add a tooltip
             String biomeId = world.func_242406_i(pos).map(bk -> bk.getLocation().toString()).orElse("unknown");

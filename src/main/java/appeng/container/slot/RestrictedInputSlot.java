@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -47,6 +46,7 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.client.gui.Icon;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
@@ -70,16 +70,13 @@ public class RestrictedInputSlot extends AppEngSlot {
             new ResourceLocation("c:nickel_ingots"), new ResourceLocation("c:aluminium_ingots"));
 
     private final PlacableItemType which;
-    private final PlayerInventory p;
     private boolean allowEdit = true;
     private int stackLimit = -1;
 
-    public RestrictedInputSlot(final PlacableItemType valid, final FixedItemInv inv, final int invSlot, final int x,
-            final int y, final PlayerInventory p) {
-        super(inv, invSlot, x, y);
+    public RestrictedInputSlot(final PlacableItemType valid, final FixedItemInv inv, final int invSlot) {
+        super(inv, invSlot);
         this.which = valid;
-        this.setIIcon(valid.IIcon);
-        this.p = p;
+        this.setIcon(valid.icon);
     }
 
     @Override
@@ -90,16 +87,13 @@ public class RestrictedInputSlot extends AppEngSlot {
         return super.getSlotStackLimit();
     }
 
-    public boolean isValid(final ItemStack is, final World theWorld) {
-        if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
-            return Api.instance().crafting().decodePattern(is, theWorld) != null;
-        }
-        return true;
-    }
-
     public Slot setStackLimit(final int i) {
         this.stackLimit = i;
         return this;
+    }
+
+    private World getWorld() {
+        return getContainer().getPlayerInventory().player.getEntityWorld();
     }
 
     @Override
@@ -131,7 +125,7 @@ public class RestrictedInputSlot extends AppEngSlot {
 
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
-                final ICraftingPatternDetails de = crafting.decodePattern(stack, this.p.player.world);
+                final ICraftingPatternDetails de = crafting.decodePattern(stack, getWorld());
                 if (de != null) {
                     return de.isCraftable();
                 }
@@ -151,7 +145,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                     return true;
                 }
 
-                return InscriberRecipes.isValidOptionalIngredient(p.player.world, stack);
+                return InscriberRecipes.isValidOptionalIngredient(getWorld(), stack);
 
             case INSCRIBER_INPUT:
                 return true;/*
@@ -166,7 +160,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case VIEW_CELL:
                 return items.viewCell().isSameAs(stack);
             case ORE:
-                return GrinderRecipes.isValidIngredient(p.player.world, stack);
+                return GrinderRecipes.isValidIngredient(getWorld(), stack);
             case FUEL:
                 return FuelRegistry.INSTANCE.get(stack.getItem()) != null;
             case POWERED_TOOL:
@@ -217,8 +211,9 @@ public class RestrictedInputSlot extends AppEngSlot {
 
     @Override
     public ItemStack getDisplayStack() {
-        if (isRemote() && (this.which == PlacableItemType.ENCODED_PATTERN)) {
-            final ItemStack is = super.getStack();
+        // If the slot only takes encoded patterns, show the encoded item instead
+        if (isRemote() && this.which == PlacableItemType.ENCODED_PATTERN) {
+            final ItemStack is = super.getDisplayStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
                 final ItemStack out = iep.getOutput(is);
@@ -227,7 +222,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 }
             }
         }
-        return super.getStack();
+        return super.getDisplayStack();
     }
 
     public static boolean isMetalIngot(final ItemStack i) {
@@ -255,26 +250,45 @@ public class RestrictedInputSlot extends AppEngSlot {
         this.allowEdit = allowEdit;
     }
 
+    @Override
+    protected boolean getCurrentValidationState() {
+        if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
+            // Allow either an empty slot, or a valid encoded pattern
+            ItemStack stack = getStack();
+            return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, getWorld()) != null;
+        }
+        return true;
+    }
+
     public enum PlacableItemType {
-        STORAGE_CELLS(15), ORE(16 + 15), STORAGE_COMPONENT(3 * 16 + 15),
+        STORAGE_CELLS(Icon.BACKGROUND_STORAGE_CELL),
+        ORE(Icon.BACKGROUND_ORE),
+        STORAGE_COMPONENT(Icon.BACKGROUND_STORAGE_COMPONENT),
+        ENCODABLE_ITEM(Icon.BACKGROUND_WIRELESS_TERM),
+        TRASH(Icon.BACKGROUND_TRASH),
+        VALID_ENCODED_PATTERN_W_OUTPUT(Icon.BACKGROUND_ENCODED_PATTERN),
+        ENCODED_PATTERN_W_OUTPUT(Icon.BACKGROUND_ENCODED_PATTERN),
+        ENCODED_CRAFTING_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
+        ENCODED_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
+        PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
+        BLANK_PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
+        POWERED_TOOL(Icon.BACKGROUND_CHARGABLE),
+        RANGE_BOOSTER(Icon.BACKGROUND_WIRELESS_BOOSTER),
+        QE_SINGULARITY(Icon.BACKGROUND_SINGULARITY),
+        SPATIAL_STORAGE_CELLS(Icon.BACKGROUND_SPATIAL_CELL),
+        FUEL(Icon.BACKGROUND_FUEL),
+        UPGRADES(Icon.BACKGROUND_UPGRADE),
+        WORKBENCH_CELL(Icon.BACKGROUND_STORAGE_CELL),
+        BIOMETRIC_CARD(Icon.BACKGROUND_BIOMETRIC_CARD),
+        VIEW_CELL(Icon.BACKGROUND_VIEW_CELL),
+        INSCRIBER_PLATE(Icon.BACKGROUND_PLATE),
+        INSCRIBER_INPUT(Icon.BACKGROUND_INGOT),
+        METAL_INGOTS(Icon.BACKGROUND_INGOT);
 
-        ENCODABLE_ITEM(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
-        ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
+        public final Icon icon;
 
-        ENCODED_CRAFTING_PATTERN(7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), PATTERN(8 * 16 + 15),
-        BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
-
-        RANGE_BOOSTER(6 * 16 + 15), QE_SINGULARITY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15),
-
-        FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15), WORKBENCH_CELL(15), BIOMETRIC_CARD(14 * 16 + 15),
-        VIEW_CELL(4 * 16 + 14),
-
-        INSCRIBER_PLATE(2 * 16 + 14), INSCRIBER_INPUT(3 * 16 + 14), METAL_INGOTS(3 * 16 + 14);
-
-        public final int IIcon;
-
-        PlacableItemType(final int o) {
-            this.IIcon = o;
+        PlacableItemType(final Icon o) {
+            this.icon = o;
         }
     }
 }

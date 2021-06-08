@@ -25,8 +25,8 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class DisabledSlot extends AppEngSlot {
 
-    public DisabledSlot(final FixedItemInv par1iInventory, final int invSlot, final int x, final int y) {
-        super(par1iInventory, invSlot, x, y);
+    public DisabledSlot(final FixedItemInv inventory, final int invSlot) {
+        super(inventory, invSlot);
     }
 
     @Override

@@ -180,7 +180,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
         }
 
         for (int num = 0; num < this.inv.getSlotCount(); num++) {
-            if ((slot & (1 << num)) > 0) {
+            if ((slot & 1 << num) > 0) {
                 this.inv.forceSetInvStack(num, AEItemStack.fromPacket(data).createItemStack());
             } else {
                 this.inv.forceSetInvStack(num, ItemStack.EMPTY);
@@ -198,13 +198,13 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
 
         for (int num = 0; num < this.inv.getSlotCount(); num++) {
             if (!this.inv.getInvStack(num).isEmpty()) {
-                slot |= (1 << num);
+                slot |= 1 << num;
             }
         }
 
         data.writeByte(slot);
         for (int num = 0; num < this.inv.getSlotCount(); num++) {
-            if ((slot & (1 << num)) > 0) {
+            if ((slot & 1 << num) > 0) {
                 final AEItemStack st = AEItemStack.fromItemStack(this.inv.getInvStack(num));
                 st.writeToPacket(data);
             }

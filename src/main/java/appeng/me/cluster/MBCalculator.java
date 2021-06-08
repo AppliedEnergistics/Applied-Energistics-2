@@ -26,7 +26,6 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
-import appeng.util.Platform;
 
 public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TCluster extends IAECluster> {
 
@@ -90,7 +89,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         IAECluster currentCluster = target.getCluster();
         if (currentCluster != null && currentCluster.isDestroyed()) {
             return; // If we're still part of a cluster that is in the process of being destroyed,
-                    // don't recalc.
+            // don't recalc.
         }
 
         try {
@@ -117,34 +116,32 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
                 max.setZ(max.getZ() + 1);
             }
 
-            if (this.checkMultiblockScale(min, max)) {
-                if (this.verifyUnownedRegion(world, min, max)) {
-                    try {
-                        if (!this.verifyInternalStructure(world, min, max)) {
-                            this.disconnect();
-                            return;
-                        }
-                    } catch (final Exception err) {
+            if (this.checkMultiblockScale(min, max) && this.verifyUnownedRegion(world, min, max)) {
+                try {
+                    if (!this.verifyInternalStructure(world, min, max)) {
                         this.disconnect();
                         return;
                     }
-
-                    boolean updateGrid = false;
-                    TCluster cluster = this.target.getCluster();
-                    if (cluster == null || !cluster.getBoundsMin().equals(min) || !cluster.getBoundsMax().equals(max)) {
-                        cluster = this.createCluster(world, min, max);
-                        setModificationInProgress(cluster);
-                        // NOTE: The following will break existing clusters within the bounds
-                        this.updateTiles(cluster, world, min, max);
-
-                        updateGrid = true;
-                    } else {
-                        setModificationInProgress(cluster);
-                    }
-
-                    cluster.updateStatus(updateGrid);
+                } catch (final Exception err) {
+                    this.disconnect();
                     return;
                 }
+
+                boolean updateGrid = false;
+                TCluster cluster = this.target.getCluster();
+                if (cluster == null || !cluster.getBoundsMin().equals(min) || !cluster.getBoundsMax().equals(max)) {
+                    cluster = this.createCluster(world, min, max);
+                    setModificationInProgress(cluster);
+                    // NOTE: The following will break existing clusters within the bounds
+                    this.updateTiles(cluster, world, min, max);
+
+                    updateGrid = true;
+                } else {
+                    setModificationInProgress(cluster);
+                }
+
+                cluster.updateStatus(updateGrid);
+                return;
             }
         } catch (final Throwable err) {
             AELog.debug(err);
@@ -159,8 +156,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        return (x >= boundsMin.getX() && y >= boundsMin.getY() && z >= boundsMin.getZ() && x <= boundsMax.getX()
-                && y <= boundsMax.getY() && z <= boundsMax.getZ());
+        return x >= boundsMin.getX() && y >= boundsMin.getY() && z >= boundsMin.getZ() && x <= boundsMax.getX()
+                && y <= boundsMax.getY() && z <= boundsMax.getZ();
     }
 
     private boolean isValidTileAt(final World w, final int x, final int y, final int z) {
@@ -172,7 +169,6 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      *
      * @param min min world coord
      * @param max max world coord
-     *
      * @return true if structure has correct dimensions or size
      */
     public abstract boolean checkMultiblockScale(BlockPos min, BlockPos max);
@@ -194,7 +190,6 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      * @param w   world
      * @param min min world coord
      * @param max max world coord
-     *
      * @return created cluster
      */
     public abstract TCluster createCluster(World w, BlockPos min, BlockPos max);
@@ -222,7 +217,6 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      * check if the tile entities are correct for the structure.
      *
      * @param te to be checked tile entity
-     *
      * @return true if tile entity is valid for structure
      */
     public abstract boolean isValidTile(TileEntity te);

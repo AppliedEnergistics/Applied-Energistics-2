@@ -18,17 +18,16 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.definitions.IItemDefinition;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
@@ -38,25 +37,13 @@ import appeng.tile.misc.InscriberRecipes;
 import appeng.tile.misc.InscriberTileEntity;
 
 /**
- * @author AlgorithmX2
- * @author thatsIch
- * @version rv2
- * @since rv0
+ * @see appeng.client.gui.implementations.InscriberScreen
  */
 public class InscriberContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static ContainerType<InscriberContainer> TYPE;
-
-    private static final ContainerHelper<InscriberContainer, InscriberTileEntity> helper = new ContainerHelper<>(
-            InscriberContainer::new, InscriberTileEntity.class);
-
-    public static InscriberContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<InscriberContainer> TYPE = ContainerTypeBuilder
+            .create(InscriberContainer::new, InscriberTileEntity.class)
+            .build("inscriber");
 
     private final InscriberTileEntity ti;
 
@@ -76,31 +63,22 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
 
         FixedItemInv inv = te.getInternalInventory();
 
-        RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0,
-                45, 16, this.getPlayerInventory());
+        RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0);
         top.setStackLimit(1);
-        this.top = this.addSlot(top);
+        this.top = this.addSlot(top, SlotSemantic.INSCRIBER_PLATE_TOP);
         RestrictedInputSlot bottom = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv,
-                1, 45, 62, this.getPlayerInventory());
+                1);
         bottom.setStackLimit(1);
-        this.bottom = this.addSlot(bottom);
+        this.bottom = this.addSlot(bottom, SlotSemantic.INSCRIBER_PLATE_BOTTOM);
         RestrictedInputSlot middle = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_INPUT, inv,
-                2, 63, 39, this.getPlayerInventory());
+                2);
         middle.setStackLimit(1);
-        this.middle = this.addSlot(middle);
+        this.middle = this.addSlot(middle, SlotSemantic.MACHINE_INPUT);
 
-        this.addSlot(new OutputSlot(inv, 3, 113, 40, -1));
+        this.addSlot(new OutputSlot(inv, 3, null), SlotSemantic.MACHINE_OUTPUT);
     }
 
     @Override
-    protected int getHeight() {
-        return 176;
-    }
-
-    @Override
-    /**
-     * Overridden super.setupConfig to prevent setting up the fake slots
-     */
     protected void setupConfig() {
         this.setupUpgrades();
     }
@@ -137,7 +115,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
             }
 
             return InscriberRecipes.findRecipe(ti.getWorld(), is, top, bot, false) != null;
-        } else if ((s == this.top && !bot.isEmpty()) || (s == this.bottom && !top.isEmpty())) {
+        } else if (s == this.top && !bot.isEmpty() || s == this.bottom && !top.isEmpty()) {
             ItemStack otherSlot;
             if (s == this.top) {
                 otherSlot = this.bottom.getStack();

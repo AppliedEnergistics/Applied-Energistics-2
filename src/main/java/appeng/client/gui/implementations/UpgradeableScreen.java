@@ -18,146 +18,80 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
-import me.shedaniel.math.Rectangle;
-
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.parts.IPart;
+import appeng.api.parts.PartItemStack;
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.widgets.ServerSettingToggleButton;
-import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.ToolboxPanel;
+import appeng.client.gui.widgets.UpgradesPanel;
+import appeng.container.SlotSemantic;
 import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.localization.GuiText;
-import appeng.parts.automation.ExportBusPart;
-import appeng.parts.automation.ImportBusPart;
 
+/**
+ * This screen adds the ability for {@link IUpgradeableHost} screens to show the upgrade inventory and the player's
+ * toolbox to more easily install/remove upgrades.
+ */
 public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
 
-    protected final UpgradeableContainer cvb;
-    protected final IUpgradeableHost bc;
+    public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
+        super(container, playerInventory, title, style);
 
-    protected SettingToggleButton<RedstoneMode> redstoneMode;
-    protected SettingToggleButton<FuzzyMode> fuzzyMode;
-    protected SettingToggleButton<YesNo> craftMode;
-    protected SettingToggleButton<SchedulingMode> schedulingMode;
-
-    public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.cvb = container;
-
-        this.bc = (IUpgradeableHost) container.getTarget();
-        this.xSize = this.hasToolbox() ? 246 : 211;
-        this.ySize = 184;
-    }
-
-    protected boolean hasToolbox() {
-        return (this.container).hasToolbox();
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        this.addButtons();
-    }
-
-    protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8,
-                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
-        addButton(this.redstoneMode);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE,
-                FuzzyMode.IGNORE_ALL);
-        addButton(this.fuzzyMode);
-        this.craftMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY,
-                YesNo.NO);
-        addButton(this.craftMode);
-        this.schedulingMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
-                Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
-        addButton(this.schedulingMode);
-    }
-
-    @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(this.getName().text()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
-
-        if (this.redstoneMode != null) {
-            this.redstoneMode.set(this.cvb.getRedStoneMode());
-        }
-
-        if (this.fuzzyMode != null) {
-            this.fuzzyMode.set(this.cvb.getFuzzyMode());
-        }
-
-        if (this.craftMode != null) {
-            this.craftMode.set(this.cvb.getCraftingMode());
-        }
-
-        if (this.schedulingMode != null) {
-            this.schedulingMode.set(this.cvb.getSchedulingMode());
+        this.widgets.add("upgrades", new UpgradesPanel(
+                container.getSlots(SlotSemantic.UPGRADE),
+                this::getCompatibleUpgrades));
+        if (container.hasToolbox()) {
+            this.widgets.add("toolbox", new ToolboxPanel(style, container.getToolboxName()));
         }
     }
 
-    @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        this.handleButtonVisibility();
+    /**
+     * Gets the tooltip text that is shown for empty slots of the upgrade panel to indicate which upgrades are
+     * compatible.
+     */
+    protected List<ITextComponent> getCompatibleUpgrades() {
+        IUpgradeableHost host = container.getUpgradeable();
 
-        this.bindTexture(this.getBackground());
-        blit(matrices, offsetX, offsetY, 0, 0, 211 - 34, this.ySize);
-        if (this.drawUpgrades()) {
-            blit(matrices, offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18);
+        Item item;
+        if (host instanceof IPart) {
+            item = ((IPart) host).getItemStack(PartItemStack.NETWORK).getItem();
+        } else if (host instanceof TileEntity) {
+            TileEntity te = (TileEntity) host;
+            item = te.getBlockState().getBlock().asItem();
+        } else {
+            return Collections.emptyList();
         }
-        if (this.hasToolbox()) {
-            blit(matrices, offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90,
-                    68, 68);
-        }
+
+        return getCompatibleUpgrades(item);
     }
 
-    protected void handleButtonVisibility() {
-        if (this.redstoneMode != null) {
-            this.redstoneMode.setVisibility(this.bc.getInstalledUpgrades(Upgrades.REDSTONE) > 0);
-        }
-        if (this.fuzzyMode != null) {
-            this.fuzzyMode.setVisibility(this.bc.getInstalledUpgrades(Upgrades.FUZZY) > 0);
-        }
-        if (this.craftMode != null) {
-            this.craftMode.setVisibility(this.bc.getInstalledUpgrades(Upgrades.CRAFTING) > 0);
-        }
-        if (this.schedulingMode != null) {
-            this.schedulingMode.setVisibility(
-                    this.bc.getInstalledUpgrades(Upgrades.CAPACITY) > 0 && this.bc instanceof ExportBusPart);
-        }
-    }
+    protected List<ITextComponent> getCompatibleUpgrades(Item machineItem) {
+        List<ITextComponent> list = new ArrayList<>();
+        list.add(GuiText.CompatibleUpgrades.text());
 
-    protected String getBackground() {
-        return "guis/bus.png";
-    }
+        for (Upgrades upgrade : Upgrades.values()) {
+            for (Upgrades.Supported supported : upgrade.getSupported()) {
+                if (supported.isSupported(machineItem)) {
+                    list.add(GuiText.CompatibleUpgrade.text(upgrade.getDisplayName(), supported.getMaxCount())
+                            .mergeStyle(TextFormatting.GRAY));
+                    break;
+                }
+            }
+        }
 
-    protected boolean drawUpgrades() {
-        return true;
-    }
-
-    protected GuiText getName() {
-        return this.bc instanceof ImportBusPart ? GuiText.ImportBus : GuiText.ExportBus;
-    }
-
-    @Override
-    public List<Rectangle> getExclusionZones() {
-        List<Rectangle> zones = super.getExclusionZones();
-        zones.add(new Rectangle(guiLeft - 18, guiTop + 8, 18, 60));
-        return zones;
+        return list;
     }
 
 }

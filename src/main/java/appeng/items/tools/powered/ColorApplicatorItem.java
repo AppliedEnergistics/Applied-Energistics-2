@@ -147,15 +147,13 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
                 final TileEntity te = w.getTileEntity(pos);
                 // clean cables.
-                if (te instanceof IColorableTile && p != null) {
-                    if (this.getAECurrentPower(is) > powerPerUse
-                            && ((IColorableTile) te).getColor() != AEColor.TRANSPARENT) {
-                        if (((IColorableTile) te).recolourBlock(side, AEColor.TRANSPARENT, p)) {
-                            inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
-                                    new BaseActionSource());
-                            this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                            return ActionResultType.func_233537_a_(w.isRemote());
-                        }
+                if (te instanceof IColorableTile && p != null && this.getAECurrentPower(is) > powerPerUse
+                        && ((IColorableTile) te).getColor() != AEColor.TRANSPARENT) {
+                    if (((IColorableTile) te).recolourBlock(side, AEColor.TRANSPARENT, p)) {
+                        inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
+                                new BaseActionSource());
+                        this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
+                        return ActionResultType.func_233537_a_(w.isRemote());
                     }
                 }
 
@@ -172,13 +170,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             } else if (!paintBall.isEmpty()) {
                 final AEColor color = this.getColorFromItem(paintBall);
 
-                if (color != null && this.getAECurrentPower(is) > powerPerUse) {
-                    if (color != AEColor.TRANSPARENT && this.recolourBlock(blk, side, w, pos, color, p)) {
-                        inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
-                                new BaseActionSource());
-                        this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                        return ActionResultType.func_233537_a_(w.isRemote());
-                    }
+                if (color != null && this.getAECurrentPower(is) > powerPerUse
+                        && color != AEColor.TRANSPARENT && this.recolourBlock(blk, side, w, pos, color, p)) {
+                    inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
+                            new BaseActionSource());
+                    this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
+                    return ActionResultType.func_233537_a_(w.isRemote());
                 }
             }
         }
@@ -200,7 +197,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             extra = new TranslationTextComponent(selected.translationKey);
         }
 
-        return super.getDisplayName(is).deepCopy().appendString(" - ").append(extra);
+        return super.getDisplayName(is).deepCopy().appendString(" - ").appendSibling(extra);
     }
 
     public AEColor getActiveColor(final ItemStack tol) {
@@ -340,7 +337,6 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 ct.recolourBlock(side, newColor, p);
                 return true;
             }
-            return false;
         }
 
         return false;

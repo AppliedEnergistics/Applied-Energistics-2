@@ -27,7 +27,7 @@ import appeng.items.parts.PartModels;
 
 /**
  * A very simple part for emitting light.
- *
+ * <p>
  * Opposed to the other subclass of {@link AbstractReportingPart}, it will only use the bright front texture.
  *
  * @author AlgorithmX2

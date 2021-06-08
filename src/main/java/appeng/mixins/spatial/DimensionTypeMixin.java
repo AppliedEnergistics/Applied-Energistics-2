@@ -76,9 +76,10 @@ public class DimensionTypeMixin {
             CallbackInfoReturnable<SimpleRegistry<Dimension>> cir) {
         SimpleRegistry<Dimension> simpleregistry = cir.getReturnValue();
 
-        simpleregistry.register(SpatialStorageDimensionIds.DIMENSION_ID, new Dimension(() -> {
-            return dimensionTypes.getOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID);
-        }, new SpatialStorageChunkGenerator(biomes)), Lifecycle.stable());
+        simpleregistry.register(SpatialStorageDimensionIds.DIMENSION_ID,
+                new Dimension(() -> dimensionTypes.getOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
+                        new SpatialStorageChunkGenerator(biomes)),
+                Lifecycle.stable());
 
     }
 

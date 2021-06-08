@@ -78,7 +78,9 @@ public class MultiCraftingTracker {
 
             if (this.getLink(x) != null) {
                 return false;
-            } else if (craftingJob != null) {
+            }
+
+            if (craftingJob != null) {
 
                 try {
                     ICraftingJob job = null;
@@ -102,13 +104,11 @@ public class MultiCraftingTracker {
                 } catch (final ExecutionException e) {
                     // :P
                 }
-            } else {
-                if (this.getLink(x) == null) {
-                    final IAEItemStack aisC = ais.copy();
-                    aisC.setStackSize(itemToCraft);
+            } else if (this.getLink(x) == null) {
+                final IAEItemStack aisC = ais.copy();
+                aisC.setStackSize(itemToCraft);
 
-                    this.setJob(x, cg.beginCraftingJob(w, g, mySrc, aisC, null));
-                }
+                this.setJob(x, cg.beginCraftingJob(w, g, mySrc, aisC, null));
             }
         }
         return false;
@@ -222,6 +222,7 @@ public class MultiCraftingTracker {
         for (final Future<ICraftingJob> job : this.jobs) {
             if (job != null) {
                 hasStuff = true;
+                break;
             }
         }
 

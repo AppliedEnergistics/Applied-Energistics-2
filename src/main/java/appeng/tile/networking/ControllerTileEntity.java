@@ -81,8 +81,8 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
 
         final boolean oldValid = this.isValid;
 
-        this.isValid = (xx && !yy && !zz) || (!xx && yy && !zz) || (!xx && !yy && zz)
-                || ((xx ? 1 : 0) + (yy ? 1 : 0) + (zz ? 1 : 0) <= 1);
+        this.isValid = xx && !yy && !zz || !xx && yy && !zz || !xx && !yy && zz
+                || (xx ? 1 : 0) + (yy ? 1 : 0) + (zz ? 1 : 0) <= 1;
 
         if (oldValid != this.isValid || force) {
             if (this.isValid) {

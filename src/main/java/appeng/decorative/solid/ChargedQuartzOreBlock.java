@@ -43,9 +43,9 @@ public class ChargedQuartzOreBlock extends QuartzOreBlock {
             return;
         }
 
-        double xOff = (r.nextFloat());
-        double yOff = (r.nextFloat());
-        double zOff = (r.nextFloat());
+        double xOff = r.nextFloat();
+        double yOff = r.nextFloat();
+        double zOff = r.nextFloat();
 
         switch (r.nextInt(6)) {
             case 0:

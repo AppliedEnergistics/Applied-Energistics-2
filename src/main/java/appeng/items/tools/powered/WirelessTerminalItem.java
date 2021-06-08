@@ -31,7 +31,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.config.Actionable;
@@ -49,6 +48,8 @@ import appeng.util.ConfigManager;
 
 public class WirelessTerminalItem extends AEBasePoweredItem implements IWirelessTermHandler {
 
+    private static final String TAG_ENCRYPTION_KEY = "encryptionKey";
+
     public WirelessTerminalItem(Item.Properties props) {
         super(AEConfig.instance().getWirelessTerminalBattery(), props);
     }
@@ -65,19 +66,10 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
             final ITooltipFlag advancedTooltips) {
         super.addInformation(stack, world, lines, advancedTooltips);
 
-        if (stack.hasTag()) {
-            final CompoundNBT tag = stack.getOrCreateTag();
-            if (tag != null) {
-                final String encKey = tag.getString("encryptionKey");
-
-                if (encKey == null || encKey.isEmpty()) {
-                    lines.add(GuiText.Unlinked.text());
-                } else {
-                    lines.add(GuiText.Linked.text());
-                }
-            }
+        if (getEncryptionKey(stack).isEmpty()) {
+            lines.add(GuiText.Unlinked.text());
         } else {
-            lines.add(new TranslationTextComponent("AppEng.GuiITooltip.Unlinked"));
+            lines.add(GuiText.Linked.text());
         }
     }
 
@@ -113,15 +105,18 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
 
     @Override
     public String getEncryptionKey(final ItemStack item) {
-        final CompoundNBT tag = item.getOrCreateTag();
-        return tag.getString("encryptionKey");
+        final CompoundNBT tag = item.getTag();
+        if (tag != null) {
+            return tag.getString(TAG_ENCRYPTION_KEY);
+        } else {
+            return "";
+        }
     }
 
     @Override
     public void setEncryptionKey(final ItemStack item, final String encKey, final String name) {
         final CompoundNBT tag = item.getOrCreateTag();
-        tag.putString("encryptionKey", encKey);
-        tag.putString("name", name);
+        tag.putString(TAG_ENCRYPTION_KEY, encKey);
     }
 
 // FIXME FABRIC Needs custom mixin

@@ -30,7 +30,6 @@ import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.util.Platform;
 
 public class LightningPacket extends BasePacket {
 

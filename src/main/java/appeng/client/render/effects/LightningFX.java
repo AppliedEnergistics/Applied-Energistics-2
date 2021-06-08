@@ -178,23 +178,23 @@ public class LightningFX extends SpriteTexturedParticle {
                     final double zD = zN - z;
 
                     if (cycle == 0) {
-                        ox = (yD * 0) - (1 * zD);
-                        oy = (zD * 0) - (0 * xD);
-                        oz = (xD * 1) - (0 * yD);
+                        ox = yD * 0 - 1 * zD;
+                        oy = zD * 0 - 0 * xD;
+                        oz = xD * 1 - 0 * yD;
                     }
                     if (cycle == 1) {
-                        ox = (yD * 1) - (0 * zD);
-                        oy = (zD * 0) - (1 * xD);
-                        oz = (xD * 0) - (0 * yD);
+                        ox = yD * 1 - 0 * zD;
+                        oy = zD * 0 - 1 * xD;
+                        oz = xD * 0 - 0 * yD;
                     }
                     if (cycle == 2) {
-                        ox = (yD * 0) - (0 * zD);
-                        oy = (zD * 1) - (0 * xD);
-                        oz = (xD * 0) - (1 * yD);
+                        ox = yD * 0 - 0 * zD;
+                        oy = zD * 1 - 0 * xD;
+                        oz = xD * 0 - 1 * yD;
                     }
 
                     final double ss = Math.sqrt(ox * ox + oy * oy + oz * oz)
-                            / ((((double) LightningFX.STEPS - (double) s) / LightningFX.STEPS) * scale);
+                            / (((double) LightningFX.STEPS - (double) s) / LightningFX.STEPS * scale);
                     ox /= ss;
                     oy /= ss;
                     oz /= ss;

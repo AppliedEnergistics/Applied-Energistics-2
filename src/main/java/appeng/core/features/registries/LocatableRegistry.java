@@ -35,7 +35,13 @@ public final class LocatableRegistry implements ILocatableRegistry {
         this.set = new HashMap<>();
 
         LocatableEventAnnounce.EVENT.register((target, change) -> {
-            if (Platform.isClient()) {
+            // TODO 1.17: Break compat and add isRemote() or getWorld() to ILocatable
+            if (e.target instanceof TileEntity) {
+                TileEntity tileEntity = (TileEntity) e.target;
+                if (tileEntity.getWorld() == null || tileEntity.getWorld().isRemote()) {
+                    return;
+                }
+            } else if (Platform.isClient()) {
                 return; // IGNORE!
             }
 

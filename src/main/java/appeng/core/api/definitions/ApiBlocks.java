@@ -29,6 +29,8 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SoundType;
+import net.minecraft.block.StairsBlock;
+import net.minecraft.block.WallBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.renderer.RenderType;
@@ -220,6 +222,7 @@ public final class ApiBlocks implements IBlocks {
     private final ITileDefinition molecularAssembler;
     private final ITileDefinition lightDetector;
     private final ITileDefinition paint;
+
     private final IBlockDefinition skyStoneStairs;
     private final IBlockDefinition smoothSkyStoneStairs;
     private final IBlockDefinition skyStoneBrickStairs;
@@ -228,6 +231,15 @@ public final class ApiBlocks implements IBlocks {
     private final IBlockDefinition quartzStairs;
     private final IBlockDefinition chiseledQuartzStairs;
     private final IBlockDefinition quartzPillarStairs;
+
+    private final IBlockDefinition skyStoneWall;
+    private final IBlockDefinition smoothSkyStoneWall;
+    private final IBlockDefinition skyStoneBrickWall;
+    private final IBlockDefinition skyStoneSmallBrickWall;
+    private final IBlockDefinition fluixWall;
+    private final IBlockDefinition quartzWall;
+    private final IBlockDefinition chiseledQuartzWall;
+    private final IBlockDefinition quartzPillarWall;
 
     private final IBlockDefinition skyStoneSlab;
     private final IBlockDefinition smoothSkyStoneSlab;
@@ -274,15 +286,15 @@ public final class ApiBlocks implements IBlocks {
                 .build();
 
         AbstractBlock.IExtendedPositionPredicate<EntityType<?>> neverAllowSpawn = (p1, p2, p3, p4) -> false;
-        this.quartzGlass = registry.features(AEFeature.QUARTZ_GLASS).block("quartz_glass", () -> {
-            return new QuartzGlassBlock(defaultProps(Material.GLASS).notSolid().setAllowsSpawn(neverAllowSpawn));
-        }).rendering(new BlockRenderingCustomizer() {
-            @Override
-            @Environment(EnvType.CLIENT)
-            public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                rendering.renderType(RenderType.getCutout());
-            }
-        }).build();
+        this.quartzGlass = registry.features(AEFeature.QUARTZ_GLASS).block("quartz_glass",
+                () -> new QuartzGlassBlock(defaultProps(Material.GLASS).notSolid().setAllowsSpawn(neverAllowSpawn)))
+                .rendering(new BlockRenderingCustomizer() {
+                    @Override
+                    @Environment(EnvType.CLIENT)
+                    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+                        rendering.renderType(RenderType.getCutout());
+                    }
+                }).build();
         this.quartzVibrantGlass = deco
                 .block("quartz_vibrant_glass",
                         () -> new QuartzLampBlock(defaultProps(Material.GLASS).setLightLevel(b -> 15).notSolid()
@@ -605,7 +617,6 @@ public final class ApiBlocks implements IBlocks {
                         () -> new AEStairsBlock(this.skyStoneSmallBrick().block()::getDefaultState,
                                 SKYSTONE_PROPERTIES))
                 .addFeatures(AEFeature.SKY_STONE).build();
-
         this.fluixStairs = deco
                 .block("fluix_stairs",
                         () -> new AEStairsBlock(this.fluixBlock().block()::getDefaultState, QUARTZ_PROPERTIES))
@@ -621,6 +632,39 @@ public final class ApiBlocks implements IBlocks {
         this.quartzPillarStairs = deco
                 .block("quartz_pillar_stairs",
                         () -> new AEStairsBlock(this.quartzPillar().block()::getDefaultState, QUARTZ_PROPERTIES))
+                .addFeatures(AEFeature.CERTUS).build();
+
+        this.skyStoneWall = deco
+                .block("sky_stone_wall",
+                        () -> new WallBlock(SKYSTONE_PROPERTIES))
+                .addFeatures(AEFeature.SKY_STONE).build();
+        this.smoothSkyStoneWall = deco
+                .block("smooth_sky_stone_wall",
+                        () -> new WallBlock(SKYSTONE_PROPERTIES))
+                .addFeatures(AEFeature.SKY_STONE).build();
+        this.skyStoneBrickWall = deco
+                .block("sky_stone_brick_wall",
+                        () -> new WallBlock(SKYSTONE_PROPERTIES))
+                .addFeatures(AEFeature.SKY_STONE).build();
+        this.skyStoneSmallBrickWall = deco
+                .block("sky_stone_small_brick_wall",
+                        () -> new WallBlock(SKYSTONE_PROPERTIES))
+                .addFeatures(AEFeature.SKY_STONE).build();
+        this.fluixWall = deco
+                .block("fluix_wall",
+                        () -> new WallBlock(QUARTZ_PROPERTIES))
+                .addFeatures(AEFeature.FLUIX).build();
+        this.quartzWall = deco
+                .block("quartz_wall",
+                        () -> new WallBlock(QUARTZ_PROPERTIES))
+                .addFeatures(AEFeature.CERTUS).build();
+        this.chiseledQuartzWall = deco
+                .block("chiseled_quartz_wall",
+                        () -> new WallBlock(QUARTZ_PROPERTIES))
+                .addFeatures(AEFeature.CERTUS).build();
+        this.quartzPillarWall = deco
+                .block("quartz_pillar_wall",
+                        () -> new WallBlock(QUARTZ_PROPERTIES))
                 .addFeatures(AEFeature.CERTUS).build();
 
         this.multiPart = registry.block("cable_bus", CableBusBlock::new).rendering(new CableBusRendering())
@@ -814,6 +858,46 @@ public final class ApiBlocks implements IBlocks {
     @Override
     public IBlockDefinition quartzPillarStairs() {
         return this.quartzPillarStairs;
+    }
+
+    @Override
+    public IBlockDefinition skyStoneWall() {
+        return this.skyStoneWall;
+    }
+
+    @Override
+    public IBlockDefinition smoothSkyStoneWall() {
+        return this.smoothSkyStoneWall;
+    }
+
+    @Override
+    public IBlockDefinition skyStoneBrickWall() {
+        return this.skyStoneBrickWall;
+    }
+
+    @Override
+    public IBlockDefinition skyStoneSmallBrickWall() {
+        return this.skyStoneSmallBrickWall;
+    }
+
+    @Override
+    public IBlockDefinition fluixWall() {
+        return this.fluixWall;
+    }
+
+    @Override
+    public IBlockDefinition quartzWall() {
+        return this.quartzWall;
+    }
+
+    @Override
+    public IBlockDefinition chiseledQuartzWall() {
+        return this.chiseledQuartzWall;
+    }
+
+    @Override
+    public IBlockDefinition quartzPillarWall() {
+        return this.quartzPillarWall;
     }
 
     @Override

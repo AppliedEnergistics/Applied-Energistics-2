@@ -18,121 +18,254 @@
 
 package appeng.core.sync.packets;
 
-import java.io.IOException;
-import java.nio.BufferOverflowException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
+
 import io.netty.buffer.Unpooled;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.IPacket;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.PacketDirection;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.storage.data.IAEItemStack;
-import appeng.client.gui.implementations.CraftConfirmScreen;
-import appeng.client.gui.implementations.CraftingCPUScreen;
-import appeng.client.gui.implementations.MEMonitorableScreen;
-import appeng.client.gui.implementations.NetworkStatusScreen;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
+import appeng.container.me.common.GridInventoryEntry;
+import appeng.container.me.common.IClientRepo;
+import appeng.container.me.common.IncrementalUpdateHelper;
+import appeng.container.me.common.MEMonitorableContainer;
+import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
+import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.util.item.AEItemStack;
 
-public class MEInventoryUpdatePacket extends BasePacket {
-    private static final int UNCOMPRESSED_PACKET_BYTE_LIMIT = 16 * 1024 * 1024;
-    private static final int OPERATION_BYTE_LIMIT = 2 * 1024;
+public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
+
+    /**
+     * Maximum size of a single packet before it will be flushed forcibly.
+     */
+    private static final int UNCOMPRESSED_PACKET_BYTE_LIMIT = 512 * 1024 * 1024;
+
+    /**
+     * Initial buffer size for an update packet.
+     */
+    private static final int INITIAL_BUFFER_CAPACITY = 2 * 1024;
 
     // input.
-    @Nullable
-    private final List<IAEItemStack> list;
-    // output...
-    private final byte ref;
+    private final List<GridInventoryEntry<T>> list;
 
-    @Nullable
-    private final PacketBuffer data;
+    private boolean fullUpdate;
 
-    private int writtenBytes = 0;
-    private boolean empty = true;
+    private int windowId;
 
-    public MEInventoryUpdatePacket(final PacketBuffer stream) {
-        this.data = null;
-        this.list = new ArrayList<>();
-        this.ref = stream.readByte();
+    public MEInventoryUpdatePacket(final PacketBuffer data) {
+        int itemCount = data.readShort();
+        this.windowId = data.readVarInt();
+        this.fullUpdate = data.readBoolean();
+        this.list = new ArrayList<>(itemCount);
 
-        while (stream.readableBytes() > 0) {
-            this.list.add(AEItemStack.fromPacket(stream));
+        // We need to access the current screen to know which storage channel was used to serialize this data
+        MEMonitorableContainer<T> container = getContainer();
+        if (container != null) {
+            IStorageChannel<T> storageChannel = container.getStorageChannel();
+            for (int i = 0; i < itemCount; i++) {
+                this.list.add(GridInventoryEntry.read(storageChannel, data));
+            }
         }
-        this.empty = this.list.isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    private MEMonitorableContainer<T> getContainer() {
+        // This is slightly dangerous since it accesses the game thread from the network thread,
+        // but reading the current container is atomic (reference field), and from then the window id
+        // and storage channel are immutable.
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        if (player == null) {
+            // Probably a race-condition when the player already has left the game
+            return null;
+        }
+
+        Container currentContainer = player.openContainer;
+        if (!(currentContainer instanceof MEMonitorableContainer)) {
+            // Ignore a packet for a screen that has already been closed
+            return null;
+        }
+
+        // If the window id matches, this unsafe cast should actually be safe
+        MEMonitorableContainer<?> meContainer = (MEMonitorableContainer<?>) currentContainer;
+        if (meContainer.windowId == windowId) {
+            return (MEMonitorableContainer<T>) meContainer;
+        }
+
+        return null;
     }
 
     // api
-    public MEInventoryUpdatePacket() throws IOException {
-        this((byte) 0);
+    private MEInventoryUpdatePacket() {
+        this.list = Collections.emptyList();
     }
 
-    // api
-    public MEInventoryUpdatePacket(final byte ref) throws IOException {
-        this.ref = ref;
-        this.data = new PacketBuffer(Unpooled.buffer(OPERATION_BYTE_LIMIT));
-        this.data.writeInt(this.getPacketID());
-        this.data.writeByte(this.ref);
-        this.list = null;
+    // Byte offset to the field in the packet that contains the item count
+    private static final int ITEM_COUNT_FIELD_OFFSET = 4;
+
+    public static class Builder<T extends IAEStack<T>> {
+        private final List<MEInventoryUpdatePacket<T>> packets = new ArrayList<>();
+
+        private final int windowId;
+
+        @Nullable
+        private PacketBuffer data;
+
+        private int itemCount;
+
+        public Builder(int windowId, boolean fullUpdate) {
+            this.windowId = windowId;
+
+            // If we are to send a full update, initialize the data buffer to ensure it is sent even if no
+            // items are ever added (this indicates clearing the inventory client-side)
+            if (fullUpdate) {
+                data = createPacketHeader(true);
+            } else {
+                data = null;
+            }
+        }
+
+        public void addFull(IncrementalUpdateHelper<T> updateHelper,
+                IItemList<T> stacks) {
+            for (T item : stacks) {
+                long serial = updateHelper.getOrAssignSerial(item);
+                add(new GridInventoryEntry<>(serial, item, item.getStackSize(), item.getCountRequestable(),
+                        item.isCraftable()));
+            }
+        }
+
+        public void addChanges(IncrementalUpdateHelper<T> updateHelper, IItemList<T> stacks) {
+            for (T key : updateHelper) {
+                T sendKey;
+                Long serial = updateHelper.getSerial(key);
+
+                // Try to serialize the item into the buffer
+                if (serial == null) {
+                    // This is a new key, not sent to the client
+                    sendKey = key;
+                    serial = updateHelper.getOrAssignSerial(key);
+                } else {
+                    // This is an incremental update referring back to the serial
+                    sendKey = null;
+                }
+
+                // The queued changes are actual differences, but we need to send the real stored properties
+                // to the client.
+                T stored = stacks.findPrecise(key);
+                if (stored == null || !stored.isMeaningful()) {
+                    // This happens when an update is queued but the item is no longer stored
+                    add(new GridInventoryEntry<>(serial, sendKey, 0, 0, false));
+                    key.reset(); // Ensure it is deleted on commit, since the client will also clear it
+                } else {
+                    add(new GridInventoryEntry<>(serial, sendKey, stored.getStackSize(), stored.getCountRequestable(),
+                            stored.isCraftable()));
+                }
+            }
+
+            updateHelper.commitChanges();
+        }
+
+        public void add(GridInventoryEntry<T> entry) {
+            PacketBuffer data = ensureData();
+
+            // This should only error out if the entire packet exceeds about 2 megabytes of memory,
+            // if any item writes that much junk to a share tag, it's acceptable to crash.
+            // We'll normaly flush much much earlier (32k)
+            entry.write(data);
+
+            ++itemCount;
+
+            if (data.writerIndex() >= UNCOMPRESSED_PACKET_BYTE_LIMIT || itemCount >= Short.MAX_VALUE) {
+                flushData();
+            }
+        }
+
+        private void flushData() {
+            if (data != null) {
+                // Jump back and fill in the number of items contained in the packet
+                data.markWriterIndex();
+                data.writerIndex(ITEM_COUNT_FIELD_OFFSET);
+                data.writeShort(itemCount);
+                data.resetWriterIndex();
+
+                // Build a packet and queue it
+                MEInventoryUpdatePacket<T> packet = new MEInventoryUpdatePacket<>();
+                packet.configureWrite(data);
+                packets.add(packet);
+
+                // Reset
+                data = null;
+                itemCount = 0;
+            }
+        }
+
+        private PacketBuffer ensureData() {
+            if (data == null) {
+                data = createPacketHeader(false);
+            }
+            return data;
+        }
+
+        private PacketBuffer createPacketHeader(boolean fullUpdate) {
+            final PacketBuffer data;
+            data = new PacketBuffer(Unpooled.buffer(INITIAL_BUFFER_CAPACITY));
+            // Since we don't have an instance of a packet we can't get the packet id the normal way now
+            data.writeInt(BasePacketHandler.PacketTypes.ME_INVENTORY_UPDATE.getPacketId());
+            Preconditions.checkState(data.writerIndex() == ITEM_COUNT_FIELD_OFFSET);
+            // This is a placeholder for the item count and will be added at the end
+            data.writeShort(0);
+            data.writeVarInt(windowId);
+            data.writeBoolean(fullUpdate);
+            return data;
+        }
+
+        public List<MEInventoryUpdatePacket<T>> build() {
+            flushData();
+            return packets;
+        }
+
+        public void buildAndSend(Consumer<MEInventoryUpdatePacket<T>> sender) {
+            for (MEInventoryUpdatePacket<T> packet : build()) {
+                sender.accept(packet);
+            }
+        }
+    }
+
+    public static <T extends IAEStack<T>> Builder<T> builder(int windowId, boolean fullUpdate) {
+        return new Builder<>(windowId, fullUpdate);
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Screen gs = Minecraft.getInstance().currentScreen;
-
-        if (gs instanceof CraftConfirmScreen) {
-            ((CraftConfirmScreen) gs).postUpdate(this.list, this.ref);
+        MEMonitorableContainer<T> container = getContainer();
+        if (container == null) {
+            AELog.info("Ignoring ME inventory update packet because the target container isn't open.");
+            return;
         }
 
-        if (gs instanceof CraftingCPUScreen) {
-            ((CraftingCPUScreen<?>) gs).postUpdate(this.list, this.ref);
+        IClientRepo<T> clientRepo = container.getClientRepo();
+        if (clientRepo == null) {
+            AELog.info("Ignoring ME inventory update packet because no client repo is available.");
+            return;
         }
 
-        if (gs instanceof MEMonitorableScreen) {
-            ((MEMonitorableScreen<?>) gs).postUpdate(this.list);
-        }
-
-        if (gs instanceof NetworkStatusScreen) {
-            ((NetworkStatusScreen) gs).postUpdate(this.list);
-        }
+        clientRepo.handleUpdate(fullUpdate, list);
     }
 
-    @Nullable
-    @Override
-    public IPacket<?> toPacket(PacketDirection direction) {
-        this.configureWrite(this.data);
-        return super.toPacket(direction);
-    }
-
-    public void appendItem(final IAEItemStack is) throws IOException, BufferOverflowException {
-        final PacketBuffer tmp = new PacketBuffer(Unpooled.buffer(OPERATION_BYTE_LIMIT));
-        is.writeToPacket(tmp);
-
-        if (this.writtenBytes + tmp.readableBytes() > UNCOMPRESSED_PACKET_BYTE_LIMIT) {
-            throw new BufferOverflowException();
-        } else {
-            this.writtenBytes += tmp.readableBytes();
-            this.data.writeBytes(tmp.array(), 0, tmp.readableBytes());
-            this.empty = false;
-        }
-    }
-
-    public int getLength() {
-        return this.data.readableBytes();
-    }
-
-    public boolean isEmpty() {
-        return this.empty;
-    }
 }

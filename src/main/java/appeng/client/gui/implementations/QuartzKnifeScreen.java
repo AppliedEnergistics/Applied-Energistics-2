@@ -30,9 +30,9 @@ import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.core.AppEng;
-import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 
@@ -40,9 +40,9 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
     private TextFieldWidget name;
 
-    public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, ITextComponent title) {
-        super(container, playerInventory, title);
-        this.ySize = 184;
+    public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, ITextComponent title,
+            ScreenStyle style) {
+        super(container, playerInventory, title, style);
     }
 
     @Override
@@ -59,18 +59,9 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.QuartzCuttingKnife.text()).getString(), 8, 6,
-                4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
-    }
-
-    @Override
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
             float partialTicks) {
-        this.bindTexture("guis/quartzknife.png");
-        blit(matrices, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
+        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.name.render(matrices, mouseX, mouseY, partialTicks);
     }
 
@@ -107,7 +98,6 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
                     final String Out = this.name.getText();
                     container.setName(Out);
                     NetworkHandler.instance().sendToServer(new ConfigValuePacket("QuartzKnife.Name", Out));
-                    return true;
                 }
 
                 // We need to swallow key presses if the field is focused because typing 'e'

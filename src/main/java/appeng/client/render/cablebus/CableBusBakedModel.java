@@ -75,9 +75,8 @@ public class CableBusBakedModel implements IBakedModel, FabricBakedModel {
 
     /**
      * Lookup table to match the spin of a part with an up direction.
-     *
+     *<p>
      * DUNSWE for the facing index, 4 spin values per facing.
-     *
      */
     private static final Direction[] SPIN_TO_DIRECTION = new Direction[] {
             Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN

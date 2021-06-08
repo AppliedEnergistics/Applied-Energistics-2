@@ -156,7 +156,7 @@ public class CraftingTreeProcess {
         if (this.limitQty || this.fullSimulation) {
             return 1;
         }
-        return (remaining / stackSize) + (remaining % stackSize != 0 ? 1 : 0);
+        return remaining / stackSize + (remaining % stackSize != 0 ? 1 : 0);
     }
 
     void request(final MECraftingInventory inv, final long i, final IActionSource src)

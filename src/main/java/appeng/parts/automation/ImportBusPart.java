@@ -44,7 +44,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.UpgradeableContainer;
+import appeng.container.implementations.IOBusContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
@@ -119,7 +119,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(UpgradeableContainer.TYPE, player, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(IOBusContainer.IMPORT_TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
     }
@@ -235,13 +235,11 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
         final ItemStack simResult;
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             simResult = myAdaptor.simulateSimilarRemove(toSend, itemStackToImport, fzMode, this);
-            itemAmountNotStorable = inv.injectItems(AEItemStack.fromItemStack(simResult), Actionable.SIMULATE,
-                    this.source);
         } else {
             simResult = myAdaptor.simulateRemove(toSend, itemStackToImport, this);
-            itemAmountNotStorable = inv.injectItems(AEItemStack.fromItemStack(simResult), Actionable.SIMULATE,
-                    this.source);
         }
+        itemAmountNotStorable = inv.injectItems(AEItemStack.fromItemStack(simResult), Actionable.SIMULATE,
+                this.source);
 
         if (itemAmountNotStorable != null) {
             return (int) Math.min(simResult.getCount() - itemAmountNotStorable.getStackSize(), toSend);

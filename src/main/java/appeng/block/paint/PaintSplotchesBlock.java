@@ -35,7 +35,6 @@ import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.misc.PaintSplotchesTileEntity;
-import appeng.util.Platform;
 
 public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntity> {
     public PaintSplotchesBlock() {

@@ -34,7 +34,6 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
-import appeng.util.Platform;
 
 public class AEFluidInventory implements IAEFluidTank {
 

@@ -46,19 +46,29 @@ public enum Upgrades {
     /**
      * Gold Tier Upgrades.
      */
-    CAPACITY(0), REDSTONE(0), CRAFTING(0),
+    CAPACITY("item.appliedenergistics2.capacity_card", 0),
+    REDSTONE("item.appliedenergistics2.redstone_card", 0),
+    CRAFTING("item.appliedenergistics2.crafting_card", 0),
 
     /**
      * Diamond Tier Upgrades.
      */
-    FUZZY(1), SPEED(1), INVERTER(1);
+    FUZZY("item.appliedenergistics2.fuzzy_card", 1),
+    SPEED("item.appliedenergistics2.speed_card", 1),
+    INVERTER("item.appliedenergistics2.inverter_card", 1);
 
     private final int tier;
+    private final ITextComponent displayName;
     private final List<Supported> supported = new ArrayList<>();
     private List<ITextComponent> supportedTooltipLines;
 
-    Upgrades(final int tier) {
+    Upgrades(final String translationKey, final int tier) {
         this.tier = tier;
+        this.displayName = new TranslationTextComponent(translationKey);
+    }
+
+    public ITextComponent getDisplayName() {
+        return displayName;
     }
 
     /**

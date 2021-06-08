@@ -24,19 +24,16 @@ import net.minecraft.item.ItemStack;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
+import appeng.client.Point;
+
 public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
 
-    private final int srcX;
-    private final int srcY;
     private final int groupNum;
     private final IOptionalSlotHost host;
     private boolean renderDisabled = true;
 
-    public OptionalFakeSlot(final FixedItemInv inv, final IOptionalSlotHost containerBus, final int invSlot,
-            final int x, final int y, final int offX, final int offY, final int groupNum) {
-        super(inv, invSlot, x + offX * 18, y + offY * 18);
-        this.srcX = x;
-        this.srcY = y;
+    public OptionalFakeSlot(final FixedItemInv inv, final IOptionalSlotHost containerBus, int invSlot, int groupNum) {
+        super(inv, invSlot);
         this.groupNum = groupNum;
         this.host = containerBus;
     }
@@ -44,10 +41,8 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
     @Override
     @Nonnull
     public ItemStack getStack() {
-        if (!this.isSlotEnabled()) {
-            if (!this.getDisplayStack().isEmpty()) {
-                this.clearStack();
-            }
+        if (!this.isSlotEnabled() && !this.getDisplayStack().isEmpty()) {
+            this.clearStack();
         }
 
         return super.getStack();
@@ -72,12 +67,7 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
     }
 
     @Override
-    public int getSourceX() {
-        return this.srcX;
-    }
-
-    @Override
-    public int getSourceY() {
-        return this.srcY;
+    public Point getBackgroundPos() {
+        return new Point(xPos - 1, yPos - 1);
     }
 }

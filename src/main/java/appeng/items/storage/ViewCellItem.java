@@ -18,6 +18,8 @@
 
 package appeng.items.storage;
 
+import java.util.Collection;
+
 import net.minecraft.item.ItemStack;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -45,7 +47,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
         super(properties);
     }
 
-    public static IPartitionList<IAEItemStack> createFilter(final ItemStack[] list) {
+    public static IPartitionList<IAEItemStack> createFilter(Collection<ItemStack> list) {
         IPartitionList<IAEItemStack> myPartitionList = null;
 
         final MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<>();
@@ -55,7 +57,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                 continue;
             }
 
-            if ((currentViewCell.getItem() instanceof ViewCellItem)) {
+            if (currentViewCell.getItem() instanceof ViewCellItem) {
                 final IItemList<IAEItemStack> priorityList = Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createList();
 

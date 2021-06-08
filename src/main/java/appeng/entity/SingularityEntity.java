@@ -94,11 +94,8 @@ public final class SingularityEntity extends AEBaseItemEntity {
                         }
 
                         // check... other name.
-                        if (!matches) {
-                            ITag<Item> tag = ItemTags.getCollection().get(TAG_ENDER_PEARL);
-                            if (tag != null && other.getItem().isIn(tag)) {
-                                matches = true;
-                            }
+                        if (!matches && other.getItem().getTags().contains(TAG_ENDER_PEARL)) {
+                            matches = true;
                         }
 
                         if (matches) {
@@ -111,7 +108,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
                                 materials.qESingularity().maybeStack(2).ifPresent(singularityStack -> {
                                     final CompoundNBT cmp = singularityStack.getOrCreateTag();
-                                    cmp.putLong("freq", (new Date()).getTime() * 100 + (randTickSeed) % 100);
+                                    cmp.putLong("freq", new Date().getTime() * 100 + randTickSeed % 100);
                                     randTickSeed++;
                                     item.grow(-1);
 

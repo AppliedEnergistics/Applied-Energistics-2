@@ -86,7 +86,6 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
      * Find the localized string...
      *
      * @param name possible names for the localized string
-     *
      * @return localized name
      */
     private String getFirstValidTranslationKey(final String... name) {
@@ -188,10 +187,8 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World w, PlayerEntity player, Hand hand) {
-        if (InteractionUtil.isInAlternateUseMode(player)) {
-            if (!w.isRemote) {
-                this.clearCard(player, w, hand);
-            }
+        if (InteractionUtil.isInAlternateUseMode(player) && !w.isRemote) {
+            this.clearCard(player, w, hand);
         }
 
         return super.onItemRightClick(w, player, hand);

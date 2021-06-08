@@ -40,7 +40,7 @@ import appeng.api.util.DimensionalCoord;
 
 /**
  * A grid providing precomupted statistics about a network.
- *
+ * <p>
  * Currently this tracks the chunks a network is occupying.
  */
 public class StatisticsCache implements IGridCache {
@@ -141,7 +141,7 @@ public class StatisticsCache implements IGridCache {
 
     /**
      * Remove the chunk of this {@link BlockPos} from the network locations.
-     *
+     * <p>
      * This uses a {@link Multiset} to ensure it will only marked as no longer containing a grid once all other
      * gridnodes are removed as well.
      *
@@ -163,9 +163,7 @@ public class StatisticsCache implements IGridCache {
     }
 
     private Multiset<ChunkPos> getChunks(IWorld world) {
-        return this.chunks.computeIfAbsent(world, w -> {
-            return HashMultiset.create();
-        });
+        return this.chunks.computeIfAbsent(world, w -> HashMultiset.create());
     }
 
     /**

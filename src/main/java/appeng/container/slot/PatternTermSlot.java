@@ -39,9 +39,9 @@ public class PatternTermSlot extends CraftingTermSlot {
 
     public PatternTermSlot(final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc,
             final IStorageMonitorable storage, final FixedItemInv cMatrix, final FixedItemInv secondMatrix,
-            final FixedItemInv output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber,
+            final IOptionalSlotHost h, final int groupNumber,
             final IContainerCraftingPacket c) {
-        super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c);
+        super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, c);
 
         this.host = h;
         this.groupNum = groupNumber;
@@ -55,10 +55,8 @@ public class PatternTermSlot extends CraftingTermSlot {
 
     @Override
     public ItemStack getStack() {
-        if (!this.isSlotEnabled()) {
-            if (!this.getDisplayStack().isEmpty()) {
-                this.clearStack();
-            }
+        if (!this.isSlotEnabled() && !this.getDisplayStack().isEmpty()) {
+            this.clearStack();
         }
 
         return super.getStack();

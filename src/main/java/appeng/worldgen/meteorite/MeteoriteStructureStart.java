@@ -59,7 +59,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
             TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
         final int centerX = chunkX * 16 + this.rand.nextInt(16);
         final int centerZ = chunkZ * 16 + this.rand.nextInt(16);
-        final float meteoriteRadius = (this.rand.nextFloat() * 6.0f) + 2;
+        final float meteoriteRadius = this.rand.nextFloat() * 6.0f + 2;
         final int yOffset = (int) Math.ceil(meteoriteRadius) + 1;
 
         final Set<Biome> t2 = generator.getBiomeProvider().getBiomes(centerX, 0, centerZ, 0);

@@ -162,7 +162,7 @@ public class DualityFluidInterface
         }
 
         final boolean couldDoWork = this.updateStorage();
-        return this.hasWorkToDo() ? (couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER)
+        return this.hasWorkToDo() ? couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER
                 : TickRateModulation.SLEEP;
     }
 
@@ -269,7 +269,7 @@ public class DualityFluidInterface
         final IAEFluidStack req = this.config.getFluidInSlot(slot);
         final IAEFluidStack stored = this.tanks.getFluidInSlot(slot);
 
-        if (req == null && (stored != null && stored.getStackSize() > 0)) {
+        if (req == null && stored != null && stored.getStackSize() > 0) {
             final IAEFluidStack work = stored.copy();
             this.requireWork[slot] = work.setStackSize(-work.getStackSize());
             return;

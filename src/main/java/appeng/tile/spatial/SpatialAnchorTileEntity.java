@@ -71,7 +71,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
      * Loads this radius after being move via a spatial transfer. This accounts for the anchor not being placed in the
      * center of the SCS, but not as much as trying to fully load a 128 cubic cell with 8x8 chunks. This would need to
      * load a 17x17 square.
-     * 
+     * <p>
      * TODO: 1.17 Break API compat and pass plot id or plot-descriptor to {@link IMovableTile}.
      */
     private static final int SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE = 4;
@@ -295,7 +295,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     private void updatePowerConsumption() {
-        int energy = 80 + (this.chunks.size() * (this.chunks.size() + 1)) / 2;
+        int energy = 80 + this.chunks.size() * (this.chunks.size() + 1) / 2;
         this.getProxy().setIdlePowerUsage(energy);
     }
 

@@ -36,7 +36,6 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.IPartHost;
@@ -46,8 +45,8 @@ import appeng.api.util.INetworkToolAgent;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.NetworkStatusContainer;
-import appeng.container.implementations.NetworkToolContainer;
+import appeng.container.me.networktool.NetworkStatusContainer;
+import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
@@ -64,7 +63,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench, 
     }
 
     @Override
-    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final World world,
+    public NetworkToolViewer getGuiObject(final ItemStack is, int playerInventorySlot, final World world,
             final BlockPos pos) {
         if (pos == null) {
             return new NetworkToolViewer(is, null, world.isRemote());
@@ -166,4 +165,5 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench, 
     public boolean canWrench(final ItemStack wrench, final PlayerEntity player, final BlockPos pos) {
         return true;
     }
+
 }

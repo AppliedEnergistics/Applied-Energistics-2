@@ -18,6 +18,8 @@
 
 package appeng.helpers;
 
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
@@ -34,7 +36,6 @@ public interface IContainerCraftingPacket {
 
     /**
      * @param string name of inventory
-     *
      * @return the inventory of the part/tile by name.
      */
     FixedItemInv getInventoryByName(String string);
@@ -50,7 +51,7 @@ public interface IContainerCraftingPacket {
     boolean useRealItems();
 
     /**
-     * @return array of view cells
+     * @return array of view cells. can contain empty itemstacks.
      */
-    ItemStack[] getViewCells();
+    List<ItemStack> getViewCells();
 }

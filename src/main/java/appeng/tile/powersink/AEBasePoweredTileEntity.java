@@ -55,8 +55,6 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     public static final BlockApiLookup.BlockEntityApiProvider<EnergyIo, Direction> ENERGY_PROVIDER = (be,
             dir) -> ((AEBasePoweredTileEntity) be).ftlEnergyIo;
 
-    // IC2 private IC2PowerSink ic2Sink;
-
     public AEBasePoweredTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.ftlEnergyIo = new FtlEnergyAdapter(this);
@@ -70,8 +68,6 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
 
     protected void setPowerSides(final Set<Direction> sides) {
         this.internalPowerSides = ImmutableSet.copyOf(sides);
-        // IC2 this.ic2Sink.setValidFaces( sides );
-        // trigger re-calc!
     }
 
     @Override
@@ -208,27 +204,6 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
 
     public void setInternalPowerFlow(final AccessRestriction internalPowerFlow) {
         this.internalPowerFlow = internalPowerFlow;
-    }
-
-    @Override
-    public void onReady() {
-        super.onReady();
-
-        // IC2 this.ic2Sink.onLoad();
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-
-        // IC2 this.ic2Sink.onChunkUnloaded();
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-
-        // IC2 this.ic2Sink.invalidate();
     }
 
 }

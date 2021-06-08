@@ -39,6 +39,7 @@ import appeng.api.features.AEFeature;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.Api;
+import appeng.core.AppEng;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
@@ -82,10 +83,8 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
         if (!world.isRemote() && mat.isLiquid()) {
             this.transformTime++;
-            if (this.transformTime > 60) {
-                if (!this.transform()) {
-                    this.transformTime = 0;
-                }
+            if (this.transformTime > 60 && !this.transform()) {
+                this.transformTime = 0;
             }
         } else {
             this.transformTime = 0;

@@ -101,7 +101,6 @@ public class InterpHelper {
      * @param q1 Value at dx1 dy1
      * @param q2 Value at dx2 dy2
      * @param q3 Value at dx3 dy3
-     *
      * @return The result.
      */
     public float interpolate(float q0, float q1, float q2, float q3) {
@@ -109,9 +108,9 @@ public class InterpHelper {
         this.valCache[1] = q1;
         this.valCache[2] = q2;
         this.valCache[3] = q3;
-        float f0 = (this.valCache[this.p00] * (1 - this.rX)) + (this.valCache[this.p10] * this.rX);
-        float f1 = (this.valCache[this.p01] * (1 - this.rX)) + (this.valCache[this.p11] * this.rX);
+        float f0 = this.valCache[this.p00] * (1 - this.rX) + this.valCache[this.p10] * this.rX;
+        float f1 = this.valCache[this.p01] * (1 - this.rX) + this.valCache[this.p11] * this.rX;
 
-        return (f0 * (1 - this.rY)) + (f1 * this.rY);
+        return f0 * (1 - this.rY) + f1 * this.rY;
     }
 }

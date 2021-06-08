@@ -31,7 +31,6 @@ import alexiil.mc.lib.attributes.item.filter.ConstantItemFilter;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
 import alexiil.mc.lib.attributes.item.impl.DirectFixedItemInv;
 
-import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;

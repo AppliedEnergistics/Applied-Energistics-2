@@ -218,7 +218,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
 
     protected void writeToStream(final PacketBuffer data) throws IOException {
         if (this.canBeRotated()) {
-            final byte orientation = (byte) ((this.up.ordinal() << 3) | this.forward.ordinal());
+            final byte orientation = (byte) (this.up.ordinal() << 3 | this.forward.ordinal());
             data.writeByte(orientation);
         }
     }

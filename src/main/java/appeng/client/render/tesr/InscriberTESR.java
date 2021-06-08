@@ -94,7 +94,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
         float progress = relativeProgress;
 
         if (progress > 1.0f) {
-            progress = 1.0f - (easeDecompressMotion(progress - 1.0f));
+            progress = 1.0f - easeDecompressMotion(progress - 1.0f);
         } else {
             progress = easeCompressMotion(progress);
         }

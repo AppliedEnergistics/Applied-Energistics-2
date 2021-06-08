@@ -22,7 +22,7 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class FakeCraftingMatrixSlot extends FakeSlot {
 
-    public FakeCraftingMatrixSlot(final FixedItemInv inv, final int invSlot, final int x, final int y) {
-        super(inv, invSlot, x, y);
+    public FakeCraftingMatrixSlot(final FixedItemInv inv, final int invSlot) {
+        super(inv, invSlot);
     }
 }

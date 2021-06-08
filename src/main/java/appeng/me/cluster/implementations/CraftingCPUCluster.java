@@ -273,56 +273,25 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                 return leftOver;
             }
-        } else if (type == Actionable.MODULATE) {
-            if (is != null && is.getStackSize() > 0) {
-                this.waiting = false;
+        } else if (type == Actionable.MODULATE && is != null && is.getStackSize() > 0) {
+            this.waiting = false;
 
-                this.postChange(what, src);
+            this.postChange(what, src);
 
-                if (is.getStackSize() >= what.getStackSize()) {
-                    is.decStackSize(what.getStackSize());
+            if (is.getStackSize() >= what.getStackSize()) {
+                is.decStackSize(what.getStackSize());
 
-                    this.updateElapsedTime(what);
-                    this.markDirty();
-                    this.postCraftingStatusChange(what.copy().setStackSize(-what.getStackSize()));
+                this.updateElapsedTime(what);
+                this.markDirty();
+                this.postCraftingStatusChange(what.copy().setStackSize(-what.getStackSize()));
 
-                    if (this.finalOutput.equals(what)) {
-                        IAEItemStack leftover = what;
+                if (this.finalOutput.equals(what)) {
+                    IAEItemStack leftover = what;
 
-                        this.finalOutput.decStackSize(what.getStackSize());
-
-                        if (this.myLastLink != null) {
-                            leftover = ((CraftingLink) this.myLastLink).injectItems(what, type);
-                        }
-
-                        if (this.finalOutput.getStackSize() <= 0) {
-                            this.completeJob();
-                        }
-
-                        this.updateCPU();
-
-                        return leftover; // ignore it.
-                    }
-
-                    // 2000
-                    return this.inventory.injectItems(what, type, src);
-                }
-
-                final IAEItemStack insert = what.copy();
-                insert.setStackSize(is.getStackSize());
-                what.decStackSize(is.getStackSize());
-
-                is.setStackSize(0);
-                this.postCraftingStatusChange(insert.copy().setStackSize(-insert.getStackSize()));
-
-                if (this.finalOutput.equals(insert)) {
-                    IAEItemStack leftover = input;
-
-                    this.finalOutput.decStackSize(insert.getStackSize());
+                    this.finalOutput.decStackSize(what.getStackSize());
 
                     if (this.myLastLink != null) {
-                        what.add(((CraftingLink) this.myLastLink).injectItems(insert.copy(), type));
-                        leftover = what;
+                        leftover = ((CraftingLink) this.myLastLink).injectItems(what, type);
                     }
 
                     if (this.finalOutput.getStackSize() <= 0) {
@@ -330,16 +299,45 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                     }
 
                     this.updateCPU();
-                    this.markDirty();
 
                     return leftover; // ignore it.
                 }
 
-                this.inventory.injectItems(insert, type, src);
+                // 2000
+                return this.inventory.injectItems(what, type, src);
+            }
+
+            final IAEItemStack insert = what.copy();
+            insert.setStackSize(is.getStackSize());
+            what.decStackSize(is.getStackSize());
+
+            is.setStackSize(0);
+            this.postCraftingStatusChange(insert.copy().setStackSize(-insert.getStackSize()));
+
+            if (this.finalOutput.equals(insert)) {
+                IAEItemStack leftover = input;
+
+                this.finalOutput.decStackSize(insert.getStackSize());
+
+                if (this.myLastLink != null) {
+                    what.add(((CraftingLink) this.myLastLink).injectItems(insert.copy(), type));
+                    leftover = what;
+                }
+
+                if (this.finalOutput.getStackSize() <= 0) {
+                    this.completeJob();
+                }
+
+                this.updateCPU();
                 this.markDirty();
 
-                return what;
+                return leftover; // ignore it.
             }
+
+            this.inventory.injectItems(insert, type, src);
+            this.markDirty();
+
+            return what;
         }
 
         return input;
@@ -547,11 +545,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.myLastLink = null;
         this.tasks.clear();
 
-        // final ImmutableSet<IAEItemStack> items = ImmutableSet.copyOf( this.waitingFor
-        // );
         final List<IAEItemStack> items = new ArrayList<>(this.waitingFor.size());
         this.waitingFor.forEach(stack -> items.add(stack.copy().setStackSize(-stack.getStackSize())));
-
         this.waitingFor.resetStatus();
 
         for (final IAEItemStack is : items) {
@@ -569,11 +564,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return;
         }
 
-        if (this.myLastLink != null) {
-            if (this.myLastLink.isCanceled()) {
-                this.myLastLink = null;
-                this.cancel();
-            }
+        if (this.myLastLink != null && this.myLastLink.isCanceled()) {
+            this.myLastLink = null;
+            this.cancel();
         }
 
         if (this.isComplete) {
@@ -1167,7 +1160,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
             if (te.hasCustomInventoryName()) {
                 if (this.myName != null) {
-                    this.myName.deepCopy().appendString(" ").append(te.getCustomInventoryName());
+                    this.myName.deepCopy().appendString(" ").appendSibling(te.getCustomInventoryName());
                 } else {
                     this.myName = te.getCustomInventoryName().deepCopy();
                 }

@@ -179,31 +179,29 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             final ItemStack newType = ItemStack.read(data);
             final short freq = data.getShort("freq");
 
-            if (!newType.isEmpty()) {
-                if (newType.getItem() instanceof IPartItem) {
-                    final IPart testPart = ((IPartItem<?>) newType.getItem()).createPart(newType);
-                    if (testPart instanceof P2PTunnelPart) {
-                        this.getHost().removePart(this.getSide(), true);
-                        final AEPartLocation dir = this.getHost().addPart(newType, this.getSide(), player, hand);
-                        final IPart newBus = this.getHost().getPart(dir);
+            if (!newType.isEmpty() && newType.getItem() instanceof IPartItem) {
+                final IPart testPart = ((IPartItem<?>) newType.getItem()).createPart(newType);
+                if (testPart instanceof P2PTunnelPart) {
+                    this.getHost().removePart(this.getSide(), true);
+                    final AEPartLocation dir = this.getHost().addPart(newType, this.getSide(), player, hand);
+                    final IPart newBus = this.getHost().getPart(dir);
 
-                        if (newBus instanceof P2PTunnelPart) {
-                            final P2PTunnelPart<?> newTunnel = (P2PTunnelPart<?>) newBus;
-                            newTunnel.setOutput(true);
+                    if (newBus instanceof P2PTunnelPart) {
+                        final P2PTunnelPart<?> newTunnel = (P2PTunnelPart<?>) newBus;
+                        newTunnel.setOutput(true);
 
-                            try {
-                                final P2PCache p2p = newTunnel.getProxy().getP2P();
-                                p2p.updateFreq(newTunnel, freq);
-                            } catch (final GridAccessException e) {
-                                // :P
-                            }
-
-                            newTunnel.onTunnelNetworkChange();
+                        try {
+                            final P2PCache p2p = newTunnel.getProxy().getP2P();
+                            p2p.updateFreq(newTunnel, freq);
+                        } catch (final GridAccessException e) {
+                            // :P
                         }
 
-                        mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
-                        return true;
+                        newTunnel.onTunnelNetworkChange();
                     }
+
+                    mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                    return true;
                 }
             }
             mc.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);

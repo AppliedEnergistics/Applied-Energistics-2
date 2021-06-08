@@ -33,7 +33,6 @@ import net.minecraft.util.text.StringTextComponent;
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickableTileEntity {
 
@@ -53,7 +52,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
 
             if (this.countdown % 20 == 0) {
                 AppEng.instance().getPlayers().forEach(e -> {
-                    e.sendMessage(new StringTextComponent("Spawning in... " + (this.countdown / 20)), Util.DUMMY_UUID);
+                    e.sendMessage(new StringTextComponent("Spawning in... " + this.countdown / 20), Util.DUMMY_UUID);
                 });
             }
 

@@ -47,7 +47,7 @@ final class RenderHelper {
         for (Direction facing : Direction.values()) {
             List<Vector3f> corners;
 
-            float offset = (facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) ? 0 : 1;
+            float offset = facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE ? 0 : 1;
 
             switch (facing.getAxis()) {
                 default:

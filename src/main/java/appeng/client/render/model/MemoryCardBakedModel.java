@@ -65,7 +65,7 @@ class MemoryCardBakedModel extends ForwardingBakedModel implements FabricBakedMo
                 final AEColor color = colorCode[x + y * 4];
 
                 builder.setColorRGB(color.mediumVariant);
-                builder.addCube(7 + x, 8 + (1 - y), 7.5f, 7 + x + 1, 8 + (1 - y) + 1, 8.5f);
+                builder.addCube(7 + x, 8 + 1 - y, 7.5f, 7 + x + 1, 8 + 1 - y + 1, 8.5f);
             }
         }
     }

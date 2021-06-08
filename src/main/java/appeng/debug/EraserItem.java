@@ -74,7 +74,7 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
         while (blocks < BLOCK_ERASE_LIMIT && next.peek() != null) {
             final BlockPos wc = next.poll();
             final Block c_state = world.getBlockState(wc).getBlock();
-            final boolean contains = state == c_state || (bulk && (commonBlocks.contains(c_state)));
+            final boolean contains = state == c_state || bulk && commonBlocks.contains(c_state);
 
             closed.add(wc);
 

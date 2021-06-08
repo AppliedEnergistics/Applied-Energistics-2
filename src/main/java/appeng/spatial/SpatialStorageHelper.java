@@ -119,11 +119,9 @@ public class SpatialStorageHelper {
             teleportTarget.remove();
         }
 
-        if (entity != null) {
-            if (!passengersOnOtherSide.isEmpty()) {
-                for (Entity passanger : passengersOnOtherSide) {
-                    passanger.startRiding(entity, true);
-                }
+        if (entity != null && !passengersOnOtherSide.isEmpty()) {
+            for (Entity passanger : passengersOnOtherSide) {
+                passanger.startRiding(entity, true);
             }
         }
 

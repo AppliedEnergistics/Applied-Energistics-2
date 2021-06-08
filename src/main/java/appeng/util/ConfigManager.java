@@ -60,7 +60,7 @@ public final class ConfigManager implements IConfigManager {
     }
 
     @Override
-    public Enum<?> putSetting(final Settings settingName, final Enum newValue) {
+    public Enum<?> putSetting(final Settings settingName, final Enum<?> newValue) {
         final Enum<?> oldValue = this.getSetting(settingName);
         this.settings.put(settingName, newValue);
         this.target.updateSetting(this, settingName, newValue);

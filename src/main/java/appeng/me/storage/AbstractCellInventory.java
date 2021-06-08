@@ -231,7 +231,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
     public boolean canHoldNewItem() {
         final long bytesFree = this.getFreeBytes();
         return (bytesFree > this.getBytesPerType()
-                || (bytesFree == this.getBytesPerType() && this.getUnusedItemCount() > 0))
+                || bytesFree == this.getBytesPerType() && this.getUnusedItemCount() > 0)
                 && this.getRemainingItemTypes() > 0;
     }
 

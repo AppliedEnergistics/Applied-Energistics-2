@@ -18,29 +18,30 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.misc.CondenserTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.CondenserScreen
+ */
 public class CondenserContainer extends AEBaseContainer implements IProgressProvider {
 
-    public static ContainerType<CondenserContainer> TYPE;
-
-    private static final ContainerHelper<CondenserContainer, CondenserTileEntity> helper = new ContainerHelper<>(
-            CondenserContainer::new, CondenserTileEntity.class);
+    public static final ContainerType<CondenserContainer> TYPE = ContainerTypeBuilder
+            .create(CondenserContainer::new, CondenserTileEntity.class)
+            .build("condenser");
 
     private final CondenserTileEntity condenser;
     @GuiSync(0)
@@ -51,26 +52,20 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
     public CondenserOutput output = CondenserOutput.TRASH;
 
     public CondenserContainer(int id, final PlayerInventory ip, final CondenserTileEntity condenser) {
-        super(TYPE, id, ip, condenser, null);
+        super(TYPE, id, ip, condenser);
         this.condenser = condenser;
 
         FixedItemInv inv = condenser.getInternalInventory();
 
-        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.TRASH, inv, 0, 51, 52, ip));
-        this.addSlot(new OutputSlot(inv, 1, 105, 52, -1));
+        this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.TRASH, inv, 0),
+                SlotSemantic.MACHINE_INPUT);
+        this.addSlot(new OutputSlot(inv, 1, null), SlotSemantic.MACHINE_OUTPUT);
         this.addSlot(
-                (new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_COMPONENT, inv, 2, 101, 26, ip))
-                        .setStackLimit(1));
+                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_COMPONENT, inv, 2)
+                        .setStackLimit(1),
+                SlotSemantic.STORAGE_CELL);
 
-        this.bindPlayerInventory(ip, 0, 197 - /* height of player inventory */82);
-    }
-
-    public static CondenserContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
+        this.createPlayerInventorySlots(ip);
     }
 
     @Override

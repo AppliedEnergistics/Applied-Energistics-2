@@ -50,7 +50,6 @@ import appeng.me.cache.SpatialPylonCache;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.IWorldCallable;
-import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements IWorldCallable<Void> {

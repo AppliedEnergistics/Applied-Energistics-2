@@ -101,7 +101,6 @@ import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.stats.AeStats;
-import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.ReiFacade;
 import appeng.me.GridAccessException;
@@ -156,12 +155,13 @@ public class Platform {
      *
      * @param n      to be formatted long value
      * @param isRate if true it adds a /t to the formatted string
-     *
      * @return formatted long value
      */
     public static String formatPowerLong(final long n, final boolean isRate) {
-        double p = ((double) n) / 100;
+        return formatPower((double) n / 100, isRate);
+    }
 
+    public static String formatPower(double p, boolean isRate) {
         final PowerUnits displayUnits = AEConfig.instance().getSelectedPowerUnit();
         p = PowerUnits.AE.convertTo(displayUnits, p);
 
@@ -281,15 +281,13 @@ public class Platform {
     public static void spawnDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
         if (!w.isRemote()) {
             for (final ItemStack i : drops) {
-                if (!i.isEmpty()) {
-                    if (i.getCount() > 0) {
-                        final double offset_x = (getRandomInt() % 32 - 16) / 82;
-                        final double offset_y = (getRandomInt() % 32 - 16) / 82;
-                        final double offset_z = (getRandomInt() % 32 - 16) / 82;
-                        final ItemEntity ei = new ItemEntity(w, 0.5 + offset_x + pos.getX(),
-                                0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy());
-                        w.addEntity(ei);
-                    }
+                if (!i.isEmpty() && i.getCount() > 0) {
+                    final double offset_x = (getRandomInt() % 32 - 16) / 82;
+                    final double offset_y = (getRandomInt() % 32 - 16) / 82;
+                    final double offset_z = (getRandomInt() % 32 - 16) / 82;
+                    final ItemEntity ei = new ItemEntity(w, 0.5 + offset_x + pos.getX(),
+                            0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy());
+                    w.addEntity(ei);
                 }
             }
         }
@@ -391,12 +389,12 @@ public class Platform {
         }
     }
 
-    public static ITextComponent getFluidDisplayName(Object o) {
+    public static ITextComponent getFluidDisplayName(IAEFluidStack o) {
         if (o == null) {
             return new StringTextComponent("** Null");
         }
         FluidVolume fluidStack = null;
-        if (o instanceof AEFluidStack) {
+        if (x instanceof AEFluidStack) {
             fluidStack = ((AEFluidStack) o).getFluidStack();
         } else if (o instanceof FluidVolume) {
             fluidStack = (FluidVolume) o;
@@ -647,7 +645,7 @@ public class Platform {
         final double energyFactor = Math.max(1.0, cell.getChannel().transferFactor());
         final double availablePower = energy.extractAEPower(retrieved / energyFactor, Actionable.SIMULATE,
                 PowerMultiplier.CONFIG);
-        final long itemToExtract = Math.min((long) ((availablePower * energyFactor) + 0.9), retrieved);
+        final long itemToExtract = Math.min((long) (availablePower * energyFactor + 0.9), retrieved);
 
         if (itemToExtract > 0) {
             if (mode == Actionable.MODULATE) {
@@ -691,7 +689,7 @@ public class Platform {
         final double energyFactor = Math.max(1.0, cell.getChannel().transferFactor());
         final double availablePower = energy.extractAEPower(transferAmount / energyFactor, Actionable.SIMULATE,
                 PowerMultiplier.CONFIG);
-        final long itemToAdd = Math.min((long) ((availablePower * energyFactor) + 0.9), transferAmount);
+        final long itemToAdd = Math.min((long) (availablePower * energyFactor + 0.9), transferAmount);
 
         if (itemToAdd > 0) {
             if (mode == Actionable.MODULATE) {
@@ -723,7 +721,7 @@ public class Platform {
                 return ret;
             } else {
                 final T ret = input.copy().setStackSize(input.getStackSize() - itemToAdd);
-                return (ret != null && ret.getStackSize() > 0) ? ret : null;
+                return ret != null && ret.getStackSize() > 0 ? ret : null;
             }
         }
 
@@ -780,9 +778,8 @@ public class Platform {
     }
 
     public static boolean securityCheck(final GridNode a, final GridNode b) {
-        if (a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1) {
-            return true;
-        } else if (a.getLastSecurityKey() == b.getLastSecurityKey()) {
+        if (a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1
+                || a.getLastSecurityKey() == b.getLastSecurityKey()) {
             return true;
         }
 
@@ -930,7 +927,7 @@ public class Platform {
             if (items != null && checkFuzzy) {
                 for (final IAEItemStack x : items) {
                     final ItemStack sh = x.getDefinition();
-                    if ((Platform.itemComparisons().isEqualItemType(providedTemplate, sh))
+                    if (Platform.itemComparisons().isEqualItemType(providedTemplate, sh)
                             && !ItemStack.areItemsEqual(sh, output)) {
                         final ItemStack cp = sh.copy();
                         cp.setCount(1);

@@ -19,33 +19,36 @@
 package appeng.client.gui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ArrayListMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
@@ -53,76 +56,133 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
-import alexiil.mc.lib.attributes.fluid.render.FluidVolumeRenderer;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import me.shedaniel.math.Rectangle;
-
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.client.Point;
+import appeng.client.gui.layout.SlotGridLayout;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.SlotPosition;
+import appeng.client.gui.style.Text;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
-import appeng.client.gui.widgets.Scrollbar;
-import appeng.client.me.InternalSlotME;
-import appeng.client.me.SlotDisconnected;
-import appeng.client.me.SlotME;
-import appeng.client.render.StackSizeRenderer;
+import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngCraftingSlot;
+import appeng.container.SlotSemantic;
 import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.AppEngSlot.CalculatedValidity;
 import appeng.container.slot.CraftingTermSlot;
 import appeng.container.slot.DisabledSlot;
 import appeng.container.slot.FakeSlot;
 import appeng.container.slot.IOptionalSlot;
-import appeng.container.slot.InaccessibleSlot;
-import appeng.container.slot.OutputSlot;
 import appeng.container.slot.PatternTermSlot;
-import appeng.container.slot.RestrictedInputSlot;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
-import appeng.fluids.client.render.FluidStackSizeRenderer;
-import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
 
-    public static final int COLOR_DARK_GRAY = 4210752;
+    private static final Point HIDDEN_SLOT_POS = new Point(-9999, -9999);
 
-    private final List<InternalSlotME> meSlots = new ArrayList<>();
+    /**
+     * Commonly used id for text that is used to show the dialog title.
+     */
+    public static final String TEXT_ID_DIALOG_TITLE = "dialog_title";
+
+    private final VerticalButtonBar verticalToolbar;
+
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
-    private final StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();
-    private final FluidStackSizeRenderer fluidStackSizeRenderer = new FluidStackSizeRenderer();
-    private Scrollbar myScrollBar = null;
     private boolean disableShiftClick = false;
     private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
     private ItemStack dbl_whichItem = ItemStack.EMPTY;
     private Slot bl_clicked;
     private boolean handlingRightClick;
-    protected final List<CustomSlotWidget> guiSlots = new ArrayList<>();
+    private final List<CustomSlotWidget> guiSlots = new ArrayList<>();
+    private final ArrayListMultimap<SlotSemantic, CustomSlotWidget> guiSlotsBySemantic = ArrayListMultimap.create();
+    private final Map<String, TextOverride> textOverrides = new HashMap<>();
+    private final EnumSet<SlotSemantic> hiddenSlots = EnumSet.noneOf(SlotSemantic.class);
+    protected final WidgetContainer widgets;
+    protected final ScreenStyle style;
 
-    public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title);
+
+        // Pre-initialize these fields since they're used in our constructors, but Vanilla only initializes them
+        // in the init method
+        this.itemRenderer = Minecraft.getInstance().getItemRenderer();
+        this.font = Minecraft.getInstance().fontRenderer;
+
+        this.style = Objects.requireNonNull(style, "style");
+        this.widgets = new WidgetContainer(style);
+        this.widgets.add("verticalToolbar", this.verticalToolbar = new VerticalButtonBar());
+
+        if (style.getBackground() != null) {
+            this.xSize = style.getBackground().getSrcWidth();
+            this.ySize = style.getBackground().getSrcHeight();
+        }
     }
 
     @Override
-    public void init() {
+    @OverridingMethodsMustInvokeSuper
+    protected void init() {
         super.init();
+        positionSlots(style);
 
-        final List<Slot> slots = this.getInventorySlots();
-        slots.removeIf(slot -> slot instanceof SlotME);
+        widgets.populateScreen(this::addButton, getBounds(true), this);
+    }
 
-        for (final InternalSlotME me : this.meSlots) {
-            slots.add(new SlotME(me));
+    private void positionSlots(ScreenStyle style) {
+
+        for (Map.Entry<SlotSemantic, SlotPosition> entry : style.getSlots().entrySet()) {
+            // Do not position slots that are hidden
+            if (hiddenSlots.contains(entry.getKey())) {
+                continue;
+            }
+
+            List<Slot> slots = container.getSlots(entry.getKey());
+            for (int i = 0; i < slots.size(); i++) {
+                Slot slot = slots.get(i);
+
+                Point pos = getSlotPosition(entry.getValue(), i);
+
+                slot.xPos = pos.getX();
+                slot.yPos = pos.getY();
+            }
+
+            // Do the same for GUI-only slots, which are used in Fluid-related UIs that do not deal with normal slots
+            List<CustomSlotWidget> guiSlots = guiSlotsBySemantic.get(entry.getKey());
+            if (guiSlots != null) {
+                for (int i = 0; i < guiSlots.size(); i++) {
+                    CustomSlotWidget guiSlot = guiSlots.get(i);
+                    Point pos = getSlotPosition(entry.getValue(), i);
+                    guiSlot.setPos(pos);
+                }
+            }
+        }
+
+    }
+
+    private Point getSlotPosition(SlotPosition position, int semanticIndex) {
+        Point pos = position.resolve(getBounds(false));
+
+        SlotGridLayout grid = position.getGrid();
+        if (grid != null) {
+            pos = grid.getPosition(pos.getX(), pos.getY(), semanticIndex);
+        }
+        return pos;
+    }
+
+    private Rectangle2d getBounds(boolean absolute) {
+        if (absolute) {
+            return new Rectangle2d(guiLeft, guiTop, xSize, ySize);
+        } else {
+            return new Rectangle2d(0, 0, xSize, ySize);
         }
     }
 
@@ -130,30 +190,84 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return this.container.inventorySlots;
     }
 
+    protected final void addSlot(CustomSlotWidget slot, SlotSemantic semantic) {
+        guiSlots.add(slot);
+        guiSlotsBySemantic.put(semantic, slot);
+    }
+
+    /**
+     * This method is called directly before rendering the screen, and should be used to perform layout, and other
+     * rendering-related updates.
+     */
+    @OverridingMethodsMustInvokeSuper
+    protected void updateBeforeRender() {
+    }
+
     @Override
     public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        this.updateBeforeRender();
+        this.widgets.updateBeforeRender();
+
         super.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(this.guiLeft, this.guiTop, 0.0F);
+        matrixStack.push();
+        matrixStack.translate(this.guiLeft, this.guiTop, 0.0F);
         RenderSystem.enableDepthTest();
         for (final CustomSlotWidget c : this.guiSlots) {
             this.drawGuiSlot(matrixStack, c, mouseX, mouseY, partialTicks);
         }
         RenderSystem.disableDepthTest();
         for (final CustomSlotWidget c : this.guiSlots) {
-            this.drawTooltip(matrixStack, c, mouseX - this.guiLeft, mouseY - this.guiTop);
+            Tooltip tooltip = c.getTooltip(mouseX, mouseY);
+            if (tooltip != null) {
+                drawTooltip(matrixStack, tooltip, mouseX, mouseY);
+            }
         }
-        RenderSystem.popMatrix();
+        matrixStack.pop();
         RenderSystem.enableDepthTest();
 
+        renderTooltips(matrixStack, mouseX, mouseY);
+
+        if (AEConfig.instance().isShowDebugGuiOverlays()) {
+            // Show a green overlay on exclusion zones
+            List<Rectangle2d> exclusionZones = getExclusionZones();
+            for (Rectangle2d rectangle2d : exclusionZones) {
+                fillRect(matrixStack, rectangle2d, 0x7f00FF00);
+            }
+
+            hLine(matrixStack, guiLeft, guiLeft + xSize - 1, guiTop, 0xFFFFFFFF);
+            hLine(matrixStack, guiLeft, guiLeft + xSize - 1, guiTop + ySize - 1, 0xFFFFFFFF);
+            vLine(matrixStack, guiLeft, guiTop, guiTop + ySize, 0xFFFFFFFF);
+            vLine(matrixStack, guiLeft + xSize - 1, guiTop, guiTop + ySize - 1, 0xFFFFFFFF);
+        }
+    }
+
+    /**
+     * Renders a potential tooltip (from one of the possible tooltip sources)
+     */
+    private void renderTooltips(MatrixStack matrixStack, int mouseX, int mouseY) {
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
 
-        for (final Object c : this.buttons) {
+        // The line above should have render a tooltip if this condition is true, and no
+        // additional tooltips should be shown
+        if (this.hoveredSlot != null && this.hoveredSlot.getHasStack()) {
+            return;
+        }
+
+        for (Widget c : this.buttons) {
             if (c instanceof ITooltip) {
-                this.drawTooltip(matrixStack, (ITooltip) c, mouseX, mouseY);
+                Tooltip tooltip = ((ITooltip) c).getTooltip(mouseX, mouseY);
+                if (tooltip != null) {
+                    drawTooltip(matrixStack, tooltip, mouseX, mouseY);
+                }
             }
+        }
+
+        // Widget-container uses screen-relative coordinates while the rest uses window-relative
+        Tooltip tooltip = this.widgets.getTooltip(mouseX - guiLeft, mouseY - guiTop);
+        if (tooltip != null) {
+            drawTooltip(matrixStack, tooltip, mouseX, mouseY);
         }
     }
 
@@ -176,38 +290,16 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
-    private void drawTooltip(MatrixStack matrixStack, ITooltip tooltip, int mouseX, int mouseY) {
-        final int x = tooltip.getTooltipAreaX();
-        int y = tooltip.getTooltipAreaY();
-
-        if (x < mouseX && x + tooltip.getTooltipAreaWidth() > mouseX && tooltip.isTooltipAreaVisible()) {
-            if (y < mouseY && y + tooltip.getTooltipAreaHeight() > mouseY) {
-                if (y < 15) {
-                    y = 15;
-                }
-
-                final ITextComponent msg = tooltip.getTooltipMessage();
-                this.drawTooltip(matrixStack, x + 11, y + 4, msg);
-            }
-        }
-    }
-
-    protected void drawTooltip(MatrixStack matrices, int x, int y, ITextComponent message) {
-        String tooltipText = message.getString();
-
-        if (!tooltipText.isEmpty()) {
-            String[] lines = tooltipText.split("\n"); // FIXME FABRIC
-            List<ITextComponent> textLines = Arrays.stream(lines).map(StringTextComponent::new)
-                    .collect(Collectors.toList());
-            this.drawTooltip(matrices, x, y, textLines);
-        }
+    private void drawTooltip(MatrixStack matrixStack, Tooltip tooltip, int mouseX, int mouseY) {
+        // Only difference between this and the Vanilla function is that we can specify a maximum width here
+        GuiUtils.drawHoveringText(matrixStack, tooltip.getContent(), mouseX, mouseY, width, height, 200, font);
     }
 
     // FIXME FABRIC: move out to json (?)
     private static final Style TOOLTIP_HEADER = Style.EMPTY.applyFormatting(TextFormatting.WHITE);
     private static final Style TOOLTIP_BODY = Style.EMPTY.applyFormatting(TextFormatting.GRAY);
 
-    protected void drawTooltip(MatrixStack matrices, int x, int y, List<ITextComponent> lines) {
+    public void drawTooltip(MatrixStack matrices, int x, int y, List<ITextComponent> lines) {
         if (lines.isEmpty()) {
             return;
         }
@@ -216,7 +308,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         // All lines after the first are colored gray
         List<ITextComponent> styledLines = new ArrayList<>(lines.size());
         for (int i = 0; i < lines.size(); i++) {
-            Style style = (i == 0) ? TOOLTIP_HEADER : TOOLTIP_BODY;
+            Style style = i == 0 ? TOOLTIP_HEADER : TOOLTIP_BODY;
             styledLines.add(lines.get(i).deepCopy().modifyStyle(s -> style));
         }
 
@@ -226,51 +318,102 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected final void drawGuiContainerForegroundLayer(MatrixStack matrixStack, final int x, final int y) {
-        final int ox = this.guiLeft; // (width - xSize) / 2;
-        final int oy = this.guiTop; // (height - ySize) / 2;
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        final int ox = this.guiLeft;
+        final int oy = this.guiTop;
 
-        if (this.getScrollBar() != null) {
-            this.getScrollBar().draw(matrixStack, this);
-        }
+        widgets.drawForegroundLayer(matrixStack, getBlitOffset(), getBounds(false), new Point(x - ox, y - oy));
 
         this.drawFG(matrixStack, ox, oy, x, y);
+
+        if (style != null) {
+            for (Map.Entry<String, Text> entry : style.getText().entrySet()) {
+                // Process text overrides
+                TextOverride override = textOverrides.get(entry.getKey());
+                drawText(matrixStack, entry.getValue(), override);
+            }
+        }
     }
 
-    public abstract void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY);
+    private void drawText(MatrixStack matrixStack, Text text, @Nullable TextOverride override) {
+        // Don't draw if the screen decided to hide this
+        if (override != null && override.isHidden()) {
+            return;
+        }
+
+        int color = style.getColor(text.getColor()).toARGB();
+
+        // Allow overrides for which content is shown
+        ITextComponent content = text.getText();
+        if (override != null && override.getContent() != null) {
+            content = override.getContent();
+        }
+
+        Point pos = text.getPosition().resolve(getBounds(false));
+
+        if (text.isCenterHorizontally()) {
+            int textWidth = this.font.getStringPropertyWidth(content);
+            pos = pos.move(-textWidth / 2, 0);
+        }
+
+        this.font.drawText(
+                matrixStack,
+                content,
+                pos.getX(),
+                pos.getY(),
+                color);
+    }
+
+    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+    }
 
     @Override
     protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
             final int y) {
-        final int ox = this.guiLeft; // (width - xSize) / 2;
-        final int oy = this.guiTop; // (height - ySize) / 2;
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.drawBG(matrixStack, ox, oy, x, y, f);
 
-        final List<Slot> slots = this.getInventorySlots();
-        for (final Slot slot : slots) {
+        this.drawBG(matrixStack, guiLeft, guiTop, x, y, f);
+
+        widgets.drawBackgroundLayer(matrixStack, getBlitOffset(), getBounds(true), new Point(x - guiLeft, y - guiTop));
+
+        for (final Slot slot : this.getInventorySlots()) {
             if (slot instanceof IOptionalSlot) {
-                final IOptionalSlot optionalSlot = (IOptionalSlot) slot;
-                if (optionalSlot.isRenderDisabled()) {
-                    final AppEngSlot aeSlot = (AppEngSlot) slot;
-                    if (aeSlot.isSlotEnabled()) {
-                        blit(matrixStack, ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1,
-                                optionalSlot.getSourceY() - 1, 18, 18);
-                    } else {
-                        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.4F);
-                        RenderSystem.enableBlend();
-                        blit(matrixStack, ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1,
-                                optionalSlot.getSourceY() - 1, 18, 18);
-                        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                    }
-                }
+                drawOptionalSlotBackground(matrixStack, (IOptionalSlot) slot, false);
             }
         }
 
         for (final CustomSlotWidget slot : this.guiSlots) {
-            slot.drawBackground(matrixStack, ox, oy, getBlitOffset());
+            if (slot instanceof IOptionalSlot) {
+                drawOptionalSlotBackground(matrixStack, (IOptionalSlot) slot, true);
+            }
         }
 
+    }
+
+    private void drawOptionalSlotBackground(MatrixStack matrixStack, IOptionalSlot slot, boolean alwaysDraw) {
+        // If a slot is optional and doesn't currently render, we still need to provide a background for it
+        if (alwaysDraw || slot.isRenderDisabled()) {
+            // If the slot is disabled, shade the background overlay
+            float alpha = slot.isSlotEnabled() ? 1.0f : 0.4f;
+
+            Point pos = slot.getBackgroundPos();
+
+            Icon.SLOT_BACKGROUND.getBlitter()
+                    .dest(guiLeft + pos.getX(), guiTop + pos.getY())
+                    .color(1, 1, 1, alpha)
+                    .blit(matrixStack, getBlitOffset());
+        }
+    }
+
+    // Convert global mouse x,y to relative Point
+    private Point getMousePoint(double x, double y) {
+        return new Point((int) Math.round(x - guiLeft), (int) Math.round(y - guiTop));
+    }
+
+    @Override
+    public boolean mouseScrolled(double x, double y, double wheelDelta) {
+        if (wheelDelta != 0 && widgets.onMouseWheel(getMousePoint(x, y), wheelDelta)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -281,8 +424,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         if (btn == 1) {
             handlingRightClick = true;
             try {
-                for (final Object o : this.buttons) {
-                    final Widget widget = (Widget) o;
+                for (Widget widget : this.buttons) {
                     if (widget.isMouseOver(xCoord, yCoord)) {
                         return super.mouseClicked(xCoord, yCoord, 0);
                     }
@@ -292,18 +434,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             }
         }
 
-        for (CustomSlotWidget slot : this.guiSlots) {
-            if (this.isPointInRegion(slot.getTooltipAreaX(), slot.getTooltipAreaY(), slot.getTooltipAreaWidth(),
-                    slot.getTooltipAreaHeight(), xCoord, yCoord) && slot.canClick(getPlayer())) {
-                slot.slotClicked(getPlayer().inventory.getItemStack(), btn);
-            }
+        CustomSlotWidget slot = getGuiSlotAt(xCoord, yCoord);
+        if (slot != null) {
+            slot.slotClicked(getPlayer().inventory.getItemStack(), btn);
         }
 
-        // Forward left mouse button down events to the scrollbar
-        if (btn == 0 && this.getScrollBar() != null) {
-            if (this.getScrollBar().mouseDown(xCoord - this.guiLeft, yCoord - this.guiTop)) {
-                return true;
-            }
+        if (widgets.onMouseDown(getMousePoint(xCoord, yCoord), btn)) {
+            return true;
         }
 
         return super.mouseClicked(xCoord, yCoord, btn);
@@ -311,11 +448,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        // Forward left mouse button up events to the scrollbar
-        if (button == 0 && this.getScrollBar() != null) {
-            if (this.getScrollBar().mouseUp(mouseX - this.guiLeft, mouseY - this.guiTop)) {
-                return true;
-            }
+        if (widgets.onMouseUp(getMousePoint(mouseX, mouseY), button)) {
+            return true;
         }
 
         return super.mouseReleased(mouseX, mouseY, button);
@@ -326,9 +460,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         final Slot slot = this.getSlot((int) mouseX, (int) mouseY);
         final ItemStack itemstack = getPlayer().inventory.getItemStack();
 
-        if (this.getScrollBar() != null) {
-            // FIXME: Coordinate system of mouseX/mouseY is unclear
-            this.getScrollBar().mouseDragged((int) mouseX - this.guiLeft, (int) mouseY - this.guiTop);
+        Point mousePos = new Point((int) Math.round(mouseX - guiLeft), (int) Math.round(mouseY - guiTop));
+        if (widgets.onMouseDrag(mousePos, mouseButton)) {
+            return true;
         }
 
         if (slot instanceof FakeSlot && !itemstack.isEmpty()) {
@@ -348,11 +482,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
-    // TODO 1.9.4 aftermath - Whole ClickType thing, to be checked.
     @Override
-    protected void handleMouseClick(final Slot slot, final int slotIdx, final int mouseButton,
+    protected void handleMouseClick(@Nullable Slot slot, final int slotIdx, final int mouseButton,
             final ClickType clickType) {
-        final PlayerEntity player = getPlayer();
+
+        // Do not allow clicks on disabled player inventory slots
+        if (slot instanceof DisabledSlot) {
+            return;
+        }
 
         if (slot instanceof FakeSlot) {
             final InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
@@ -384,7 +521,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 action = InventoryAction.CRAFT_SHIFT;
             } else {
                 // Craft stack on right-click, craft single on left-click
-                action = (mouseButton == 1) ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
+                action = mouseButton == 1 ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
             }
 
             final InventoryActionPacket p = new InventoryActionPacket(action, slotIdx, 0);
@@ -393,107 +530,15 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             return;
         }
 
-        if (InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
-            if (this.enableSpaceClicking()) {
-                IAEItemStack stack = null;
-                if (slot instanceof SlotME) {
-                    stack = ((SlotME) slot).getAEStack();
-                }
-
-                int slotNum = this.getInventorySlots().size();
-
-                if (!(slot instanceof SlotME) && slot != null) {
-                    slotNum = slot.slotNumber;
-                }
-
-                ((AEBaseContainer) this.container).setTargetStack(stack);
-                final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
-                NetworkHandler.instance().sendToServer(p);
-                return;
-            }
-        }
-
-        if (slot instanceof SlotDisconnected) {
-            InventoryAction action = null;
-
-            switch (clickType) {
-                case PICKUP: // pickup / set-down.
-                    action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE
-                            : InventoryAction.PICKUP_OR_SET_DOWN;
-                    break;
-                case QUICK_MOVE:
-                    action = (mouseButton == 1) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
-                    break;
-
-                case CLONE: // creative dupe:
-
-                    if (player.abilities.isCreativeMode) {
-                        action = InventoryAction.CREATIVE_DUPLICATE;
-                    }
-
-                    break;
-
-                default:
-                case THROW: // drop item:
-            }
-
-            if (action != null) {
-                final InventoryActionPacket p = new InventoryActionPacket(action, getSlotIndex(slot),
-                        ((SlotDisconnected) slot).getSlot().getId());
-                NetworkHandler.instance().sendToServer(p);
-            }
-
+        if (slot != null &&
+                InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
+            int slotNum = slot.slotNumber;
+            final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
+            NetworkHandler.instance().sendToServer(p);
             return;
         }
 
-        if (slot instanceof SlotME) {
-            InventoryAction action = null;
-            IAEItemStack stack = null;
-
-            switch (clickType) {
-                case PICKUP: // pickup / set-down.
-                    action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE
-                            : InventoryAction.PICKUP_OR_SET_DOWN;
-                    stack = ((SlotME) slot).getAEStack();
-
-                    if (stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0
-                            && player.inventory.getItemStack().isEmpty()) {
-                        action = InventoryAction.AUTO_CRAFT;
-                    }
-
-                    break;
-                case QUICK_MOVE:
-                    action = (mouseButton == 1) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
-                    stack = ((SlotME) slot).getAEStack();
-                    break;
-
-                case CLONE: // creative dupe:
-
-                    stack = ((SlotME) slot).getAEStack();
-                    if (stack != null && stack.isCraftable()) {
-                        action = InventoryAction.AUTO_CRAFT;
-                    } else if (player.abilities.isCreativeMode) {
-                        final IAEItemStack slotItem = ((SlotME) slot).getAEStack();
-                        if (slotItem != null) {
-                            action = InventoryAction.CREATIVE_DUPLICATE;
-                        }
-                    }
-                    break;
-
-                default:
-                case THROW: // drop item:
-            }
-
-            if (action != null) {
-                this.container.setTargetStack(stack);
-                final InventoryActionPacket p = new InventoryActionPacket(action, this.getInventorySlots().size(), 0);
-                NetworkHandler.instance().sendToServer(p);
-            }
-
-            return;
-        }
-
-        if (!this.disableShiftClick && hasShiftDown() && mouseButton == 0) {
+        if (slot != null && !this.disableShiftClick && hasShiftDown() && mouseButton == 0) {
             this.disableShiftClick = true;
 
             if (this.dbl_whichItem.isEmpty() || this.bl_clicked != slot
@@ -501,18 +546,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 // some simple double click logic.
                 this.bl_clicked = slot;
                 this.dbl_clickTimer = Stopwatch.createStarted();
-                if (slot != null) {
-                    this.dbl_whichItem = slot.getHasStack() ? slot.getStack().copy() : ItemStack.EMPTY;
-                } else {
-                    this.dbl_whichItem = ItemStack.EMPTY;
-                }
+                this.dbl_whichItem = slot.getHasStack() ? slot.getStack().copy() : ItemStack.EMPTY;
             } else if (!this.dbl_whichItem.isEmpty()) {
                 // a replica of the weird broken vanilla feature.
 
                 final List<Slot> slots = this.getInventorySlots();
                 for (final Slot inventorySlot : slots) {
                     if (inventorySlot != null && inventorySlot.canTakeStack(getPlayer()) && inventorySlot.getHasStack()
-                            && inventorySlot.inventory == slot.inventory
+                            && inventorySlot.isSameInventory(slot)
                             && Container.canAddItemToSlot(inventorySlot, this.dbl_whichItem, true)) {
                         this.handleMouseClick(inventorySlot, inventorySlot.slotNumber, 0, ClickType.QUICK_MOVE);
                     }
@@ -537,22 +578,17 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return Preconditions.checkNotNull(getMinecraft().player);
     }
 
-    protected int getSlotIndex(Slot slot) {
-        return slot.slotIndex;
-    }
-
     protected boolean checkHotbarKeys(final InputMappings.Input input) {
         final Slot theSlot = this.getSlotUnderMouse();
 
         if (getPlayer().inventory.getItemStack().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
-                if (isActiveAndMatches(getMinecraft().gameSettings.keyBindsHotbar[j], input)) {
+                if (getMinecraft().gameSettings.keyBindsHotbar[j].isActiveAndMatches(input)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
-                        if (getSlotIndex(s) == j && s.inventory == ((AEBaseContainer) this.container).getPlayerInv()) {
-                            if (!s.canTakeStack(((AEBaseContainer) this.container).getPlayerInv().player)) {
-                                return false;
-                            }
+                        if (s.getSlotIndex() == j && s.inventory == this.container.getPlayerInventory()
+                                && !s.canTakeStack(this.container.getPlayerInventory().player)) {
+                            return false;
                         }
                     }
 
@@ -561,8 +597,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                         return true;
                     } else {
                         for (final Slot s : slots) {
-                            if (getSlotIndex(s) == j
-                                    && s.inventory == ((AEBaseContainer) this.container).getPlayerInv()) {
+                            if (s.getSlotIndex() == j
+                                    && s.inventory == this.container.getPlayerInventory()) {
                                 NetworkHandler.instance()
                                         .sendToServer(new SwapSlotsPacket(s.slotNumber, theSlot.slotNumber));
                                 return true;
@@ -576,14 +612,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return false;
     }
 
-    private boolean isActiveAndMatches(KeyBinding keyBinding, InputMappings.Input input) {
-        return !keyBinding.isInvalid() && keyBinding.matchesKey(input.getKeyCode(), -1);
-    }
-
     protected Slot getSlot(final int mouseX, final int mouseY) {
         final List<Slot> slots = this.getInventorySlots();
         for (final Slot slot : slots) {
-            // isPointInRegion
             if (this.isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY)) {
                 return slot;
             }
@@ -592,50 +623,20 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return null;
     }
 
-    public abstract void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-            float partialTicks);
-
-    @Override
-    public boolean mouseScrolled(double x, double y, double wheelDelta) {
-        if (wheelDelta != 0 && hasShiftDown()) {
-            this.mouseWheelEvent(x, y, wheelDelta / Math.abs(wheelDelta));
-            return true;
-        } else if (wheelDelta != 0 && this.getScrollBar() != null) {
-            this.getScrollBar().wheel(wheelDelta);
-            return true;
-        }
-        return false;
-    }
-
-    private void mouseWheelEvent(final double x, final double y, final double wheel) {
-        final Slot slot = this.getSlot((int) x, (int) y);
-        if (slot instanceof SlotME) {
-            final IAEItemStack item = ((SlotME) slot).getAEStack();
-            if (item != null) {
-                this.container.setTargetStack(item);
-                final InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
-                final int times = (int) Math.abs(wheel);
-                final int inventorySize = this.getInventorySlots().size();
-                for (int h = 0; h < times; h++) {
-                    final InventoryActionPacket p = new InventoryActionPacket(direction, inventorySize, 0);
-                    NetworkHandler.instance().sendToServer(p);
-                }
-            }
+    public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
+            float partialTicks) {
+        if (style.getBackground() != null) {
+            style.getBackground().dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
         }
     }
 
-    protected boolean enableSpaceClicking() {
-        return true;
-    }
-
-    public void bindTexture(final String base, final String file) {
-        final ResourceLocation loc = new ResourceLocation(base, "textures/" + file);
-        getMinecraft().getTextureManager().bindTexture(loc);
-    }
-
-    protected void drawItem(final int x, final int y, final ItemStack is) {
+    public void drawItem(final int x, final int y, final ItemStack is) {
         this.itemRenderer.zLevel = 100.0F;
+
+        // FIXME I dont think this is needed anymore...
+        RenderHelper.enableStandardItemLighting();
         this.itemRenderer.renderItemAndEffectIntoGUI(is, x, y);
+        RenderHelper.disableStandardItemLighting();
 
         this.itemRenderer.zLevel = 0.0F;
     }
@@ -648,143 +649,43 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      * This overrides the base-class method through some access transformer hackery...
      */
     @Override
-    public void moveItems(MatrixStack matrices, Slot s) {
-        if (s instanceof SlotME) {
-
+    protected void moveItems(MatrixStack matrices, Slot s) {
+        if (s instanceof AppEngSlot) {
             try {
-                if (!this.isPowered()) {
-                    fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
-                }
-
-                // Annoying but easier than trying to splice into render item
-                super.moveItems(matrices, new Size1Slot(s));
-
-                this.stackSizeRenderer.renderStackSize(this.font, ((SlotME) s).getAEStack(), s.xPos, s.yPos);
-
+                renderAppEngSlot(matrices, (AppEngSlot) s);
             } catch (final Exception err) {
-                AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err.toString());
+                AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
             }
-
-            return;
-        } else if (s instanceof IMEFluidSlot && ((IMEFluidSlot) s).shouldRenderAsFluid()) {
-            final IMEFluidSlot slot = (IMEFluidSlot) s;
-            final IAEFluidStack fs = slot.getAEFluidStack();
-
-            if (fs != null && this.isPowered()) {
-                List<FluidRenderFace> faces = new ArrayList<>();
-                faces.add(FluidRenderFace.createFlatFaceZ(0, 0, 0, 16, 16, 0, 1 / 16., false, false));
-
-                matrices.push();
-                matrices.translate(s.xPos, s.yPos, 0);
-
-                FluidVolume fluidStack = fs.getFluidStack();
-                fluidStack.render(faces, FluidVolumeRenderer.VCPS, matrices);
-                RenderSystem.runAsFancy(FluidVolumeRenderer.VCPS::draw);
-                matrices.pop();
-
-                this.fluidStackSizeRenderer.renderStackSize(this.font, fs, s.xPos, s.yPos);
-            } else if (!this.isPowered()) {
-                fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
-            }
-
-            return;
         } else {
-            try {
-                final ItemStack is = s.getStack();
-                if (s instanceof AppEngSlot && (((AppEngSlot) s).renderIconWithItem() || is.isEmpty())
-                        && (((AppEngSlot) s).shouldDisplay())) {
-                    final AppEngSlot aes = (AppEngSlot) s;
-                    if (aes.getIcon() >= 0) {
-                        this.bindTexture("guis/states.png");
-
-                        try {
-                            final int uv_y = aes.getIcon() / 16;
-                            final int uv_x = aes.getIcon() - uv_y * 16;
-
-                            RenderSystem.enableBlend();
-                            RenderSystem.enableTexture();
-                            RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                            RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-                            final float par1 = aes.xPos;
-                            final float par2 = aes.yPos;
-                            final float par3 = uv_x * 16;
-                            final float par4 = uv_y * 16;
-
-                            final Tessellator tessellator = Tessellator.getInstance();
-                            final BufferBuilder vb = tessellator.getBuffer();
-
-                            vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX);
-
-                            final float f1 = 0.00390625F;
-                            final float f = 0.00390625F;
-                            final float par6 = 16;
-                            vb.pos(par1 + 0, par2 + par6, getBlitOffset())
-                                    .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon())
-                                    .tex((par3 + 0) * f, (par4 + par6) * f1).endVertex();
-                            final float par5 = 16;
-                            vb.pos(par1 + par5, par2 + par6, getBlitOffset())
-                                    .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon())
-                                    .tex((par3 + par5) * f, (par4 + par6) * f1).endVertex();
-                            vb.pos(par1 + par5, par2 + 0, getBlitOffset())
-                                    .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon())
-                                    .tex((par3 + par5) * f, (par4 + 0) * f1).endVertex();
-                            vb.pos(par1 + 0, par2 + 0, getBlitOffset())
-                                    .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon())
-                                    .tex((par3 + 0) * f, (par4 + 0) * f1).endVertex();
-                            tessellator.draw();
-
-                        } catch (final Exception err) {
-                            err.printStackTrace();
-                        }
-                    }
-                }
-
-                if (!is.isEmpty() && s instanceof AppEngSlot) {
-                    AppEngSlot aeSlot = (AppEngSlot) s;
-                    if (aeSlot.getIsValid() == CalculatedValidity.NotAvailable) {
-                        boolean isValid = s.isItemValid(is) || s instanceof OutputSlot
-                                || s instanceof AppEngCraftingSlot || s instanceof DisabledSlot
-                                || s instanceof InaccessibleSlot || s instanceof FakeSlot
-                                || s instanceof RestrictedInputSlot || s instanceof SlotDisconnected;
-                        if (isValid && s instanceof RestrictedInputSlot) {
-                            try {
-                                isValid = ((RestrictedInputSlot) s).isValid(is, getMinecraft().world);
-                            } catch (final Exception err) {
-                                AELog.debug(err);
-                            }
-                        }
-                        aeSlot.setIsValid(isValid ? CalculatedValidity.Valid : CalculatedValidity.Invalid);
-                    }
-
-                    if (aeSlot.getIsValid() == CalculatedValidity.Invalid) {
-                        setBlitOffset(100);
-                        this.itemRenderer.zLevel = 100.0F;
-
-                        fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66ff6666);
-
-                        setBlitOffset(0);
-                        this.itemRenderer.zLevel = 0.0F;
-                    }
-                }
-
-                if (s instanceof AppEngSlot) {
-                    ((AppEngSlot) s).setDisplay(true);
-                    super.moveItems(matrices, s);
-                } else {
-                    super.moveItems(matrices, s);
-                }
-
-                return;
-            } catch (final Exception err) {
-                AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err.toString());
-            }
+            super.moveItems(matrices, s);
         }
-        // do the usual for non-ME Slots.
-        super.moveItems(matrices, s);
     }
 
-    protected boolean isPowered() {
-        return true;
+    private void renderAppEngSlot(MatrixStack matrices, AppEngSlot s) {
+        final ItemStack is = s.getStack();
+
+        // If the slot has a background icon, render it, but only if the slot is empty
+        // or it requests the icon to be always drawn
+        if ((s.renderIconWithItem() || is.isEmpty()) && s.isSlotEnabled() && s.getIcon() != null) {
+            s.getIcon().getBlitter()
+                    .dest(s.xPos, s.yPos)
+                    .opacity(s.getOpacityOfIcon())
+                    .blit(matrices, getBlitOffset());
+        }
+
+        // Draw a red background for slots that are in an invalid state
+        if (!s.isValid()) {
+            fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66ff6666);
+        }
+
+        // Makes it so the first call to s.getStack will return getDisplayStack instead, the finally is there
+        // just for making absolutly sure the flag gets reset (it should be reset inside of getStack)
+        s.setRendering(true);
+        try {
+            super.moveItems(matrices, s);
+        } finally {
+            s.setRendering(false);
+        }
     }
 
     public void bindTexture(final String file) {
@@ -792,29 +693,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         getMinecraft().getTextureManager().bindTexture(loc);
     }
 
-    public void bindTexture(final ResourceLocation loc) {
-        getMinecraft().getTextureManager().bindTexture(loc);
-    }
-
-    protected Scrollbar getScrollBar() {
-        return this.myScrollBar;
-    }
-
-    protected void setScrollBar(final Scrollbar myScrollBar) {
-        this.myScrollBar = myScrollBar;
-    }
-
-    protected List<InternalSlotME> getMeSlots() {
-        return this.meSlots;
-    }
-
     @Override
     public void tick() {
         super.tick();
 
-        if (this.getScrollBar() != null) {
-            this.getScrollBar().tick();
-        }
+        widgets.tick();
 
         for (IGuiEventListener child : children) {
             if (child instanceof ITickingWidget) {
@@ -830,26 +713,126 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return handlingRightClick;
     }
 
-    public List<Rectangle> getExclusionZones() {
-        return Lists.newArrayList(new Rectangle(guiLeft, guiTop, xSize, ySize));
+    /**
+     * Adds a button to the vertical toolbar to the left of the screen and returns that button to the caller. The button
+     * will automatically be positioned. This button will automatically be re-added to the screen when it's resized.
+     */
+    protected final <B extends Button> B addToLeftToolbar(B button) {
+        verticalToolbar.add(button);
+        return button;
     }
 
-    // These are things that Forge adds
-    public Minecraft getMinecraft() {
-        return Preconditions.checkNotNull(minecraft);
+    /**
+     * Returns rectangles in UI-space that define areas of the screen occluded by this GUI, in addition to the rectangle
+     * defined by [guiLeft, guiTop, xSize, ySize], which is assumed to be occluded. This is used for moving JEI items
+     * out of the way.
+     */
+    public List<Rectangle2d> getExclusionZones() {
+        List<Rectangle2d> result = new ArrayList<>(2);
+        widgets.addExclusionZones(result, getBounds(true));
+        return result;
     }
 
-    @javax.annotation.Nullable
-    public Slot getSlotUnderMouse() {
-        return this.hoveredSlot;
+    protected void fillRect(MatrixStack matrices, Rectangle2d rect, int color) {
+        fill(matrices, rect.getX(), rect.getY(), rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight(), color);
     }
 
-    public int getGuiLeft() {
-        return guiLeft;
+    private TextOverride getOrCreateTextOverride(String id) {
+        return textOverrides.computeIfAbsent(id, x -> new TextOverride());
     }
 
-    public int getGuiTop() {
-        return guiTop;
+    /**
+     * Hides (or shows) a text that is defined in this screen's style file.
+     */
+    protected final void setTextHidden(String id, boolean hidden) {
+        getOrCreateTextOverride(id).setHidden(hidden);
     }
 
+    /**
+     * Hides (or shows) a group of slots based on semantic.
+     */
+    protected final void setSlotsHidden(SlotSemantic semantic, boolean hidden) {
+        if (hidden) {
+            if (hiddenSlots.add(semantic)) {
+                // This isn't the greatest tactic but allows us to do this for every slot-type.
+                // This approach has been used to hide slots since 1.7
+                for (Slot slot : container.getSlots(semantic)) {
+                    slot.xPos = HIDDEN_SLOT_POS.getX();
+                    slot.yPos = HIDDEN_SLOT_POS.getY();
+                }
+            }
+        } else if (hiddenSlots.remove(semantic) && style != null) {
+            positionSlots(style);
+        }
+    }
+
+    /**
+     * Gets the GUI slot under the given coordinates.
+     *
+     * @param x X coordinate in window space.
+     * @param y Y coordinate in window space.
+     */
+    @Nullable
+    private CustomSlotWidget getGuiSlotAt(double x, double y) {
+        for (CustomSlotWidget slot : this.guiSlots) {
+            if (this.isPointInRegion(slot.getTooltipAreaX(), slot.getTooltipAreaY(), slot.getTooltipAreaWidth(),
+                    slot.getTooltipAreaHeight(), x, y) && slot.canClick(getPlayer())) {
+                return slot;
+            }
+        }
+
+        return null;
+    }
+
+    public List<CustomSlotWidget> getGuiSlots() {
+        return Collections.unmodifiableList(guiSlots);
+    }
+
+    /**
+     * Changes the text that will be displayed for a text defined in this screen's style file.
+     */
+    protected final void setTextContent(String id, ITextComponent content) {
+        getOrCreateTextOverride(id).setContent(content);
+    }
+
+    public ScreenStyle getStyle() {
+        return style;
+    }
+
+    /**
+     * Return a Vanilla ItemStack or FluidStack if there is one at the given window coordinates. This is used by JEI to
+     * allow the U and R hotkeys to work for ingredients (such as fluids) that are not stored in normal slots.
+     * <p/>
+     * The given coordinates are in window space.
+     */
+    @Nullable
+    public Object getIngredientUnderMouse(double mouseX, double mouseY) {
+        IIngredientSupplier ingredientSupplier = null;
+
+        // First search for custom widgets
+        CustomSlotWidget guiSlot = getGuiSlotAt(mouseX, mouseY);
+        if (guiSlot instanceof IIngredientSupplier) {
+            ingredientSupplier = (IIngredientSupplier) guiSlot;
+        }
+
+        // Then any of the children
+        if (ingredientSupplier == null) {
+            for (IGuiEventListener child : super.children) {
+                if (child instanceof IIngredientSupplier && child.isMouseOver(mouseX, mouseY)) {
+                    ingredientSupplier = (IIngredientSupplier) child;
+                    break;
+                }
+            }
+        }
+
+        Object ingredient = null;
+        if (ingredientSupplier != null) {
+            ingredient = ingredientSupplier.getFluidIngredient();
+            if (ingredient == null) {
+                ingredient = ingredientSupplier.getItemIngredient();
+            }
+        }
+
+        return ingredient;
+    }
 }

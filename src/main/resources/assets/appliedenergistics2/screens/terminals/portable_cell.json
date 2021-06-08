@@ -1,0 +1,19 @@
+{
+  "$schema": "../schema.json",
+  "includes": ["item_terminal.json"],
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.appliedenergistics2.PortableCell"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  },
+  "terminalStyle": {
+    "maxRows": 3,
+    "supportsAutoCrafting": false
+  }
+}

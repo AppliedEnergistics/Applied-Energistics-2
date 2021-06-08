@@ -135,7 +135,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
             this.addItem(sia, r.getRecipeOutput());
 
             for (GrinderOptionalResult optionalResult : r.getOptionalResults()) {
-                final float chance = (Platform.getRandomInt() % 2000) / 2000.0f;
+                final float chance = Platform.getRandomInt() % 2000 / 2000.0f;
 
                 if (chance <= optionalResult.getChance()) {
                     this.addItem(sia, optionalResult.getResult());

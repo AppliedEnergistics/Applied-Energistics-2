@@ -28,9 +28,13 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import net.minecraftforge.items.IItemHandler;
 
+import appeng.client.gui.Icon;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
@@ -38,88 +42,73 @@ import appeng.items.contents.QuartzKnifeObj;
 import appeng.items.materials.MaterialItem;
 import appeng.tile.inventory.AppEngInternalInventory;
 
+/**
+ * @see appeng.client.gui.implementations.QuartzKnifeScreen
+ */
 public class QuartzKnifeContainer extends AEBaseContainer {
 
-    public static ContainerType<QuartzKnifeContainer> TYPE;
-
-    private static final ContainerHelper<QuartzKnifeContainer, QuartzKnifeObj> helper = new ContainerHelper<>(
-            QuartzKnifeContainer::new, QuartzKnifeObj.class);
-
-    public static QuartzKnifeContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<QuartzKnifeContainer> TYPE = ContainerTypeBuilder
+            .create(QuartzKnifeContainer::new, QuartzKnifeObj.class)
+            .build("quartzknife");
 
     private final QuartzKnifeObj toolInv;
 
     private final FixedItemInv inSlot = new AppEngInternalInventory(null, 1, 1);
-    private String myName = "";
+
+    private String currentName = "";
 
     public QuartzKnifeContainer(int id, final PlayerInventory ip, final QuartzKnifeObj te) {
-        super(TYPE, id, ip, null, null);
+        super(TYPE, id, ip, te);
         this.toolInv = te;
 
         this.addSlot(
-                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip));
-        this.addSlot(new QuartzKniveSlot(this.inSlot, 0, 134, 44, -1));
+                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.METAL_INGOTS, this.inSlot, 0),
+                SlotSemantic.MACHINE_INPUT);
+        this.addSlot(new QuartzKniveSlot(this.inSlot, 0, null), SlotSemantic.MACHINE_OUTPUT);
 
         this.lockPlayerInventorySlot(ip.currentItem);
 
-        this.bindPlayerInventory(ip, 0, 184 - /* height of player inventory */82);
+        this.createPlayerInventorySlots(ip);
     }
 
     public void setName(final String value) {
-        this.myName = value;
+        this.currentName = value;
     }
 
     @Override
     public void detectAndSendChanges() {
-        final ItemStack currentItem = this.getPlayerInv().getCurrentItem();
-
-        if (currentItem != this.toolInv.getItemStack()) {
-            if (!currentItem.isEmpty()) {
-                if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem,
-                            this.toolInv.getItemStack());
-                } else {
-                    this.setValidContainer(false);
-                }
-            } else {
-                this.setValidContainer(false);
-            }
+        if (!ensureGuiItemIsInSlot(this.toolInv, this.getPlayerInventory().currentItem)) {
+            this.setValidContainer(false);
+            return;
         }
 
         super.detectAndSendChanges();
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
-        if (this.inSlot.getInvStack(0) != null) {
-            par1PlayerEntity.dropItem(this.inSlot.getInvStack(0), false);
+    public void onContainerClosed(final PlayerEntity player) {
+        ItemStack item = this.inSlot.extractItem(0, Integer.MAX_VALUE, false);
+        if (!item.isEmpty()) {
+            player.dropItem(item, false);
         }
     }
 
     private class QuartzKniveSlot extends OutputSlot {
-        QuartzKniveSlot(FixedItemInv inv, int invSlot, int x, int y, int iconIdx) {
-            super(inv, invSlot, x, y, iconIdx);
+        QuartzKniveSlot(FixedItemInv inv, int invSlot, Icon icon) {
+            super(inv, invSlot, icon);
         }
 
         @Override
         public ItemStack getStack() {
             final ItemStack input = super.getStack();
 
-            if (RestrictedInputSlot.isMetalIngot(input)) {
-                if (QuartzKnifeContainer.this.myName.length() > 0) {
-                    return Api.instance().definitions().materials().namePress().maybeStack(1).map(namePressStack -> {
-                        final CompoundNBT compound = namePressStack.getOrCreateTag();
-                        compound.putString(MaterialItem.TAG_INSCRIBE_NAME, QuartzKnifeContainer.this.myName);
+            if (RestrictedInputSlot.isMetalIngot(input) && QuartzKnifeContainer.this.currentName.length() > 0) {
+                return Api.instance().definitions().materials().namePress().maybeStack(1).map(namePressStack -> {
+                    final CompoundNBT compound = namePressStack.getOrCreateTag();
+                    compound.putString(MaterialItem.TAG_INSCRIBE_NAME, QuartzKnifeContainer.this.currentName);
 
-                        return namePressStack;
-                    }).orElse(ItemStack.EMPTY);
-                }
+                    return namePressStack;
+                }).orElse(ItemStack.EMPTY);
             }
             return ItemStack.EMPTY;
         }
@@ -142,23 +131,16 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         }
 
         private void makePlate() {
-            if (isServer()) {
-                if (!inSlot.getSlot(0).extract(1).isEmpty()) {
-                    final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
-                    final ItemStack before = item.copy();
-                    // FIXME FABRIC: Quartz Knife currently is not damageable due to recipe
-                    // remainder concerns
-                    item.damageItem(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
-                        QuartzKnifeContainer.this.getPlayerInv()
-                                .setInventorySlotContents(QuartzKnifeContainer.this.getPlayerInv().currentItem,
-                                        ItemStack.EMPTY);
-                        // FIXME FABRIC equivalent??
-                        // FIXME FABRIC MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(
-                        // FIXME FABRIC QuartzKnifeContainer.this.getPlayerInv().player, before, null));
-                    });
+            if (isServer() && !this.getItemHandler().extractItem(0, 1, false).isEmpty()) {
+                final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
+                final ItemStack before = item.copy();
+                PlayerInventory playerInv = QuartzKnifeContainer.this.getPlayerInventory();
+                item.damageItem(1, playerInv.player, p -> {
+                    playerInv.setInventorySlotContents(playerInv.currentItem, ItemStack.EMPTY);
+                    MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(playerInv.player, before, null));
+                });
 
-                    QuartzKnifeContainer.this.detectAndSendChanges();
-                }
+                QuartzKnifeContainer.this.detectAndSendChanges();
             }
         }
     }

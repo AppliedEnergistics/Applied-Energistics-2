@@ -152,56 +152,54 @@ class QnbFormedBakedModel implements IBakedModel, FabricBakedModel {
             builder.setTexture(this.linkTexture);
             builder.addCube(DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX,
                     DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX);
-        } else {
-            if (formedState.isCorner()) {
-                this.renderCableAt(builder, 0.188f * 16, this.coveredCableTexture, 0.05f * 16,
-                        formedState.getAdjacentQuantumBridges());
+        } else if (formedState.isCorner()) {
+            this.renderCableAt(builder, 0.188f * 16, this.coveredCableTexture, 0.05f * 16,
+                    formedState.getAdjacentQuantumBridges());
 
-                builder.setTexture(this.ringTexture);
-                builder.addCube(DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX,
-                        DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX);
+            builder.setTexture(this.ringTexture);
+            builder.addCube(DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX,
+                    DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX);
 
-                if (formedState.isPowered()) {
-                    builder.setTexture(this.lightCornerTexture);
-                    builder.setEmissiveMaterial(true);
-                    for (Direction facing : Direction.values()) {
-                        // Offset the face by a slight amount so that it is drawn over the already drawn
-                        // ring texture
-                        // (avoids z-fighting)
-                        float xOffset = Math.abs(facing.getXOffset() * 0.01f);
-                        float yOffset = Math.abs(facing.getYOffset() * 0.01f);
-                        float zOffset = Math.abs(facing.getZOffset() * 0.01f);
+            if (formedState.isPowered()) {
+                builder.setTexture(this.lightCornerTexture);
+                builder.setEmissiveMaterial(true);
+                for (Direction facing : Direction.values()) {
+                    // Offset the face by a slight amount so that it is drawn over the already drawn
+                    // ring texture
+                    // (avoids z-fighting)
+                    float xOffset = Math.abs(facing.getXOffset() * 0.01f);
+                    float yOffset = Math.abs(facing.getYOffset() * 0.01f);
+                    float zOffset = Math.abs(facing.getZOffset() * 0.01f);
 
-                        builder.setDrawFaces(EnumSet.of(facing));
-                        builder.addCube(DEFAULT_RENDER_MIN - xOffset, DEFAULT_RENDER_MIN - yOffset,
-                                DEFAULT_RENDER_MIN - zOffset, DEFAULT_RENDER_MAX + xOffset,
-                                DEFAULT_RENDER_MAX + yOffset, DEFAULT_RENDER_MAX + zOffset);
-                    }
-                    builder.setEmissiveMaterial(false);
+                    builder.setDrawFaces(EnumSet.of(facing));
+                    builder.addCube(DEFAULT_RENDER_MIN - xOffset, DEFAULT_RENDER_MIN - yOffset,
+                            DEFAULT_RENDER_MIN - zOffset, DEFAULT_RENDER_MAX + xOffset,
+                            DEFAULT_RENDER_MAX + yOffset, DEFAULT_RENDER_MAX + zOffset);
                 }
-            } else {
-                builder.setTexture(this.ringTexture);
+                builder.setEmissiveMaterial(false);
+            }
+        } else {
+            builder.setTexture(this.ringTexture);
 
-                builder.addCube(0, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, 16, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX);
+            builder.addCube(0, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, 16, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX);
 
-                builder.addCube(DEFAULT_RENDER_MIN, 0, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX, 16, DEFAULT_RENDER_MAX);
+            builder.addCube(DEFAULT_RENDER_MIN, 0, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX, 16, DEFAULT_RENDER_MAX);
 
-                builder.addCube(DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, 0, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX, 16);
+            builder.addCube(DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, 0, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX, 16);
 
-                if (formedState.isPowered()) {
-                    builder.setTexture(this.lightTexture);
-                    builder.setEmissiveMaterial(true);
-                    for (Direction facing : Direction.values()) {
-                        // Offset the face by a slight amount so that it is drawn over the already drawn
-                        // ring texture
-                        // (avoids z-fighting)
-                        float xOffset = Math.abs(facing.getXOffset() * 0.01f);
-                        float yOffset = Math.abs(facing.getYOffset() * 0.01f);
-                        float zOffset = Math.abs(facing.getZOffset() * 0.01f);
+            if (formedState.isPowered()) {
+                builder.setTexture(this.lightTexture);
+                builder.setEmissiveMaterial(true);
+                for (Direction facing : Direction.values()) {
+                    // Offset the face by a slight amount so that it is drawn over the already drawn
+                    // ring texture
+                    // (avoids z-fighting)
+                    float xOffset = Math.abs(facing.getXOffset() * 0.01f);
+                    float yOffset = Math.abs(facing.getYOffset() * 0.01f);
+                    float zOffset = Math.abs(facing.getZOffset() * 0.01f);
 
-                        builder.setDrawFaces(EnumSet.of(facing));
-                        builder.addCube(-xOffset, -yOffset, -zOffset, 16 + xOffset, 16 + yOffset, 16 + zOffset);
-                    }
+                    builder.setDrawFaces(EnumSet.of(facing));
+                    builder.addCube(-xOffset, -yOffset, -zOffset, 16 + xOffset, 16 + yOffset, 16 + zOffset);
                 }
             }
         }

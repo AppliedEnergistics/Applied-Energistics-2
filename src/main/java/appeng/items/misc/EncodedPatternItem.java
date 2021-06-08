@@ -127,19 +127,20 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
 
             final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text())
                     .deepCopy().appendString(": ");
-            final ITextComponent and = new StringTextComponent(" ").deepCopy().append(GuiText.And.text()).deepCopy()
+            final ITextComponent and = new StringTextComponent(" ").deepCopy().appendSibling(GuiText.And.text())
+                    .deepCopy()
                     .appendString(" ");
             final ITextComponent with = GuiText.With.text().deepCopy().appendString(": ");
 
             boolean first = true;
             for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
-                lines.add((first ? label : and).deepCopy().append(output.getFormattedToolTip()));
+                lines.add((first ? label : and).deepCopy().appendSibling(output.getFormattedToolTip()));
                 first = false;
             }
 
             first = true;
             for (final InvalidPatternHelper.PatternIngredient input : invalid.getInputs()) {
-                lines.add((first ? with : and).deepCopy().append(input.getFormattedToolTip()));
+                lines.add((first ? with : and).deepCopy().appendSibling(input.getFormattedToolTip()));
                 first = false;
             }
 
@@ -147,7 +148,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
                 final ITextComponent substitutionLabel = GuiText.Substitute.text().deepCopy().appendString(" ");
                 final ITextComponent canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
 
-                lines.add(substitutionLabel.deepCopy().append(canSubstitute));
+                lines.add(substitutionLabel.deepCopy().appendSibling(canSubstitute));
             }
 
             return;
@@ -165,7 +166,8 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
 
         final ITextComponent label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).deepCopy()
                 .appendString(": ");
-        final ITextComponent and = new StringTextComponent(" ").deepCopy().append(GuiText.And.text()).appendString(" ");
+        final ITextComponent and = new StringTextComponent(" ").deepCopy().appendSibling(GuiText.And.text())
+                .appendString(" ");
         final ITextComponent with = GuiText.With.text().deepCopy().appendString(": ");
 
         boolean first = true;
@@ -175,7 +177,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
             }
 
             lines.add((first ? label : and).deepCopy().appendString(anOut.getStackSize() + "x ")
-                    .append(Platform.getItemDisplayName(anOut)));
+                    .appendSibling(Platform.getItemDisplayName(anOut)));
             first = false;
         }
 
@@ -186,7 +188,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
             }
 
             lines.add((first ? with : and).deepCopy().appendString(anIn.getStackSize() + "x ")
-                    .append(Platform.getItemDisplayName(anIn)));
+                    .appendSibling(Platform.getItemDisplayName(anIn)));
             first = false;
         }
 
@@ -194,7 +196,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
             final ITextComponent substitutionLabel = GuiText.Substitute.text().deepCopy().appendString(" ");
             final ITextComponent canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
 
-            lines.add(substitutionLabel.deepCopy().append(canSubstitute));
+            lines.add(substitutionLabel.deepCopy().appendSibling(canSubstitute));
         }
     }
 

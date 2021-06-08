@@ -36,6 +36,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import appeng.block.AEBaseBlock;
+import appeng.client.gui.style.StyleManager;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
@@ -49,6 +50,13 @@ import appeng.server.ServerHelper;
 import appeng.util.Platform;
 
 public class ClientHelper extends ServerHelper {
+
+    public ClientHelper() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft != null) {
+            StyleManager.initialize(minecraft.getResourceManager());
+        }
+    }
 
     public void clientInit() {
         MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);
@@ -133,9 +141,9 @@ public class ClientHelper extends ServerHelper {
     }
 
     private void spawnEnergy(final World w, final double posX, final double posY, final double posZ) {
-        final float x = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-        final float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-        final float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
+        final float x = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
+        final float y = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
+        final float z = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
 
         Minecraft.getInstance().particles.addParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y,
                 posZ + z, -x * 0.1, -y * 0.1, -z * 0.1);

@@ -18,21 +18,17 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.AppEngSlot;
@@ -43,20 +39,14 @@ import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 
+/**
+ * @see appeng.client.gui.implementations.MolecularAssemblerScreen
+ */
 public class MolecularAssemblerContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static ContainerType<MolecularAssemblerContainer> TYPE;
-
-    private static final ContainerHelper<MolecularAssemblerContainer, MolecularAssemblerTileEntity> helper = new ContainerHelper<>(
-            MolecularAssemblerContainer::new, MolecularAssemblerTileEntity.class);
-
-    public static MolecularAssemblerContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf);
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator);
-    }
+    public static final ContainerType<MolecularAssemblerContainer> TYPE = ContainerTypeBuilder
+            .create(MolecularAssemblerContainer::new, MolecularAssemblerTileEntity.class)
+            .build("molecular_assembler");
 
     private static final int MAX_CRAFT_PROGRESS = 100;
     private final MolecularAssemblerTileEntity tma;
@@ -81,7 +71,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         if (is.getItem() instanceof EncodedPatternItem) {
             final World w = this.getTileEntity().getWorld();
             final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
-            if (ph.isCraftable()) {
+            if (ph != null && ph.isCraftable()) {
                 return ph.isValidItemForSlot(slotIndex, i, w);
             }
         }
@@ -90,47 +80,20 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     }
 
     @Override
-    protected int getHeight() {
-        return 197;
-    }
-
-    @Override
     protected void setupConfig() {
-        int offX = 29;
-        int offY = 30;
-
         final FixedItemInv mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
 
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                final MolecularAssemblerPatternSlot s = new MolecularAssemblerPatternSlot(this, mac, x + y * 3,
-                        offX + x * 18, offY + y * 18);
-                this.addSlot(s);
-            }
+        for (int i = 0; i < 9; i++) {
+            this.addSlot(new MolecularAssemblerPatternSlot(this, mac, i), SlotSemantic.MACHINE_CRAFTING_GRID);
         }
 
-        offX = 126;
-        offY = 16;
+        encodedPatternSlot = this.addSlot(
+                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10),
+                SlotSemantic.ENCODED_PATTERN);
 
-        encodedPatternSlot = this
-                .addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10,
-                        offX, offY, this.getPlayerInventory()));
-        this.addSlot(new OutputSlot(mac, 9, offX, offY + 32, -1));
+        this.addSlot(new OutputSlot(mac, 9, null), SlotSemantic.MACHINE_OUTPUT);
 
-        offX = 122;
-        offY = 17;
-
-        final FixedItemInv upgrades = this.getUpgradeable().getInventoryByName("upgrades");
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,
-                this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 2, 187,
-                8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 3, 187,
-                8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
-        this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 4, 187,
-                8 + 18 * 4, this.getPlayerInventory())).setNotDraggable());
+        setupUpgrades();
     }
 
     @Override
@@ -146,11 +109,6 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     @Override
     public void detectAndSendChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
-
-        if (isServer()) {
-            this.setRedStoneMode(
-                    (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED));
-        }
 
         this.craftProgress = this.tma.getCraftingProgress();
 
@@ -170,11 +128,11 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     @Override
     public void onSlotChange(Slot s) {
 
-        // If the pattern changes, the crafting grid slots lose validity
+        // If the pattern changes, the crafting grid slots have to be revalidated
         if (s == encodedPatternSlot) {
             for (Slot otherSlot : inventorySlots) {
                 if (otherSlot != s && otherSlot instanceof AppEngSlot) {
-                    ((AppEngSlot) otherSlot).setIsValid(AppEngSlot.CalculatedValidity.NotAvailable);
+                    ((AppEngSlot) otherSlot).resetCachedValidation();
                 }
             }
         }

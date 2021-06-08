@@ -298,10 +298,8 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
                     }
 
                     if (itemsToMove > 0 && shouldMove && this.moveSlot(x)) {
-                        ret = TickRateModulation.URGENT;
-                    } else {
-                        ret = TickRateModulation.URGENT;
                     }
+                    ret = TickRateModulation.URGENT;
 
                 }
             }

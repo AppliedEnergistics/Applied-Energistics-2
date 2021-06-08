@@ -19,6 +19,7 @@
 package appeng.fluids.parts;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
@@ -39,13 +40,11 @@ import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.core.Api;
-import appeng.fluids.container.FluidIOContainer;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeablePart;
-import appeng.util.Platform;
 
 /**
  * @author BrockWS
@@ -92,11 +91,13 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(FluidIOContainer.TYPE, player, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(getContainerType(), player, ContainerLocator.forPart(this));
         }
 
         return true;
     }
+
+    protected abstract ContainerType<?> getContainerType();
 
     @Override
     public void getBoxes(IPartCollisionHelper bch) {

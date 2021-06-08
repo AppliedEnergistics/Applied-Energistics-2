@@ -30,9 +30,8 @@ public class CraftingMatrixSlot extends AppEngSlot {
     private final AEBaseContainer c;
     private final IInventory wrappedInventory;
 
-    public CraftingMatrixSlot(final AEBaseContainer c, final FixedItemInv inv, final int invSlot, final int x,
-            final int y) {
-        super(inv, invSlot, x, y);
+    public CraftingMatrixSlot(final AEBaseContainer c, final FixedItemInv inv, final int invSlot) {
+        super(inv, invSlot);
         this.c = c;
         this.wrappedInventory = new WrapperInvItemHandler(inv);
     }
@@ -47,11 +46,6 @@ public class CraftingMatrixSlot extends AppEngSlot {
     public void putStack(final ItemStack par1ItemStack) {
         super.putStack(par1ItemStack);
         this.c.onCraftMatrixChanged(this.wrappedInventory);
-    }
-
-    @Override
-    public boolean isPlayerSide() {
-        return true;
     }
 
     @Override

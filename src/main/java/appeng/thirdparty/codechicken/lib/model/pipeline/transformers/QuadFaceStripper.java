@@ -71,7 +71,7 @@ public class QuadFaceStripper implements RenderContext.QuadTransform {
         }
         // If the bit for this quad is set, then check if we should strip.
         Direction face = quad.nominalFace();
-        if ((this.mask & (1 << face.ordinal())) != 0) {
+        if ((this.mask & 1 << face.ordinal()) != 0) {
             AxisDirection dir = face.getAxisDirection();
             switch (face.getAxis()) {
                 case X: {

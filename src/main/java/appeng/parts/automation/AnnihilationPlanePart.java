@@ -111,8 +111,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         // For collision, we're using a simplified bounding box
         if (bch.isBBCollision()) {
-            // The smaller collision hitbox here is needed to allow for the entity collision
-            // event
+            // The smaller collision hitbox here is needed to allow for the entity collision event
             bch.addBox(0, 0, 14, 16, 16, 15.5);
             return;
         }
@@ -225,7 +224,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * Stores an {@link ItemStack} inside the network.
      *
      * @param item {@link ItemStack} to store
-     *
      * @return the leftover items, which could not be stored inside the network
      */
     private IAEItemStack storeItemStack(final ItemStack item) {
@@ -253,7 +251,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      *
      * @param entityItem the entity to update or destroy
      * @param overflow   the leftover {@link IAEItemStack}
-     *
      * @return true, if the entity was changed otherwise false.
      */
     private boolean handleOverflow(final ItemEntity entityItem, final IAEItemStack overflow) {
@@ -333,9 +330,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         for (ItemStack item : items) {
             IAEItemStack overflow = storeItemStack(item);
-            // If inserting the item fully was not possible, drop it as an item entity
-            // instead
-            // if the storage clears up, we'll pick it up that way
+            // If inserting the item fully was not possible, drop it as an item entity instead if the storage clears up,
+            // we'll pick it up that way
             if (overflow != null) {
                 Platform.spawnDrops(w, pos, Collections.singletonList(overflow.createItemStack()));
             }
@@ -377,33 +373,26 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         }
 
         final Material material = state.getMaterial();
+        // Note: bedrock, portals, and other unbreakable blocks have a hardness < 0, hence the >= 0 check below.
         final float hardness = state.getBlockHardness(w, pos);
-        final boolean ignoreMaterials = material == Material.AIR || material == Material.LAVA
-                || material == Material.WATER || material.isLiquid();
+        final boolean ignoreAirAndFluids = material == Material.AIR || material.isLiquid();
 
-        return !ignoreMaterials && hardness >= 0f && w.isBlockLoaded(pos)
+        return !ignoreAirAndFluids && hardness >= 0f && w.isBlockLoaded(pos)
                 && w.isBlockModifiable(FakePlayer.getOrCreate(w), pos);
     }
 
     protected List<ItemStack> obtainBlockDrops(final ServerWorld w, final BlockPos pos) {
-
-        Entity fakePlayer = FakePlayer.getOrCreate(w);
-
+        final Entity fakePlayer = FakePlayer.getOrCreate(w);
         final BlockState state = w.getBlockState(pos);
+        final TileEntity te = w.getTileEntity(pos);
 
         ItemStack harvestTool = createHarvestTool(state);
 
-        if (harvestTool == null) {
-            if (!state.getRequiresTool()) {
-                harvestTool = ItemStack.EMPTY;
-            } else {
-                // In case the block does NOT allow us to harvest it without a tool, or the
-                // proper tool, do not return anything.
-                return Collections.emptyList();
-            }
+        if (!state.getRequiresTool() && state.getHarvestTool() == null && !harvestTool.isEnchanted()) {
+            // Do not use a tool when not required, no hints about it and not enchanted in cases like silk touch.
+            harvestTool = ItemStack.EMPTY;
         }
 
-        TileEntity te = w.getTileEntity(pos);
         return Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
     }
 
@@ -424,11 +413,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     /**
      * Checks if the network can store the possible drops.
-     *
+     * <p>
      * It also sets isAccepting to false, if the item can not be stored.
      *
      * @param itemStacks an array of {@link ItemStack} to test
-     *
      * @return true, if the network can store at least a single item of all drops or no drops are reported
      */
     private boolean canStoreItemStacks(final List<ItemStack> itemStacks) {
@@ -461,9 +449,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             return false;
         }
 
-        // This handles items that do not spawn via loot-tables but rather normal block
-        // breaking
-        // i.e. our cable-buses do this (bad practice, really)
+        // This handles items that do not spawn via loot-tables but rather normal block breaking i.e. our cable-buses do
+        // this (bad practice, really)
         final AxisAlignedBB box = new AxisAlignedBB(pos).grow(0.2);
         for (final Object ei : w.getEntitiesWithinAABB(ItemEntity.class, box)) {
             if (ei instanceof ItemEntity) {
@@ -499,19 +486,27 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             Items.DIAMOND_SHOVEL, };
 
     /**
-     * Creates the fake (and temporary) tool that will be used to calculate the loot tables of a block this plane wants
-     * to break.
+     * Creates the fake (and temporary) tool based on the provided hints in case a loot table relies on it.
      *
-     * @param state The state of the block about to be broken.
+     * Generally could use a stick as tool or anything else which can be enchanted. {@link ItemStack#EMPTY} is not an
+     * option as at least anything having a fortune effect need something enchantable even without the enchantment,
+     * otherwise it will not drop anything.
+     *
+     * @param state The block state of the block about to be broken.
      */
     protected ItemStack createHarvestTool(BlockState state) {
-        // Try to use the right tool...
-        for (Item toolItem : SUPPORTED_HARVEST_TOOLS) {
-            if (toolItem.canHarvestBlock(state)) {
-                return new ItemStack(toolItem);
-            }
+        ToolType harvestToolType = state.getBlock().getHarvestTool(state);
+
+        if (harvestToolType == ToolType.AXE) {
+            return new ItemStack(Items.DIAMOND_AXE, 1);
+        } else if (harvestToolType == ToolType.SHOVEL) {
+            return new ItemStack(Items.DIAMOND_SHOVEL, 1);
+        } else if (harvestToolType == ToolType.HOE) {
+            return new ItemStack(Items.DIAMOND_HOE, 1);
+        } else {
+            // Use a pickaxe for everything else. Mostly to allow silk touch enchants
+            return new ItemStack(Items.DIAMOND_PICKAXE, 1);
         }
-        return null;
     }
 
     public static boolean isBlockBlacklisted(Block b) {

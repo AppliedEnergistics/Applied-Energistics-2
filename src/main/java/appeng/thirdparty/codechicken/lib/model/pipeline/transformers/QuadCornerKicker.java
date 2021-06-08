@@ -104,21 +104,19 @@ public class QuadCornerKicker implements RenderContext.QuadTransform {
         int side = quad.nominalFace().ordinal();
         if (side != this.mySide && side != (this.mySide ^ 1)) {
             for (int hoz : horizonals[this.mySide]) {
-                if (side != hoz && side != (hoz ^ 1)) {
-                    if ((this.facadeMask & (1 << hoz)) != 0) {
-                        Corner corner = Corner.fromSides(this.mySide ^ 1, side, hoz);
-                        for (int i = 0; i < 4; i++) {
-                            float x = quad.posByIndex(i, 0);
-                            float y = quad.posByIndex(i, 1);
-                            float z = quad.posByIndex(i, 2);
-                            if (epsComp(x, corner.pX(this.box)) && epsComp(y, corner.pY(this.box))
-                                    && epsComp(z, corner.pZ(this.box))) {
-                                Vector3i vec = Direction.values()[hoz].getDirectionVec();
-                                x -= vec.getX() * this.thickness;
-                                y -= vec.getY() * this.thickness;
-                                z -= vec.getZ() * this.thickness;
-                                quad.pos(i, x, y, z);
-                            }
+                if (side != hoz && side != (hoz ^ 1) && (this.facadeMask & 1 << hoz) != 0) {
+                    Corner corner = Corner.fromSides(this.mySide ^ 1, side, hoz);
+                    for (int i = 0; i < 4; i++) {
+                        float x = quad.posByIndex(i, 0);
+                        float y = quad.posByIndex(i, 1);
+                        float z = quad.posByIndex(i, 2);
+                        if (epsComp(x, corner.pX(this.box)) && epsComp(y, corner.pY(this.box))
+                                && epsComp(z, corner.pZ(this.box))) {
+                            Vector3i vec = Direction.values()[hoz].getDirectionVec();
+                            x -= vec.getX() * this.thickness;
+                            y -= vec.getY() * this.thickness;
+                            z -= vec.getZ() * this.thickness;
+                            quad.pos(i, x, y, z);
                         }
                     }
                 }

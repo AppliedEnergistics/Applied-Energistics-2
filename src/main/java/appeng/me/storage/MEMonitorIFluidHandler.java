@@ -159,9 +159,9 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
                 IAEFluidStack stack = null;
 
                 if (!newAmount.isZero()) {
-                    stack = (old == null || old.aeStack == null
+                    stack = old == null || old.aeStack == null
                             ? AEFluidStack.fromFluidVolume(storedFluid.withAmount(newAmount), RoundingMode.DOWN)
-                            : old.aeStack.copy());
+                            : old.aeStack.copy();
                 }
                 if (stack != null) {
                     stack.setStackSize(newSize);

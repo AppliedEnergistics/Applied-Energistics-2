@@ -22,22 +22,23 @@ import java.time.Duration;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-import appeng.client.gui.AEBaseScreen;
+import appeng.client.Point;
+import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.style.Blitter;
 
 /**
  * Implements a vertical scrollbar using Vanilla's scrollbar handle texture from the creative tab.
  * <p>
  * It is expected that the background of the UI contains a pre-baked scrollbar track border, and that the exact
- * rectangle of that track is set on this object via {@link #setLeft(int)}, {@link #setTop(int)} and
- * {@link #setHeight(int)}. While the width of the track can also be set, the drawn handle will use vanilla's sprite
- * width (see {@link #HANDLE_WIDTH}.
+ * rectangle of that track is set on this object via {@link #displayX}, {@link #displayY} and {@link #setHeight(int)}.
+ * While the width of the track can also be set, the drawn handle will use vanilla's sprite width (see
+ * {@link #HANDLE_WIDTH}.
  */
-public class Scrollbar extends AbstractGui implements IScrollSource {
+public class Scrollbar implements IScrollSource, ICompositeWidget {
 
     /**
      * Width of the scrollbar handle sprite in the source texture.
@@ -58,12 +59,14 @@ public class Scrollbar extends AbstractGui implements IScrollSource {
     /**
      * Rectangle in the source texture that contains the sprite for an enabled handle.
      */
-    private static final Rectangle2d ENABLED = new Rectangle2d(232, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
+    private static final Blitter ENABLED = Blitter.texture(TEXTURE)
+            .src(232, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
 
     /**
      * Rectangle in the source texture that contains the sprite for a disabled handle.
      */
-    private static final Rectangle2d DISABLED = new Rectangle2d(232 + HANDLE_WIDTH, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
+    private static final Blitter DISABLED = Blitter.texture(TEXTURE)
+            .src(232 + HANDLE_WIDTH, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
 
     /**
      * The screen x-coordinate of the scrollbar's inner track.
@@ -102,32 +105,33 @@ public class Scrollbar extends AbstractGui implements IScrollSource {
 
     private final EventRepeater eventRepeater = new EventRepeater(Duration.ofMillis(250), Duration.ofMillis(150));
 
+    @Override
+    public Rectangle2d getBounds() {
+        return new Rectangle2d(displayX, displayY, width, height);
+    }
+
     /**
      * Draws the handle of the scrollbar.
      * <p>
      * The GUI is assumed to already contain a prebaked scrollbar track in its background.
      */
-    public void draw(MatrixStack matrices, final AEBaseScreen<?> g) {
-        setBlitOffset(g.getBlitOffset());
-
+    @Override
+    public void drawForegroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
         // Draw the track (nice for debugging)
         // fill(matrices, displayX, displayY, this.displayX + width, this.displayY +
         // height, 0xffff0000);
 
-        g.bindTexture(TEXTURE);
-
         int yOffset;
-        Rectangle2d sourceRect;
+        Blitter image;
         if (this.getRange() == 0) {
             yOffset = 0;
-            sourceRect = DISABLED;
+            image = DISABLED;
         } else {
             yOffset = getHandleYOffset();
-            sourceRect = ENABLED;
+            image = ENABLED;
         }
 
-        blit(matrices, this.displayX, this.displayY + yOffset, sourceRect.getX(), sourceRect.getY(),
-                sourceRect.getWidth(), sourceRect.getHeight());
+        image.dest(this.displayX, this.displayY + yOffset).blit(matrices, zIndex);
     }
 
     /**
@@ -145,40 +149,25 @@ public class Scrollbar extends AbstractGui implements IScrollSource {
         return this.maxScroll - this.minScroll;
     }
 
-    public int getLeft() {
-        return this.displayX;
-    }
-
-    public Scrollbar setLeft(final int v) {
-        this.displayX = v;
-        return this;
-    }
-
-    public int getTop() {
-        return this.displayY;
-    }
-
-    public Scrollbar setTop(final int v) {
-        this.displayY = v;
-        return this;
-    }
-
-    public int getWidth() {
-        return this.width;
-    }
-
-    public Scrollbar setWidth(final int v) {
-        this.width = v;
-        return this;
-    }
-
-    public int getHeight() {
-        return this.height;
-    }
-
     public Scrollbar setHeight(final int v) {
         this.height = v;
         return this;
+    }
+
+    @Override
+    public void setPosition(Point position) {
+        this.displayX = position.getX();
+        this.displayY = position.getY();
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+        if (width != 0) {
+            this.width = width;
+        }
+        if (height != 0) {
+            this.height = height;
+        }
     }
 
     public void setRange(final int min, final int max, final int pageSize) {
@@ -202,24 +191,20 @@ public class Scrollbar extends AbstractGui implements IScrollSource {
         return this.currentScroll;
     }
 
-    public boolean mouseDown(double x, double y) {
+    @Override
+    public boolean onMouseDown(Point mousePos, int button) {
+        if (button != BUTTON_LEFT) {
+            return false; // Only handle left mouse button
+        }
+
         this.dragging = false;
-
-        // Clicks to the left or right of the scrollbar don't do anything
-        if (x < displayX || x >= displayX + width) {
-            return false;
-        }
-
-        // Clicks to the top or bottom don't do anything either
-        int relY = (int) Math.round(y - displayY);
-        if (relY < 0 || relY >= height) {
-            return false;
-        }
 
         // Do nothing when there's no range, but swallow the event
         if (getRange() == 0) {
             return true;
         }
+
+        int relY = mousePos.getY() - displayY;
 
         int handleYOffset = getHandleYOffset();
 
@@ -241,44 +226,64 @@ public class Scrollbar extends AbstractGui implements IScrollSource {
         return true;
     }
 
-    public boolean mouseUp(double x, double y) {
-        this.dragging = false;
-        this.eventRepeater.stop();
+    @Override
+    public boolean onMouseUp(Point mousePos, int button) {
+        if (button == BUTTON_LEFT) {
+            this.dragging = false;
+            this.eventRepeater.stop();
+        }
         return false;
     }
 
-    public void mouseDragged(double x, double y) {
+    @Override
+    public boolean wantsAllMouseUpEvents() {
+        // We need all mouse up events to properly stop dragging, since we don't have "real" mouse capture
+        return true;
+    }
+
+    @Override
+    public boolean onMouseDrag(Point mousePos, int button) {
         if (this.getRange() == 0 || !this.dragging || this.eventRepeater.isRepeating()) {
-            return;
+            return false;
         }
 
         // Compute the position of the mouse (adjusted for where it grabbed the handle,
         // so as if it grabbed
         // the upper edge of it) within the scrollable area of the track (minus the
         // handle height).
-        double handleUpperEdgeY = y - this.displayY - this.dragYOffset;
+        double handleUpperEdgeY = mousePos.getY() - this.displayY - this.dragYOffset;
         double availableHeight = this.height - HANDLE_HEIGHT;
         double position = MathHelper.clamp(handleUpperEdgeY / availableHeight, 0.0, 1.0);
 
         this.currentScroll = this.minScroll + (int) Math.round(position * this.getRange());
         this.applyRange();
+        return true;
     }
 
-    public void wheel(double delta) {
+    @Override
+    public boolean onMouseWheel(Point mousePos, double delta) {
         // Do nothing when there's no range
         if (getRange() == 0) {
-            return;
+            return false;
         }
 
         delta = Math.max(Math.min(-delta, 1), -1);
         this.currentScroll += delta * this.pageSize;
         this.applyRange();
+        return true;
+    }
+
+    @Override
+    public boolean wantsAllMouseWheelEvents() {
+        // Capture all mouse wheel events since we want to scroll even when over the item grid
+        return true;
     }
 
     /**
      * Ticks the scrollbar for the purposes of input-repeats (since mouse-downs are not repeat-triggered), used to
      * repeatedly page-up or page-down when the mouse is held in the area above or below the scrollbar handle.
      */
+    @Override
     public void tick() {
         this.eventRepeater.tick();
     }

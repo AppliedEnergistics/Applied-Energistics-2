@@ -226,7 +226,7 @@ public final class AEConfig {
     }
 
     public boolean isFeatureEnabled(final AEFeature f) {
-        return (!f.isConfig() && f.isEnabled()) || this.featureFlags.contains(f);
+        return !f.isConfig() && f.isEnabled() || this.featureFlags.contains(f);
     }
 
     public boolean areFeaturesEnabled(Collection<AEFeature> features) {
@@ -402,6 +402,10 @@ public final class AEConfig {
         return (float) COMMON.improvedFluidMultiplier.get();
     }
 
+    public boolean isShowDebugGuiOverlays() {
+        return CLIENT.debugGuiOverlays.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -412,6 +416,7 @@ public final class AEConfig {
         public final BooleanOption useColoredCraftingStatus;
         public final BooleanOption disableColoredCableRecipesInJEI;
         public final EnumOption<PowerUnits> selectedPowerUnit;
+        public final BooleanValue debugGuiOverlays;
 
         // GUI Buttons
         private static final int[] BTN_BY_STACK_DEFAULTS = { 1, 10, 100, 1000 };
@@ -431,6 +436,8 @@ public final class AEConfig {
             this.useLargeFonts = client.addBoolean("useTerminalUseLargeFont", false);
             this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);
             this.selectedPowerUnit = client.addEnum("PowerUnit", PowerUnits.AE, "Power unit shown in AE UIs");
+            this.debugGuiOverlays = builder.comment("Show debugging GUI overlays")
+                    .define("showDebugGuiOverlays", false);
 
             this.craftByStacks = new ArrayList<>(4);
             this.priorityByStacks = new ArrayList<>(4);

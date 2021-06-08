@@ -267,8 +267,8 @@ public class SpatialStorageCommand implements ISubCommand {
             ITextComponent tpLink = new StringTextComponent("Origin: " + origin)
                     .modifyStyle(makeCommandLink("/ae2 spatial tp " + plot.getId(), "Click to teleport into plot"));
 
-            IFormattableTextComponent message = new StringTextComponent("").append(infoLink)
-                    .appendString(" Size: " + size + " ").append(tpLink);
+            IFormattableTextComponent message = new StringTextComponent("").appendSibling(infoLink)
+                    .appendString(" Size: " + size + " ").appendSibling(tpLink);
 
             sender.sendFeedback(message, true);
         }
@@ -307,7 +307,8 @@ public class SpatialStorageCommand implements ISubCommand {
     private static void sendKeyValuePair(CommandSource source, String label, ITextComponent value) {
         source.sendFeedback(
                 new StringTextComponent("")
-                        .append(new StringTextComponent(label + ": ").mergeStyle(TextFormatting.BOLD)).append(value),
+                        .appendSibling(new StringTextComponent(label + ": ").mergeStyle(TextFormatting.BOLD))
+                        .appendSibling(value),
                 true);
     }
 

@@ -25,45 +25,46 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.ActionItems;
+import appeng.client.gui.Icon;
 import appeng.core.localization.ButtonToolTips;
 
 public class ActionButton extends IconButton {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
-    private final int iconIndex;
+    private final Icon icon;
 
-    public ActionButton(final int x, final int y, final ActionItems action, Consumer<ActionItems> onPress) {
-        super(x, y, btn -> onPress.accept(action));
+    public ActionButton(final ActionItems action, Consumer<ActionItems> onPress) {
+        super(btn -> onPress.accept(action));
 
         ButtonToolTips displayName;
         ButtonToolTips displayValue;
         switch (action) {
             case WRENCH:
-                iconIndex = 66;
+                icon = Icon.WRENCH;
                 displayName = ButtonToolTips.PartitionStorage;
                 displayValue = ButtonToolTips.PartitionStorageHint;
                 break;
             case CLOSE:
-                iconIndex = 6;
+                icon = Icon.CLEAR;
                 displayName = ButtonToolTips.Clear;
                 displayValue = ButtonToolTips.ClearSettings;
                 break;
             case STASH:
-                iconIndex = 6;
+                icon = Icon.CLEAR;
                 displayName = ButtonToolTips.Stash;
                 displayValue = ButtonToolTips.StashDesc;
                 break;
             case ENCODE:
-                iconIndex = 8;
+                icon = Icon.WHITE_ARROW_DOWN;
                 displayName = ButtonToolTips.Encode;
                 displayValue = ButtonToolTips.EncodeDescription;
                 break;
             case ENABLE_SUBSTITUTION:
-                iconIndex = 4 + 3 * 16;
+                icon = Icon.SUBSTITUTION_ENABLED;
                 displayName = ButtonToolTips.Substitutions;
                 displayValue = ButtonToolTips.SubstitutionsDescEnabled;
                 break;
             case DISABLE_SUBSTITUTION:
-                iconIndex = 7 + 3 * 16;
+                icon = Icon.SUBSTITUTION_DISABLED;
                 displayName = ButtonToolTips.Substitutions;
                 displayValue = ButtonToolTips.SubstitutionsDescDisabled;
                 break;
@@ -75,8 +76,8 @@ public class ActionButton extends IconButton {
     }
 
     @Override
-    protected int getIconIndex() {
-        return iconIndex;
+    protected Icon getIcon() {
+        return icon;
     }
 
     private ITextComponent buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {

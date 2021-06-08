@@ -106,12 +106,10 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
                 is.setDamage(dmg);
                 queue.add(is);
             }
-        } else {
-            if (item.getGroup() != null) {
-                final NonNullList<ItemStack> list = NonNullList.create();
-                item.fillItemGroup(item.getGroup(), list);
-                queue.addAll(list);
-            }
+        } else if (item.getGroup() != null) {
+            final NonNullList<ItemStack> list = NonNullList.create();
+            item.fillItemGroup(item.getGroup(), list);
+            queue.addAll(list);
         }
     }
 

@@ -48,7 +48,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
     @Override
     public void tick() {
         if (this.rotation > 0) {
-            this.setVisibleRotation(this.getVisibleRotation() - 360.0f / (this.ticksPerRotation));
+            this.setVisibleRotation(this.getVisibleRotation() - 360.0f / this.ticksPerRotation);
             this.charge++;
             if (this.charge >= this.ticksPerRotation) {
                 this.charge -= this.ticksPerRotation;

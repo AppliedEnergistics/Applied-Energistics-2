@@ -57,7 +57,7 @@ import appeng.util.item.AEItemStack;
 
 /**
  * A basic subclass for any item monitor like display with an item icon and an amount.
- *
+ * <p>
  * It can also be used to extract items from somewhere and spawned into the world.
  *
  * @author AlgorithmX2
@@ -306,12 +306,10 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             } else {
                 return on;
             }
+        } else if (this.isLocked()) {
+            return lockedOff;
         } else {
-            if (this.isLocked()) {
-                return lockedOff;
-            } else {
-                return off;
-            }
+            return off;
         }
     }
 

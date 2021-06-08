@@ -18,10 +18,9 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -31,32 +30,24 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.container.ContainerLocator;
+import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
-import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.parts.automation.LevelEmitterPart;
 
 public class LevelEmitterContainer extends UpgradeableContainer {
 
-    public static ContainerType<LevelEmitterContainer> TYPE;
-
-    private static final ContainerHelper<LevelEmitterContainer, LevelEmitterPart> helper = new ContainerHelper<>(
-            LevelEmitterContainer::new, LevelEmitterPart.class, SecurityPermissions.BUILD);
-
-    public static LevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-        return helper.fromNetwork(windowId, inv, buf, (host, container, buffer) -> {
-            container.reportingValue = buffer.readVarLong();
-        });
-    }
-
-    public static boolean open(PlayerEntity player, ContainerLocator locator) {
-        return helper.open(player, locator, (host, buffer) -> {
-            buffer.writeVarLong(host.getReportingValue());
-        });
-    }
+    public static final ContainerType<LevelEmitterContainer> TYPE = ContainerTypeBuilder
+            .create(LevelEmitterContainer::new, LevelEmitterPart.class)
+            .requirePermission(SecurityPermissions.BUILD)
+            .withInitialData((host, buffer) -> {
+                buffer.writeVarLong(host.getReportingValue());
+            }, (host, container, buffer) -> {
+                container.reportingValue = buffer.readVarLong();
+            })
+            .build("levelemitter");
 
     private final LevelEmitterPart lvlEmitter;
 
@@ -91,28 +82,10 @@ public class LevelEmitterContainer extends UpgradeableContainer {
 
     @Override
     protected void setupConfig() {
-        final FixedItemInv upgrades = this.getUpgradeable().getInventoryByName("upgrades");
-        if (this.availableUpgrades() > 0) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
-                    this.getPlayerInventory())).setNotDraggable());
-        }
-        if (this.availableUpgrades() > 1) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187,
-                    8 + 18, this.getPlayerInventory())).setNotDraggable());
-        }
-        if (this.availableUpgrades() > 2) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 2, 187,
-                    8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
-        }
-        if (this.availableUpgrades() > 3) {
-            this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 3, 187,
-                    8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
-        }
+        this.setupUpgrades();
 
         final FixedItemInv inv = this.getUpgradeable().getInventoryByName("config");
-        final int y = 40;
-        final int x = 80 + 57;
-        this.addSlot(new FakeTypeOnlySlot(inv, 0, x, y));
+        this.addSlot(new FakeTypeOnlySlot(inv, 0), SlotSemantic.CONFIG);
     }
 
     @Override
