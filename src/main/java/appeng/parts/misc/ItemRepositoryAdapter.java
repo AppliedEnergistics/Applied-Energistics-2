@@ -203,10 +203,11 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
         public List<IAEItemStack> update()
         {
             final List<IAEItemStack> changes = new ArrayList<>();
+            IItemList<IAEItemStack> storage = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
-            List<IAEItemStack> out = this.iItemRepository.getAllItems().stream().map( s -> AEItemStack.fromItemStack( s.itemPrototype ).setStackSize( s.count ) ).collect(Collectors.toList() );
+            this.iItemRepository.getAllItems().stream().map( s -> AEItemStack.fromItemStack( s.itemPrototype ).setStackSize( s.count ) ).forEach( storage::add );
 
-            final int size = out.size();
+            final int size = storage.size();
 
             // Make room for new slots
             if( size > this.cachedAeStacks.length )
@@ -214,22 +215,21 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
                 this.cachedAeStacks = Arrays.copyOf( this.cachedAeStacks, size );
             }
 
-            for( int x = 0; x < size; x++ )
+            int sx = 0;
+            for( IAEItemStack iaeItemStack : storage )
             {
                 // Save the old stuff
-                final IAEItemStack oldAeIS = this.cachedAeStacks[x];
-                final IAEItemStack newIS = out.get( x );
+                final IAEItemStack oldAeIS = this.cachedAeStacks[sx];
 
-                this.handlePossibleSlotChanges( x, oldAeIS, newIS, changes );
+                this.handlePossibleSlotChanges( sx, oldAeIS, iaeItemStack, changes );
+                sx++;
             }
 
             // Handle cases where the number of slots actually is lower now than before
             if( size < this.cachedAeStacks.length )
             {
-                for( int x = 0; x < this.cachedAeStacks.length; x++ )
+                for( final IAEItemStack aeStack : this.cachedAeStacks )
                 {
-                    final IAEItemStack aeStack = this.cachedAeStacks[x];
-
                     if( aeStack != null )
                     {
                         final IAEItemStack a = aeStack.copy();
