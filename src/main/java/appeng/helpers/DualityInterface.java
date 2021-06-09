@@ -306,6 +306,14 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		this.upgrades.readFromNBT( data, "upgrades" );
 		this.config.readFromNBT( data, "config" );
+
+		NBTTagCompound pa = data.getCompoundTag( "patterns" );
+		if( pa.hasKey( "Size" ) && pa.getInteger( "Size" ) != this.patterns.getSlots() )
+		{
+			pa.setInteger( "Size", this.patterns.getSlots() );
+			this.upgrades.writeToNBT( pa, "patterns" );
+		}
+
 		this.patterns.readFromNBT( data, "patterns" );
 		this.storage.readFromNBT( data, "storage" );
 		this.priority = data.getInteger( "priority" );
