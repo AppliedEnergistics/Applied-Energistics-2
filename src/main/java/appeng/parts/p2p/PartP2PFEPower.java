@@ -19,11 +19,12 @@
 package appeng.parts.p2p;
 
 
-import java.util.List;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.me.cache.helpers.TunnelCollection;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -42,6 +43,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 	private static final IEnergyStorage NULL_ENERGY_STORAGE = new NullEnergyStorage();
 	private final IEnergyStorage inputHandler = new InputEnergyStorage();
 	private final IEnergyStorage outputHandler = new OutputEnergyStorage();
+	private final Queue<PartP2PFEPower> outputs = new ArrayDeque<>();
 
 	public PartP2PFEPower( ItemStack is )
 	{
@@ -108,6 +110,8 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 
 	private class InputEnergyStorage implements IEnergyStorage
 	{
+		private boolean iteratingOutputs;
+
 		@Override
 		public int extractEnergy( int maxExtract, boolean simulate )
 		{
@@ -131,8 +135,14 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 				final int amountPerOutput = maxReceive / outputTunnels;
 				int overflow = amountPerOutput == 0 ? maxReceive : maxReceive % amountPerOutput;
 
-				for( PartP2PFEPower target : PartP2PFEPower.this.getOutputs() )
+				if (outputs.isEmpty())
 				{
+					for ( PartP2PFEPower o : PartP2PFEPower.this.getOutputs())
+					outputs.add( o );
+				}
+
+				while ( !outputs.isEmpty() ) {
+					PartP2PFEPower target = outputs.poll();
 					final IEnergyStorage output = target.getAttachedEnergyStorage();
 					final int toSend = amountPerOutput + overflow;
 					final int received = output.receiveEnergy( toSend, simulate );
