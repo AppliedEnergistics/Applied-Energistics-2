@@ -292,7 +292,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				{
 					is.decStackSize( what.getStackSize() );
 
-					this.updateElapsedTime( what );
+					this.updateRemainingItemCount( what );
 					this.markDirty();
 					this.postCraftingStatusChange( what.copy().setStackSize( -what.getStackSize() ) );
 
@@ -939,14 +939,13 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	@Override
 	public boolean isBusy()
 	{
-		final Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = this.tasks.entrySet().iterator();
 
-		while( i.hasNext() )
+		this.tasks.entrySet().removeIf(
+				taskProgressEntry -> taskProgressEntry.getValue().value <= 0 );
+
+		if( !this.waitingFor.isEmpty() || !this.tasks.isEmpty() )
 		{
-			if( i.next().getValue().value <= 0 )
-			{
-				i.remove();
-			}
+			this.updateElapsedTime();
 		}
 
 		return !this.tasks.isEmpty() || !this.waitingFor.isEmpty();
@@ -1338,12 +1337,16 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.remainingItemCount = itemCount;
 	}
 
-	private void updateElapsedTime( final IAEItemStack is )
+	private void updateRemainingItemCount( final IAEItemStack is )
+	{
+		this.remainingItemCount = this.getRemainingItemCount() - is.getStackSize();
+	}
+
+	private void updateElapsedTime()
 	{
 		final long nextStartTime = System.nanoTime();
 		this.elapsedTime = this.getElapsedTime() + nextStartTime - this.lastTime;
 		this.lastTime = nextStartTime;
-		this.remainingItemCount = this.getRemainingItemCount() - is.getStackSize();
 	}
 
 	public long getElapsedTime()
