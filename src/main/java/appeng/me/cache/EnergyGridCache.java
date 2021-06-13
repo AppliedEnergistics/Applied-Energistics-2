@@ -126,6 +126,10 @@ public class EnergyGridCache implements IEnergyGrid
 	private double lastStoredPower = -1;
 
 	private final GridPowerStorage localStorage = new GridPowerStorage();
+	private Set<IAEPowerStorage> providerToRemove = new HashSet<>();
+	private Set<IAEPowerStorage> requesterToRemove = new HashSet<>();
+	private Set<IAEPowerStorage> providersToAdd = new HashSet<>();
+	private Set<IAEPowerStorage> requesterToAdd = new HashSet<>();
 
 	public EnergyGridCache( final IGrid g )
 	{
@@ -159,23 +163,31 @@ public class EnergyGridCache implements IEnergyGrid
 	{
 		if( ev.storage.isAEPublicPowerStorage() )
 		{
-			switch( ev.type )
+			switch ( ev.type )
 			{
 				case PROVIDE_POWER:
 					if( ev.storage.getPowerFlow() != AccessRestriction.WRITE )
 					{
-						if (!ongoingExtractOperation)
+						if( !ongoingExtractOperation )
 						{
 							addProvider( ev.storage );
+						}
+						else
+						{
+							this.providersToAdd.add( ev.storage );
 						}
 					}
 					break;
 				case REQUEST_POWER:
 					if( ev.storage.getPowerFlow() != AccessRestriction.READ )
 					{
-						if (!ongoingInjectOperation)
+						if( !ongoingInjectOperation )
 						{
-							addRequester(ev.storage);
+							addRequester( ev.storage );
+						}
+						else
+						{
+							this.requesterToAdd.add( ev.storage );
 						}
 					}
 					break;
@@ -190,6 +202,23 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public void onUpdateTick()
 	{
+		if (!providerToRemove.isEmpty() && !ongoingExtractOperation) {
+			this.providers.removeIf( p -> providerToRemove.contains( p ) );
+			providerToRemove.clear();
+		}
+		if (!requesterToRemove.isEmpty() && !ongoingInjectOperation) {
+			this.requesters.removeIf( r -> providerToRemove.contains( r ) );
+			requesterToRemove.clear();
+		}
+		if (!providersToAdd.isEmpty() && !ongoingExtractOperation) {
+			this.providers.addAll(providersToAdd);
+			providersToAdd.clear();
+		}
+		if( !requesterToAdd.isEmpty() && !ongoingInjectOperation){
+			this.requesters.addAll(requesterToAdd);
+			requesterToAdd.clear();
+		}
+
 		if( !this.interests.isEmpty() )
 		{
 			final double oldPower = this.lastStoredPower;
@@ -332,6 +361,12 @@ public class EnergyGridCache implements IEnergyGrid
 			{
 				final IAEPowerStorage node = it.next();
 
+				if ( providerToRemove.contains( node )) {
+					it.remove();
+					providerToRemove.remove( node );
+					continue;
+				}
+
 				final double req = amt - extractedPower;
 				final double newPower = node.extractAEPower( req, mode, PowerMultiplier.ONE );
 				extractedPower += newPower;
@@ -374,6 +409,13 @@ public class EnergyGridCache implements IEnergyGrid
 			while ( amt > 0 && it.hasNext() )
 			{
 				final IAEPowerStorage node = it.next();
+
+				if ( requesterToRemove.contains( node )) {
+					it.remove();
+					requesterToRemove.remove( node );
+					continue;
+				}
+
 				amt = node.injectAEPower( amt, mode );
 
 				if( amt > 0 && mode == Actionable.MODULATE )
@@ -540,9 +582,22 @@ public class EnergyGridCache implements IEnergyGrid
 					this.globalMaxPower -= ps.getAEMaxPower();
 					this.globalAvailablePower -= ps.getAECurrentPower();
 				}
-
-				removeProvider(ps);
-				removeRequester(ps);
+				if( !ongoingExtractOperation )
+				{
+					removeProvider( ps );
+				}
+				else
+				{
+					this.providerToRemove.add( ps );
+				}
+				if( !ongoingInjectOperation )
+				{
+					removeRequester( ps );
+				}
+				else
+				{
+					this.requesterToRemove.add( ps );
+				}
 			}
 		}
 
@@ -567,7 +622,7 @@ public class EnergyGridCache implements IEnergyGrid
 	private void removeRequester(IAEPowerStorage requester) {
 		Preconditions.checkState(!ongoingInjectOperation,
 				"Cannot modify energy requesters while energy is being injected.");
-		this.requesters.add(requester);
+		this.requesters.remove(requester);
 	}
 
 	private void addProvider(IAEPowerStorage provider) {
@@ -614,12 +669,26 @@ public class EnergyGridCache implements IEnergyGrid
 				if( current > 0 && ps.getPowerFlow() != AccessRestriction.WRITE )
 				{
 					this.globalAvailablePower += current;
-					addProvider(ps);
+					if( !ongoingExtractOperation )
+					{
+						addProvider( ps );
+					}
+					else
+					{
+						this.providersToAdd.add( ps );
+					}
 				}
 
 				if( current < max && ps.getPowerFlow() != AccessRestriction.READ )
 				{
-					addRequester(ps);
+					if( !ongoingInjectOperation )
+					{
+						addRequester( ps );
+					}
+					else
+					{
+						this.requesterToAdd.add( ps );
+					}
 				}
 			}
 		}
