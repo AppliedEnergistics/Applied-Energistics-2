@@ -314,7 +314,7 @@ public class PathGridCache implements IPathingGrid
 		int depth = 0;
 		for( final IGridNode nodes : this.requireChannels )
 		{
-			if( !this.semiOpen.contains( nodes ) )
+			if( !this.semiOpen.contains( (IPathItem) nodes ) )
 			{
 				final IGridBlock gb = nodes.getGridBlock();
 				final EnumSet<GridFlags> flags = gb.getFlags();

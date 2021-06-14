@@ -42,6 +42,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -105,8 +109,8 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	private final Set<ICraftingProvider> craftingProviders = new HashSet<>();
 	private final Map<IGridNode, ICraftingWatcher> craftingWatchers = new HashMap<>();
 	private final IGrid grid;
-	private final Map<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<>();
-	private final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<>();
+	private final Object2ObjectMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new Object2ObjectOpenHashMap<>();
+	private final Object2ObjectMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new Object2ObjectOpenHashMap<>();
 	private final Set<IAEItemStack> emitableItems = new HashSet<>();
 	private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
 	private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
@@ -160,11 +164,11 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	{
 		if( machine instanceof ICraftingWatcherHost )
 		{
-			final ICraftingWatcher craftingWatcher = this.craftingWatchers.get( machine );
+			final ICraftingWatcher craftingWatcher = this.craftingWatchers.get( gridNode );
 			if( craftingWatcher != null )
 			{
 				craftingWatcher.reset();
-				this.craftingWatchers.remove( machine );
+				this.craftingWatchers.remove( gridNode );
 			}
 		}
 
@@ -270,7 +274,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			return;
 		}
 
-		final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = this.craftableItems;
+		final Object2ObjectMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = this.craftableItems;
 
 		// erase list.
 		this.craftingMethods.clear();
@@ -287,7 +291,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			provider.provideCrafting( this );
 		}
 
-		final Map<IAEItemStack, Set<ICraftingPatternDetails>> tmpCraft = new HashMap<>();
+		final Object2ObjectMap<IAEItemStack, ObjectSet<ICraftingPatternDetails>> tmpCraft = new Object2ObjectOpenHashMap<>();
 
 		// new craftables!
 		for( final ICraftingPatternDetails details : this.craftingMethods.keySet() )
@@ -298,11 +302,11 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				out.reset();
 				out.setCraftable( true );
 
-				Set<ICraftingPatternDetails> methods = tmpCraft.get( out );
+				ObjectSet<ICraftingPatternDetails> methods = tmpCraft.get( out );
 
 				if( methods == null )
 				{
-					tmpCraft.put( out, methods = new TreeSet<>( COMPARATOR ) );
+					tmpCraft.put( out, methods = new ObjectRBTreeSet<>( COMPARATOR ) );
 				}
 
 				methods.add( details );
@@ -310,7 +314,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		}
 
 		// make them immutable
-		for( final Entry<IAEItemStack, Set<ICraftingPatternDetails>> e : tmpCraft.entrySet() )
+		for( final Entry<IAEItemStack, ObjectSet<ICraftingPatternDetails>> e : tmpCraft.entrySet() )
 		{
 			this.craftableItems.put( e.getKey(), ImmutableList.copyOf( e.getValue() ) );
 		}
@@ -635,7 +639,11 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 	public boolean hasCpu( final ICraftingCPU cpu )
 	{
-		return this.craftingCPUClusters.contains( cpu );
+		if (cpu instanceof CraftingCPUCluster)
+		{
+			return this.craftingCPUClusters.contains( (CraftingCPUCluster) cpu );
+		}
+		return false;
 	}
 
 	public GenericInterestManager<CraftingWatcher> getInterestManager()

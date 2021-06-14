@@ -56,6 +56,6 @@ public class ReadOnlyCollection<T> implements IReadOnlyCollection<T>
 	@Override
 	public boolean contains( final Object node )
 	{
-		return this.c.contains( node );
+		return this.c.contains( (T) node );
 	}
 }

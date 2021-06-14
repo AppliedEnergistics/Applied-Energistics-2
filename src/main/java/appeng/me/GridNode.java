@@ -633,10 +633,10 @@ public class GridNode implements IGridNode, IPathItem
 			this.usedChannels = 0;
 		}
 
-		final int idx = this.connections.indexOf( fast );
+		final int idx = this.connections.indexOf( (IGridConnection) fast );
 		if( idx > 0 )
 		{
-			this.connections.remove( fast );
+			this.connections.remove( (IGridConnection) fast );
 			this.connections.add( 0, (IGridConnection) fast );
 		}
 	}
