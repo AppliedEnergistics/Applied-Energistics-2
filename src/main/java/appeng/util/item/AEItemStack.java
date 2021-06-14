@@ -79,16 +79,20 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         return new AEItemStack(AEItemStackRegistry.getRegisteredStack(stack), stack.getCount());
     }
 
-    public static IAEItemStack fromNBT(final NBTTagCompound i) {
-        if (i == null) {
+    public static IAEItemStack fromNBT( final NBTTagCompound i )
+    {
+        if( i == null )
+        {
             return null;
         }
 
-        final ItemStack itemstack = new ItemStack(i);
-        final AEItemStack item = AEItemStack.fromItemStack(itemstack);
-        if (item == null) {
+        final ItemStack itemstack = new ItemStack( i );
+        if( itemstack.isEmpty() )
+        {
             return null;
         }
+
+        final AEItemStack item = AEItemStack.fromItemStack( itemstack );
 
         item.setStackSize(i.getLong(NBT_STACKSIZE));
         item.setCountRequestable(i.getLong(NBT_REQUESTABLE));
@@ -98,8 +102,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @Override
     public void writeToNBT(final NBTTagCompound i) {
-        final NBTTagCompound itemStack = new NBTTagCompound();
-        this.getDefinition().writeToNBT(itemStack);
+        this.getDefinition().writeToNBT( i );
 
         i.setLong(NBT_STACKSIZE, this.getStackSize());
         i.setLong(NBT_REQUESTABLE, this.getCountRequestable());
