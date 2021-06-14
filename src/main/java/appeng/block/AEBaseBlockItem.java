@@ -74,6 +74,9 @@ public class AEBaseBlockItem extends BlockItem {
         return this.blockType.getTranslationKey();
     }
 
+    /**
+     * TODO: 1.17 Refactor to use Block#onBlockPlacedBy(), BlockItem#setTileEntityNBT() or equivalent.
+     */
     @Override
     public ActionResultType tryPlace(BlockItemUseContext context) {
 
@@ -149,8 +152,6 @@ public class AEBaseBlockItem extends BlockItem {
             if (tile instanceof IGridProxyable) {
                 ((IGridProxyable) tile).getProxy().setOwner(player);
             }
-
-            tile.onPlacement(context);
         } else if (this.blockType instanceof IOrientableBlock) {
             ori.setOrientation(forward, up);
         }
