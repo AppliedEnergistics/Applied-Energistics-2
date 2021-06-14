@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,59 +18,53 @@
 
 package appeng.util.item;
 
-
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import appeng.api.storage.data.IAEItemStack;
 
+/**
+ * This iterator will only return items from a collection that are meaningful (w.r.t.
+ * {@link IAEItemStack#isMeaningful()}. Items that are not meaningful are automatically removed from the collection as
+ * it is being iterated.
+ */
+public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<T> {
+    private final Iterator<T> parent;
+    private T next;
 
-public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<T>
-{
+    public MeaningfulItemIterator(final Collection<T> collection) {
+        this.parent = collection.iterator();
+        this.next = seekNext();
+    }
 
-	private final Iterator<T> parent;
-	private T next;
+    @Override
+    public boolean hasNext() {
+        return this.next != null;
+    }
 
-	public MeaningfulItemIterator( final Iterator<T> iterator )
-	{
-		this.parent = iterator;
-	}
+    @Override
+    public T next() {
+        if (this.next == null) {
+            throw new NoSuchElementException();
+        }
 
-	@Override
-	public boolean hasNext()
-	{
-		while( this.parent.hasNext() )
-		{
-			this.next = this.parent.next();
+        T result = this.next;
+        this.next = this.seekNext();
+        return result;
+    }
 
-			if( this.next.isMeaningful() )
-			{
-				return true;
-			}
-			else
-			{
-				this.parent.remove(); // self cleaning :3
-			}
-		}
+    private T seekNext() {
+        while (this.parent.hasNext()) {
+            T item = this.parent.next();
 
-		this.next = null;
-		return false;
-	}
+            if (item.isMeaningful()) {
+                return item;
+            } else {
+                this.parent.remove();
+            }
+        }
 
-	@Override
-	public T next()
-	{
-		if( this.next == null )
-		{
-			throw new NoSuchElementException();
-		}
-
-		return this.next;
-	}
-
-	@Override
-	public void remove()
-	{
-		this.parent.remove();
-	}
+        return null;
+    }
 }

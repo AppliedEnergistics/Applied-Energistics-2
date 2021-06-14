@@ -312,7 +312,6 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 				if( storedStack == null )
 				{
 					changes.add( cachedStack.setStackSize( -cachedStack.getStackSize() ) );
-					cachedAeStacksIterator.remove();
 				}
 				else if( cachedStack.getStackSize() != storedStack.getStackSize() )
 				{

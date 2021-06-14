@@ -277,6 +277,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 		}
 
 		t.setStackSize( stackSize );
+		t.setCraftable( false );
 
 		if( stackSize > 0 )
 		{

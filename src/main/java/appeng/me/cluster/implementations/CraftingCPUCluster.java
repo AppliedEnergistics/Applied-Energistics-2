@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.InventoryCrafting;
@@ -233,8 +234,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final IActionSource src )
 	{
-		if( !( input instanceof IAEItemStack ) )
-		{
+		// also stop accepting items when the job is complete, i.e. to prevent re-insertion when pushing out
+		// items during storeItems
+		if (input == null || isComplete) {
 			return input;
 		}
 
@@ -431,6 +433,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			AELog.crafting( LOG_MARK_AS_COMPLETE, logStack );
 		}
 
+		// Waiting for can potentially contain items at this point, if the user has a 64xplank->64xbutton processing
+		// recipe for example, but only requested 1xbutton. We just ignore the rest since it will be dumped
+		// back into the network inventory regardless. For this to work it's important that injectItems in this CPU
+		// does not accept any further items if isComplete is true.
+		this.waitingFor.resetStatus();
 		this.remainingItemCount = 0;
 		this.startItemCount = 0;
 		this.lastTime = 0;
@@ -828,6 +835,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void storeItems()
 	{
+		Preconditions.checkState(isComplete, "CPU should be complete to prevent re-insertion when dumping items");
 		final IGrid g = this.getGrid();
 
 		if( g == null )
@@ -838,23 +846,24 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		final IStorageGrid sg = g.getCache( IStorageGrid.class );
 		final IMEInventory<IAEItemStack> ii = sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		for( IAEItemStack is : this.inventory.getItemList() )
+		IItemList<IAEItemStack> itemList = this.inventory.getItemList();
+		for( IAEItemStack is : itemList )
 		{
-			is = this.inventory.extractItems( is.copy(), Actionable.MODULATE, this.machineSrc );
+			this.postChange( is, this.machineSrc );
+			IAEItemStack remainder = ii.injectItems( is.copy(), Actionable.MODULATE, this.machineSrc );
 
-			if( is != null )
+			// The network was unable to receive all of the items, i.e. no or not enough storage space left
+			if( remainder != null )
 			{
-				this.postChange( is, this.machineSrc );
-				is = ii.injectItems( is, Actionable.MODULATE, this.machineSrc );
+				is.setStackSize( remainder.getStackSize() );
 			}
-
-			if( is != null )
+			else
 			{
-				this.inventory.injectItems( is, Actionable.MODULATE, this.machineSrc );
+				is.reset();
 			}
 		}
 
-		if( this.inventory.getItemList().isEmpty() )
+		if( itemList.isEmpty() )
 		{
 			this.inventory = new MECraftingInventory();
 		}

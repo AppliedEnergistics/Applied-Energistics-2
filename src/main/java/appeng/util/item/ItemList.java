@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2020, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,212 +18,196 @@
 
 package appeng.util.item;
 
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
-import java.util.NavigableMap;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.item.Item;
+
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.util.item.AESharedItemStack.Bounds;
 
+public final class ItemList implements IItemList<IAEItemStack> {
 
-public final class ItemList implements IItemList<IAEItemStack>
-{
+    private final Reference2ObjectMap<Item, ItemVariantList> records = new Reference2ObjectOpenHashMap<>();
+    /**
+     * We increment this version field everytime an attempt to mutate this item list (or potentially one of its
+     * sub-lists) is made. Iterators will copy the version when they are created and compare it against the current
+     * version whenever they advance to trigger a {@link ConcurrentModificationException}.
+     */
+    private final AtomicInteger version = new AtomicInteger(0);
 
-	private final NavigableMap<AESharedItemStack, IAEItemStack> records = new ConcurrentSkipListMap<>();
+    @Override
+    public IAEItemStack findPrecise(final IAEItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
 
-	@Override
-	public void add( final IAEItemStack option )
-	{
-		if( option == null )
-		{
-			return;
-		}
+        ItemVariantList record = this.records.get(itemStack.getItem());
+        return record != null ? record.findPrecise(itemStack) : null;
+    }
 
-		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
+    @Override
+    public Collection<IAEItemStack> findFuzzy(final IAEItemStack filter, final FuzzyMode fuzzy) {
+        if (filter == null) {
+            return Collections.emptyList();
+        }
 
-		if( st != null )
-		{
-			st.add( option );
-			return;
-		}
+        ItemVariantList record = this.records.get(filter.getItem());
+        return record != null ? record.findFuzzy(filter, fuzzy) : Collections.emptyList();
+    }
 
-		final IAEItemStack opt = option.copy();
+    @Override
+    public boolean isEmpty() {
+        return !this.iterator().hasNext();
+    }
 
-		this.putItemRecord( opt );
-	}
+    @Override
+    public void add(final IAEItemStack itemStack) {
+        version.incrementAndGet();
 
-	@Override
-	public IAEItemStack findPrecise( final IAEItemStack itemStack )
-	{
-		if( itemStack == null )
-		{
-			return null;
-		}
+        if (itemStack == null) {
+            return;
+        }
 
-		return this.records.get( ( (AEItemStack) itemStack ).getSharedStack() );
-	}
+        this.getOrCreateRecord(itemStack.getItem()).add(itemStack);
+    }
 
-	@Override
-	public Collection<IAEItemStack> findFuzzy( final IAEItemStack filter, final FuzzyMode fuzzy )
-	{
-		if( filter == null )
-		{
-			return Collections.emptyList();
-		}
+    @Override
+    public void addStorage(final IAEItemStack itemStack) {
+        version.incrementAndGet();
 
-		final AEItemStack ais = (AEItemStack) filter;
+        if (itemStack == null) {
+            return;
+        }
 
-		return ais.getOre().map( or ->
-		{
-			if( or.getAEEquivalents().size() == 1 )
-			{
-				final IAEItemStack is = or.getAEEquivalents().get( 0 );
+        this.getOrCreateRecord(itemStack.getItem()).addStorage(itemStack);
+    }
 
-				return this.findFuzzyDamage( is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE );
-			}
-			else
-			{
-				final Collection<IAEItemStack> output = new ArrayList<>();
+    @Override
+    public void addCrafting(final IAEItemStack itemStack) {
+        version.incrementAndGet();
 
-				for( final IAEItemStack is : or.getAEEquivalents() )
-				{
-					output.addAll( this.findFuzzyDamage( is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );
-				}
+        if (itemStack == null) {
+            return;
+        }
 
-				return output;
-			}
-		} ).orElse( this.findFuzzyDamage( ais, fuzzy, false ) );
-	}
+        this.getOrCreateRecord(itemStack.getItem()).addCrafting(itemStack);
+    }
 
-	@Override
-	public boolean isEmpty()
-	{
-		return !this.iterator().hasNext();
-	}
+    @Override
+    public void addRequestable(final IAEItemStack itemStack) {
+        version.incrementAndGet();
 
-	@Override
-	public void addStorage( final IAEItemStack option )
-	{
-		if( option == null )
-		{
-			return;
-		}
+        if (itemStack == null) {
+            return;
+        }
 
-		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
+        this.getOrCreateRecord(itemStack.getItem()).addRequestable(itemStack);
+    }
 
-		if( st != null )
-		{
-			st.incStackSize( option.getStackSize() );
-			return;
-		}
+    @Override
+    public IAEItemStack getFirstItem() {
+        for (final IAEItemStack stackType : this) {
+            return stackType;
+        }
 
-		final IAEItemStack opt = option.copy();
+        return null;
+    }
 
-		this.putItemRecord( opt );
-	}
+    @Override
+    public int size() {
+        int size = 0;
+        for (ItemVariantList entry : records.values()) {
+            size += entry.size();
+        }
 
-	/*
-	 * public void clean() { Iterator<StackType> i = iterator(); while (i.hasNext()) { StackType AEI =
-	 * i.next(); if ( !AEI.isMeaningful() ) i.remove(); } }
-	 */
+        return size;
+    }
 
-	@Override
-	public void addCrafting( final IAEItemStack option )
-	{
-		if( option == null )
-		{
-			return;
-		}
+    @Override
+    public Iterator<IAEItemStack> iterator() {
+        return new ChainedIterator(this.records.values().iterator(), version);
+    }
 
-		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
+    @Override
+    public void resetStatus() {
+        for (final IAEItemStack i : this) {
+            i.reset();
+        }
+    }
 
-		if( st != null )
-		{
-			st.setCraftable( true );
-			return;
-		}
+    private ItemVariantList getOrCreateRecord(Item item) {
+        return this.records.computeIfAbsent(item, this::makeRecordMap);
+    }
 
-		final IAEItemStack opt = option.copy();
-		opt.setStackSize( 0 );
-		opt.setCraftable( true );
+    private ItemVariantList makeRecordMap(Item item) {
+        if (item.isDamageable()) {
+            return new FuzzyItemVariantList();
+        } else {
+            return new NormalItemVariantList();
+        }
+    }
 
-		this.putItemRecord( opt );
-	}
+    /**
+     * Iterates over multiple item lists as if they were one list.
+     */
+    private static class ChainedIterator implements Iterator<IAEItemStack> {
 
-	@Override
-	public void addRequestable( final IAEItemStack option )
-	{
-		if( option == null )
-		{
-			return;
-		}
+        private final AtomicInteger parentVersion;
+        private final int version;
+        private final Iterator<ItemVariantList> parent;
+        private Iterator<IAEItemStack> next;
 
-		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
+        public ChainedIterator(Iterator<ItemVariantList> iterator, AtomicInteger parentVersion) {
+            this.parent = iterator;
+            this.parentVersion = parentVersion;
+            this.version = parentVersion.get();
+            this.ensureItems();
+        }
 
-		if( st != null )
-		{
-			st.setCountRequestable( st.getCountRequestable() + option.getCountRequestable() );
-			return;
-		}
+        @Override
+        public boolean hasNext() {
+            return next != null && next.hasNext();
+        }
 
-		final IAEItemStack opt = option.copy();
-		opt.setStackSize( 0 );
-		opt.setCraftable( false );
-		opt.setCountRequestable( option.getCountRequestable() );
+        @Override
+        public IAEItemStack next() {
+            if (this.next == null) {
+                throw new NoSuchElementException();
+            }
+            if (this.version != this.parentVersion.get()) {
+                throw new ConcurrentModificationException();
+            }
 
-		this.putItemRecord( opt );
-	}
+            IAEItemStack result = this.next.next();
+            this.ensureItems();
+            return result;
+        }
 
-	@Override
-	public IAEItemStack getFirstItem()
-	{
-		for( final IAEItemStack stackType : this )
-		{
-			return stackType;
-		}
+        private void ensureItems() {
+            if (hasNext()) {
+                return; // Still items left in the current one
+            }
 
-		return null;
-	}
+            // Find the next iterator willing to return some items...
+            while (this.parent.hasNext()) {
+                this.next = this.parent.next().iterator();
 
-	@Override
-	public int size()
-	{
-		return this.records.size();
-	}
+                if (this.next.hasNext()) {
+                    return; // Found one!
+                }
+            }
 
-	@Override
-	public Iterator<IAEItemStack> iterator()
-	{
-		return new MeaningfulItemIterator<>( this.records.values().iterator() );
-	}
-
-	@Override
-	public void resetStatus()
-	{
-		for( final IAEItemStack i : this )
-		{
-			i.reset();
-		}
-	}
-
-	private IAEItemStack putItemRecord( final IAEItemStack itemStack )
-	{
-		return this.records.put( ( (AEItemStack) itemStack ).getSharedStack(), itemStack );
-	}
-
-	private Collection<IAEItemStack> findFuzzyDamage( final IAEItemStack filter, final FuzzyMode fuzzy, final boolean ignoreMeta )
-	{
-		final AEItemStack itemStack = (AEItemStack) filter;
-		final Bounds bounds = itemStack.getSharedStack().getBounds( fuzzy, ignoreMeta );
-
-		return this.records.subMap( bounds.lower(), true, bounds.upper(), true ).descendingMap().values();
-	}
+            // No more items
+            this.next = null;
+        }
+    }
 }
