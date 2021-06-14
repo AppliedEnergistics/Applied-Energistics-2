@@ -425,6 +425,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 						if( extracted != null )
 						{
 							possible = extracted.getStackSize();
+							extracted.setCraftable( false );
 							final IAEStack failed = Platform.poweredInsert( energy, destination, extracted, this.mySrc );
 
 							if( failed != null )
