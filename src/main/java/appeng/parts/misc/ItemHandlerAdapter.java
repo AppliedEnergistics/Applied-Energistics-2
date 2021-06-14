@@ -304,6 +304,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 				}
 			}
 
+			IItemList<IAEItemStack> newCachedAeStacks = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+
 			Iterator<IAEItemStack> cachedAeStacksIterator = cachedAeStacks.iterator();
 			while ( cachedAeStacksIterator.hasNext() )
 			{
@@ -313,9 +315,13 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 				{
 					changes.add( cachedStack.setStackSize( -cachedStack.getStackSize() ) );
 				}
-				else if( cachedStack.getStackSize() != storedStack.getStackSize() )
+				else
 				{
-					handleStackSizeChanged( cachedStack, storedStack, changes );
+					newCachedAeStacks.add( storedStack );
+					if( cachedStack.getStackSize() != storedStack.getStackSize() )
+					{
+						handleStackSizeChanged( cachedStack, storedStack, changes );
+					}
 				}
 			}
 
@@ -323,10 +329,12 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			{
 				if( cachedAeStacks.findPrecise( storedStack ) == null )
 				{
-					cachedAeStacks.add( storedStack );
+					newCachedAeStacks.add( storedStack );
 					changes.add( storedStack.copy() );
 				}
 			}
+
+			this.cachedAeStacks = newCachedAeStacks;
 
 			return changes;
 		}
@@ -338,8 +346,6 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 			if( diff != 0 )
 			{
-				cachedStack.setStackSize( storedStack.getStackSize() );
-
 				final IAEItemStack diffStack = cachedStack.copy();
 				diffStack.setStackSize( diff );
 				changes.add( diffStack );

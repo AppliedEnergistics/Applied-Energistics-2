@@ -205,6 +205,8 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
             IItemList<IAEItemStack> storage = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
             this.iItemRepository.getAllItems().stream().map( s -> AEItemStack.fromItemStack( s.itemPrototype ).setStackSize( s.count ) ).forEach( storage::add );
 
+            IItemList<IAEItemStack> newCachedAeStacks = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+
             Iterator<IAEItemStack> cachedAeStacksIterator = cachedAeStacks.iterator();
             while ( cachedAeStacksIterator.hasNext() )
             {
@@ -213,11 +215,14 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
                 if( storedStack == null )
                 {
                     changes.add( cachedStack.setStackSize( -cachedStack.getStackSize() ) );
-                    cachedAeStacksIterator.remove();
                 }
-                else if( cachedStack.getStackSize() != storedStack.getStackSize() )
+                else
                 {
-                    handleStackSizeChanged( cachedStack, storedStack, changes );
+                    newCachedAeStacks.add( storedStack );
+                    if( cachedStack.getStackSize() != storedStack.getStackSize() )
+                    {
+                        handleStackSizeChanged( cachedStack, storedStack, changes );
+                    }
                 }
             }
 
@@ -225,10 +230,12 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
             {
                 if( cachedAeStacks.findPrecise( storedStack ) == null )
                 {
-                    cachedAeStacks.add( storedStack );
+                    newCachedAeStacks.add( storedStack );
                     changes.add( storedStack.copy() );
                 }
             }
+
+            this.cachedAeStacks = newCachedAeStacks;
 
             return changes;
         }
@@ -240,8 +247,6 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
             if( diff != 0 )
             {
-                cachedStack.setStackSize( storedStack.getStackSize() );
-
                 final IAEItemStack diffStack = cachedStack.copy();
                 diffStack.setStackSize( diff );
                 changes.add( diffStack );
