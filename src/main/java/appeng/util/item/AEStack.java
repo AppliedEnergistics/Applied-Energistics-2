@@ -18,169 +18,152 @@
 
 package appeng.util.item;
 
-
+import appeng.api.storage.data.IAEStack;
 import io.netty.buffer.ByteBuf;
 
-import appeng.api.storage.data.IAEStack;
 
+public abstract class AEStack<T extends IAEStack<T>> implements IAEStack<T> {
 
-public abstract class AEStack<StackType extends IAEStack<StackType>> implements IAEStack<StackType>
-{
+    private boolean isCraftable;
+    private long stackSize;
+    private long countRequestable;
 
-	private boolean isCraftable;
-	private long stackSize;
-	private long countRequestable;
+    protected static long getPacketValue( final byte type, final ByteBuf tag )
+    {
+        if( type == 0 )
+        {
+            long l = tag.readByte();
+            l -= Byte.MIN_VALUE;
+            return l;
+        }
+        else if( type == 1 )
+        {
+            long l = tag.readShort();
+            l -= Short.MIN_VALUE;
+            return l;
+        }
+        else if( type == 2 )
+        {
+            long l = tag.readInt();
+            l -= Integer.MIN_VALUE;
+            return l;
+        }
 
-	protected static long getPacketValue( final byte type, final ByteBuf tag )
-	{
-		if( type == 0 )
-		{
-			long l = tag.readByte();
-			l -= Byte.MIN_VALUE;
-			return l;
-		}
-		else if( type == 1 )
-		{
-			long l = tag.readShort();
-			l -= Short.MIN_VALUE;
-			return l;
-		}
-		else if( type == 2 )
-		{
-			long l = tag.readInt();
-			l -= Integer.MIN_VALUE;
-			return l;
-		}
+        return tag.readLong();
+    }
 
-		return tag.readLong();
-	}
+    @Override
+    public long getStackSize() {
+        return this.stackSize;
+    }
 
-	@Override
-	public long getStackSize()
-	{
-		return this.stackSize;
-	}
+    @Override
+    public T setStackSize(final long ss) {
+        this.stackSize = ss;
+        return (T) this;
+    }
 
-	@Override
-	public StackType setStackSize( final long ss )
-	{
-		this.stackSize = ss;
-		return (StackType) this;
-	}
+    @Override
+    public long getCountRequestable() {
+        return this.countRequestable;
+    }
 
-	@Override
-	public long getCountRequestable()
-	{
-		return this.countRequestable;
-	}
+    @Override
+    public T setCountRequestable(final long countRequestable) {
+        this.countRequestable = countRequestable;
+        return (T) this;
+    }
 
-	@Override
-	public StackType setCountRequestable( final long countRequestable )
-	{
-		this.countRequestable = countRequestable;
-		return (StackType) this;
-	}
+    @Override
+    public boolean isCraftable() {
+        return this.isCraftable;
+    }
 
-	@Override
-	public boolean isCraftable()
-	{
-		return this.isCraftable;
-	}
+    @Override
+    public T setCraftable(final boolean isCraftable) {
+        this.isCraftable = isCraftable;
+        return (T) this;
+    }
 
-	@Override
-	public StackType setCraftable( final boolean isCraftable )
-	{
-		this.isCraftable = isCraftable;
-		return (StackType) this;
-	}
+    @Override
+    public T reset() {
+        this.stackSize = 0;
+        this.setCountRequestable(0);
+        this.setCraftable(false);
+        return (T) this;
+    }
 
-	@Override
-	public StackType reset()
-	{
-		this.stackSize = 0;
-		// priority = Integer.MIN_VALUE;
-		this.setCountRequestable( 0 );
-		this.setCraftable( false );
-		return (StackType) this;
-	}
+    @Override
+    public T empty() {
+        final T dup = this.copy();
+        dup.reset();
+        return dup;
+    }
 
-	@Override
-	public StackType empty()
-	{
-		final StackType dup = this.copy();
-		dup.reset();
-		return dup;
-	}
+    @Override
+    public boolean isMeaningful() {
+        return this.stackSize != 0 || this.countRequestable > 0 || this.isCraftable;
+    }
 
-	@Override
-	public boolean isMeaningful()
-	{
-		return this.stackSize != 0 || this.countRequestable > 0 || this.isCraftable;
-	}
+    @Override
+    public void incStackSize(final long i) {
+        this.stackSize += i;
+    }
 
-	@Override
-	public void incStackSize( final long i )
-	{
-		this.stackSize += i;
-	}
+    @Override
+    public void decStackSize(final long i) {
+        this.stackSize -= i;
+    }
 
-	@Override
-	public void decStackSize( final long i )
-	{
-		this.stackSize -= i;
-	}
+    @Override
+    public void incCountRequestable(final long i) {
+        this.countRequestable += i;
+    }
 
-	@Override
-	public void incCountRequestable( final long i )
-	{
-		this.countRequestable += i;
-	}
+    @Override
+    public void decCountRequestable(final long i) {
+        this.countRequestable -= i;
+    }
 
-	@Override
-	public void decCountRequestable( final long i )
-	{
-		this.countRequestable -= i;
-	}
+    protected byte getType( final long num )
+    {
+        if( num <= 255 )
+        {
+            return 0;
+        }
+        else if( num <= 65535 )
+        {
+            return 1;
+        }
+        else if( num <= 4294967295L )
+        {
+            return 2;
+        }
+        else
+        {
+            return 3;
+        }
+    }
 
-	protected byte getType( final long num )
-	{
-		if( num <= 255 )
-		{
-			return 0;
-		}
-		else if( num <= 65535 )
-		{
-			return 1;
-		}
-		else if( num <= 4294967295L )
-		{
-			return 2;
-		}
-		else
-		{
-			return 3;
-		}
-	}
+    protected abstract boolean hasTagCompound();
 
-	protected abstract boolean hasTagCompound();
-
-	protected void putPacketValue( final ByteBuf tag, final long num )
-	{
-		if( num <= 255 )
-		{
-			tag.writeByte( (byte) ( num + Byte.MIN_VALUE ) );
-		}
-		else if( num <= 65535 )
-		{
-			tag.writeShort( (short) ( num + Short.MIN_VALUE ) );
-		}
-		else if( num <= 4294967295L )
-		{
-			tag.writeInt( (int) ( num + Integer.MIN_VALUE ) );
-		}
-		else
-		{
-			tag.writeLong( num );
-		}
-	}
+    protected void putPacketValue( final ByteBuf tag, final long num )
+    {
+        if( num <= 255 )
+        {
+            tag.writeByte( (byte) ( num + Byte.MIN_VALUE ) );
+        }
+        else if( num <= 65535 )
+        {
+            tag.writeShort( (short) ( num + Short.MIN_VALUE ) );
+        }
+        else if( num <= 4294967295L )
+        {
+            tag.writeInt( (int) ( num + Integer.MIN_VALUE ) );
+        }
+        else
+        {
+            tag.writeLong( num );
+        }
+    }
 }
