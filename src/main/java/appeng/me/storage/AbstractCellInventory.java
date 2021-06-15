@@ -151,7 +151,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		}
 
 		// clean any old crusty stuff...
-		for( ; x < oldStoredItems && x < this.maxItemTypes; x++ )
+		for( ; x >= oldStoredItems && x < this.maxItemTypes; x++ )
 		{
 			this.tagCompound.removeTag( ITEM_SLOT_KEYS[x] );
 			this.tagCompound.removeTag( ITEM_SLOT_COUNT_KEYS[x] );
