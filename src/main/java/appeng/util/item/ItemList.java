@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import appeng.util.Platform;
+import gregtech.common.items.MetaTool;
 import net.minecraft.item.Item;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
@@ -149,7 +151,7 @@ public final class ItemList implements IItemList<IAEItemStack> {
     }
 
     private ItemVariantList makeRecordMap(Item item) {
-        if (item.isDamageable()) {
+        if (item.isDamageable() || (Platform.isModLoaded( "gregtech" ) && item instanceof MetaTool) ) {
             return new FuzzyItemVariantList();
         } else {
             return new NormalItemVariantList();

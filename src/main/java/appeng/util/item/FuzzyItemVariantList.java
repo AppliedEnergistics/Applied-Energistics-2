@@ -22,8 +22,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 
+import appeng.util.Platform;
 import com.google.common.base.Preconditions;
 
+import gregtech.common.items.MetaTool;
 import net.minecraft.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
@@ -146,7 +148,7 @@ class FuzzyItemVariantList extends ItemVariantList {
      */
     static ItemDamageBound makeLowerBound(final ItemStack stack, final FuzzyMode fuzzy)
     {
-        Preconditions.checkState( stack.getItem().isDamageable(), "Item#isDamageable() has to be true" );
+        Preconditions.checkState( stack.getItem().isDamageable() || (Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool), "Item#isDamageable() has to be true" );
 
         int damage;
         if( fuzzy == FuzzyMode.IGNORE_ALL )
@@ -174,7 +176,7 @@ class FuzzyItemVariantList extends ItemVariantList {
      * lower number than the lower bound. It also is exclusive.
      */
     static ItemDamageBound makeUpperBound(final ItemStack stack, final FuzzyMode fuzzy) {
-        Preconditions.checkState(stack.getItem().isDamageable(), "Item#isDamageable() has to be true");
+        Preconditions.checkState(stack.getItem().isDamageable() || (Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool), "Item#isDamageable() has to be true");
 
         int damage;
         if (fuzzy == FuzzyMode.IGNORE_ALL) {

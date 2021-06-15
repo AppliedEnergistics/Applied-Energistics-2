@@ -29,6 +29,7 @@ import java.util.Iterator;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IItemList;
 import appeng.container.implementations.ContainerPatternTerm;
+import gregtech.common.items.MetaTool;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -215,7 +216,7 @@ public class PacketJEIRecipe extends AppEngPacket
 										IAEItemStack mostDamaged = null;
 										for( IAEItemStack is : outList )
 										{
-											if( !is.isCraftable() )
+											if( !is.isCraftable() && (is.getItem().isDamageable() || (Platform.isModLoaded( "gregtech" ) && is.getItem() instanceof MetaTool ) ) )
 											{
 												if( mostDamaged == null || mostDamaged.getItemDamage() < is.getItemDamage() )
 												{
